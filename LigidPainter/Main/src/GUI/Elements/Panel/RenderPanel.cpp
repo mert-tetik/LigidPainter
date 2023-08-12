@@ -109,7 +109,7 @@ static float calculateElementStartingPosition(bool vertical, std::vector<Section
     return elementPos;
 }
 
-static void renderBarButtons(std::vector<Button> &barButtons, glm::vec3 pos, glm::vec2 scale, glm::vec2 videoScale, Mouse mouse, Timer timer, TextRenderer textRenderer, bool doMouseTracking){
+static void renderBarButtons(std::vector<Button> &barButtons, glm::vec3 pos, glm::vec2 scale, glm::vec2 videoScale, Mouse& mouse, Timer timer, TextRenderer textRenderer, bool doMouseTracking){
     
     for (size_t i = 0; i < barButtons.size(); i++) //Bar buttons are used only in the vertical panels
     {

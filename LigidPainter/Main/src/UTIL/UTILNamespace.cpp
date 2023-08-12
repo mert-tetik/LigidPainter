@@ -808,7 +808,7 @@ void UTIL::duplicateFolder(const std::string src, const std::string dest){
         //If a file then duplicate the file
         else{
             if(!std::filesystem::copy_file(file, dst))
-                std::cout << "ERROR : Duplicating folder : " << src << " to " << dest << ". Copying file : " file << " to " << dst << std::endl;
+                std::cout << "ERROR : Duplicating folder : " << src << " to " << dest << ". Copying file : " << file << " to " << dst << std::endl;
         }
     }
 }

@@ -84,39 +84,48 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
     
 
     //Create the project folder
-    std::filesystem::create_directory(this->folderPath);
+    if(!std::filesystem::create_directory(this->folderPath))
+        std::cout << "ERROR : Creating project folder : Creating folder : " << folderPath << std::endl; 
 
     //Create the textures folder
     std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
-    std::filesystem::create_directory(textureFolderPath);
+    if(!std::filesystem::create_directory(textureFolderPath))
+        std::cout << "ERROR : Creating project folder : Creating folder : " << textureFolderPath << std::endl; 
 
     //Materials
     std::string materialsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials";
-    std::filesystem::create_directory(materialsFolderPath);
+    if(!std::filesystem::create_directory(materialsFolderPath))
+        std::cout << "ERROR : Creating project folder : Creating folder : " << materialsFolderPath << std::endl; 
     
     //Brushes
     std::string brushesFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
-    std::filesystem::create_directory(brushesFolderPath);
+    if(!std::filesystem::create_directory(brushesFolderPath))
+        std::cout << "ERROR : Creating project folder : Creating folder : " << brushesFolderPath << std::endl; 
     
     //Fonts
     std::string fontsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Fonts";
-    std::filesystem::create_directory(fontsFolderPath);
+    if(!std::filesystem::create_directory(fontsFolderPath))
+        std::cout << "ERROR : Creating project folder : Creating folder : " << fontsFolderPath << std::endl; 
     
     //Scripts
     std::string scriptsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Scripts";
-    std::filesystem::create_directory(scriptsFolderPath);
+    if(!std::filesystem::create_directory(scriptsFolderPath))
+        std::cout << "ERROR : Creating project folder : Creating folder : " << scriptsFolderPath << std::endl; 
     
     //Filters
     std::string filtersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Filters";
-    std::filesystem::create_directory(filtersFolderPath);
+    if(!std::filesystem::create_directory(filtersFolderPath))
+        std::cout << "ERROR : Creating project folder : Creating folder : " << filtersFolderPath << std::endl; 
     
     //Layers
     std::string layersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Layers";
-    std::filesystem::create_directory(layersFolderPath);
+    if(!std::filesystem::create_directory(layersFolderPath))
+        std::cout << "ERROR : Creating project folder : Creating folder : " << layersFolderPath << std::endl; 
     
     //3D Models
     std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
-    std::filesystem::create_directory(tdModelFolderPath);
+    if(!std::filesystem::create_directory(tdModelFolderPath))
+        std::cout << "ERROR : Creating project folder : Creating folder : " << tdModelFolderPath << std::endl; 
     completeFolder(tdModelFolderPath, TD_MODEL_FOLDER_CREATION);
     
     if(std::filesystem::exists(TDModelPath)){

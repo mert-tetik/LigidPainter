@@ -37,12 +37,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //forward declerations for the utility functions
 static void setBrushProperties (BrushProperties brushProperties);
-static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int frameCounter, Mouse mouse);
+static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int frameCounter, Mouse& mouse);
 static void set3DShaderSideUniforms(int selectedColorIndex,Color color1,Color color2,Color color3,float opacity ,int selectedPaintingModeIndex);
 
 
 
-void Painter::doPaint(Mouse mouse, glm::mat4 windowOrtho, std::vector<Texture> textures, Context context){
+void Painter::doPaint(Mouse& mouse, glm::mat4 windowOrtho, std::vector<Texture> textures, Context context){
 
     glm::vec2 firstCursorPos = mouse.cursorPos;
     
@@ -149,7 +149,7 @@ static void setBrushProperties (
     ShaderSystem::twoDPainting().setFloat("brush.txtr", 0);
 }
 
-static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int frameCounter, Mouse mouse){
+static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int frameCounter, Mouse& mouse){
     glm::vec2 scale = videoScale / glm::vec2(2);
     glm::vec3 pos = glm::vec3(videoScale / glm::vec2(2),1.f);
     projection = glm::ortho(0.f,videoScale.x,0.f,videoScale.y);

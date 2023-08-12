@@ -518,7 +518,7 @@ public:
     * @param windowOrtho orthographics projection matrix created with window size value.
     * @param textures textures in the library
     */
-    void doPaint(Mouse mouse,glm::mat4 windowOrtho,std::vector<Texture> textures, Context context);
+    void doPaint(Mouse& mouse,glm::mat4 windowOrtho,std::vector<Texture> textures, Context context);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)

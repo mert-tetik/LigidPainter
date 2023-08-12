@@ -140,6 +140,7 @@ void ComboBox::render(
                 //Mouse left button pressed on top of the button
                 selectedIndex = i;
                 pressed = false;
+                mouse.LClick = false;
             }
             else if(clickedMixVal[0] < 0.2f)
                 pressed = true;

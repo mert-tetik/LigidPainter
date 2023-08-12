@@ -181,7 +181,6 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
 
             //Open in file explorer
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){
-                ;
                 UTIL::openInFileExplorer(std::filesystem::absolute(project.folderPath).string().c_str());
             }
         }
