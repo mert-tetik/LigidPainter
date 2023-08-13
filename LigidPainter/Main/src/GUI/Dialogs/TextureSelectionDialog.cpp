@@ -178,6 +178,20 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, pixels);
     glGenerateMipmap(GL_TEXTURE_2D);
+    
+    this->selectedTextureMode = 0;
+
+    if(receivedTexture.proceduralID != -1){
+        this->selectedTextureMode = 1;
+        this->selectedTextureIndex = receivedTexture.proceduralID;
+        
+        if(this->selectedTextureIndex > MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE - 1){
+            this->selectedTextureMode = 2;
+            this->selectedTextureIndex -= MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
+        }
+        subPanel.sections[0].elements[3].checkBox.clickState1 = receivedTexture.proceduralnverted;
+        subPanel.sections[0].elements[4].rangeBar.value = receivedTexture.proceduralScale * 10.f;  
+    }
 
     while (!window.shouldClose())
     {
@@ -277,14 +291,13 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
 
         this->textureSelectingPanel.render(videoScale,__mouse,timer,__textRenderer,true);
 
+        ShaderSystem::buttonShader().setInt("properties.invertTheTexture", this->subPanel.sections[0].elements[3].checkBox.clickState1);
+        ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(this->subPanel.sections[0].elements[4].rangeBar.value / 10.f));
+        this->selectedTextureDisplayingPanel.render(videoScale,__mouse,timer,__textRenderer,true);
+        ShaderSystem::buttonShader().setInt("properties.invertTheTexture", false);
+        ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
+        
         if(this->selectedTextureMode == 0){
-
-            ShaderSystem::buttonShader().setInt("properties.invertTheTexture", this->subPanel.sections[0].elements[3].checkBox.clickState1);
-            ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(this->subPanel.sections[0].elements[4].rangeBar.value / 10.f));
-            this->selectedTextureDisplayingPanel.render(videoScale,__mouse,timer,__textRenderer,true);
-            ShaderSystem::buttonShader().setInt("properties.invertTheTexture", false);
-            ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
-
         }
         else{
             ShaderSystem::proceduralDisplayerShader().use();
