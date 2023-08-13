@@ -43,21 +43,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 // Forward declarations for the utilities
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
-#ifndef CREATEMODELUTIL
-#define CREATEMODELUTIL
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
-#endif
 void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
 
 // Forward declarations for the obj file processing functions
 static void parseOBJMeshData(std::vector<glm::vec3> uniquePositions,std::vector<glm::vec2> uniqueUVS,std::vector<glm::vec3> uniqueNormals,std::vector<std::string> matTitles,std::vector<std::vector<std::vector<glm::vec3>>> faces,std::vector<std::vector<Vertex>>& meshVertices,std::vector<std::vector<unsigned int>>& meshIndices);
 static void getDataFromWavefrontFile( std::ifstream& rf, std::vector<glm::vec3>& uniquePositions, std::vector<glm::vec2>& uniqueUVS, std::vector<glm::vec3>& uniqueNormals, std::vector<std::string>& matTitles, std::vector<std::vector<std::vector<glm::vec3>>>& faces);
 
-
-
 #define LIGID_OBJ_IMPORTER_TRIANGULATE true
-
-
 
 Model FileHandler::readOBJFile(std::string path){
 

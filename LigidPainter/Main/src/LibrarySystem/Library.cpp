@@ -123,11 +123,16 @@ void Library::addModel(Model model){
 void Library::eraseTexture   (int index){
     __changed = true;
     
+    glDeleteTextures(1, &__textures[index].ID);
+
     __textures.erase(__textures.begin() + index);
 }
 
 void Library::eraseMaterial  (int index){
     __changed = true;
+
+    glDeleteFramebuffers(1, &__materials[index].displayingFBO);
+    glDeleteTextures(1, &__materials[index].displayingTexture);
     
     __materials.erase(__materials.begin() + index);
 }
@@ -141,11 +146,29 @@ void Library::eraseBrush     (int index){
 void Library::eraseModel     (int index){
     __changed = true;
     
+    for (size_t mshI = 0; mshI < __TDModels[index].meshes.size(); mshI++)
+    {
+        glDeleteVertexArrays(1, &__TDModels[index].meshes[mshI].VAO);
+        glDeleteBuffers(1, &__TDModels[index].meshes[mshI].VBO);
+        
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].albedo.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].roughness.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].metallic.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].normalMap.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].heightMap.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].ambientOcclusion.ID);
+    }
+
     __TDModels.erase(__TDModels.begin() + index);
 }
 
 void Library::clearTextures   (){
     __changed = true;
+    
+    for (size_t i = 0; i < __textures.size(); i++)
+    {
+        glDeleteTextures(1, &__textures[i].ID);
+    }
     
     __textures.clear();
 }
@@ -153,6 +176,12 @@ void Library::clearTextures   (){
 void Library::clearMaterials  (){
     __changed = true;
     
+    for (size_t i = 0; i < __materials.size(); i++)
+    {
+        glDeleteFramebuffers(1, &__materials[i].displayingFBO);
+        glDeleteTextures(1, &__materials[i].displayingTexture);
+    }
+
     __materials.clear();
 }
 
@@ -165,6 +194,22 @@ void Library::clearBrushes     (){
 void Library::clearModels     (){
     __changed = true;
     
+    for (size_t i = 0; i < __TDModels.size(); i++)
+    {
+        for (size_t mshI = 0; mshI < __TDModels[i].meshes.size(); mshI++)
+        {
+            glDeleteVertexArrays(1, &__TDModels[i].meshes[mshI].VAO);
+            glDeleteBuffers(1, &__TDModels[i].meshes[mshI].VBO);
+
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].albedo.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].roughness.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].metallic.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].normalMap.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].heightMap.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].ambientOcclusion.ID);
+        }
+    }
+
     __TDModels.clear();
 }
 

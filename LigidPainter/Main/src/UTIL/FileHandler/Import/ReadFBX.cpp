@@ -45,12 +45,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LIGID_FBX_IMPORTER_PRINT_TEXT_STATE 0
 #define LIGID_FBX_IMPORTER_TRIANGULATE true
 
-
 // Forward declarations for the utilities
-#ifndef CREATEMODELUTIL
-#define CREATEMODELUTIL
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
-#endif
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
 std::vector<char> DecompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize);
