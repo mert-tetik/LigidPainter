@@ -838,37 +838,6 @@ void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& cu
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void generateNormalMap(unsigned int& heightMap, unsigned int& normalMap, int textureResolution){
-    unsigned int FBO;
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMap, 0);
-    glViewport(0, 0, textureResolution, textureResolution);
-
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    Box box;
-    box.init();
-    box.bindBuffers();
-    
-    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
-    ShaderSystem::heightToNormalMap().use();
-    ShaderSystem::heightToNormalMap().setInt("heightMap", 0);
-    ShaderSystem::heightToNormalMap().setMat4("projection"  ,       projection);
-    ShaderSystem::heightToNormalMap().setMat4("projectedPosProjection"  ,       projection);
-    ShaderSystem::heightToNormalMap().setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
-    ShaderSystem::heightToNormalMap().setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, heightMap);
-
-    glDrawArrays(GL_TRIANGLES, 0 , 6);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glDeleteFramebuffers(1, &FBO);
-}
-
 static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution){
     
     Texture textureObject = Texture(txtr);
@@ -1123,7 +1092,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.normalMap.removeSeams(mesh, textureResolution);
@@ -1339,7 +1308,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution);
             mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1447,7 +1416,7 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution);
             mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1575,7 +1544,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.normalMap.removeSeams(mesh, textureResolution);
@@ -1701,7 +1670,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.normalMap.removeSeams(mesh, textureResolution);
@@ -1828,7 +1797,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.normalMap.removeSeams(mesh, textureResolution);
@@ -1951,7 +1920,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            generateNormalMap(mesh.heightMap.ID, mesh.normalMap.ID, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.normalMap.removeSeams(mesh, textureResolution);

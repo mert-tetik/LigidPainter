@@ -326,3 +326,34 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Scene scene, int tex
 
     return proceduralTxtr;
 }
+
+void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution){
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMap, 0);
+    glViewport(0, 0, textureResolution, textureResolution);
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    Box box;
+    box.init();
+    box.bindBuffers();
+    
+    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
+    ShaderSystem::heightToNormalMap().use();
+    ShaderSystem::heightToNormalMap().setInt("heightMap", 0);
+    ShaderSystem::heightToNormalMap().setMat4("projection"  ,       projection);
+    ShaderSystem::heightToNormalMap().setMat4("projectedPosProjection"  ,       projection);
+    ShaderSystem::heightToNormalMap().setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
+    ShaderSystem::heightToNormalMap().setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, this->ID);
+
+    glDrawArrays(GL_TRIANGLES, 0 , 6);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &FBO);
+}
