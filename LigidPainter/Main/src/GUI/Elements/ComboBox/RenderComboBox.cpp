@@ -136,13 +136,13 @@ void ComboBox::render(
         
         //If clicked to the element
         if(hover[i] && mouse.LClick){
-            if(clickedMixVal[0] > 0.8f){
+            if(clickedMixVal[0] > 0.5f){
                 //Mouse left button pressed on top of the button
                 selectedIndex = i;
                 pressed = false;
                 mouse.LClick = false;
             }
-            else if(clickedMixVal[0] < 0.2f)
+            else
                 pressed = true;
         }
 
@@ -187,7 +187,7 @@ void ComboBox::render(
         glDepthFunc(GL_LEQUAL);
     
     //Unpress
-    if((!hover[0] && mouse.LClick) || window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS){
+    if(window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS){
         pressed = false;
     }
 }

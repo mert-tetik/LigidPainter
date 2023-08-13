@@ -84,12 +84,7 @@ void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalett
     panel.render(videoScale,mouse,timer,textRenderer,true);
 
     //If pressed to any of the combo box element change the texture res
-    for (size_t i = 0; i < panel.sections[0].elements[1].comboBox.hover.size(); i++)
-    {
-        if(panel.sections[0].elements[1].comboBox.hover[i] && mouse.LClick){
-            settings.textureRes = stoi(panel.sections[0].elements[1].comboBox.texts[panel.sections[0].elements[1].comboBox.selectedIndex]);
-        }
-    }
+    settings.textureRes = stoi(panel.sections[0].elements[1].comboBox.texts[panel.sections[0].elements[1].comboBox.selectedIndex]);
     
     //End the dialog
     if  (
