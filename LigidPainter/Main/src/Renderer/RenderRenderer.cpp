@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 #include "ShaderSystem/Shader.hpp"
+#include "NodeSystem/Node/Node.hpp"
 
 bool _ligid_renderer_render_first_frame = true;
 
@@ -111,7 +112,7 @@ void Renderer::render(){
         /* Albedo */
         glActiveTexture(GL_TEXTURE2);
         if(painter.selectedDisplayingModeIndex == 0){
-            if(meshNodeScene[0].IOs[i].connections.size())
+            if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].albedo.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
@@ -122,7 +123,7 @@ void Renderer::render(){
         /* Roughness */
         glActiveTexture(GL_TEXTURE3);
         if(painter.selectedDisplayingModeIndex == 0){
-            if(meshNodeScene[0].IOs[i].connections.size())
+            if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].roughness.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
@@ -133,7 +134,7 @@ void Renderer::render(){
         /* Metallic*/
         glActiveTexture(GL_TEXTURE4);
         if(painter.selectedDisplayingModeIndex == 0){
-            if(meshNodeScene[0].IOs[i].connections.size())
+            if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].metallic.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
@@ -144,7 +145,7 @@ void Renderer::render(){
         /* Normal Map*/
         glActiveTexture(GL_TEXTURE5);
         if(painter.selectedDisplayingModeIndex == 0){
-            if(meshNodeScene[0].IOs[i].connections.size())
+            if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].normalMap.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
@@ -155,7 +156,7 @@ void Renderer::render(){
         /* Height Map*/
         glActiveTexture(GL_TEXTURE6);
         if(painter.selectedDisplayingModeIndex == 0){
-            if(meshNodeScene[0].IOs[i].connections.size())
+            if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].heightMap.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
@@ -166,7 +167,7 @@ void Renderer::render(){
         /* Ambient Occlusion*/
         glActiveTexture(GL_TEXTURE7);
         if(painter.selectedDisplayingModeIndex == 0){
-            if(meshNodeScene[0].IOs[i].connections.size())
+            if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].ambientOcclusion.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
@@ -219,7 +220,7 @@ void Renderer::render(){
                             context,
                             box,
                             
-                            meshNodeScene,
+                            
                             contextMenus,
                             settings,
                             project,

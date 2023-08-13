@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "NodeSystem/Node/Node.hpp"
 
 #include <string>
 #include <iostream>
@@ -34,7 +35,6 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nod
     
     glm::vec2 pos = src - gap/2.f;
     glm::vec2 scale = glm::abs(gap/2.f);
-    ;
     glm::vec3 resultPos = glm::vec3( 
                                     UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
                                     ,0.9f); 
@@ -59,71 +59,69 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nod
     ShaderSystem::buttonShader().use();
 }
 
-
-void Node::createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI,std::vector<Node> &meshNodeScene){
-    
+void Node::createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI){
     IOs[currentIOI].connections.push_back(NodeConnection(nodeIParam,IOIParam));
-    meshNodeScene[nodeIParam].IOs[IOIParam].connections.push_back(NodeConnection(currentNodeI,currentIOI));
+    NodeScene::getNode(nodeIParam)->IOs[IOIParam].connections.push_back(NodeConnection(currentNodeI,currentIOI));
 }
 
-void Node::clearConnections(int nodeIParam,int IOIParam,std::vector<Node> &meshNodeScene){
+void Node::clearConnections(int nodeIParam,int IOIParam){
     
-    meshNodeScene[nodeIParam].IOs[IOIParam].connections.clear();
+    NodeScene::getNode(nodeIParam)->IOs[IOIParam].connections.clear();
 
     //Check all the nodes in the meshNodeScene
-    for (size_t nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
+    for (size_t nodeI = 0; nodeI < NodeScene::getArraySize(); nodeI++)
     {
         //Check all the IO in the node
-        for (size_t IOI = 0; IOI < meshNodeScene[nodeI].IOs.size(); IOI++)
+        for (size_t IOI = 0; IOI < NodeScene::getNode(nodeI)->IOs.size(); IOI++)
         {
             //Check all the connections in the IO
-            for (size_t conI = 0; conI < meshNodeScene[nodeI].IOs[IOI].connections.size(); conI++)
+            for (size_t conI = 0; conI < NodeScene::getNode(nodeI)->IOs[IOI].connections.size(); conI++)
             {
                 //Does the node matches
                 bool nodeMatches = false;
                 
-                if(meshNodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == nodeIParam)
+                if(NodeScene::getNode(nodeI)->IOs[IOI].connections[conI].nodeIndex == nodeIParam)
                     nodeMatches = true;
                 
                 
                 //Does the IO matches
                 bool IOMatches = false;
                 
-                if(meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex == IOIParam)
+                if(NodeScene::getNode(nodeI)->IOs[IOI].connections[conI].inputIndex == IOIParam)
                     IOMatches = true;
 
                 
                 //If the both node & IOI indices matches than the input has connection
                 if(nodeMatches && IOMatches)
-                    meshNodeScene[nodeI].IOs[IOI].connections.erase(meshNodeScene[nodeI].IOs[IOI].connections.begin() + conI);
+                    NodeScene::getNode(nodeI)->IOs[IOI].connections.erase(NodeScene::getNode(nodeI)->IOs[IOI].connections.begin() + conI);
             }
         }
     }
 }
 
 
-bool Node::doHaveConnection(int nodeIParam,int IOIParam,std::vector<Node> meshNodeScene){
+bool Node::doHaveConnection(int nodeIParam,int IOIParam){
     
     //Check all the nodes in the meshNodeScene
-    for (size_t nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
+    for (size_t nodeI = 0; nodeI < NodeScene::getArraySize(); nodeI++)
     {
         //Check all the IO in the node
-        for (size_t IOI = 0; IOI < meshNodeScene[nodeI].IOs.size(); IOI++)
+        for (size_t IOI = 0; IOI < NodeScene::getNode(nodeI)->IOs.size(); IOI++)
         {
             //Check all the connections in the IO
-            for (size_t conI = 0; conI < meshNodeScene[nodeI].IOs[IOI].connections.size(); conI++)
+            for (size_t conI = 0; conI < NodeScene::getNode(nodeI)->IOs[IOI].connections.size(); conI++)
             {
                 //Does the node matches
                 bool nodeMatches = false;
                 
-                if(meshNodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == nodeIParam)
+                if(NodeScene::getNode(nodeI)->IOs[IOI].connections[conI].nodeIndex == nodeIParam)
                     nodeMatches = true;
                 
                 
                 //Does the IO matches
                 bool IOMatches = false;
                 
-                if(meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex == IOIParam)
+                if(NodeScene::getNode(nodeI)->IOs[IOI].connections[conI].inputIndex == IOIParam)
                     IOMatches = true;
 
                 
@@ -137,19 +135,19 @@ bool Node::doHaveConnection(int nodeIParam,int IOIParam,std::vector<Node> meshNo
     return false;
 }
 
-int Node::getStateData(int nodeI, int IOI,std::vector<Node> meshNodeScene){
-    return meshNodeScene[nodeI].IOs[IOI].state;
+int Node::getStateData(int nodeI, int IOI){
+    return NodeScene::getNode(nodeI)->IOs[IOI].state;
 }
 
-void Node::getHoveredInputs(int &nodeIParam, int &IOIndexParam, std::vector<Node> meshNodeScene){
+void Node::getHoveredInputs(int &nodeIParam, int &IOIndexParam){
     //Check all the nodes in the meshNodeScene
-    for (size_t nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
+    for (size_t nodeI = 0; nodeI < NodeScene::getArraySize(); nodeI++)
     {
         //Check all the IO in the node
-        for (size_t IOI = 0; IOI < meshNodeScene[nodeI].IOs.size(); IOI++)
+        for (size_t IOI = 0; IOI < NodeScene::getNode(nodeI)->IOs.size(); IOI++)
         {
             //Check if IO circle is hovered
-            if(meshNodeScene[nodeI].IOs[IOI].IOCircle.hover){
+            if(NodeScene::getNode(nodeI)->IOs[IOI].IOCircle.hover){
                 nodeIParam = nodeI;
                 IOIndexParam = IOI;
             }
@@ -157,27 +155,27 @@ void Node::getHoveredInputs(int &nodeIParam, int &IOIndexParam, std::vector<Node
     }
 }
 
-void Node::getTheIOConnectedToTheInput(int &nodeIParam, int &IOIParam,int currentNodeI, int currentIOI, std::vector<Node> meshNodeScene){
+void Node::getTheIOConnectedToTheInput(int &nodeIParam, int &IOIParam,int currentNodeI, int currentIOI){
     //Check all the nodes in the meshNodeScene
-    for (size_t nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
+    for (size_t nodeI = 0; nodeI < NodeScene::getArraySize(); nodeI++)
     {
         //Check all the IO in the node
-        for (size_t IOI = 0; IOI < meshNodeScene[nodeI].IOs.size(); IOI++)
+        for (size_t IOI = 0; IOI < NodeScene::getNode(nodeI)->IOs.size(); IOI++)
         {
             //Check all the connections in the IO
-            for (size_t conI = 0; conI < meshNodeScene[nodeI].IOs[IOI].connections.size(); conI++)
+            for (size_t conI = 0; conI < NodeScene::getNode(nodeI)->IOs[IOI].connections.size(); conI++)
             {
                 //Does the node matches
                 bool nodeMatches = false;
                 
-                if(meshNodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == currentNodeI)
+                if(NodeScene::getNode(nodeI)->IOs[IOI].connections[conI].nodeIndex == currentNodeI)
                     nodeMatches = true;
                 
                 
                 //Does the IO matches
                 bool IOMatches = false;
                 
-                if(meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex == currentIOI)
+                if(NodeScene::getNode(nodeI)->IOs[IOI].connections[conI].inputIndex == currentIOI)
                     IOMatches = true;
 
                 

@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "NodeSystem/Node/Node.hpp"
 
 #include <string>
 #include <fstream>
@@ -34,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void nodeInteraction(
                         Model &model, 
-                        std::vector<Node> &meshNodeScene,
+                        
                         ColorPalette colorPalette,
                         glm::vec2 videoScale,
                         Scene scene, 
@@ -45,21 +46,21 @@ void nodeInteraction(
     //Update the mesh node if a new model is added
     if(model.newModelAdded){
         
-        Node previousNode = meshNodeScene[0]; //(Current node (unchanged))
+        Node previousNode = *NodeScene::getNode(0); //(Current node (unchanged))
 
-        meshNodeScene[0].uploadNewIOs(model, colorPalette);
+        NodeScene::getNode(0)->uploadNewIOs(model, colorPalette);
 
         for (size_t i = 0; i < previousNode.IOs.size(); i++)
         {
-            if(i >= meshNodeScene[0].IOs.size())
+            if(i >= NodeScene::getNode(0)->IOs.size())
                 break;
 
-            meshNodeScene[0].IOs[i].connections = previousNode.IOs[i].connections;
+            NodeScene::getNode(0)->IOs[i].connections = previousNode.IOs[i].connections;
         }
         
         //Update all the connections
-        UTIL::updateAllTheNodeConnections(meshNodeScene);
+        NodeScene::updateAllTheNodeConnections();
     
-        UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
+        NodeScene::updateNodeResults(model, scene, textureRes, -1);
     }
 }

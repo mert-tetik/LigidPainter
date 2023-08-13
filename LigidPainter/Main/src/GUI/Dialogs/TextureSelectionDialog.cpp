@@ -207,7 +207,6 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
             __mouse.MClick = false;
         }
 
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         glActiveTexture(GL_TEXTURE0);

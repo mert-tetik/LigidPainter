@@ -38,8 +38,7 @@ void paintingPanelInteraction(
                                 Dropper &dropper,
                                 ColorPalette colorPalette,
                                 AppTextures appTextures, 
-                                Model &model, 
-                                std::vector<Node> &meshNodeScene
+                                Model &model
                             )
 {
 

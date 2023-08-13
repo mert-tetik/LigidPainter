@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "NodeSystem/Node/Node.hpp"
 
 #include <string>
 #include <fstream>
@@ -33,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , 
-                                std::vector<Node> &meshNodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
+                                Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
                                 Project& project, int &textureRes, Painter &painter){
     anyContextMenuActive = false; 
     for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
@@ -83,7 +84,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                                             videoScale
                                         );
                 materialNode.barButton.text = Library::getMaterial(contextMenus[i].selectedElement)->title;
-                meshNodeScene.push_back(materialNode); //Add material node
+                NodeScene::addNode(materialNode); //Add material node
             }
             if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
                 renamingTextBox.active = true;
@@ -105,10 +106,10 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
                 
                 //Delete the nodes using same material
-                for (int nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
+                for (int nodeI = 0; nodeI < NodeScene::getArraySize(); nodeI++)
                 {
-                    if(meshNodeScene[nodeI].materialID == Library::getMaterial(contextMenus[i].selectedElement)->uniqueID && meshNodeScene[nodeI].nodeIndex == MATERIAL_NODE){
-                        UTIL::deleteNode(meshNodeScene, nodeI);
+                    if(NodeScene::getNode(nodeI)->materialID == Library::getMaterial(contextMenus[i].selectedElement)->uniqueID && NodeScene::getNode(nodeI)->nodeIndex == MATERIAL_NODE){
+                        NodeScene::deleteNode( nodeI);
                         nodeI--;
                     }
                 }
@@ -156,12 +157,12 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         if(i == 3 && contextMenus[i].dialogControl.isActive()){ //If project context menu is active
             //Save
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-                project.updateProject(meshNodeScene,textureRes);
+                project.updateProject(textureRes);
             }
             
             //Save as
             if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
-                project.updateProject(meshNodeScene,textureRes);
+                project.updateProject(textureRes);
                 project.duplicateFolder("");
             }
             
@@ -207,24 +208,22 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
         }
         
         if(i == 7 && contextMenus[i].dialogControl.isActive()){ //If node context menu is active
-            
             //Delete the node
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick && contextMenus[i].selectedElement){
-                UTIL::deleteNode(meshNodeScene,contextMenus[i].selectedElement);                
+                NodeScene::deleteNode(contextMenus[i].selectedElement);                
             }
-        
         }
 
         if(i == 9 && contextMenus[i].dialogControl.isActive()){//If node scene context menu is active
             //Add material ID node button pressed
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-                meshNodeScene.push_back(Node(MATERIAL_ID_NODE, 0, colorPalette, appTextures, videoScale));
-                meshNodeScene[meshNodeScene.size()-1].nodePanel.pos = meshNodeScene[0].nodePanel.pos;
+                NodeScene::addNode(Node(MATERIAL_ID_NODE, 0, colorPalette, appTextures, videoScale));
+                NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
             }
             //Add material mask node button pressed
             else if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
-                meshNodeScene.push_back(Node(MATERIAL_MASK_NODE, 0, colorPalette, appTextures, videoScale));
-                meshNodeScene[meshNodeScene.size()-1].nodePanel.pos = meshNodeScene[0].nodePanel.pos;
+                NodeScene::addNode(Node(MATERIAL_MASK_NODE, 0, colorPalette, appTextures, videoScale));
+                NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
             }
         } 
 
@@ -332,12 +331,12 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
     }
 
     bool anyNodeHover = false;
-    for (size_t i = 0; i < meshNodeScene.size(); i++)
+    for (size_t i = 0; i < NodeScene::getArraySize(); i++)
     {
-        if((meshNodeScene[i].nodePanel.hover || meshNodeScene[i].barButton.hover))
+        if((NodeScene::getNode(i)->nodePanel.hover || NodeScene::getNode(i)->barButton.hover))
             anyNodeHover = true;
 
-        if((meshNodeScene[i].nodePanel.hover || meshNodeScene[i].barButton.hover) && mouse.RClick && !meshNodeScene[i].cursorOnBarriers){
+        if((NodeScene::getNode(i)->nodePanel.hover || NodeScene::getNode(i)->barButton.hover) && mouse.RClick && !NodeScene::getNode(i)->cursorOnBarriers){
             contextMenus[7].dialogControl.activate();
             contextMenus[7].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
             contextMenus[7].pos.y = mouse.cursorPos.y / videoScale.y * 100.f + contextMenus[7].contextPanel.scale.y;

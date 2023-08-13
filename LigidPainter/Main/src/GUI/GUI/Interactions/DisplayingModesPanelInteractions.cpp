@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "NodeSystem/Node/Node.hpp"
 
 #include <string>
 #include <fstream>
@@ -34,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void displayingModesPanelInteraction(
                                         Panel &displayingModesPanel, 
                                         Painter &painter,
-                                        std::vector<Node> &meshNodeScene, 
+                                         
                                         Model &model, 
                                         Scene scene, 
                                         int textureRes
@@ -48,7 +49,7 @@ void displayingModesPanelInteraction(
                 displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
                 painter.selectedDisplayingModeIndex = i;
                 if(painter.selectedDisplayingModeIndex == 0)
-                    UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
+                    NodeScene::updateNodeResults( model, scene, textureRes, -1);
                 break;
             }
         }

@@ -104,14 +104,14 @@ private:
 
     bool renderBarriers(Panel &nodeEditorPanel,Mouse &mouse);
     void drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel, int direction);
-    void createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI,std::vector<Node> &meshNodeScene);
-    void clearConnections(int nodeIParam,int IOIParam,std::vector<Node> &meshNodeScene);
-    bool doHaveConnection(int nodeIParam,int IOIParam,std::vector<Node> meshNodeScene);
+    void createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI);
+    void clearConnections(int nodeIParam,int IOIParam);
+    bool doHaveConnection(int nodeIParam,int IOIParam);
     void addVectors(std::vector<NodeIO>& orgVec, std::vector<NodeIO>& addedVec);
     void createPanelUsingIOs();
-    void getHoveredInputs(int &nodeIParam, int &IOIndexParam, std::vector<Node> meshNodeScene);
-    int getStateData(int nodeI, int outI,std::vector<Node> meshNodeScene);
-    void getTheIOConnectedToTheInput(int &nodeIParam, int &IOIParam,int currentNodeI, int currentIOI, std::vector<Node> meshNodeScene);
+    void getHoveredInputs(int &nodeIParam, int &IOIndexParam);
+    int getStateData(int nodeI, int outI);
+    void getTheIOConnectedToTheInput(int &nodeIParam, int &IOIParam,int currentNodeI, int currentIOI);
 
 public:
     /// @brief Inputs & outputs of the node
@@ -162,13 +162,45 @@ public:
 
     /// @brief Render the node & manage inputs & outputs 
     /// @param currentNodeIndex which node is rendered (index of the nodeScene)
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,std::vector<Node> &meshNodeScene,int currentNodeIndex, NodePanel& nodePanel,  Model &model, int textureRes, Scene scene);
+    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel,  Model &model, int textureRes, Scene scene);
 
     /// @brief Replaces the IOs vector with the new inputs & outputs (+ generates the node panel)  
     void uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs);
     
     /// @brief Replaces the IOs vector with the new IOs generated with meshes of the 3D model (used for the mesh node) (+ generates the node panel)  
     void uploadNewIOs(Model &model, ColorPalette colorPalette);
+};
+
+namespace NodeScene{
+
+    /// @brief Renders the node list 
+    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,  Model &model, int textureRes, Scene scene, Panel nodeEditorPanel, NodePanel& nodePanel);
+    
+    /// @brief Adds the given node to the scene 
+    void addNode(const Node node);
+
+    /// @brief Returns the node pointer at the corresponding index from the node scene
+    Node* getNode(int index);
+
+    /// @brief Deletes all the nodes in the nodes cene
+    void clearArray();
+
+    /// @brief Returns the count of the nodes in the node scene
+    int getArraySize();
+
+    /// @brief remove the connections with invalid indices 
+    ///        (if the node is connected to a nonexistent node or an input)
+    ///        (for example : connection node index = 5 & the meshNodeScene size : 4)
+    void updateAllTheNodeConnections();
+    
+    /// @brief deletes the node with the given index from meshNodeScene and updates all the nodes
+    /// @param index remove the meshNodeScene[index]
+    void deleteNode(int index);
+
+    Mesh processNode(Node &node, Mesh& mesh, Scene scene, int textureRes);
+
+    /// @brief Updates the result textures of the every input of the mesh node
+    void updateNodeResults( Model& model, Scene scene, int textureRes, int updateNodeI);
 };
 
 #endif

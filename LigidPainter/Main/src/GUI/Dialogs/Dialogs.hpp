@@ -160,7 +160,7 @@ class LoadProjectDialog
     
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-                Project &project,bool &greetingDialogActive,bool &startScreen,Model &model,int &textureRes,std::vector<Node> &meshNodeScene);
+                Project &project,bool &greetingDialogActive,bool &startScreen,Model &model,int &textureRes);
  };
 
 
@@ -260,7 +260,7 @@ public:
 
    //Public member functions
    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,
-               Material &material, int textureRes,Box box,Context context,std::vector<ContextMenu> &contextMenus,std::vector<Node>& meshNodeScene,Model& model,
+               Material &material, int textureRes,Box box,Context context,std::vector<ContextMenu> &contextMenus,Model& model,
                Scene scene);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
@@ -287,7 +287,7 @@ class NewProjectDialog
 
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-                Project &project,bool &greetingDialogActive,bool &startScreen,Model &model,int &textureRes,std::vector<Node> &meshNodeScene);
+                Project &project,bool &greetingDialogActive,bool &startScreen,Model &model,int &textureRes);
  };
 
 
@@ -311,7 +311,7 @@ class ExportDialog
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
                 Project &project,bool &greetingDialogActive,Model &model,MaterialEditorDialog &materialEditorDialog
-                ,std::vector<Node> &meshNodeScene, Model sphereModel,Scene scene);
+                , Model sphereModel,Scene scene);
  };
 
 

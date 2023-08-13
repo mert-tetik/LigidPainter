@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "NodeSystem/Node/Node.hpp"
 
 #include <string>
 #include <fstream>
@@ -62,7 +63,7 @@ bool wasTextureSelectionDialogActive(){
 
 static void renderBrushCursor(Painter& painter, Mouse& mouse, glm::mat4 guiProjection, Context& context);
 
-void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,std::vector<Node> &meshNodeScene,
+void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,
             std::vector<ContextMenu> &contextMenus, AppSettings& settings, Project &project, Painter &painter, Skybox &skybox,Model &model, Scene& scene){
     
     __texture_selection_dialog = this->textureSelectionDialog;
@@ -113,10 +114,10 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     renderRenamingTextbox(videoScale, mouse, timer, textRenderer, painter, context);
     
     //Render the nodes
-    renderNodes(videoScale,mouse,timer,textRenderer,meshNodeScene, model, settings.textureRes, scene);
+    NodeScene::render(videoScale,mouse,timer,textRenderer,model, settings.textureRes, scene, nodeEditorDisplayer, nodePanel);
     
     //Render the dialogs
-    renderDialogs(videoScale, mouse, timer, textRenderer, meshNodeScene, context, project, model, skybox, settings, box, contextMenus, scene);
+    renderDialogs(videoScale, mouse, timer, textRenderer, context, project, model, skybox, settings, box, contextMenus, scene);
     
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(mouse,painter);
@@ -128,7 +129,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
         context.window.setCursorVisibility(true);
 
     //Interactions of the UI elements
-    elementInteraction(painter, mouse, contextMenus, meshNodeScene, context, videoScale, textRenderer, timer, settings.textureRes, screenGapPerc, model, project, scene, this->materialEditorDialog.appMaterialModifiers);
+    elementInteraction(painter, mouse, contextMenus, context, videoScale, textRenderer, timer, settings.textureRes, screenGapPerc, model, project, scene, this->materialEditorDialog.appMaterialModifiers);
 
     frameCounter++;
 
@@ -441,30 +442,12 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
     }
 }
 
-void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, std::vector<Node> &meshNodeScene, Model &model, int textureRes, Scene scene){
-    
-    for (size_t i = 0; i < meshNodeScene.size(); i++)
-    {
-
-        //Update the display texture of the material node
-        if(meshNodeScene[i].nodeIndex == MATERIAL_NODE){//Is a material node
-            for (size_t matI = 0; matI < Library::getMaterialArraySize(); matI++)
-            {
-                if(meshNodeScene[i].materialID == Library::getMaterial(matI)->uniqueID)
-                    meshNodeScene[i].nodePanel.sections[0].elements[0].button.texture = Texture(Library::getMaterial(matI)->displayingTexture);
-            }
-        }
-
-        meshNodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,meshNodeScene,i,this->nodePanel, model, textureRes, scene);
-    }
-}
-
-void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, std::vector<Node> &meshNodeScene, Context &context, Project &project, Model& model, Skybox &skybox, AppSettings& settings, Box &box,  std::vector<ContextMenu> &contextMenus, Scene scene){
+void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,  Context &context, Project &project, Model& model, Skybox &skybox, AppSettings& settings, Box &box,  std::vector<ContextMenu> &contextMenus, Scene scene){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes,meshNodeScene);
+        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes,meshNodeScene);
+        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes);
     
     if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
@@ -473,7 +456,7 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
         displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,skybox);
     
     if(exportDialog.dialogControl.isActive())
-        exportDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,model,materialEditorDialog,meshNodeScene, sphereModel, scene);
+        exportDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,model,materialEditorDialog,sphereModel, scene);
     
     if(newTextureDialog.dialogControl.isActive())
         newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,settings.textureRes);
@@ -482,7 +465,7 @@ void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRen
         settingsDialog.render(context.window, colorPalette, mouse, timer, textRenderer, videoScale, settings);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
-        materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex),settings.textureRes,box,context,contextMenus,meshNodeScene, model, scene);
+        materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex),settings.textureRes,box,context,contextMenus,model, scene);
     
 }
 

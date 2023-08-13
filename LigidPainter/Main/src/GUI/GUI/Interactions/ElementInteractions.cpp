@@ -34,18 +34,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //Forward declarations for the interaction functions defined in the Interactions directory 
 void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse, Panel &paintingPanel, Painter &painter,  Model &model, ColorPalette& colorPalette, int &textureRes,NewTextureDialog &newTextureDialog,AppTextures &appTextures, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer,  ColorPalette& colorPalette, int frameCounter);
-void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette, AppTextures appTextures, Model &model, std::vector<Node> &meshNodeScene);
+void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette, AppTextures appTextures, Model &model);
 void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
-void nodeInteraction(Model &model, std::vector<Node> &meshNodeScene,ColorPalette colorPalette,glm::vec2 videoScale, Scene scene, int textureRes);
-void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter, std::vector<Node> &meshNodeScene, Model &model, Scene scene, int textureRes);
+void nodeInteraction(Model &model, ColorPalette colorPalette,glm::vec2 videoScale, Scene scene, int textureRes);
+void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter,  Model &model, Scene scene, int textureRes);
 
 void UI::elementInteraction(
                                 Painter &painter,
                                 Mouse &mouse, 
                                 
                                 std::vector<ContextMenu> &contextMenus,
-                                std::vector<Node> &meshNodeScene,
+                                
                                 Context &context,
                                 glm::vec2 &videoScale,
                                 TextRenderer &textRenderer, 
@@ -80,7 +80,7 @@ void UI::elementInteraction(
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover;
 
-    this->contextMenuInteraction(contextMenus,mouse,meshNodeScene,context,videoScale,timer,textRenderer,project,textureRes, painter);
+    this->contextMenuInteraction(contextMenus,mouse,context,videoScale,timer,textRenderer,project,textureRes, painter);
     
     updateLibraryPanelDisplayerElements(libraryPanelDisplayer,colorPalette,frameCounter);
     
@@ -88,15 +88,15 @@ void UI::elementInteraction(
     
     this->libraryPanelLeftInteraction(libraryPanelLeft,mouse);
 
-    paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,appTextures,model, meshNodeScene);
+    paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,appTextures,model);
     
     windowPanelInteraction(windowPanel, mouse, painter, settingsDialog, displayerDialog,exportDialog);
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
 
-    displayingModesPanelInteraction(displayingModesPanel, painter, meshNodeScene, model, scene, textureRes);
+    displayingModesPanelInteraction(displayingModesPanel, painter, model, scene, textureRes);
 
-    nodeInteraction(model,meshNodeScene,colorPalette,videoScale, scene, textureRes);
+    nodeInteraction(model,colorPalette,videoScale, scene, textureRes);
     
     this->panelPositioning(screenGapPerc,painter);
 }

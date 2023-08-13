@@ -92,8 +92,6 @@ public:
 
     AppTextures appTextures;
 
-    std::vector<Node> meshNodeScene;
-
     ColorPalette colorPalette;
 
     std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials, 2 for brushes

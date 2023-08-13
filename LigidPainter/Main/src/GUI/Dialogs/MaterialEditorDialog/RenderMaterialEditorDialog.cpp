@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "NodeSystem/Node/Node.hpp"
 
 #include <string>
 #include <iostream>
@@ -56,7 +57,7 @@ void MaterialEditorDialog::render
                                     Box box,
                                     Context context,
                                     std::vector<ContextMenu> &contextMenus,
-                                    std::vector<Node>& meshNodeScene,
+                                    
                                     Model& model,
                                     Scene scene
                                 )
@@ -138,7 +139,7 @@ void MaterialEditorDialog::render
     //Close the dialog
     if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick)){
         if(!wasTextureSelectionDialogActive() && !contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive()){
-            UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
+            NodeScene::updateNodeResults(model, scene, textureRes, -1);
             this->deactivate(textureSelectionDialog);
         }
 

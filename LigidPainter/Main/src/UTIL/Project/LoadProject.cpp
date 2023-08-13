@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 bool Project::loadProject(std::string ligidFilePath,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
-                          int& textureRes, std::vector<Node> &meshNodeScene, glm::vec2 videoScale, AppMaterialModifiers& appMaterialModifiers){
+                          int& textureRes,  glm::vec2 videoScale, AppMaterialModifiers& appMaterialModifiers){
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
@@ -47,7 +47,7 @@ bool Project::loadProject(std::string ligidFilePath,Model &model,AppTextures app
     time_t lastOpenedDate;
     
 
-    if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate, meshNodeScene, textureRes, colorPalette, appTextures, videoScale)){
+    if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate, textureRes, colorPalette, appTextures, videoScale)){
         std::cout << "ERROR CAN'T READ THE LIGID FILE : " << ligidFilePath << ". The file is might not be a ligid file." << std::endl;
 
         return false;
@@ -60,9 +60,7 @@ bool Project::loadProject(std::string ligidFilePath,Model &model,AppTextures app
     if(this->folderPath[this->folderPath.size()-1] == '/' || this->folderPath[this->folderPath.size()-1] == '\\') 
         this->folderPath.pop_back();
 
-
     //writeLigidFile(meshNodeScene);
-
 
     //Load the textures
     Library::clearTextures();

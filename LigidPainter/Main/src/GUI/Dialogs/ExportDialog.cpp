@@ -23,6 +23,7 @@
 
 #include "3D/ThreeD.hpp" 
 #include "GUI/GUI.hpp" 
+#include "NodeSystem/Node/Node.hpp" 
 
 #include <string>
 #include <iostream>
@@ -97,7 +98,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
 
 void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
                           glm::vec2 videoScale,Project &project,bool &greetingDialogActive,
-                          Model &model,MaterialEditorDialog &materialEditorDialog,std::vector<Node> &meshNodeScene,Model sphereModel,
+                          Model &model,MaterialEditorDialog &materialEditorDialog,Model sphereModel,
                           Scene scene){
     
     dialogControl.updateStart();
@@ -126,7 +127,7 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
         }
         //All the materials connected to the mesh output
         
-        UTIL::updateNodeResults(meshNodeScene, model, scene, resolution, -1);
+        NodeScene::updateNodeResults(model, scene, resolution, -1);
         
         //Update all the materials connected to the mesh output & export it's textures
         for (size_t i = 0; i < model.meshes.size(); i++)

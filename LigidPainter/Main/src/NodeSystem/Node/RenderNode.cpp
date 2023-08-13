@@ -24,23 +24,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "GUI/Elements/Elements.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "NodeSystem/Node/Node.hpp"
 
 #include <string>
 #include <iostream>
 #include <vector>
 #include <map>
 
-
-
 void Node::render(  glm::vec2 videoScale,
                     Mouse& mouse,
                     Timer &timer,
                     TextRenderer &textRenderer,
                     Panel nodeEditorPanel,
-                    std::vector<Node> &meshNodeScene,
                     int currentNodeIndex,
                     NodePanel& nodePanelData,
-                    
                     Model &model,
                     int textureRes,
                     Scene scene
@@ -77,12 +74,12 @@ void Node::render(  glm::vec2 videoScale,
             this->uploadNewIOs(inputs, outputs);
         }
 
-        UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
+        NodeScene::updateNodeResults( model, scene, textureRes, -1);
     }
 
     if(this->nodeIndex == MATERIAL_MASK_NODE){
         if(nodePanel.sections[0].elements[1].rangeBar.valueDoneChanging){
-            UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
+            NodeScene::updateNodeResults( model, scene, textureRes, -1);
         }
     }
 
@@ -138,15 +135,15 @@ void Node::render(  glm::vec2 videoScale,
                     int resNodeI = 1000;
                     int resIOI = 1000;
                     
-                    getTheIOConnectedToTheInput(resNodeI,resIOI,currentNodeIndex,i,meshNodeScene);
+                    getTheIOConnectedToTheInput(resNodeI,resIOI,currentNodeIndex,i);
 
                     if(resNodeI != 1000 && resIOI != 1000){
-                        meshNodeScene[resNodeI].IOs[resIOI].IOCircle.clickState1 = true;
+                        NodeScene::getNode(resNodeI)->IOs[resIOI].IOCircle.clickState1 = true;
                         IOs[i].IOCircle.clickState1 = false;
                     }
                     
-                    clearConnections(currentNodeIndex,i,meshNodeScene);
-                    UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
+                    clearConnections(currentNodeIndex,i);
+                    NodeScene::updateNodeResults( model, scene, textureRes, -1);
 
                 }
 
@@ -166,43 +163,43 @@ void Node::render(  glm::vec2 videoScale,
                     int hoveredNodeI = 1000;
                     int hoveredIOI = 1000;
 
-                    getHoveredInputs(hoveredNodeI,hoveredIOI,meshNodeScene);
+                    getHoveredInputs(hoveredNodeI,hoveredIOI);
 
                     //A IO circle is hovered
                     if(hoveredNodeI != 1000 && hoveredIOI != 1000 && hoveredNodeI != currentNodeIndex){
-                        if((meshNodeScene[hoveredNodeI].IOs[hoveredIOI].state == 0 && IOs[i].state == 2) || (meshNodeScene[hoveredNodeI].IOs[hoveredIOI].state == 2 && IOs[i].state == 0)){
+                        if((NodeScene::getNode(hoveredNodeI)->IOs[hoveredIOI].state == 0 && IOs[i].state == 2) || (NodeScene::getNode(hoveredNodeI)->IOs[hoveredIOI].state == 2 && IOs[i].state == 0)){
                             //Delete the previous connection if an input IO is connected
                             if(IOs[i].state == 0)
-                                clearConnections(currentNodeIndex,i,meshNodeScene);
+                                clearConnections(currentNodeIndex,i);
 
                             //If the circle hovered already has a connection & is an input
-                            if(doHaveConnection(hoveredNodeI,hoveredNodeI,meshNodeScene) && getStateData(hoveredNodeI,hoveredNodeI,meshNodeScene) == 0){
+                            if(doHaveConnection(hoveredNodeI,hoveredNodeI) && getStateData(hoveredNodeI,hoveredNodeI) == 0){
                             //Than remove the connections of the circle hovered
-                                clearConnections(hoveredNodeI,hoveredIOI,meshNodeScene);
+                                clearConnections(hoveredNodeI,hoveredIOI);
                             }
 
                             //Create a connection 
-                            createConnection(hoveredNodeI,hoveredIOI,currentNodeIndex,i,meshNodeScene);
+                            createConnection(hoveredNodeI,hoveredIOI,currentNodeIndex,i);
 
                             Material material;
                             for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
                             {
-                                if(meshNodeScene[hoveredNodeI].nodeIndex == MATERIAL_NODE){
-                                    if(meshNodeScene[hoveredNodeI].materialID == Library::getMaterial(i)->uniqueID)
+                                if(NodeScene::getNode(hoveredNodeI)->nodeIndex == MATERIAL_NODE){
+                                    if(NodeScene::getNode(hoveredNodeI)->materialID == Library::getMaterial(i)->uniqueID)
                                         material = *Library::getMaterial(i);
                                 }
-                                else if(meshNodeScene[currentNodeIndex].nodeIndex == MATERIAL_NODE){
-                                    if(meshNodeScene[currentNodeIndex].materialID == Library::getMaterial(i)->uniqueID)
+                                else if(NodeScene::getNode(currentNodeIndex)->nodeIndex == MATERIAL_NODE){
+                                    if(NodeScene::getNode(currentNodeIndex)->materialID == Library::getMaterial(i)->uniqueID)
                                         material = *Library::getMaterial(i);
                                 }
                             }
 
-                            if(meshNodeScene[hoveredNodeI].nodeIndex == MESH_NODE){ //The hovered node is a mesh node (another node to the mesh node)
-                                UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
+                            if(NodeScene::getNode(hoveredNodeI)->nodeIndex == MESH_NODE){ //The hovered node is a mesh node (another node to the mesh node)
+                                NodeScene::updateNodeResults( model, scene, textureRes, -1);
                             }
 
-                            else if(meshNodeScene[currentNodeIndex].nodeIndex == MESH_NODE){ //The node's itself is mesh node (mesh node to another) 
-                                UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
+                            else if(NodeScene::getNode(currentNodeIndex)->nodeIndex == MESH_NODE){ //The node's itself is mesh node (mesh node to another) 
+                                NodeScene::updateNodeResults( model, scene, textureRes, -1);
                             }
                         }
                     }
@@ -216,7 +213,8 @@ void Node::render(  glm::vec2 videoScale,
                 {
 
                     //Which node the connection is connected to
-                    Node connectedNode = meshNodeScene[IOs[i].connections[conI].nodeIndex];
+                    Node connectedNode = *NodeScene::getNode(IOs[i].connections[conI].nodeIndex);
+
 
                     //Which IO circle the connection is connected to
                     NodeIO connectedIO = connectedNode.IOs[IOs[i].connections[conI].inputIndex]; 
@@ -256,10 +254,10 @@ void Node::render(  glm::vec2 videoScale,
     if(barButton.clickState1 && !nodePanel.topSide.pressed){ //Pressed
 
         //Prevent moving multiple nodes
-        for (size_t i = 0; i < meshNodeScene.size(); i++)
+        for (size_t i = 0; i < NodeScene::getArraySize(); i++)
         {
             if(i != currentNodeIndex)
-                meshNodeScene[i].barButton.clickState1 = false;
+                NodeScene::getNode(i)->barButton.clickState1 = false;
         }
 
         nodePanel.pos.x += mouse.mouseOffset.x/videoScale.x * 100.f;

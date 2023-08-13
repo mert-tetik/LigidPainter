@@ -37,7 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 
-void Project::updateProject( std::vector<Node> &meshNodeScene, int& textureRes){
+void Project::updateProject(  int& textureRes){
     
     if(!std::filesystem::exists(folderPath)){
         std::cout << "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << std::endl;
@@ -100,5 +100,5 @@ void Project::updateProject( std::vector<Node> &meshNodeScene, int& textureRes){
     }
 
 
-    writeLigidFile(meshNodeScene, textureRes);
+    writeLigidFile( textureRes);
 }

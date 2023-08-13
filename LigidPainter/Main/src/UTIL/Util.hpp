@@ -139,37 +139,6 @@ namespace UTIL{
     /// @brief generates unique value into the param s according to the sArray
     /// @return if change is made 
     bool uniqueName(std::string &s, std::vector<std::string> sArray);
-
-
-
-    //! NODES
-
-
-    /// @brief 
-    /// @param meshNodeScene the node scene 
-    /// @param library 
-    /// @param textureRes 1024 , 2048 , 512 etc. 
-    ///         (the selected texture resolution) 
-    ///         (used to create the textures of the material) 
-    ///         (set to 0 for no texture creation (if will be called every frame))
-    /// @return a vector of materials connected to the mesh node (has the size of a model.meshes)  
-    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &meshNodeScene,  int textureRes, AppTextures appTextures);
-    
-    /// @brief remove the connections with invalid indices 
-    ///        (if the node is connected to a nonexistent node or an input)
-    ///        (for example : connection node index = 5 & the meshNodeScene size : 4)
-    /// @param meshNodeScene 
-    void updateAllTheNodeConnections(std::vector<Node> &meshNodeScene);
-    
-    /// @brief deletes the node with the given index from meshNodeScene and updates all the nodes
-    /// @param meshNodeScene 
-    /// @param index remove the meshNodeScene[index]
-    void deleteNode(std::vector<Node>& meshNodeScene, int index);
-
-    Mesh processNode(Node &node, std::vector<Node> &nodeScene, Mesh& mesh, Scene scene, int textureRes);
-
-    /// @brief Updates the result textures of the every input of the mesh node
-    void updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Scene scene, int textureRes, int updateNodeI);
 }
 
 
@@ -346,7 +315,7 @@ public:
     /// @param  structure (holds the textures / materials / brushes & TDModels)
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
-    void updateProject( std::vector<Node> &meshNodeScene, int& textureRes);
+    void updateProject(  int& textureRes);
     
     /// @brief load an existing project using ligid file path
     /// @param ligidFilePath path to the ligid file
@@ -358,7 +327,7 @@ public:
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @return 
     bool loadProject(std::string ligidFilePath,Model &model,AppTextures appTextures,
-                    ColorPalette colorPalette,int &textureRes,std::vector<Node> &meshNodeScene, glm::vec2 videoScale,
+                    ColorPalette colorPalette,int &textureRes, glm::vec2 videoScale,
                     AppMaterialModifiers& appMaterialModifiers);
 
     /// @brief Used to save as
@@ -381,12 +350,12 @@ public:
     /// @param meshNodeScene 
     /// @param textureRes 
     /// @return True if success
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,std::vector<Node> &meshNodeScene,  int& textureRes,  ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,  int& textureRes,  ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
     
     /// @brief Write ligid file to the project folder
     /// @param meshNodeScene 
     /// @param textureRes 
-    void writeLigidFile(const std::vector<Node> meshNodeScene, int textureRes);
+    void writeLigidFile(int textureRes);
 
         /// @brief Returns the ligid file path of the project
     ///        (AAA/MyProject/MyProject.ligid)
