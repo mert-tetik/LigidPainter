@@ -36,7 +36,6 @@ void displayingModesPanelInteraction(
                                         Painter &painter,
                                         std::vector<Node> &meshNodeScene, 
                                         Model &model, 
-                                        Library library, 
                                         Scene scene, 
                                         int textureRes
                                     )
@@ -49,7 +48,7 @@ void displayingModesPanelInteraction(
                 displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
                 painter.selectedDisplayingModeIndex = i;
                 if(painter.selectedDisplayingModeIndex == 0)
-                    UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
+                    UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
                 break;
             }
         }

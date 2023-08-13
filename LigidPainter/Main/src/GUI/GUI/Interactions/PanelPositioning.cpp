@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -34,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void UI::panelPositioning(
                             float &screenGapPerc, 
-                            Library &library, 
+                             
                             Painter &painter
                         )
 {
@@ -69,7 +70,7 @@ void UI::panelPositioning(
     displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;
 
     selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
-    if(library.textures.size())
+    if(Library::getTextureArraySize())
         selectedTextureDisplayer.sections[0].elements[0].button.texture = painter.selectedTexture;
     twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
 }

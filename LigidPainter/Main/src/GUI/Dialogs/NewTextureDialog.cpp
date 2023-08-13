@@ -22,6 +22,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <iostream>
@@ -69,7 +70,7 @@ NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPal
     panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
 }
 
-void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,Library &library,glm::vec2 videoScale,int textureRes){
+void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,int textureRes){
     
     textureRes = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
 
@@ -126,7 +127,7 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Send the created texture to the library
-        library.addTexture(txtr);
+        Library::addTexture(txtr);
     }
 
     //End the dialog

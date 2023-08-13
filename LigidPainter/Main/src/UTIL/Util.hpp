@@ -31,10 +31,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //forward declerations :
 
-/// @brief forward declared Library class
-struct Library;
-/// @brief forward declared Library Shaders structure
-struct Shaders;
 /// @brief forward declared Library AppTextures structure
 struct AppTextures;
 /// @brief forward declared ColorPalette class
@@ -123,17 +119,7 @@ namespace UTIL{
     /// @param ID 
     /// @param otherIDs 
     void giveUniqueId(int &ID ,const std::vector<int> otherIDs);
-    
-    /// @brief uses void giveUniqueId(int &ID ,const std::vector<int> otherIDs); (implementation for the textures)
-    /// @param ID 
-    /// @param textures 
-    void giveUniqueId(int &ID ,const std::vector<Texture> textures);
 
-    /// @brief uses void giveUniqueId(int &ID ,const std::vector<int> otherIDs); (implementation for the materials)
-    /// @param ID 
-    /// @param materials 
-    void giveUniqueId(int &ID ,const std::vector<Material> materials);
-    
     /// @brief Converts std::vector<std::string> to char* const* (char**)
     /// @param strings 
     /// @return 
@@ -167,7 +153,7 @@ namespace UTIL{
     ///         (used to create the textures of the material) 
     ///         (set to 0 for no texture creation (if will be called every frame))
     /// @return a vector of materials connected to the mesh node (has the size of a model.meshes)  
-    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &meshNodeScene, Library &library, int textureRes, AppTextures appTextures);
+    std::vector<Material> getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &meshNodeScene,  int textureRes, AppTextures appTextures);
     
     /// @brief remove the connections with invalid indices 
     ///        (if the node is connected to a nonexistent node or an input)
@@ -180,10 +166,10 @@ namespace UTIL{
     /// @param index remove the meshNodeScene[index]
     void deleteNode(std::vector<Node>& meshNodeScene, int index);
 
-    Mesh processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh,   Scene scene, int textureRes);
+    Mesh processNode(Node &node, std::vector<Node> &nodeScene, Mesh& mesh, Scene scene, int textureRes);
 
     /// @brief Updates the result textures of the every input of the mesh node
-    void updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library,   Scene scene, int textureRes, int updateNodeI);
+    void updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Scene scene, int textureRes, int updateNodeI);
 }
 
 
@@ -357,21 +343,21 @@ public:
     bool createProject(std::string destinationPath,std::string name,std::string TDModelPath,int textureRes);
     
     /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
-    /// @param library library structure (holds the textures / materials / brushes & TDModels)
+    /// @param  structure (holds the textures / materials / brushes & TDModels)
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
-    void updateProject(Library &library, std::vector<Node> &meshNodeScene, int& textureRes);
+    void updateProject( std::vector<Node> &meshNodeScene, int& textureRes);
     
     /// @brief load an existing project using ligid file path
     /// @param ligidFilePath path to the ligid file
-    /// @param library library structure (holds the textures / materials / brushes & TDModels)
+    /// @param  structure (holds the textures / materials / brushes & TDModels)
     /// @param model The 3D models
     /// @param appTextures appTextures structure (holds all the textures used by the GUI)
     /// @param colorPalette colorPalette class (color theme of the ligidpainter)
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @return 
-    bool loadProject(std::string ligidFilePath,Library &library,Model &model,AppTextures appTextures,
+    bool loadProject(std::string ligidFilePath,Model &model,AppTextures appTextures,
                     ColorPalette colorPalette,int &textureRes,std::vector<Node> &meshNodeScene, glm::vec2 videoScale,
                     AppMaterialModifiers& appMaterialModifiers);
 
@@ -518,7 +504,7 @@ public:
     * @param windowOrtho orthographics projection matrix created with window size value.
     * @param textures textures in the library
     */
-    void doPaint(Mouse& mouse,glm::mat4 windowOrtho,std::vector<Texture> textures, Context context);
+    void doPaint(Mouse& mouse, glm::mat4 windowOrtho, Context context);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -534,7 +520,7 @@ public:
     * @param scene structure contains matrices related to 3D model rendering & cam pos
     * @param twoDPaintingPanel if the painting mode is 2D use this panel's transform data 
     */
-    void updateTexture(std::vector<Texture> &textures, Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos);
+    void updateTexture(Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos);
     
 
     /*!
@@ -784,42 +770,6 @@ struct Scene{
     Camera camera;
 };
 
-/// @brief Don't directly manipulate vectors! Instead use public member functions. Same goes for the selectedElementIndex.
-struct Library{
-    
-    std::vector<Texture> textures;
-    std::vector<Material> materials;
-    std::vector<Brush> brushes;
-    std::vector<Model> TDModels;
-
-    int selectedElementIndex = 0;
-
-    bool changed = true;
-
-    void uniqueNameControl();
-
-    //Add elements
-    void addTexture     (Texture texture);
-    void addMaterial    (Material material);
-    void addBrush       (Brush brush);
-    void addModel       (Model model);
-
-    //Erase elements
-    void eraseTexture   (int index);
-    void eraseMaterial  (int index);
-    void eraseBrush     (int index);
-    void eraseModel     (int index);
-    
-    //Clear vectors
-    void clearTextures   ();
-    void clearMaterials  ();
-    void clearBrushes    ();
-    void clearModels     ();
-
-    void changeSelectedElementIndex(int newI);
-
-};
-
 struct Context{
     LigidWindow window;
     glm::ivec2 windowScale;
@@ -870,7 +820,7 @@ namespace FileHandler{
     Model readFBXFile(std::string path);
     
     bool readLGDMATERIALFile(std::string path, Material& material, ColorPalette colorPalette,  AppTextures appTextures, 
-                             AppMaterialModifiers appMaterialModifiers, const std::vector<Material> materials);
+                             AppMaterialModifiers appMaterialModifiers);
     bool writeLGDMATERIALFile(std::string path, Material &material);
     
     bool writeLGDBRUSHFile(std::string path, Brush brush);

@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <iostream>
@@ -152,7 +153,7 @@ void __getTextRendererDataToTheTextureSelection(TextRenderer& textRenderer){
     __textRenderer = textRenderer;
 }
 
-void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library library, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer){
+void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer){
     
     this->dialogControl.activate();
         
@@ -217,9 +218,9 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
         this->textureSelectingPanel.sections.clear();
         std::vector<Element> sectionElements;
         if(this->selectedTextureMode == 0){
-            for (size_t i = 0; i < library.textures.size(); i++)
+            for (size_t i = 0; i < Library::getTextureArraySize(); i++)
             {
-                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"texture"       , library.textures[i], 0.f,false)));
+                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"texture"       , *Library::getTexture(i), 0.f,false)));
             }
         }
         else if(this->selectedTextureMode == 1){
@@ -271,8 +272,8 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
         textureSelectingPanel.pos.x = selectedTextureDisplayingPanel.pos.x;
         textureSelectingPanel.scale.x = selectedTextureDisplayingPanel.scale.x;
 
-        if(library.textures.size() && selectedTextureMode == 0 && selectedTextureIndex < library.textures.size())
-            selectedTextureDisplayingPanel.sections[0].elements[0].button.texture = library.textures[selectedTextureIndex];
+        if(Library::getTextureArraySize() && selectedTextureMode == 0 && selectedTextureIndex < Library::getTextureArraySize())
+            selectedTextureDisplayingPanel.sections[0].elements[0].button.texture = *Library::getTexture(selectedTextureIndex);
 
         this->textureSelectingPanel.render(videoScale,__mouse,timer,__textRenderer,true);
 
@@ -333,7 +334,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
             if(this->selectedTextureMode == 0){
                 receivedTexture.proceduralID = -1;
 
-                if(library.textures.size() <= this->selectedTextureIndex){
+                if(Library::getTextureArraySize() <= this->selectedTextureIndex){
                     std::cout << "ERROR : Invalid selected texture index! No texture selected" << std::endl;
                 }
                 else{
@@ -341,7 +342,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                         glGenTextures(1, &receivedTexture.ID);
                     }
 
-                    const int txtrRes = std::max(library.textures[this->selectedTextureIndex].getResolution().x, library.textures[this->selectedTextureIndex].getResolution().y);
+                    const int txtrRes = std::max(Library::getTexture(this->selectedTextureIndex)->getResolution().x, Library::getTexture(this->selectedTextureIndex)->getResolution().y);
                     
                     glActiveTexture(GL_TEXTURE0);
                     glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
@@ -382,7 +383,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, Library li
                     ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(this->subPanel.sections[0].elements[4].rangeBar.value / 10.f));
 
                     glActiveTexture(GL_TEXTURE0);
-                    glBindTexture(GL_TEXTURE_2D, library.textures[this->selectedTextureIndex].ID);
+                    glBindTexture(GL_TEXTURE_2D, Library::getTexture(this->selectedTextureIndex)->ID);
 
                     glDrawArrays(GL_TRIANGLES, 0, 6);                
 

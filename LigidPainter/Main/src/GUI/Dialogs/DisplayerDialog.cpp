@@ -110,7 +110,7 @@ DisplayerDialog::DisplayerDialog(
 }
 
 void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
-            Library &library,glm::vec2 videoScale,Skybox &skybox){
+            glm::vec2 videoScale,Skybox &skybox){
     
     dialogControl.updateStart();
 

@@ -42,7 +42,7 @@ static void set3DShaderSideUniforms(int selectedColorIndex,Color color1,Color co
 
 
 
-void Painter::doPaint(Mouse& mouse, glm::mat4 windowOrtho, std::vector<Texture> textures, Context context){
+void Painter::doPaint(Mouse& mouse, glm::mat4 windowOrtho, Context context){
 
     glm::vec2 firstCursorPos = mouse.cursorPos;
     

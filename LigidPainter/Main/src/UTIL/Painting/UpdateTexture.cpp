@@ -61,7 +61,7 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
 }
 
 
-void Painter::updateTexture(std::vector<Texture> &textures, Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos){
+void Painter::updateTexture(Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos){
     
     glm::vec2 textureRes = this->selectedTexture.getResolution();
 

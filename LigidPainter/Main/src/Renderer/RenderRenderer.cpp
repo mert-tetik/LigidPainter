@@ -218,7 +218,7 @@ void Renderer::render(){
                             textRenderer,
                             context,
                             box,
-                            library,
+                            
                             meshNodeScene,
                             contextMenus,
                             settings,
@@ -235,7 +235,6 @@ void Renderer::render(){
         painter.doPaint(    
                             mouse,
                             userInterface.projection,
-                            library.textures,
                             this->context
                         );
 
@@ -243,15 +242,17 @@ void Renderer::render(){
 
     //Painting done (refresh)
     if((painter.refreshable && !mouse.LPressed) || (painter.refreshable && (mouse.RClick || mouse.MClick))){ //Last frame painting done or once mouse right click or mouse wheel click
-        //TODO Prevent updating all the materials
+        /*//TODO Prevent updating all the materials
         for (size_t i = 0; i < library.materials.size(); i++)
         {   
             //Update the material after painting
             //TODO : Do smt after painting
             // library.materials[i].updateMaterial(this->settings.textureRes, box, context, shaders.buttonShader, shaders.tdModelShader, sphereModel);
         }
+        */
+
         //Update the selected texture after painting
-        painter.updateTexture(library.textures, model, scene, userInterface.twoDPaintingPanel, userInterface.projection, userInterface.twoDPaintingSceneScroll, userInterface.twoDPaintingScenePos);
+        painter.updateTexture(model, scene, userInterface.twoDPaintingPanel, userInterface.projection, userInterface.twoDPaintingSceneScroll, userInterface.twoDPaintingScenePos);
         //Refresh the 2D painting texture
         painter.refreshPainting();
 

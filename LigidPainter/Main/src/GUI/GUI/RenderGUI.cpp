@@ -28,6 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -38,7 +39,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <cstdlib>
 
 TextureSelectionDialog __texture_selection_dialog;
-Library __library;
 TextRenderer __render_gui_textRenderer;
 glm::mat4 __projection;
 LigidWindow __window;
@@ -48,7 +48,7 @@ bool __wasTextureSelectionDialogActive = false;
 glm::ivec2 __windowSize;
 
 void showTextureSelectionDialog(Texture& txtr){
-    __texture_selection_dialog.show(__videoScale, __timer, __library, __projection, txtr, __window, __render_gui_textRenderer);
+    __texture_selection_dialog.show(__videoScale, __timer, __projection, txtr, __window, __render_gui_textRenderer);
     __wasTextureSelectionDialogActive = true;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,__windowSize.x,__windowSize.y);
@@ -62,11 +62,10 @@ bool wasTextureSelectionDialogActive(){
 
 static void renderBrushCursor(Painter& painter, Mouse& mouse, glm::mat4 guiProjection, Context& context);
 
-void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,Library &library,std::vector<Node> &meshNodeScene,
+void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,std::vector<Node> &meshNodeScene,
             std::vector<ContextMenu> &contextMenus, AppSettings& settings, Project &project, Painter &painter, Skybox &skybox,Model &model, Scene& scene){
     
     __texture_selection_dialog = this->textureSelectionDialog;
-    __library = library;
     __projection = this->projection;
     __window = context.window;
     __videoScale = videoScale; 
@@ -105,19 +104,19 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     
     //TODO Don't call that everyframe (maybe)
     //Rename every library element if their name is doubled 
-    library.uniqueNameControl();
+    Library::uniqueNameControl();
 
     //Render the panels
-    renderPanels(videoScale, mouse, timer, textRenderer, painter, library, model, screenGapPerc);
+    renderPanels(videoScale, mouse, timer, textRenderer, painter, model, screenGapPerc);
 
     //Render renaming textbox
-    renderRenamingTextbox(videoScale, mouse, timer, textRenderer, painter, library, context);
+    renderRenamingTextbox(videoScale, mouse, timer, textRenderer, painter, context);
     
     //Render the nodes
-    renderNodes(videoScale,mouse,timer,textRenderer,library,meshNodeScene, model, settings.textureRes, scene);
+    renderNodes(videoScale,mouse,timer,textRenderer,meshNodeScene, model, settings.textureRes, scene);
     
     //Render the dialogs
-    renderDialogs(videoScale, mouse, timer, textRenderer, library, meshNodeScene, context, project, model, skybox, settings, box, contextMenus, scene);
+    renderDialogs(videoScale, mouse, timer, textRenderer, meshNodeScene, context, project, model, skybox, settings, box, contextMenus, scene);
     
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(mouse,painter);
@@ -129,7 +128,7 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
         context.window.setCursorVisibility(true);
 
     //Interactions of the UI elements
-    elementInteraction(painter, mouse, library, contextMenus, meshNodeScene, context, videoScale, textRenderer, timer, settings.textureRes, screenGapPerc, model, project, scene, this->materialEditorDialog.appMaterialModifiers);
+    elementInteraction(painter, mouse, contextMenus, meshNodeScene, context, videoScale, textRenderer, timer, settings.textureRes, screenGapPerc, model, project, scene, this->materialEditorDialog.appMaterialModifiers);
 
     frameCounter++;
 
@@ -167,42 +166,42 @@ static void renderBrushCursor(Painter& painter, Mouse& mouse, glm::mat4 guiProje
     ShaderSystem::buttonShader().use();
 }
 
-void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter, Library &library, Model& model, float screenGapPerc){
+void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter,  Model& model, float screenGapPerc){
     navigationPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     if(navigationPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, library, painter);
+            this->panelPositioning(screenGapPerc, painter);
     }
     windowPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     if(windowPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, library, painter);
+            this->panelPositioning(screenGapPerc, painter);
     }
     paintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     if(paintingPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, library, painter);
+            this->panelPositioning(screenGapPerc, painter);
     }
     
     libraryPanelLeft.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     if(libraryPanelLeft.resizingDone){
         for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, library, painter);
+            this->panelPositioning(screenGapPerc, painter);
     }
     libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     if(libraryPanelDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, library, painter);
+            this->panelPositioning(screenGapPerc, painter);
     }
     nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     if(nodeEditorDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, library, painter);
+            this->panelPositioning(screenGapPerc, painter);
     }
     selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,false);
     if(selectedTextureDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, library, painter);
+            this->panelPositioning(screenGapPerc, painter);
     }
     
     if(nodeEditorDisplayer.hover){
@@ -324,7 +323,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,false);
         if(twoDPaintingPanel.resizingDone){
             for (size_t i = 0; i < 5; i++)
-                this->panelPositioning(screenGapPerc, library, painter);
+                this->panelPositioning(screenGapPerc, painter);
         }
 
         //Bottom Barrier
@@ -400,16 +399,16 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     if(paintingModesPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, library, painter);
+            this->panelPositioning(screenGapPerc, painter);
     }
     displayingModesPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
     if(displayingModesPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, library, painter);
+            this->panelPositioning(screenGapPerc, painter);
     }
 }
 
-void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter, Library &library, Context &context){
+void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter,  Context &context){
     
     if(renamingTextBox.active){
         renamingTextBox.render(videoScale,mouse,timer,textRenderer,false,context.window);
@@ -419,71 +418,71 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
         //The first frame renamingTextBox is closed 
         if(!renamingTextBoxClosed){
             if(context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_RELEASE){
-                if(renamingIndices.x == 0 && renamingIndices.y < library.textures.size())
-                    library.textures[renamingIndices.y].title = renamingTextBox.text;
-                else if(renamingIndices.x == 1 && renamingIndices.y < library.materials.size())
-                    library.materials[renamingIndices.y].title = renamingTextBox.text;
-                else if(renamingIndices.x == 2 && renamingIndices.y < library.brushes.size())
-                    library.brushes[renamingIndices.y].title = renamingTextBox.text;
+                if(renamingIndices.x == 0 && renamingIndices.y < Library::getTextureArraySize())
+                    Library::getTexture(renamingIndices.y)->title = renamingTextBox.text;
+                else if(renamingIndices.x == 1 && renamingIndices.y < Library::getMaterialArraySize())
+                    Library::getMaterial(renamingIndices.y)->title = renamingTextBox.text;
+                else if(renamingIndices.x == 2 && renamingIndices.y < Library::getBrushArraySize())
+                    Library::getBrush(renamingIndices.y)->title = renamingTextBox.text;
             }
             else{
-                if(renamingIndices.x == 0 && renamingIndices.y < library.textures.size())
-                    library.textures[renamingIndices.y].title = lastTitleBeforeRenaming;
-                else if(renamingIndices.x == 1 && renamingIndices.y < library.materials.size())
-                    library.materials[renamingIndices.y].title = lastTitleBeforeRenaming;
-                else if(renamingIndices.x == 2 && renamingIndices.y < library.brushes.size())
-                    library.brushes[renamingIndices.y].title = lastTitleBeforeRenaming;
+                if(renamingIndices.x == 0 && renamingIndices.y < Library::getTextureArraySize())
+                    Library::getTexture(renamingIndices.y)->title = lastTitleBeforeRenaming;
+                else if(renamingIndices.x == 1 && renamingIndices.y < Library::getMaterialArraySize())
+                    Library::getMaterial(renamingIndices.y)->title = lastTitleBeforeRenaming;
+                else if(renamingIndices.x == 2 && renamingIndices.y < Library::getBrushArraySize())
+                    Library::getBrush(renamingIndices.y)->title = lastTitleBeforeRenaming;
             }
 
             //Update the library panel
-            library.changed = true;
+            Library::setChanged(true);
         }
         renamingTextBoxClosed = true;
     }
 }
 
-void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &meshNodeScene, Model &model, int textureRes, Scene scene){
+void UI::renderNodes(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, std::vector<Node> &meshNodeScene, Model &model, int textureRes, Scene scene){
     
     for (size_t i = 0; i < meshNodeScene.size(); i++)
     {
 
         //Update the display texture of the material node
         if(meshNodeScene[i].nodeIndex == MATERIAL_NODE){//Is a material node
-            for (size_t matI = 0; matI < library.materials.size(); matI++)
+            for (size_t matI = 0; matI < Library::getMaterialArraySize(); matI++)
             {
-                if(meshNodeScene[i].materialID == library.materials[matI].uniqueID)
-                    meshNodeScene[i].nodePanel.sections[0].elements[0].button.texture = Texture(library.materials[matI].displayingTexture);
+                if(meshNodeScene[i].materialID == Library::getMaterial(matI)->uniqueID)
+                    meshNodeScene[i].nodePanel.sections[0].elements[0].button.texture = Texture(Library::getMaterial(matI)->displayingTexture);
             }
         }
 
-        meshNodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,meshNodeScene,i,this->nodePanel, library, model, textureRes, scene);
+        meshNodeScene[i].render(videoScale,mouse,timer,textRenderer,nodeEditorDisplayer,meshNodeScene,i,this->nodePanel, model, textureRes, scene);
     }
 }
 
-void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Library &library,std::vector<Node> &meshNodeScene, Context &context, Project &project, Model& model, Skybox &skybox, AppSettings& settings, Box &box,  std::vector<ContextMenu> &contextMenus, Scene scene){
+void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, std::vector<Node> &meshNodeScene, Context &context, Project &project, Model& model, Skybox &skybox, AppSettings& settings, Box &box,  std::vector<ContextMenu> &contextMenus, Scene scene){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,model,settings.textureRes,meshNodeScene);
+        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes,meshNodeScene);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,library,model,settings.textureRes,meshNodeScene);
+        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes,meshNodeScene);
     
     if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
 
     if(displayerDialog.dialogControl.isActive())
-        displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,skybox);
+        displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,skybox);
     
     if(exportDialog.dialogControl.isActive())
-        exportDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,library,model,materialEditorDialog,meshNodeScene, sphereModel, scene);
+        exportDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,model,materialEditorDialog,meshNodeScene, sphereModel, scene);
     
     if(newTextureDialog.dialogControl.isActive())
-        newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,library,videoScale,settings.textureRes);
+        newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,settings.textureRes);
     
     if(settingsDialog.dialogControl.isActive())
-        settingsDialog.render(context.window, colorPalette, mouse, timer, textRenderer, library, videoScale, settings);
+        settingsDialog.render(context.window, colorPalette, mouse, timer, textRenderer, videoScale, settings);
     
-    if(materialEditorDialog.dialogControl.isActive() && library.materials.size())
-        materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,library,library.materials[selectedMaterialIndex],settings.textureRes,box,context,contextMenus,meshNodeScene, model, scene);
+    if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
+        materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex),settings.textureRes,box,context,contextMenus,meshNodeScene, model, scene);
     
 }
 

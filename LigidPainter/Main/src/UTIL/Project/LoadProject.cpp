@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/Elements/Elements.hpp"
 #include "3D/ThreeD.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -32,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-bool Project::loadProject(std::string ligidFilePath,Library &library,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
+bool Project::loadProject(std::string ligidFilePath,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
                           int& textureRes, std::vector<Node> &meshNodeScene, glm::vec2 videoScale, AppMaterialModifiers& appMaterialModifiers){
 
     //Return if the ligidFilePath doesn't exists
@@ -64,7 +65,7 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Model &mode
 
 
     //Load the textures
-    library.clearTextures();
+    Library::clearTextures();
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
         std::string texturePath = entry.path().string();
 
@@ -83,34 +84,34 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Model &mode
         }
 
 
-        library.addTexture(texture);
+        Library::addTexture(texture);
     }
 
     //Load the materials
-    library.clearMaterials();
+    Library::clearMaterials();
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
         std::string materialPath = entry.path().string();
 
         Material material(textureRes, "", 0);;
-        if(FileHandler::readLGDMATERIALFile(materialPath, material, colorPalette, appTextures, appMaterialModifiers, library.materials))
-            library.addMaterial(material);
+        if(FileHandler::readLGDMATERIALFile(materialPath, material, colorPalette, appTextures, appMaterialModifiers))
+            Library::addMaterial(material);
     
     }
     
     //Load the brushes
-    library.clearBrushes();
+    Library::clearBrushes();
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Brushes")){
         std::string brushPath = entry.path().string();
 
         Brush brush;
         if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
             brush.updateDisplayTexture();
-            library.addBrush(brush);
+            Library::addBrush(brush);
         }
     }
     
     //Load the tdmodels
-    library.clearModels();
+    Library::clearModels();
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
         std::string modelPath = entry.path().string();
 
@@ -129,14 +130,14 @@ bool Project::loadProject(std::string ligidFilePath,Library &library,Model &mode
         }
 
         if(TDModel.meshes.size())
-            library.addModel(TDModel);
+            Library::addModel(TDModel);
         else
-            std::cout << "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << std::endl;
+            std::cout << "ERROR : Can't add the 3D model to the Library:: Mesh size is 0!" << std::endl;
 
     }
 
-    if(library.TDModels.size())
-        model = library.TDModels[0];
+    if(Library::getModelArraySize())
+        model = *Library::getModel(0);
     else
         model.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
 

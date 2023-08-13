@@ -35,6 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #define LGDMATERIAL_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
                                 std::cout << "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << std::endl;\
@@ -46,10 +47,8 @@ bool FileHandler::readLGDMATERIALFile(
                                         std::string path, 
                                         Material& material, 
                                         ColorPalette colorPalette,
-                                        
                                         AppTextures appTextures, 
-                                        AppMaterialModifiers appMaterialModifiers,
-                                        const std::vector<Material> materials
+                                        AppMaterialModifiers appMaterialModifiers
                                     )
 {
     if(path.size()){
@@ -289,19 +288,6 @@ bool FileHandler::readLGDMATERIALFile(
 
             material.materialModifiers.push_back(modifier);
         }    
-    }
-
-    //Check if there is already a material with the same ID
-    bool uniqueIDRepeats = false; 
-    for (size_t i = 0; i < materials.size(); i++)
-    {
-        if(materials[i].uniqueID == material.uniqueID)
-            uniqueIDRepeats = true;
-    }
-    
-    //If there is give a new unique id
-    if(uniqueIDRepeats){
-        UTIL::giveUniqueId(material.uniqueID, materials);
     }
 
     return true;

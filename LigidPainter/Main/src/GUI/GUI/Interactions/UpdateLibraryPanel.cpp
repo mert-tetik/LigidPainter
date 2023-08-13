@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -33,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void updateLibraryPanelDisplayerElements(
                                             Panel &libraryPanelDisplayer, 
-                                            Library &library, 
+                                             
                                             ColorPalette& colorPalette, 
                                             int frameCounter
                                         )
@@ -41,39 +42,39 @@ void updateLibraryPanelDisplayerElements(
     
     //!LIBRARY PANEL DISPLAYER
     //Update the library displayer panel every time library changed
-    if(library.changed){
+    if(Library::isChanged()){
         libraryPanelDisplayer.sections.clear(); //Remove all the elements of the library panel displayer
         
         //Create a new section
         Section libSection;
         libSection.header = Element(Button()); //Has no section button
         //Fill the elements of the section using the data in the library structure
-        if(library.selectedElementIndex == 0){//Update textures
-            for (size_t i = 0; i < library.textures.size(); i++)
+        if(Library::getSelectedElementIndex() == 0){//Update textures
+            for (size_t i = 0; i < Library::getTextureArraySize(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, library.textures[i].title       , library.textures[i], 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, Library::getTexture(i)->title       , *Library::getTexture(i), 0.f,false))) ;
             }
         }
-        else if(library.selectedElementIndex == 1){ //Update materials
-            for (size_t i = 0; i < library.materials.size(); i++)
+        else if(Library::getSelectedElementIndex() == 1){ //Update materials
+            for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, library.materials[i].title       , Texture(library.materials[i].displayingTexture), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, Library::getMaterial(i)->title       , Texture(Library::getMaterial(i)->displayingTexture), 0.f,false))) ;
             }
         }
-        else if(library.selectedElementIndex == 2){ //Update materials
-            for (size_t i = 0; i < library.brushes.size(); i++)
+        else if(Library::getSelectedElementIndex() == 2){ //Update materials
+            for (size_t i = 0; i < Library::getBrushArraySize(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, library.brushes[i].title       , Texture(library.brushes[i].displayingTexture), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, Library::getBrush(i)->title       , Texture(Library::getBrush(i)->displayingTexture), 0.f,false))) ;
             }
         }
-        else if(library.selectedElementIndex == 3){ //Update tdmodels
-            for (size_t i = 0; i < library.TDModels.size(); i++)
+        else if(Library::getSelectedElementIndex() == 3){ //Update tdmodels
+            for (size_t i = 0; i < Library::getModelArraySize(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, library.TDModels[i].title       , Texture(), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, Library::getModel(i)->title       , Texture(), 0.f,false))) ;
             }
         }
         //Give the section
@@ -82,5 +83,5 @@ void updateLibraryPanelDisplayerElements(
     }
     
     //Set library changed to false after updating some stuff after library change
-    library.changed = false;
+    Library::setChanged(false);
 }

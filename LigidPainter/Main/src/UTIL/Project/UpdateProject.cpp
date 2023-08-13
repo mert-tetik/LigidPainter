@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -36,7 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 
-void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, int& textureRes){
+void Project::updateProject( std::vector<Node> &meshNodeScene, int& textureRes){
     
     if(!std::filesystem::exists(folderPath)){
         std::cout << "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << std::endl;
@@ -50,10 +51,10 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
     UTIL::deleteFilesInFolder(textureFolderPath);
 
     //Write the textures
-    for (size_t i = 0; i < library.textures.size(); i++)
+    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
     {
         //Export texture
-        library.textures[i].exportTexture(textureFolderPath, "PNG");
+        Library::getTexture(i)->exportTexture(textureFolderPath, "PNG");
     }
     
     
@@ -64,10 +65,10 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
     UTIL::deleteFilesInFolder(materialFolderPath);
 
     //Write the materials
-    for (size_t i = 0; i < library.materials.size(); i++)
+    for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
     {
         //Export material
-        FileHandler::writeLGDMATERIALFile(materialFolderPath + UTIL::folderDistinguisher() + library.materials[i].title + ".lgdmaterial", library.materials[i]);
+        FileHandler::writeLGDMATERIALFile(materialFolderPath + UTIL::folderDistinguisher() + Library::getMaterial(i)->title + ".lgdmaterial", *Library::getMaterial(i));
     }
 
 
@@ -78,10 +79,10 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
     UTIL::deleteFilesInFolder(brushFolderPath);
 
     //Write the brushes
-    for (size_t i = 0; i < library.brushes.size(); i++)
+    for (size_t i = 0; i < Library::getBrushArraySize(); i++)
     {
         //Export brush
-        FileHandler::writeLGDBRUSHFile(brushFolderPath, library.brushes[i]);
+        FileHandler::writeLGDBRUSHFile(brushFolderPath, *Library::getBrush(i));
     }
     
     
@@ -92,10 +93,10 @@ void Project::updateProject(Library &library, std::vector<Node> &meshNodeScene, 
     UTIL::deleteFilesInFolder(tdModelFolderPath);
 
     //Write the 3D models
-    for (size_t i = 0; i < library.TDModels.size(); i++)
+    for (size_t i = 0; i < Library::getModelArraySize(); i++)
     {
         //Export 3D model
-        FileHandler::writeOBJFile(tdModelFolderPath + UTIL::folderDistinguisher() + library.TDModels[i].title + ".obj", library.TDModels[i]);
+        FileHandler::writeOBJFile(tdModelFolderPath + UTIL::folderDistinguisher() + Library::getModel(i)->title + ".obj", *Library::getModel(i));
     }
 
 

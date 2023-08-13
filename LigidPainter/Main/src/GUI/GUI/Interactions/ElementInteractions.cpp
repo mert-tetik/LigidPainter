@@ -32,18 +32,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 //Forward declarations for the interaction functions defined in the Interactions directory 
-void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse, Panel &paintingPanel, Painter &painter, Library &library, Model &model, ColorPalette& colorPalette, int &textureRes,NewTextureDialog &newTextureDialog,AppTextures &appTextures, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
-void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, Library &library, ColorPalette& colorPalette, int frameCounter);
+void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Mouse &mouse, Panel &paintingPanel, Painter &painter,  Model &model, ColorPalette& colorPalette, int &textureRes,NewTextureDialog &newTextureDialog,AppTextures &appTextures, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
+void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer,  ColorPalette& colorPalette, int frameCounter);
 void paintingPanelInteraction(Panel &paintingPanel, Mouse &mouse, Painter &painter, Dropper &dropper,ColorPalette colorPalette, AppTextures appTextures, Model &model, std::vector<Node> &meshNodeScene);
 void windowPanelInteraction(Panel &windowPanel, Mouse &mouse, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
-void nodeInteraction(Model &model, std::vector<Node> &meshNodeScene,ColorPalette colorPalette,glm::vec2 videoScale, Library library, Scene scene, int textureRes);
-void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter, std::vector<Node> &meshNodeScene, Model &model, Library library,   Scene scene, int textureRes);
+void nodeInteraction(Model &model, std::vector<Node> &meshNodeScene,ColorPalette colorPalette,glm::vec2 videoScale, Scene scene, int textureRes);
+void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter, std::vector<Node> &meshNodeScene, Model &model, Scene scene, int textureRes);
 
 void UI::elementInteraction(
                                 Painter &painter,
                                 Mouse &mouse, 
-                                Library &library,
+                                
                                 std::vector<ContextMenu> &contextMenus,
                                 std::vector<Node> &meshNodeScene,
                                 Context &context,
@@ -80,13 +80,13 @@ void UI::elementInteraction(
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover;
 
-    this->contextMenuInteraction(contextMenus,mouse,library,meshNodeScene,context,videoScale,timer,textRenderer,project,textureRes, painter);
+    this->contextMenuInteraction(contextMenus,mouse,meshNodeScene,context,videoScale,timer,textRenderer,project,textureRes, painter);
     
-    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,library,colorPalette,frameCounter);
+    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,colorPalette,frameCounter);
     
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,library,model,colorPalette,textureRes,newTextureDialog,appTextures, appMaterialModifiers,frameCounter);
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer,mouse,paintingPanel,painter,model,colorPalette,textureRes,newTextureDialog,appTextures, appMaterialModifiers,frameCounter);
     
-    this->libraryPanelLeftInteraction(libraryPanelLeft,library,mouse);
+    this->libraryPanelLeftInteraction(libraryPanelLeft,mouse);
 
     paintingPanelInteraction(paintingPanel,mouse,painter,dropper,colorPalette,appTextures,model, meshNodeScene);
     
@@ -94,9 +94,9 @@ void UI::elementInteraction(
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
 
-    displayingModesPanelInteraction(displayingModesPanel, painter, meshNodeScene, model, library, scene, textureRes);
+    displayingModesPanelInteraction(displayingModesPanel, painter, meshNodeScene, model, scene, textureRes);
 
-    nodeInteraction(model,meshNodeScene,colorPalette,videoScale, library, scene, textureRes);
+    nodeInteraction(model,meshNodeScene,colorPalette,videoScale, scene, textureRes);
     
-    this->panelPositioning(screenGapPerc,library,painter);
+    this->panelPositioning(screenGapPerc,painter);
 }

@@ -131,7 +131,7 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
 }
 
 void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
-                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,Library &library,
+                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,
                                 Model &model,int &textureRes,std::vector<Node> &meshNodeScene ){
     
     dialogControl.updateStart();
@@ -155,7 +155,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
         if(test.size()){
             
             //Load the project
-            if(project.loadProject(test,library,model,appTextures,colorPalette,textureRes,meshNodeScene, videoScale, appMaterialModifiers)){
+            if(project.loadProject(test,model,appTextures,colorPalette,textureRes,meshNodeScene, videoScale, appMaterialModifiers)){
                 
                 startScreen = false;
                 
@@ -221,7 +221,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath,library, model, appTextures, colorPalette, textureRes, meshNodeScene, videoScale, appMaterialModifiers)){
+            if(project.loadProject(ligidFilePath,model, appTextures, colorPalette, textureRes, meshNodeScene, videoScale, appMaterialModifiers)){
                 
                 startScreen = false;
                 

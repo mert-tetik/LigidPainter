@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -32,15 +33,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 
-void UI::libraryPanelLeftInteraction(Panel &libraryPanelLeft, Library &library,Mouse &mouse){
+void UI::libraryPanelLeftInteraction(Panel &libraryPanelLeft, Mouse &mouse){
     
     //Check all the library element button if they are pressed
     for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++) 
     {
         if(libraryPanelLeft.sections[0].elements[i].button.hover && mouse.LClick){//If any button element is pressed
-            if(library.selectedElementIndex != i){
-                libraryPanelLeft.sections[0].elements[library.selectedElementIndex].button.clickState1 = false;
-                library.changeSelectedElementIndex(i);
+            if(Library::getSelectedElementIndex() != i){
+                libraryPanelLeft.sections[0].elements[Library::getSelectedElementIndex()].button.clickState1 = false;
+                Library::changeSelectedElementIndex(i);
                 renamingTextBox.active = false;
                 break;
             }
@@ -50,8 +51,8 @@ void UI::libraryPanelLeftInteraction(Panel &libraryPanelLeft, Library &library,M
     //Keep the selected element as selected
     for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++) 
     {
-        if(library.selectedElementIndex == i){
-            libraryPanelLeft.sections[0].elements[library.selectedElementIndex].button.clickState1 = true;
+        if(Library::getSelectedElementIndex() == i){
+            libraryPanelLeft.sections[0].elements[Library::getSelectedElementIndex()].button.clickState1 = true;
         }
     }
 }

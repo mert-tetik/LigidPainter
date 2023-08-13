@@ -94,8 +94,6 @@ public:
 
     std::vector<Node> meshNodeScene;
 
-    Library library;
-
     ColorPalette colorPalette;
 
     std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials, 2 for brushes

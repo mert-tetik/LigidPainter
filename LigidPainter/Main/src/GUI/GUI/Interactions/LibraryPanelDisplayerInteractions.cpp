@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -36,7 +37,6 @@ void libraryPanelDisplayerInteraction(
                                         Mouse &mouse, 
                                         Panel &paintingPanel, 
                                         Painter &painter, 
-                                        Library &library, 
                                         Model &model, 
                                         ColorPalette& colorPalette, 
                                         int &textureRes,
@@ -50,18 +50,18 @@ void libraryPanelDisplayerInteraction(
     //Update the selected texture
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
     {
-        if(library.selectedElementIndex == 0){ //Textures selected
+        if(Library::getSelectedElementIndex() == 0){ //Textures selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
-                painter.selectedTexture = library.textures[i]; //Select the texture 
+                painter.selectedTexture = *Library::getTexture(i); //Select the texture 
                 paintingPanel.sections[4].elements[painter.selectedPaintingChannelIndex].button.texture = painter.selectedTexture;
             } //If any texture button element is pressed
         
-            if(library.textures[i].ID == painter.selectedTexture.ID) //Highlight the selected texture
+            if(Library::getTexture(i)->ID == painter.selectedTexture.ID) //Highlight the selected texture
                 libraryPanelDisplayer.sections[0].elements[i].button.clickState1 = true;
         }
-        if(library.selectedElementIndex == 3){ //Models selected
+        if(Library::getSelectedElementIndex() == 3){ //Models selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
-                model = library.TDModels[i]; //Select the model
+                model = *Library::getModel(i); //Select the model
                 model.newModelAdded = true; 
             } 
         }
@@ -69,16 +69,16 @@ void libraryPanelDisplayerInteraction(
 
     //Add button from the barButtons in the library displayer panel clicked 
     if(libraryPanelDisplayer.barButtons[0].clicked){
-        if(library.selectedElementIndex == 0){//Textures
+        if(Library::getSelectedElementIndex() == 0){//Textures
             newTextureDialog.dialogControl.activate();
         }
-        if(library.selectedElementIndex == 1){ //Materials
+        if(Library::getSelectedElementIndex() == 1){ //Materials
             //Add new material to the library & not the panel
             //Will be displayed right after library panel is updated
-            library.addMaterial(Material(textureRes, "material", 0));
+            Library::addMaterial(Material(textureRes, "material", 0));
         }
-        if(library.selectedElementIndex == 2){ //Brushes
-            library.addBrush(
+        if(Library::getSelectedElementIndex() == 2){ //Brushes
+            Library::addBrush(
                                         Brush
                                             (    
                                                 painter.brushProperties.sizeJitter,
@@ -94,17 +94,17 @@ void libraryPanelDisplayerInteraction(
                                             )
                                     );
             
-            library.brushes[library.brushes.size()-1].updateDisplayTexture();
+            Library::getBrush(Library::getBrushArraySize() - 1)->updateDisplayTexture();
             
         }
-        if(library.selectedElementIndex == 3){ //3D Models
+        if(Library::getSelectedElementIndex() == 3){ //3D Models
             
             std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
                 Model tdModel;
                 tdModel.loadModel(test, true);
                 if(tdModel.meshes.size())
-                    library.addModel(tdModel);
+                    Library::addModel(tdModel);
                 else
                     std::cout << "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << std::endl;
             }
@@ -112,25 +112,25 @@ void libraryPanelDisplayerInteraction(
         }
     }
     if(libraryPanelDisplayer.barButtons[1].clicked){ //Import button
-        if(library.selectedElementIndex == 0){//Textures  
+        if(Library::getSelectedElementIndex() == 0){//Textures  
             std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
                 Texture importedTxtr;
                 importedTxtr.load(test.c_str());
-                library.addTexture(importedTxtr);
+                Library::addTexture(importedTxtr);
             }
         }
-        if(library.selectedElementIndex == 1){ //Materials
+        if(Library::getSelectedElementIndex() == 1){ //Materials
             //Select material
             std::string test = showFileSystemObjectSelectionDialog("Select a material file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
             if(test.size()){
                 Material importedMaterial(textureRes, "", 0);
-                if(FileHandler::readLGDMATERIALFile(test, importedMaterial, colorPalette, appTextures, appMaterialModifiers, library.materials))
-                    library.addMaterial(importedMaterial);
+                if(FileHandler::readLGDMATERIALFile(test, importedMaterial, colorPalette, appTextures, appMaterialModifiers))
+                    Library::addMaterial(importedMaterial);
             }
         }
-        if(library.selectedElementIndex == 2){ //Brushes
+        if(Library::getSelectedElementIndex() == 2){ //Brushes
             
             std::string test = showFileSystemObjectSelectionDialog("Select a brush file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_BRUSH, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
@@ -138,12 +138,12 @@ void libraryPanelDisplayerInteraction(
                 Brush importedBrush;
                 if(FileHandler::readLGDBRUSHFile(test,importedBrush)){
                     importedBrush.updateDisplayTexture();
-                    library.addBrush(importedBrush);
+                    Library::addBrush(importedBrush);
                 }
             }
             
         }
-        if(library.selectedElementIndex == 3){ //3D Models
+        if(Library::getSelectedElementIndex() == 3){ //3D Models
             
             std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             
@@ -151,7 +151,7 @@ void libraryPanelDisplayerInteraction(
                 Model tdModel;
                 tdModel.loadModel(test,true);
                 if(tdModel.meshes.size())
-                    library.addModel(tdModel);
+                    Library::addModel(tdModel);
                 else
                     std::cout << "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << std::endl;
             }

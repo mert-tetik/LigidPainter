@@ -50,7 +50,7 @@ void MaterialEditorDialog::render
                                     Timer &timer,
                                     TextRenderer &textRenderer,
                                     TextureSelectionDialog &textureSelectionDialog,
-                                    Library &library,
+                                    
                                     Material &material,
                                     int textureRes,
                                     Box box,
@@ -100,13 +100,13 @@ void MaterialEditorDialog::render
     checkModifiersPanel(material,textureRes,box,context,mouse,textureSelectionDialog);
     
     //Manage actions of the context menus 
-    this->manageContextMenuActions(library, mouse, material, textureRes, box, context, contextMenus);
+    this->manageContextMenuActions(mouse, material, textureRes, box, context, contextMenus);
 
     //Update the layer panel recreate all the modifiers using material.materialModifiers vector & add a new modifier if add is pressed to that vector
     updateLayerPanelElements(material, textureRes, box, context, mouse, videoScale, contextMenus);
     
     //If texture selection done
-    checkTextureSelectionDialog(textureSelectionDialog,material,library,textureRes,box,context);
+    checkTextureSelectionDialog(textureSelectionDialog,material,textureRes,box,context);
 
     //Render the material displayer
     materialDisplayer.render(videoScale,mouse,timer,textRenderer,false);
@@ -138,7 +138,7 @@ void MaterialEditorDialog::render
     //Close the dialog
     if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick)){
         if(!wasTextureSelectionDialogActive() && !contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive()){
-            UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
+            UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
             this->deactivate(textureSelectionDialog);
         }
 
@@ -321,7 +321,7 @@ void MaterialEditorDialog::updateLayerPanelElements(Material &material,int &text
     }
 }
 
-void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Library &library,float textureRes,Box box,Context context){
+void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,float textureRes,Box box,Context context){
     //If the texture selection dialog is active and indexing number indicates a channel button 
     if(textureSelectionDialog.dialogControl.isActive() && textureModifierTextureSelectingButtonIndex != 1000){
         if(textureSelectionDialog.selectedTextureIndex != 1000){// If a texture is selected in the texture selection dialog
@@ -346,7 +346,7 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
     }
 }
 
-void MaterialEditorDialog::manageContextMenuActions(Library &library, Mouse &mouse, Material &material, int textureRes, Box box, Context context, std::vector<ContextMenu> &contextMenus)
+void MaterialEditorDialog::manageContextMenuActions( Mouse &mouse, Material &material, int textureRes, Box box, Context context, std::vector<ContextMenu> &contextMenus)
 {
     if(contextMenus[6].dialogControl.isActive()){ //If material modifier context menu is active
         

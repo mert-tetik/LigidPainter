@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "GUI/Elements/Elements.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <iostream>
@@ -39,7 +40,7 @@ void Node::render(  glm::vec2 videoScale,
                     std::vector<Node> &meshNodeScene,
                     int currentNodeIndex,
                     NodePanel& nodePanelData,
-                    Library &library,
+                    
                     Model &model,
                     int textureRes,
                     Scene scene
@@ -76,12 +77,12 @@ void Node::render(  glm::vec2 videoScale,
             this->uploadNewIOs(inputs, outputs);
         }
 
-        UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
+        UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
     }
 
     if(this->nodeIndex == MATERIAL_MASK_NODE){
         if(nodePanel.sections[0].elements[1].rangeBar.valueDoneChanging){
-            UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
+            UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
         }
     }
 
@@ -145,7 +146,7 @@ void Node::render(  glm::vec2 videoScale,
                     }
                     
                     clearConnections(currentNodeIndex,i,meshNodeScene);
-                    UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
+                    UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
 
                 }
 
@@ -184,24 +185,24 @@ void Node::render(  glm::vec2 videoScale,
                             createConnection(hoveredNodeI,hoveredIOI,currentNodeIndex,i,meshNodeScene);
 
                             Material material;
-                            for (size_t i = 0; i < library.materials.size(); i++)
+                            for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
                             {
                                 if(meshNodeScene[hoveredNodeI].nodeIndex == MATERIAL_NODE){
-                                    if(meshNodeScene[hoveredNodeI].materialID == library.materials[i].uniqueID)
-                                        material = library.materials[i];
+                                    if(meshNodeScene[hoveredNodeI].materialID == Library::getMaterial(i)->uniqueID)
+                                        material = *Library::getMaterial(i);
                                 }
                                 else if(meshNodeScene[currentNodeIndex].nodeIndex == MATERIAL_NODE){
-                                    if(meshNodeScene[currentNodeIndex].materialID == library.materials[i].uniqueID)
-                                        material = library.materials[i];
+                                    if(meshNodeScene[currentNodeIndex].materialID == Library::getMaterial(i)->uniqueID)
+                                        material = *Library::getMaterial(i);
                                 }
                             }
 
                             if(meshNodeScene[hoveredNodeI].nodeIndex == MESH_NODE){ //The hovered node is a mesh node (another node to the mesh node)
-                                UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
+                                UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
                             }
 
                             else if(meshNodeScene[currentNodeIndex].nodeIndex == MESH_NODE){ //The node's itself is mesh node (mesh node to another) 
-                                UTIL::updateNodeResults(meshNodeScene, model, library, scene, textureRes, -1);
+                                UTIL::updateNodeResults(meshNodeScene, model, scene, textureRes, -1);
                             }
                         }
                     }

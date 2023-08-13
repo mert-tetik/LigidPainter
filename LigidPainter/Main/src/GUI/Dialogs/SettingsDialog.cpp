@@ -60,7 +60,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
 }
 
 void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalette, Mouse& mouse, Timer timer, TextRenderer &textRenderer,
-                            Library &library, glm::vec2 videoScale, AppSettings& settings){
+                             glm::vec2 videoScale, AppSettings& settings){
     
     dialogControl.updateStart();   
 

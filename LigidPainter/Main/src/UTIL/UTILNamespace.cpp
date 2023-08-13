@@ -27,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "LibrarySystem/Library.hpp"
 
 
 float UTIL::getPercent(float value, float percent){
@@ -90,7 +91,7 @@ std::string UTIL::toLowercase(const std::string& str) {
 }
 
 
-std::vector<Material> UTIL::getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &meshNodeScene,Library &library,int textureRes, AppTextures appTextures){
+std::vector<Material> UTIL::getTheMaterialsConnectedToTheMeshNode(std::vector<Node> &meshNodeScene,int textureRes, AppTextures appTextures){
     std::vector<Material> materials;
     
     // //Check all the inputs of the mesh node
@@ -234,7 +235,7 @@ static void deleteMaterialChannels(Mesh &mesh){
     glDeleteTextures(1, &mesh.ambientOcclusion.ID);
 }
 
-Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library, Mesh& mesh,   Scene scene, int textureRes){
+Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Mesh& mesh,   Scene scene, int textureRes){
     Mesh msh = mesh;
     initTexture(msh.albedo.ID, textureRes);
     initTexture(msh.roughness.ID, textureRes);
@@ -268,7 +269,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
                 //An input can only have one connection unlike the outputs
                 
                 if(node.IOs[i].connections.size())
-                    retrievedMeshes[cToS(node.IOs[i].element.button.color)] = UTIL::processNode(nodeScene[node.IOs[i].connections[0].nodeIndex], nodeScene, library, mesh, scene, textureRes);
+                    retrievedMeshes[cToS(node.IOs[i].element.button.color)] = UTIL::processNode(nodeScene[node.IOs[i].connections[0].nodeIndex], nodeScene, mesh, scene, textureRes);
                 else{
                     retrievedMeshes[cToS(node.IOs[i].element.button.color)] = Mesh();
                     initTexture(retrievedMeshes[cToS(node.IOs[i].element.button.color)].albedo.ID, 100);
@@ -452,7 +453,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         
         Mesh blackMesh;
         if(node.IOs[2].connections.size())
-            blackMesh = UTIL::processNode(nodeScene[node.IOs[2].connections[0].nodeIndex], nodeScene, library, mesh, scene, textureRes);
+            blackMesh = UTIL::processNode(nodeScene[node.IOs[2].connections[0].nodeIndex], nodeScene, mesh, scene, textureRes);
         else{
             initTexture(blackMesh.albedo.ID, 100);
             initTexture(blackMesh.roughness.ID, 100);
@@ -463,7 +464,7 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
         }
         Mesh whiteMesh;
         if(node.IOs[2].connections.size()) 
-            whiteMesh = UTIL::processNode(nodeScene[node.IOs[3].connections[0].nodeIndex], nodeScene, library, mesh, scene, textureRes);
+            whiteMesh = UTIL::processNode(nodeScene[node.IOs[3].connections[0].nodeIndex], nodeScene, mesh, scene, textureRes);
         else{
             initTexture(whiteMesh.albedo.ID, 100);
             initTexture(whiteMesh.roughness.ID, 100);
@@ -583,10 +584,10 @@ Mesh UTIL::processNode(Node &node, std::vector<Node> &nodeScene, Library library
     else if(node.nodeIndex == MATERIAL_NODE){
         
         Material material;
-        for (size_t i = 0; i < library.materials.size(); i++)
+        for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
         {
-            if(node.materialID == library.materials[i].uniqueID)
-                material = library.materials[i];
+            if(node.materialID == Library::getMaterial(i)->uniqueID)
+                material = *Library::getMaterial(i);
         }
         
         for (int i = material.materialModifiers.size() - 1; i >= 0; --i)    
@@ -628,7 +629,7 @@ std::vector<int> findNodeIndexConnectedToMesh(std::vector<Node> meshNodeScene, i
     return res;
 }
 
-void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Library library,    Scene scene, int textureRes, int updateNodeI){
+void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Scene scene, int textureRes, int updateNodeI){
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     int viewportWidth = viewport[2];
@@ -643,7 +644,7 @@ void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Lib
                     for (size_t conI = 0; conI < meshNodeScene[nodeI].IOs[IOI].connections.size(); conI++)
                     {
                         if(meshNodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == 0){
-                            Mesh retMesh = UTIL::processNode(meshNodeScene[nodeI], meshNodeScene, library, model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex], scene, textureRes);
+                            Mesh retMesh = UTIL::processNode(meshNodeScene[nodeI], meshNodeScene, model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex], scene, textureRes);
                             
                             deleteMaterialChannels(model.meshes[meshNodeScene[nodeI].IOs[IOI].connections[conI].inputIndex]);
                             
@@ -671,7 +672,7 @@ void UTIL::updateNodeResults(std::vector<Node>& meshNodeScene, Model& model, Lib
                     for (size_t conI = 0; conI < meshNodeScene[indices[i]].IOs[IOI].connections.size(); conI++)
                     {
                         if(meshNodeScene[indices[i]].IOs[IOI].connections[conI].nodeIndex == 0){
-                            Mesh retMesh = UTIL::processNode(meshNodeScene[indices[i]], meshNodeScene, library, model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex],  scene, textureRes);
+                            Mesh retMesh = UTIL::processNode(meshNodeScene[indices[i]], meshNodeScene, model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex],  scene, textureRes);
                             
                             deleteMaterialChannels(model.meshes[meshNodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex]);
                             
@@ -739,28 +740,6 @@ void UTIL::giveUniqueId(int &ID ,const std::vector<int> otherIDs){
 
     // Assign the unique ID to the reference variable
     ID = newID;
-}
-
-void UTIL::giveUniqueId(int &ID ,const std::vector<Texture> textures){
-	std::vector<int> IDArray;
-
-	for (size_t i = 0; i < textures.size(); i++)
-	{
-		IDArray.push_back(textures[i].uniqueId);
-	}
-	
-	giveUniqueId(ID, IDArray);
-}
-
-void UTIL::giveUniqueId(int &ID ,const std::vector<Material> materials){
-	std::vector<int> IDArray;
-
-	for (size_t i = 0; i < materials.size(); i++)
-	{
-		IDArray.push_back(materials[i].uniqueID);
-	}
-
-	giveUniqueId(ID, IDArray);
 }
 
 char* const* UTIL::convertStringArray(const std::vector<std::string> strings){

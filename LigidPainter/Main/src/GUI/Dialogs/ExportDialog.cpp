@@ -96,7 +96,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
 }
 
 void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
-                          glm::vec2 videoScale,Project &project,bool &greetingDialogActive,Library &library,
+                          glm::vec2 videoScale,Project &project,bool &greetingDialogActive,
                           Model &model,MaterialEditorDialog &materialEditorDialog,std::vector<Node> &meshNodeScene,Model sphereModel,
                           Scene scene){
     
@@ -126,7 +126,7 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
         }
         //All the materials connected to the mesh output
         
-        UTIL::updateNodeResults(meshNodeScene, model, library, scene, resolution, -1);
+        UTIL::updateNodeResults(meshNodeScene, model, scene, resolution, -1);
         
         //Update all the materials connected to the mesh output & export it's textures
         for (size_t i = 0; i < model.meshes.size(); i++)

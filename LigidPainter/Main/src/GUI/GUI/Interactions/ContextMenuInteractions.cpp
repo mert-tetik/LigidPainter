@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -31,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Library &library,
+void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , 
                                 std::vector<Node> &meshNodeScene,Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
                                 Project& project, int &textureRes, Painter &painter){
     anyContextMenuActive = false; 
@@ -41,14 +42,14 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             anyContextMenuActive = true;
         
         //CONTEXT MENU BUTTONS
-        if(i == 0 && library.selectedElementIndex == 0 && contextMenus[i].dialogControl.isActive() && library.textures.size()){ //If texture context menu is active
+        if(i == 0 && Library::getSelectedElementIndex() == 0 && contextMenus[i].dialogControl.isActive() && Library::getTextureArraySize()){ //If texture context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to rename button
                 renamingTextBox.active = true;
-                library.changed = true;
+                Library::setChanged(true);
                 renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
                 renamingTextBox.pos.y += 2.8f;
-                lastTitleBeforeRenaming = library.textures[contextMenus[i].selectedElement].title;
-                library.textures[contextMenus[i].selectedElement].title = "";
+                lastTitleBeforeRenaming = Library::getTexture(contextMenus[i].selectedElement)->title;
+                Library::getTexture(contextMenus[i].selectedElement)->title = "";
                 renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
                 renamingTextBox.activeChar = renamingTextBox.text.size()-1;
                 renamingTextBox.activeChar2 = renamingTextBox.activeChar;
@@ -57,16 +58,16 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
             }
             if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){//Clicked to duplicate button
                 Texture duplicatedTexture;
-                duplicatedTexture = library.textures[contextMenus[i].selectedElement];
-                duplicatedTexture.ID = library.textures[contextMenus[i].selectedElement].duplicateTexture();
-                library.addTexture(duplicatedTexture);
+                duplicatedTexture = *Library::getTexture(contextMenus[i].selectedElement);
+                duplicatedTexture.ID = Library::getTexture(contextMenus[i].selectedElement)->duplicateTexture();
+                Library::addTexture(duplicatedTexture);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to delete button
-                library.eraseTexture(contextMenus[i].selectedElement);
+                Library::eraseTexture(contextMenus[i].selectedElement);
             }
         }
         
-        if(i == 1 && library.selectedElementIndex == 1 && contextMenus[i].dialogControl.isActive()){ //If material context menu is active
+        if(i == 1 && Library::getSelectedElementIndex() == 1 && contextMenus[i].dialogControl.isActive()){ //If material context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to edit button
                 //Select the material that material editor will edit & show the material editor dialog
                 selectedMaterialIndex = contextMenus[i].selectedElement;
@@ -76,21 +77,21 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 //Create the node of the materail an add to the node scene
                 Node materialNode = Node(
                                             MATERIAL_NODE, 
-                                            library.materials[contextMenus[i].selectedElement].uniqueID,
+                                            Library::getMaterial(contextMenus[i].selectedElement)->uniqueID,
                                             colorPalette,
                                             appTextures,
                                             videoScale
                                         );
-                materialNode.barButton.text = library.materials[contextMenus[i].selectedElement].title;
+                materialNode.barButton.text = Library::getMaterial(contextMenus[i].selectedElement)->title;
                 meshNodeScene.push_back(materialNode); //Add material node
             }
             if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
                 renamingTextBox.active = true;
-                library.changed = true;
+                Library::setChanged(true);
                 renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
                 renamingTextBox.pos.y += 2.8f;
-                lastTitleBeforeRenaming = library.materials[contextMenus[i].selectedElement].title;
-                library.materials[contextMenus[i].selectedElement].title = "";
+                lastTitleBeforeRenaming = Library::getMaterial(contextMenus[i].selectedElement)->title;
+                Library::getMaterial(contextMenus[i].selectedElement)->title = "";
                 renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
                 renamingTextBox.activeChar = renamingTextBox.text.size()-1;
                 renamingTextBox.activeChar2 = renamingTextBox.activeChar;
@@ -98,47 +99,47 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 renamingIndices.y = contextMenus[i].selectedElement;
             }
             if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to duplicate button
-                Material duplicatedMaterial = library.materials[contextMenus[i].selectedElement].duplicateMaterial(textureRes);
-                library.addMaterial(duplicatedMaterial);
+                Material duplicatedMaterial = Library::getMaterial(contextMenus[i].selectedElement)->duplicateMaterial(textureRes);
+                Library::addMaterial(duplicatedMaterial);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
                 
                 //Delete the nodes using same material
                 for (int nodeI = 0; nodeI < meshNodeScene.size(); nodeI++)
                 {
-                    if(meshNodeScene[nodeI].materialID == library.materials[contextMenus[i].selectedElement].uniqueID && meshNodeScene[nodeI].nodeIndex == MATERIAL_NODE){
+                    if(meshNodeScene[nodeI].materialID == Library::getMaterial(contextMenus[i].selectedElement)->uniqueID && meshNodeScene[nodeI].nodeIndex == MATERIAL_NODE){
                         UTIL::deleteNode(meshNodeScene, nodeI);
                         nodeI--;
                     }
                 }
                 
                 //Delete the material
-                library.eraseMaterial(contextMenus[i].selectedElement);
+                Library::eraseMaterial(contextMenus[i].selectedElement);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[6].button.hover && mouse.LClick){//Clicked to export button
                 std::string exportingPath = showFileSystemObjectSelectionDialog("Export the lgdmaterial file", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false,FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE);
                 if(exportingPath.size())
-                    FileHandler::writeLGDMATERIALFile(exportingPath, library.materials[contextMenus[i].selectedElement]);
+                    FileHandler::writeLGDMATERIALFile(exportingPath, *Library::getMaterial(contextMenus[i].selectedElement));
             }
         }
-        if(i == 2 && library.selectedElementIndex == 2 && contextMenus[i].dialogControl.isActive()){ //If brush context menu is active
+        if(i == 2 && Library::getSelectedElementIndex() == 2 && contextMenus[i].dialogControl.isActive()){ //If brush context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){//Clicked to use brush button
                 
-                library.brushes[contextMenus[i].selectedElement].useBrush(paintingPanel);
+                Library::getBrush(contextMenus[i].selectedElement)->useBrush(paintingPanel);
 
             }
             if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){//Clicked to apply brush settings
 
-                library.brushes[contextMenus[i].selectedElement].applyToBrush(paintingPanel);
+                Library::getBrush(contextMenus[i].selectedElement)->applyToBrush(paintingPanel);
 
             }
             if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && mouse.LClick){//Clicked to rename button
                 renamingTextBox.active = true;
-                library.changed = true;
+                Library::setChanged(true);
                 renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
                 renamingTextBox.pos.y += 2.8f;
-                lastTitleBeforeRenaming = library.brushes[contextMenus[i].selectedElement].title;
-                library.brushes[contextMenus[i].selectedElement].title = "";
+                lastTitleBeforeRenaming = Library::getBrush(contextMenus[i].selectedElement)->title;
+                Library::getBrush(contextMenus[i].selectedElement)->title = "";
                 renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
                 renamingTextBox.activeChar = renamingTextBox.text.size()-1;
                 renamingTextBox.activeChar2 = renamingTextBox.activeChar;
@@ -146,21 +147,21 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 renamingIndices.y = contextMenus[i].selectedElement;
             }
             if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){//Clicked to duplicate button
-                library.addBrush(library.brushes[contextMenus[i].selectedElement]);
+                Library::addBrush(*Library::getBrush(contextMenus[i].selectedElement));
             }
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && mouse.LClick){//Clicked to delete button
-                library.eraseBrush(contextMenus[i].selectedElement);
+                Library::eraseBrush(contextMenus[i].selectedElement);
             }
         }
         if(i == 3 && contextMenus[i].dialogControl.isActive()){ //If project context menu is active
             //Save
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && mouse.LClick){
-                project.updateProject(library,meshNodeScene,textureRes);
+                project.updateProject(meshNodeScene,textureRes);
             }
             
             //Save as
             if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && mouse.LClick){
-                project.updateProject(library,meshNodeScene,textureRes);
+                project.updateProject(meshNodeScene,textureRes);
                 project.duplicateFolder("");
             }
             
@@ -255,7 +256,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
     {
         if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.RClick){ //Right clicked to an element
-            if(library.selectedElementIndex == 0){//To a texture
+            if(Library::getSelectedElementIndex() == 0){//To a texture
                 //Show the context menu
                 contextMenus[0].dialogControl.activate();
                 contextMenus[0].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
@@ -264,7 +265,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 contextMenus[0].selectedElement = i;
                 
             }
-            if(library.selectedElementIndex == 1){//To a material
+            if(Library::getSelectedElementIndex() == 1){//To a material
                 //Show the context menu
                 contextMenus[1].dialogControl.activate();
                 contextMenus[1].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
@@ -272,7 +273,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &m
                 contextMenus[1].pos.z = 0.95f;
                 contextMenus[1].selectedElement = i;
             }
-            if(library.selectedElementIndex == 2){//To a brush
+            if(Library::getSelectedElementIndex() == 2){//To a brush
                 //Show the context menu
                 contextMenus[2].dialogControl.activate();
                 contextMenus[2].pos.x = mouse.cursorPos.x / videoScale.x * 100.f;
