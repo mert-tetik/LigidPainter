@@ -940,6 +940,13 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
+    
+    unsigned int proceduralTexture;
+    Scene scene;
+    scene.projectionMatrix = perspective;
+    scene.viewMatrix = view;
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
@@ -952,9 +959,6 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         material.materialModifiers[curModI].shader.setMat4("orthoProjection",projection); //Set the projection
         material.materialModifiers[curModI].shader.setMat4("perspectiveProjection",perspective); //Set the projection
         material.materialModifiers[curModI].shader.setMat4("view",view); //Set the projection        
-        material.materialModifiers[curModI].shader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        material.materialModifiers[curModI].shader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        material.materialModifiers[curModI].shader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural material.materialModifiers[curModI].
         material.materialModifiers[curModI].shader.setInt("state",channelI); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("theTexture",0); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("mask", 1); //Set the texture slot
@@ -968,12 +972,21 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
 
         //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
         glActiveTexture(GL_TEXTURE0);
-        //Bind the texture from the materialModifier's button element texture
-        glBindTexture(GL_TEXTURE_2D,material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.ID);
-
+        unsigned int proceduralChannelTexture;
+        if(material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D,material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.ID);
+        else{
+            proceduralChannelTexture = material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.generateProceduralTexture(mesh, scene, textureResolution);
+            glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+            glBindTexture(GL_TEXTURE_2D, proceduralChannelTexture);
+        }
+    
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        if(material.materialModifiers[curModI].maskTexture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, proceduralTexture);
 
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
@@ -1000,9 +1013,10 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
 
         currentTexture.removeSeams(mesh,textureResolution);
         glDeleteTextures(1, &previousTexture.ID);
+        glDeleteTextures(1, &proceduralChannelTexture);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
-
+    glDeleteTextures(1, &proceduralTexture);
 }
 
 void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
@@ -1024,6 +1038,13 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
+    
+    unsigned int proceduralTexture;
+    Scene scene;
+    scene.projectionMatrix = perspective;
+    scene.viewMatrix = view;
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
@@ -1040,9 +1061,6 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setVec3("pos",fragPos); //Set the position
 
         /* Channel Properties */
-        modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1076,7 +1094,10 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        if(material.materialModifiers[curModI].maskTexture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, proceduralTexture);
 
         glActiveTexture(GL_TEXTURE2);
         if(curModI != material.materialModifiers.size()-1)
@@ -1114,7 +1135,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
-
+    glDeleteTextures(1, &proceduralTexture);
 }
 
 void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
@@ -1136,6 +1157,13 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
+    
+    unsigned int proceduralTexture;
+    Scene scene;
+    scene.projectionMatrix = perspective;
+    scene.viewMatrix = view;
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
@@ -1152,9 +1180,6 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
-        modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state",channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1169,7 +1194,11 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
 
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        if(material.materialModifiers[curModI].maskTexture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, proceduralTexture);
+
 
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
@@ -1199,7 +1228,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
-
+    glDeleteTextures(1, &proceduralTexture);
 }
 
 void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
@@ -1222,6 +1251,13 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
+    
+    unsigned int proceduralTexture;
+    Scene scene;
+    scene.projectionMatrix = perspective;
+    scene.viewMatrix = view;
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
@@ -1238,9 +1274,6 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
-                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1275,7 +1308,11 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
 
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        if(material.materialModifiers[curModI].maskTexture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, proceduralTexture);
+
 
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
@@ -1311,7 +1348,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
-
+    glDeleteTextures(1, &proceduralTexture);
 }
 
 void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
@@ -1334,6 +1371,13 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
+    
+    unsigned int proceduralTexture;
+    Scene scene;
+    scene.projectionMatrix = perspective;
+    scene.viewMatrix = view;
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
@@ -1350,9 +1394,6 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
-                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1375,7 +1416,11 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
 
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        if(material.materialModifiers[curModI].maskTexture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, proceduralTexture);
+
 
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
@@ -1411,7 +1456,7 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
-
+    glDeleteTextures(1, &proceduralTexture);
 }
 
 
@@ -1435,6 +1480,13 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
+    
+    unsigned int proceduralTexture;
+    Scene scene;
+    scene.projectionMatrix = perspective;
+    scene.viewMatrix = view;
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
@@ -1451,9 +1503,6 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
-                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1495,7 +1544,11 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
 
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        if(material.materialModifiers[curModI].maskTexture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, proceduralTexture);
+
 
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
@@ -1533,7 +1586,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
-
+    glDeleteTextures(1, &proceduralTexture);
 }
 
 void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
@@ -1556,6 +1609,13 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
+    
+    unsigned int proceduralTexture;
+    Scene scene;
+    scene.projectionMatrix = perspective;
+    scene.viewMatrix = view;
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
@@ -1572,9 +1632,6 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
-                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1613,7 +1670,11 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        if(material.materialModifiers[curModI].maskTexture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, proceduralTexture);
+
 
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
@@ -1651,7 +1712,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
-
+    glDeleteTextures(1, &proceduralTexture);
 }
 
 void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
@@ -1674,6 +1735,13 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
+    
+    unsigned int proceduralTexture;
+    Scene scene;
+    scene.projectionMatrix = perspective;
+    scene.viewMatrix = view;
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
@@ -1690,9 +1758,6 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
-                modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1732,7 +1797,11 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        if(material.materialModifiers[curModI].maskTexture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, proceduralTexture);
+
 
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
@@ -1770,7 +1839,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
-
+    glDeleteTextures(1, &proceduralTexture);
 }
 
 void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
@@ -1792,6 +1861,13 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)
+    
+    unsigned int proceduralTexture;
+    Scene scene;
+    scene.projectionMatrix = perspective;
+    scene.viewMatrix = view;
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
@@ -1808,9 +1884,6 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setMat4("view",view); //Set the projection
 
         /* Channel Properties */
-        modifierShader.setInt("proceduralID", material.materialModifiers[curModI].maskTexture.proceduralID); //Set the channel procedural 
-        modifierShader.setFloat("proceduralScale", material.materialModifiers[curModI].maskTexture.proceduralScale); //Set the channel procedural 
-        modifierShader.setInt("proceduralInverted", material.materialModifiers[curModI].maskTexture.proceduralnverted); //Set the channel procedural 
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
@@ -1847,7 +1920,11 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        if(material.materialModifiers[curModI].maskTexture.proceduralID == -1)
+            glBindTexture(GL_TEXTURE_2D, material.materialModifiers[curModI].maskTexture.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, proceduralTexture);
+
 
         //Bind the previous height texture      
         glActiveTexture(GL_TEXTURE2);
@@ -1885,5 +1962,5 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
-
+    glDeleteTextures(1, &proceduralTexture);
 }

@@ -15,8 +15,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #version 400 core
 
-#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Procedural.frag)
-
 // variant of Vorocracks: https://shadertoy.com/view/lsVyRy
 // integrated with cracks here: https://www.shadertoy.com/view/Xd3fRN
 
@@ -57,9 +55,6 @@ uniform int state;
 uniform sampler2D mask;
 uniform sampler2D previousTxtr;
 uniform float opacity;
-uniform int proceduralID;
-uniform float proceduralScale;
-uniform int proceduralInverted;
 
 /* Fragment Inputs */
 in vec2 TexCoords;
@@ -475,13 +470,8 @@ void main()
             fragColor.r = 1.;
     }
 
-    float procedural = getProcedural( Pos, proceduralID, proceduralScale, proceduralInverted);
-
     float alpha = opacity;
-    if(proceduralID == -1)
-        alpha *= texture(mask, TexCoords).r; 
-    else
-        alpha *= procedural;  
+    alpha *= texture(mask, TexCoords).r; 
     
     vec3 clrResult = mix(texture(previousTxtr, TexCoords).rgb, fragColor.rgb, alpha);
 

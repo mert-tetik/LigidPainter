@@ -290,6 +290,7 @@ public:
 
     void removeSeams(Mesh& mesh, int textureResolution);
     void removeSeams(Mesh& mesh, glm::ivec2 textureResolution);
+    unsigned int generateProceduralTexture(Mesh &mesh, Scene scene, int textureRes);
 };
 
 class Project

@@ -196,39 +196,10 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRe
             glBindTexture(GL_TEXTURE_2D, node.IOs[0].element.button.texture.ID);
         }
         else{
-            //To2DProcedural.frag
-            ShaderSystem::to2DProcedural().use();
-
-            ShaderSystem::to2DProcedural().setInt("proceduralID", node.IOs[0].element.button.texture.proceduralID);
-            ShaderSystem::to2DProcedural().setFloat("proceduralScale", node.IOs[0].element.button.texture.proceduralScale);
-            ShaderSystem::to2DProcedural().setInt("proceduralInverted", node.IOs[0].element.button.texture.proceduralnverted);
-            
-            ShaderSystem::to2DProcedural().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-            ShaderSystem::to2DProcedural().setMat4("perspectiveProjection", scene.projectionMatrix);
-            ShaderSystem::to2DProcedural().setMat4("view", scene.viewMatrix);
-
-            initTexture(proceduralTxtr, textureRes);
-
-            unsigned int FBO;
-            glGenFramebuffers(1,&FBO);
-            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, proceduralTxtr, 0);
-            glViewport(0, 0, textureRes, textureRes);
-            
-            glClearColor(0,0,0,0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-            mesh.Draw();
-
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glDeleteFramebuffers(0, &FBO);
-
-            ShaderSystem::colorIDMaskingShader().use();
-
-            glActiveTexture(GL_TEXTURE0);
+            proceduralTxtr = node.IOs[0].element.button.texture.generateProceduralTexture(mesh, scene, textureRes);
             glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
+            ShaderSystem::colorIDMaskingShader().use();
         } 
-
                 
         Box box;
         box.init();
@@ -379,39 +350,13 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRe
         
         // Bind the mask
         glActiveTexture(GL_TEXTURE0);
-        if(node.nodePanel.sections[0].elements[0].button.texture.proceduralID == -1)
+        if(node.nodePanel.sections[0].elements[0].button.texture.proceduralID == -1){
             glBindTexture(GL_TEXTURE_2D, node.nodePanel.sections[0].elements[0].button.texture.ID);
+        }
         else{
-            ShaderSystem::to2DProcedural().use();
-
-            ShaderSystem::to2DProcedural().setInt("proceduralID", node.nodePanel.sections[0].elements[0].button.texture.proceduralID);
-            ShaderSystem::to2DProcedural().setFloat("proceduralScale", node.nodePanel.sections[0].elements[0].button.texture.proceduralScale);
-            ShaderSystem::to2DProcedural().setInt("proceduralInverted", node.nodePanel.sections[0].elements[0].button.texture.proceduralnverted);
-            
-            ShaderSystem::to2DProcedural().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-            ShaderSystem::to2DProcedural().setMat4("perspectiveProjection", scene.projectionMatrix);
-            ShaderSystem::to2DProcedural().setMat4("view", scene.viewMatrix);
-
-            initTexture(proceduralTxtr, textureRes);
-
-            unsigned int FBO;
-            glGenFramebuffers(1,&FBO);
-            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, proceduralTxtr, 0);
-            glViewport(0, 0, textureRes, textureRes);
-            
-            glClearColor(0,0,0,0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-            mesh.Draw();
-
-            glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glDeleteFramebuffers(0, &FBO);
-
-            ShaderSystem::grayScaleIDMaskingShader().use();
-
-            glActiveTexture(GL_TEXTURE0);
+            proceduralTxtr = node.nodePanel.sections[0].elements[0].button.texture.generateProceduralTexture(mesh, scene, textureRes);
             glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
+            ShaderSystem::grayScaleIDMaskingShader().use();
         } 
                 
         Box box;

@@ -15,8 +15,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #version 400 core
 
-#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Procedural.frag)
-
 in vec3 fragPos;
 in vec2 TexCoords;  
 in vec3 Pos;  
@@ -26,13 +24,7 @@ uniform int state;
 uniform sampler2D mask;
 uniform sampler2D previousTxtr;
 uniform float opacity;
-uniform int proceduralID;
-uniform float proceduralScale;
-uniform int proceduralInverted;
 uniform sampler2D theTexture;
-uniform int theTextureProceduralID;
-uniform float theTextureProceduralScale;
-uniform int theTextureProceduralInverted;
 uniform float depthValue;
 uniform sampler2D depthTxtr;
 
@@ -44,19 +36,10 @@ void getImage(sampler2D txtr,out vec4 result){
 
 void main(){
     
-    float procedural = getProcedural(Pos, theTextureProceduralID, theTextureProceduralScale, theTextureProceduralInverted);
-    if(theTextureProceduralID == -1)
-        fragColor = texture(theTexture, TexCoords);
-    else
-        fragColor = vec4(vec3(procedural), 1.);
+    fragColor = texture(theTexture, TexCoords);
     
-    procedural = getProcedural(Pos, proceduralID, proceduralScale, proceduralInverted);
-
     float alpha = opacity;
-    if(proceduralID == -1)
-        alpha *= texture(mask, TexCoords).r; 
-    else
-        alpha *= procedural; 
+    alpha *= texture(mask, TexCoords).r; 
     
     float dpth = texture(depthTxtr, TexCoords).r; 
     if(depthValue < dpth)

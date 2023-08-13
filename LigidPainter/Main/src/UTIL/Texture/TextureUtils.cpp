@@ -13,7 +13,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ---------------------------------------------------------------------------
 */
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
@@ -282,4 +282,47 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDeleteFramebuffers(1, &FBO);
     glDeleteTextures(1, &textureCopy);
+}
+
+unsigned int Texture::generateProceduralTexture(Mesh &mesh, Scene scene, int textureRes){
+    unsigned int proceduralTxtr;
+    
+    ShaderSystem::to2DProcedural().use();
+
+    ShaderSystem::to2DProcedural().setInt("proceduralID", this->proceduralID);
+    ShaderSystem::to2DProcedural().setFloat("proceduralScale", this->proceduralScale);
+    ShaderSystem::to2DProcedural().setInt("proceduralInverted", this->proceduralnverted);
+    
+    ShaderSystem::to2DProcedural().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
+    ShaderSystem::to2DProcedural().setMat4("perspectiveProjection", scene.projectionMatrix);
+    ShaderSystem::to2DProcedural().setMat4("view", scene.viewMatrix);
+
+    glActiveTexture(GL_TEXTURE0);
+    glGenTextures(1,&proceduralTxtr);
+    glBindTexture(GL_TEXTURE_2D,proceduralTxtr);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, proceduralTxtr, 0);
+    glViewport(0, 0, textureRes, textureRes);
+    
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    mesh.Draw();
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(0, &FBO);
+
+    return proceduralTxtr;
 }
