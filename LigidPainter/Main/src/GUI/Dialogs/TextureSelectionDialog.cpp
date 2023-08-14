@@ -12,13 +12,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
 
-    In button
-    Call the show dialog function - giving this->texture as a parameter
-    If the texture is not procedural and the selected texture is procedural delete the received texture
-    If the texture ID is not valid and the selected texture is not procedural create the texture (if the texture is procedural and the selected texture is not procedural (then update the procedural properties))
-    If the texture is procedural and the selected texture is procedural just adjust the procedural properties
-    If pressed to the select button (texture selected) return true (receivedTexture got modified)
-    If not return false (receivedTexture is the same)
+    Texture selection dialog is responsible of modifying the procedural variables inside of a Texture class & generating displaying textures
+
 */
 
 #include<glad/glad.h>
@@ -261,45 +256,21 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr){
     glViewport(0, 0, viewportResolution.x, viewportResolution.y);
 }
 
+
+
+//Forward declarations for the utility functions
+static void initTextureSelectionDialog(TextRenderer& textRenderer, int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, int& selectedTextureIndex, Texture& receivedTexture);
+static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
+static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, ColorPalette& colorPalette);
+static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex, ColorPalette& colorPalette);
+
 void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer){
     
     this->dialogControl.activate();
         
-    __textRenderer = textRenderer;
-
-    // Get the viewport size
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    int viewportWidth = viewport[2];
-    int viewportHeight = viewport[3];
-
-    glm::ivec2 windowSize = glm::ivec2(viewportWidth, viewportHeight);
-
-    GLfloat* pixels = new GLfloat[windowSize.x * windowSize.y * 4];
-    glReadPixels(0, 0, windowSize.x, windowSize.y, GL_RGBA, GL_FLOAT, pixels);
-
-    unsigned int bgTexture;
-    glGenTextures(1, &bgTexture);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, bgTexture);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, pixels);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    
-    this->selectedTextureMode = 0;
-
-    if(receivedTexture.proceduralID != -1){
-        this->selectedTextureMode = 1;
-        this->selectedTextureIndex = receivedTexture.proceduralID;
-        
-        if(this->selectedTextureIndex > MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE - 1){
-            this->selectedTextureMode = 2;
-            this->selectedTextureIndex -= MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
-        }
-        subPanel.sections[0].elements[6].checkBox.clickState1 = receivedTexture.proceduralnverted;
-        subPanel.sections[0].elements[7].rangeBar.value = receivedTexture.proceduralScale * 10.f;  
-    }
+    unsigned int bgTexture; 
+    glm::ivec2 windowSize;
+    initTextureSelectionDialog(textRenderer, this->selectedTextureMode, bgTexture, windowSize, this->subPanel, this->selectedTextureIndex, receivedTexture);
 
     while (!window.shouldClose())
     {
@@ -315,72 +286,18 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
             __mouse.MClick = false;
         }
 
+        glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, bgTexture);
-
-        ShaderSystem::buttonShader().setVec3("pos", glm::vec3(windowSize / glm::ivec2(2), 0.1));
-        ShaderSystem::buttonShader().setVec2("scale", windowSize / glm::ivec2(2));
-        ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
-        ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
-        ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
+        drawBG(bgTexture, windowSize);
 
         dialogControl.updateStart();
 
         generateDisplayingTexture(displayingTexture);
 
-        //Update the panel elements
-        this->textureSelectingPanel.sections.clear();
-        std::vector<Element> sectionElements;
-        if(this->selectedTextureMode == 0){
-            for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-            {
-                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"texture"       , Texture(), 0.f,false)));
-            }
-        }
-        else if(this->selectedTextureMode == 1){
-            for (size_t i = 0; i < MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE; i++)
-            {
-                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),colorPalette,""       , Texture(), 0.f,false)));
-            }
-        }
-        else if(this->selectedTextureMode == 2){
-            for (size_t i = 0; i < MAX_PROCEDURAL_NOISE_TEXTURE_SIZE; i++)
-            {
-                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),colorPalette,""       , Texture(), 0.f,false)));
-            }
-        }
+        updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, colorPalette);
 
-        //Push the section elements to the texture panel
-        this->textureSelectingPanel.sections.push_back(
-            Section
-                    (
-                        Element(Button()),
-                        sectionElements
-                    )
-        );
-
-        for (size_t i = 0; i < 3; i++)
-        {
-            if(this->subPanel.sections[0].elements[i].button.clickState1 && this->selectedTextureMode != i){
-                this->selectedTextureMode = i;
-                this->selectedTextureIndex = 0;
-                for (size_t i = 0; i < this->subPanel.sections[0].elements.size(); i++)
-                    this->subPanel.sections[0].elements[i].button.clickState1 = false;
-            }
-
-            if(this->selectedTextureMode == i)
-                this->subPanel.sections[0].elements[i].button.clickState1 = true;
-            else
-                this->subPanel.sections[0].elements[i].button.clickState1 = false;
-        }
+        updateSubPanel(this->subPanel, this->selectedTextureMode, this->selectedTextureIndex, colorPalette);
 
         //Render the panel
         this->bgPanel.render(videoScale, __mouse,timer,__textRenderer,true);
@@ -430,8 +347,6 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
 
         ShaderSystem::buttonShader().use();
 
-
-
         //If pressed any of the texture select the texture
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
         {
@@ -480,5 +395,122 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
         __textRenderer.keyInput = false;
         __textRenderer.mods = 0;
     }
+}
 
+
+
+
+
+// ---------- UTILITY FUNCTIONS -----------
+static void initTextureSelectionDialog(
+                                        TextRenderer& textRenderer, 
+                                        int &selectedTextureMode, 
+                                        unsigned int& bgTexture, 
+                                        glm::ivec2& windowSize, 
+                                        Panel& subPanel, 
+                                        int& selectedTextureIndex, 
+                                        Texture& receivedTexture
+                                    )
+{
+    __textRenderer = textRenderer;
+
+    // Get the viewport size
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    int viewportWidth = viewport[2];
+    int viewportHeight = viewport[3];
+
+    glm::ivec2 windowSize = glm::ivec2(viewportWidth, viewportHeight);
+
+    GLfloat* pixels = new GLfloat[windowSize.x * windowSize.y * 4];
+    glReadPixels(0, 0, windowSize.x, windowSize.y, GL_RGBA, GL_FLOAT, pixels);
+
+    glGenTextures(1, &bgTexture);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, bgTexture);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, pixels);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    
+    selectedTextureMode = 0;
+
+    if(receivedTexture.proceduralID != -1){
+        selectedTextureMode = 1;
+        selectedTextureIndex = receivedTexture.proceduralID;
+        
+        if(selectedTextureIndex > MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE - 1){
+            selectedTextureMode = 2;
+            selectedTextureIndex -= MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
+        }
+
+        subPanel.sections[0].elements[6].checkBox.clickState1 = receivedTexture.proceduralnverted;
+        subPanel.sections[0].elements[7].rangeBar.value = receivedTexture.proceduralScale * 10.f;  
+    }
+}
+
+static void drawBG(
+                    unsigned int bgTexture, 
+                    glm::ivec2 windowSize
+                )
+{
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, bgTexture);
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(windowSize / glm::ivec2(2), 0.1));
+    ShaderSystem::buttonShader().setVec2("scale", windowSize / glm::ivec2(2));
+    ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
+    ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
+    ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
+}
+
+static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, ColorPalette& colorPalette){
+    textureSelectingPanel.sections.clear();
+    std::vector<Element> sectionElements;
+    if(selectedTextureMode == 0){
+        for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+        {
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette, "texture"       , Texture(), 0.f,false)));
+        }
+    }
+    else if(selectedTextureMode == 1){
+        for (size_t i = 0; i < MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE; i++)
+        {
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),colorPalette,""       , Texture(), 0.f,false)));
+        }
+    }
+    else if(selectedTextureMode == 2){
+        for (size_t i = 0; i < MAX_PROCEDURAL_NOISE_TEXTURE_SIZE; i++)
+        {
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),colorPalette,""       , Texture(), 0.f,false)));
+        }
+    }
+
+    textureSelectingPanel.sections.push_back
+                                            (
+                                                Section
+                                                        (
+                                                            Element(Button()),
+                                                            sectionElements
+                                                        )
+                                            );  
+}
+
+static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex, ColorPalette& colorPalette){
+    for (size_t i = 0; i < 3; i++)
+    {
+        if(subPanel.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
+            selectedTextureMode = i;
+            selectedTextureIndex = 0;
+            for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++)
+                subPanel.sections[0].elements[i].button.clickState1 = false;
+        }
+
+        if(selectedTextureMode == i)
+            subPanel.sections[0].elements[i].button.clickState1 = true;
+        else
+            subPanel.sections[0].elements[i].button.clickState1 = false;
+    }
 }
