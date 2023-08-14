@@ -121,6 +121,12 @@ void Library::addModel(Model model){
 }
 
 void Library::eraseTexture   (int index){
+    
+    if(index >= __textures.size()){
+        std::cout << "ERROR! : Couldn't erase the texture : Requested texture index is out of boundaries." << std::endl;
+        return;
+    }
+
     __changed = true;
     
     glDeleteTextures(1, &__textures[index].ID);
@@ -129,6 +135,12 @@ void Library::eraseTexture   (int index){
 }
 
 void Library::eraseMaterial  (int index){
+    
+    if(index >= __materials.size()){
+        std::cout << "ERROR! : Couldn't erase the material : Requested material index is out of boundaries." << std::endl;
+        return;
+    }
+    
     __changed = true;
 
     glDeleteFramebuffers(1, &__materials[index].displayingFBO);
@@ -138,12 +150,24 @@ void Library::eraseMaterial  (int index){
 }
 
 void Library::eraseBrush     (int index){
+
+    if(index >= __brushes.size()){
+        std::cout << "ERROR! : Couldn't erase the brush : Requested brush index is out of boundaries." << std::endl;
+        return;
+    }
     __changed = true;
     
     __brushes.erase(__brushes.begin() + index);
 }
 
 void Library::eraseModel     (int index){
+    
+    if(index >= __TDModels.size()){
+        std::cout << "ERROR! : Couldn't erase the model : Requested model index is out of boundaries." << std::endl;
+        return;
+    }
+        
+    
     __changed = true;
     
     for (size_t mshI = 0; mshI < __TDModels[index].meshes.size(); mshI++)
@@ -232,15 +256,35 @@ void Library::setChanged(bool state){
 }
 
 Texture* Library::getTexture(int index){
+    if(index >= __textures.size()){
+        std::cout << "ERROR! : Couldn't get the texture : Requested texture index is out of boundaries." << std::endl;
+        Texture a = Texture();
+        return &a;
+    }
     return &__textures[index];
 }
 Material* Library::getMaterial(int index){
+    if(index >= __materials.size()){
+        std::cout << "ERROR! : Couldn't get the material : Requested material index is out of boundaries." << std::endl;
+        Material a = Material();
+        return &a;
+    }
     return &__materials[index];
 }
 Brush* Library::getBrush(int index){
+    if(index >= __brushes.size()){
+        std::cout << "ERROR! : Couldn't get the brush : Requested brush index is out of boundaries." << std::endl;
+        Brush a = Brush();
+        return &a;
+    }
     return &__brushes[index];
 }
 Model* Library::getModel(int index){
+    if(index >= __TDModels.size()){
+        std::cout << "ERROR! : Couldn't get the model : Requested model index is out of boundaries." << std::endl;
+        Model a = Model();
+        return &a;
+    }
     return &__TDModels[index];
 }
 
