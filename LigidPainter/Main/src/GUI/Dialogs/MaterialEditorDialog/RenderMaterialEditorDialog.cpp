@@ -357,6 +357,11 @@ void MaterialEditorDialog::manageContextMenuActions( Mouse &mouse, Material &mat
             material.materialModifiers.erase(material.materialModifiers.begin() + contextMenus[6].selectedElement);
             dialogControl.firstFrameActivated = true;
             selectedMaterialModifierIndex = 0;
+            
+            if(material.materialModifiers.size())
+                modifiersPanel.sections = material.materialModifiers[0].sections;
+            else
+                modifiersPanel.sections.clear();
         }
         
         //Move to top button pressed

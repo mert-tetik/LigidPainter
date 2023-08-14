@@ -187,7 +187,7 @@ void Renderer::render(){
             ShaderSystem::tdModelShader().setInt("displayingMode", 0);
         }
         
-        if(painter.selectedDisplayingModeIndex == 2 | 1){
+        if(painter.selectedDisplayingModeIndex == 2 || painter.selectedDisplayingModeIndex == 1){
             if(painter.selectedMeshIndex == i)
                 ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
             else
