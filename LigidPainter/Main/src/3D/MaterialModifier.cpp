@@ -1082,9 +1082,9 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         //Generating the normal map
         if(channelI == 4){
-            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
         }
 
@@ -1522,9 +1522,9 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Generating the normal map
         if(channelI == 4){
-            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1645,9 +1645,9 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1769,9 +1769,9 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
@@ -1889,9 +1889,9 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
         }
         glEnable(GL_DEPTH_TEST);
