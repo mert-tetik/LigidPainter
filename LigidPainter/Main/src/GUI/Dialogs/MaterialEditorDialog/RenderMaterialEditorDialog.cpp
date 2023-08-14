@@ -140,6 +140,9 @@ void MaterialEditorDialog::render
     if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover) && mouse.LClick) || (barButton.hover && mouse.LDoubleClick)){
         if(!wasTextureSelectionDialogActive() && !contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive()){
             NodeScene::updateNodeResults(model, scene, textureRes, -1);
+            this->updateTheMaterial = true;
+            this->displayModeComboBox.selectedIndex = 0;
+            
             this->deactivate(textureSelectionDialog);
         }
 
