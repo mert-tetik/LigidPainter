@@ -20,7 +20,6 @@ uniform vec3 woodColor1 = vec3(0.0, 0.0, 0.0);
 uniform vec3 woodColor2 = vec3(0.25, 0.11, 0.04);
 uniform vec3 woodColor3 = vec3(0.52, 0.32, 0.19);
 
-
 /* Properties */
 uniform float scale = 1.;
 uniform float noiseOffset = 1.;
@@ -153,7 +152,7 @@ vec3 getWood(vec3 p) {
 
 void main() {
     //TODO Use the scale
-    vec3 woodColor = getWood(Pos);
+    vec3 woodColor = getWood(Pos * scale);
     
     float gammaVal = 1. - woodGamma;
     vec3 woodGamma = pow(woodColor, vec3(gammaVal));

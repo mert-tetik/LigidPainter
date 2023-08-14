@@ -90,17 +90,17 @@ float noise(in vec3 p)
            (h - a) * u.x * u.y * u.z;
 }
 
-float fbm(in vec3 p)
+float fbm(in vec3 p, int octaves, float roughness)
 {
   float value = 0.0;
   float amplitude = 1.0;
   float frequency = 2.;
 
-  for (int i = 0; i < 16; i++)
+  for (int i = 0; i < octaves; i++)
   {
     value += amplitude * noise(p);
     p *= 3.;
-    amplitude *= .5;
+    amplitude *= roughness;
   }
     
   return value;
@@ -108,7 +108,7 @@ float fbm(in vec3 p)
 
 vec3 fbm3D( in vec3 p )
 {
-    return vec3( fbm(p.xyz), fbm(p.yxz) , fbm(p.zyx));
+    return vec3( fbm(p.xyz, fbmOctaves, fbmRoughness), fbm(p.yxz, fbmOctaves, fbmRoughness) , fbm(p.zyx, fbmOctaves, fbmRoughness));
 }
 
 // Rusty metal texture mapping

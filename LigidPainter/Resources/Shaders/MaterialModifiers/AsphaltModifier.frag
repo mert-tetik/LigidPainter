@@ -159,10 +159,7 @@ void main()
         }
     }
     
-    // Normalized pixel coordinates (from 0 to 1)
-    vec2 uv = TexCoords;
-    
-    float perlin = getPerlin(Pos);
+    float perlin = getPerlin(Pos * colorNoiseScale);
 
     vec3 coloredAsphalt = mix(aspColor, aspColor2 , perlin * colorNoiseStrength); 
 
@@ -170,7 +167,7 @@ void main()
 
     vec3 noisedAsphalt = mix(coloredAsphalt, coloredAsphalt/2., noise); 
     
-    perlin = getPerlin(Pos);
+    perlin = getPerlin(Pos * dirtScale);
     
     vec3 dirtyAsphalt = mix(noisedAsphalt / dirtStrength, noisedAsphalt * 2., perlin);
     

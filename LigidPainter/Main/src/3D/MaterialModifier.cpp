@@ -419,7 +419,7 @@ std::vector<Section> MaterialModifier::createRustModifier(ColorPalette colorPale
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), colorPalette, "FBM Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, "FBM Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 , appTextures), 
+                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), colorPalette, "FBM Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 16, 16 , appTextures), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), colorPalette, "FBM Roughness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 50.f, appTextures), // /100
             }
         ),
