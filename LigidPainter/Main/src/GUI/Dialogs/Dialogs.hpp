@@ -332,6 +332,7 @@ public:
    Panel selectedTextureDisplayingPanel;
    Panel textureSelectingPanel;
 
+   Texture displayingTexture;
    int selectedTextureIndex = 0; 
    bool clicked = false; 
    glm::vec3 pos = glm::vec3(50,50,0.95f);
@@ -342,8 +343,12 @@ public:
    TextureSelectionDialog();
    TextureSelectionDialog( ColorPalette colorPalette, AppTextures appTextures);
 
+
    //Public member functions
    void show(glm::vec2 videoScale,Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer);
+
+   void generateDisplayingTexture(Texture& txtr);
+
 };
 
 //!------------------------------CONTEXT MENU------------------------------
