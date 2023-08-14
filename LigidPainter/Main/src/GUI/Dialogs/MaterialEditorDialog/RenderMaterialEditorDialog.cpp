@@ -275,7 +275,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,float textureR
 
             //If range bar's value changed update the material
             if(modifiersPanel.sections[secI].elements[elementI].state == 1)
-                if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true){
+                if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true || (modifiersPanel.sections[secI].elements[elementI].rangeBar.leftArrowHover && mouse.LClick) || (modifiersPanel.sections[secI].elements[elementI].rangeBar.rightArrowHover && mouse.LClick)){
                     this->updateTheMaterial = true;
                     material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar = modifiersPanel.sections[secI].elements[elementI].rangeBar; 
                 }
