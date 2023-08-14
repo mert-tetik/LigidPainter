@@ -297,6 +297,10 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Scene scene, int tex
     ShaderSystem::to2DProcedural().setMat4("perspectiveProjection", scene.projectionMatrix);
     ShaderSystem::to2DProcedural().setMat4("view", scene.viewMatrix);
 
+    ShaderSystem::to2DProcedural().setInt("proceduralTexture", 1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, this->proceduralTextureID);
+
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1,&proceduralTxtr);
     glBindTexture(GL_TEXTURE_2D,proceduralTxtr);
@@ -324,10 +328,34 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Scene scene, int tex
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDeleteFramebuffers(0, &FBO);
 
+    if(this->proceduralNormalMap){
+        Texture txtrObject = Texture(proceduralTxtr);
+
+        unsigned int normalMapRes;
+
+        glActiveTexture(GL_TEXTURE0);
+        glGenTextures(1,&normalMapRes);
+        glBindTexture(GL_TEXTURE_2D,normalMapRes);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        txtrObject.generateNormalMap(normalMapRes, textureRes, this->proceduralNormalStrength, this->proceduralNormalGrayScale); 
+
+        glDeleteTextures(1,&proceduralTxtr);
+        proceduralTxtr = normalMapRes;
+    }
+
     return proceduralTxtr;
 }
 
-void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution){
+void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale){
     unsigned int FBO;
     glGenFramebuffers(1,&FBO);
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);
@@ -344,6 +372,9 @@ void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution){
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
     ShaderSystem::heightToNormalMap().use();
     ShaderSystem::heightToNormalMap().setInt("heightMap", 0);
+    ShaderSystem::heightToNormalMap().setInt("txtrRes", textureResolution);
+    ShaderSystem::heightToNormalMap().setFloat("strength", proceduralNormalStrength);
+    ShaderSystem::heightToNormalMap().setInt("grayScale", proceduralNormalGrayScale);
     ShaderSystem::heightToNormalMap().setMat4("projection"  ,       projection);
     ShaderSystem::heightToNormalMap().setMat4("projectedPosProjection"  ,       projection);
     ShaderSystem::heightToNormalMap().setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));

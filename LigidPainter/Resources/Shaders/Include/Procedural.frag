@@ -1400,7 +1400,7 @@ float dropletsNoise5(vec3 pos){
     return innergetDroplets(pos, dropletsCount, dropletsOpacityJitter, dropletsSize, 0, 1);
 }
 
-float getProcedural(vec3 pos, int proceduralID, float scale, int inverted){
+float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted){
     
     vec2 uv;
     if(pos.x > pos.z)
@@ -1571,4 +1571,22 @@ float getProcedural(vec3 pos, int proceduralID, float scale, int inverted){
         return abs(res);   
     else
         return abs(1. - res);   
+}
+
+float GMC(vec3 val, int inverted){
+    if(inverted == 0)
+        return max(max(val.r, val.g), val.b);
+    else
+        return 1. - max(max(val.r, val.g), val.b);
+}
+
+vec3 getProcedural(vec3 pos, int proceduralID, sampler2D texture, vec2 texCoord, float scale, int inverted){
+    if(proceduralID != -1)
+        return vec3(getProceduralVal(pos, proceduralID, scale, inverted));
+    else{
+        if(inverted == 0)
+            return texture(texture, texCoord * scale).rgb;
+        else
+            return 1. - texture(texture, texCoord * scale).rgb;
+    }
 }

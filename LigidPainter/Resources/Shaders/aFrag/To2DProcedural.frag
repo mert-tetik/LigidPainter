@@ -3,14 +3,16 @@
 #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Procedural.frag)
 
 in vec3 Pos;
+in vec2 TexCoords;
 
 uniform int proceduralID; 
 uniform float proceduralScale; 
 uniform int proceduralInverted;
+uniform sampler2D proceduralTexture;
 
 out vec4 fragColor;
 
 void main(){
-    float procedural = getProcedural(Pos, proceduralID, proceduralScale, proceduralInverted);
+    vec3 procedural = getProcedural(Pos, proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted);
     fragColor = vec4(vec3(procedural),1.);
 }

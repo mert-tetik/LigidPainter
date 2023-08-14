@@ -52,11 +52,9 @@ uniform int doDepthTest;
 out vec4 fragColor;
 
 void main(){
-
     vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, ProjectedPos, paintingOpacity, doDepthTest);
 
     float txtrAlpha = texture(txtr, TexCoords).a; 
 
     fragColor = vec4(getBrushedTexture(txtr, brushTxtr, TexCoords, paintingColor, brushModeState),txtrAlpha);
-
 }

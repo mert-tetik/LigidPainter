@@ -192,14 +192,9 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRe
         
         // Bind the id mask
         glActiveTexture(GL_TEXTURE0);
-        if(node.IOs[0].element.button.texture.proceduralID == -1){
-            glBindTexture(GL_TEXTURE_2D, node.IOs[0].element.button.texture.ID);
-        }
-        else{
-            proceduralTxtr = node.IOs[0].element.button.texture.generateProceduralTexture(mesh, scene, textureRes);
-            glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
-            ShaderSystem::colorIDMaskingShader().use();
-        } 
+        proceduralTxtr = node.IOs[0].element.button.texture.generateProceduralTexture(mesh, scene, textureRes);
+        glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
+        ShaderSystem::colorIDMaskingShader().use();
                 
         Box box;
         box.init();
@@ -350,14 +345,9 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRe
         
         // Bind the mask
         glActiveTexture(GL_TEXTURE0);
-        if(node.nodePanel.sections[0].elements[0].button.texture.proceduralID == -1){
-            glBindTexture(GL_TEXTURE_2D, node.nodePanel.sections[0].elements[0].button.texture.ID);
-        }
-        else{
-            proceduralTxtr = node.nodePanel.sections[0].elements[0].button.texture.generateProceduralTexture(mesh, scene, textureRes);
-            glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
-            ShaderSystem::grayScaleIDMaskingShader().use();
-        } 
+        proceduralTxtr = node.nodePanel.sections[0].elements[0].button.texture.generateProceduralTexture(mesh, scene, textureRes);
+        glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
+        ShaderSystem::grayScaleIDMaskingShader().use();
                 
         Box box;
         box.init();

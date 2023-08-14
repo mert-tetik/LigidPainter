@@ -234,6 +234,10 @@ public:
     int proceduralID = -1;
     float proceduralScale = 1.f;
     int proceduralnverted = 0;
+    bool proceduralNormalMap = false;
+    bool proceduralNormalGrayScale = false;
+    float proceduralNormalStrength = 10.f;
+    unsigned int proceduralTextureID = 0;
 
     /// @brief Title of the texture (myTexture)
     std::string title = "";
@@ -291,7 +295,7 @@ public:
     void removeSeams(Mesh& mesh, int textureResolution);
     void removeSeams(Mesh& mesh, glm::ivec2 textureResolution);
     unsigned int generateProceduralTexture(Mesh &mesh, Scene scene, int textureRes);
-    void generateNormalMap(unsigned int& normalMap, int textureResolution);
+    void generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale);
 
 };
 
