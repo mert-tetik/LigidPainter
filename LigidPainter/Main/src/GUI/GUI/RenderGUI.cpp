@@ -48,8 +48,8 @@ Timer __timer;
 bool __wasTextureSelectionDialogActive = false;
 glm::ivec2 __windowSize;
 
-void showTextureSelectionDialog(Texture& txtr){
-    __texture_selection_dialog.show(__videoScale, __timer, __projection, txtr, __window, __render_gui_textRenderer);
+void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes){
+    __texture_selection_dialog.show(__videoScale, __timer, __projection, txtr, __window, __render_gui_textRenderer, displayingTextureRes);
     __wasTextureSelectionDialogActive = true;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,__windowSize.x,__windowSize.y);

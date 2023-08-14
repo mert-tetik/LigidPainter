@@ -139,28 +139,28 @@ class NewTextureDialog
 
 
 class LoadProjectDialog
- {
- public:
-    Panel bgPanel;
-    Panel projectsPanel;
-    Button loadButton;
-    Button textBtn1;
-    Button textBtn2;
-    Button textBtn3;
-    Button textBtn4;
-    Box box;
-    
-    AppTextures appTextures;
-    AppMaterialModifiers appMaterialModifiers;
-    DialogControl dialogControl;
+{
+public:
+   Panel bgPanel;
+   Panel projectsPanel;
+   Button loadButton;
+   Button textBtn1;
+   Button textBtn2;
+   Button textBtn3;
+   Button textBtn4;
+   Box box;
+   
+   AppTextures appTextures;
+   AppMaterialModifiers appMaterialModifiers;
+   DialogControl dialogControl;
 
-    //Constructors
-    LoadProjectDialog();
-    LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
-    
-    //Public member functions
-    void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-                Project &project,bool &greetingDialogActive,bool &startScreen,Model &model,int &textureRes);
+   //Constructors
+   LoadProjectDialog();
+   LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
+   
+   //Public member functions
+   void render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
+               Project &project,bool &greetingDialogActive,bool &startScreen,Model &model,int &textureRes);
  };
 
 
@@ -317,7 +317,7 @@ class ExportDialog
 
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
-void showTextureSelectionDialog(Texture& txtr);
+void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes);
 bool wasTextureSelectionDialogActive();
 
 class TextureSelectionDialog
@@ -345,9 +345,9 @@ public:
 
 
    //Public member functions
-   void show(glm::vec2 videoScale,Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer);
+   void show(glm::vec2 videoScale,Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer, int displayingTextureRes);
 
-   void generateDisplayingTexture(Texture& txtr);
+   void generateDisplayingTexture(Texture& txtr, int displayingTextureRes);
 
 };
 

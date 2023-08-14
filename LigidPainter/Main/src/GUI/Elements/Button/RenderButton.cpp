@@ -81,7 +81,7 @@ void Button::render(
     
     if(this->clicked){
         if(this->textureSelection)
-            showTextureSelectionDialog(this->texture);
+            showTextureSelectionDialog(this->texture, 512);
         if(this->colorSelection){
             unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
             const char* hex0Val = "#000000";

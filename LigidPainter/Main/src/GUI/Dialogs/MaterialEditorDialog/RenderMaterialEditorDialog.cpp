@@ -390,7 +390,7 @@ void MaterialEditorDialog::manageContextMenuActions( Mouse &mouse, Material &mat
         
         //Change mask button pressed
         if(contextMenus[6].contextPanel.sections[0].elements[3].button.hover && mouse.LClick){ 
-            showTextureSelectionDialog(material.materialModifiers[contextMenus[6].selectedElement].maskTexture);
+            showTextureSelectionDialog(material.materialModifiers[contextMenus[6].selectedElement].maskTexture, 512);
 
             dialogControl.firstFrameActivated = true;
         }

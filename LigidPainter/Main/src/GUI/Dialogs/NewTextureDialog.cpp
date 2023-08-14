@@ -45,12 +45,13 @@ NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPal
                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Texture(), 1.f, false)),
                         Element(TextBox(0,glm::vec2(4,2),colorPalette,"NewTexture",1.f,false),context.window),
                         Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), colorPalette,  {"256", "512", "1024", "2048", "4096"} , "Resolution", 1.f), context.window),
-                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2), colorPalette, "Create"  , Texture(), 4.f, true))
+                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2), colorPalette, "Create"  , Texture(), 4.f, true)),
+                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(3,2), colorPalette, "Create With The Texture Selection Dialog"  , Texture(), 1.f, true))
                     }
                 )
             }
         },
-        glm::vec2(13.f),
+        glm::vec2(16.f),
         glm::vec3(50.f,50.f,0.8f),
         colorPalette.mainColor,
         colorPalette.thirdColor,
@@ -69,6 +70,8 @@ NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPal
     //Change the color button's color to black
     panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
 }
+
+bool __newTxtrDialog_last_texture_selection_dialog_state = false;
 
 void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,int textureRes){
     
@@ -89,7 +92,7 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
     }
 
     //Clicked to the create button
-    if(panel.sections[0].elements[3].button.hover && mouse.LClick && !panel.sections[0].elements[2].comboBox.pressed){
+    if(panel.sections[0].elements[4].button.hover && mouse.LClick && !panel.sections[0].elements[2].comboBox.pressed){
         
         //Create the texture class
         Texture txtr;
@@ -97,7 +100,23 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
         //Set the text of the texture as the title textbox's text
         txtr.title = panel.sections[0].elements[1].textBox.text;
         
-        //Create the texture
+        showTextureSelectionDialog(txtr, textureRes);
+
+        //Send the created texture to the library
+        if(txtr.ID){
+            panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
+            panel.sections[0].elements[1].textBox.text = "NewTexture";
+            dialogControl.unActivate();
+            Library::addTexture(txtr);
+        }
+    }
+    if(panel.sections[0].elements[3].button.hover && mouse.LClick && !panel.sections[0].elements[2].comboBox.pressed){
+        
+        //Create the texture class
+        Texture txtr;
+
+        //Set the text of the texture as the title textbox's text
+        txtr.title = panel.sections[0].elements[1].textBox.text;
         
         //Pixels of the texture
         std::vector<GLubyte> colorData(textureRes * textureRes * 4, 0); // RGBA format
@@ -132,12 +151,16 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
 
     //End the dialog
     if((panel.sections[0].elements[3].button.hover && mouse.LClick) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && mouse.LClick)){
-        if(!panel.sections[0].elements[2].comboBox.pressed){
-            panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
-            panel.sections[0].elements[1].textBox.text = "NewTexture";
-            dialogControl.unActivate();
+        if(!(panel.sections[0].elements[4].button.hover && mouse.LClick)){
+            if(!panel.sections[0].elements[2].comboBox.pressed){
+                panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
+                panel.sections[0].elements[1].textBox.text = "NewTexture";
+                dialogControl.unActivate();
+            }
         }
     }
+
+    __newTxtrDialog_last_texture_selection_dialog_state = panel.sections[0].elements[4].button.hover && mouse.LClick;
 
     //Render the panel
     panel.render(videoScale,mouse,timer,textRenderer,true);

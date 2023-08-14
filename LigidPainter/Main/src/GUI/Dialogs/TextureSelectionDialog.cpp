@@ -152,7 +152,7 @@ void __getTextRendererDataToTheTextureSelection(TextRenderer& textRenderer){
     __textRenderer = textRenderer;
 }
 
-void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr){
+void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displayingTextureRes){
     
     GLint viewport[4]; 
     glGetIntegerv(GL_VIEWPORT, viewport);
@@ -178,7 +178,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr){
         glGenTextures(1, &txtr.ID);
     }
 
-    const int displayRes = 512;
+    const int displayRes = displayingTextureRes;
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, txtr.ID);
@@ -264,7 +264,7 @@ static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, ColorPalette& colorPalette);
 static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex, ColorPalette& colorPalette);
 
-void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer){
+void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer, int displayingTextureRes){
     
     this->dialogControl.activate();
         
@@ -293,7 +293,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
 
         dialogControl.updateStart();
 
-        generateDisplayingTexture(displayingTexture);
+        generateDisplayingTexture(displayingTexture, 512);
 
         updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, colorPalette);
 
@@ -363,7 +363,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
 
         // Pressed to the select button
         if(this->subPanel.sections[0].elements[8].button.clicked){
-            generateDisplayingTexture(receivedTexture);
+            generateDisplayingTexture(receivedTexture, displayingTextureRes);
             receivedTexture.title = "SelectedTexture";
             dialogControl.unActivate();
         }
@@ -420,7 +420,7 @@ static void initTextureSelectionDialog(
     int viewportWidth = viewport[2];
     int viewportHeight = viewport[3];
 
-    glm::ivec2 windowSize = glm::ivec2(viewportWidth, viewportHeight);
+    windowSize = glm::ivec2(viewportWidth, viewportHeight);
 
     GLfloat* pixels = new GLfloat[windowSize.x * windowSize.y * 4];
     glReadPixels(0, 0, windowSize.x, windowSize.y, GL_RGBA, GL_FLOAT, pixels);
