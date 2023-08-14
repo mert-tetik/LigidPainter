@@ -187,7 +187,7 @@ void ComboBox::render(
         glDepthFunc(GL_LEQUAL);
     
     //Unpress
-    if(window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS){
+    if(window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || mouse.LClick && !hover[0]){
         pressed = false;
     }
 }
