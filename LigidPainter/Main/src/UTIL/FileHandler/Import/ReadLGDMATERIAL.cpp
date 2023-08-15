@@ -212,6 +212,12 @@ bool FileHandler::readLGDMATERIALFile(
                                 elementI = iii;
                             }
                         }
+                        else if(valueType == 'b'){
+                            if(modifier.sections[ii].header.button.text == sectionTitle && modifier.sections[ii].elements[iii].checkBox.text == elementTitle){
+                                secI = ii;
+                                elementI = iii;
+                            }
+                        }
                         else if(valueType == '3' || valueType == 't'){
                             if(modifier.sections[ii].header.button.text == sectionTitle && modifier.sections[ii].elements[iii].button.text == elementTitle){
                                 secI = ii;
@@ -221,6 +227,7 @@ bool FileHandler::readLGDMATERIALFile(
                     }
                 }
                 
+                bool valB;
                 float valF;
                 glm::vec3 val3;
                 Texture valT;
@@ -228,6 +235,10 @@ bool FileHandler::readLGDMATERIALFile(
                 //Is a rangebar
                 if(valueType == 'f'){
                     LGDMATERIAL_READBITS(valF, float, "Modifier's property - float data");
+                }
+                
+                else if(valueType == 'b'){
+                    LGDMATERIAL_READBITS(valB, bool, "Modifier's property - bool data");
                 }
                 
                 //Is a button
@@ -272,6 +283,8 @@ bool FileHandler::readLGDMATERIALFile(
                 if(secI != -1 && elementI != -1){
                     if(valueType == 'f')
                         modifier.sections[secI].elements[elementI].rangeBar.value = valF;
+                    if(valueType == 'b')
+                        modifier.sections[secI].elements[elementI].checkBox.clickState1 = valB;
                     if(valueType == '3'){
                         modifier.sections[secI].elements[elementI].button.color.r = val3.r;
                         modifier.sections[secI].elements[elementI].button.color.g = val3.g;

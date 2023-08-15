@@ -132,6 +132,8 @@ bool FileHandler::writeLGDMATERIALFile(
                         propTitles.push_back(material.materialModifiers[i].sections[sI].header.button.text + "-" + material.materialModifiers[i].sections[sI].elements[eI].button.text);
                     else if(material.materialModifiers[i].sections[sI].elements[eI].state == 1)
                         propTitles.push_back(material.materialModifiers[i].sections[sI].header.button.text + "-" + material.materialModifiers[i].sections[sI].elements[eI].rangeBar.text);
+                    else if(material.materialModifiers[i].sections[sI].elements[eI].state == 2)
+                        propTitles.push_back(material.materialModifiers[i].sections[sI].header.button.text + "-" + material.materialModifiers[i].sections[sI].elements[eI].checkBox.text);
                     else{
                         std::cout << "ERROR : Unknown GUI element type : " << material.materialModifiers[i].sections[sI].elements[eI].state << ". Failed to write the material file" << std::endl;
                         wf.close();
@@ -162,6 +164,13 @@ bool FileHandler::writeLGDMATERIALFile(
                     LGDMATERIAL_WRITEBITS(valueType, char, "Property value type");
                 
                     LGDMATERIAL_WRITEBITS(propElements[pI].rangeBar.value, float, "Property value");
+                }
+                
+                if(propElements[pI].state == 2){
+                    char valueType = 'b';
+                    LGDMATERIAL_WRITEBITS(valueType, char, "Property value type");
+                
+                    LGDMATERIAL_WRITEBITS(propElements[pI].checkBox.clickState1, bool, "Property value");
                 }
                 
                 //Is a button

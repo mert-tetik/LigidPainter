@@ -336,16 +336,19 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
             }
         }
 
-        receivedTexture.proceduralScale = this->subPanel.sections[0].elements[7].rangeBar.value / 10.f;
-        receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[6].checkBox.clickState1;
-        receivedTexture.proceduralNormalMap = this->subPanel.sections[0].elements[3].checkBox.clickState1;
-        receivedTexture.proceduralNormalGrayScale = this->subPanel.sections[0].elements[4].checkBox.clickState1;
-        receivedTexture.proceduralNormalStrength = this->subPanel.sections[0].elements[5].rangeBar.value;
 
         // Pressed to the select button
         if(this->subPanel.sections[0].elements[8].button.clicked){
+            receivedTexture.proceduralScale = this->subPanel.sections[0].elements[7].rangeBar.value / 10.f;
+            receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[6].checkBox.clickState1;
+            receivedTexture.proceduralNormalMap = this->subPanel.sections[0].elements[3].checkBox.clickState1;
+            receivedTexture.proceduralNormalGrayScale = this->subPanel.sections[0].elements[4].checkBox.clickState1;
+            receivedTexture.proceduralNormalStrength = this->subPanel.sections[0].elements[5].rangeBar.value;
+            
             generateDisplayingTexture(receivedTexture, displayingTextureRes);
+            
             receivedTexture.title = "SelectedTexture";
+            
             dialogControl.unActivate();
         }
 
