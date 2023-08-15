@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <iostream>
@@ -86,22 +87,22 @@ void CheckBox::render(
 
 /// @brief manages the activites regarding the mouse like mouse hover, mouse clicked to the button etc.
 void CheckBox::manageMouseActivity  (
-                                        Mouse &mouse, 
+                                        
                                         glm::vec2 resultScale, 
                                         glm::vec3 resultPos
                                     )
 {
     //Check if hover
     if(doMouseTracking)
-        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+        hover = Mouse::isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
     else 
         hover = false;
     
     //Stuff
     if(hover)
         //Set the cursor as pointer
-        mouse.setCursor(mouse.pointerCursor);// mouse.activeCursor = mouse.pointerCursor
-    if(hover && mouse.LClick){
+        Mouse::setCursor(*Mouse::pointerCursor());// mouse.activeCursor = *Mouse::pointerCursor()
+    if(hover && *Mouse::LClick()){
         //Mouse left button pressed on top of the button
         clickState1 = !clickState1;
     }

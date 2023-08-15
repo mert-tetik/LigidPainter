@@ -38,7 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /// @param doMouseTracking don't check mouse hover if set to false
 void Button::render(
                         glm::vec2 videoScale,
-                        Mouse& mouse,
+                       
                         Timer &timer,
                         TextRenderer &textRenderer,
                         bool doMouseTracking
@@ -65,7 +65,7 @@ void Button::render(
     float resultOutlineThickness = videoScale.x/1920/2*outlineThickness;
 
     //Manage mouse activites
-    manageMouseActivity(mouse);
+    manageMouseActivity();
 
     //Manage the hover animation of the button 
     timer.transition(hover,hoverMixVal,0.2f); 

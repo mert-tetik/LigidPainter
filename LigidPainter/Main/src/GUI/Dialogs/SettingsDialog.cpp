@@ -23,6 +23,7 @@
 
 #include "Renderer.h"
 #include "GUI/GUI.hpp"
+#include "MouseSystem/Mouse.hpp" 
 
 #include <string>
 #include <iostream>
@@ -59,7 +60,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
     },glm::vec2(15.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
-void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalette, Mouse& mouse, Timer timer, TextRenderer &textRenderer,
+void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer,
                              glm::vec2 videoScale, AppSettings& settings){
     
     dialogControl.updateStart();   
@@ -81,7 +82,7 @@ void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalett
     settings.backfaceCulling = panel.sections[0].elements[3].checkBox.clickState1;
 
     //Render the panel    
-    panel.render(videoScale,mouse,timer,textRenderer,true);
+    panel.render(videoScale,timer,textRenderer,true);
 
     //If pressed to any of the combo box element change the texture res
     settings.textureRes = stoi(panel.sections[0].elements[1].comboBox.texts[panel.sections[0].elements[1].comboBox.selectedIndex]);
@@ -89,8 +90,8 @@ void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalett
     //End the dialog
     if  (
             context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Escape key pressed 
-            ((!panel.hover && mouse.LClick)) && !dialogControl.firstFrameActivated || //Mouse Lclick out of the panel
-            (panel.sections[0].elements[0].button.hover && mouse.LDoubleClick) //If the menu button double clicked
+            ((!panel.hover && *Mouse::LClick())) && !dialogControl.firstFrameActivated || //Mouse Lclick out of the panel
+            (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()) //If the menu button double clicked
         )
     {
         dialogControl.unActivate();

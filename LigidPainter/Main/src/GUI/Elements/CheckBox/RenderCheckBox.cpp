@@ -28,7 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 
-void CheckBox::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
+void CheckBox::render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
     
     //Define the common utilities class
     ;
@@ -75,7 +75,7 @@ void CheckBox::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRender
     float resultOutlineThickness = videoScale.x/1920/2 * (2.f);//2.f = outline thickness
     
     //Mouse activites
-    manageMouseActivity(mouse,resultScale,resultPos);
+    manageMouseActivity(resultScale,resultPos);
 
     //Mouse hover animation
     timer.transition(hover,hoverMixVal,0.2f); 

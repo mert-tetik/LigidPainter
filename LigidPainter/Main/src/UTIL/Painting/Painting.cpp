@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <fstream>
@@ -37,19 +38,19 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //forward declerations for the utility functions
 static void setBrushProperties (BrushProperties brushProperties);
-static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int frameCounter, Mouse& mouse);
+static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int frameCounter);
 static void set3DShaderSideUniforms(int selectedColorIndex,Color color1,Color color2,Color color3,float opacity ,int selectedPaintingModeIndex);
 
 
 
-void Painter::doPaint(Mouse& mouse, glm::mat4 windowOrtho, Context context){
+void Painter::doPaint(glm::mat4 windowOrtho, Context context){
 
-    glm::vec2 firstCursorPos = mouse.cursorPos;
+    glm::vec2 firstCursorPos = *Mouse::cursorPos();
     
     //First frame the painting is started
-    if(mouse.LClick){
-        startCursorPos = mouse.cursorPos;
-        lastCursorPos = mouse.cursorPos;
+    if(*Mouse::LClick()){
+        startCursorPos = *Mouse::cursorPos();
+        lastCursorPos = *Mouse::cursorPos();
         frameCounter = 0;
     }
 
@@ -74,7 +75,7 @@ void Painter::doPaint(Mouse& mouse, glm::mat4 windowOrtho, Context context){
     ShaderSystem::twoDPainting().use();
 
     //Set uniforms of the painting shader (scale, pos, projection, videoScale, mouseOffset, frame)
-    setShaderUniforms(windowOrtho,context.windowScale,frameCounter,mouse);
+    setShaderUniforms(windowOrtho,context.windowScale,frameCounter);
 
     //Set brush properties
     setBrushProperties(this->brushProperties);
@@ -87,7 +88,7 @@ void Painter::doPaint(Mouse& mouse, glm::mat4 windowOrtho, Context context){
     ShaderSystem::twoDPainting().use();
 
     //Stroke positions
-    std::vector<glm::vec2> holdLocations = getCursorSubstitution(mouse,this->brushProperties.spacing);
+    std::vector<glm::vec2> holdLocations = getCursorSubstitution(this->brushProperties.spacing);
     ShaderSystem::twoDPainting().setInt("posCount",holdLocations.size());
     for (int i = 0; i < holdLocations.size(); i++)
     {
@@ -101,8 +102,8 @@ void Painter::doPaint(Mouse& mouse, glm::mat4 windowOrtho, Context context){
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
     //Painting
-    if(glm::distance(startCursorPos,mouse.cursorPos) > this->brushProperties.spacing){ //Provide spacing
-        startCursorPos = mouse.cursorPos;            
+    if(glm::distance(startCursorPos,*Mouse::cursorPos()) > this->brushProperties.spacing){ //Provide spacing
+        startCursorPos = *Mouse::cursorPos();            
         glDrawArrays(GL_TRIANGLES,0,6);
     }
     
@@ -149,7 +150,7 @@ static void setBrushProperties (
     ShaderSystem::twoDPainting().setFloat("brush.txtr", 0);
 }
 
-static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int frameCounter, Mouse& mouse){
+static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int frameCounter){
     glm::vec2 scale = videoScale / glm::vec2(2);
     glm::vec3 pos = glm::vec3(videoScale / glm::vec2(2),1.f);
     projection = glm::ortho(0.f,videoScale.x,0.f,videoScale.y);
@@ -158,7 +159,7 @@ static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int f
     ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
     ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
     ShaderSystem::twoDPainting().setVec2("videoScale", videoScale); 
-    ShaderSystem::twoDPainting().setVec2("mouseOffset", mouse.mouseOffset);
+    ShaderSystem::twoDPainting().setVec2("mouseOffset", *Mouse::mouseOffset());
     ShaderSystem::twoDPainting().setInt("frame", frameCounter);
 }
 

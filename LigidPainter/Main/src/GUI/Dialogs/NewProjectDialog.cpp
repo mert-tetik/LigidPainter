@@ -26,6 +26,7 @@
 
 #include "3D/ThreeD.hpp" 
 #include "GUI/GUI.hpp" 
+#include "MouseSystem/Mouse.hpp" 
 
 #include <string>
 #include <iostream>
@@ -90,17 +91,17 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
     this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
 }
 
-void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                                 glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,
                                 Model &model, int &textureRes ){
     
     dialogControl.updateStart();
 
     //Render the panel
-    panel.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
+    panel.render(videoScale,timer,textRenderer,dialogControl.isComplete());
     
     //If pressed to the last button of the panel (Create the project button)
-    if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
+    if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && *Mouse::LClick()){
         
         //Create the project
         if(project.createProject(   
@@ -120,7 +121,7 @@ void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
     }
     
     //Close the dialog
-    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || panel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
+    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
         if(startScreen)
             greetingDialogActive = true;
         

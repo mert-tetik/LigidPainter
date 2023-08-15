@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <iostream>
@@ -131,7 +132,7 @@ RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::stri
 
 void RangeBar::render(
                         glm::vec2 videoScale, //Resolution of the monitor
-                        Mouse& mouse, //Mouse class to access mouse events
+                        //Mouse class to access mouse events
                         Timer &timer, //Timer that handles the animations
                         TextRenderer &textRenderer, //TextRenderer that handles text rendering
                         bool doMouseTracking //If there is need to check if mouse hover
@@ -162,30 +163,30 @@ void RangeBar::render(
         
     //Check if mouse on top of the slider
     if(doMouseTracking)
-        hover = mouse.isMouseHover(resultScale, glm::vec2(resultPos.x,resultPos.y));
+        hover = Mouse::isMouseHover(resultScale, glm::vec2(resultPos.x,resultPos.y));
     else 
         hover = false;
 
 
     if(hover) //Set the cursor as horizontal slide if hover
-        mouse.setCursor(mouse.hSlideCursor);// mouse.activeCursor = mouse.pointerCursor
+        Mouse::setCursor(*Mouse::hSlideCursor());// mouse.activeCursor = *Mouse::pointerCursor()
 
-    if(hover && !leftArrowHover && !rightArrowHover && mouse.LClick){ //If clicked to the pointer
+    if(hover && !leftArrowHover && !rightArrowHover && *Mouse::LClick()){ //If clicked to the pointer
         //Set pointer as pressed
         pointerPressed = true;
     }
 
     if(pointerPressed){
         //Move the pointer (change the value of the slider)
-        mouse.setCursor(mouse.hSlideCursor);// mouse.activeCursor = mouse.pointerCursor
+        Mouse::setCursor(*Mouse::hSlideCursor());// mouse.activeCursor = *Mouse::pointerCursor()
         if(isNumeric){
-            if(mouse.mouseOffset.x > 0 || (rightArrowHover && mouse.LClick))
+            if(Mouse::mouseOffset()->x > 0 || (rightArrowHover && *Mouse::LClick()))
                 value++;
-            else if(mouse.mouseOffset.x < 0 || (leftArrowHover && mouse.LClick))
+            else if(Mouse::mouseOffset()->x < 0 || (leftArrowHover && *Mouse::LClick()))
                 value--;
         }
         else
-            value += mouse.mouseOffset.x;
+            value += Mouse::mouseOffset()->x;
         
         if(value < minValue)
             value = minValue;
@@ -194,7 +195,7 @@ void RangeBar::render(
     }
 
     this->valueDoneChanging = false;
-    if(!mouse.LPressed){ //If left click is released
+    if(!*Mouse::LPressed()){ //If left click is released
         if(pointerPressed)
             this->valueDoneChanging = true;
         pointerPressed = false;
@@ -233,14 +234,14 @@ void RangeBar::render(
             resultRadius, color, color2, 0.f, true, resultOutlineThickness); //Back side
 
     if(doMouseTracking)
-        leftArrowHover = mouse.isMouseHover(arrowBtnScale, glm::vec2(resultPos.x - resultScale.x + (arrowBtnScale.x), resultPos.y));
+        leftArrowHover = Mouse::isMouseHover(arrowBtnScale, glm::vec2(resultPos.x - resultScale.x + (arrowBtnScale.x), resultPos.y));
     else 
         leftArrowHover = false;
 
     timer.transition(leftArrowHover, leftArrowMixVal,0.2f); 
     timer.transition(false, leftArrowClickedMixVal,0.2f); 
 
-    if(leftArrowHover && mouse.LClick){
+    if(leftArrowHover && *Mouse::LClick()){
         leftArrowClickedMixVal = 1.f;
         if(this->isNumeric)
             this->value--;
@@ -260,14 +261,14 @@ void RangeBar::render(
             resultRadius, color, color2, 0.f, true, resultOutlineThickness); //Back side
     
     if(doMouseTracking)
-        rightArrowHover = mouse.isMouseHover(arrowBtnScale, glm::vec2(resultPos.x + resultScale.x - (arrowBtnScale.x), resultPos.y));
+        rightArrowHover = Mouse::isMouseHover(arrowBtnScale, glm::vec2(resultPos.x + resultScale.x - (arrowBtnScale.x), resultPos.y));
     else 
         rightArrowHover = false;
 
     timer.transition(rightArrowHover, rightArrowMixVal, 0.2f); 
     timer.transition(false, rightArrowClickedMixVal, 0.2f); 
 
-    if(rightArrowHover && mouse.LClick){
+    if(rightArrowHover && *Mouse::LClick()){
         rightArrowClickedMixVal = 1.f;
 
         if(this->isNumeric)
@@ -280,7 +281,7 @@ void RangeBar::render(
     }
 
     if(leftArrowHover || rightArrowHover)
-        mouse.setCursor(mouse.pointerCursor);// mouse.activeCursor = mouse.pointerCursor
+        Mouse::setCursor(*Mouse::pointerCursor());// mouse.activeCursor = *Mouse::pointerCursor()
 
     ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
 

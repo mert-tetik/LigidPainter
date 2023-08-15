@@ -31,6 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Renderer.h"
 #include "ShaderSystem/Shader.hpp"
 #include "NodeSystem/Node/Node.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 bool _ligid_renderer_render_first_frame = true;
 
@@ -72,7 +73,7 @@ void Renderer::render(){
     set3DUniforms();
 
     //Update the depth texture if necessary
-    if(painter.updateTheDepthTexture && !mouse.RPressed){ //Last frame camera changed position
+    if(painter.updateTheDepthTexture && !*Mouse::RPressed()){ //Last frame camera changed position
         //Update the depth texture
         painter.updateDepthTexture(model,context.windowScale);
 
@@ -214,7 +215,7 @@ void Renderer::render(){
     //Render the UI
     userInterface.render(   //Params
                             scene.videoScale,
-                            mouse,
+                           
                             timer,
                             textRenderer,
                             context,
@@ -231,10 +232,10 @@ void Renderer::render(){
                         );
 
     //Painting
-    if(mouse.LPressed && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive && (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2)){ //If mouse hover 3D viewport and left mouse button pressed
+    if(*Mouse::LPressed() && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive && (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2)){ //If mouse hover 3D viewport and left mouse button pressed
         //Paint
         painter.doPaint(    
-                            mouse,
+                           
                             userInterface.projection,
                             this->context
                         );
@@ -242,7 +243,7 @@ void Renderer::render(){
     }
 
     //Painting done (refresh)
-    if((painter.refreshable && !mouse.LPressed) || (painter.refreshable && (mouse.RClick || mouse.MClick))){ //Last frame painting done or once mouse right click or mouse wheel click
+    if((painter.refreshable && !*Mouse::LPressed()) || (painter.refreshable && (*Mouse::RClick() || *Mouse::MClick()))){ //Last frame painting done or once mouse right click or mouse wheel click
         /*//TODO Prevent updating all the materials
         for (size_t i = 0; i < library.materials.size(); i++)
         {   
@@ -265,21 +266,21 @@ void Renderer::render(){
 
 
     //Set mouse states to default
-    mouse.LClick = false;
-    mouse.RClick = false;
-    mouse.MClick = false;
+    *Mouse::LClick() = false;
+    *Mouse::RClick() = false;
+    *Mouse::MClick() = false;
     
     if(!this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_LEFT))
-        mouse.LPressed = false;
+        *Mouse::LPressed() = false;
     if(!this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT))
-        mouse.RPressed = false;
+        *Mouse::RPressed() = false;
     if(!this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE))
-        mouse.MPressed = false;
+        *Mouse::MPressed() = false;
 
-    mouse.LDoubleClick = false;
-    mouse.mouseOffset = glm::vec2(0);
-    mouse.mods = 0;
-    mouse.mouseScroll = 0;
+    *Mouse::LDoubleClick() = false;
+    *Mouse::mouseOffset() = glm::vec2(0);
+    *Mouse::mods() = 0;
+    *Mouse::mouseScroll() = 0;
 
     //Set keyboard states to default
     textRenderer.keyInput = false;
@@ -295,7 +296,7 @@ void Renderer::render(){
     //Cursor is changing there
     //Sets the active cursor (mouse.activeCursor) as the cursor
     //Than changes the active cursor as default cursor
-    mouse.updateCursor();  
+    Mouse::updateCursor();  
 
     //Swap the front and back buffers of the window
     context.window.swapBuffers();

@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ShaderSystem/Shader.hpp"
 #include "LibrarySystem/Library.hpp"
 #include "NodeSystem/Node/Node.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <fstream>
@@ -61,9 +62,9 @@ bool wasTextureSelectionDialogActive(){
 
 /* -- Forward declerations -- */
 
-static void renderBrushCursor(Painter& painter, Mouse& mouse, glm::mat4 guiProjection, Context& context);
+static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection, Context& context);
 
-void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,
+void UI::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,Context context,Box box,
             std::vector<ContextMenu> &contextMenus, AppSettings& settings, Project &project, Painter &painter, Skybox &skybox,Model &model, Scene& scene){
     
     __texture_selection_dialog = this->textureSelectionDialog;
@@ -108,28 +109,28 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
     Library::uniqueNameControl();
 
     //Render the panels
-    renderPanels(videoScale, mouse, timer, textRenderer, painter, model, screenGapPerc);
+    renderPanels(videoScale, timer, textRenderer, painter, model, screenGapPerc);
 
     //Render renaming textbox
-    renderRenamingTextbox(videoScale, mouse, timer, textRenderer, painter, context);
+    renderRenamingTextbox(videoScale, timer, textRenderer, painter, context);
     
     //Render the nodes
-    NodeScene::render(videoScale,mouse,timer,textRenderer,model, settings.textureRes, scene, nodeEditorDisplayer, nodePanel);
+    NodeScene::render(videoScale,timer,textRenderer,model, settings.textureRes, scene, nodeEditorDisplayer, nodePanel);
     
     //Render the dialogs
-    renderDialogs(videoScale, mouse, timer, textRenderer, context, project, model, skybox, settings, box, contextMenus, scene);
+    renderDialogs(videoScale, timer, textRenderer, context, project, model, skybox, settings, box, contextMenus, scene);
     
     //Render the dropper & pick color if mouse left button clicked
-    renderDropper(mouse,painter);
+    renderDropper(painter);
 
     //Render the brush cursor
     if(!this->anyPanelHover && !this->anyDialogActive && !this->anyContextMenuActive && (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2))
-        renderBrushCursor(painter, mouse, this->projection, context);
+        renderBrushCursor(painter, this->projection, context);
     else
         context.window.setCursorVisibility(true);
 
     //Interactions of the UI elements
-    elementInteraction(painter, mouse, contextMenus, context, videoScale, textRenderer, timer, settings.textureRes, screenGapPerc, model, project, scene, this->materialEditorDialog.appMaterialModifiers);
+    elementInteraction(painter, contextMenus, context, videoScale, textRenderer, timer, settings.textureRes, screenGapPerc, model, project, scene, this->materialEditorDialog.appMaterialModifiers);
 
     frameCounter++;
 
@@ -145,13 +146,13 @@ void UI::render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &
 
 //UTILITY FUNCTIONS
 
-static void renderBrushCursor(Painter& painter, Mouse& mouse, glm::mat4 guiProjection, Context& context){
+static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection, Context& context){
     /* Use the circle shader */
     ShaderSystem::circleShader().use();
 
     /* Set the transform data & the projection */
     ShaderSystem::circleShader().setMat4("projection", guiProjection);
-    ShaderSystem::circleShader().setVec3("pos", mouse.cursorPos.x, mouse.cursorPos.y, 1);
+    ShaderSystem::circleShader().setVec3("pos", Mouse::cursorPos()->x, Mouse::cursorPos()->y, 1);
     ShaderSystem::circleShader().setVec2("scale", glm::vec2(painter.brushProperties.radius));
 
     /* Hide the cursor */
@@ -167,39 +168,39 @@ static void renderBrushCursor(Painter& painter, Mouse& mouse, glm::mat4 guiProje
     ShaderSystem::buttonShader().use();
 }
 
-void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter,  Model& model, float screenGapPerc){
-    navigationPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+void UI::renderPanels(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer, Painter &painter,  Model& model, float screenGapPerc){
+    navigationPanel.render(videoScale,timer,textRenderer,!anyDialogActive);
     if(navigationPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    windowPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    windowPanel.render(videoScale,timer,textRenderer,!anyDialogActive);
     if(windowPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    paintingPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    paintingPanel.render(videoScale,timer,textRenderer,!anyDialogActive);
     if(paintingPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
     
-    libraryPanelLeft.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    libraryPanelLeft.render(videoScale,timer,textRenderer,!anyDialogActive);
     if(libraryPanelLeft.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    libraryPanelDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    libraryPanelDisplayer.render(videoScale,timer,textRenderer,!anyDialogActive);
     if(libraryPanelDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    nodeEditorDisplayer.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    nodeEditorDisplayer.render(videoScale,timer,textRenderer,!anyDialogActive);
     if(nodeEditorDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    selectedTextureDisplayer.render(videoScale,mouse,timer,textRenderer,false);
+    selectedTextureDisplayer.render(videoScale,timer,textRenderer,false);
     if(selectedTextureDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
@@ -207,8 +208,8 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
     
     if(nodeEditorDisplayer.hover){
         
-        if(mouse.MPressed){
-            this->nodePanel.position += mouse.mouseOffset;
+        if(*Mouse::MPressed()){
+            this->nodePanel.position += *Mouse::mouseOffset();
             
             /*Restrict movement*/
             if(this->nodePanel.position.x > 40){
@@ -248,7 +249,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
                 transPower.y = 0;
 
 
-            this->nodePanel.mixVal += (mouse.mouseOffset / 100.f * transPower);
+            this->nodePanel.mixVal += (*Mouse::mouseOffset() / 100.f * transPower);
         
         }
         else{
@@ -285,7 +286,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         
         glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
         glm::vec2 prevScale = destScale * this->twoDPaintingSceneScroll;
-        float scrVal = mouse.mouseScroll / videoScale.y * 4.f;
+        float scrVal = *Mouse::mouseScroll() / videoScale.y * 4.f;
         if(!this->twoDPaintingPanel.hover)
             scrVal = 0.f;
 
@@ -302,11 +303,11 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
             this->twoDPaintingSceneScroll = 0.02;
 
         //Calculate the position value        
-        if(mouse.MPressed && this->twoDPaintingPanel.hover)
-            this->twoDPaintingScenePos += mouse.mouseOffset;
+        if(*Mouse::MPressed() && this->twoDPaintingPanel.hover)
+            this->twoDPaintingScenePos += *Mouse::mouseOffset();
         //(Zoom into the cursor)
         glm::vec2 scaleGap = prevScale - destScale * this->twoDPaintingSceneScroll;
-        this->twoDPaintingScenePos += (scaleGap) * (((mouse.cursorPos - glm::vec2(twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + this->twoDPaintingScenePos.x, twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + this->twoDPaintingScenePos.y)) + 0.00001f) / (prevScale + 0.00001f));
+        this->twoDPaintingScenePos += (scaleGap) * (((*Mouse::cursorPos() - glm::vec2(twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + this->twoDPaintingScenePos.x, twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + this->twoDPaintingScenePos.y)) + 0.00001f) / (prevScale + 0.00001f));
 
         if(this->twoDPaintingScenePos.x > destScale.x * this->twoDPaintingSceneScroll)
             this->twoDPaintingScenePos.x = destScale.x * this->twoDPaintingSceneScroll;
@@ -321,7 +322,7 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
 
 
         //Render the 2D painting panel
-        twoDPaintingPanel.render(videoScale,mouse,timer,textRenderer,false);
+        twoDPaintingPanel.render(videoScale,timer,textRenderer,false);
         if(twoDPaintingPanel.resizingDone){
             for (size_t i = 0; i < 5; i++)
                 this->panelPositioning(screenGapPerc, painter);
@@ -397,22 +398,22 @@ void UI::renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRend
         ShaderSystem::buttonShader().use();
     }
 
-    paintingModesPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    paintingModesPanel.render(videoScale,timer,textRenderer,!anyDialogActive);
     if(paintingModesPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    displayingModesPanel.render(videoScale,mouse,timer,textRenderer,!anyDialogActive);
+    displayingModesPanel.render(videoScale,timer,textRenderer,!anyDialogActive);
     if(displayingModesPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
 }
 
-void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter,  Context &context){
+void UI::renderRenamingTextbox(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer, Painter &painter,  Context &context){
     
     if(renamingTextBox.active){
-        renamingTextBox.render(videoScale,mouse,timer,textRenderer,false,context.window);
+        renamingTextBox.render(videoScale,timer,textRenderer,false,context.window);
         renamingTextBoxClosed = false;
     }
     else{
@@ -442,39 +443,39 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer,
     }
 }
 
-void UI::renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,  Context &context, Project &project, Model& model, Skybox &skybox, AppSettings& settings, Box &box,  std::vector<ContextMenu> &contextMenus, Scene scene){
+void UI::renderDialogs(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Context &context, Project &project, Model& model, Skybox &skybox, AppSettings& settings, Box &box,  std::vector<ContextMenu> &contextMenus, Scene scene){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes);
+        newProjectDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes);
+        loadProjectDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes);
     
     if(greetingDialog.dialogControl.isActive())
-        greetingDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
+        greetingDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
 
     if(displayerDialog.dialogControl.isActive())
-        displayerDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,skybox);
+        displayerDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,skybox);
     
     if(exportDialog.dialogControl.isActive())
-        exportDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,model,materialEditorDialog,sphereModel, scene);
+        exportDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,model,materialEditorDialog,sphereModel, scene);
     
     if(newTextureDialog.dialogControl.isActive())
-        newTextureDialog.render(context.window,colorPalette,mouse,timer,textRenderer,videoScale,settings.textureRes);
+        newTextureDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,settings.textureRes);
     
     if(settingsDialog.dialogControl.isActive())
-        settingsDialog.render(context.window, colorPalette, mouse, timer, textRenderer, videoScale, settings);
+        settingsDialog.render(context.window, colorPalette, timer, textRenderer, videoScale, settings);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
-        materialEditorDialog.render(videoScale,mouse,timer,textRenderer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex),settings.textureRes,box,context,contextMenus,model, scene);
+        materialEditorDialog.render(videoScale,timer,textRenderer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex),settings.textureRes,box,context,contextMenus,model, scene);
     
 }
 
-void UI::renderDropper(Mouse &mouse, Painter &painter){
-    if(mouse.LClick && dropper.active){
+void UI::renderDropper(Painter &painter){
+    if(*Mouse::LClick() && dropper.active){
         //Dropper active pick color
         glm::vec3 cursorHoverPixelRGBData;
         //Read the cursor position from the default frame buffer
-        glReadPixels(mouse.cursorPos.x,mouse.cursorPos.y,1,1,GL_RGB,GL_FLOAT,&cursorHoverPixelRGBData);
+        glReadPixels(Mouse::cursorPos()->x,Mouse::cursorPos()->y,1,1,GL_RGB,GL_FLOAT,&cursorHoverPixelRGBData);
         
         dropper.value = cursorHoverPixelRGBData; 
     

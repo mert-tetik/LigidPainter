@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <fstream>
@@ -33,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void ComboBox::render(
                         glm::vec2 videoScale, //Resolution of the monitor
-                        Mouse& mouse, //Mouse class to access mouse events
+                        //Mouse class to access mouse events
                         Timer &timer, //Timer that handles the animations
                         TextRenderer &textRenderer, //TextRenderer that handles text rendering
                         bool doMouseTracking, //If there is need to check if mouse hover
@@ -126,21 +127,21 @@ void ComboBox::render(
         
         //Check if mouse on top of the element
         if(doMouseTracking)
-            hover[i] = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+            hover[i] = Mouse::isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
         else 
             hover[i] = false;
         
         //Set the cursor as pointer if hovers the element
         if(hover[i])
-            mouse.setCursor(mouse.pointerCursor); //mouse.activeCursor = mouse.pointerCursor
+            Mouse::setCursor(*Mouse::pointerCursor()); //mouse.activeCursor = *Mouse::pointerCursor()
         
         //If clicked to the element
-        if(hover[i] && mouse.LClick){
+        if(hover[i] && *Mouse::LClick()){
             if(clickedMixVal[0] > 0.5f){
                 //Mouse left button pressed on top of the button
                 selectedIndex = i;
                 pressed = false;
-                mouse.LClick = false;
+                *Mouse::LClick() = false;
             }
             else
                 pressed = true;
@@ -187,7 +188,7 @@ void ComboBox::render(
         glDepthFunc(GL_LEQUAL);
     
     //Unpress
-    if(window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || mouse.LClick && !hover[0]){
+    if(window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || *Mouse::LClick() && !hover[0]){
         pressed = false;
     }
 }

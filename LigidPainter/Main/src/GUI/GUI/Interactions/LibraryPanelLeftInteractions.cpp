@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <fstream>
@@ -33,12 +34,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 
-void UI::libraryPanelLeftInteraction(Panel &libraryPanelLeft, Mouse &mouse){
+void UI::libraryPanelLeftInteraction(Panel &libraryPanelLeft){
     
     //Check all the library element button if they are pressed
     for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++) 
     {
-        if(libraryPanelLeft.sections[0].elements[i].button.hover && mouse.LClick){//If any button element is pressed
+        if(libraryPanelLeft.sections[0].elements[i].button.hover && *Mouse::LClick()){//If any button element is pressed
             if(Library::getSelectedElementIndex() != i){
                 libraryPanelLeft.sections[0].elements[Library::getSelectedElementIndex()].button.clickState1 = false;
                 Library::changeSelectedElementIndex(i);

@@ -101,7 +101,7 @@ private:
     
     //-------------------- UTILITY FUNCTIONS --------------------
 
-    bool renderBarriers(Panel &nodeEditorPanel,Mouse &mouse);
+    bool renderBarriers(Panel &nodeEditorPanel);
     void drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel, int direction);
     void createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI);
     void clearConnections(int nodeIParam,int IOIParam);
@@ -161,7 +161,7 @@ public:
 
     /// @brief Render the node & manage inputs & outputs 
     /// @param currentNodeIndex which node is rendered (index of the nodeScene)
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel,  Model &model, int textureRes, Scene scene);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel,  Model &model, int textureRes, Scene scene);
 
     /// @brief Replaces the IOs vector with the new inputs & outputs (+ generates the node panel)  
     void uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs);
@@ -173,7 +173,7 @@ public:
 namespace NodeScene{
 
     /// @brief Renders the node list 
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,  Model &model, int textureRes, Scene scene, Panel nodeEditorPanel, NodePanel& nodePanel);
+    void render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Model &model, int textureRes, Scene scene, Panel nodeEditorPanel, NodePanel& nodePanel);
     
     /// @brief Adds the given node to the scene 
     void addNode(const Node node);

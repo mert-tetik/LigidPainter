@@ -24,6 +24,7 @@
 #include "3D/ThreeD.hpp" 
 #include "GUI/GUI.hpp" 
 #include "NodeSystem/Node/Node.hpp" 
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <iostream>
@@ -96,7 +97,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
     this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
 }
 
-void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                           glm::vec2 videoScale,Project &project,bool &greetingDialogActive,
                           Model &model,MaterialEditorDialog &materialEditorDialog,Model sphereModel,
                           Scene scene){
@@ -104,10 +105,10 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
     dialogControl.updateStart();
 
     //Render the panel
-    panel.render(videoScale,mouse,timer,textRenderer,true);
+    panel.render(videoScale,timer,textRenderer,true);
     
     //If pressed to the last button of the panel (Export button)
-    if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && mouse.LClick){
+    if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && *Mouse::LClick()){
 
 
         int resolution = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
@@ -181,7 +182,7 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,M
     }
     
     //Close the dialog
-    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && mouse.LClick) || (panel.sections[0].elements[0].button.hover && mouse.LDoubleClick)){
+    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){
         if(!dialogControl.firstFrameActivated)
             this->dialogControl.unActivate();
     }

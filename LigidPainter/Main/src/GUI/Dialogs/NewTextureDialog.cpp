@@ -23,6 +23,7 @@
 
 #include "GUI/GUI.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "MouseSystem/Mouse.hpp" 
 
 #include <string>
 #include <iostream>
@@ -73,14 +74,14 @@ NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPal
 
 bool __newTxtrDialog_last_texture_selection_dialog_state = false;
 
-void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,int textureRes){
+void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,int textureRes){
     
     textureRes = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
 
     dialogControl.updateStart();
     
     //Show the color picker dialog if clicked to the color button
-    if(panel.sections[0].elements[0].button.hover && mouse.LClick){
+    if(panel.sections[0].elements[0].button.hover && *Mouse::LClick()){
         unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
         const char* hex0Val = "#000000";
         auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);
@@ -92,7 +93,7 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
     }
 
     //Clicked to the create button
-    if(panel.sections[0].elements[4].button.hover && mouse.LClick && !panel.sections[0].elements[2].comboBox.pressed){
+    if(panel.sections[0].elements[4].button.hover && *Mouse::LClick() && !panel.sections[0].elements[2].comboBox.pressed){
         
         //Create the texture class
         Texture txtr;
@@ -110,7 +111,7 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
             Library::addTexture(txtr);
         }
     }
-    if(panel.sections[0].elements[3].button.hover && mouse.LClick && !panel.sections[0].elements[2].comboBox.pressed){
+    if(panel.sections[0].elements[3].button.hover && *Mouse::LClick() && !panel.sections[0].elements[2].comboBox.pressed){
         
         //Create the texture class
         Texture txtr;
@@ -150,8 +151,8 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
     }
 
     //End the dialog
-    if((panel.sections[0].elements[3].button.hover && mouse.LClick) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && mouse.LClick)){
-        if(!(panel.sections[0].elements[4].button.hover && mouse.LClick)){
+    if((panel.sections[0].elements[3].button.hover && *Mouse::LClick()) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
+        if(!(panel.sections[0].elements[4].button.hover && *Mouse::LClick())){
             if(!panel.sections[0].elements[2].comboBox.pressed){
                 panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
                 panel.sections[0].elements[1].textBox.text = "NewTexture";
@@ -160,10 +161,10 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
         }
     }
 
-    __newTxtrDialog_last_texture_selection_dialog_state = panel.sections[0].elements[4].button.hover && mouse.LClick;
+    __newTxtrDialog_last_texture_selection_dialog_state = panel.sections[0].elements[4].button.hover && *Mouse::LClick();
 
     //Render the panel
-    panel.render(videoScale,mouse,timer,textRenderer,true);
+    panel.render(videoScale,timer,textRenderer,true);
     
     //Invert the text color of the color button
     panel.sections[0].elements[0].button.textColor = glm::vec4(glm::vec3(1.) - glm::vec3(panel.sections[0].elements[0].button.color),1);

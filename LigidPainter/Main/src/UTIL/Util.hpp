@@ -43,8 +43,6 @@ class Texture;
 class Material;
 /// @brief forward declared Brush class
 class Brush;
-/// @brief forward declared Mouse class
-class Mouse;
 /// @brief forward declared Node class
 class Node;
 /// @brief forward declared Scene struct
@@ -476,11 +474,10 @@ public:
     /*! 
     * @brief do painting (paint 2D). Called every frame if painting conditions are set. 
     *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
-    * @param mouse mouse class
     * @param windowOrtho orthographics projection matrix created with window size value.
     * @param textures textures in the library
     */
-    void doPaint(Mouse& mouse, glm::mat4 windowOrtho, Context context);
+    void doPaint(glm::mat4 windowOrtho, Context context);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -537,44 +534,8 @@ private:
     glm::vec2 lastCursorPos = glm::vec2(0); 
     int frameCounter = 0;
     
-    std::vector<glm::vec2> getCursorSubstitution(Mouse &mouse,float spacing);
+    std::vector<glm::vec2> getCursorSubstitution(float spacing);
     void changeColor(Color &color);
-};
-
-
-
-class Mouse
-{
-public:
-    glm::vec2 cursorPos = glm::vec2(0);
-    glm::vec2 mouseOffset;
-	int mods = 0;
-	int action = 0;
-	bool LClick = false; //Left click - button 0
-	bool RClick = false; //Right click - button 1
-	bool MClick = false; //Middle click - button 2
-	bool LDoubleClick = false; //Left click - button 0
-	bool LPressed = false;
-	bool RPressed = false;
-	bool MPressed = false;
-	double mouseScroll = 0.;
-	LigidCursor defaultCursor;
-	LigidCursor pointerCursor;
-	LigidCursor hSlideCursor;
-	LigidCursor vSlideCursor;
-	LigidCursor activeCursor; //updateCursor sets that cursor as the cursor
-    LigidWindow window;
-
-    int cursorTypeGotSet = 0;
-
-    Mouse();
-    Mouse(LigidWindow window);
-
-	void loadCursors();
-    bool isCursorPointer();
-	void setCursor(LigidCursor cursor);
-	void updateCursor();
-    bool isMouseHover(glm::vec2 scale, glm::vec2 position);
 };
 
 /// @brief A single char

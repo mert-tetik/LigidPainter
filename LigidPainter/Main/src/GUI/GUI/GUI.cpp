@@ -105,41 +105,41 @@ Element::Element(TextBox textBox,LigidWindow window){
     state = 4;
 }
 
-void Element::render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
+void Element::render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
     if(state == 0){ //Render the button
         button.pos = pos;
         button.scale = scale;
         button.panelOffset = panelOffset;
         button.doMouseTracking = doMouseTracking;
-        button.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
+        button.render(videoScale,timer,textRenderer,doMouseTracking);
     }
     if(state == 1){ //Render the rangeBar
         rangeBar.pos = pos;
         rangeBar.scale = scale;
         rangeBar.panelOffset = panelOffset;
         rangeBar.doMouseTracking = doMouseTracking;
-        rangeBar.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
+        rangeBar.render(videoScale,timer,textRenderer,doMouseTracking);
     }
     if(state == 2){ //Render the checkBox
         checkBox.pos = pos;
         checkBox.scale = scale;
         checkBox.panelOffset = panelOffset;
         checkBox.doMouseTracking = doMouseTracking;
-        checkBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking);
+        checkBox.render(videoScale,timer,textRenderer,doMouseTracking);
     }
     if(state == 3){ //Render the comboxBox
         comboBox.pos = pos;
         comboBox.scale = scale;
         comboBox.panelOffset = panelOffset;
         comboBox.doMouseTracking = doMouseTracking;
-        comboBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking,window);
+        comboBox.render(videoScale,timer,textRenderer,doMouseTracking,window);
     }
     if(state == 4){ //Render the textbox
         textBox.pos = pos;
         textBox.scale = scale;
         textBox.panelOffset = panelOffset;
         textBox.doMouseTracking = doMouseTracking;
-        textBox.render(videoScale,mouse, timer,textRenderer,doMouseTracking,window);
+        textBox.render(videoScale,timer,textRenderer,doMouseTracking,window);
     }
 }
 

@@ -118,25 +118,25 @@ public:
     void init(Context context,AppTextures appTextures,Websites websites,glm::vec2 videoScale,Model &sphereModel);
     
     /*! @brief Renders all the GUI */
-    void render(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer,Context context,Box box,std::vector<ContextMenu> &contextMenus, 
+    void render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,Context context,Box box,std::vector<ContextMenu> &contextMenus, 
                 AppSettings& settings, Project &project, Painter &painter, Skybox &skybox,Model &model, Scene& scene);
 
 private: 
-    void elementInteraction(Painter &painter,Mouse &mouse, std::vector<ContextMenu> &contextMenus,
+    void elementInteraction(Painter &painter,std::vector<ContextMenu> &contextMenus,
                             Context &context,glm::vec2 &videoScale,TextRenderer &textRenderer, Timer &timer, int &textureRes,float screenGapPerc,
                             Model &model,Project& project, Scene scene, AppMaterialModifiers& appMaterialModifiers);
 
-    void renderPanels(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter,  Model& model, float screenGapPerc);
+    void renderPanels(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer, Painter &painter,  Model& model, float screenGapPerc);
 
-    void renderRenamingTextbox(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Painter &painter,  Context &context);
+    void renderRenamingTextbox(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer, Painter &painter,  Context &context);
 
-    void renderDialogs(glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer, Context &context, Project &project, Model& model, Skybox &skybox, AppSettings &settings, Box &box, std::vector<ContextMenu> &contextMenus, Scene scene);
+    void renderDialogs(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer, Context &context, Project &project, Model& model, Skybox &skybox, AppSettings &settings, Box &box, std::vector<ContextMenu> &contextMenus, Scene scene);
 
-    void renderDropper(Mouse &mouse,Painter &painter);
+    void renderDropper(Painter &painter);
 
-    void contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Mouse &mouse , Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,Project& project,int &textureRes, Painter &painter);
+    void contextMenuInteraction(std::vector<ContextMenu> &contextMenus,  Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,Project& project,int &textureRes, Painter &painter);
 
-    void libraryPanelLeftInteraction(Panel &libraryPanelLeft, Mouse &mouse);
+    void libraryPanelLeftInteraction(Panel &libraryPanelLeft);
 
     void panelPositioning(float &screenGapPerc,  Painter &painter);
 };

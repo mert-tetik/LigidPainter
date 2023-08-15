@@ -32,9 +32,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
+#include "MouseSystem/Mouse.hpp"
 
-void __getMousePosDataToTheTextureSelection(Mouse& mousePos);
-void __getMouseButtonDataToTheTextureSelection(Mouse& mouseBtn);
 void __getTextRendererDataToTheTextureSelection(TextRenderer& textRenderer);
 
 void Renderer::mouseButtonCallback(
@@ -51,7 +50,7 @@ void Renderer::mouseButtonCallback(
 
         //Double click done if clicked in 0.3s
         if (timeSinceLastClick < 0.3) {
-            this->mouse.LDoubleClick = true;
+            *Mouse::LDoubleClick() = true;
         }
     
         previousClickTime = currentTime;
@@ -60,37 +59,35 @@ void Renderer::mouseButtonCallback(
     //Left click
     if(button == 0){ 
         if(action == 1)
-            this->mouse.LClick = true;
+            *Mouse::LClick() = true;
     }  
     //Right click
     if(button == 1){
         if(action == 1)
-            this->mouse.RClick = true;
+            *Mouse::RClick() = true;
     }  
     //Mid click
     if(button == 2){
         if(action == 1)
-            this->mouse.MClick = true;
+            *Mouse::MClick() = true;
     }  
 
     //Left pressed
     if(button == 0){ 
-        this->mouse.LPressed = action;
+        *Mouse::LPressed() = action;
     }  
     //Right pressed
     if(button == 1){
-        this->mouse.RPressed = action;
+        *Mouse::RPressed() = action;
     }  
     //Mid pressed
     if(button == 2){
-        this->mouse.MPressed = action;
+        *Mouse::MPressed() = action;
     }  
     
     //Mods
-    this->mouse.mods = mods;
-    this->mouse.action = action;
-
-    __getMouseButtonDataToTheTextureSelection(mouse);
+    *Mouse::mods() = mods;
+    *Mouse::action() = action;
 }
 
 void Renderer::framebufferSizeCallback(
@@ -117,7 +114,7 @@ void Renderer::scrollCallback(
                             )
 {
     //Update the scroll value of the mouse class
-    this->mouse.mouseScroll = yoffset;
+    *Mouse::mouseScroll() = yoffset;
     
     if(!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode)
     {
@@ -143,8 +140,6 @@ void Renderer::scrollCallback(
         //Since the 3D model's position in the screen is changed update the painter's depth texture
         this->painter.updateTheDepthTexture = true;
     }
-
-    __getMousePosDataToTheTextureSelection(mouse);
 }
 
 void Renderer::cursorPositionCallback(
@@ -154,12 +149,12 @@ void Renderer::cursorPositionCallback(
                                     )
 {
     //Update the mouse position of the mouse class
-    this->mouse.cursorPos.x = xpos;
-    this->mouse.cursorPos.y = ypos;
+    Mouse::cursorPos()->x = xpos;
+    Mouse::cursorPos()->y = ypos;
     
     //Get the mouse offset by subtracting current cursor position from last frame's cursor pos
-    this->mouse.mouseOffset.x = this->mouse.cursorPos.x - lastMousePos.x;
-    this->mouse.mouseOffset.y = this->mouse.cursorPos.y - lastMousePos.y;
+    Mouse::mouseOffset()->x = Mouse::cursorPos()->x - lastMousePos.x;
+    Mouse::mouseOffset()->y = Mouse::cursorPos()->y - lastMousePos.y;
 
     const float sensitivity = 0.2f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
     
@@ -185,19 +180,19 @@ void Renderer::cursorPositionCallback(
         const float cos_pitch = cos(glm::radians(cam->pitch));
 
         // Calculate the x and z offsets based on yaw angle, mouse movement, sensitivity, and half sensitivity
-        float x_offset = sin_yaw * this->mouse.mouseOffset.x * sensitivity * half_sensitivity;
-        float z_offset = cos_yaw * this->mouse.mouseOffset.x * sensitivity * half_sensitivity;
+        float x_offset = sin_yaw * Mouse::mouseOffset()->x * sensitivity * half_sensitivity;
+        float z_offset = cos_yaw * Mouse::mouseOffset()->x * sensitivity * half_sensitivity;
 
         // Check if pitch is greater than 60 degrees or less than -60 degrees
         if (cam->pitch > 60.0f || cam->pitch < -60.0f) {
             
             // Add additional x and z offsets based on yaw, pitch, mouse movement, sensitivity, and half sensitivity
-            x_offset += cos_yaw * sin_pitch * this->mouse.mouseOffset.y * sensitivity * half_sensitivity;
-            z_offset -= sin_yaw * sin_pitch * this->mouse.mouseOffset.y * sensitivity * half_sensitivity;
+            x_offset += cos_yaw * sin_pitch * Mouse::mouseOffset()->y * sensitivity * half_sensitivity;
+            z_offset -= sin_yaw * sin_pitch * Mouse::mouseOffset()->y * sensitivity * half_sensitivity;
         }
 
         // Calculate the y offset based on pitch, mouse movement, sensitivity, and half sensitivity
-        const float y_offset = cos_pitch * this->mouse.mouseOffset.y * sensitivity * half_sensitivity;
+        const float y_offset = cos_pitch * Mouse::mouseOffset()->y * sensitivity * half_sensitivity;
 
         // Update camera's x position and origin position by subtracting x offset
         cam->cameraPos.x -= x_offset;
@@ -226,8 +221,8 @@ void Renderer::cursorPositionCallback(
         if(this->userInterface.materialEditorDialog.dialogControl.isActive())
             cam = &this->userInterface.materialEditorDialog.displayerCamera;
 
-        cam->yaw += this->mouse.mouseOffset.x * sensitivity;
-        cam->pitch -= this->mouse.mouseOffset.y * sensitivity;
+        cam->yaw += Mouse::mouseOffset()->x * sensitivity;
+        cam->pitch -= Mouse::mouseOffset()->y * sensitivity;
 
         //Disable 90+ degrees rotations in y axis
         if (cam->pitch > 89.0f)
@@ -250,10 +245,8 @@ void Renderer::cursorPositionCallback(
     this->updateViewMatrix();
     
     //This will be used as "last frame's cursor pos" for the cursor offset
-    this->lastMousePos.x = this->mouse.cursorPos.x;
-    this->lastMousePos.y = this->mouse.cursorPos.y;
-
-    __getMousePosDataToTheTextureSelection(mouse);
+    this->lastMousePos.x = Mouse::cursorPos()->x;
+    this->lastMousePos.y = Mouse::cursorPos()->y;
 }
 
 void Renderer::keyCallback(

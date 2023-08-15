@@ -23,6 +23,7 @@
 
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
+#include "MouseSystem/Mouse.hpp"
  
 #include <string>
 #include <iostream>
@@ -130,24 +131,24 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                                 glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,
                                 Model &model,int &textureRes ){
     
     dialogControl.updateStart();
 
     //Render panels
-    bgPanel.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
-    loadButton.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
+    bgPanel.render(videoScale,timer,textRenderer,dialogControl.isComplete());
+    loadButton.render(videoScale,timer,textRenderer,dialogControl.isComplete());
     
     //Render texts
-    textBtn1.render(videoScale,mouse,timer,textRenderer,false);
-    textBtn2.render(videoScale,mouse,timer,textRenderer,false);
-    textBtn3.render(videoScale,mouse,timer,textRenderer,false);
-    textBtn4.render(videoScale,mouse,timer,textRenderer,false);
+    textBtn1.render(videoScale,timer,textRenderer,false);
+    textBtn2.render(videoScale,timer,textRenderer,false);
+    textBtn3.render(videoScale,timer,textRenderer,false);
+    textBtn4.render(videoScale,timer,textRenderer,false);
     
 
-    if(loadButton.hover && mouse.LClick){
+    if(loadButton.hover && *Mouse::LClick()){
         //Select a project file inside of a project folder
         std::string test = showFileSystemObjectSelectionDialog("Select a ligid file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_LIGID, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
@@ -209,13 +210,13 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
     projectsPanel.sections.push_back(projectSection);
     
     //After refreshing the elements render the projects panel
-    projectsPanel.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
+    projectsPanel.render(videoScale,timer,textRenderer,dialogControl.isComplete());
     
     //Check all the projects element if one them is pressed
     for (size_t i = 0; i < projectsPanel.sections[0].elements.size(); i++)
     {
         //If pressed to the project button
-        if(projectsPanel.sections[0].elements[i].button.hover && mouse.LClick){
+        if(projectsPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
             
             //Get the ligid file path using the button's text as a project folder path source
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
@@ -242,7 +243,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
     }
     
     //Close the dialog
-    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || bgPanel.sections[0].elements[0].button.hover && mouse.LDoubleClick){
+    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || bgPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
         
         if(startScreen)
             greetingDialogActive = true;

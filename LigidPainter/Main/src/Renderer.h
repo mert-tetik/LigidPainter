@@ -65,11 +65,6 @@ public:
     Model sphereModel; 
 
     /*!
-        @brief Everything related to the mouse is done via that class 
-    */
-    Mouse mouse; 
-
-    /*!
         @brief Render 2D square 
     */
     Box box; 

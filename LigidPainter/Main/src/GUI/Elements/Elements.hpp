@@ -72,7 +72,7 @@ private:
     
     void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness);
     bool renderTheTexture(glm::vec3 resultPos,glm::vec2 resultScale,float resultScaleText,glm::vec2 videoScale,TextRenderer &textRenderer,float &textureRadius);
-    void manageMouseActivity(Mouse &mouse);
+    void manageMouseActivity();
     void renderTextAndTexture(TextRenderer &textRenderer, glm::vec2 videoScale, float resultScaleText);
 public:
     //Pressed to the button
@@ -141,7 +141,7 @@ public:
     Button(int style, glm::vec2 scale, ColorPalette colorPalette, std::string text, Texture texture, float panelOffset, bool keepPressingState);
 
     //Public member functions
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
 };
 
 
@@ -186,7 +186,7 @@ public:
     TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset,int openSelectFolderDialog);
     
     /// @brief Public member function to render the text box
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,LigidWindow window);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,LigidWindow window);
 };
 
 
@@ -228,7 +228,7 @@ public:
     ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::vector<std::string> texts,std::string text,float panelOffset);
 
     //Public member functions
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,LigidWindow window);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,LigidWindow window);
 };
 
 
@@ -307,7 +307,7 @@ class CheckBox
 private:
     //Private member functions
     void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness);
-    void manageMouseActivity(Mouse &mouse, glm::vec2 resultScale, glm::vec3 resultPos);
+    void manageMouseActivity(glm::vec2 resultScale, glm::vec3 resultPos);
 
 public:
     bool clickState1 = false;
@@ -335,7 +335,7 @@ public:
     CheckBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset);
 
     //Public member functions
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
 };
 
 
@@ -393,7 +393,7 @@ public:
              float minValue,float maxValue,float value,AppTextures appTextures);
 
     /// @brief Public member function to render the text box
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
 };
 
 
@@ -434,7 +434,7 @@ struct Element{
     Element(TextBox textBox,LigidWindow window);
 
     //Public member function
-    void render(glm::vec2 videoScale,Mouse& mouse, Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
 };
 struct Section{ //Sections seperates the elements in the panel
     
@@ -462,12 +462,12 @@ class Panel
 private:
     float slideRatio = 1.f;
     
-    void mouseTracking(Mouse& mouse);
-    void resizeThePanel(Mouse &mouse, glm::vec2 videoScale);
+    void mouseTracking();
+    void resizeThePanel(glm::vec2 videoScale);
     void prepDrawBtnVertically(Element &button,Element &previousButton,float& elementPos,int btnCounter);
     void prepDrawBtnHorizontally(Element &button,Element &previousButton,float& elementPos,int btnCounter);
-    void renderTheHeader(int sectionI,float &elementPos, int &btnCounter, glm::vec2 videoScale, Mouse &mouse, Timer &timer, TextRenderer &textRenderer);
-    void drawPanel(glm::vec2 videoScale,Mouse &mouse, glm::vec3 resultPos,glm::vec2 resultScale,Timer &timer,TextRenderer &textRenderer); //Draws the panel and it's elements
+    void renderTheHeader(int sectionI,float &elementPos, int &btnCounter, glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer);
+    void drawPanel(glm::vec2 videoScale,glm::vec3 resultPos,glm::vec2 resultScale,Timer &timer,TextRenderer &textRenderer); //Draws the panel and it's elements
 
 public:
     /*! 
@@ -590,7 +590,7 @@ public:
           bool hasSlider);
 
     /// @brief Renders the panel
-    void render(glm::vec2 videoScale,Mouse& mouse,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
 };
 
 

@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <fstream>
@@ -34,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void libraryPanelDisplayerInteraction(
                                         Panel &libraryPanelDisplayer, 
-                                        Mouse &mouse, 
+                                        
                                         Panel &paintingPanel, 
                                         Painter &painter, 
                                         Model &model, 
@@ -51,7 +52,7 @@ void libraryPanelDisplayerInteraction(
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
     {
         if(Library::getSelectedElementIndex() == 0){ //Textures selected
-            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
+            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LClick()){
                 painter.selectedTexture = *Library::getTexture(i); //Select the texture 
                 paintingPanel.sections[4].elements[painter.selectedPaintingChannelIndex].button.texture = painter.selectedTexture;
             } //If any texture button element is pressed
@@ -60,7 +61,7 @@ void libraryPanelDisplayerInteraction(
                 libraryPanelDisplayer.sections[0].elements[i].button.clickState1 = true;
         }
         if(Library::getSelectedElementIndex() == 3){ //Models selected
-            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && mouse.LClick){
+            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LClick()){
                 model = *Library::getModel(i); //Select the model
                 model.newModelAdded = true; 
             } 

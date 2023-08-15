@@ -1593,16 +1593,16 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         /* Droplets */
         modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 1.f);
-        modifierShader.setFloat("dropletsOpacityJitter", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 100.f);
-        modifierShader.setFloat("dropletsSize", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value / 10.f);
+        modifierShader.setFloat("dropletsOpacityJitter", material.materialModifiers[curModI].sections[1].elements[1].rangeBar.value / 100.f);
+        modifierShader.setFloat("dropletsSize", material.materialModifiers[curModI].sections[1].elements[2].rangeBar.value / 10.f);
 
         /* Front Layer */
         modifierShader.setFloat("frontLayerStrength", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value / 100.f);
-        modifierShader.setFloat("frontLayerScale", material.materialModifiers[curModI].sections[2].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("frontLayerScale", material.materialModifiers[curModI].sections[2].elements[1].rangeBar.value / 100.f);
 
         /* Lighting */
         modifierShader.setFloat("lightStrength", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value / 100.f);
-        modifierShader.setFloat("darkeningStrength", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat("darkeningStrength", material.materialModifiers[curModI].sections[3].elements[1].rangeBar.value / 100.f);
 
         /* Noise */
         modifierShader.setFloat("noiseStrength", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value / 100.f);

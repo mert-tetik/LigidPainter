@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "NodeSystem/Node/Node.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <iostream>
@@ -189,7 +190,7 @@ void Node::getTheIOConnectedToTheInput(int &nodeIParam, int &IOIParam,int curren
     }
 }
 
-bool Node::renderBarriers(Panel &nodeEditorPanel,Mouse &mouse){
+bool Node::renderBarriers(Panel &nodeEditorPanel){
     //Renders the barriers and returns if the cursor is inside of the barriers
     //Barriers prevents the node rendering outside of the node editor panel
     //Barriers are covering outside of the node editor panel
@@ -204,7 +205,7 @@ bool Node::renderBarriers(Panel &nodeEditorPanel,Mouse &mouse){
     ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,   0.f );
     ShaderSystem::buttonShader().setVec3("properties.outline.color" ,    glm::vec4(0)     ); //Invisible
     
-    if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y + nodeEditorPanel.resultScale.y + 5000,1.f))){
+    if(Mouse::isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y + nodeEditorPanel.resultScale.y + 5000,1.f))){
         cursorOnBarriers = true;
     }
     
@@ -213,7 +214,7 @@ bool Node::renderBarriers(Panel &nodeEditorPanel,Mouse &mouse){
     //Top
     ShaderSystem::buttonShader().setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f)); //To the Top
     ShaderSystem::buttonShader().setVec2("scale",     glm::vec2(5000));
-    if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f))){
+    if(Mouse::isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f))){
         cursorOnBarriers = true;
     }
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -221,7 +222,7 @@ bool Node::renderBarriers(Panel &nodeEditorPanel,Mouse &mouse){
     //Left
     ShaderSystem::buttonShader().setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f));
     ShaderSystem::buttonShader().setVec2("scale",     glm::vec2(5000));
-    if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f))){
+    if(Mouse::isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f))){
         cursorOnBarriers = true;
     }
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -229,7 +230,7 @@ bool Node::renderBarriers(Panel &nodeEditorPanel,Mouse &mouse){
     //Right
     ShaderSystem::buttonShader().setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f));
     ShaderSystem::buttonShader().setVec2("scale",     glm::vec2(5000));
-    if(mouse.isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f)))
+    if(Mouse::isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f)))
         cursorOnBarriers = true;
     glDrawArrays(GL_TRIANGLES, 0, 6);
     return cursorOnBarriers;

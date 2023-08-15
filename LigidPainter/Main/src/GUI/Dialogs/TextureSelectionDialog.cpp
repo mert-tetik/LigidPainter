@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <iostream>
@@ -135,18 +136,8 @@ TextureSelectionDialog::TextureSelectionDialog(ColorPalette colorPalette,AppText
 
 }
 
-Mouse __mouse_pos;
-Mouse __mouse_button;
 
 TextRenderer __textRenderer;
-
-void __getMousePosDataToTheTextureSelection(Mouse& mousePos){
-    __mouse_pos = mousePos;
-}
-
-void __getMouseButtonDataToTheTextureSelection(Mouse& mouseBtn){
-    __mouse_button = mouseBtn;
-}
 
 void __getTextRendererDataToTheTextureSelection(TextRenderer& textRenderer){
     __textRenderer = textRenderer;
@@ -276,16 +267,6 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
     {
         window.pollEvents();
         
-        Mouse __mouse = __mouse_button;
-        __mouse.cursorPos = __mouse_pos.cursorPos;
-        __mouse.mouseOffset = __mouse_pos.mouseOffset;
-
-        if(__mouse.action == 0){
-            __mouse.LClick = false;
-            __mouse.RClick = false;
-            __mouse.MClick = false;
-        }
-
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -300,10 +281,10 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
         updateSubPanel(this->subPanel, this->selectedTextureMode, this->selectedTextureIndex, colorPalette);
 
         //Render the panel
-        this->bgPanel.render(videoScale, __mouse,timer,__textRenderer,true);
+        this->bgPanel.render(videoScale, timer,__textRenderer,true);
 
         //Render the texture mode selection panel
-        this->subPanel.render(videoScale, __mouse,timer,__textRenderer,true);
+        this->subPanel.render(videoScale, timer,__textRenderer,true);
 
         selectedTextureDisplayingPanel.scale.x = this->scale.x - subPanel.scale.x;
         selectedTextureDisplayingPanel.pos.x = this->pos.x + subPanel.scale.x;
@@ -313,11 +294,11 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
 
         selectedTextureDisplayingPanel.sections[0].elements[0].button.texture = displayingTexture;
 
-        this->textureSelectingPanel.render(videoScale,__mouse,timer,__textRenderer,true);
+        this->textureSelectingPanel.render(videoScale,timer,__textRenderer,true);
 
         ShaderSystem::buttonShader().setInt("properties.invertTheTexture", false);
         ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
-        this->selectedTextureDisplayingPanel.render(videoScale,__mouse,timer,__textRenderer,true);
+        this->selectedTextureDisplayingPanel.render(videoScale,timer,__textRenderer,true);
 
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
         {
@@ -350,7 +331,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
         //If pressed any of the texture select the texture
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
         {
-            if(this->textureSelectingPanel.sections[0].elements[i].button.hover && __mouse.LClick){
+            if(this->textureSelectingPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
                 selectedTextureIndex = i;
             }
         }
@@ -369,7 +350,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
         }
 
         //End the dialog
-        if((window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && __mouse.LClick)){
+        if((window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && *Mouse::LClick())){
             dialogControl.unActivate();
             selectedTextureIndex = 0;
         }
@@ -382,14 +363,14 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
         window.swapBuffers();
 
         //Set mouse states to default
-        __mouse_button.LClick = false;
-        __mouse_button.RClick = false;
-        __mouse_button.MClick = false;
-        __mouse_button.LDoubleClick = false;
-        __mouse_pos.mouseOffset = glm::vec2(0);
-        __mouse_button.mods = 0;
-        __mouse_button.mouseScroll = 0;
-        __mouse_button.action = 0;
+        *Mouse::LClick() = false;
+        *Mouse::RClick() = false;
+        *Mouse::MClick() = false;
+        *Mouse::LDoubleClick() = false;
+        *Mouse::mouseOffset() = glm::vec2(0);
+        *Mouse::mods() = 0;
+        *Mouse::mouseScroll() = 0;
+        *Mouse::action() = 0;
 
         //Set keyboard states to default
         __textRenderer.keyInput = false;

@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <iostream>
@@ -185,20 +186,20 @@ bool Button::renderTheTexture(
 /// @brief manages the activites regarding the mouse like mouse hover, mouse clicked to the button etc.
 /// @param mouse  
 void Button::manageMouseActivity(
-                                    Mouse &mouse
+                                    
                                 ){
     //Check if mouse on top of the button
     if(doMouseTracking)
-        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+        hover = Mouse::isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
     else
         hover = false;
 
     //Set the cursor as pointer if cursor on button
     if(hover)
-        mouse.setCursor(mouse.pointerCursor); //mouse.activeCursor = mouse.pointerCursor
+        Mouse::setCursor(*Mouse::pointerCursor()); //mouse.activeCursor = *Mouse::pointerCursor()
     
     //Mouse left button pressed on top of the button
-    if(hover && mouse.LClick){
+    if(hover && *Mouse::LClick()){
         //(if release on top of the button, the button will be clicked)
         if(keepPressingState)
             clickState1 = !clickState1;
@@ -211,7 +212,7 @@ void Button::manageMouseActivity(
 
     //Set the clickedMixVal to 1.f if button is pressed and released while the cursor is on top of the button
     //(Than the clickedMixVal will be set to 0 gradually by the click animation managment)
-    if(!mouse.LPressed && !keepPressingState){
+    if(!*Mouse::LPressed() && !keepPressingState){
         //If clicked to the button
         if(clickState1 && hover){
             //Clicked

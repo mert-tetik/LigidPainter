@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "LibrarySystem/Library.hpp"
 #include "NodeSystem/Node/Node.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <iostream>
@@ -32,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <map>
 
 void Node::render(  glm::vec2 videoScale,
-                    Mouse& mouse,
+                   
                     Timer &timer,
                     TextRenderer &textRenderer,
                     Panel nodeEditorPanel,
@@ -46,13 +47,13 @@ void Node::render(  glm::vec2 videoScale,
     
 
     //Barriers (In order to prevent the overflow)
-    this->cursorOnBarriers = renderBarriers(nodeEditorPanel,mouse);
+    this->cursorOnBarriers = renderBarriers(nodeEditorPanel);
 
     this->nodePanel.additionalPos.x = nodePanelData.position.x + nodePanelData.mixVal.x;
     this->nodePanel.additionalPos.y = nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2;
 
     //Render the node panel which contains the input buttons and stuff
-    nodePanel.render(videoScale,mouse,timer,textRenderer, this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
+    nodePanel.render(videoScale,timer,textRenderer, this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
 
     if(nodePanel.sections[0].elements[0].button.clicked){
             if(this->nodeIndex == MATERIAL_ID_NODE){
@@ -150,14 +151,14 @@ void Node::render(  glm::vec2 videoScale,
                 //Draw a line from the circle to the cursor
                 drawLine(
                             glm::vec2(IOs[i].IOCircle.pos.x,IOs[i].IOCircle.pos.y), //Circle pos
-                            mouse.cursorPos/videoScale * 100.f, //Cursor pos in the range of 0 - 100
+                            *Mouse::cursorPos()/videoScale * 100.f, //Cursor pos in the range of 0 - 100
                             videoScale,
                             nodeEditorPanel,
                             IOs[i].state == 2   
                         );
 
                 //First frame line released
-                if(!mouse.LPressed){
+                if(!*Mouse::LPressed()){
                     
                     //Those values will remain 1000 if no IO circle is hovered
                     int hoveredNodeI = 1000;
@@ -233,7 +234,7 @@ void Node::render(  glm::vec2 videoScale,
 
 
             //Render the IO circle
-            IOs[i].IOCircle.render(videoScale,mouse,timer,textRenderer,true);
+            IOs[i].IOCircle.render(videoScale,timer,textRenderer,true);
         }
     }
 
@@ -248,7 +249,7 @@ void Node::render(  glm::vec2 videoScale,
     barButton.pos.y = nodePanel.pos.y + nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2 - nodePanel.scale.y; 
     barButton.pos.z += 0.02f;
     //Render the bar button
-    barButton.render(videoScale,mouse,timer,textRenderer,!cursorOnBarriers);
+    barButton.render(videoScale,timer,textRenderer,!cursorOnBarriers);
     
     //Move the node panel if bar button is pressed
     if(barButton.clickState1 && !nodePanel.topSide.pressed){ //Pressed
@@ -260,8 +261,8 @@ void Node::render(  glm::vec2 videoScale,
                 NodeScene::getNode(i)->barButton.clickState1 = false;
         }
 
-        nodePanel.pos.x += mouse.mouseOffset.x/videoScale.x * 100.f;
-        nodePanel.pos.y += mouse.mouseOffset.y/videoScale.y * 100.f;
+        nodePanel.pos.x += Mouse::mouseOffset()->x/videoScale.x * 100.f;
+        nodePanel.pos.y += Mouse::mouseOffset()->y/videoScale.y * 100.f;
     }
     
     glClear(GL_DEPTH_BUFFER_BIT);

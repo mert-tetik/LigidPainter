@@ -22,6 +22,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <iostream>
@@ -75,30 +76,30 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->dialogControl.activate();
 }
 
-void GreetingDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale, NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
+void GreetingDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale, NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
 
     dialogControl.updateStart();
 
     //Render elements 
     
     //Render the texture displayer button 
-    textureDisplayerButton.render(videoScale,mouse,timer,textRenderer,false);
+    textureDisplayerButton.render(videoScale,timer,textRenderer,false);
 
-    //bgPanel.render(videoScale,mouse,timer,textRenderer,false);
-    loadProjectButton.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
-    createProjectButton.render(videoScale,mouse,timer,textRenderer,dialogControl.isComplete());
+    //bgPanel.render(videoScale,timer,textRenderer,false);
+    loadProjectButton.render(videoScale,timer,textRenderer,dialogControl.isComplete());
+    createProjectButton.render(videoScale,timer,textRenderer,dialogControl.isComplete());
     
     //Render text elements
-    // textButton1.render(videoScale,mouse,timer,textRenderer,false);
+    // textButton1.render(videoScale,timer,textRenderer,false);
     
     //Show new project dialog if create project button is pressed
-    if(createProjectButton.hover && mouse.LClick){
+    if(createProjectButton.hover && *Mouse::LClick()){
         newProjectDialog.dialogControl.activate();
         this->dialogControl.unActivate();
     }
 
     //Show load project dialog if load project button is pressed
-    if(loadProjectButton.hover && mouse.LClick){
+    if(loadProjectButton.hover && *Mouse::LClick()){
         loadProjectDialog.dialogControl.activate();
         this->dialogControl.unActivate();
     }

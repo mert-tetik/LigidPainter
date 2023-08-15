@@ -25,8 +25,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
-
 #include "3D/ThreeD.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <iostream>
@@ -109,13 +109,13 @@ DisplayerDialog::DisplayerDialog(
     }
 }
 
-void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Mouse& mouse,Timer timer,TextRenderer &textRenderer,
+void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
             glm::vec2 videoScale,Skybox &skybox){
     
     dialogControl.updateStart();
 
     //Render the panel
-    panel.render(videoScale,mouse,timer,textRenderer,true);
+    panel.render(videoScale, timer, textRenderer, true);
     
     //Update the texture of the skybox displayer button
     panel.sections[0].elements[0].button.texture = Texture(skybox.displayingTexture);
@@ -134,10 +134,10 @@ void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalett
             skyboxes[i].scale.x = panel.sections[0].elements[0].button.scale.x/skyboxes.size();
 
             //Render the button
-            skyboxes[i].render(videoScale,mouse,timer,textRenderer,true);
+            skyboxes[i].render(videoScale, timer, textRenderer, true);
             
             //If pressed to the skybox load the pressed skybox
-            if(skyboxes[i].button.hover && mouse.LClick){
+            if(skyboxes[i].button.hover && *Mouse::LClick()){
                 skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky" + std::to_string(i+1));
                 skybox.createPrefilterMap(videoScale);
                 skybox.createDisplayingTxtr(sphereModel, context.windowScale);
@@ -152,7 +152,7 @@ void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalett
     panel.sections[0].elements[4].button.color = glm::vec4(skybox.bgColor,1);
     
     //If pressed to the bg color element show color picker dialog
-    if(panel.sections[0].elements[4].button.hover && mouse.LClick){
+    if(panel.sections[0].elements[4].button.hover && *Mouse::LClick()){
         unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
         const char* hex0Val = "#000000";
         auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);
@@ -175,7 +175,7 @@ void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalett
     skybox.opacity = panel.sections[0].elements[3].rangeBar.value/100.f;
     
     //End the dialog
-    if((panel.sections[0].elements[2].button.hover && mouse.LClick) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && mouse.LClick)){
+    if((panel.sections[0].elements[2].button.hover && *Mouse::LClick()) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
             panel.sections[0].elements[0].button.clickState1 = false;
             dialogControl.unActivate();

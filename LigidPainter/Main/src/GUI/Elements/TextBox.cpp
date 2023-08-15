@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <iostream>
 #include <string>
@@ -102,7 +103,7 @@ TextBox::TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string
 
 void TextBox::render(
                         glm::vec2 videoScale, //Resolution of the monitor
-                        Mouse& mouse, //Mouse class to access mouse events
+                        //Mouse class to access mouse events
                         Timer &timer, //Timer that handles the animations
                         TextRenderer &textRenderer, //TextRenderer that handles text rendering
                         bool doMouseTracking, //If there is need to check if mouse hover
@@ -127,20 +128,20 @@ void TextBox::render(
 
     //Check if mouse on top of the text box
     if(doMouseTracking)
-        hover = mouse.isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+        hover = Mouse::isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
     else 
         hover = false;
 
     if(hover)//Set the cursor as pointer
-        mouse.setCursor(mouse.pointerCursor);// mouse.activeCursor = mouse.pointerCursor
+        Mouse::setCursor(*Mouse::pointerCursor());// mouse.activeCursor = *Mouse::pointerCursor()
     
-    if(hover && mouse.LClick){
+    if(hover && *Mouse::LClick()){
         //Mouse left button pressed on top of the button
         active = !active;
     }
     
     //Deactivate the textbox
-    if((!hover && mouse.LClick) || window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS){
+    if((!hover && *Mouse::LClick()) || window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS){
         active = false;
     }
     

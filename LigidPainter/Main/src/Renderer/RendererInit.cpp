@@ -34,6 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "NodeSystem/Node/Node.hpp"
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
+#include "MouseSystem/Mouse.hpp"
 
 #include "LigidGL/LigidGL.hpp"
 
@@ -154,10 +155,10 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     userInterface.init(context, appTextures, websites, videoScale, sphereModel);
 
     //Init mouse class
-    mouse = Mouse(context.window);
+    Mouse::setWindow(context.window);
     
     //Load the cursors of the LigidPainter
-    mouse.loadCursors();
+    Mouse::loadCursors();
 
     //Init the painter
     painter.initPainter(videoScale);
