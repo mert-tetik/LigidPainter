@@ -113,6 +113,26 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
         
         UTIL::uniqueName(matTitle, meshTitles);
 
+        float big = 0.00001f;
+        for (size_t vi = 0; vi < meshVertices[i].size(); vi++)
+        {
+            if(big < abs(meshVertices[i][vi].Position.x))
+                big = abs(meshVertices[i][vi].Position.x);
+            
+            if(big < abs(meshVertices[i][vi].Position.y))
+                big = abs(meshVertices[i][vi].Position.y);
+            
+            if(big < abs(meshVertices[i][vi].Position.z))
+                big = abs(meshVertices[i][vi].Position.z);
+        }
+        
+        for (size_t vi = 0; vi < meshVertices[i].size(); vi++)
+        {
+            meshVertices[i][vi].Position.x = meshVertices[i][vi].Position.x / big;
+            meshVertices[i][vi].Position.y = meshVertices[i][vi].Position.y / big;
+            meshVertices[i][vi].Position.z = meshVertices[i][vi].Position.z / big;
+        }
+        
         model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle));
     }
 

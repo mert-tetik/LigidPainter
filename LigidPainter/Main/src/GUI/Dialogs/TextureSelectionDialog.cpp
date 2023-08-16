@@ -108,7 +108,7 @@ TextureSelectionDialog::TextureSelectionDialog(ColorPalette colorPalette,AppText
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette,"Normal Gray Scale", 2.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Normal Strength", Texture(), 2.f, 0.f, 100.f, 10.f, appTextures),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette,"Invert", 2.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Scale", Texture(), 2.f, 0.f, 100.f, 10.f, appTextures),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Scale", Texture(), 2.f, 0.f, 200.f, 10.f, appTextures),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),colorPalette,"Select", Texture(), 2.f, false),
                                         }
                                     )
@@ -152,7 +152,8 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
 
     if(this->selectedTextureMode == 0){
         txtr.proceduralID = -1;
-        txtr.proceduralTextureID = Library::getTexture(selectedTextureIndex)->ID;
+        if(selectedTextureIndex < Library::getTextureArraySize())
+            txtr.proceduralTextureID = Library::getTexture(selectedTextureIndex)->ID;
     }
     else if(this->selectedTextureMode == 1){
         txtr.proceduralID = this->selectedTextureIndex;
@@ -321,7 +322,8 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
             glActiveTexture(GL_TEXTURE0);
             if(this->selectedTextureMode == 0)
-                glBindTexture(GL_TEXTURE_2D, Library::getTexture(i)->ID);
+                if(i < Library::getTextureArraySize())
+                    glBindTexture(GL_TEXTURE_2D, Library::getTexture(i)->ID);
 
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
@@ -418,6 +420,7 @@ static void initTextureSelectionDialog(
     glGenerateMipmap(GL_TEXTURE_2D);
     
     selectedTextureMode = 0;
+    selectedTextureIndex = 0;
 
     if(receivedTexture.proceduralID != -1){
         selectedTextureMode = 1;
@@ -430,6 +433,9 @@ static void initTextureSelectionDialog(
 
         subPanel.sections[0].elements[6].checkBox.clickState1 = receivedTexture.proceduralnverted;
         subPanel.sections[0].elements[7].rangeBar.value = receivedTexture.proceduralScale * 10.f;  
+        subPanel.sections[0].elements[3].checkBox.clickState1 = receivedTexture.proceduralNormalMap;
+        subPanel.sections[0].elements[4].checkBox.clickState1 = receivedTexture.proceduralNormalGrayScale;
+        subPanel.sections[0].elements[5].rangeBar.value = receivedTexture.proceduralNormalStrength;
     }
 }
 
@@ -456,7 +462,7 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
     if(selectedTextureMode == 0){
         for (size_t i = 0; i < Library::getTextureArraySize(); i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette, "texture"       , Texture(), 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette, ""       , Texture(), 0.f,false)));
         }
     }
     else if(selectedTextureMode == 1){

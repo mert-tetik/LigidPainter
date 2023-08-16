@@ -13,7 +13,7 @@ uniform sampler2D proceduralTexture;
 
 void main(){
     if(proceduralID > 28)
-        fragColor = vec4(vec3(getProcedural(vec3(TexCoords.x, TexCoords.y, TexCoords.y), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted)), 1.);
+        fragColor = vec4(getProcedural(vec3(TexCoords.x, TexCoords.y, TexCoords.y), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted));
     else
-        fragColor = vec4(vec3(getProcedural(vec3(TexCoords.x, 0., TexCoords.y), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted)), 1.);
+        fragColor = vec4(getProcedural(vec3(TexCoords.x, 0., TexCoords.y), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted));
 } 

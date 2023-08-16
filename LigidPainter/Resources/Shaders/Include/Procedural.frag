@@ -37,7 +37,7 @@ float hexagonalPattern(
     pos.y += 0.5 * mod(floor(pos.x), 2.0);
     pos = abs(fract(pos) - 0.5);
     
-    float d = abs(max(pos.x*1.5 + pos.y, pos.y*2.0) - 1.0);
+    float d = abs(max(pos.x * 1.5 + pos.y, pos.y*2.0) - 1.0);
     return smoothstep(0.0, gridThickness, d);
 }
 
@@ -1400,25 +1400,25 @@ float dropletsNoise5(vec3 pos){
     return innergetDroplets(pos, dropletsCount, dropletsOpacityJitter, dropletsSize, 0, 1);
 }
 
-float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted){
+float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, vec2 uv){
     
+    //pos = normalize(pos);
+    /*
     vec2 uv;
     if(pos.x > pos.z)
         uv = vec2(pos.x + pos.y, pos.z );
     else
         uv = vec2(pos.x , pos.z + pos.y);
-
-    uv *= scale;
-
-    /*
     uv.x = maxValue((abs(Pos)));
     uv.y = secondBiggestValue((abs(Pos))); 
-    */
     
     uv = abs(uv);
+    */
     
     //pos = normalize((pos));
+    
     pos *= scale;
+    uv *= scale;
     
     float res = 0.;
 
@@ -1580,13 +1580,13 @@ float GMC(vec3 val, int inverted){
         return 1. - max(max(val.r, val.g), val.b);
 }
 
-vec3 getProcedural(vec3 pos, int proceduralID, sampler2D texture, vec2 texCoord, float scale, int inverted){
+vec4 getProcedural(vec3 pos, int proceduralID, sampler2D texture, vec2 texCoord, float scale, int inverted){
     if(proceduralID != -1)
-        return vec3(getProceduralVal(pos, proceduralID, scale, inverted));
+        return vec4(vec3(getProceduralVal(pos, proceduralID, scale, inverted, texCoord)), 1);
     else{
         if(inverted == 0)
-            return texture(texture, texCoord * scale).rgb;
+            return texture(texture, texCoord * scale);
         else
-            return 1. - texture(texture, texCoord * scale).rgb;
+            return 1. - texture(texture, texCoord * scale);
     }
 }

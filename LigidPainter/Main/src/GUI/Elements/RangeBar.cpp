@@ -246,7 +246,7 @@ void RangeBar::render(
         if(this->isNumeric)
             this->value--;
         else
-            this->value -= (this->maxValue - this->minValue)/100.f * 10.f;
+            this->value -= 1.f;
     
         if(this->value < minValue)
             this->value = minValue;
@@ -274,7 +274,7 @@ void RangeBar::render(
         if(this->isNumeric)
             this->value++;
         else
-            this->value += (this->maxValue - this->minValue)/100.f * 10.f;
+            this->value += 1.f;
 
         if(this->value > maxValue)
             this->value = maxValue;

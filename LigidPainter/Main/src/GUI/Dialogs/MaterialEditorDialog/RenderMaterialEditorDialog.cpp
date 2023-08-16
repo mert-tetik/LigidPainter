@@ -138,8 +138,8 @@ void MaterialEditorDialog::render
     if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
         if(!wasTextureSelectionDialogActive() && !contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive()){
             NodeScene::updateNodeResults(model, scene, textureRes, -1);
-            this->updateTheMaterial = true;
             this->displayModeComboBox.selectedIndex = 0;
+            material.updateMaterialDisplayingTexture((float)textureRes, box, context, sphereModel, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
 
             this->deactivate(textureSelectionDialog);
         }
