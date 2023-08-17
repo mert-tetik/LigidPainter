@@ -136,7 +136,7 @@ void Panel::renderTheHeader(int sectionI,float &elementPos, int &btnCounter, glm
     else
         this->prepDrawBtnHorizontally(sections[sectionI].header,sections[std::max(sectionI,0)].elements[sections[std::max(sectionI,0)].elements.size()-1],elementPos,btnCounter);
     //Draw the button
-    this->sections[sectionI].header.render(videoScale, timer, textRenderer, this->doMouseTracking);
+    this->sections[sectionI].header.render(videoScale, timer, textRenderer, this->doMouseTracking && !sliderButton.hover);
     btnCounter++; //Indexing buttons to position them
 }
 
@@ -167,7 +167,7 @@ void Panel::drawPanel(
     int btnCounter = 0; 
 
     //Render the bar buttons
-    renderBarButtons(this->barButtons, this->pos + this->additionalPos, this->scale, videoScale, timer, textRenderer, this->doMouseTracking);
+    renderBarButtons(this->barButtons, this->pos + this->additionalPos, this->scale, videoScale, timer, textRenderer, this->doMouseTracking && !sliderButton.hover); 
     
     //Calculate the barbuttons for positioning other elements
     if(barButtons.size())
@@ -207,7 +207,7 @@ void Panel::drawPanel(
                 //Don't render the unshown elements
                 if(this->sections[sI].elements[i].pos.y - this->sections[sI].elements[i].scale.y < (this->pos.y + this->additionalPos.y + this->scale.y) && this->sections[sI].elements[i].pos.y + this->sections[sI].elements[i].scale.y > (this->pos.y + this->additionalPos.y - this->scale.y)){
                     
-                    sections[sI].elements[i].render(videoScale,timer,textRenderer,doMouseTracking);
+                    sections[sI].elements[i].render(videoScale,timer,textRenderer,doMouseTracking && !sliderButton.hover);
                     
                     /* Render the text if rendering library displayer panel*/
                     if(isLibraryDisplayer){
@@ -240,21 +240,15 @@ void Panel::drawPanel(
         sliderButton.pos = pos + this->additionalPos;
         
         if(leftSide.locked)
-            sliderButton.pos.x = pos.x + this->additionalPos.x + sliderButton.scale.x + scale.x;
+            sliderButton.pos.x = pos.x + this->additionalPos.x - sliderButton.scale.x + scale.x;
         else
-            sliderButton.pos.x = pos.x + this->additionalPos.x - sliderButton.scale.x - scale.x;
+            sliderButton.pos.x = pos.x + this->additionalPos.x + sliderButton.scale.x - scale.x;
         
         float elementHeight = (elementPos - elementStartPos)/2.f + lastElementScale;
 
-        std::cout << elementHeight << ' ' << scale.y << ' ' << this->barButtons.size() << std::endl; 
-
         slideRatio = scale.y/elementHeight;
 
-            sliderButton.scale.y = scale.y * slideRatio;
-            sliderButton.pos.y = (pos.y + this->additionalPos.y - scale.y) + sliderButton.scale.y + slideVal;  
-
-            sliderButton.render(videoScale,timer,textRenderer,doMouseTracking);
-
+        if(slideRatio < 1 && vertical){
             if(sliderButton.clickState1){ //Pressed
                 //Move the slidebar
                 slideVal += Mouse::mouseOffset()->y / videoScale.y*100.f;
@@ -266,16 +260,29 @@ void Panel::drawPanel(
                     *Mouse::mouseScroll() = -100;
                 slideVal -= *Mouse::mouseScroll() / videoScale.y * 100.f * slideRatio;
             }
-
+            
             if(slideVal < 0) //If the slider is out of boundaries
                 slideVal = 0; //Get the slide bar back
 
-            if (sliderButton.pos.y + sliderButton.scale.y >= pos.y + this->additionalPos.y + scale.y && (Mouse::mouseOffset()->y > 0 || *Mouse::mouseScroll() < 0)) {
+            if ((pos.y + this->additionalPos.y - scale.y) + sliderButton.scale.y + slideVal + sliderButton.scale.y > pos.y + this->additionalPos.y + scale.y) {
                 // If the slider is out of boundaries
-                slideVal = sliderButton.pos.y - (pos.y + this->additionalPos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
+
+                // Calculate the maximum value for slideVal
+                float maxSlideVal = (pos.y + this->additionalPos.y + scale.y) - (pos.y + this->additionalPos.y - scale.y) - sliderButton.scale.y - sliderButton.scale.y;
+
+                // Set slideVal to its maximum value
+                slideVal = maxSlideVal;
             }
-        
-        //this->slideVal = 0.f; 
+            
+            sliderButton.scale.y = scale.y * slideRatio;
+            sliderButton.pos.y = (pos.y + this->additionalPos.y - scale.y) + sliderButton.scale.y + slideVal;  
+            sliderButton.pos.z += 0.02f;
+
+            sliderButton.render(videoScale,timer,textRenderer,doMouseTracking);
+
+        }
+        else
+            this->slideVal = 0.f; 
     }
     
     

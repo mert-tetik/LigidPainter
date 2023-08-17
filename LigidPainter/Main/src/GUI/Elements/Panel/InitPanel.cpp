@@ -70,4 +70,6 @@ Panel::Panel(
     this->sliderButton.color2 = colorPalette.themeColor;
     this->sliderButton.radius = 0.25f;
     this->hasSlider = hasSlider;
+
+    this->hasSlider = true;
 }
