@@ -160,7 +160,8 @@ void Panel::drawPanel(
     }
 
     //Starting pos
-    float elementPos = calculateElementStartingPosition(this->vertical, this->sections, this->pos + this->additionalPos, this->scale);
+    float elementStartPos = calculateElementStartingPosition(this->vertical, this->sections, this->pos + this->additionalPos, this->scale);
+    float elementPos = elementStartPos;
 
     //Indexing buttons to position them
     int btnCounter = 0; 
@@ -243,10 +244,13 @@ void Panel::drawPanel(
         else
             sliderButton.pos.x = pos.x + this->additionalPos.x - sliderButton.scale.x - scale.x;
         
-        slideRatio = (elementPos + lastElementScale + (lastElementScale*2.f)) / (pos.y + this->additionalPos.y + scale.y);
+        float elementHeight = (elementPos - elementStartPos)/2.f + lastElementScale;
 
-        if(slideRatio > 1 && vertical){
-            sliderButton.scale.y = scale.y / slideRatio;
+        std::cout << elementHeight << ' ' << scale.y << ' ' << this->barButtons.size() << std::endl; 
+
+        slideRatio = scale.y/elementHeight;
+
+            sliderButton.scale.y = scale.y * slideRatio;
             sliderButton.pos.y = (pos.y + this->additionalPos.y - scale.y) + sliderButton.scale.y + slideVal;  
 
             sliderButton.render(videoScale,timer,textRenderer,doMouseTracking);
@@ -260,7 +264,7 @@ void Panel::drawPanel(
                     *Mouse::mouseScroll() = 100;
                 if(*Mouse::mouseScroll() < -100)
                     *Mouse::mouseScroll() = -100;
-                slideVal -= *Mouse::mouseScroll() / videoScale.y * 100.f;
+                slideVal -= *Mouse::mouseScroll() / videoScale.y * 100.f * slideRatio;
             }
 
             if(slideVal < 0) //If the slider is out of boundaries
@@ -270,9 +274,8 @@ void Panel::drawPanel(
                 // If the slider is out of boundaries
                 slideVal = sliderButton.pos.y - (pos.y + this->additionalPos.y - scale.y) - sliderButton.scale.y; // Set slideVal to its maximum value
             }
-        }
-        else 
-            this->slideVal = 0.f; 
+        
+        //this->slideVal = 0.f; 
     }
     
     

@@ -156,7 +156,7 @@ void Panel::prepDrawBtnVertically(Element &button,Element &previousButton,float&
         elementPos += (button.scale.y + previousButton.scale.y) + button.panelOffset;
     button.pos.z += 0.01f;
     float screenGapY = 50 - scale.y*1.f;
-    button.pos.y = elementPos - slideVal * slideRatio;
+    button.pos.y = elementPos - slideVal / slideRatio;
 }
 
 void Panel::prepDrawBtnHorizontally(Element &button,Element &previousButton,float& elementPos,int btnCounter){
