@@ -79,6 +79,7 @@ public:
 
     /* -- DIALOGS -- */
 
+    LogDialog logDialog;
     GreetingDialog greetingDialog;
     NewProjectDialog newProjectDialog;
     ExportDialog exportDialog;

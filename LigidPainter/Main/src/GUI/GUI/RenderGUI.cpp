@@ -468,6 +468,7 @@ void UI::renderDialogs(glm::vec2 videoScale, Timer &timer, TextRenderer &textRen
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
         materialEditorDialog.render(videoScale,timer,textRenderer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex),settings.textureRes,box,context,contextMenus,model, scene);
     
+    logDialog.render(context.window, colorPalette, timer, textRenderer, videoScale);
 }
 
 void UI::renderDropper(Painter &painter){

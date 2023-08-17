@@ -426,6 +426,7 @@ void UI::init
     //Init dialogs
     greetingDialog              = GreetingDialog(context,videoScale,colorPalette,appTextures);
     newTextureDialog            = NewTextureDialog(context,videoScale,colorPalette,appTextures);
+    logDialog                   = LogDialog(context,videoScale,colorPalette,appTextures, materialEditorDialog.appMaterialModifiers);
     displayerDialog             = DisplayerDialog(context,videoScale,colorPalette,appTextures,sphereModel);
     materialEditorDialog        = MaterialEditorDialog(colorPalette, appTextures, sphereModel);
     textureSelectionDialog      = TextureSelectionDialog(colorPalette,appTextures);

@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "UTIL/Util.hpp"
+#include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
@@ -37,7 +38,7 @@ void Model::loadModel(std::string const &path,bool triangulate)
 
     meshes.clear();
  
-    std::cout << "Loading : " << path << std::endl;
+    //LGDLOG::start << "Loading : " << path;
 
     if(UTIL::toLowercase(UTIL::getFileExtension(path)) == "obj"){
         Model model = FileHandler::readOBJFile(path);

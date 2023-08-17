@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include <string>
+#include <sstream>
 #include <iostream>
 #include <vector>
 
@@ -370,6 +371,77 @@ public:
     
     /// @brief Public member function to render the context menu
     void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer);
+};
+
+//!-------------------------------LOG DIALOG--------------------------------
+
+namespace LGDLOG {
+   class LogMsg {
+   public:
+      // Constructor
+      LogMsg() = default;
+      
+      // Overload << operator for custom manipulations
+      template <typename T>
+      LogMsg& operator<<(const T& value) {
+         // Convert value to string and add to the internal buffer
+         buffer << value;
+
+         std::string a;
+         std::ostringstream outputBuffer; // Use istringstream to store input
+         outputBuffer << value;
+         a = outputBuffer.str();
+
+         if(a == "$#")
+            std::cout << std::endl;
+         else
+            std::cout << a;
+
+         return *this;
+
+      }
+
+      // Overload >> operator for input
+      LogMsg& operator>>(std::string& input) {
+         // Read input from the user and store it in 'input'
+         inputBuffer.clear(); // Clear previous state
+         inputBuffer.str(buffer.str()); // Transfer output buffer to input buffer
+         inputBuffer >> input; // Extract the input from the buffer
+         return *this;
+      }
+
+      // Converts the internal buffer to a string
+      std::string str() const {
+         return buffer.str();
+      }
+
+   private:
+      std::ostringstream buffer;
+      std::istringstream inputBuffer; // Use istringstream to store input
+   };
+
+   extern LogMsg start;
+   extern std::string end;
+}
+
+
+class LogDialog
+{
+ private:
+   AppTextures appTextures;
+   AppMaterialModifiers appMaterialModifiers;
+ 
+ public:
+   Panel panel;
+   
+   DialogControl dialogControl;
+
+   //Constructors
+   LogDialog();
+   LogDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
+
+   //Public member functions
+   void render(LigidWindow originalWindow, ColorPalette colorPalette,Timer timer, TextRenderer &textRenderer, glm::vec2 videoScale);
 };
 
 #endif

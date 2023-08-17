@@ -40,8 +40,10 @@ void Renderer::render(){
     //Handle user input and interact with the windowing system
     context.window.pollEvents();
     //Update local timer data
-    if(timer.runTimer(1.f))
-        std::cout << timer.FPS << std::endl; //Print the fps every second
+    if(timer.runTimer(1.f)){
+        //std::cout << timer.FPS << std::endl; //Print the fps every second
+        LGDLOG::start << (timer.FPS) << LGDLOG::end;
+    }
     
     if(_ligid_renderer_render_first_frame)
         this->context.window.setWindowSize(scene.videoScale.x,scene.videoScale.y);
