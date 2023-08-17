@@ -57,7 +57,7 @@ Model FileHandler::readOBJFile(std::string path){
     std::ifstream rf(path, std::ios::in);
     
     if(!rf){
-        std::cout << "ERROR : Can't read OBJ file. Can't open : " << path << std::endl;
+        LGDLOG::start<< "ERROR : Can't read OBJ file. Can't open : " << path << LGDLOG::end;
     }
 
     // Unique values retrieved from the wavefront file
@@ -87,7 +87,7 @@ Model FileHandler::readOBJFile(std::string path){
         return createModel(meshVertices, meshIndices, matTitles);
     }
     else{
-        std::cout << "WARNING! Reading FBX file : No mesh data received" << std::endl;
+        LGDLOG::start<< "WARNING! Reading FBX file : No mesh data received" << LGDLOG::end;
         return Model();
     }
 
@@ -121,7 +121,7 @@ static void getDataFromWavefrontFile(
             } 
             else 
             {
-                std::cout << "LigidExporter : Failed to extract values from the string. (Vertex pos data)" << std::endl;
+                LGDLOG::start<< "LigidExporter : Failed to extract values from the string. (Vertex pos data)" << LGDLOG::end;
             }
         }
         
@@ -141,7 +141,7 @@ static void getDataFromWavefrontFile(
             } 
             else 
             {
-                std::cout << "LigidExporter : Failed to extract values from the string. (Vertex UV data)" << std::endl;
+                LGDLOG::start<< "LigidExporter : Failed to extract values from the string. (Vertex UV data)" << LGDLOG::end;
             }
         }
         
@@ -161,7 +161,7 @@ static void getDataFromWavefrontFile(
             } 
             else 
             {
-                std::cout << "LigidExporter : Failed to extract values from the string. (Vertex Normal data)" << std::endl;
+                LGDLOG::start<< "LigidExporter : Failed to extract values from the string. (Vertex Normal data)" << LGDLOG::end;
             }
         }
 

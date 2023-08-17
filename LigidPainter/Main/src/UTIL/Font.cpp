@@ -51,6 +51,7 @@ or texture format you are working with.
 #include <map>
 
 #include "UTIL/Util.hpp"
+#include "GUI/GUI.hpp"
 
 #include "freetype/freetype.h"
 
@@ -71,7 +72,7 @@ void Font::loadFont(const char* path){
 	///Load the font to the FreeType face
 	if (FT_New_Face(ft, path, 0, &face)) {
 		//If couldn't load
-		std::cout << "ERROR::FREETYPE: Failed to load font " << path << std::endl;
+		LGDLOG::start<< "ERROR::FREETYPE: Failed to load font " << path << LGDLOG::end;
 	}
 	else {
 		//Activate the texture slot 0
@@ -89,7 +90,7 @@ void Font::loadFont(const char* path){
 			//Load character glyph 
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 			{
-				std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+				LGDLOG::start<< "ERROR::FREETYTPE: Failed to load Glyph" << LGDLOG::end;
 				continue;
 			}
 			
@@ -130,7 +131,7 @@ void Font::loadFont(const char* path){
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 
-		std::cout << "Loaded " << path << std::endl; 
+		LGDLOG::start<< "Loaded " << path << LGDLOG::end; 
 		
 		//Get the name of the font file
 		name = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());

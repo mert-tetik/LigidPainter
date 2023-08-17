@@ -19,6 +19,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 
 #include "LigidGL/LigidGL.hpp"
+#include "GUI/GUI.hpp"
 #include <utility>
 
 #include <gl/GL.h>
@@ -78,7 +79,7 @@ int LigidWindow::createWindow(
     if (!this->window) {
         
         // Window creation failed
-        std::cout << "Can't create HWND window" << std::endl;
+        LGDLOG::start<< "Can't create HWND window" << LGDLOG::end;
         return 0;
     
     }
@@ -108,7 +109,7 @@ int LigidWindow::createWindow(
     if (!this->window) {
         
         // Window creation failed
-        std::cout << "Can't create cocoa window" << std::endl;
+        LGDLOG::start<< "Can't create cocoa window" << LGDLOG::end;
         return 0;
     
     }
@@ -134,7 +135,7 @@ int LigidWindow::createWindow(
     if (!this->window) {
         
         // Window creation failed
-        std::cout << "Can't create Linux window" << std::endl;
+        LGDLOG::start<< "Can't create Linux window" << LGDLOG::end;
         return 0;
     
     }

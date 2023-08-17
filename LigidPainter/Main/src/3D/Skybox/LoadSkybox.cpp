@@ -29,6 +29,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
+#include "GUI/GUI.hpp"
+
 
 #include "../../thirdparty/stb_image.h"
 
@@ -73,12 +75,12 @@ void Skybox::load(std::string path) //Path to the folder
 							data
 			);
 			
-			std::cout << "Loaded " << faces[i] << std::endl;
+			LGDLOG::start<< "Loaded " << faces[i] << LGDLOG::end;
 			stbi_image_free(data);
 		}
 		else //An error occured while loading
 		{
-			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			LGDLOG::start<< "Cubemap texture failed to load at path: " << faces[i] << LGDLOG::end;
 			stbi_image_free(data);
 		}
 	}

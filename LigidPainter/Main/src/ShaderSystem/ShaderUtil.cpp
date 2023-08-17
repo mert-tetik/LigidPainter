@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "GUI/GUI.hpp"
 
 // activate the shader
 // ------------------------------------------------------------------------
@@ -103,7 +104,7 @@ void Shader::checkCompileErrors(GLuint shader, std::string type)
         if(!success)
         {
             glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-            std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            LGDLOG::start<< "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << LGDLOG::end;
         }
     }
     else
@@ -112,7 +113,7 @@ void Shader::checkCompileErrors(GLuint shader, std::string type)
         if(!success)
         {
             glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-            std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+            LGDLOG::start<< "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << LGDLOG::end;
         }
     }
 }

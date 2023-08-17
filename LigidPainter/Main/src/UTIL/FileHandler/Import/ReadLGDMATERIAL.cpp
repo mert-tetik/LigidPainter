@@ -38,7 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "LibrarySystem/Library.hpp"
 
 #define LGDMATERIAL_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
-                                std::cout << "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << std::endl;\
+                                LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << LGDLOG::end;\
                                 return false; \
                             }
 
@@ -58,7 +58,7 @@ bool FileHandler::readLGDMATERIALFile(
         material.title = UTIL::removeExtension(material.title);
         
         if(!rf) {
-            std::cout << "ERROR WHILE READING MATERIAL FILE! Cannot open file : " << path << std::endl;
+            LGDLOG::start<< "ERROR WHILE READING MATERIAL FILE! Cannot open file : " << path << LGDLOG::end;
             return false;
         }
         
@@ -76,7 +76,7 @@ bool FileHandler::readLGDMATERIALFile(
         LGDMATERIAL_READBITS(h3, uint64_t, "File description header part 3");
 
         if(h1 != r1 || h2 != r2 || h3 != r3){
-            std::cout << "ERROR WHILE READING MATERIAL FILE! Description header is not correct." << std::endl;
+            LGDLOG::start<< "ERROR WHILE READING MATERIAL FILE! Description header is not correct." << LGDLOG::end;
             return false;
         }
 
@@ -85,7 +85,7 @@ bool FileHandler::readLGDMATERIALFile(
         LGDMATERIAL_READBITS(versionNumber, uint32_t, "Version number");
 
         if(versionNumber != 0x000007D0){
-            std::cout << "WARNING! : Material version number was : " << versionNumber << ". Results might be unexpected." << std::endl; 
+            LGDLOG::start<< "WARNING! : Material version number was : " << versionNumber << ". Results might be unexpected." << LGDLOG::end; 
         }
 
         //ID
@@ -125,7 +125,7 @@ bool FileHandler::readLGDMATERIALFile(
             else if(modifierIndex == 8)
                 modifier = appMaterialModifiers.woodenModifier;
             else{
-                std::cout << "ERROR : Reading material file : Unknown modifier index." << std::endl;
+                LGDLOG::start<< "ERROR : Reading material file : Unknown modifier index." << LGDLOG::end;
                 return false;
             }
 
@@ -149,7 +149,7 @@ bool FileHandler::readLGDMATERIALFile(
 
             char* pixels = new char[textureWidth * textureHeight * 4];
             if(!rf.read(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
-                std::cout << "ERROR : Reading lgdmaterial file. Failed to read at : Modifier's mask texture - texture pixels" << std::endl;
+                LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : Modifier's mask texture - texture pixels" << LGDLOG::end;
                 return false; 
             }
         
@@ -264,7 +264,7 @@ bool FileHandler::readLGDMATERIALFile(
 
                     char* pixels = new char[textureWidth * textureHeight * 4];
                     if(!rf.read(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
-                        std::cout << "ERROR : Reading lgdmaterial file. Failed to read at : Modifier's property - texture data - texture pixels" << std::endl;
+                        LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : Modifier's property - texture data - texture pixels" << LGDLOG::end;
                         return false;   
                     }
                 
@@ -276,7 +276,7 @@ bool FileHandler::readLGDMATERIALFile(
                     valT.proceduralScale = proceduralScale;
                 }
                 else {
-                    std::cout << "ERROR! : Reading material file : Unknown value type" << std::endl;
+                    LGDLOG::start<< "ERROR! : Reading material file : Unknown value type" << LGDLOG::end;
                     return false;
                 }
                 
@@ -295,7 +295,7 @@ bool FileHandler::readLGDMATERIALFile(
                     }
                 }
                 else{
-                    std::cout << "WARNING! : Reading material file : Unknown property." << std::endl;
+                    LGDLOG::start<< "WARNING! : Reading material file : Unknown property." << LGDLOG::end;
                 }
             }
 

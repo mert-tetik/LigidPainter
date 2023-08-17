@@ -94,7 +94,7 @@ Model FileHandler::readFBXFile(std::string path) {
     std::ifstream file(path, std::ios::binary);
 
     if (!file.is_open()) {
-        std::cerr << "ERROR : Can't read FBX file. Can't open : " << path << std::endl;
+        std::cerr << "ERROR : Can't read FBX file. Can't open : " << path << LGDLOG::end;
         return Model();
     }
 
@@ -115,7 +115,7 @@ Model FileHandler::readFBXFile(std::string path) {
             //version != 7500 
         )
     {
-        std::cout << "ERROR Reading fbx file : unsupported fbx version : " << version << std::endl;
+        LGDLOG::start<< "ERROR Reading fbx file : unsupported fbx version : " << version << LGDLOG::end;
         return Model();
     }
 
@@ -145,7 +145,7 @@ Model FileHandler::readFBXFile(std::string path) {
     ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials);
 
     if(!positions.size() || !edges.size() || !polygonVertexIndices.size() || !uvIndices.size()){
-        std::cout << "ERROR : Processing the fbx node hierarchy : Can't detect enough vertex data to create a mesh" << std::endl;
+        LGDLOG::start<< "ERROR : Processing the fbx node hierarchy : Can't detect enough vertex data to create a mesh" << LGDLOG::end;
         return Model();
     }
 
@@ -201,7 +201,7 @@ Model FileHandler::readFBXFile(std::string path) {
         return createModel(meshVertices, meshIndices, matTitles);
     }
     else{
-        std::cout << "WARNING! Reading FBX file : No mesh data received" << std::endl;
+        LGDLOG::start<< "WARNING! Reading FBX file : No mesh data received" << LGDLOG::end;
         return Model();
     }
 }
@@ -391,7 +391,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                     prop.data = byteArray;
                 }
                 else {
-                    std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
+                    LGDLOG::start<< "ERROR : Reading FBX unknown encoding value : " << encoding << LGDLOG::end;
                 }
 
                 break;
@@ -445,7 +445,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                
                 }
                 else {
-                    std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
+                    LGDLOG::start<< "ERROR : Reading FBX unknown encoding value : " << encoding << LGDLOG::end;
                 }
 
                 break;
@@ -497,7 +497,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                     prop.data = byteArray;            
                 }
                 else {
-                    std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
+                    LGDLOG::start<< "ERROR : Reading FBX unknown encoding value : " << encoding << LGDLOG::end;
                 }
 
                 break;
@@ -549,7 +549,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                     prop.data = byteArray;         
                 }
                 else {
-                    std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
+                    LGDLOG::start<< "ERROR : Reading FBX unknown encoding value : " << encoding << LGDLOG::end;
                 }
 
                 break;
@@ -596,11 +596,11 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                     prop.data = DecompressZlibChar(compressedData, sizeof(bool) * arrayLength);                
                 }
                 else {
-                    std::cout << "ERROR : Reading FBX unknown encoding value : " << encoding << std::endl;
+                    LGDLOG::start<< "ERROR : Reading FBX unknown encoding value : " << encoding << LGDLOG::end;
                 }
                 */
 
-                std::cout << "WARNING! : Reading fbx file : Boolean array type detected. LigidPainter can't handle boolean array types." << std::endl;
+                LGDLOG::start<< "WARNING! : Reading fbx file : Boolean array type detected. LigidPainter can't handle boolean array types." << LGDLOG::end;
                 
                 break;
             }
@@ -631,19 +631,19 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
         }
 
         if(LIGID_FBX_IMPORTER_PRINT_TEXT_STATE == 2){
-            std::cout << '-';
+            LGDLOG::start<< '-';
             for (size_t i = 0; i < prop.data.size(); i++)
             {
-                std::cout << prop.data[i];
+                LGDLOG::start<< prop.data[i];
             
                 if(i > 20){
-                    std::cout << "More...";
+                    LGDLOG::start<< "More...";
                     break;
                 }
             }
-            std::cout << " ( " << prop.data.size() << " ) ";
-            std::cout << " ( " << prop.typeCode << " ) ";
-            std::cout << std::endl;
+            LGDLOG::start<< " ( " << prop.data.size() << " ) ";
+            LGDLOG::start<< " ( " << prop.typeCode << " ) ";
+            LGDLOG::start<< LGDLOG::end;
         }
         
         properties.push_back(prop);
@@ -702,7 +702,7 @@ bool ReadNestedNodes(std::ifstream& file, const std::string fileName, std::vecto
         _FBX_totalBitsRead += nameLen;
 
         if(LIGID_FBX_IMPORTER_PRINT_TEXT_STATE)
-            std::cout << nestedNode.nodeType << std::endl;
+            LGDLOG::start<< nestedNode.nodeType << LGDLOG::end;
         // Read nested node properties
         ReadProperties(file, nestedNode.properties, numProperties, propertyListLen);
 
@@ -757,7 +757,7 @@ void ProcessNodeHierarchy(
                         ) 
 {
     for ( auto& node : nodes) {
-        //std::cout << node.nodeType<< std::endl;
+        //LGDLOG::start<< node.nodeType<< LGDLOG::end;
 
         if (true) {
             
@@ -810,7 +810,7 @@ void ProcessNodeHierarchy(
                         }
                     }
                     else{
-                        std::cout << "WARNING! Variable type for the vertices array is not valid : " << prop.typeCode << std::endl;
+                        LGDLOG::start<< "WARNING! Variable type for the vertices array is not valid : " << prop.typeCode << LGDLOG::end;
                     }
                 }
                 
@@ -860,7 +860,7 @@ void ProcessNodeHierarchy(
                         }
                     }
                     else{
-                        std::cout << "WARNING! Variable type for the normals array is not valid : " << prop.typeCode << std::endl;
+                        LGDLOG::start<< "WARNING! Variable type for the normals array is not valid : " << prop.typeCode << LGDLOG::end;
                     }
                 }
 
@@ -908,7 +908,7 @@ void ProcessNodeHierarchy(
                         }
                     }
                     else{
-                        std::cout << "WARNING! Variable type for the texture coordinate array is not valid : " << prop.typeCode << std::endl;
+                        LGDLOG::start<< "WARNING! Variable type for the texture coordinate array is not valid : " << prop.typeCode << LGDLOG::end;
                     }
                 }
 
@@ -976,7 +976,7 @@ void ProcessNodeHierarchy(
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
                         if(infoStr != "ByPolygonVertex" && infoStr != "ByPolygon" && infoStr != "AllSame"){
-                            std::cout << "WARNING : Mapping information type is : " << infoStr << "! Results might be unexpected."  << std::endl;
+                            LGDLOG::start<< "WARNING : Mapping information type is : " << infoStr << "! Results might be unexpected."  << LGDLOG::end;
                         }
                     }
                 }
@@ -985,7 +985,7 @@ void ProcessNodeHierarchy(
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
                         if(infoStr != "Geometry"){
-                            std::cout << "WARNING : Object type is  : " << infoStr << "! Results might be unexpected."  << std::endl;
+                            LGDLOG::start<< "WARNING : Object type is  : " << infoStr << "! Results might be unexpected."  << LGDLOG::end;
                         }
                     }
                 }
@@ -1044,7 +1044,7 @@ static void parseFBXMeshData(
     
     if (polygonVertexIndices.size() != edges.size())
     {
-        std::cout << "ERROR: Reading FBX file. Can't parse mesh data. Sizes of the polygonVertexIndices & the edges are not the same." << std::endl;
+        LGDLOG::start<< "ERROR: Reading FBX file. Can't parse mesh data. Sizes of the polygonVertexIndices & the edges are not the same." << LGDLOG::end;
         return;
     }
 
@@ -1081,19 +1081,19 @@ static void parseFBXMeshData(
         Vertex uniqueVert;
         
         if(posIndex >= positions.size()){
-            std::cout << "ERROR : Reading fbx file. Position index is not valid." << std::endl;
+            LGDLOG::start<< "ERROR : Reading fbx file. Position index is not valid." << LGDLOG::end;
             return;
         }
         uniqueVert.Position = positions[posIndex];
 
         if(edgeIndex >= UVs.size()){
-            std::cout << "ERROR : Reading fbx file. Texture coordinate index is not valid." << std::endl;
+            LGDLOG::start<< "ERROR : Reading fbx file. Texture coordinate index is not valid." << LGDLOG::end;
             return;
         }
         uniqueVert.TexCoords = UVs[edgeIndex];
         
         if(i >= normals.size()){
-            std::cout << "ERROR : Reading fbx file. Normal vector index is not valid." << std::endl;
+            LGDLOG::start<< "ERROR : Reading fbx file. Normal vector index is not valid." << LGDLOG::end;
             return;
         }
         uniqueVert.Normal = normals[i];

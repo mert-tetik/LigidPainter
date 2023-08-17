@@ -144,7 +144,7 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,T
             UTIL::uniqueName(materialFolderPath, filesInTheFolder);
 
             if(!std::filesystem::create_directories(materialFolderPath))
-                std::cout << "ERROR : Exporting. Can't create folder in the location : " << materialFolderPath << std::endl;
+                LGDLOG::start<< "ERROR : Exporting. Can't create folder in the location : " << materialFolderPath << LGDLOG::end;
 
             //For all the channels
             for (size_t channelI = 0; channelI < 6; channelI++)

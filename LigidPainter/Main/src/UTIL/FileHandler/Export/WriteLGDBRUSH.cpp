@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
     
 #define LGDBRUSH_WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
-                                    std::cout << "ERROR : Writing lgdmaterial file. Failed to write at : " << loc << std::endl;\
+                                    LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << loc << LGDLOG::end;\
                                     if(std::filesystem::exists(path)){\
                                         std::filesystem::remove(path);\
                                     }\
@@ -62,7 +62,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         std::ofstream wf(path + UTIL::folderDistinguisher() + brush.title + ".lgdbrush", std::ios::out | std::ios::binary);
 
         if(!wf) {
-            std::cout << "ERROR WHILE WRITING BRUSH FILE! Cannot open file : " << path << std::endl;
+            LGDLOG::start<< "ERROR WHILE WRITING BRUSH FILE! Cannot open file : " << path << LGDLOG::end;
             return false;
         }
         
@@ -169,7 +169,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         brush.texture.getData(pixels);
         
         if(!wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
-            std::cout << "ERROR : Writing lgdmaterial file. Failed to write at : " << "Property texture - texture pixels" << std::endl;
+            LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << "Property texture - texture pixels" << LGDLOG::end;
             if(std::filesystem::exists(path)){
                 std::filesystem::remove(path);
             }

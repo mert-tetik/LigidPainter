@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "GUI/GUI.hpp"
 
 //forward decleration for the util function
 std::string readTheWord(std::string text, size_t &i);
@@ -170,7 +171,7 @@ void Shader::processShaderCode(std::string &code){
     
     catch(const std::exception& e)
     {
-        std::cout << "ERROR! While processing the shader code : " << code << std::endl;
+        LGDLOG::start<< "ERROR! While processing the shader code : " << code << LGDLOG::end;
     }
 
 }

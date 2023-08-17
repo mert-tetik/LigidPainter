@@ -53,7 +53,7 @@ void Project::writeLigidFile(int textureRes){
     }
 
     if(!wf) {
-        std::cout << "ERROR! : Writing ligid file." << std::endl;
+        LGDLOG::start<< "ERROR! : Writing ligid file." << LGDLOG::end;
         return;
     }
 

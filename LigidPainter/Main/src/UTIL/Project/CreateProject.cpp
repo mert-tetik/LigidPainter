@@ -85,47 +85,47 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
 
     //Create the project folder
     if(!std::filesystem::create_directory(this->folderPath))
-        std::cout << "ERROR : Creating project folder : Creating folder : " << folderPath << std::endl; 
+        LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << folderPath << LGDLOG::end; 
 
     //Create the textures folder
     std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
     if(!std::filesystem::create_directory(textureFolderPath))
-        std::cout << "ERROR : Creating project folder : Creating folder : " << textureFolderPath << std::endl; 
+        LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << textureFolderPath << LGDLOG::end; 
 
     //Materials
     std::string materialsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials";
     if(!std::filesystem::create_directory(materialsFolderPath))
-        std::cout << "ERROR : Creating project folder : Creating folder : " << materialsFolderPath << std::endl; 
+        LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << materialsFolderPath << LGDLOG::end; 
     
     //Brushes
     std::string brushesFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
     if(!std::filesystem::create_directory(brushesFolderPath))
-        std::cout << "ERROR : Creating project folder : Creating folder : " << brushesFolderPath << std::endl; 
+        LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << brushesFolderPath << LGDLOG::end; 
     
     //Fonts
     std::string fontsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Fonts";
     if(!std::filesystem::create_directory(fontsFolderPath))
-        std::cout << "ERROR : Creating project folder : Creating folder : " << fontsFolderPath << std::endl; 
+        LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << fontsFolderPath << LGDLOG::end; 
     
     //Scripts
     std::string scriptsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Scripts";
     if(!std::filesystem::create_directory(scriptsFolderPath))
-        std::cout << "ERROR : Creating project folder : Creating folder : " << scriptsFolderPath << std::endl; 
+        LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << scriptsFolderPath << LGDLOG::end; 
     
     //Filters
     std::string filtersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Filters";
     if(!std::filesystem::create_directory(filtersFolderPath))
-        std::cout << "ERROR : Creating project folder : Creating folder : " << filtersFolderPath << std::endl; 
+        LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << filtersFolderPath << LGDLOG::end; 
     
     //Layers
     std::string layersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Layers";
     if(!std::filesystem::create_directory(layersFolderPath))
-        std::cout << "ERROR : Creating project folder : Creating folder : " << layersFolderPath << std::endl; 
+        LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << layersFolderPath << LGDLOG::end; 
     
     //3D Models
     std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
     if(!std::filesystem::create_directory(tdModelFolderPath))
-        std::cout << "ERROR : Creating project folder : Creating folder : " << tdModelFolderPath << std::endl; 
+        LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << tdModelFolderPath << LGDLOG::end; 
     completeFolder(tdModelFolderPath, TD_MODEL_FOLDER_CREATION);
     
     if(std::filesystem::exists(TDModelPath)){

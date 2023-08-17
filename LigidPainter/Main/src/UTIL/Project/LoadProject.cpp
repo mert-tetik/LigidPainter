@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "3D/ThreeD.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "GUI/GUI.hpp"
 
 #include <string>
 #include <fstream>
@@ -38,7 +39,7 @@ bool Project::loadProject(std::string ligidFilePath,Model &model,AppTextures app
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
-        std::cout << "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << std::endl;
+        LGDLOG::start<< "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << LGDLOG::end;
         return false;
     }
 
@@ -48,7 +49,7 @@ bool Project::loadProject(std::string ligidFilePath,Model &model,AppTextures app
     
 
     if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate, textureRes, colorPalette, appTextures, videoScale)){
-        std::cout << "ERROR CAN'T READ THE LIGID FILE : " << ligidFilePath << ". The file is might not be a ligid file." << std::endl;
+        LGDLOG::start<< "ERROR CAN'T READ THE LIGID FILE : " << ligidFilePath << ". The file is might not be a ligid file." << LGDLOG::end;
 
         return false;
     }
@@ -130,7 +131,7 @@ bool Project::loadProject(std::string ligidFilePath,Model &model,AppTextures app
         if(TDModel.meshes.size())
             Library::addModel(TDModel);
         else
-            std::cout << "ERROR : Can't add the 3D model to the Library:: Mesh size is 0!" << std::endl;
+            LGDLOG::start<< "ERROR : Can't add the 3D model to the Library:: Mesh size is 0!" << LGDLOG::end;
 
     }
 

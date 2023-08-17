@@ -52,7 +52,7 @@ bool Project::readLigidFile(
         std::ifstream rf(path, std::ios::out | std::ios::binary);
 		
         if(!rf) {
-            std::cout << "ERROR WHILE READING LIGID FILE! Cannot open file : " << path << std::endl;
+            LGDLOG::start<< "ERROR WHILE READING LIGID FILE! Cannot open file : " << path << LGDLOG::end;
             return false;
         }
 

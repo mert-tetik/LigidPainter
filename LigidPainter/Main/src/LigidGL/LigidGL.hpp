@@ -521,7 +521,7 @@ public:
     *   Example mouse position callback function :
     * 
     *   void mouse_pos_callback(int mouse_x_pos, int mouse_y_pos){
-    *       std::cout << mouse_x_pos << ' ' << mouse_y_pos << std::endl //Print the mouse position data to the terminal
+    *       LGDLOG::start<< mouse_x_pos << ' ' << mouse_y_pos << LGDLOG::end //Print the mouse position data to the terminal
     *   }
     * 
     *   How to use the function :
@@ -537,7 +537,7 @@ public:
     *   Example mouse button callback function :
     * 
     *   void mouse_btn_callback(int button, int action, int mods){
-    *       std::cout << button << ' ' << action << ' ' << mods << std::endl //Print the mouse button data to the terminal
+    *       LGDLOG::start<< button << ' ' << action << ' ' << mods << LGDLOG::end //Print the mouse button data to the terminal
     * 
     *       if(button == LIGIDGL_MOUSE_BUTTON_LEFT && action == LIGIDGL_PRESS && mods == LIGIDGL_MOD_DEFAULT){
     *           Pressed to the left mouse button
@@ -558,7 +558,7 @@ public:
     *   Example mouse button callback function :
     * 
     *   void key_callback(int key, int action, int mods){
-    *       std::cout << button << ' ' << action << ' ' << mods << std::endl //Print the key data to the terminal
+    *       LGDLOG::start<< button << ' ' << action << ' ' << mods << LGDLOG::end //Print the key data to the terminal
     * 
     *       if(key == LIGID_KEY_A && action == LIGIDGL_PRESS && mods == LIGIDGL_MOD_DEFAULT){
     *           Pressed to the 'A' key
@@ -579,7 +579,7 @@ public:
     *   Example window size callback function :
     * 
     *   void window_size_callback(int windowSizeX, int windowSizeY){
-    *       std::cout << windowSizeX << ' ' << windowSizeY << std::endl //Print the window size data to the terminal
+    *       LGDLOG::start<< windowSizeX << ' ' << windowSizeY << LGDLOG::end //Print the window size data to the terminal
     *       
     *       Do smt with the window size values
     *       ...  
@@ -600,7 +600,7 @@ public:
     * 
     *   void scroll_callback(double xOffset, int yOffset){
     *       
-    *       std::cout << xOffset << ' ' << yOffset << std::endl //Print the scroll data to the terminal
+    *       LGDLOG::start<< xOffset << ' ' << yOffset << LGDLOG::end //Print the scroll data to the terminal
     *       
     *       Do smt with the scroll values
     *       ...  

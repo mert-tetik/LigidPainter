@@ -40,7 +40,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void Project::updateProject(  int& textureRes){
     
     if(!std::filesystem::exists(folderPath)){
-        std::cout << "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << std::endl;
+        LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << LGDLOG::end;
         return;
     }
     

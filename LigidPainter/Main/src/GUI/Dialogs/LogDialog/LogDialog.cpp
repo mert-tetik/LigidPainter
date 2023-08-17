@@ -78,7 +78,6 @@ void LogDialog::render(LigidWindow originalWindow, ColorPalette colorPalette,Tim
     
     std::string a;
     LGDLOG::start >> a;
-    
     for (size_t i = 0; i < a.size(); i++)
     {
         if(i < a.size()-1){

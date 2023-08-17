@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 
 #define LGDMATERIAL_WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
-                                    std::cout << "ERROR : Writing lgdmaterial file. Failed to write at : " << loc << std::endl;\
+                                    LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << loc << LGDLOG::end;\
                                     if(std::filesystem::exists(path)){\
                                         std::filesystem::remove(path);\
                                     }\
@@ -60,7 +60,7 @@ bool FileHandler::writeLGDMATERIALFile(
         std::ofstream wf(path, std::ios::out | std::ios::binary);
 
         if(!wf) {
-            std::cout << "ERROR WHILE WRITING MATERIAL FILE! Cannot open file : " << path << std::endl;
+            LGDLOG::start<< "ERROR WHILE WRITING MATERIAL FILE! Cannot open file : " << path << LGDLOG::end;
             
             if(std::filesystem::exists(path))
                 std::filesystem::remove(path);
@@ -108,7 +108,7 @@ bool FileHandler::writeLGDMATERIALFile(
             char* pixels = new char[textureWidth * textureHeight * 4];
             material.materialModifiers[i].maskTexture.getData(pixels);
             if(!wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
-                std::cout << "ERROR : Writing lgdmaterial file. Failed to write at : " << "Mask texture - texture pixels" << std::endl;
+                LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << "Mask texture - texture pixels" << LGDLOG::end;
                 if(std::filesystem::exists(path)){
                     std::filesystem::remove(path);
                 }
@@ -135,7 +135,7 @@ bool FileHandler::writeLGDMATERIALFile(
                     else if(material.materialModifiers[i].sections[sI].elements[eI].state == 2)
                         propTitles.push_back(material.materialModifiers[i].sections[sI].header.button.text + "-" + material.materialModifiers[i].sections[sI].elements[eI].checkBox.text);
                     else{
-                        std::cout << "ERROR : Unknown GUI element type : " << material.materialModifiers[i].sections[sI].elements[eI].state << ". Failed to write the material file" << std::endl;
+                        LGDLOG::start<< "ERROR : Unknown GUI element type : " << material.materialModifiers[i].sections[sI].elements[eI].state << ". Failed to write the material file" << LGDLOG::end;
                         wf.close();
                         
                         if(std::filesystem::exists(path))
@@ -193,7 +193,7 @@ bool FileHandler::writeLGDMATERIALFile(
                         propElements[pI].button.texture.getData(pixels);
                         
                         if(!wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
-                            std::cout << "ERROR : Writing lgdmaterial file. Failed to write at : " << "Property texture - texture pixels" << std::endl;
+                            LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << "Property texture - texture pixels" << LGDLOG::end;
                             if(std::filesystem::exists(path)){
                                 std::filesystem::remove(path);
                             }

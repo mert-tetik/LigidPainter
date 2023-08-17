@@ -107,7 +107,7 @@ void libraryPanelDisplayerInteraction(
                 if(tdModel.meshes.size())
                     Library::addModel(tdModel);
                 else
-                    std::cout << "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << std::endl;
+                    LGDLOG::start<< "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << LGDLOG::end;
             }
             
         }
@@ -154,7 +154,7 @@ void libraryPanelDisplayerInteraction(
                 if(tdModel.meshes.size())
                     Library::addModel(tdModel);
                 else
-                    std::cout << "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << std::endl;
+                    LGDLOG::start<< "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << LGDLOG::end;
             }
         }
     }

@@ -181,7 +181,7 @@ std::vector<char> DecompressZlibChar(const std::vector<char>& compressedData, si
     stream.opaque = Z_NULL;
 
     if (inflateInit(&stream) != Z_OK) {
-        std::cerr << "Failed to initialize zlib for decompression." << std::endl;
+        std::cerr << "Failed to initialize zlib for decompression." << LGDLOG::end;
         return {};
     }
 
@@ -190,7 +190,7 @@ std::vector<char> DecompressZlibChar(const std::vector<char>& compressedData, si
     inflateEnd(&stream);
 
     if (result != Z_STREAM_END) {
-        std::cerr << "Failed to decompress zlib data. Error code: " << result << std::endl;
+        std::cerr << "Failed to decompress zlib data. Error code: " << result << LGDLOG::end;
         return {};
     }
 
@@ -211,7 +211,7 @@ std::vector<float> DecompressZlibFloat(const std::vector<char>& compressedData, 
     stream.opaque = Z_NULL;
 
     if (inflateInit(&stream) != Z_OK) {
-        std::cerr << "Failed to initialize zlib for decompression." << std::endl;
+        std::cerr << "Failed to initialize zlib for decompression." << LGDLOG::end;
         return {};
     }
 
@@ -220,7 +220,7 @@ std::vector<float> DecompressZlibFloat(const std::vector<char>& compressedData, 
     inflateEnd(&stream);
 
     if (result != Z_STREAM_END) {
-        std::cerr << "Failed to decompress zlib data. Error code: " << result << std::endl;
+        std::cerr << "Failed to decompress zlib data. Error code: " << result << LGDLOG::end;
         return {};
     }
 
@@ -245,7 +245,7 @@ std::vector<double> DecompressZlibDouble(const std::vector<char>& compressedData
     stream.opaque = Z_NULL;
 
     if (inflateInit(&stream) != Z_OK) {
-        std::cerr << "Failed to initialize zlib for decompression." << std::endl;
+        std::cerr << "Failed to initialize zlib for decompression." << LGDLOG::end;
         return {};
     }
 
@@ -254,7 +254,7 @@ std::vector<double> DecompressZlibDouble(const std::vector<char>& compressedData
     inflateEnd(&stream);
 
     if (result != Z_STREAM_END) {
-        std::cerr << "Failed to decompress zlib data. Error code: " << result << std::endl;
+        std::cerr << "Failed to decompress zlib data. Error code: " << result << LGDLOG::end;
         return {};
     }
 
@@ -279,7 +279,7 @@ std::vector<long long> DecompressZlibLongLong(const std::vector<char>& compresse
     stream.opaque = Z_NULL;
 
     if (inflateInit(&stream) != Z_OK) {
-        std::cerr << "Failed to initialize zlib for decompression." << std::endl;
+        std::cerr << "Failed to initialize zlib for decompression." << LGDLOG::end;
         return {};
     }
 
@@ -288,7 +288,7 @@ std::vector<long long> DecompressZlibLongLong(const std::vector<char>& compresse
     inflateEnd(&stream);
 
     if (result != Z_STREAM_END) {
-        std::cerr << "Failed to decompress zlib data. Error code: " << result << std::endl;
+        std::cerr << "Failed to decompress zlib data. Error code: " << result << LGDLOG::end;
         return {};
     }
 
@@ -313,7 +313,7 @@ std::vector<int> DecompressZlibInt(const std::vector<char>& compressedData, size
     stream.opaque = Z_NULL;
 
     if (inflateInit(&stream) != Z_OK) {
-        std::cerr << "Failed to initialize zlib for decompression." << std::endl;
+        std::cerr << "Failed to initialize zlib for decompression." << LGDLOG::end;
         return {};
     }
 
@@ -322,7 +322,7 @@ std::vector<int> DecompressZlibInt(const std::vector<char>& compressedData, size
     inflateEnd(&stream);
 
     if (result != Z_STREAM_END) {
-        std::cerr << "Failed to decompress zlib data. Error code: " << result << std::endl;
+        std::cerr << "Failed to decompress zlib data. Error code: " << result << LGDLOG::end;
         return {};
     }
 

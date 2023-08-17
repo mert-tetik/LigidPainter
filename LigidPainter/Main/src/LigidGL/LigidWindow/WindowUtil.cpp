@@ -19,6 +19,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 
 #include "LigidGL/LigidGL.hpp"
+#include "GUI/GUI.hpp"
 
 #include <GL/GL.h>
 #include <GL/GLU.h>
@@ -161,7 +162,7 @@ void LigidWindow::makeContextCurrent(){
 
     // Make the created context current for the given device context
     if(!wglMakeCurrent(hdc, this->openGLContext)){
-        std::cout << "Window OpenGL context - failed to make current" << std::endl;
+        LGDLOG::start<< "Window OpenGL context - failed to make current" << LGDLOG::end;
     }       
     
 
@@ -193,7 +194,7 @@ void LigidWindow::makeContextCurrent(){
     // Make the GLX context current
     if (!glXMakeCurrent(display, this->window, this->glxContext)) {
         // Failed to make context current
-        std::cout << "ERROR : Can't make the context current!" << std::endl;
+        LGDLOG::start<< "ERROR : Can't make the context current!" << LGDLOG::end;
     }
 
 #endif
@@ -296,7 +297,7 @@ void LigidWindow::setWindowSize(
     int originalY = CW_USEDEFAULT; // Use default Y position
 
     if (!SetWindowPos(this->window, nullptr, originalX, originalY, w, h, SWP_NOMOVE | SWP_NOZORDER)) {
-        std::cerr << "Failed to change window size." << std::endl;
+        std::cerr << "Failed to change window size." << LGDLOG::end;
     }
 
 #elif(__APPLE__)
@@ -352,7 +353,7 @@ void LigidWindow::getWindowPos(
     // Get the window position
     RECT windowRect;
     if (!GetWindowRect(this->window, &windowRect)) {
-        std::cerr << "Failed to get window position." << std::endl;
+        std::cerr << "Failed to get window position." << LGDLOG::end;
     }
 
     // Write the position data to the reference parameters
@@ -383,7 +384,7 @@ void LigidWindow::setWindowPos(
     int originalH = CW_USEDEFAULT; // Use default height
 
     if (!SetWindowPos(this->window, nullptr, x, y, originalW, originalH, SWP_NOSIZE | SWP_NOZORDER)) {
-        std::cerr << "Failed to change the window position." << std::endl;
+        std::cerr << "Failed to change the window position." << LGDLOG::end;
     }
 
 #elif(__APPLE__)

@@ -30,13 +30,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "GUI/GUI.hpp"
 
 unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip){
     stbi_set_flip_vertically_on_load(flip);
     unsigned char* data = stbi_load(aPath, &aWidth, &aHeight, &aChannels, desiredChannels);
     
     if(data != NULL){
-        std::cout << "Loaded " << aPath << std::endl;
+        LGDLOG::start<< "Loaded " << aPath << LGDLOG::end;
         return data;
     }
     
@@ -46,7 +47,7 @@ unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int 
 		{
 			reason = stbi_failure_reason();
 		}
-		std::cout << "Failed to load texture! " << aPath << " Reason : " << reason<< std::endl;
+		LGDLOG::start<< "Failed to load texture! " << aPath << " Reason : " << reason<< LGDLOG::end;
     
         stbi_image_free(data);
         

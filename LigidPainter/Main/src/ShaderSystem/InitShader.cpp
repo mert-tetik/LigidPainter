@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "GUI/GUI.hpp"
 
 ///@brief Default constructor 
 Shader::Shader(){}
@@ -60,15 +61,15 @@ Shader::Shader(
     {
         //Print the shader file paths 
         if(vertexPath != nullptr)
-            std::cout << "Loading : " << vertexPath << std::endl;        
+            LGDLOG::start<< "Loading : " << vertexPath << LGDLOG::end;        
         if(fragmentPath != nullptr)
-            std::cout << "Loading : " << fragmentPath << std::endl;    
+            LGDLOG::start<< "Loading : " << fragmentPath << LGDLOG::end;    
         if(geometryPath != nullptr)
-            std::cout << "Loading : " << geometryPath << std::endl;    
+            LGDLOG::start<< "Loading : " << geometryPath << LGDLOG::end;    
         if(tessControlPath != nullptr)
-            std::cout << "Loading : " << tessControlPath << std::endl;    
+            LGDLOG::start<< "Loading : " << tessControlPath << LGDLOG::end;    
         if(tessEvalPath != nullptr)
-            std::cout << "Loading : " << tessEvalPath << std::endl;    
+            LGDLOG::start<< "Loading : " << tessEvalPath << LGDLOG::end;    
 
 
         if(vertexPath != nullptr)
@@ -122,8 +123,8 @@ Shader::Shader(
     }
     catch (std::ifstream::failure& e)
     {
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " 
-            << e.what() << std::endl;
+        LGDLOG::start<< "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " 
+            << e.what() << LGDLOG::end;
     }
     const char* vShaderCode = vertexCode.c_str();
     const char * fShaderCode = fragmentCode.c_str();

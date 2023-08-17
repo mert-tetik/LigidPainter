@@ -28,6 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "UTIL/Util.hpp"
+#include "GUI/GUI.hpp"
 
 void Texture::load(const char* path){
     this->title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
@@ -54,7 +55,7 @@ void Texture::load(const char* path){
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
-		std::cout << "Loaded " << path << std::endl;
+		LGDLOG::start<< "Loaded " << path << LGDLOG::end;
 	}
 	else
 	{
@@ -63,7 +64,7 @@ void Texture::load(const char* path){
 		{
 			reason = stbi_failure_reason();
 		}
-		std::cout << "Failed to load texture! " << path << " Reason : " << reason<< std::endl;
+		LGDLOG::start<< "Failed to load texture! " << path << " Reason : " << reason<< LGDLOG::end;
 	}
     stbi_image_free(data);
 }

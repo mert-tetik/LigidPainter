@@ -53,7 +53,7 @@ void Project::duplicateFolder(std::string dstPath)
 
     //If the destination path doesn't exists
     if(!std::filesystem::exists(dstPath)){
-        std::cout << "ERROR : Can't duplicate the project folder! Destination path doesn't exists : " << dstPath << std::endl;
+        LGDLOG::start<< "ERROR : Can't duplicate the project folder! Destination path doesn't exists : " << dstPath << LGDLOG::end;
         return;
     }
 
@@ -62,7 +62,7 @@ void Project::duplicateFolder(std::string dstPath)
 
     //If there is already a folder with that name
     if(std::filesystem::exists(dstProjectPath)){
-        std::cout << "ERROR : Can't duplicate the project folder! There is already a folder with the same name : " << dstPath << std::endl;
+        LGDLOG::start<< "ERROR : Can't duplicate the project folder! There is already a folder with the same name : " << dstPath << LGDLOG::end;
         return;
     }
 

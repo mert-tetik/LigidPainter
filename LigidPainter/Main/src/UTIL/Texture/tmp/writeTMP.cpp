@@ -29,12 +29,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
+#include "GUI/GUI.hpp"
 
 void Texture::writeTMP(){
     //If the tmp directory doesn't exist then create it
     if(!std::filesystem::exists("./tmp")){
         if(!std::filesystem::create_directories("./tmp"))
-            std::cout << "ERROR : Writing TMP file : Creating tmp folder." << std::endl;     }
+            LGDLOG::start<< "ERROR : Writing TMP file : Creating tmp folder." << LGDLOG::end;     }
 
     //Unique generated name for the tmp file (doesn't include the extension)
     std::string tmpTitle = generateTMPTitle();
@@ -46,7 +47,7 @@ void Texture::writeTMP(){
     std::ofstream wf(tmpFilePath , std::ios::out | std::ios::binary);
 
     if(!wf) {
-        std::cout << "ERROR WHILE WRITING A TMP FILE! Cannot create file : " << tmpFilePath << std::endl;
+        LGDLOG::start<< "ERROR WHILE WRITING A TMP FILE! Cannot create file : " << tmpFilePath << LGDLOG::end;
         return;
     }   
 

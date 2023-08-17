@@ -18,6 +18,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <functional>
 
 #include "LigidGL/LigidGL.hpp"
+#include "GUI/GUI.hpp"
 
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -48,13 +49,13 @@ void LigidGL::setClipboardText(const std::string& text) {
 
     // Open the clipboard
     if (!OpenClipboard(nullptr)) {
-        std::cerr << "Failed to open the clipboard." << std::endl;
+        std::cerr << "Failed to open the clipboard." << LGDLOG::end;
         return;
     }
 
     // Empty the clipboard
     if (!EmptyClipboard()) {
-        std::cerr << "Failed to empty the clipboard." << std::endl;
+        std::cerr << "Failed to empty the clipboard." << LGDLOG::end;
         CloseClipboard();
         return;
     }
@@ -66,7 +67,7 @@ void LigidGL::setClipboardText(const std::string& text) {
     // Allocate global memory for the text
     HGLOBAL hGlobal = GlobalAlloc(GMEM_MOVEABLE, bufferSize);
     if (!hGlobal) {
-        std::cerr << "Failed to allocate global memory." << std::endl;
+        std::cerr << "Failed to allocate global memory." << LGDLOG::end;
         CloseClipboard();
         return;
     }
@@ -74,7 +75,7 @@ void LigidGL::setClipboardText(const std::string& text) {
     // Lock the memory and get a pointer to it
     char* data = static_cast<char*>(GlobalLock(hGlobal));
     if (!data) {
-        std::cerr << "Failed to lock global memory." << std::endl;
+        std::cerr << "Failed to lock global memory." << LGDLOG::end;
         GlobalFree(hGlobal);
         CloseClipboard();
         return;
@@ -88,7 +89,7 @@ void LigidGL::setClipboardText(const std::string& text) {
 
     // Set the data to the clipboard
     if (!SetClipboardData(CF_TEXT, hGlobal)) {
-        std::cerr << "Failed to set clipboard data." << std::endl;
+        std::cerr << "Failed to set clipboard data." << LGDLOG::end;
         GlobalFree(hGlobal);
         CloseClipboard();
         return;
@@ -118,14 +119,14 @@ std::string LigidGL::getClipboardText() {
 
     // Open the clipboard
     if (!OpenClipboard(nullptr)) {
-        std::cerr << "Failed to open the clipboard." << std::endl;
+        std::cerr << "Failed to open the clipboard." << LGDLOG::end;
         return clipboardText;
     }
 
     // Get the clipboard data handle
     HANDLE hClipboardData = GetClipboardData(CF_TEXT);
     if (hClipboardData == nullptr) {
-        std::cerr << "Failed to get clipboard data." << std::endl;
+        std::cerr << "Failed to get clipboard data." << LGDLOG::end;
         CloseClipboard();
         return clipboardText;
     }
@@ -133,7 +134,7 @@ std::string LigidGL::getClipboardText() {
     // Lock the data and get a pointer to it
     char* pData = static_cast<char*>(GlobalLock(hClipboardData));
     if (pData == nullptr) {
-        std::cerr << "Failed to lock clipboard data." << std::endl;
+        std::cerr << "Failed to lock clipboard data." << LGDLOG::end;
         CloseClipboard();
         return clipboardText;
     }

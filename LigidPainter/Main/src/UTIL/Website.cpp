@@ -45,7 +45,7 @@ void Website::open(){
     
     #else
     //Unknown OS  
-    std::cout << "ERROR : Can't open website. User-Unknown OS. (Switch to Windows / Linux / MacOS to solve the problem)"
+    LGDLOG::start<< "ERROR : Can't open website. User-Unknown OS. (Switch to Windows / Linux / MacOS to solve the problem)"
     return;
     #endif
 }

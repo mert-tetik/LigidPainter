@@ -61,9 +61,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
+#include "GUI/GUI.hpp"
     
 #define LGDBRUSH_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
-                                std::cout << "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << std::endl;\
+                                LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << LGDLOG::end;\
                                 return false; \
                             }
 
@@ -87,7 +88,7 @@ bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     brush.title = UTIL::removeExtension(brush.title);
 
     if(!rf) {
-        std::cout << "ERROR WHILE WRITING BRUSH FILE! Cannot open file : " << path << std::endl;
+        LGDLOG::start<< "ERROR WHILE WRITING BRUSH FILE! Cannot open file : " << path << LGDLOG::end;
         return false;
     }
         
@@ -105,7 +106,7 @@ bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     LGDBRUSH_READBITS(c3, uint64_t, "Description 3rd");
 
     if(c1 != h1 || c2 != h1 || c3 != h1 ){
-        std::cout << "ERROR WHILE READING BRUSH FILE! Description header is not correct." << std::endl;
+        LGDLOG::start<< "ERROR WHILE READING BRUSH FILE! Description header is not correct." << LGDLOG::end;
         return false;
     }
     
@@ -114,7 +115,7 @@ bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     LGDBRUSH_READBITS(versionNumber, uint32_t, "Version number");
 
     if(versionNumber != 0x000007D0){
-        std::cout << "WARNING! : Brush version number was : " << versionNumber << ". Results might be unexpected." << std::endl; 
+        LGDLOG::start<< "WARNING! : Brush version number was : " << versionNumber << ". Results might be unexpected." << LGDLOG::end; 
     }
 
     std::vector<LGDBRUSHProp> properties;
@@ -146,7 +147,7 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
             else if(properties[i].valueType == 'b')
                 brush.sizeJitter = properties[i].boolVal;
             else
-                std::cout << "ERROR! Parsing brush file. Invalid value type for the sizeJitter property : " << properties[i].valueType << "." << std::endl;
+                LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the sizeJitter property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "scatter"){
             if(properties[i].valueType == 'f')
@@ -154,7 +155,7 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
             else if(properties[i].valueType == 'b')
                 brush.scatter = properties[i].boolVal;
             else
-                std::cout << "ERROR! Parsing brush file. Invalid value type for the scatter property : " << properties[i].valueType << "." << std::endl;
+                LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the scatter property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "fade"){
             if(properties[i].valueType == 'f')
@@ -162,7 +163,7 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
             else if(properties[i].valueType == 'b')
                 brush.fade = properties[i].boolVal;
             else
-                std::cout << "ERROR! Parsing brush file. Invalid value type for the fade property : " << properties[i].valueType << "." << std::endl;
+                LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the fade property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "rotation"){
             if(properties[i].valueType == 'f')
@@ -170,7 +171,7 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
             else if(properties[i].valueType == 'b')
                 brush.rotation = properties[i].boolVal;
             else
-                std::cout << "ERROR! Parsing brush file. Invalid value type for the rotation property : " << properties[i].valueType << "." << std::endl;
+                LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the rotation property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "rotationJitter"){
             if(properties[i].valueType == 'f')
@@ -178,7 +179,7 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
             else if(properties[i].valueType == 'b')
                 brush.rotationJitter = properties[i].boolVal;
             else
-                std::cout << "ERROR! Parsing brush file. Invalid value type for the rotationJitter property : " << properties[i].valueType << "." << std::endl;
+                LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the rotationJitter property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "alphaJitter"){
             if(properties[i].valueType == 'f')
@@ -186,7 +187,7 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
             else if(properties[i].valueType == 'b')
                 brush.alphaJitter = properties[i].boolVal;
             else
-                std::cout << "ERROR! Parsing brush file. Invalid value type for the alphaJitter property : " << properties[i].valueType << "." << std::endl;
+                LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the alphaJitter property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "individualTexture"){
             if(properties[i].valueType == 'f')
@@ -194,7 +195,7 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
             else if(properties[i].valueType == 'b')
                 brush.individualTexture = properties[i].boolVal;
             else
-                std::cout << "ERROR! Parsing brush file. Invalid value type for the individualTexture property : " << properties[i].valueType << "." << std::endl;
+                LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the individualTexture property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "sinWavePattern"){
             if(properties[i].valueType == 'f')
@@ -202,16 +203,16 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
             else if(properties[i].valueType == 'b')
                 brush.sinWavePattern = properties[i].boolVal;
             else
-                std::cout << "ERROR! Parsing brush file. Invalid value type for the sinWavePattern property : " << properties[i].valueType << "." << std::endl;
+                LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the sinWavePattern property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "texture"){
             if(properties[i].valueType == 't')
                 brush.texture = properties[i].texture;
             else
-                std::cout << "ERROR! Parsing brush file. Invalid value type for the texture property : " << properties[i].valueType << "." << std::endl;
+                LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the texture property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else{
-            std::cout << "WARNING! Parning brush file. Unknown property : " << properties[i].title << std::endl;
+            LGDLOG::start<< "WARNING! Parning brush file. Unknown property : " << properties[i].title << LGDLOG::end;
         }
     }
 
@@ -261,7 +262,7 @@ static bool readFile(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties){
 
             char* pixels = new char[textureWidth * textureHeight * 4];
             if(!rf.read(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
-                std::cout << "ERROR : Reading lgdbrush file. Failed to read at : property - texture data - texture pixels" << std::endl;
+                LGDLOG::start<< "ERROR : Reading lgdbrush file. Failed to read at : property - texture data - texture pixels" << LGDLOG::end;
                 return false;   
             }
         
@@ -273,7 +274,7 @@ static bool readFile(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties){
             prop.texture.proceduralScale = proceduralScale;
         }
         else{
-            std::cout << "ERROR! Reading lgdbrush file. Unknown property value type!" << std::endl;
+            LGDLOG::start<< "ERROR! Reading lgdbrush file. Unknown property value type!" << LGDLOG::end;
             return false;
         }
         

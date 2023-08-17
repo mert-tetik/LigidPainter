@@ -58,7 +58,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     context.window.show();
 
     if(!context.window.setWindowIcon(L"./LigidPainter/Resources/Icons/logo-1080x.ico"))
-        std::cout << "ERROR : Can't change the icon of the window" << std::endl;
+        LGDLOG::start<< "ERROR : Can't change the icon of the window" << LGDLOG::end;
 
     context.window.setWindowUserPointer(this);
 
@@ -172,21 +172,21 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     //Create the projects folder if not exists
     if(!std::filesystem::exists("./Projects")){
         if(!std::filesystem::create_directory("./Projects"))
-            std::cout << "ERROR : Creating projects folder." << std::endl;
+            LGDLOG::start<< "ERROR : Creating projects folder." << LGDLOG::end;
     }
     
     //If the tmp directory doesn't exist then create 
     if(!std::filesystem::exists("./tmp")){
         if(!std::filesystem::create_directory("./tmp"))
-            std::cout << "ERROR : Creating tmp folder." << std::endl;
+            LGDLOG::start<< "ERROR : Creating tmp folder." << LGDLOG::end;
     }
 
     //If the tmp directory exists empty the folder
     else{
         if(!std::filesystem::remove_all("./tmp"))
-            std::cout << "ERROR : Deleting tmp folder. (after deleting)" << std::endl;
+            LGDLOG::start<< "ERROR : Deleting tmp folder. (after deleting)" << LGDLOG::end;
         if(!std::filesystem::create_directory("./tmp"))
-            std::cout << "ERROR : Creating tmp folder. (after deleting)" << std::endl;
+            LGDLOG::start<< "ERROR : Creating tmp folder. (after deleting)" << LGDLOG::end;
 
     }
 }
@@ -201,7 +201,7 @@ void Renderer::initGlad(){
     //Init GLAD
     if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
     {
-        std::cout << "Failed to initialize GLAD" << std::endl;
+        LGDLOG::start<< "Failed to initialize GLAD" << LGDLOG::end;
     }    
 }
 

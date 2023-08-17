@@ -29,12 +29,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
+#include "GUI/GUI.hpp"
 
 void Texture::readTMP(){
     //If the tmp directory doesn't exist then create it
     if(!std::filesystem::exists("./tmp")){
         if(!std::filesystem::create_directories("./tmp"))
-            std::cout << "ERROR : Reading TMP file : Creating tmp folder." << std::endl; 
+            LGDLOG::start<< "ERROR : Reading TMP file : Creating tmp folder." << LGDLOG::end; 
     }
 
     //Unique name for the tmp file with the greatest index (doesn't include the extension)
@@ -47,7 +48,7 @@ void Texture::readTMP(){
     std::ifstream rf(tmpFilePath , std::ios::in | std::ios::binary);
 
     if(!rf) {
-        std::cout << "ERROR WHILE READING A TMP FILE! Cannot open file : " << tmpFilePath << std::endl;
+        LGDLOG::start<< "ERROR WHILE READING A TMP FILE! Cannot open file : " << tmpFilePath << LGDLOG::end;
         return;
     }   
     
@@ -85,7 +86,7 @@ void Texture::readTMP(){
 
     //Delete the tmp file after reading
     if(!std::filesystem::remove(tmpFilePath))
-        std::cout << "ERROR : Reading tmp file. Couldn't remove the file after reading." << std::endl;
+        LGDLOG::start<< "ERROR : Reading tmp file. Couldn't remove the file after reading." << LGDLOG::end;
 }
 
 std::string Texture::getTMPTitleWithGreatestIndex(){

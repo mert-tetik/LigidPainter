@@ -174,13 +174,13 @@ void UTIL::duplicateFolder(const std::string src, const std::string dest){
         //If a folder then create a folder
         if(!std::filesystem::is_directory(file)){
             if(!std::filesystem::create_directories(dst))
-                std::cout << "ERROR : Duplicating folder : " << src << " to " << dest << ". Couldn't create : " << dst <<std::endl;
+                LGDLOG::start<< "ERROR : Duplicating folder : " << src << " to " << dest << ". Couldn't create : " << dst <<LGDLOG::end;
         }
 
         //If a file then duplicate the file
         else{
             if(!std::filesystem::copy_file(file, dst))
-                std::cout << "ERROR : Duplicating folder : " << src << " to " << dest << ". Copying file : " << file << " to " << dst << std::endl;
+                LGDLOG::start<< "ERROR : Duplicating folder : " << src << " to " << dest << ". Copying file : " << file << " to " << dst << LGDLOG::end;
         }
     }
 }

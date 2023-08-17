@@ -57,7 +57,7 @@ bool FileHandler::writeOBJFile(std::string path, Model model){
     std::ofstream wf(path, std::ios::out);
 
     if(!wf) {
-        std::cout << "ERROR WHILE WRITING *.OBJ FILE! Cannot open file : " << path << std::endl;
+        LGDLOG::start<< "ERROR WHILE WRITING *.OBJ FILE! Cannot open file : " << path << LGDLOG::end;
         return false;
     }
     

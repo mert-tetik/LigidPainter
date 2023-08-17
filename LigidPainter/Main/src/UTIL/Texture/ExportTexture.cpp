@@ -32,6 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "UTIL/Util.hpp"
+#include "GUI/GUI.hpp"
 
 void Texture::exportTexture(std::string path,const std::string format){
     glm::ivec2 scale;
@@ -50,22 +51,22 @@ void Texture::exportTexture(std::string path,const std::string format){
 
     if(format == "PNG"){
         if(!stbi_write_png((path + UTIL::folderDistinguisher() + title + ".png").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
-            std::cout << "ERROR Failed to write texture file : " << path << std::endl;
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path << LGDLOG::end;
         }
     }
     else if(format == "JPEG"){
         if(!stbi_write_jpg((path + UTIL::folderDistinguisher() + title + ".jpeg").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
-            std::cout << "ERROR Failed to write texture file : " << path << std::endl;
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path << LGDLOG::end;
         }
     }
     else if(format == "BMP"){
         if(!stbi_write_bmp((path + UTIL::folderDistinguisher() + title + ".bmp").c_str(), scale.x, scale.y, channels, pixels)){
-            std::cout << "ERROR Failed to write texture file : " << path << std::endl;
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path << LGDLOG::end;
         }
     }
     else if(format == "TGA"){
         if(!stbi_write_tga((path + UTIL::folderDistinguisher() + title + ".tga").c_str(), scale.x, scale.y, channels, pixels)){
-            std::cout << "ERROR Failed to write texture file : " << path << std::endl;
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path << LGDLOG::end;
         }
     }
 

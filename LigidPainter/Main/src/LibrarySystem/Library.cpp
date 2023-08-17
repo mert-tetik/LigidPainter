@@ -123,7 +123,7 @@ void Library::addModel(Model model){
 void Library::eraseTexture   (int index){
     
     if(index >= __textures.size()){
-        std::cout << "ERROR! : Couldn't erase the texture : Requested texture index is out of boundaries." << std::endl;
+        LGDLOG::start<< "ERROR! : Couldn't erase the texture : Requested texture index is out of boundaries." << LGDLOG::end;
         return;
     }
 
@@ -137,7 +137,7 @@ void Library::eraseTexture   (int index){
 void Library::eraseMaterial  (int index){
     
     if(index >= __materials.size()){
-        std::cout << "ERROR! : Couldn't erase the material : Requested material index is out of boundaries." << std::endl;
+        LGDLOG::start<< "ERROR! : Couldn't erase the material : Requested material index is out of boundaries." << LGDLOG::end;
         return;
     }
     
@@ -152,7 +152,7 @@ void Library::eraseMaterial  (int index){
 void Library::eraseBrush     (int index){
 
     if(index >= __brushes.size()){
-        std::cout << "ERROR! : Couldn't erase the brush : Requested brush index is out of boundaries." << std::endl;
+        LGDLOG::start<< "ERROR! : Couldn't erase the brush : Requested brush index is out of boundaries." << LGDLOG::end;
         return;
     }
     __changed = true;
@@ -163,7 +163,7 @@ void Library::eraseBrush     (int index){
 void Library::eraseModel     (int index){
     
     if(index >= __TDModels.size()){
-        std::cout << "ERROR! : Couldn't erase the model : Requested model index is out of boundaries." << std::endl;
+        LGDLOG::start<< "ERROR! : Couldn't erase the model : Requested model index is out of boundaries." << LGDLOG::end;
         return;
     }
         
@@ -257,7 +257,7 @@ void Library::setChanged(bool state){
 
 Texture* Library::getTexture(int index){
     if(index >= __textures.size()){
-        std::cout << "ERROR! : Couldn't get the texture : Requested texture index is out of boundaries." << std::endl;
+        LGDLOG::start<< "ERROR! : Couldn't get the texture : Requested texture index is out of boundaries." << LGDLOG::end;
         Texture a = Texture();
         return &a;
     }
@@ -265,7 +265,7 @@ Texture* Library::getTexture(int index){
 }
 Material* Library::getMaterial(int index){
     if(index >= __materials.size()){
-        std::cout << "ERROR! : Couldn't get the material : Requested material index is out of boundaries." << std::endl;
+        LGDLOG::start<< "ERROR! : Couldn't get the material : Requested material index is out of boundaries." << LGDLOG::end;
         Material a = Material();
         return &a;
     }
@@ -273,7 +273,7 @@ Material* Library::getMaterial(int index){
 }
 Brush* Library::getBrush(int index){
     if(index >= __brushes.size()){
-        std::cout << "ERROR! : Couldn't get the brush : Requested brush index is out of boundaries." << std::endl;
+        LGDLOG::start<< "ERROR! : Couldn't get the brush : Requested brush index is out of boundaries." << LGDLOG::end;
         Brush a = Brush();
         return &a;
     }
@@ -281,7 +281,7 @@ Brush* Library::getBrush(int index){
 }
 Model* Library::getModel(int index){
     if(index >= __TDModels.size()){
-        std::cout << "ERROR! : Couldn't get the model : Requested model index is out of boundaries." << std::endl;
+        LGDLOG::start<< "ERROR! : Couldn't get the model : Requested model index is out of boundaries." << LGDLOG::end;
         Model a = Model();
         return &a;
     }

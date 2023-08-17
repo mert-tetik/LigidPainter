@@ -41,7 +41,7 @@ void Renderer::render(){
     context.window.pollEvents();
     //Update local timer data
     if(timer.runTimer(1.f)){
-        //std::cout << timer.FPS << std::endl; //Print the fps every second
+        //LGDLOG::start<< timer.FPS << LGDLOG::end; //Print the fps every second
         LGDLOG::start << (timer.FPS) << LGDLOG::end;
     }
     

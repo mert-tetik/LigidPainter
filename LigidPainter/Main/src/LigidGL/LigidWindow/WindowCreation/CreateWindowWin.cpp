@@ -19,6 +19,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 
 #include "LigidGL/LigidGL.hpp"
+#include "GUI/GUI.hpp"
 #include <utility>
 
 #include <gl/GL.h>
@@ -76,7 +77,7 @@ wglChoosePixelFormatARB_type *wglChoosePixelFormatARB;
 
 static void fatal_error(char *uMsg)
 {
-    std::cout << "ERROR : " << uMsg << std::endl;
+    LGDLOG::start<< "ERROR : " << uMsg << LGDLOG::end;
     //exit(EXIT_FAILURE);
 }
 
@@ -219,8 +220,8 @@ HGLRC init_opengl(HDC real_dc)
 
     HGLRC gl33_context = wglCreateContextAttribsARB(real_dc, 0, gl33_attribs);
     if (!gl33_context) {
-        std::cout << "Failed to create OpenGL 4.0 context. Your GPU might not be compatible with the OpenGL version 4.0" << std::endl;
-        std::cout << "Trying to create the OpenGL context without the attributes." << std::endl;
+        LGDLOG::start<< "Failed to create OpenGL 4.0 context. Your GPU might not be compatible with the OpenGL version 4.0" << LGDLOG::end;
+        LGDLOG::start<< "Trying to create the OpenGL context without the attributes." << LGDLOG::end;
     
         gl33_context = wglCreateContext(real_dc);
 

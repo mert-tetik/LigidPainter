@@ -88,7 +88,7 @@ Node::Node(int nodeIndex, int materialID, ColorPalette colorPalette, AppTextures
             inputs[0].element.button.textureSelection = true;
     }
     else
-        std::cout << "WARNING : Unknown node type is requested : " << nodeIndex << std::endl;
+        LGDLOG::start<< "WARNING : Unknown node type is requested : " << nodeIndex << LGDLOG::end;
 
     //Add inputs & outputs to the IOs vector
     this->addVectors(this->IOs, inputs);

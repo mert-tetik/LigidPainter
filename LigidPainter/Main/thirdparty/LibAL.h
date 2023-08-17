@@ -23,7 +23,7 @@
                 
                 
                 if(!LibAL_start())
-		            std::cout << "ERROR : Initializing LibAL " << LibALerrorMsg << std::endl;
+		            LGDLOG::start<< "ERROR : Initializing LibAL " << LibALerrorMsg << LGDLOG::end;
 	            
                 unsigned int sound1;//These are objects
 	            unsigned int sound2;
@@ -62,7 +62,7 @@
                 
                 
                 if(!LibAL_start())
-		            std::cout << "ERROR : Initializing LibAL\n";
+		            LGDLOG::start<< "ERROR : Initializing LibAL\n";
 	            
                 unsigned int sound1;//These are objects
 	            unsigned int sound2;
@@ -136,7 +136,7 @@
                 std::vector<unsigned int> characterVoiceFileObjects;
 
                 if(!LibAL_start())
-		            std::cout << "ERROR : Initializing LibAL\n";
+		            LGDLOG::start<< "ERROR : Initializing LibAL\n";
 
 
                 for (size_t i = 0; i < characterVoiceFilePaths.size(); i++)
@@ -181,7 +181,7 @@
                 
                 
                 if(!LibAL_start())
-		            std::cout << "ERROR : Initializing LibAL" << std::endl;
+		            LGDLOG::start<< "ERROR : Initializing LibAL" << LGDLOG::end;
 	            
                 unsigned int sound;
                 LibAL_genAudio(sound);
@@ -195,7 +195,7 @@
                 ALsizei size;
                 
 	            if(!LibAL_readWAVFile(path,bufferData,channels,sampleRate,bitsPerSample,size)){ //You can use your own importer
-                    std::cout << "ERROR : Reading wav file";
+                    LGDLOG::start<< "ERROR : Reading wav file";
                 }
 
                 LibAL_modifyAudioViaData(channels,bitsPerSample,bufferData,size,sampleRate,sound);
@@ -226,7 +226,7 @@
                 
                 
                 if(!LibAL_start())
-		            std::cout << "ERROR : Initializing LibAL\n";
+		            LGDLOG::start<< "ERROR : Initializing LibAL\n";
 	            
                 unsigned int sound;
 
@@ -266,7 +266,7 @@
                 
                 
                 if(!LibAL_start())
-		            std::cout << "ERROR : Initializing LibAL\n";
+		            LGDLOG::start<< "ERROR : Initializing LibAL\n";
 	            
                 unsigned int sound;
 
@@ -312,7 +312,7 @@
                 size_t size;
                 
 	            if(!LibAL_readWAVFile(path,bufferData,channels,sampleRate,bitsPerSample,size)){ //You can use your own importer
-                    std::cout << "ERROR : Reading wav file";
+                    LGDLOG::start<< "ERROR : Reading wav file";
                 }
 
                 aSoundRendererThatIsOtherThanOpenAL.playSoundblabla(path,bufferData,channels,sampleRate,bitsPerSample,size); //😡
@@ -342,7 +342,7 @@
                 
                 
                 if(!LibAL_start())
-		            std::cout << "ERROR : Initializing LibAL\n";
+		            LGDLOG::start<< "ERROR : Initializing LibAL\n";
 	            
                 unsigned int sound;
 
@@ -1966,15 +1966,15 @@ typedef void           (ALC_APIENTRY *LPALCCAPTURESAMPLES)(ALCdevice *device, AL
             if (error != AL_NO_ERROR) 
             { 
                 if(error == AL_INVALID_ENUM)
-                    std::cout << "AL_INVALID_ENUM";
+                    LGDLOG::start<< "AL_INVALID_ENUM";
                 if(error == AL_INVALID_NAME)
-                    std::cout << "AL_INVALID_NAME";
+                    LGDLOG::start<< "AL_INVALID_NAME";
                 if(error == AL_INVALID_OPERATION)
-                    std::cout << "AL_INVALID_OPERATION";
+                    LGDLOG::start<< "AL_INVALID_OPERATION";
                 if(error == AL_INVALID_VALUE)
-                    std::cout << "AL_INVALID_VALUE";
+                    LGDLOG::start<< "AL_INVALID_VALUE";
                 if(error == AL_OUT_OF_MEMORY)
-                    std::cout << "AL_OUT_OF_MEMORY";
+                    LGDLOG::start<< "AL_OUT_OF_MEMORY";
             }
         }
     }

@@ -404,9 +404,7 @@ namespace LGDLOG {
       // Overload >> operator for input
       LogMsg& operator>>(std::string& input) {
          // Read input from the user and store it in 'input'
-         inputBuffer.clear(); // Clear previous state
-         inputBuffer.str(buffer.str()); // Transfer output buffer to input buffer
-         inputBuffer >> input; // Extract the input from the buffer
+         input = buffer.str();
          return *this;
       }
 
@@ -417,7 +415,6 @@ namespace LGDLOG {
 
    private:
       std::ostringstream buffer;
-      std::istringstream inputBuffer; // Use istringstream to store input
    };
 
    extern LogMsg start;
