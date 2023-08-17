@@ -739,6 +739,9 @@ struct AppTextures{
     Texture nodeDisplayingMode;
     Texture paintingDisplayingMode;
     Texture solidPaintingDisplayingMode;
+    Texture logButtonL;
+    Texture logButtonR;
+    Texture logButtonM;
     
     //--Textures
     Texture greetingDialogImage;  

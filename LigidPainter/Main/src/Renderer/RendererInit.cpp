@@ -225,6 +225,9 @@ void Renderer::loadAppTextures(){
     appTextures.paintingDisplayingMode.load("./LigidPainter/Resources/Icons/PaintingDisplayingMode.png");
     appTextures.solidPaintingDisplayingMode.load("./LigidPainter/Resources/Icons/SolidPaintingDisplayingMode.png");
     appTextures.ligidPainterIcon.load("./LigidPainter/Resources/Icons/LigidPainter.png");
+    appTextures.logButtonL.load("./LigidPainter/Resources/Icons/LogButtonL.png");
+    appTextures.logButtonR.load("./LigidPainter/Resources/Icons/LogButtonR.png");
+    appTextures.logButtonM.load("./LigidPainter/Resources/Icons/LogButtonM.png");
     appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
     appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
 }

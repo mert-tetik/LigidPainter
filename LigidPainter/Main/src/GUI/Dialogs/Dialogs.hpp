@@ -421,6 +421,9 @@ namespace LGDLOG {
    extern std::string end;
 }
 
+#define TEXTURE_UPDATING_ACTION 0
+
+void registerAction(const std::string title, const unsigned int id, const Texture icon);
 
 class LogDialog
 {
@@ -430,7 +433,18 @@ class LogDialog
  
  public:
    Panel panel;
-   
+   Button logBtn;
+   Button logBtnR;
+   Button logBtnL;
+
+   glm::vec2 pos = glm::vec2(50.f);
+
+   float panelXAxisMixVal = 0.f;
+   float panelYAxisMixVal = 0.f;
+
+   bool messagesActive = false;
+   bool actionHistoryActive = false;
+
    DialogControl dialogControl;
 
    //Constructors

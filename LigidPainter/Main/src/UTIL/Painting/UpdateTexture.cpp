@@ -65,6 +65,8 @@ void Painter::updateTexture(Model &model, Scene scene, Panel& twoDPaintingPanel,
     
     glm::vec2 textureRes = this->selectedTexture.getResolution();
 
+    registerAction("Did painting", 0, Texture());
+
     //Write the tmp file of the selected texture before updating the texture (for undo)
     selectedTexture.writeTMP();
     

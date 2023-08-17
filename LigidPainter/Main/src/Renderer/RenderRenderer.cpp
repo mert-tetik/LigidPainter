@@ -41,13 +41,11 @@ void Renderer::render(){
     context.window.pollEvents();
     //Update local timer data
     if(timer.runTimer(1.f)){
-        //LGDLOG::start<< timer.FPS << LGDLOG::end; //Print the fps every second
-        LGDLOG::start << (timer.FPS) << LGDLOG::end;
+        std::cout << timer.FPS << std::endl;
     }
     
     if(_ligid_renderer_render_first_frame)
         this->context.window.setWindowSize(scene.videoScale.x,scene.videoScale.y);
-
 
     //Update OpenGL viewport every frame
     updateViewport();
