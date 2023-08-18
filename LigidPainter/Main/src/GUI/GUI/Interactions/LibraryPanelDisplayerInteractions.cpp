@@ -37,7 +37,7 @@ void libraryPanelDisplayerInteraction(
                                         Panel &libraryPanelDisplayer, 
                                         Panel &paintingPanel, 
                                         Painter &painter, 
-                                        Model &model, 
+                                        
                                         ColorPalette& colorPalette, 
                                         NewTextureDialog &newTextureDialog,
                                         AppMaterialModifiers &appMaterialModifiers,
@@ -59,8 +59,8 @@ void libraryPanelDisplayerInteraction(
         }
         if(Library::getSelectedElementIndex() == 3){ //Models selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LClick()){
-                model = *Library::getModel(i); //Select the model
-                model.newModelAdded = true; 
+                *getModel() = *Library::getModel(i); //Select the model
+                getModel()->newModelAdded = true; 
             } 
         }
     }

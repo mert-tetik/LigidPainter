@@ -40,7 +40,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void UI::init
             (  
                  //All the shaders
-                Context context, //window & stuff
+                //window & stuff
                 //Textures used in GUI
                 Websites websites, //Websites related to the LigidPainter
                 glm::vec2 videoScale, //Monitor resolution
@@ -425,16 +425,16 @@ void UI::init
                         );
 
     //Init dialogs
-    greetingDialog              = GreetingDialog(context,videoScale,colorPalette);
-    newTextureDialog            = NewTextureDialog(context,videoScale,colorPalette);
-    logDialog                   = LogDialog(context,videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
-    displayerDialog             = DisplayerDialog(context,videoScale,colorPalette,sphereModel);
+    greetingDialog              = GreetingDialog(videoScale,colorPalette);
+    newTextureDialog            = NewTextureDialog(videoScale,colorPalette);
+    logDialog                   = LogDialog(videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
+    displayerDialog             = DisplayerDialog(videoScale,colorPalette,sphereModel);
     materialEditorDialog        = MaterialEditorDialog(colorPalette, sphereModel);
     textureSelectionDialog      = TextureSelectionDialog(colorPalette);
-    loadProjectDialog           = LoadProjectDialog(context,videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
-    newProjectDialog            = NewProjectDialog(context,videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
-    settingsDialog              = SettingsDialog(context,videoScale,colorPalette);
-    exportDialog                = ExportDialog(context,videoScale,colorPalette);
+    loadProjectDialog           = LoadProjectDialog(videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
+    newProjectDialog            = NewProjectDialog(videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
+    settingsDialog              = SettingsDialog(videoScale,colorPalette);
+    exportDialog                = ExportDialog(videoScale,colorPalette);
 
     char whitePixel[] = { 127, 127, 127, 127 };
     paintingPanel.sections[2].elements[4].button.textureSelection = true;
@@ -458,7 +458,7 @@ void UI::init
     
     //Init renaming textbox
     libraryPanelDisplayer.isLibraryDisplayer = true;
-    renamingTextBox = TextBox(0,glm::vec2(4,2),colorPalette,"",4.f,false),context.window;
+    renamingTextBox = TextBox(0,glm::vec2(4,2),colorPalette,"",4.f,false);
     renamingTextBox.thickness = 0.f;
     renamingTextBox.animationStyle = 1;
     renamingTextBox.radius = 10000.f;

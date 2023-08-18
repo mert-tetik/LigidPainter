@@ -256,7 +256,7 @@ static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, ColorPalette& colorPalette);
 static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex, ColorPalette& colorPalette);
 
-void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, LigidWindow& window, TextRenderer& textRenderer, int displayingTextureRes){
+void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, TextRenderer& textRenderer, int displayingTextureRes){
     
     this->dialogControl.activate();
         
@@ -264,9 +264,9 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
     glm::ivec2 windowSize;
     initTextureSelectionDialog(textRenderer, this->selectedTextureMode, bgTexture, windowSize, this->subPanel, this->selectedTextureIndex, receivedTexture);
 
-    while (!window.shouldClose())
+    while (!getContext()->window.shouldClose())
     {
-        window.pollEvents();
+        getContext()->window.pollEvents();
         
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -355,7 +355,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
         }
 
         //End the dialog
-        if((window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && *Mouse::LClick())){
+        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && *Mouse::LClick())){
             dialogControl.unActivate();
             selectedTextureIndex = 0;
         }
@@ -365,7 +365,7 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
             
         dialogControl.updateEnd(timer,0.15f);
 
-        window.swapBuffers();
+        getContext()->window.swapBuffers();
 
         //Set mouse states to default
         *Mouse::LClick() = false;

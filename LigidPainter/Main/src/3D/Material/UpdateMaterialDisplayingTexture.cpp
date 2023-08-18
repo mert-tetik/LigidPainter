@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <iostream>
@@ -32,7 +33,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void Material::updateMaterialDisplayingTexture(
                                                 float textureRes,
                                                 Box box,
-                                                Context context,
                                                 Model sphereModel,
                                                 bool updateMaterial,
                                                 Camera matCam,
@@ -60,7 +60,7 @@ void Material::updateMaterialDisplayingTexture(
         //TODO : Material - update material function
         for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
         {
-            this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i, projectionMatrix, view);
+            this->materialModifiers[i].updateMaterialChannels(*this, sphereModel.meshes[0], textureRes, i);
         }
     }
     
@@ -118,5 +118,5 @@ void Material::updateMaterialDisplayingTexture(
     glBindFramebuffer(GL_FRAMEBUFFER,0);
     
     //Set the OpenGL viewport to default
-    glViewport(0,0,context.windowScale.x,context.windowScale.y);
+    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
 }

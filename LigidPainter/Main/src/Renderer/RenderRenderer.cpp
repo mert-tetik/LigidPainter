@@ -39,14 +39,14 @@ bool _ligid_renderer_render_first_frame = true;
 void Renderer::render(){
     
     //Handle user input and interact with the windowing system
-    context.window.pollEvents();
+    getContext()->window.pollEvents();
     //Update local timer data
     if(timer.runTimer(1.f)){
         std::cout << timer.FPS << std::endl;
     }
     
     if(_ligid_renderer_render_first_frame)
-        this->context.window.setWindowSize(scene.videoScale.x,scene.videoScale.y);
+        getContext()->window.setWindowSize(Settings::videoScale()->x, Settings::videoScale()->y);
 
     //Update OpenGL viewport every frame
     updateViewport();
@@ -76,7 +76,7 @@ void Renderer::render(){
     //Update the depth texture if necessary
     if(painter.updateTheDepthTexture && !*Mouse::RPressed()){ //Last frame camera changed position
         //Update the depth texture
-        painter.updateDepthTexture(model,context.windowScale);
+        painter.updateDepthTexture();
 
         painter.updateTheDepthTexture = false;
     }
@@ -108,14 +108,14 @@ void Renderer::render(){
     //Get the nodes connected to the mesh node (output node)
     
     //Render each mesh
-    for (size_t i = 0; i < model.meshes.size(); i++)
+    for (size_t i = 0; i < getModel()->meshes.size(); i++)
     {
         
         /* Albedo */
         glActiveTexture(GL_TEXTURE2);
         if(painter.selectedDisplayingModeIndex == 0){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
-                glBindTexture(GL_TEXTURE_2D, model.meshes[i].albedo.ID);
+                glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].albedo.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
             }
@@ -126,7 +126,7 @@ void Renderer::render(){
         glActiveTexture(GL_TEXTURE3);
         if(painter.selectedDisplayingModeIndex == 0){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
-                glBindTexture(GL_TEXTURE_2D, model.meshes[i].roughness.ID);
+                glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].roughness.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
@@ -137,7 +137,7 @@ void Renderer::render(){
         glActiveTexture(GL_TEXTURE4);
         if(painter.selectedDisplayingModeIndex == 0){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
-                glBindTexture(GL_TEXTURE_2D, model.meshes[i].metallic.ID);
+                glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].metallic.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
@@ -148,7 +148,7 @@ void Renderer::render(){
         glActiveTexture(GL_TEXTURE5);
         if(painter.selectedDisplayingModeIndex == 0){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
-                glBindTexture(GL_TEXTURE_2D, model.meshes[i].normalMap.ID);
+                glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].normalMap.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
@@ -159,7 +159,7 @@ void Renderer::render(){
         glActiveTexture(GL_TEXTURE6);
         if(painter.selectedDisplayingModeIndex == 0){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
-                glBindTexture(GL_TEXTURE_2D, model.meshes[i].heightMap.ID);
+                glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].heightMap.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
@@ -170,7 +170,7 @@ void Renderer::render(){
         glActiveTexture(GL_TEXTURE7);
         if(painter.selectedDisplayingModeIndex == 0){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
-                glBindTexture(GL_TEXTURE_2D, model.meshes[i].ambientOcclusion.ID);
+                glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].ambientOcclusion.ID);
             else
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
@@ -199,7 +199,7 @@ void Renderer::render(){
             ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
         //Draw the mesh
-        model.meshes[i].Draw();
+        getModel()->meshes[i].Draw();
     }
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
@@ -211,21 +211,18 @@ void Renderer::render(){
     box.bindBuffers();
     
     //Update the UI projection using window size
-    userInterface.projection = glm::ortho(0.f,(float)context.windowScale.x,(float)context.windowScale.y,0.f);
+    userInterface.projection = glm::ortho(0.f,(float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
     
     //Render the UI
     userInterface.render(   //Params
-                            scene.videoScale,
+                            *Settings::videoScale(),
                             timer,
                             textRenderer,
-                            context,
                             box,
                             contextMenus,
                             project,
                             painter,
-                            skybox,
-                            model,
-                            scene
+                            skybox
                         );
 
     //Painting
@@ -233,8 +230,7 @@ void Renderer::render(){
         //Paint
         painter.doPaint(    
                            
-                            userInterface.projection,
-                            this->context
+                            userInterface.projection
                         );
 
     }
@@ -251,7 +247,7 @@ void Renderer::render(){
         */
 
         //Update the selected texture after painting
-        painter.updateTexture(model, scene, userInterface.twoDPaintingPanel, userInterface.projection, userInterface.twoDPaintingSceneScroll, userInterface.twoDPaintingScenePos);
+        painter.updateTexture(userInterface.twoDPaintingPanel, userInterface.projection, userInterface.twoDPaintingSceneScroll, userInterface.twoDPaintingScenePos);
         //Refresh the 2D painting texture
         painter.refreshPainting();
 
@@ -267,11 +263,11 @@ void Renderer::render(){
     *Mouse::RClick() = false;
     *Mouse::MClick() = false;
     
-    if(!this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_LEFT))
+    if(!getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_LEFT))
         *Mouse::LPressed() = false;
-    if(!this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT))
+    if(!getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT))
         *Mouse::RPressed() = false;
-    if(!this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE))
+    if(!getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE))
         *Mouse::MPressed() = false;
 
     *Mouse::LDoubleClick() = false;
@@ -284,11 +280,11 @@ void Renderer::render(){
     textRenderer.mods = 0;
     textRenderer.action = 0;
 
-    //Let the model.newModelAdded be true for an another cycle
+    //Let the getModel()->newModelAdded be true for an another cycle
     if(previousModelNewModelAdded == true)
-        model.newModelAdded = false;
+        getModel()->newModelAdded = false;
 
-    previousModelNewModelAdded = model.newModelAdded; 
+    previousModelNewModelAdded = getModel()->newModelAdded; 
 
     //Cursor is changing there
     //Sets the active cursor (mouse.activeCursor) as the cursor
@@ -296,7 +292,7 @@ void Renderer::render(){
     Mouse::updateCursor();  
 
     //Swap the front and back buffers of the window
-    context.window.swapBuffers();
+    getContext()->window.swapBuffers();
 
     _ligid_renderer_render_first_frame = false;
 }
@@ -305,25 +301,27 @@ void Renderer::render(){
 
 
 void Renderer::updateViewMatrix(){
-    scene.viewMatrix = glm::lookAt(scene.camera.cameraPos, 
-                                    scene.camera.originPos, 
-                                    glm::vec3(0.0, 1.0, 0.0));
+    getScene()->viewMatrix = glm::lookAt( 
+                                    getScene()->camera.cameraPos, 
+                                    getScene()->camera.originPos, 
+                                    glm::vec3(0.0, 1.0, 0.0)
+                                );
 }
 
 void Renderer::updateProjectionMatrix(){
-    if(context.windowScale.x){
-        scene.projectionMatrix = glm::perspective(glm::radians(scene.fov), 
-                                            (float)context.windowScale.x / (float)context.windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
-                                            scene.aNear, 
-                                            scene.aFar);
+    if(getContext()->windowScale.x){
+        getScene()->projectionMatrix = glm::perspective(glm::radians(getScene()->fov), 
+                                            (float)getContext()->windowScale.x / (float)getContext()->windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
+                                            getScene()->aNear, 
+                                            getScene()->aFar);
     }
 }
 
 void Renderer::updateViewport(){
     glViewport(0, 
                 0, 
-                context.windowScale.x, 
-                context.windowScale.y);
+                getContext()->windowScale.x, 
+                getContext()->windowScale.y);
 }
 
 void Renderer::set3DUniforms(){
@@ -341,21 +339,21 @@ void Renderer::set3DUniforms(){
     ShaderSystem::tdModelShader().setInt("ambientOcclusionTxtr",7);
     ShaderSystem::tdModelShader().setInt("paintingTexture",8);
     ShaderSystem::tdModelShader().setInt("depthTexture",9);
-    ShaderSystem::tdModelShader().setVec3("viewPos",scene.camera.cameraPos);
-    ShaderSystem::tdModelShader().setMat4("view",scene.viewMatrix);
-    ShaderSystem::tdModelShader().setMat4("projection",scene.projectionMatrix);
+    ShaderSystem::tdModelShader().setVec3("viewPos", getScene()->camera.cameraPos);
+    ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::tdModelShader().setMat4("projection", getScene()->projectionMatrix);
     glm::mat4 modelMatrix = glm::mat4(1);
     ShaderSystem::tdModelShader().setMat4("modelMatrix",modelMatrix);
 
     //Shader (used to render the model with depth)
     ShaderSystem::depth3D().use();
-    ShaderSystem::depth3D().setMat4("view",scene.viewMatrix);
-    ShaderSystem::depth3D().setMat4("projection",scene.projectionMatrix);
+    ShaderSystem::depth3D().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::depth3D().setMat4("projection", getScene()->projectionMatrix);
 
     //Skybox ball shader 
     ShaderSystem::skyboxBall().use();
-    ShaderSystem::skyboxBall().setMat4("view",scene.viewMatrix);
-    ShaderSystem::skyboxBall().setMat4("projection",scene.projectionMatrix);
+    ShaderSystem::skyboxBall().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::skyboxBall().setMat4("projection", getScene()->projectionMatrix);
 
 }
 
@@ -370,8 +368,8 @@ void Renderer::renderSkyBox(){
     
     //Skybox shader
     ShaderSystem::skyboxShader().use();
-    ShaderSystem::skyboxShader().setMat4("view",scene.viewMatrix);
-    ShaderSystem::skyboxShader().setMat4("projection",scene.projectionMatrix);
+    ShaderSystem::skyboxShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::skyboxShader().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::skyboxShader().setMat4("transformMatrix",skybox.transformMatrix);
     ShaderSystem::skyboxShader().setFloat("lod",skybox.lod);
     ShaderSystem::skyboxShader().setVec3("bgColor",skybox.bgColor);

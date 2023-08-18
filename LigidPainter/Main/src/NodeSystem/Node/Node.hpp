@@ -160,19 +160,19 @@ public:
 
     /// @brief Render the node & manage inputs & outputs 
     /// @param currentNodeIndex which node is rendered (index of the nodeScene)
-    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel,  Model &model, int textureRes, Scene scene);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel,  int textureRes);
 
     /// @brief Replaces the IOs vector with the new inputs & outputs (+ generates the node panel)  
     void uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs);
     
     /// @brief Replaces the IOs vector with the new IOs generated with meshes of the 3D model (used for the mesh node) (+ generates the node panel)  
-    void uploadNewIOs(Model &model, ColorPalette colorPalette);
+    void uploadNewIOs(ColorPalette colorPalette);
 };
 
 namespace NodeScene{
 
     /// @brief Renders the node list 
-    void render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Model &model, Scene scene, Panel nodeEditorPanel, NodePanel& nodePanel);
+    void render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Panel nodeEditorPanel, NodePanel& nodePanel);
     
     /// @brief Adds the given node to the scene 
     void addNode(const Node node);
@@ -195,10 +195,10 @@ namespace NodeScene{
     /// @param index remove the meshNodeScene[index]
     void deleteNode(int index);
 
-    Mesh processNode(Node &node, Mesh& mesh, Scene scene, int textureRes);
+    Mesh processNode(Node &node, Mesh& mesh, int textureRes);
 
     /// @brief Updates the result textures of the every input of the mesh node
-    void updateNodeResults( Model& model, Scene scene, int textureRes, int updateNodeI);
+    void updateNodeResults( int textureRes, int updateNodeI);
 
     std::vector<Node>* getNodeArrayPointer();
 };

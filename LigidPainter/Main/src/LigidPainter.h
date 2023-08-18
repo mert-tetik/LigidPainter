@@ -17,6 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include "../../thirdparty/include/glm/glm.hpp"
 
@@ -25,15 +26,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class LigidPainter{
 public:
     int run(){
-        
-        
         // .x : width | .y : height | .z : refresh rate  
         glm::ivec3 primaryMonitorData;
         LigidGL::getPrimaryMonitorData(primaryMonitorData.x, primaryMonitorData.y, primaryMonitorData.z);
 
-        Renderer renderer(glm::vec2(primaryMonitorData.x,primaryMonitorData.y));
+        *Settings::videoScale() = glm::vec2(primaryMonitorData.x, primaryMonitorData.y);
+
+        Renderer renderer = Renderer();
         
-        while(!renderer.context.window.shouldClose())
+        while(!getContext()->window.shouldClose())
         {   
             renderer.render();
         }

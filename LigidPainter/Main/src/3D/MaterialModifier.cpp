@@ -61,6 +61,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 //0 = albedo
 //1 = roughness
@@ -71,15 +72,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 MaterialModifier::MaterialModifier(){}
 
-void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
-void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
 
 MaterialModifier::MaterialModifier(ColorPalette colorPalette, int modifierIndex){
     
@@ -892,7 +893,7 @@ glm::vec2 getDirectionVector(float rotation) {
 }
 
 
-void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     //Set the OpenGL viewport to the texture resolution
     glViewport(0,0,textureResolution,textureResolution);
@@ -911,23 +912,20 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     //Disable the depth test (just in case)
     
     unsigned int proceduralTexture;
-    Scene scene;
-    scene.projectionMatrix = perspective;
-    scene.viewMatrix = view;
-    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
+        channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
 
         //Set the uniforms of the modifier's shader
         material.materialModifiers[curModI].shader.use(); //Use the shader of the modifier
         material.materialModifiers[curModI].shader.setMat4("orthoProjection",projection); //Set the projection
-        material.materialModifiers[curModI].shader.setMat4("perspectiveProjection",perspective); //Set the projection
-        material.materialModifiers[curModI].shader.setMat4("view",view); //Set the projection        
+        material.materialModifiers[curModI].shader.setMat4("perspectiveProjection",getScene()->projectionMatrix); //Set the projection
+        material.materialModifiers[curModI].shader.setMat4("view",getScene()->viewMatrix); //Set the projection        
         material.materialModifiers[curModI].shader.setInt("state",channelI); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("theTexture",0); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("mask", 1); //Set the texture slot
@@ -939,7 +937,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
         glActiveTexture(GL_TEXTURE0);
         unsigned int proceduralChannelTexture = 0;
-        proceduralChannelTexture = material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.generateProceduralTexture(mesh, scene, textureResolution);
+        proceduralChannelTexture = material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.generateProceduralTexture(mesh, textureResolution);
 
         material.materialModifiers[curModI].shader.use();
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
@@ -981,7 +979,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     glDeleteTextures(1, &proceduralTexture);
 }
 
-void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1002,23 +1000,20 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Disable the depth test (just in case)
     
     unsigned int proceduralTexture;
-    Scene scene;
-    scene.projectionMatrix = perspective;
-    scene.viewMatrix = view;
-    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
+        channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
         modifierShader.setMat4("orthoProjection",projection); //Set the projection
-        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
-        modifierShader.setMat4("view",view); //Set the projection
+        modifierShader.setMat4("perspectiveProjection",getScene()->projectionMatrix); //Set the projection
+        modifierShader.setMat4("view",getScene()->viewMatrix); //Set the projection
         modifierShader.setVec2("scale",fragScale); //Set the scale
         modifierShader.setVec3("pos",fragPos); //Set the position
 
@@ -1097,7 +1092,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glDeleteTextures(1, &proceduralTexture);
 }
 
-void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1118,25 +1113,22 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
     //Disable the depth test (just in case)
     
     unsigned int proceduralTexture;
-    Scene scene;
-    scene.projectionMatrix = perspective;
-    scene.viewMatrix = view;
-    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
+        channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
         modifierShader.setMat4("orthoProjection",projection); //Set the projection
         modifierShader.setVec2("scale",fragScale); //Set the scale
         modifierShader.setVec3("pos",fragPos); //Set the position
-        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
-        modifierShader.setMat4("view",view); //Set the projection
+        modifierShader.setMat4("perspectiveProjection",getScene()->projectionMatrix); //Set the projection
+        modifierShader.setMat4("view",getScene()->viewMatrix); //Set the projection
 
         /* Channel Properties */
         modifierShader.setInt("state",channelI); //Set the channel state
@@ -1187,7 +1179,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
     glDeleteTextures(1, &proceduralTexture);
 }
 
-void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1209,25 +1201,22 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     //Disable the depth test (just in case)
     
     unsigned int proceduralTexture;
-    Scene scene;
-    scene.projectionMatrix = perspective;
-    scene.viewMatrix = view;
-    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
+        channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
         modifierShader.setMat4("orthoProjection",projection); //Set the projection
         modifierShader.setVec2("scale",fragScale); //Set the scale
         modifierShader.setVec3("pos",fragPos); //Set the position
-        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
-        modifierShader.setMat4("view",view); //Set the projection
+        modifierShader.setMat4("perspectiveProjection",getScene()->projectionMatrix); //Set the projection
+        modifierShader.setMat4("view",getScene()->viewMatrix); //Set the projection
 
         /* Channel Properties */
         modifierShader.setInt("state", channelI); //Set the channel state
@@ -1304,7 +1293,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     glDeleteTextures(1, &proceduralTexture);
 }
 
-void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1326,25 +1315,22 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     //Disable the depth test (just in case)
     
     unsigned int proceduralTexture;
-    Scene scene;
-    scene.projectionMatrix = perspective;
-    scene.viewMatrix = view;
-    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
+        channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
         modifierShader.setMat4("orthoProjection",projection); //Set the projection
         modifierShader.setVec2("scale",fragScale); //Set the scale
         modifierShader.setVec3("pos",fragPos); //Set the position
-        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
-        modifierShader.setMat4("view",view); //Set the projection
+        modifierShader.setMat4("perspectiveProjection",getScene()->projectionMatrix); //Set the projection
+        modifierShader.setMat4("view",getScene()->viewMatrix); //Set the projection
 
         /* Channel Properties */
         modifierShader.setInt("state", channelI); //Set the channel state
@@ -1410,7 +1396,7 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
 }
 
 
-void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1432,25 +1418,22 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     //Disable the depth test (just in case)
     
     unsigned int proceduralTexture;
-    Scene scene;
-    scene.projectionMatrix = perspective;
-    scene.viewMatrix = view;
-    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
+        channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
         modifierShader.setMat4("orthoProjection",projection); //Set the projection
         modifierShader.setVec2("scale",fragScale); //Set the scale
         modifierShader.setVec3("pos",fragPos); //Set the position
-        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
-        modifierShader.setMat4("view",view); //Set the projection
+        modifierShader.setMat4("perspectiveProjection",getScene()->projectionMatrix); //Set the projection
+        modifierShader.setMat4("view",getScene()->viewMatrix); //Set the projection
 
         /* Channel Properties */
         modifierShader.setInt("state", channelI); //Set the channel state
@@ -1536,7 +1519,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     glDeleteTextures(1, &proceduralTexture);
 }
 
-void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1558,25 +1541,22 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Disable the depth test (just in case)
     
     unsigned int proceduralTexture;
-    Scene scene;
-    scene.projectionMatrix = perspective;
-    scene.viewMatrix = view;
-    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
+        channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
         modifierShader.setMat4("orthoProjection",projection); //Set the projection
         modifierShader.setVec2("scale",fragScale); //Set the scale
         modifierShader.setVec3("pos",fragPos); //Set the position
-        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
-        modifierShader.setMat4("view",view); //Set the projection
+        modifierShader.setMat4("perspectiveProjection",getScene()->projectionMatrix); //Set the projection
+        modifierShader.setMat4("view",getScene()->viewMatrix); //Set the projection
 
         /* Channel Properties */
         modifierShader.setInt("state", channelI); //Set the channel state
@@ -1659,7 +1639,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glDeleteTextures(1, &proceduralTexture);
 }
 
-void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -1681,25 +1661,22 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Disable the depth test (just in case)
     
     unsigned int proceduralTexture;
-    Scene scene;
-    scene.projectionMatrix = perspective;
-    scene.viewMatrix = view;
-    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
+        channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
         modifierShader.setMat4("orthoProjection",projection); //Set the projection
         modifierShader.setVec2("scale",fragScale); //Set the scale
         modifierShader.setVec3("pos",fragPos); //Set the position
-        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
-        modifierShader.setMat4("view",view); //Set the projection
+        modifierShader.setMat4("perspectiveProjection",getScene()->projectionMatrix); //Set the projection
+        modifierShader.setMat4("view",getScene()->viewMatrix); //Set the projection
 
         /* Channel Properties */
         modifierShader.setInt("state", channelI); //Set the channel state
@@ -1783,7 +1760,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     glDeleteTextures(1, &proceduralTexture);
 }
 
-void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view){
+void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
     
@@ -1804,25 +1781,22 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     //Disable the depth test (just in case)
     
     unsigned int proceduralTexture;
-    Scene scene;
-    scene.projectionMatrix = perspective;
-    scene.viewMatrix = view;
-    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, scene, textureResolution);
+    proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
     
         unsigned int FBO;
         Texture currentTexture;
         Texture previousTexture;
-        channelPrep(material, mesh, textureResolution, curModI, perspective, view, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
+        channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
         
         //Set the uniforms of the modifier's shader
         modifierShader.use(); //Use the shader of the modifier
         modifierShader.setMat4("orthoProjection",projection); //Set the projection
         modifierShader.setVec2("scale",fragScale); //Set the scale
         modifierShader.setVec3("pos",fragPos); //Set the position
-        modifierShader.setMat4("perspectiveProjection",perspective); //Set the projection
-        modifierShader.setMat4("view",view); //Set the projection
+        modifierShader.setMat4("perspectiveProjection",getScene()->projectionMatrix); //Set the projection
+        modifierShader.setMat4("view",getScene()->viewMatrix); //Set the projection
 
         /* Channel Properties */
         modifierShader.setInt("state", channelI); //Set the channel state

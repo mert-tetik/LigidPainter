@@ -32,16 +32,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <map>
 
-void Node::render(  glm::vec2 videoScale,
-                   
+void Node::render(  
+                    glm::vec2 videoScale,
                     Timer &timer,
                     TextRenderer &textRenderer,
                     Panel nodeEditorPanel,
                     int currentNodeIndex,
                     NodePanel& nodePanelData,
-                    Model &model,
-                    int textureRes,
-                    Scene scene
+                    int textureRes
                 )
 {
     
@@ -75,12 +73,12 @@ void Node::render(  glm::vec2 videoScale,
             this->uploadNewIOs(inputs, outputs);
         }
 
-        NodeScene::updateNodeResults( model, scene, textureRes, -1);
+        NodeScene::updateNodeResults( textureRes, -1);
     }
 
     if(this->nodeIndex == MATERIAL_MASK_NODE){
         if(nodePanel.sections[0].elements[1].rangeBar.valueDoneChanging){
-            NodeScene::updateNodeResults( model, scene, textureRes, -1);
+            NodeScene::updateNodeResults( textureRes, -1);
         }
     }
 
@@ -146,7 +144,7 @@ void Node::render(  glm::vec2 videoScale,
                     }
                     
                     clearConnections(currentNodeIndex,i);
-                    NodeScene::updateNodeResults( model, scene, textureRes, -1);
+                    NodeScene::updateNodeResults( textureRes, -1);
                 }
 
                 //Draw a line from the circle to the cursor
@@ -198,7 +196,7 @@ void Node::render(  glm::vec2 videoScale,
                                 }
                             }
 
-                            NodeScene::updateNodeResults( model, scene, textureRes, -1);
+                            NodeScene::updateNodeResults( textureRes, -1);
                         }
                     }
                 }

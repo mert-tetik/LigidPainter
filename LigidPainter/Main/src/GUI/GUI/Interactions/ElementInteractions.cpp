@@ -32,25 +32,22 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 //Forward declarations for the interaction functions defined in the Interactions directory 
-void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Panel &paintingPanel, Painter &painter,  Model &model, ColorPalette& colorPalette, NewTextureDialog &newTextureDialog, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
+void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Panel &paintingPanel, Painter &painter,  ColorPalette& colorPalette, NewTextureDialog &newTextureDialog, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer,  ColorPalette& colorPalette, int frameCounter);
-void paintingPanelInteraction(Panel &paintingPanel, Painter &painter, Dropper &dropper,ColorPalette colorPalette, Model &model);
+void paintingPanelInteraction(Panel &paintingPanel, Painter &painter, Dropper &dropper,ColorPalette colorPalette);
 void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
-void nodeInteraction(Model &model, ColorPalette colorPalette,glm::vec2 videoScale, Scene scene);
-void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter,  Model &model, Scene scene);
+void nodeInteraction(ColorPalette colorPalette,glm::vec2 videoScale);
+void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
 void UI::elementInteraction(
                                 Painter &painter,
                                 std::vector<ContextMenu> &contextMenus,
-                                Context &context,
                                 glm::vec2 &videoScale,
                                 TextRenderer &textRenderer, 
                                 Timer &timer, 
                                 float screenGapPerc,
-                                Model &model, 
                                 Project& project,
-                                Scene scene,
                                 AppMaterialModifiers& appMaterialModifiers
                             )
 {
@@ -76,23 +73,23 @@ void UI::elementInteraction(
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover;
 
-    this->contextMenuInteraction(contextMenus,context,videoScale,timer,textRenderer,project,painter);
+    this->contextMenuInteraction(contextMenus, videoScale, timer, textRenderer, project, painter);
     
     updateLibraryPanelDisplayerElements(libraryPanelDisplayer,colorPalette,frameCounter);
     
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer,paintingPanel,painter,model,colorPalette,newTextureDialog,appMaterialModifiers,frameCounter);
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer,paintingPanel,painter,colorPalette,newTextureDialog,appMaterialModifiers,frameCounter);
     
     this->libraryPanelLeftInteraction(libraryPanelLeft);
 
-    paintingPanelInteraction(paintingPanel,painter,dropper,colorPalette,model);
+    paintingPanelInteraction(paintingPanel, painter, dropper, colorPalette);
     
     windowPanelInteraction(windowPanel, painter, settingsDialog, displayerDialog,exportDialog);
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
 
-    displayingModesPanelInteraction(displayingModesPanel, painter, model, scene);
+    displayingModesPanelInteraction(displayingModesPanel, painter);
 
-    nodeInteraction(model,colorPalette,videoScale, scene);
+    nodeInteraction(colorPalette,videoScale);
     
     this->panelPositioning(screenGapPerc,painter);
 }

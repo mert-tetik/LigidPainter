@@ -186,7 +186,7 @@ public:
     TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset,int openSelectFolderDialog);
     
     /// @brief Public member function to render the text box
-    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,LigidWindow window);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
 };
 
 
@@ -228,7 +228,7 @@ public:
     ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::vector<std::string> texts,std::string text,float panelOffset);
 
     //Public member functions
-    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking,LigidWindow window);
+    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
 };
 
 
@@ -294,7 +294,7 @@ public:
     
     void renderText(int &textPosCharIndex,glm::vec4 textColor);
 
-	void processTextInput(std::string &text,LigidWindow window,int &activeChar,int &activeChar2,int &textPosCharIndex);
+	void processTextInput(std::string &text,int &activeChar,int &activeChar2,int &textPosCharIndex);
 };
 
 
@@ -407,8 +407,6 @@ struct Element{
     ComboBox comboBox;
     TextBox textBox;
 
-    LigidWindow window;
-    
     /*!
         @brief Decide which GUI element will be used 
         0 = button 
@@ -430,8 +428,8 @@ struct Element{
     Element(Button button);
     Element(RangeBar rangeBar);
     Element(CheckBox checkBox);
-    Element(ComboBox comboBox,LigidWindow window);
-    Element(TextBox textBox,LigidWindow window);
+    Element(ComboBox comboBox);
+    Element(TextBox textBox);
 
     //Public member function
     void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);

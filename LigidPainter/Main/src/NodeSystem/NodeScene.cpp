@@ -25,7 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 std::vector<Node> __nodeScene;
 
-void NodeScene::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Model &model, Scene scene, Panel nodeEditorPanel, NodePanel& nodePanel){
+void NodeScene::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Panel nodeEditorPanel, NodePanel& nodePanel){
     
     for (size_t i = 0; i < __nodeScene.size(); i++)
     {
@@ -38,7 +38,7 @@ void NodeScene::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRen
             }
         }
 
-        __nodeScene[i].render(videoScale, timer, textRenderer, nodeEditorPanel, i, nodePanel, model, Settings::properties()->textureRes, scene);
+        __nodeScene[i].render(videoScale, timer, textRenderer, nodeEditorPanel, i, nodePanel, Settings::properties()->textureRes);
     }
 }
 
@@ -131,7 +131,7 @@ static void deleteMaterialChannels(Mesh &mesh){
     glDeleteTextures(1, &mesh.ambientOcclusion.ID);
 }
 
-Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRes){
+Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
     Mesh msh = mesh;
     initTexture(msh.albedo.ID, textureRes);
     initTexture(msh.roughness.ID, textureRes);
@@ -165,7 +165,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRe
                 //An input can only have one connection unlike the outputs
                 
                 if(node.IOs[i].connections.size())
-                    retrievedMeshes[cToS(node.IOs[i].element.button.color)] = NodeScene::processNode(__nodeScene[node.IOs[i].connections[0].nodeIndex], mesh, scene, textureRes);
+                    retrievedMeshes[cToS(node.IOs[i].element.button.color)] = NodeScene::processNode(__nodeScene[node.IOs[i].connections[0].nodeIndex], mesh, textureRes);
                 else{
                     retrievedMeshes[cToS(node.IOs[i].element.button.color)] = Mesh();
                     initTexture(retrievedMeshes[cToS(node.IOs[i].element.button.color)].albedo.ID, 100);
@@ -199,7 +199,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRe
         
         // Bind the id mask
         glActiveTexture(GL_TEXTURE0);
-        proceduralTxtr = node.IOs[0].element.button.texture.generateProceduralTexture(mesh, scene, textureRes);
+        proceduralTxtr = node.IOs[0].element.button.texture.generateProceduralTexture(mesh, textureRes);
         glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
         ShaderSystem::colorIDMaskingShader().use();
                 
@@ -315,7 +315,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRe
         
         Mesh blackMesh;
         if(node.IOs[2].connections.size())
-            blackMesh = NodeScene::processNode(__nodeScene[node.IOs[2].connections[0].nodeIndex], mesh, scene, textureRes);
+            blackMesh = NodeScene::processNode(__nodeScene[node.IOs[2].connections[0].nodeIndex], mesh, textureRes);
         else{
             initTexture(blackMesh.albedo.ID, 100);
             initTexture(blackMesh.roughness.ID, 100);
@@ -326,7 +326,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRe
         }
         Mesh whiteMesh;
         if(node.IOs[2].connections.size()) 
-            whiteMesh = NodeScene::processNode(__nodeScene[node.IOs[3].connections[0].nodeIndex], mesh, scene, textureRes);
+            whiteMesh = NodeScene::processNode(__nodeScene[node.IOs[3].connections[0].nodeIndex], mesh, textureRes);
         else{
             initTexture(whiteMesh.albedo.ID, 100);
             initTexture(whiteMesh.roughness.ID, 100);
@@ -352,7 +352,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRe
         
         // Bind the mask
         glActiveTexture(GL_TEXTURE0);
-        proceduralTxtr = node.nodePanel.sections[0].elements[0].button.texture.generateProceduralTexture(mesh, scene, textureRes);
+        proceduralTxtr = node.nodePanel.sections[0].elements[0].button.texture.generateProceduralTexture(mesh, textureRes);
         glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
         ShaderSystem::grayScaleIDMaskingShader().use();
                 
@@ -423,7 +423,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   Scene scene, int textureRe
         
         for (int i = material.materialModifiers.size() - 1; i >= 0; --i)    
         {
-            material.materialModifiers[i].updateMaterialChannels(material, msh, textureRes, i, scene.projectionMatrix, scene.viewMatrix);
+            material.materialModifiers[i].updateMaterialChannels(material, msh, textureRes, i);
         }
 
         
@@ -460,7 +460,7 @@ std::vector<int> findNodeIndexConnectedToMesh(int i){
     return res;
 }
 
-void NodeScene::updateNodeResults( Model& model, Scene scene, int textureRes, int updateNodeI){
+void NodeScene::updateNodeResults( int textureRes, int updateNodeI){
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     int viewportWidth = viewport[2];
@@ -475,16 +475,16 @@ void NodeScene::updateNodeResults( Model& model, Scene scene, int textureRes, in
                     for (size_t conI = 0; conI < __nodeScene[nodeI].IOs[IOI].connections.size(); conI++)
                     {
                         if(__nodeScene[nodeI].IOs[IOI].connections[conI].nodeIndex == 0){
-                            Mesh retMesh = NodeScene::processNode(__nodeScene[nodeI], model.meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex], scene, textureRes);
+                            Mesh retMesh = NodeScene::processNode(__nodeScene[nodeI], getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex], textureRes);
                             
-                            deleteMaterialChannels(model.meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex]);
+                            deleteMaterialChannels(getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex]);
                             
-                            model.meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].albedo.ID = retMesh.albedo.ID; 
-                            model.meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].roughness.ID = retMesh.roughness.ID; 
-                            model.meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].metallic.ID = retMesh.metallic.ID; 
-                            model.meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].normalMap.ID = retMesh.normalMap.ID; 
-                            model.meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].heightMap.ID = retMesh.heightMap.ID; 
-                            model.meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].ambientOcclusion.ID = retMesh.ambientOcclusion.ID;
+                            getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].albedo.ID = retMesh.albedo.ID; 
+                            getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].roughness.ID = retMesh.roughness.ID; 
+                            getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].metallic.ID = retMesh.metallic.ID; 
+                            getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].normalMap.ID = retMesh.normalMap.ID; 
+                            getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].heightMap.ID = retMesh.heightMap.ID; 
+                            getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].ambientOcclusion.ID = retMesh.ambientOcclusion.ID;
 
                         }
                     }
@@ -503,16 +503,16 @@ void NodeScene::updateNodeResults( Model& model, Scene scene, int textureRes, in
                     for (size_t conI = 0; conI < __nodeScene[indices[i]].IOs[IOI].connections.size(); conI++)
                     {
                         if(__nodeScene[indices[i]].IOs[IOI].connections[conI].nodeIndex == 0){
-                            Mesh retMesh = NodeScene::processNode(__nodeScene[indices[i]], model.meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex],  scene, textureRes);
+                            Mesh retMesh = NodeScene::processNode(__nodeScene[indices[i]], getModel()->meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex],  textureRes);
                             
-                            deleteMaterialChannels(model.meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex]);
+                            deleteMaterialChannels(getModel()->meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex]);
                             
-                            model.meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].albedo.ID = retMesh.albedo.ID; 
-                            model.meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].roughness.ID = retMesh.roughness.ID; 
-                            model.meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].metallic.ID = retMesh.metallic.ID; 
-                            model.meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].normalMap.ID = retMesh.normalMap.ID; 
-                            model.meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].heightMap.ID = retMesh.heightMap.ID; 
-                            model.meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].ambientOcclusion.ID = retMesh.ambientOcclusion.ID;
+                            getModel()->meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].albedo.ID = retMesh.albedo.ID; 
+                            getModel()->meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].roughness.ID = retMesh.roughness.ID; 
+                            getModel()->meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].metallic.ID = retMesh.metallic.ID; 
+                            getModel()->meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].normalMap.ID = retMesh.normalMap.ID; 
+                            getModel()->meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].heightMap.ID = retMesh.heightMap.ID; 
+                            getModel()->meshes[__nodeScene[indices[i]].IOs[IOI].connections[conI].inputIndex].ambientOcclusion.ID = retMesh.ambientOcclusion.ID;
 
                         }
                     }

@@ -37,6 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <iostream>
@@ -59,13 +60,7 @@ LigidCursor __pointerCursor;
 LigidCursor __hSlideCursor;
 LigidCursor __vSlideCursor;
 LigidCursor __activeCursor; //updateCursor sets that cursor as the cursor
-LigidWindow __mouse_window;
 int __cursorTypeGotSet = 0;
-
-
-void Mouse::setWindow(LigidWindow window){
-	__mouse_window = window;
-}
 
 /// @brief Load all the cursors (that function is called in renderer constructor)
 void Mouse::loadCursors(){
@@ -104,7 +99,7 @@ void Mouse::setCursor(LigidCursor cursor){
 
 /// @brief Was called at the end of the renderer.render (every frame)
 void Mouse::updateCursor(){//Call that every frame after rendering the UI elements
-	__mouse_window.setCursor(__activeCursor);
+	getContext()->window.setCursor(__activeCursor);
 	__cursorTypeGotSet = __activeCursor.cursorType;
 	__activeCursor = __defaultCursor;
 }
@@ -191,9 +186,6 @@ LigidCursor* Mouse::vSlideCursor(){
 }
 LigidCursor* Mouse::activeCursor(){
 	return &__activeCursor;
-}
-LigidWindow* Mouse::mouse_window(){
-	return &__mouse_window;
 }
 int* Mouse::cursorTypeGotSet(){
 	return &__cursorTypeGotSet;

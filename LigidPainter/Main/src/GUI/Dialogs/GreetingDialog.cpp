@@ -31,7 +31,7 @@
 
 GreetingDialog::GreetingDialog(){}
 
-GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette){
+GreetingDialog::GreetingDialog(glm::vec2 videoScale,ColorPalette colorPalette){
     
     //First text button
     this->textButton1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2), colorPalette, "Welcome To The LigidPainter",Texture(),0.f,false);
@@ -77,7 +77,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->dialogControl.activate();
 }
 
-void GreetingDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale, NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
+void GreetingDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale, NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
 
     dialogControl.updateStart();
 

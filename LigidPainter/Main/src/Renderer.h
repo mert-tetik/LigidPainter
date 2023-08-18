@@ -34,25 +34,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class Renderer
 {
 public:
-    /*! 
-        @brief Holds data related to window 
-        
-        @todo Remove this struct
-    */
-    Context context; 
-
-    Scene scene; //3D Scene structure
-    
-    /*!
-        @brief The only 3D model object.   
-    */
-    Model model;
-    
-    /*!
-        @brief Sphere 3D Model to display the materials, shader balls and stuff
-    */
-    Model sphereModel; 
-
     /*!
         @brief Render 2D square 
     */
@@ -74,8 +55,6 @@ public:
 
     TextRenderer textRenderer; 
 
-    
-
     ColorPalette colorPalette;
 
     std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials, 2 for brushes
@@ -87,30 +66,26 @@ public:
     Painter painter;
 
     //Constructor
-    Renderer(glm::vec2 videoScale);
+    Renderer();
 
     void render();
 private:
     /*!
-        @brief Let the model.newModelAdded be true for an another cycle
+        @brief Let the getModel()->newModelAdded be true for an another cycle
                 Ignore pls
     */
     bool previousModelNewModelAdded = false;
-
 
     void initGlad();
     void loadAppTextures();
     void createContextMenus();
 
-
     void updateViewMatrix();
     void updateProjectionMatrix();
     void updateViewport();
 
-
     void renderSkyBox();
     void set3DUniforms();
-
 
     double previousClickTime = 0.0;
     glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset 
@@ -119,7 +94,7 @@ private:
     void framebufferSizeCallback(LigidWindow window, int width, int height);
     void scrollCallback(LigidWindow window, double xoffset, double yoffset);
     void cursorPositionCallback(LigidWindow window, double xpos, double ypos);
-    void keyCallback(LigidWindow window,int key,int scancode,int action,int mods);
+    void keyCallback(LigidWindow window, int key,int scancode,int action,int mods);
 
 };
 #endif

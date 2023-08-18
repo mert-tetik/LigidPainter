@@ -103,11 +103,8 @@ public:
     /*!
         @brief Creates the @ref displayingTexture. Renders a sphere using skyboxBall 
                 shader and captures it into the displayingTexture.
-        
-        @param sphereModel The skybox ball 3D Model
-        @param windowScale Resolution of the main window
     */
-    void createDisplayingTxtr(Model &sphereModel, glm::vec2 windowScale);
+    void createDisplayingTxtr();
 
 private:
     /*! @brief Skybox vertex buffer object ID*/

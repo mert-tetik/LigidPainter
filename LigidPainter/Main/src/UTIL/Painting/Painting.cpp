@@ -27,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -43,7 +44,7 @@ static void set3DShaderSideUniforms(int selectedColorIndex,Color color1,Color co
 
 
 
-void Painter::doPaint(glm::mat4 windowOrtho, Context context){
+void Painter::doPaint(glm::mat4 windowOrtho){
 
     glm::vec2 firstCursorPos = *Mouse::cursorPos();
     
@@ -75,7 +76,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, Context context){
     ShaderSystem::twoDPainting().use();
 
     //Set uniforms of the painting shader (scale, pos, projection, videoScale, mouseOffset, frame)
-    setShaderUniforms(windowOrtho,context.windowScale,frameCounter);
+    setShaderUniforms(windowOrtho,getContext()->windowScale,frameCounter);
 
     //Set brush properties
     setBrushProperties(this->brushProperties);

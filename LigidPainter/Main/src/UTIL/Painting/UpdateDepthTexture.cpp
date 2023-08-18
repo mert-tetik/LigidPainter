@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -35,7 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
-void Painter::updateDepthTexture(Model &model, glm::vec2 windowScale){
+void Painter::updateDepthTexture(){
     glDepthFunc(GL_LESS);
     
     //Create the capture framebuffer
@@ -64,8 +65,8 @@ void Painter::updateDepthTexture(Model &model, glm::vec2 windowScale){
     ShaderSystem::depth3D().setMat4("modelMatrix",modelMatrix);
 
     //Draw the selected mesh in 3D
-    if(selectedMeshIndex < model.meshes.size())
-        model.meshes[selectedMeshIndex].Draw();
+    if(selectedMeshIndex < getModel()->meshes.size())
+        getModel()->meshes[selectedMeshIndex].Draw();
 
     //!Finished
 
@@ -75,7 +76,7 @@ void Painter::updateDepthTexture(Model &model, glm::vec2 windowScale){
     //Delete the capture framebuffer
     glDeleteFramebuffers(1,&captureFBO);
 
-    glViewport(0,0,windowScale.x,windowScale.y);
+    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
 
     glDepthFunc(GL_LEQUAL);
 

@@ -35,19 +35,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 void nodeInteraction(
-                        Model &model, 
+                        
                         ColorPalette colorPalette,
-                        glm::vec2 videoScale,
-                        Scene scene 
+                        glm::vec2 videoScale
                     )
 {
     
     //Update the mesh node if a new model is added
-    if(model.newModelAdded){
+    if(getModel()->newModelAdded){
         
         Node previousNode = *NodeScene::getNode(0); //(Current node (unchanged))
 
-        NodeScene::getNode(0)->uploadNewIOs(model, colorPalette);
+        NodeScene::getNode(0)->uploadNewIOs(colorPalette);
 
         for (size_t i = 0; i < previousNode.IOs.size(); i++)
         {
@@ -60,6 +59,6 @@ void nodeInteraction(
         //Update all the connections
         NodeScene::updateAllTheNodeConnections();
     
-        NodeScene::updateNodeResults(model, scene, Settings::properties()->textureRes, -1);
+        NodeScene::updateNodeResults(Settings::properties()->textureRes, -1);
     }
 }

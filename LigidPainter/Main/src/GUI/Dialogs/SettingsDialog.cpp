@@ -32,8 +32,8 @@
 
 SettingsDialog::SettingsDialog(){}
 
-SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette){
-    this->context = context;
+SettingsDialog::SettingsDialog(glm::vec2 videoScale,ColorPalette colorPalette){
+    
     
     //Create the panel
     this->panel = Panel(colorPalette,{
@@ -50,7 +50,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
                         "1024",
                         "2048",
                         "4096"
-                    },"Texture Resolution",4.f),context.window),
+                    },"Texture Resolution",4.f)),
                     
                     Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "VSync"  , 2.f)),
                     
@@ -61,7 +61,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
     },glm::vec2(15.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
-void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer,
+void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer,
                              glm::vec2 videoScale){
     
     dialogControl.updateStart();   
@@ -90,7 +90,7 @@ void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalett
     
     //End the dialog
     if  (
-            context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Escape key pressed 
+            getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Escape key pressed 
             ((!panel.hover && *Mouse::LClick())) && !dialogControl.firstFrameActivated || //Mouse Lclick out of the panel
             (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()) //If the menu button double clicked
         )

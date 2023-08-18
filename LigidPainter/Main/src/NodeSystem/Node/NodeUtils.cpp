@@ -270,12 +270,12 @@ void Node::uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs)
     createPanelUsingIOs();
 }
 
-void Node::uploadNewIOs(Model &model, ColorPalette colorPalette){
+void Node::uploadNewIOs(ColorPalette colorPalette){
     
     std::vector <NodeIO> meshOutputNodeInputElements;
-    for (size_t i = 0; i < model.meshes.size(); i++)
+    for (size_t i = 0; i < getModel()->meshes.size(); i++)
     {
-        meshOutputNodeInputElements.push_back(NodeIO(model.meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,model.meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,videoScale,0));
+        meshOutputNodeInputElements.push_back(NodeIO(getModel()->meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,getModel()->meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,videoScale,0));
     }
 
     //Clear the IOs vector

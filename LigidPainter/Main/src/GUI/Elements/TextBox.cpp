@@ -103,13 +103,11 @@ TextBox::TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string
 
 void TextBox::render(
                         glm::vec2 videoScale, //Resolution of the monitor
-                        //Mouse class to access mouse events
                         Timer &timer, //Timer that handles the animations
                         TextRenderer &textRenderer, //TextRenderer that handles text rendering
-                        bool doMouseTracking, //If there is need to check if mouse hover
-                        LigidWindow window //To take the key inputs
+                        bool doMouseTracking //If there is need to check if mouse hover
                     ){
-    ;
+    
     
     this->doMouseTracking = doMouseTracking;
     
@@ -141,7 +139,7 @@ void TextBox::render(
     }
     
     //Deactivate the textbox
-    if((!hover && *Mouse::LClick()) || window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS){
+    if((!hover && *Mouse::LClick()) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS){
         active = false;
     }
     
@@ -178,7 +176,7 @@ void TextBox::render(
         }
         else{
             //Take key input
-            textRenderer.processTextInput(text,window,activeChar,activeChar2,textPosCharIndex);
+            textRenderer.processTextInput(text, activeChar, activeChar2, textPosCharIndex);
         }
     }
 

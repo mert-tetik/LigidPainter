@@ -36,7 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,  
-                                Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
+                                glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
                                 Project& project, Painter &painter){
 
     anyContextMenuActive = false; 
@@ -180,7 +180,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
             
             //Copy path
             if(contextMenus[i].contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){
-                project.copyTheProjectPathToTheClipboard(context.window);
+                project.copyTheProjectPathToTheClipboard();
             }
 
             //Open in file explorer
@@ -225,8 +225,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
                 *Mouse::LClick()|| //Mouse left click
                 *Mouse::RClick()|| //Mouse right click
                 *Mouse::MClick()|| //Mouse middle click
-                context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS|| //Pressed to escape key 
-                context.window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS //Pressed to enter key
+                getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS|| //Pressed to escape key 
+                getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS //Pressed to enter key
             )
         {
            contextMenus[i].dialogControl.unActivate(); //Turn the context menu offs

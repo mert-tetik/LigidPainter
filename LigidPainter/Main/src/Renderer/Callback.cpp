@@ -33,11 +33,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 void __getTextRendererDataToTheTextureSelection(TextRenderer& textRenderer);
 
 void Renderer::mouseButtonCallback(
-                                        LigidWindow window, 
+                                        LigidWindow window,
                                         int button, 
                                         int action, 
                                         int mods
@@ -97,8 +98,8 @@ void Renderer::framebufferSizeCallback(
                                         )
 {
     //Update the window size from context
-    this->context.windowScale.x = width;
-    this->context.windowScale.y = height;
+    getContext()->windowScale.x = width;
+    getContext()->windowScale.y = height;
 
     //Update the perspective projection matrix to keep the ratio of the 3D model
     this->updateProjectionMatrix(); 
@@ -108,7 +109,7 @@ void Renderer::framebufferSizeCallback(
 }
 
 void Renderer::scrollCallback(
-                                LigidWindow window, 
+                                LigidWindow window,
                                 double xoffset, 
                                 double yoffset
                             )
@@ -119,20 +120,20 @@ void Renderer::scrollCallback(
     if(!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode)
     {
         //The distance between the camera & center 
-        float originCameraDistance = glm::distance(this->scene.camera.originPos,this->scene.camera.cameraPos)/10;
+        float originCameraDistance = glm::distance(getScene()->camera.originPos,getScene()->camera.cameraPos)/10;
 
         //Change the distance between camera & center (radius)
-        if (yoffset > 0 && this->scene.camera.radius > 1) {
-            this->scene.camera.radius -= originCameraDistance;
+        if (yoffset > 0 && getScene()->camera.radius > 1) {
+            getScene()->camera.radius -= originCameraDistance;
         }
         else if (yoffset < 0) {
-            this->scene.camera.radius += originCameraDistance;
+            getScene()->camera.radius += originCameraDistance;
         }
         
         //Zoom in-out
-        this->scene.camera.cameraPos.x = cos(glm::radians(this->scene.camera.yaw)) * cos(glm::radians(this->scene.camera.pitch)) * this->scene.camera.radius + this->scene.camera.originPos.x;
-        this->scene.camera.cameraPos.y = sin(glm::radians(this->scene.camera.pitch)) * -this->scene.camera.radius + this->scene.camera.originPos.y;
-        this->scene.camera.cameraPos.z = sin(glm::radians(this->scene.camera.yaw)) * cos(glm::radians(this->scene.camera.pitch)) * this->scene.camera.radius + this->scene.camera.originPos.z;
+        getScene()->camera.cameraPos.x = cos(glm::radians(getScene()->camera.yaw)) * cos(glm::radians(getScene()->camera.pitch)) * getScene()->camera.radius + getScene()->camera.originPos.x;
+        getScene()->camera.cameraPos.y = sin(glm::radians(getScene()->camera.pitch)) * -getScene()->camera.radius + getScene()->camera.originPos.y;
+        getScene()->camera.cameraPos.z = sin(glm::radians(getScene()->camera.yaw)) * cos(glm::radians(getScene()->camera.pitch)) * getScene()->camera.radius + getScene()->camera.originPos.z;
 
         //Update the view matrix after the camera position is changed
         this->updateViewMatrix();
@@ -158,10 +159,10 @@ void Renderer::cursorPositionCallback(
 
     const float sensitivity = 0.2f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
     
-    Camera* cam = &this->scene.camera;
+    Camera* cam = &getScene()->camera;
 
     if ((
-            this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) && //If pressed to right mouse button
+            getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) && //If pressed to right mouse button
             window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS &&  //If pressed to CTRL button
             !this->userInterface.anyDialogActive && //If there is no active dialog (don't move the camera if a dialog is active)
             !this->userInterface.anyPanelHover        //Don't move the camera if cursor hover a panel
@@ -212,7 +213,7 @@ void Renderer::cursorPositionCallback(
 
 
     else if (
-                this->context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
+                getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
                 (!this->userInterface.anyDialogActive || //If there is no active dialog (don't move the camera if a dialog is active)
                 this->userInterface.materialEditorDialog.dialogControl.isActive()) &&
                 !this->userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel

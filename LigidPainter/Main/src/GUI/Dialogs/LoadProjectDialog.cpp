@@ -35,7 +35,7 @@
 
 LoadProjectDialog::LoadProjectDialog(){}
 
-LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
+LoadProjectDialog::LoadProjectDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
     
     //Take the parameters to the class member variables 
     
@@ -132,9 +132,8 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,
-                                Model &model){
+void LoadProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen){
     
     dialogControl.updateStart();
 
@@ -157,7 +156,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
         if(test.size()){
             
             //Load the project
-            if(project.loadProject(test, model, colorPalette, videoScale, appMaterialModifiers)){
+            if(project.loadProject(test, colorPalette, videoScale, appMaterialModifiers)){
                 
                 startScreen = false;
                 
@@ -223,7 +222,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath, model, colorPalette, videoScale, appMaterialModifiers)){
+            if(project.loadProject(ligidFilePath, colorPalette, videoScale, appMaterialModifiers)){
                 
                 startScreen = false;
                 
@@ -244,7 +243,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
     }
     
     //Close the dialog
-    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || bgPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || bgPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
         
         if(startScreen)
             greetingDialogActive = true;

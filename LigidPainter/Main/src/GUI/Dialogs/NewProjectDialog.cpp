@@ -35,7 +35,7 @@
 
 NewProjectDialog::NewProjectDialog(){}
 
-NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
+NewProjectDialog::NewProjectDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
     
     //Take the parameters to the class member variables 
     
@@ -51,8 +51,8 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                         //Project settings
 
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"New Project",Texture(),0.f,false)), 
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"MyProject",2.f,false),context.window),
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"./Projects",2.f,true),context.window),
+                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"MyProject",2.f,false)),
+                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"./Projects",2.f,true)),
                                         
                                         Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
                                         {
@@ -61,12 +61,12 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
                                             "1024",
                                             "2048",
                                             "4096"
-                                        },"Texture Resolution",4.f),context.window),
+                                        },"Texture Resolution",4.f)),
 
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Large",2.f)),
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Medium",0.f)),
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Small",0.f)),
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"3D Model",2.f,2),context.window),
+                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"3D Model",2.f,2)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(4,2),colorPalette,"Create",Texture(),2.f,false))
                                     }
                                 )
@@ -92,9 +92,8 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
     this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
 }
 
-void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,
-                                Model &model){
+void NewProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen){
     
     dialogControl.updateStart();
 
@@ -112,7 +111,7 @@ void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
                                     std::stoi(panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex])
                                  ))
         {
-            project.loadProject(project.ligidFilePath(), model, colorPalette, videoScale, appMaterialModifiers);
+            project.loadProject(project.ligidFilePath(), colorPalette, videoScale, appMaterialModifiers);
             
             startScreen = false;
 
@@ -122,7 +121,7 @@ void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
     }
     
     //Close the dialog
-    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
         if(startScreen)
             greetingDialogActive = true;
         

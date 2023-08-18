@@ -30,8 +30,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "SettingsSystem/Settings.hpp"
 
-void Skybox::createDisplayingTxtr(Model &sphereModel, glm::vec2 windowScale){
+void Skybox::createDisplayingTxtr(){
+	
 	glActiveTexture(GL_TEXTURE0);
 	if(displayingTexture == 0)
 		glGenTextures(1,&displayingTexture);
@@ -89,7 +91,7 @@ void Skybox::createDisplayingTxtr(Model &sphereModel, glm::vec2 windowScale){
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,ID);
 	
-	sphereModel.Draw();
+	getModel()->Draw();
 	
 	glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -98,5 +100,5 @@ void Skybox::createDisplayingTxtr(Model &sphereModel, glm::vec2 windowScale){
 	glBindFramebuffer(GL_FRAMEBUFFER,0);
 	glDeleteFramebuffers(1,&FBO);
 
-	glViewport(0,0,windowScale.x,windowScale.y);
+	glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
 }

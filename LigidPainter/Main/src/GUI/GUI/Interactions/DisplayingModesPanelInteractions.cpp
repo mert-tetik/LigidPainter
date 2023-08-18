@@ -35,9 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void displayingModesPanelInteraction(
                                         Panel &displayingModesPanel, 
-                                        Painter &painter,
-                                        Model &model, 
-                                        Scene scene
+                                        Painter &painter
                                     )
 {
     //!PAINTING MODES PANEL
@@ -48,7 +46,7 @@ void displayingModesPanelInteraction(
                 displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
                 painter.selectedDisplayingModeIndex = i;
                 if(painter.selectedDisplayingModeIndex == 0)
-                    NodeScene::updateNodeResults( model, scene, Settings::properties()->textureRes, -1);
+                    NodeScene::updateNodeResults( Settings::properties()->textureRes, -1);
                 break;
             }
         }

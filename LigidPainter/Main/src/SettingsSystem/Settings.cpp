@@ -25,6 +25,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 Settings::AppTextures __appTextures;
 Settings::Properties __settingsProperties;
 
+Context __context; 
+Scene __scene; //3D Scene structure
+Model __model;
+Model __sphereModel;
+glm::vec2 __videoScale;
+
 void Settings::loadAppTextures(){
     __appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/TDModel.png");
     __appTextures.softenIcon.load("./LigidPainter/Resources/Icons/Soften.png");
@@ -52,6 +58,20 @@ void Settings::loadAppTextures(){
     __appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
 }
 
+Context* getContext(){
+    return &__context;
+}
+Scene* getScene(){
+    return &__scene;
+}
+Model* getModel(){
+    return &__model;
+}
+Model* getSphereModel(){
+    return &__sphereModel;
+}
+
+
 namespace Settings{
     AppTextures appTextures(){
         return __appTextures;
@@ -59,5 +79,9 @@ namespace Settings{
 
     Properties* properties(){
         return &__settingsProperties;
+    }
+    
+    glm::vec2* videoScale(){
+        return &__videoScale;
     }
 };

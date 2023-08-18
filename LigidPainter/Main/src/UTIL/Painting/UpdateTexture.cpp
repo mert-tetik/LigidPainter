@@ -61,7 +61,7 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
 }
 
 
-void Painter::updateTexture(Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos){
+void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos){
     
     glm::vec2 textureRes = this->selectedTexture.getResolution();
 
@@ -155,8 +155,8 @@ void Painter::updateTexture(Model &model, Scene scene, Panel& twoDPaintingPanel,
 
         //*Vertex
         ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
-        ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", scene.projectionMatrix);
-        ShaderSystem::textureUpdatingShader().setMat4("view", scene.viewMatrix);
+        ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
+        ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->viewMatrix);
 
 
         //* Bind the textures
@@ -173,8 +173,8 @@ void Painter::updateTexture(Model &model, Scene scene, Panel& twoDPaintingPanel,
         glBindTexture(GL_TEXTURE_2D, this->depthTexture);
 
         //Draw the UV of the selected model
-        if(selectedMeshIndex < model.meshes.size())
-            model.meshes[selectedMeshIndex].Draw();         
+        if(selectedMeshIndex < getModel()->meshes.size())
+            getModel()->meshes[selectedMeshIndex].Draw();         
     }
     else{
 
@@ -220,7 +220,7 @@ void Painter::updateTexture(Model &model, Scene scene, Panel& twoDPaintingPanel,
     captureTxtrToSourceTxtr(captureTexture,textureRes,selectedTexture.ID);
 
     if(this->threeDimensionalMode)
-        this->selectedTexture.removeSeams(model.meshes[selectedMeshIndex], textureRes);
+        this->selectedTexture.removeSeams(getModel()->meshes[selectedMeshIndex], textureRes);
 }
 
 

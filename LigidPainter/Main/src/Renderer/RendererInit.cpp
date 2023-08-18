@@ -43,7 +43,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 typedef const char* (WINAPI* PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
 
-Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value that will be used for viewport & window size
+Renderer::Renderer(){//Settings::Videoscale() is the resolution value that will be used for viewport & window size
 
     if(!LigidGL::isAdmin()){
         int res = tinyfd_messageBox("Warning!", "LigidPainter has no admin priviliges (run the app as administrator)! std::filesystem might cause a crash. Do you want to proceed?", "yesno", "warning", 0);
@@ -53,15 +53,15 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     }
 
     //Create the window and make it's OpenGL context current    
-    context.window.createWindow(videoScale.x, videoScale.y, L"LigidPainter");
+    getContext()->window.createWindow(Settings::videoScale()->x, Settings::videoScale()->y, L"LigidPainter");
     
     //Show the created window
-    context.window.show();
+    getContext()->window.show();
 
-    if(!context.window.setWindowIcon(L"./LigidPainter/Resources/Icons/logo-1080x.ico"))
+    if(!getContext()->window.setWindowIcon(L"./LigidPainter/Resources/Icons/logo-1080x.ico"))
         LGDLOG::start<< "ERROR : Can't change the icon of the window" << LGDLOG::end;
 
-    context.window.setWindowUserPointer(this);
+    getContext()->window.setWindowUserPointer(this);
 
     auto cursorPosFunc = [](LigidWindow w, double x, double y)
     {
@@ -72,21 +72,21 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
         }
     };
     
-    context.window.setMousePosCallback(cursorPosFunc);
+    getContext()->window.setMousePosCallback(cursorPosFunc);
     
     //Scroll callback function casting
     auto scrollFunc = [](LigidWindow w, double x, double y)
     {
         static_cast<Renderer*>(w.getWindowUserPointer())->scrollCallback(w,x,y);
     };
-    context.window.setScrollCallback(scrollFunc);
+    getContext()->window.setScrollCallback(scrollFunc);
 
     //Framebuffer size callback function casting
     auto framebufferSizeFunc = [](LigidWindow w, int x, int y)
     {
         static_cast<Renderer*>(w.getWindowUserPointer())->framebufferSizeCallback(w,x,y);
     };
-    context.window.setWindowSizeCallback(framebufferSizeFunc);
+    getContext()->window.setWindowSizeCallback(framebufferSizeFunc);
 
     //Mouse button callback function casting
     auto mouseButtonFunc = [](LigidWindow w, int button, int action, int mods)
@@ -94,7 +94,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
         static_cast<Renderer*>(w.getWindowUserPointer())->mouseButtonCallback(w,button,action,mods);
     };
 
-    context.window.setMouseButtonCallback(mouseButtonFunc);
+    getContext()->window.setMouseButtonCallback(mouseButtonFunc);
 
     //Key button callback function casting
     auto keyFunc = [](LigidWindow w, int key, int action, int mods)
@@ -102,13 +102,10 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
         static_cast<Renderer*>(w.getWindowUserPointer())->keyCallback(w, key, 0, action, mods);
     };
 
-    context.window.setKeyCallback(keyFunc);
-
-    //Hold the videoscale value inside of the scene structure
-    scene.videoScale = videoScale;
+    getContext()->window.setKeyCallback(keyFunc);
 
     //Get the window size
-    context.windowScale = videoScale;
+    getContext()->windowScale = *Settings::videoScale();
 
     //Initialize the GLAD
     initGlad();
@@ -125,8 +122,8 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     ShaderSystem::initShaderSystem();
 
     //Load the sphere model
-    model.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
-    sphereModel.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
+    getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
+    getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
 
     //Init the skybox    
     skybox.init();
@@ -136,14 +133,14 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     
     //Load the default skybox
     skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox's itself
-    skybox.createPrefilterMap(videoScale); //Create prefiltered skybox
-    skybox.createDisplayingTxtr(sphereModel, context.windowScale); //Create displaying texture
+    skybox.createPrefilterMap(*Settings::videoScale()); //Create prefiltered skybox
+    skybox.createDisplayingTxtr(); //Create displaying texture
     
     //Load the fonts
     fonts.Arial.loadFont("./LigidPainter/Resources/Fonts/Arial.ttf");
 
     //Init the text renderer
-    textRenderer = TextRenderer(fonts.Arial, videoScale);
+    textRenderer = TextRenderer(fonts.Arial, *Settings::videoScale());
     
     //Create context menus
     createContextMenus();
@@ -153,22 +150,19 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
 
     //Init the userinterface
-    userInterface.init(context, websites, videoScale, sphereModel);
+    userInterface.init(websites, *Settings::videoScale(), *getSphereModel());
 
-    //Init mouse class
-    Mouse::setWindow(context.window);
-    
     //Load the cursors of the LigidPainter
     Mouse::loadCursors();
 
     //Init the painter
-    painter.initPainter(videoScale);
+    painter.initPainter(*Settings::videoScale());
 
     //Create the mesh node
-    NodeScene::addNode(Node(MESH_NODE, 0, colorPalette, videoScale));
+    NodeScene::addNode(Node(MESH_NODE, 0, colorPalette, *Settings::videoScale()));
 
     //Load the inputs of the mesh node
-    NodeScene::getNode(0)->uploadNewIOs(model, colorPalette);
+    NodeScene::getNode(0)->uploadNewIOs(colorPalette);
 
     //Create the projects folder if not exists
     if(!std::filesystem::exists("./Projects")){

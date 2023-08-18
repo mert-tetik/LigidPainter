@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-bool Project::loadProject(std::string ligidFilePath,Model &model,ColorPalette colorPalette, glm::vec2 videoScale, AppMaterialModifiers& appMaterialModifiers){
+bool Project::loadProject(std::string ligidFilePath,ColorPalette colorPalette, glm::vec2 videoScale, AppMaterialModifiers& appMaterialModifiers){
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
@@ -135,9 +135,9 @@ bool Project::loadProject(std::string ligidFilePath,Model &model,ColorPalette co
     }
 
     if(Library::getModelArraySize())
-        model = *Library::getModel(0);
+        *getModel() = *Library::getModel(0);
     else
-        model.loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
+        getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
 
     return true;
 }

@@ -23,6 +23,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /// @brief Front decleration for the @ref Section structure
 struct Section;
 
+/// @brief Front decleration for the @ref Camera structure
+struct Camera;
+
 /// @brief Front decleration for the @ref Mesh class
 class Mesh;
 
@@ -55,7 +58,7 @@ public:
 
     Texture maskTexture;
 
-    void (*updateMaterialChannels)(Material &material, Mesh &mesh, int textureResolution, int curModI, glm::mat4 perspective, glm::mat4 view);
+    void (*updateMaterialChannels)(Material &material, Mesh &mesh, int textureResolution, int curModI);
 
     //Constructors
     MaterialModifier();
@@ -122,7 +125,7 @@ public:
     Material(std::string title,int ID);
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
-    void updateMaterialDisplayingTexture(float textureRes, Box box, Context context, Model sphereModel,   bool updateMaterial, Camera matCam, int displayingMode);
+    void updateMaterialDisplayingTexture(float textureRes, Box box, Model sphereModel, bool updateMaterial, Camera matCam, int displayingMode);
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial();

@@ -34,7 +34,6 @@ class LigidCursor;
 
 namespace Mouse
 {
-    void setWindow(LigidWindow window);
 	void loadCursors();
     bool isCursorPointer();
 	void setCursor(LigidCursor cursor);
@@ -58,7 +57,6 @@ namespace Mouse
     LigidCursor* hSlideCursor();
     LigidCursor* vSlideCursor();
     LigidCursor* activeCursor();
-    LigidWindow* mouse_window();
     int* cursorTypeGotSet();
 };
 

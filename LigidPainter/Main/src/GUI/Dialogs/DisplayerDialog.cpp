@@ -38,14 +38,14 @@
 DisplayerDialog::DisplayerDialog(){}
 
 DisplayerDialog::DisplayerDialog(
-                                    Context context, //Window and stuff
+                                    //Window and stuff
                                     glm::vec2 videoScale, //Monitor resolution
                                     ColorPalette colorPalette, //LigidPainter's theme
                                     Model &sphereModel //Skybox's displaying texture is rendered using this sphere model
                                 ){
                                     
     //Take the parameters to the class member variables
-    this->context = context;
+    
     this->sphereModel = sphereModel;
     
     //Create the panel
@@ -108,7 +108,7 @@ DisplayerDialog::DisplayerDialog(
     }
 }
 
-void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+void DisplayerDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
             glm::vec2 videoScale,Skybox &skybox){
     
     dialogControl.updateStart();
@@ -139,7 +139,7 @@ void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalett
             if(skyboxes[i].button.hover && *Mouse::LClick()){
                 skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky" + std::to_string(i+1));
                 skybox.createPrefilterMap(videoScale);
-                skybox.createDisplayingTxtr(sphereModel, context.windowScale);
+                skybox.createDisplayingTxtr();
 
                 //Unpress the skybox displayer
                 panel.sections[0].elements[0].button.clickState1 = false;
@@ -174,7 +174,7 @@ void DisplayerDialog::render(LigidWindow originalWindow,ColorPalette colorPalett
     skybox.opacity = panel.sections[0].elements[3].rangeBar.value/100.f;
     
     //End the dialog
-    if((panel.sections[0].elements[2].button.hover && *Mouse::LClick()) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
+    if((panel.sections[0].elements[2].button.hover && *Mouse::LClick()) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
             panel.sections[0].elements[0].button.clickState1 = false;
             dialogControl.unActivate();

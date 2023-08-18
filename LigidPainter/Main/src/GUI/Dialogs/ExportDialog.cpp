@@ -25,6 +25,7 @@
 #include "GUI/GUI.hpp" 
 #include "NodeSystem/Node/Node.hpp" 
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <iostream>
@@ -34,11 +35,11 @@
 
 ExportDialog::ExportDialog(){}
 
-ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette){
+ExportDialog::ExportDialog(glm::vec2 videoScale,ColorPalette colorPalette){
     
     //Take the parameters to the class member variables 
     
-    this->context = context;
+    
 
     
 
@@ -52,7 +53,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Export",Texture(),0.f,false)), 
                                         
                                         //Project settings
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"Select A Path",2.f,true),context.window),
+                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"Select A Path",2.f,true)),
                                         
                                         Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
                                         {
@@ -61,7 +62,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                             "1024",
                                             "2048",
                                             "4096"
-                                        },"Texture Resolution",4.f),context.window),
+                                        },"Texture Resolution",4.f)),
                                         
                                         Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
                                         {
@@ -69,7 +70,7 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
                                             "JPEG", 
                                             "BMP", 
                                             "TGA"
-                                        },"File Format",4.f),context.window),
+                                        },"File Format",4.f)),
 
                                         Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,"Export",Texture(),5.f,false))
                                     }
@@ -97,10 +98,9 @@ ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette col
     this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
 }
 
-void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+void ExportDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                           glm::vec2 videoScale,Project &project,bool &greetingDialogActive,
-                          Model &model,MaterialEditorDialog &materialEditorDialog,Model sphereModel,
-                          Scene scene){
+                          MaterialEditorDialog &materialEditorDialog,Model sphereModel){
     
     dialogControl.updateStart();
 
@@ -128,13 +128,13 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,T
         }
         //All the materials connected to the mesh output
         
-        NodeScene::updateNodeResults(model, scene, resolution, -1);
+        NodeScene::updateNodeResults(resolution, -1);
         
         //Update all the materials connected to the mesh output & export it's textures
-        for (size_t i = 0; i < model.meshes.size(); i++)
+        for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {
 
-            std::string materialFolderPath = destPath + UTIL::folderDistinguisher() + model.meshes[i].materialName;
+            std::string materialFolderPath = destPath + UTIL::folderDistinguisher() + getModel()->meshes[i].materialName;
             
             std::vector<std::string> filesInTheFolder;
             for (const auto& entry : std::filesystem::directory_iterator(destPath)) {
@@ -152,27 +152,27 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,T
                 Texture channelTxtr;
                 
                 if(channelI == 0){
-                    channelTxtr = model.meshes[i].albedo;
+                    channelTxtr = getModel()->meshes[i].albedo;
                     channelTxtr.title = "albedo";
                 }
                 if(channelI == 1){
-                    channelTxtr = model.meshes[i].roughness;
+                    channelTxtr = getModel()->meshes[i].roughness;
                     channelTxtr.title = "roughness";
                 }
                 if(channelI == 2){
-                    channelTxtr = model.meshes[i].metallic;
+                    channelTxtr = getModel()->meshes[i].metallic;
                     channelTxtr.title = "metallic";
                 }
                 if(channelI == 3){
-                    channelTxtr = model.meshes[i].normalMap;
+                    channelTxtr = getModel()->meshes[i].normalMap;
                     channelTxtr.title = "normalMap";
                 }
                 if(channelI == 4){
-                    channelTxtr = model.meshes[i].heightMap;
+                    channelTxtr = getModel()->meshes[i].heightMap;
                     channelTxtr.title = "heightMap";
                 }
                 if(channelI == 5){
-                    channelTxtr = model.meshes[i].ambientOcclusion;
+                    channelTxtr = getModel()->meshes[i].ambientOcclusion;
                     channelTxtr.title = "ambientOcclusion";
                 }
 
@@ -182,7 +182,7 @@ void ExportDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,T
     }
     
     //Close the dialog
-    if(originalWindow.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){
         if(!dialogControl.firstFrameActivated)
             this->dialogControl.unActivate();
     }

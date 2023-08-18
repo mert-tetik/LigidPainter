@@ -32,8 +32,8 @@
 #include "tinyfiledialogs.h"
 
 NewTextureDialog::NewTextureDialog(){}
-NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette){
-    this->context = context;
+NewTextureDialog::NewTextureDialog(glm::vec2 videoScale,ColorPalette colorPalette){
+    
     
     //Create the panel
     this->panel = Panel(
@@ -44,8 +44,8 @@ NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPal
                     Element(Button()),
                     {
                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Texture(), 1.f, false)),
-                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"NewTexture",1.f,false),context.window),
-                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), colorPalette,  {"256", "512", "1024", "2048", "4096"} , "Resolution", 1.f), context.window),
+                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"NewTexture",1.f,false)),
+                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), colorPalette,  {"256", "512", "1024", "2048", "4096"} , "Resolution", 1.f)),
                         Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2), colorPalette, "Create"  , Texture(), 4.f, true)),
                         Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(3,2), colorPalette, "Create With The Texture Selection Dialog"  , Texture(), 1.f, true))
                     }
@@ -74,7 +74,7 @@ NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPal
 
 bool __newTxtrDialog_last_texture_selection_dialog_state = false;
 
-void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale){
+void NewTextureDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale){
     
     int textureRes = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
 
@@ -151,7 +151,7 @@ void NewTextureDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
     }
 
     //End the dialog
-    if((panel.sections[0].elements[3].button.hover && *Mouse::LClick()) || context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
+    if((panel.sections[0].elements[3].button.hover && *Mouse::LClick()) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
         if(!(panel.sections[0].elements[4].button.hover && *Mouse::LClick())){
             if(!panel.sections[0].elements[2].comboBox.pressed){
                 panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);

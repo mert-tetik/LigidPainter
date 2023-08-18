@@ -86,19 +86,17 @@ Element::Element(CheckBox checkBox){
     panelOffset = checkBox.panelOffset;
     state = 2;
 }
-Element::Element(ComboBox comboBox,LigidWindow window){
+Element::Element(ComboBox comboBox){
     //Init as combo box
     this->comboBox = comboBox;
-    this->window = window;
     pos = comboBox.pos;
     scale = comboBox.scale;
     panelOffset = comboBox.panelOffset;
     state = 3;
 }
-Element::Element(TextBox textBox,LigidWindow window){
+Element::Element(TextBox textBox){
     //Init as text box
     this->textBox = textBox;
-    this->window = window;
     pos = textBox.pos;
     scale = textBox.scale;
     panelOffset = textBox.panelOffset;
@@ -132,14 +130,14 @@ void Element::render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRendere
         comboBox.scale = scale;
         comboBox.panelOffset = panelOffset;
         comboBox.doMouseTracking = doMouseTracking;
-        comboBox.render(videoScale,timer,textRenderer,doMouseTracking,window);
+        comboBox.render(videoScale,timer,textRenderer,doMouseTracking);
     }
     if(state == 4){ //Render the textbox
         textBox.pos = pos;
         textBox.scale = scale;
         textBox.panelOffset = panelOffset;
         textBox.doMouseTracking = doMouseTracking;
-        textBox.render(videoScale,timer,textRenderer,doMouseTracking,window);
+        textBox.render(videoScale,timer,textRenderer,doMouseTracking);
     }
 }
 

@@ -46,9 +46,9 @@ bool isVec3InVector(const glm::vec3& value, const std::vector<glm::vec3>& vector
 bool isVec2InVector(const glm::vec2& value, const std::vector<glm::vec2>& vector);
 void writeVec3(std::ofstream &wf, glm::vec3 val, int precision);
 void writeVec2(std::ofstream &wf, glm::vec2 val, int precision);
-void calculateUniqueValues(Model &model, std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal);
+void calculateUniqueValues(std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal);
 void writeUniqueValues(std::ofstream& wf, std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal);
-void writeIndices(std::ofstream& wf, Model &model, std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal);
+void writeIndices(std::ofstream& wf, std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal);
 
 
 
@@ -82,13 +82,13 @@ bool FileHandler::writeOBJFile(std::string path, Model model){
     std::vector<glm::vec3> uniqueNormal;
 
     //Calculate unique values (takes all the vectors as reference and inserts the vertex data into them)
-    calculateUniqueValues(model, uniquePos, uniqueUV, uniqueNormal);
+    calculateUniqueValues(uniquePos, uniqueUV, uniqueNormal);
 
     //Write all the unqiue vectors to the obj file
     writeUniqueValues(wf, uniquePos, uniqueUV, uniqueNormal);
 
     //Write the index values
-    writeIndices(wf, model, uniquePos, uniqueUV, uniqueNormal);
+    writeIndices(wf, uniquePos, uniqueUV, uniqueNormal);
 
     //Close the obj file stream
     wf.close();
@@ -118,21 +118,21 @@ bool FileHandler::writeOBJFile(std::string path, Model model){
 
 
 
-void writeIndices(std::ofstream& wf, Model &model, std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal){
+void writeIndices(std::ofstream& wf, std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal){
     
     //All the meshes
-    for (size_t meshI = 0; meshI < model.meshes.size(); meshI++)
+    for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
     {
 
         //Indicate the material 
-        wf << "usemtl " + model.meshes[meshI].materialName + '\n';
+        wf << "usemtl " + getModel()->meshes[meshI].materialName + '\n';
         
         //Smooth normals off (change that) (maybe) (🥱)
         if(meshI == 0)
             wf << "s off \n";
 
         //Write all the indices
-        for (size_t indI = 0; indI < model.meshes[meshI].indices.size();)
+        for (size_t indI = 0; indI < getModel()->meshes[meshI].indices.size();)
         {
             try
             {
@@ -142,7 +142,7 @@ void writeIndices(std::ofstream& wf, Model &model, std::vector<glm::vec3>& uniqu
 
                 for (size_t i = 0; i < 3; i++)
                 {
-                    Vertex currentVertex = model.meshes[meshI].vertices[model.meshes[meshI].indices[indI]]; 
+                    Vertex currentVertex = getModel()->meshes[meshI].vertices[getModel()->meshes[meshI].indices[indI]]; 
                     
                     //Find the index of the vertex pos
                     wf << findIndexVec3(currentVertex.Position, uniquePos) + 1;
@@ -216,31 +216,31 @@ void writeUniqueValues(std::ofstream& wf, std::vector<glm::vec3>& uniquePos, std
     }
 }
 
-void calculateUniqueValues(Model &model, std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal){
-    for (size_t meshI = 0; meshI < model.meshes.size(); meshI++)
+void calculateUniqueValues(std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal){
+    for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
     {
         
         //Calculate unique vertex positions
-        for (size_t vertI = 0; vertI < model.meshes[meshI].vertices.size(); vertI++)
+        for (size_t vertI = 0; vertI < getModel()->meshes[meshI].vertices.size(); vertI++)
         {
-            if(!isVec3InVector(model.meshes[meshI].vertices[vertI].Position, uniquePos)){
-                uniquePos.push_back(model.meshes[meshI].vertices[vertI].Position);
+            if(!isVec3InVector(getModel()->meshes[meshI].vertices[vertI].Position, uniquePos)){
+                uniquePos.push_back(getModel()->meshes[meshI].vertices[vertI].Position);
             }
         }
         
         //Calculate unique vertex texture coordinates
-        for (size_t vertI = 0; vertI < model.meshes[meshI].vertices.size(); vertI++)
+        for (size_t vertI = 0; vertI < getModel()->meshes[meshI].vertices.size(); vertI++)
         {
-            if(!isVec2InVector(model.meshes[meshI].vertices[vertI].TexCoords, uniqueUV)){
-                uniqueUV.push_back(model.meshes[meshI].vertices[vertI].TexCoords);
+            if(!isVec2InVector(getModel()->meshes[meshI].vertices[vertI].TexCoords, uniqueUV)){
+                uniqueUV.push_back(getModel()->meshes[meshI].vertices[vertI].TexCoords);
             }
         }
 
         //Calculate unique vertex normal vectors
-        for (size_t vertI = 0; vertI < model.meshes[meshI].vertices.size(); vertI++)
+        for (size_t vertI = 0; vertI < getModel()->meshes[meshI].vertices.size(); vertI++)
         {
-            if(!isVec3InVector(model.meshes[meshI].vertices[vertI].Normal, uniqueNormal)){
-                uniqueNormal.push_back(model.meshes[meshI].vertices[vertI].Normal);
+            if(!isVec3InVector(getModel()->meshes[meshI].vertices[vertI].Normal, uniqueNormal)){
+                uniqueNormal.push_back(getModel()->meshes[meshI].vertices[vertI].Normal);
             }
         }
     }

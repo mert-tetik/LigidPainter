@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -36,8 +37,7 @@ void paintingPanelInteraction(
                                 Panel &paintingPanel, 
                                 Painter &painter, 
                                 Dropper &dropper,
-                                ColorPalette colorPalette,
-                                Model &model
+                                ColorPalette colorPalette
                             )
 {
 
@@ -66,7 +66,7 @@ void paintingPanelInteraction(
     if(paintingPanel.sections[0].elements[2].button.hover && *Mouse::LDoubleClick()){//Pressed to third color button element
         painter.loadColor3();
     }
-    
+
     //Prevent multiple selection and update the painter.selectedColorIndex for colors
     for (size_t i = 0; i < paintingPanel.sections[0].elements.size(); i++)
     {
@@ -131,15 +131,15 @@ void paintingPanelInteraction(
     }
 
     //Update the meshes section of the painting panel if a new model is added
-    if(model.newModelAdded){
+    if(getModel()->newModelAdded){
         painter.selectedMeshIndex = 0;
         
         paintingPanel.sections[3].elements.clear();
         
-        for (size_t i = 0; i < model.meshes.size(); i++)
+        for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {
 
-            Element meshButton = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, model.meshes[i].materialName , Texture(), 0.f,true));
+            Element meshButton = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, getModel()->meshes[i].materialName , Texture(), 0.f,true));
 
             paintingPanel.sections[3].elements.push_back(meshButton);
         

@@ -292,7 +292,7 @@ public:
 
     void removeSeams(Mesh& mesh, int textureResolution);
     void removeSeams(Mesh& mesh, glm::ivec2 textureResolution);
-    unsigned int generateProceduralTexture(Mesh &mesh, Scene scene, int textureRes);
+    unsigned int generateProceduralTexture(Mesh &mesh, int textureRes);
     void generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale);
 
 };
@@ -329,7 +329,7 @@ public:
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @return 
-    bool loadProject(std::string ligidFilePath,Model &model,
+    bool loadProject(std::string ligidFilePath,
                     ColorPalette colorPalette, glm::vec2 videoScale,
                     AppMaterialModifiers& appMaterialModifiers);
 
@@ -339,7 +339,7 @@ public:
     
     /// @brief Copies the project path to the clipboard
     /// @param window 
-    void copyTheProjectPathToTheClipboard(LigidWindow window);
+    void copyTheProjectPathToTheClipboard();
 
     /// @brief Locates the ligid file in the folderPath 
     /// @param folderPath 
@@ -475,7 +475,7 @@ public:
     * @param windowOrtho orthographics projection matrix created with window size value.
     * @param textures textures in the library
     */
-    void doPaint(glm::mat4 windowOrtho, Context context);
+    void doPaint(glm::mat4 windowOrtho);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -491,16 +491,13 @@ public:
     * @param scene structure contains matrices related to 3D model rendering & cam pos
     * @param twoDPaintingPanel if the painting mode is 2D use this panel's transform data 
     */
-    void updateTexture(Model &model, Scene scene, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos);
+    void updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos);
     
-
     /*!
     * @brief updates the @ref depthTexture right after painting is done.
     *        Use this right before the @ref refreshPainting  
-    * @param model the 3D model
-    * @param windowScale size of the window
     */
-    void updateDepthTexture( Model &model,glm::vec2 windowScale);
+    void updateDepthTexture();
 
     void loadColor1();
     void loadColor2();
@@ -682,33 +679,6 @@ public:
     std::string getURL();
 };
 
-
-// RENDERER UTIL STRUCTURES
-struct Camera{
-    float yaw = -90.f;
-    float pitch = 0.f;
-    glm::vec3 cameraPos = glm::vec3(0,0,-10.f);
-    glm::vec3 originPos = glm::vec3(0,0,0);
-    float radius = 10.f; 
-};
-
-struct Scene{
-    glm::mat4 projectionMatrix;
-    glm::mat4 viewMatrix;
-
-    const float fov = 45.f;
-    const float aNear = 0.1f;
-    const float aFar = 1000.0f;
-
-    glm::vec2 videoScale;
-
-    Camera camera;
-};
-
-struct Context{
-    LigidWindow window;
-    glm::ivec2 windowScale;
-};
 
 struct Websites{
     Website ligidTools;

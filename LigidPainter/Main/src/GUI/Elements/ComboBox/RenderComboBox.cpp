@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -37,8 +38,7 @@ void ComboBox::render(
                         //Mouse class to access mouse events
                         Timer &timer, //Timer that handles the animations
                         TextRenderer &textRenderer, //TextRenderer that handles text rendering
-                        bool doMouseTracking, //If there is need to check if mouse hover
-                        LigidWindow window //To take the key inputs
+                        bool doMouseTracking //If there is need to check if mouse hover
                     ){
     
     if(this->pressed)
@@ -188,7 +188,7 @@ void ComboBox::render(
         glDepthFunc(GL_LEQUAL);
     
     //Unpress
-    if(window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || *Mouse::LClick() && !hover[0]){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || *Mouse::LClick() && !hover[0]){
         pressed = false;
     }
 }

@@ -40,13 +40,13 @@ void deletion(int& activeChar, int& activeChar2, std::string &text);
 void leftArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
 void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
 void charInput(int &key, bool &caps, std::string& text, int& activeChar, int& activeChar2);
-void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text, LigidWindow window);
+void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text);
 
 
 
 
 
-void TextRenderer::processTextInput(std::string &text,LigidWindow window,int &activeChar,int &activeChar2, int &textPosCharIndex){
+void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activeChar2, int &textPosCharIndex){
 	//If pressed to a key
     if(keyInput){
 
@@ -84,7 +84,7 @@ void TextRenderer::processTextInput(std::string &text,LigidWindow window,int &ac
 		
         }
         else if(mods == 2){ //Control pressed
-            modsControl(key, activeChar, activeChar2, text, window);
+            modsControl(key, activeChar, activeChar2, text);
         }
 	}
 }
@@ -243,7 +243,7 @@ void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text){
 	}
 }
 
-void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text, LigidWindow window){
+void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text){
     //Control + V
     if(key == LIGIDGL_KEY_V){
         if(activeChar2 != activeChar)

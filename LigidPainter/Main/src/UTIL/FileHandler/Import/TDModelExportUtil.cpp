@@ -90,7 +90,24 @@ void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, st
 
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles){
     Model model;
-
+    
+    float big = 1.f;
+    for (size_t i = 0; i < meshVertices.size(); i++)
+    {
+        for (size_t vi = 0; vi < meshVertices[i].size(); vi++)
+        {
+            if(big < abs(meshVertices[i][vi].Position.x))
+                big = abs(meshVertices[i][vi].Position.x);
+            
+            if(big < abs(meshVertices[i][vi].Position.y))
+                big = abs(meshVertices[i][vi].Position.y);
+            
+            if(big < abs(meshVertices[i][vi].Position.z))
+                big = abs(meshVertices[i][vi].Position.z);
+        }
+    }
+    
+    
     for (int i = 0; i < meshVertices.size(); i++)
     {
         std::string matTitle;
@@ -112,19 +129,6 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
             meshTitles.push_back(model.meshes[i].materialName);
         
         UTIL::uniqueName(matTitle, meshTitles);
-
-        float big = 0.00001f;
-        for (size_t vi = 0; vi < meshVertices[i].size(); vi++)
-        {
-            if(big < abs(meshVertices[i][vi].Position.x))
-                big = abs(meshVertices[i][vi].Position.x);
-            
-            if(big < abs(meshVertices[i][vi].Position.y))
-                big = abs(meshVertices[i][vi].Position.y);
-            
-            if(big < abs(meshVertices[i][vi].Position.z))
-                big = abs(meshVertices[i][vi].Position.z);
-        }
         
         for (size_t vi = 0; vi < meshVertices[i].size(); vi++)
         {
@@ -141,7 +145,7 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
 }
 
 void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2) {
-    // Calculate position differences
+    // Calculate posiztion differences
     glm::vec3 deltaPos1 = v1.Position - v0.Position;
     glm::vec3 deltaPos2 = v2.Position - v0.Position;
 

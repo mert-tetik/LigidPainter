@@ -57,7 +57,7 @@ std::string Project::locateLigidFileInFolder(const std::string& folderPath)
     }
 }
 
-void Project::copyTheProjectPathToTheClipboard(LigidWindow window){
+void Project::copyTheProjectPathToTheClipboard(){
     LigidGL::setClipboardText(std::filesystem::absolute(folderPath).string().c_str());
 }
 

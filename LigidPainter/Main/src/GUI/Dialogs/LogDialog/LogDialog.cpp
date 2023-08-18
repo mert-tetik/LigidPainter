@@ -100,7 +100,7 @@ namespace LGDLOG{
     std::string end = "$#";
 }
 
-LogDialog::LogDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
+LogDialog::LogDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
     this->panel = Panel(
         colorPalette,
         {
@@ -153,7 +153,7 @@ LogDialog::LogDialog(Context context,glm::vec2 videoScale,ColorPalette colorPale
     this->panel.hasSlider = true;
 }
 
-void LogDialog::render(LigidWindow originalWindow, ColorPalette colorPalette,Timer timer, TextRenderer &textRenderer, glm::vec2 videoScale){
+void LogDialog::render(ColorPalette colorPalette,Timer timer, TextRenderer &textRenderer, glm::vec2 videoScale){
     
     if(this->logBtn.clicked)
         actionHistoryActive = !actionHistoryActive;

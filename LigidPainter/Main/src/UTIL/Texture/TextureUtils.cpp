@@ -285,7 +285,7 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
     glDeleteTextures(1, &textureCopy);
 }
 
-unsigned int Texture::generateProceduralTexture(Mesh &mesh, Scene scene, int textureRes){
+unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
     unsigned int proceduralTxtr;
     
     ShaderSystem::to2DProcedural().use();
@@ -295,8 +295,8 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Scene scene, int tex
     ShaderSystem::to2DProcedural().setInt("proceduralInverted", this->proceduralnverted);
     
     ShaderSystem::to2DProcedural().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-    ShaderSystem::to2DProcedural().setMat4("perspectiveProjection", scene.projectionMatrix);
-    ShaderSystem::to2DProcedural().setMat4("view", scene.viewMatrix);
+    ShaderSystem::to2DProcedural().setMat4("perspectiveProjection", getScene()->projectionMatrix);
+    ShaderSystem::to2DProcedural().setMat4("view", getScene()->viewMatrix);
 
     ShaderSystem::to2DProcedural().setInt("proceduralTexture", 1);
     glActiveTexture(GL_TEXTURE1);

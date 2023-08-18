@@ -54,10 +54,7 @@ void MaterialEditorDialog::render
                                     TextureSelectionDialog &textureSelectionDialog,
                                     Material &material,
                                     Box box,
-                                    Context context,
-                                    std::vector<ContextMenu> &contextMenus,
-                                    Model& model,
-                                    Scene scene
+                                    std::vector<ContextMenu> &contextMenus
                                 )
 {
     
@@ -72,9 +69,9 @@ void MaterialEditorDialog::render
     barButton.pos.x = bgPanel.pos.x + bgPanel.additionalPos.x;
     barButton.pos.y = bgPanel.pos.y + bgPanel.additionalPos.y - bgPanel.scale.y - barButton.scale.y;
 
-    bgPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(context.windowScale)) / videoScale * 50.f ,0);
-    layerPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(context.windowScale)) / videoScale * 50.f ,0);
-    modifiersPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(context.windowScale)) / videoScale * 50.f ,0);
+    bgPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(getContext()->windowScale)) / videoScale * 50.f ,0);
+    layerPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(getContext()->windowScale)) / videoScale * 50.f ,0);
+    modifiersPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(getContext()->windowScale)) / videoScale * 50.f ,0);
 
     //Update the texture, scale & position of the material displayer button
     updateMaterialDisplayerButton(materialDisplayer, material, bgPanel, modifiersPanel, layerPanel);
@@ -96,16 +93,16 @@ void MaterialEditorDialog::render
     checkLayerPanel(material,contextMenus,videoScale );
     
     //Check the modifier's panel and update the material if interacted with any of the GUI element (show the texture selection dialog if pressed to a texture modifier's channel button)
-    checkModifiersPanel(material, box, context, textureSelectionDialog);
+    checkModifiersPanel(material, box, textureSelectionDialog);
     
     //Manage actions of the context menus 
-    this->manageContextMenuActions(material, box, context, contextMenus);
+    this->manageContextMenuActions(material, box, contextMenus);
 
     //Update the layer panel recreate all the modifiers using material.materialModifiers vector & add a new modifier if add is pressed to that vector
-    updateLayerPanelElements(material, box, context, videoScale, contextMenus);
+    updateLayerPanelElements(material, box, videoScale, contextMenus);
     
     //If texture selection done
-    checkTextureSelectionDialog(textureSelectionDialog,material, box, context);
+    checkTextureSelectionDialog(textureSelectionDialog,material, box);
 
     //Render the material displayer
     materialDisplayer.render(videoScale,timer,textRenderer,false);
@@ -113,19 +110,19 @@ void MaterialEditorDialog::render
     this->displayModeComboBox.pos = layerPanel.pos + layerPanel.additionalPos;
     this->displayModeComboBox.pos.y -= materialDisplayer.scale.y + this->displayModeComboBox.scale.y;
     this->displayModeComboBox.pos.x += layerPanel.scale.x + materialDisplayer.scale.x;
-    this->displayModeComboBox.render(videoScale, timer, textRenderer, true, context.window);
+    this->displayModeComboBox.render(videoScale, timer, textRenderer, true);
     
     dialogControl.updateEnd(timer,0.15f);
 
     if(!this->updateTheMaterial && this->prevUpdateTheMaterial){
-        material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, box, context, sphereModel, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+        material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, box, sphereModel, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
     }
     
     this->prevUpdateTheMaterial = this->updateTheMaterial;
     this->updateTheMaterial = false;
 
 
-    if(context.window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS){
         if(!__materialEditorDialogESCPressed)
             __materialEditorDialogESCFirstFramePressed = true;
         __materialEditorDialogESCPressed = true;
@@ -137,9 +134,9 @@ void MaterialEditorDialog::render
     //Close the dialog
     if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
         if(!wasTextureSelectionDialogActive() && !contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive()){
-            NodeScene::updateNodeResults(model, scene, Settings::properties()->textureRes, -1);
+            NodeScene::updateNodeResults(Settings::properties()->textureRes, -1);
             this->displayModeComboBox.selectedIndex = 0;
-            material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, box, context, sphereModel, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+            material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, box, sphereModel, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
 
             this->deactivate(textureSelectionDialog);
         }
@@ -148,8 +145,8 @@ void MaterialEditorDialog::render
 
     __materialEditorDialogESCFirstFramePressed = false; 
 
-    if((!contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive() && context.window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) || __lastDisplayModeComboBoxPressed)
-        material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, box, context, sphereModel, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+    if((!contextMenus[6].dialogControl.isActive() && !contextMenus[8].dialogControl.isActive() && getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) || __lastDisplayModeComboBoxPressed)
+        material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, box, sphereModel, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
 
     __lastDisplayModeComboBoxPressed = this->displayModeComboBox.pressed;
 }
@@ -176,7 +173,7 @@ void MaterialEditorDialog::render
 // -------------------- UTILITY FUNCTIONS --------------------
 
 
-void MaterialEditorDialog::updateLayerPanel(Material &material, Box &box, Context &context){
+void MaterialEditorDialog::updateLayerPanel(Material &material, Box &box){
     //Clear the elements of the layerPanel
     layerPanel.sections.clear();
     
@@ -197,7 +194,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material, Box &box, Contex
     layerPanel.sections.push_back(layerPanelSection);
     
     //Update the material after updating layerPanel
-    material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, box, context, sphereModel, true,this->displayerCamera, this->displayModeComboBox.selectedIndex);
+    material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, box, sphereModel, true,this->displayerCamera, this->displayModeComboBox.selectedIndex);
 }
 
 
@@ -227,7 +224,7 @@ void MaterialEditorDialog::checkLayerPanel(Material &material, std::vector<Conte
 }
 
 
-void MaterialEditorDialog::checkModifiersPanel(Material &material,Box box,Context context,TextureSelectionDialog &textureSelectionDialog){
+void MaterialEditorDialog::checkModifiersPanel(Material &material,Box box,TextureSelectionDialog &textureSelectionDialog){
     
     //Clear the modifiers panel as the panel starts
     if(dialogControl.firstFrameActivated){
@@ -308,7 +305,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,Box box,Contex
     */
 }
 
-void MaterialEditorDialog::updateLayerPanelElements(Material &material,Box &box,Context &context, glm::vec2 videoScale, std::vector<ContextMenu> contextMenus){
+void MaterialEditorDialog::updateLayerPanelElements(Material &material,Box &box,glm::vec2 videoScale, std::vector<ContextMenu> contextMenus){
     //Update layer panal elements
     if  (
             dialogControl.firstFrameActivated // Or in the first frame this dialog is activated
@@ -319,11 +316,11 @@ void MaterialEditorDialog::updateLayerPanelElements(Material &material,Box &box,
         ////material.materialModifiers.insert(material.materialModifiers.begin(),appMaterialModifiers.dustModifier);
         
         //Creates layer panel elements from scratch using material.materialModifiers
-        updateLayerPanel(material,box,context);
+        updateLayerPanel(material,box);
     }
 }
 
-void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Box box,Context context){
+void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Box box){
     //If the texture selection dialog is active and indexing number indicates a channel button 
     if(textureSelectionDialog.dialogControl.isActive() && textureModifierTextureSelectingButtonIndex != 1000){
         if(textureSelectionDialog.selectedTextureIndex != 1000){// If a texture is selected in the texture selection dialog
@@ -342,12 +339,12 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
             textureSelectionDialog.dialogControl.unActivate();
             
             //Update the material after a selection is made
-            material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, box, context, sphereModel, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+            material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, box, sphereModel, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
         }
     }
 }
 
-void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box, Context context, std::vector<ContextMenu> &contextMenus)
+void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box, std::vector<ContextMenu> &contextMenus)
 {
     if(contextMenus[6].dialogControl.isActive()){ //If material modifier context menu is active
         
@@ -410,7 +407,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.textureModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralID = 24;
-            updateLayerPanel(material,box,context);
+            updateLayerPanel(material,box);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
@@ -420,7 +417,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.dustModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralID = 24;
-            updateLayerPanel(material,box,context);
+            updateLayerPanel(material,box);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
@@ -430,7 +427,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.asphaltModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralID = 24;
-            updateLayerPanel(material,box,context);
+            updateLayerPanel(material,box);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
@@ -440,7 +437,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.fabricModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralID = 24;
-            updateLayerPanel(material,box,context);
+            updateLayerPanel(material,box);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
@@ -450,7 +447,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.mossModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralID = 24;
-            updateLayerPanel(material,box,context);
+            updateLayerPanel(material,box);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
@@ -460,7 +457,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.rustModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralID = 24;
-            updateLayerPanel(material,box,context);
+            updateLayerPanel(material,box);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
@@ -470,7 +467,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.skinModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralID = 24;
-            updateLayerPanel(material,box,context);
+            updateLayerPanel(material,box);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
@@ -480,7 +477,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.solidModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralID = 24;
-            updateLayerPanel(material,box,context);
+            updateLayerPanel(material,box);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
@@ -490,7 +487,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.woodenModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralID = 24;
-            updateLayerPanel(material,box,context);
+            updateLayerPanel(material,box);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
