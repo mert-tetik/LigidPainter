@@ -71,6 +71,10 @@ void registerTextureDeletionAction(const std::string title, const Texture icon, 
     __actions.push_back(Action(title, TEXTURE_DELETION_ACTION, icon, texture, index));
 }
 
+void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index){
+    __actions.push_back(Action(title, TEXTURE_ADDITION_ACTION, icon, texture, index));
+}
+
 LogDialog::LogDialog(){
 
 }
@@ -238,43 +242,48 @@ void LogDialog::render(LigidWindow originalWindow, ColorPalette colorPalette,Tim
         this->panel.render(videoScale, timer, textRenderer, true);
 
         if(this->panel.sections[0].elements[this->panel.sections[0].elements.size() - 1].button.clicked){
-            
-            for (const auto& entry : std::filesystem::directory_iterator("./tmp")) {
-                if (entry.is_regular_file()) {
-                    std::string fileName = entry.path().filename().string();
+            if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION || __actions[__actions.size()-1].ID == TEXTURE_DELETION_ACTION){
+                for (const auto& entry : std::filesystem::directory_iterator("./tmp")) {
+                    if (entry.is_regular_file()) {
+                        std::string fileName = entry.path().filename().string();
 
-                    // Check if the file starts with "_history_"
-                    if (fileName.find("_history_") == 0) {
-                        // Use string stream to split the filename into parts
-                        std::istringstream iss(fileName);
-                        std::string part;
-                        std::getline(iss, part, '_'); // Skip the first part "_history_"
-                        std::getline(iss, part, '_'); // Read the first integer value
-                        std::getline(iss, part, '_'); // Read the first integer value
-                        int indexVal = std::stoi(part);
+                        // Check if the file starts with "_history_"
+                        if (fileName.find("_history_") == 0) {
+                            // Use string stream to split the filename into parts
+                            std::istringstream iss(fileName);
+                            std::string part;
+                            std::getline(iss, part, '_'); // Skip the first part "_history_"
+                            std::getline(iss, part, '_'); // Read the first integer value
+                            std::getline(iss, part, '_'); // Read the first integer value
+                            int indexVal = std::stoi(part);
 
-                        std::getline(iss, part, '_'); // Read the second integer value
-                        int IDVal = std::stoi(part);
-                        
-                        if(indexVal == __actions.size() - 1){
-                            if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION){
-                                for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-                                {   
-                                    if(Library::getTexture(i)->ID == IDVal){
-                                        Library::getTexture(i)->readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
+                            std::getline(iss, part, '_'); // Read the second integer value
+                            int IDVal = std::stoi(part);
+                            
+                            if(indexVal == __actions.size() - 1){
+                                if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION){
+                                    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+                                    {   
+                                        if(Library::getTexture(i)->ID == IDVal){
+                                            Library::getTexture(i)->readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
+                                        }
                                     }
                                 }
-                            }
-                            else if(__actions[__actions.size()-1].ID == TEXTURE_DELETION_ACTION){
-                                Texture regeneratedTxtr = Texture(nullptr, 1, 1); 
-                                regeneratedTxtr.readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
-                                regeneratedTxtr.title = __actions[__actions.size()-1].texture.title;
-                                Library::getTextureVectorPointer()->insert(Library::getTextureVectorPointer()->begin() + __actions[__actions.size()-1].textureIndex, regeneratedTxtr);
-                                Library::setChanged(true);
+                                else if(__actions[__actions.size()-1].ID == TEXTURE_DELETION_ACTION){
+                                    Texture regeneratedTxtr = Texture(nullptr, 1, 1); 
+                                    regeneratedTxtr.readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
+                                    regeneratedTxtr.title = __actions[__actions.size()-1].texture.title;
+                                    Library::getTextureVectorPointer()->insert(Library::getTextureVectorPointer()->begin() + __actions[__actions.size()-1].textureIndex, regeneratedTxtr);
+                                    Library::setChanged(true);
+                                }
                             }
                         }
                     }
                 }
+            }
+            else if(__actions[__actions.size()-1].ID == TEXTURE_ADDITION_ACTION){
+                Library::getTextureVectorPointer()->erase(Library::getTextureVectorPointer()->begin() + __actions[__actions.size()-1].textureIndex);
+                Library::setChanged(true);
             }
             
             __actions.pop_back();

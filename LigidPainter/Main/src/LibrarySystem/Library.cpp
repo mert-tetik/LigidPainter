@@ -91,6 +91,8 @@ void Library::uniqueNameControl(){
 void Library::addTexture(Texture texture){
     __changed = true;
     
+    registerTextureAdditionAction("Texture added", Texture(), texture, __textures.size());
+
     texture.uniqueId = 0; 
 
     __textures.push_back(texture);
