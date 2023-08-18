@@ -55,8 +55,8 @@ void Node::render(  glm::vec2 videoScale,
     //Render the node panel which contains the input buttons and stuff
     nodePanel.render(videoScale,timer,textRenderer, this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
 
-    if(nodePanel.sections[0].elements[0].button.clicked){
-            if(this->nodeIndex == MATERIAL_ID_NODE){
+    if(nodePanel.sections[0].elements[0].button.clicked){        
+        if(this->nodeIndex == MATERIAL_ID_NODE){
             std::vector<NodeIO> inputs;
             std::vector<NodeIO> outputs;
             std::vector<glm::vec3> palette;
@@ -133,6 +133,8 @@ void Node::render(  glm::vec2 videoScale,
                 
                 //If an input is pressed that already has a connection
                 if(IOs[i].state == 0 && IOs[i].connections.size()){
+                    registerNodeAction("Severed node connection", Texture());
+                    
                     int resNodeI = 1000;
                     int resIOI = 1000;
                     
@@ -145,7 +147,6 @@ void Node::render(  glm::vec2 videoScale,
                     
                     clearConnections(currentNodeIndex,i);
                     NodeScene::updateNodeResults( model, scene, textureRes, -1);
-
                 }
 
                 //Draw a line from the circle to the cursor
@@ -169,6 +170,8 @@ void Node::render(  glm::vec2 videoScale,
                     //A IO circle is hovered
                     if(hoveredNodeI != 1000 && hoveredIOI != 1000 && hoveredNodeI != currentNodeIndex){
                         if((NodeScene::getNode(hoveredNodeI)->IOs[hoveredIOI].state == 0 && IOs[i].state == 2) || (NodeScene::getNode(hoveredNodeI)->IOs[hoveredIOI].state == 2 && IOs[i].state == 0)){
+                            registerNodeAction("New node connection", Texture());
+                            
                             //Delete the previous connection if an input IO is connected
                             if(IOs[i].state == 0)
                                 clearConnections(currentNodeIndex,i);
@@ -195,13 +198,7 @@ void Node::render(  glm::vec2 videoScale,
                                 }
                             }
 
-                            if(NodeScene::getNode(hoveredNodeI)->nodeIndex == MESH_NODE){ //The hovered node is a mesh node (another node to the mesh node)
-                                NodeScene::updateNodeResults( model, scene, textureRes, -1);
-                            }
-
-                            else if(NodeScene::getNode(currentNodeIndex)->nodeIndex == MESH_NODE){ //The node's itself is mesh node (mesh node to another) 
-                                NodeScene::updateNodeResults( model, scene, textureRes, -1);
-                            }
+                            NodeScene::updateNodeResults( model, scene, textureRes, -1);
                         }
                     }
                 }

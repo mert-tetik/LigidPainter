@@ -424,10 +424,12 @@ namespace LGDLOG {
 #define TEXTURE_UPDATING_ACTION 0
 #define TEXTURE_DELETION_ACTION 1
 #define TEXTURE_ADDITION_ACTION 2
+#define NODE_ACTION 3
 
 void registerTextureAction(const std::string title, const Texture icon, Texture texture);
 void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index);
 void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index);
+void registerNodeAction(const std::string title, const Texture icon);
 
 class LogDialog
 {

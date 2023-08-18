@@ -42,6 +42,8 @@ void NodeScene::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRen
 }
 
 void NodeScene::addNode(const Node node){
+    if(node.nodeIndex != MESH_NODE)
+        registerNodeAction("New node", Texture());
     __nodeScene.push_back(node);
 }
 
@@ -60,6 +62,10 @@ void NodeScene::clearArray(){
     }
 
     __nodeScene.clear();
+}
+
+std::vector<Node>* NodeScene::getNodeArrayPointer(){
+    return &__nodeScene;
 }
 
 static void initTexture(unsigned int &txtr, int textureRes){

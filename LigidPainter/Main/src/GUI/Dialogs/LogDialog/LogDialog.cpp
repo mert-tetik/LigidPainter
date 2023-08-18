@@ -28,6 +28,7 @@
 #include "GUI/GUI.hpp" 
 #include "MouseSystem/Mouse.hpp" 
 #include "LibrarySystem/Library.hpp" 
+#include "NodeSystem/Node/Node.hpp" 
 
 #include <string>
 #include <iostream>
@@ -40,6 +41,7 @@ struct Action{
     Texture icon;
     Texture texture;
     int textureIndex;
+    std::vector<Node> nodeScene;
 
     Action(std::string title, unsigned int ID, Texture icon, Texture texture){
         this->title = title;
@@ -55,24 +57,37 @@ struct Action{
         this->texture = texture;
         this->textureIndex = textureIndex;
     }
+    
+    Action(std::string title, unsigned int ID, Texture icon, std::vector<Node> nodeScene){
+        this->title = title;
+        this->ID = ID;
+        this->icon = icon;
+        this->texture = texture;
+        this->textureIndex = textureIndex;
+        this->nodeScene = nodeScene;
+    }
 };
 
 std::vector<Action> __actions;
 
 void registerTextureAction(const std::string title, const Texture icon, Texture texture){
-    texture.writeTMP("_history_" + std::to_string(__actions.size()) + "_" + std::to_string(texture.ID));
+    texture.writeTMP("_history_" + std::to_string(__actions.size()) + "_" + std::to_string(texture.uniqueId));
     
     __actions.push_back(Action(title, TEXTURE_UPDATING_ACTION, icon, texture));
 }
 
 void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index){
-    texture.writeTMP("_history_" + std::to_string(__actions.size()) + "_" + std::to_string(texture.ID));
+    texture.writeTMP("_history_" + std::to_string(__actions.size()) + "_" + std::to_string(texture.uniqueId));
 
     __actions.push_back(Action(title, TEXTURE_DELETION_ACTION, icon, texture, index));
 }
 
 void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index){
     __actions.push_back(Action(title, TEXTURE_ADDITION_ACTION, icon, texture, index));
+}
+
+void registerNodeAction(const std::string title, const Texture icon){
+    __actions.push_back(Action(title, NODE_ACTION, icon, *NodeScene::getNodeArrayPointer()));
 }
 
 LogDialog::LogDialog(){
@@ -264,7 +279,7 @@ void LogDialog::render(LigidWindow originalWindow, ColorPalette colorPalette,Tim
                                 if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION){
                                     for (size_t i = 0; i < Library::getTextureArraySize(); i++)
                                     {   
-                                        if(Library::getTexture(i)->ID == IDVal){
+                                        if(Library::getTexture(i)->uniqueId == IDVal){
                                             Library::getTexture(i)->readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
                                         }
                                     }
@@ -284,6 +299,10 @@ void LogDialog::render(LigidWindow originalWindow, ColorPalette colorPalette,Tim
             else if(__actions[__actions.size()-1].ID == TEXTURE_ADDITION_ACTION){
                 Library::getTextureVectorPointer()->erase(Library::getTextureVectorPointer()->begin() + __actions[__actions.size()-1].textureIndex);
                 Library::setChanged(true);
+            }
+            else if(__actions[__actions.size()-1].ID == NODE_ACTION){
+                *NodeScene::getNodeArrayPointer() = __actions[__actions.size()-1].nodeScene;
+                //NodeScene::updateNodeResults();
             }
             
             __actions.pop_back();

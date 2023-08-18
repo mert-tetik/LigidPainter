@@ -200,6 +200,8 @@ namespace NodeScene{
 
     /// @brief Updates the result textures of the every input of the mesh node
     void updateNodeResults( Model& model, Scene scene, int textureRes, int updateNodeI);
+
+    std::vector<Node>* getNodeArrayPointer();
 };
 
 #endif
