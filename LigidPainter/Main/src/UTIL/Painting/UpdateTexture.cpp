@@ -65,11 +65,17 @@ void Painter::updateTexture(Model &model, Scene scene, Panel& twoDPaintingPanel,
     
     glm::vec2 textureRes = this->selectedTexture.getResolution();
 
-    registerAction("Did painting", 0, Texture());
-
-    //Write the tmp file of the selected texture before updating the texture (for undo)
-    selectedTexture.writeTMP();
+    std::string actionTitle = "Unknown painting mode";
     
+    if(this->selectedPaintingModeIndex == 0)
+        actionTitle = "Painting a texture";
+    if(this->selectedPaintingModeIndex == 1)
+        actionTitle = "Softening a texture";
+    if(this->selectedPaintingModeIndex == 2)
+        actionTitle = "Smearing a texture";
+        
+    registerTextureAction(actionTitle, Texture(), selectedTexture);
+
     unsigned int captureFBO;
     unsigned int captureTexture;
     

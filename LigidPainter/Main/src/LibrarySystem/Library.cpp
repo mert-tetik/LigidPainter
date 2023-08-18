@@ -127,6 +127,8 @@ void Library::eraseTexture   (int index){
         return;
     }
 
+    registerTextureDeletionAction("Texture Deletion", Texture(), __textures[index], index);
+
     __changed = true;
     
     glDeleteTextures(1, &__textures[index].ID);
@@ -321,4 +323,8 @@ void Library::materialGiveUniqueId(int index){
 	}
 
 	UTIL::giveUniqueId(__materials[index].uniqueID, IDArray);
+}
+
+std::vector<Texture>* Library::getTextureVectorPointer(){
+    return &__textures;
 }

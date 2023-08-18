@@ -51,7 +51,6 @@ public:
     */
     Context context; 
 
-
     Scene scene; //3D Scene structure
     
     /*!

@@ -283,10 +283,10 @@ public:
     unsigned int duplicateTexture();
     
     /// @brief Write the tmp file of the texture from the tmp folder
-    void writeTMP();
+    void writeTMP(std::string tmpTitle);
     
     /// @brief Read the tmp file of the texture from the tmp folder and delete the readen file
-    void readTMP();
+    void readTMP(std::string tmpTitle);
 
     std::vector<glm::vec3> getMaterialIDPalette();
 

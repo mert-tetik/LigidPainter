@@ -188,16 +188,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
             }
         }
         if(i == 4 && contextMenus[i].dialogControl.isActive()){ //If painting context menu is active
-            //Undo
-            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
-                painter.selectedTexture.readTMP();
-            }
-            
-            //Redo
-            if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
-
-            }
-            
+            //TODO REMOVE THE PAINTING CONTEXT MENU            
         }
         if(i == 5 && contextMenus[i].dialogControl.isActive()){ //If help context menu is active
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){

@@ -94,6 +94,8 @@ namespace Library{
     /// @brief Clears the TDModels array 
     void clearModels     ();
 
+    //----------- Vector Pointers -------------
+    std::vector<Texture>* getTextureVectorPointer();
 
     //----------- Selected Library Element -------------
     /*
