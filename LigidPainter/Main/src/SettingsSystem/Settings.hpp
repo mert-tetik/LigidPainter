@@ -32,7 +32,19 @@ namespace Settings{
         Texture noMaterialConnectedToTheMeshWarningImage;  
     };
 
+    struct Properties{
+        /*! @brief Set swapInterval(1) if true */
+        bool VSync = false; 
+
+        bool backfaceCulling = false;
+
+        /*! @brief Textures will be generated with that resolution value */
+        int textureRes = 1024; 
+    };
+
     void loadAppTextures();
 
     AppTextures appTextures();
+
+    Properties* properties();
 };

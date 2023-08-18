@@ -37,7 +37,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //Forward declarations
 class ColorPalette;
 class ContextMenu;
-struct AppSettings;
 
 class DialogControl
 {
@@ -109,7 +108,7 @@ class SettingsDialog
 
     //Public member functions    
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                glm::vec2 videoScale, AppSettings& settings);
+                glm::vec2 videoScale);
  };
 
 
@@ -132,7 +131,7 @@ class NewTextureDialog
     
     //Public member function
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                glm::vec2 videoScale,int textureRes);
+                glm::vec2 videoScale);
  };
 
 
@@ -161,7 +160,7 @@ public:
    
    //Public member functions
    void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-               Project &project,bool &greetingDialogActive,bool &startScreen,Model &model,int &textureRes);
+               Project &project,bool &greetingDialogActive,bool &startScreen,Model &model);
  };
 
 
@@ -226,12 +225,12 @@ private:
    Model sphereModel;
 
    //Private member functions
-   void updateLayerPanel(Material &material,int &textureRes,Box &box,Context &context);
+   void updateLayerPanel(Material &material,Box &box,Context &context);
    void checkLayerPanel(Material &material,std::vector<ContextMenu> &contextMenus,glm::vec2 videoScale);
-   void checkModifiersPanel(Material &material,float textureRes,Box box,Context context,TextureSelectionDialog &textureSelectionDialog);
-   void updateLayerPanelElements(Material &material,int &textureRes,Box &box,Context &context,glm::vec2 videoScale, std::vector<ContextMenu> contextMenus);
-   void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,float textureRes,Box box,Context context);
-   void manageContextMenuActions( Material &material, int textureRes, Box box, Context context, std::vector<ContextMenu> &contextMenus);
+   void checkModifiersPanel(Material &material,Box box,Context context,TextureSelectionDialog &textureSelectionDialog);
+   void updateLayerPanelElements(Material &material,Box &box,Context &context,glm::vec2 videoScale, std::vector<ContextMenu> contextMenus);
+   void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Box box,Context context);
+   void manageContextMenuActions( Material &material, Box box, Context context, std::vector<ContextMenu> &contextMenus);
 
    bool updateTheMaterial = false;
    bool prevUpdateTheMaterial = false;
@@ -261,7 +260,7 @@ public:
 
    //Public member functions
    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,
-               Material &material, int textureRes,Box box,Context context,std::vector<ContextMenu> &contextMenus,Model& model,
+               Material &material, Box box, Context context, std::vector<ContextMenu> &contextMenus, Model& model,
                Scene scene);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
@@ -288,7 +287,7 @@ class NewProjectDialog
 
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
-                Project &project,bool &greetingDialogActive,bool &startScreen,Model &model,int &textureRes);
+                Project &project,bool &greetingDialogActive,bool &startScreen,Model &model);
  };
 
 

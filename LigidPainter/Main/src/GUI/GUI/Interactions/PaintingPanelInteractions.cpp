@@ -66,6 +66,7 @@ void paintingPanelInteraction(
     if(paintingPanel.sections[0].elements[2].button.hover && *Mouse::LDoubleClick()){//Pressed to third color button element
         painter.loadColor3();
     }
+    
     //Prevent multiple selection and update the painter.selectedColorIndex for colors
     for (size_t i = 0; i < paintingPanel.sections[0].elements.size(); i++)
     {

@@ -319,8 +319,7 @@ public:
     /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
     /// @param  structure (holds the textures / materials / brushes & TDModels)
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
-    /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
-    void updateProject(  int& textureRes);
+    void updateProject();
     
     /// @brief load an existing project using ligid file path
     /// @param ligidFilePath path to the ligid file
@@ -331,7 +330,7 @@ public:
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @return 
     bool loadProject(std::string ligidFilePath,Model &model,
-                    ColorPalette colorPalette,int &textureRes, glm::vec2 videoScale,
+                    ColorPalette colorPalette, glm::vec2 videoScale,
                     AppMaterialModifiers& appMaterialModifiers);
 
     /// @brief Used to save as
@@ -354,12 +353,12 @@ public:
     /// @param meshNodeScene 
     /// @param textureRes 
     /// @return True if success
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,  int& textureRes,  ColorPalette colorPalette, glm::vec2 videoScale);
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate, ColorPalette colorPalette, glm::vec2 videoScale);
     
     /// @brief Write ligid file to the project folder
     /// @param meshNodeScene 
     /// @param textureRes 
-    void writeLigidFile(int textureRes);
+    void writeLigidFile();
 
         /// @brief Returns the ligid file path of the project
     ///        (AAA/MyProject/MyProject.ligid)

@@ -133,7 +133,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
     }
 
     //Create the .ligid file
-    writeLigidFile(textureRes);
+    writeLigidFile();
 
     return true;
 }

@@ -17,6 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "SettingsSystem/Settings.hpp"
 #include "NodeSystem/Node/Node.hpp"
 
 #include <vector>
@@ -24,7 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 std::vector<Node> __nodeScene;
 
-void NodeScene::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Model &model, int textureRes, Scene scene, Panel nodeEditorPanel, NodePanel& nodePanel){
+void NodeScene::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Model &model, Scene scene, Panel nodeEditorPanel, NodePanel& nodePanel){
     
     for (size_t i = 0; i < __nodeScene.size(); i++)
     {
@@ -37,7 +38,7 @@ void NodeScene::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRen
             }
         }
 
-        __nodeScene[i].render(videoScale, timer, textRenderer, nodeEditorPanel, i, nodePanel, model, textureRes, scene);
+        __nodeScene[i].render(videoScale, timer, textRenderer, nodeEditorPanel, i, nodePanel, model, Settings::properties()->textureRes, scene);
     }
 }
 

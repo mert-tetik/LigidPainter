@@ -172,7 +172,7 @@ public:
 namespace NodeScene{
 
     /// @brief Renders the node list 
-    void render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Model &model, int textureRes, Scene scene, Panel nodeEditorPanel, NodePanel& nodePanel);
+    void render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Model &model, Scene scene, Panel nodeEditorPanel, NodePanel& nodePanel);
     
     /// @brief Adds the given node to the scene 
     void addNode(const Node node);

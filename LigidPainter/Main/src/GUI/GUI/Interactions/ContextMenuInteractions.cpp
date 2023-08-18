@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "LibrarySystem/Library.hpp"
 #include "NodeSystem/Node/Node.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -36,7 +37,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,  
                                 Context &context,glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
-                                Project& project, int &textureRes, Painter &painter){
+                                Project& project, Painter &painter){
+
     anyContextMenuActive = false; 
     for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
     {
@@ -100,7 +102,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
                 renamingIndices.y = contextMenus[i].selectedElement;
             }
             if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to duplicate button
-                Material duplicatedMaterial = Library::getMaterial(contextMenus[i].selectedElement)->duplicateMaterial(textureRes);
+                Material duplicatedMaterial = Library::getMaterial(contextMenus[i].selectedElement)->duplicateMaterial();
                 Library::addMaterial(duplicatedMaterial);
             }
             if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Clicked to delete button
@@ -157,12 +159,12 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
         if(i == 3 && contextMenus[i].dialogControl.isActive()){ //If project context menu is active
             //Save
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
-                project.updateProject(textureRes);
+                project.updateProject();
             }
             
             //Save as
             if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
-                project.updateProject(textureRes);
+                project.updateProject();
                 project.duplicateFolder("");
             }
             

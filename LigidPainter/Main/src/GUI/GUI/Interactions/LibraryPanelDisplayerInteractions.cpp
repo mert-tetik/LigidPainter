@@ -35,12 +35,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void libraryPanelDisplayerInteraction(
                                         Panel &libraryPanelDisplayer, 
-                                        
                                         Panel &paintingPanel, 
                                         Painter &painter, 
                                         Model &model, 
                                         ColorPalette& colorPalette, 
-                                        int &textureRes,
                                         NewTextureDialog &newTextureDialog,
                                         AppMaterialModifiers &appMaterialModifiers,
                                         int frameCounter
@@ -75,7 +73,7 @@ void libraryPanelDisplayerInteraction(
         if(Library::getSelectedElementIndex() == 1){ //Materials
             //Add new material to the library & not the panel
             //Will be displayed right after library panel is updated
-            Library::addMaterial(Material(textureRes, "material", 0));
+            Library::addMaterial(Material("material", 0));
         }
         if(Library::getSelectedElementIndex() == 2){ //Brushes
             Library::addBrush(
@@ -125,7 +123,7 @@ void libraryPanelDisplayerInteraction(
             std::string test = showFileSystemObjectSelectionDialog("Select a material file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
             if(test.size()){
-                Material importedMaterial(textureRes, "", 0);
+                Material importedMaterial("", 0);
                 if(FileHandler::readLGDMATERIALFile(test, importedMaterial, colorPalette, appMaterialModifiers))
                     Library::addMaterial(importedMaterial);
             }

@@ -65,7 +65,7 @@ bool wasTextureSelectionDialogActive(){
 static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection, Context& context);
 
 void UI::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,Context context,Box box,
-            std::vector<ContextMenu> &contextMenus, AppSettings& settings, Project &project, Painter &painter, Skybox &skybox,Model &model, Scene& scene){
+            std::vector<ContextMenu> &contextMenus, Project &project, Painter &painter, Skybox &skybox,Model &model, Scene& scene){
     
     __texture_selection_dialog = this->textureSelectionDialog;
     __projection = this->projection;
@@ -115,10 +115,10 @@ void UI::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,C
     renderRenamingTextbox(videoScale, timer, textRenderer, painter, context);
     
     //Render the nodes
-    NodeScene::render(videoScale,timer,textRenderer,model, settings.textureRes, scene, nodeEditorDisplayer, nodePanel);
+    NodeScene::render(videoScale,timer,textRenderer,model, scene, nodeEditorDisplayer, nodePanel);
     
     //Render the dialogs
-    renderDialogs(videoScale, timer, textRenderer, context, project, model, skybox, settings, box, contextMenus, scene);
+    renderDialogs(videoScale, timer, textRenderer, context, project, model, skybox, box, contextMenus, scene);
     
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(painter);
@@ -130,7 +130,7 @@ void UI::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,C
         context.window.setCursorVisibility(true);
 
     //Interactions of the UI elements
-    elementInteraction(painter, contextMenus, context, videoScale, textRenderer, timer, settings.textureRes, screenGapPerc, model, project, scene, this->materialEditorDialog.appMaterialModifiers);
+    elementInteraction(painter, contextMenus, context, videoScale, textRenderer, timer, screenGapPerc, model, project, scene, this->materialEditorDialog.appMaterialModifiers);
 
     frameCounter++;
 
@@ -443,12 +443,12 @@ void UI::renderRenamingTextbox(glm::vec2 videoScale, Timer &timer, TextRenderer 
     }
 }
 
-void UI::renderDialogs(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Context &context, Project &project, Model& model, Skybox &skybox, AppSettings& settings, Box &box,  std::vector<ContextMenu> &contextMenus, Scene scene){
+void UI::renderDialogs(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Context &context, Project &project, Model& model, Skybox &skybox, Box &box,  std::vector<ContextMenu> &contextMenus, Scene scene){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes);
+        newProjectDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model,settings.textureRes);
+        loadProjectDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,greetingDialog.startScreen,model);
     
     if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,newProjectDialog,loadProjectDialog);
@@ -460,13 +460,13 @@ void UI::renderDialogs(glm::vec2 videoScale, Timer &timer, TextRenderer &textRen
         exportDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,project,greetingDialog.dialogControl.active,model,materialEditorDialog,sphereModel, scene);
     
     if(newTextureDialog.dialogControl.isActive())
-        newTextureDialog.render(context.window,colorPalette,timer,textRenderer,videoScale,settings.textureRes);
+        newTextureDialog.render(context.window,colorPalette,timer,textRenderer,videoScale);
     
     if(settingsDialog.dialogControl.isActive())
-        settingsDialog.render(context.window, colorPalette, timer, textRenderer, videoScale, settings);
+        settingsDialog.render(context.window, colorPalette, timer, textRenderer, videoScale);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
-        materialEditorDialog.render(videoScale,timer,textRenderer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex),settings.textureRes,box,context,contextMenus,model, scene);
+        materialEditorDialog.render(videoScale,timer,textRenderer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex), box, context, contextMenus, model, scene);
     
     logDialog.render(context.window, colorPalette, timer, textRenderer, videoScale);
 }

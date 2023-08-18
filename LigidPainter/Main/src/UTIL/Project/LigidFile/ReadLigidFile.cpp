@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "NodeSystem/Node/Node.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -40,11 +41,7 @@ bool Project::readLigidFile(
                                 std::string path,
                                 time_t &creationDate,
                                 time_t &lastOpenedDate, 
-                                 
-                                int& textureRes,
-                                 
                                 ColorPalette colorPalette, 
-                                
                                 glm::vec2 videoScale
                             ){ //Returns true if path is a ligid file
     
@@ -85,7 +82,7 @@ bool Project::readLigidFile(
         readmeshNodeSceneData(rf, colorPalette, videoScale);
 
         //!Texture resolution
-        rf.read(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
+        rf.read(reinterpret_cast<char*>(   &Settings::properties()->textureRes    ),sizeof(int));
         
         return true;
     }

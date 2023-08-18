@@ -117,16 +117,15 @@ public:
     Material();
     
     /// @brief Init the channel textures of the material + displayingTexture + assign the unique ID value
-    /// @param textureRes Project texture resolution value assigned by the user using GUI 
     /// @param title Title of the material
     /// @param ID Generated unique ID for the material (Unique to other materials in the libray.materials)
-    Material(int textureRes,std::string title,int ID);
+    Material(std::string title,int ID);
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
     void updateMaterialDisplayingTexture(float textureRes, Box box, Context context, Model sphereModel,   bool updateMaterial, Camera matCam, int displayingMode);
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
-    Material duplicateMaterial(int textureRes);
+    Material duplicateMaterial();
 };
 
 #endif 

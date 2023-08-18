@@ -37,7 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 
-void Project::updateProject(  int& textureRes){
+void Project::updateProject(){
     
     if(!std::filesystem::exists(folderPath)){
         LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << LGDLOG::end;
@@ -99,6 +99,5 @@ void Project::updateProject(  int& textureRes){
         FileHandler::writeOBJFile(tdModelFolderPath + UTIL::folderDistinguisher() + Library::getModel(i)->title + ".obj", *Library::getModel(i));
     }
 
-
-    writeLigidFile( textureRes);
+    writeLigidFile();
 }

@@ -24,6 +24,7 @@
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
  
 #include <string>
 #include <iostream>
@@ -133,7 +134,7 @@ LoadProjectDialog::LoadProjectDialog(Context context,glm::vec2 videoScale,ColorP
 
 void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                                 glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,
-                                Model &model,int &textureRes ){
+                                Model &model){
     
     dialogControl.updateStart();
 
@@ -156,7 +157,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
         if(test.size()){
             
             //Load the project
-            if(project.loadProject(test, model, colorPalette, textureRes, videoScale, appMaterialModifiers)){
+            if(project.loadProject(test, model, colorPalette, videoScale, appMaterialModifiers)){
                 
                 startScreen = false;
                 
@@ -222,7 +223,7 @@ void LoadProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPale
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath,model, colorPalette, textureRes, videoScale, appMaterialModifiers)){
+            if(project.loadProject(ligidFilePath, model, colorPalette, videoScale, appMaterialModifiers)){
                 
                 startScreen = false;
                 

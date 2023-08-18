@@ -24,6 +24,7 @@
 #include "Renderer.h"
 #include "GUI/GUI.hpp"
 #include "MouseSystem/Mouse.hpp" 
+#include "SettingsSystem/Settings.hpp" 
 
 #include <string>
 #include <iostream>
@@ -61,7 +62,7 @@ SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette
 }
 
 void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer,
-                             glm::vec2 videoScale, AppSettings& settings){
+                             glm::vec2 videoScale){
     
     dialogControl.updateStart();   
 
@@ -69,23 +70,23 @@ void SettingsDialog::render(LigidWindow originalWindow, ColorPalette colorPalett
     int txtrRes = 256;
     for (size_t i = 0; i < panel.sections[0].elements[1].comboBox.texts.size(); i++)
     {
-        if(settings.textureRes == txtrRes)
+        if(Settings::properties()->textureRes == txtrRes)
             panel.sections[0].elements[1].comboBox.selectedIndex = i;
         
         txtrRes*=2;
     }
 
     //Set the vsync option as the vsync checkbox element
-    settings.VSync = panel.sections[0].elements[2].checkBox.clickState1;
+    Settings::properties()->VSync = panel.sections[0].elements[2].checkBox.clickState1;
     
     //Set the backface culling option as the backface culling checkbox element
-    settings.backfaceCulling = panel.sections[0].elements[3].checkBox.clickState1;
+    Settings::properties()->backfaceCulling = panel.sections[0].elements[3].checkBox.clickState1;
 
     //Render the panel    
     panel.render(videoScale,timer,textRenderer,true);
 
     //If pressed to any of the combo box element change the texture res
-    settings.textureRes = stoi(panel.sections[0].elements[1].comboBox.texts[panel.sections[0].elements[1].comboBox.selectedIndex]);
+    Settings::properties()->textureRes = stoi(panel.sections[0].elements[1].comboBox.texts[panel.sections[0].elements[1].comboBox.selectedIndex]);
     
     //End the dialog
     if  (

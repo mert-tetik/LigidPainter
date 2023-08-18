@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "NodeSystem/Node/Node.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -35,11 +36,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void nodeInteraction(
                         Model &model, 
-                        
                         ColorPalette colorPalette,
                         glm::vec2 videoScale,
-                        Scene scene, 
-                        int textureRes
+                        Scene scene 
                     )
 {
     
@@ -61,6 +60,6 @@ void nodeInteraction(
         //Update all the connections
         NodeScene::updateAllTheNodeConnections();
     
-        NodeScene::updateNodeResults(model, scene, textureRes, -1);
+        NodeScene::updateNodeResults(model, scene, Settings::properties()->textureRes, -1);
     }
 }

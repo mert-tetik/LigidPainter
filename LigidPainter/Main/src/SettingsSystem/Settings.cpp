@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 
 Settings::AppTextures __appTextures;
+Settings::Properties __settingsProperties;
 
 void Settings::loadAppTextures(){
     __appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/TDModel.png");
@@ -54,5 +55,9 @@ void Settings::loadAppTextures(){
 namespace Settings{
     AppTextures appTextures(){
         return __appTextures;
+    }
+
+    Properties* properties(){
+        return &__settingsProperties;
     }
 };

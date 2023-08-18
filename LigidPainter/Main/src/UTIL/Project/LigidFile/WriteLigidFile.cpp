@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "SettingsSystem/Settings.hpp"
 #include "NodeSystem/Node/Node.hpp"
 
 #include <string>
@@ -40,7 +41,7 @@ void writemeshNodeSceneData(std::ofstream &wf);
 
 
 
-void Project::writeLigidFile(int textureRes){
+void Project::writeLigidFile(){
     
     std::ofstream wf;
     
@@ -65,6 +66,8 @@ void Project::writeLigidFile(int textureRes){
 
     //!meshNodeScene
     writemeshNodeSceneData(wf);
+
+    int textureRes = Settings::properties()->textureRes;
 
     //!Texture resolution
     wf.write(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));

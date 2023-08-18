@@ -52,7 +52,7 @@ void Renderer::render(){
     updateViewport();
 
     //VSync
-    if(this->settings.VSync)
+    if(Settings::properties()->VSync)
         LigidGL::setSwapInterval(1); //Enable VSync
     else
         LigidGL::setSwapInterval(0); //Disable VSync
@@ -81,7 +81,7 @@ void Renderer::render(){
         painter.updateTheDepthTexture = false;
     }
 
-    if(this->settings.backfaceCulling)
+    if(Settings::properties()->backfaceCulling)
         glEnable(GL_CULL_FACE);
     else
         glDisable(GL_CULL_FACE);
@@ -216,15 +216,11 @@ void Renderer::render(){
     //Render the UI
     userInterface.render(   //Params
                             scene.videoScale,
-                           
                             timer,
                             textRenderer,
                             context,
                             box,
-                            
-                            
                             contextMenus,
-                            settings,
                             project,
                             painter,
                             skybox,

@@ -34,8 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-bool Project::loadProject(std::string ligidFilePath,Model &model,ColorPalette colorPalette, 
-                          int& textureRes,  glm::vec2 videoScale, AppMaterialModifiers& appMaterialModifiers){
+bool Project::loadProject(std::string ligidFilePath,Model &model,ColorPalette colorPalette, glm::vec2 videoScale, AppMaterialModifiers& appMaterialModifiers){
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
@@ -48,7 +47,7 @@ bool Project::loadProject(std::string ligidFilePath,Model &model,ColorPalette co
     time_t lastOpenedDate;
     
 
-    if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate, textureRes, colorPalette, videoScale)){
+    if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate, colorPalette, videoScale)){
         LGDLOG::start<< "ERROR CAN'T READ THE LIGID FILE : " << ligidFilePath << ". The file is might not be a ligid file." << LGDLOG::end;
 
         return false;
@@ -91,7 +90,7 @@ bool Project::loadProject(std::string ligidFilePath,Model &model,ColorPalette co
     for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
         std::string materialPath = entry.path().string();
 
-        Material material(textureRes, "", 0);;
+        Material material("", 0);
         if(FileHandler::readLGDMATERIALFile(materialPath, material, colorPalette, appMaterialModifiers))
             Library::addMaterial(material);
     

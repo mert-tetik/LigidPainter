@@ -36,7 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Material::Material(){}
 
-Material::Material(int textureRes,std::string title,int ID){
+Material::Material(std::string title,int ID){
     this->title = title;
     this->uniqueID = ID;
     //Init displaying texture
@@ -50,6 +50,9 @@ Material::Material(int textureRes,std::string title,int ID){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
+    //Resolution of the material displaying texture
+    const int displayRes = 2048;
+    
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 2048, 2048, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -57,9 +60,6 @@ Material::Material(int textureRes,std::string title,int ID){
     glGenFramebuffers(1,&this->displayingFBO);
     glBindFramebuffer(GL_FRAMEBUFFER,this->displayingFBO);
     
-    //Resolution of the material displaying texture
-    const int displayRes = 2048;
-
     //Set the OpenGL viewport to the resolution of the material displaying texture
     glViewport(0,0,displayRes,displayRes);
 

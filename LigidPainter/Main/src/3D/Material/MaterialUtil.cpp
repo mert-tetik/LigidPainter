@@ -32,8 +32,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
 
-Material Material::duplicateMaterial(int textureRes){
-    Material duplicatedMat(textureRes, this->title + "_copied", 0);
+Material Material::duplicateMaterial(){
+    
+    Material duplicatedMat(this->title + "_copied", 0);
 
     duplicatedMat.materialModifiers = this->materialModifiers;
     

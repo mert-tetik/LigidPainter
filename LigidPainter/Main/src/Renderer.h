@@ -31,16 +31,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
 
-struct AppSettings{
-    /*! @brief Set swapInterval(1) if true */
-    bool VSync = false; 
-
-    bool backfaceCulling = false;
-
-    /*! @brief Textures will be generated with that resolution value */
-    int textureRes = 1024; 
-};
-
 class Renderer
 {
 public:
@@ -95,8 +85,6 @@ public:
     Skybox skybox;
 
     Painter painter;
-
-    AppSettings settings;
 
     //Constructor
     Renderer(glm::vec2 videoScale);

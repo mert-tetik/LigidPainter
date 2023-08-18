@@ -27,6 +27,7 @@
 #include "3D/ThreeD.hpp" 
 #include "GUI/GUI.hpp" 
 #include "MouseSystem/Mouse.hpp" 
+#include "SettingsSystem/Settings.hpp" 
 
 #include <string>
 #include <iostream>
@@ -93,7 +94,7 @@ NewProjectDialog::NewProjectDialog(Context context,glm::vec2 videoScale,ColorPal
 
 void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                                 glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen,
-                                Model &model, int &textureRes ){
+                                Model &model){
     
     dialogControl.updateStart();
 
@@ -111,7 +112,7 @@ void NewProjectDialog::render(LigidWindow originalWindow,ColorPalette colorPalet
                                     std::stoi(panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex])
                                  ))
         {
-            project.loadProject(project.ligidFilePath(), model, colorPalette, textureRes, videoScale, appMaterialModifiers);
+            project.loadProject(project.ligidFilePath(), model, colorPalette, videoScale, appMaterialModifiers);
             
             startScreen = false;
 
