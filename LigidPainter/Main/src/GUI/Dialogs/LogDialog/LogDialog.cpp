@@ -29,6 +29,7 @@
 #include "MouseSystem/Mouse.hpp" 
 #include "LibrarySystem/Library.hpp" 
 #include "NodeSystem/Node/Node.hpp" 
+#include "SettingsSystem/Settings.hpp" 
 
 #include <string>
 #include <iostream>
@@ -99,7 +100,7 @@ namespace LGDLOG{
     std::string end = "$#";
 }
 
-LogDialog::LogDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers){
+LogDialog::LogDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
     this->panel = Panel(
         colorPalette,
         {
@@ -128,21 +129,21 @@ LogDialog::LogDialog(Context context,glm::vec2 videoScale,ColorPalette colorPale
         false
     );
 
-    this->logBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(3.f), colorPalette, "", appTextures.logButtonM, 0., false);
+    this->logBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(3.f), colorPalette, "", Settings::appTextures().logButtonM, 0., false);
     this->logBtn.color = glm::vec4(0);
     this->logBtn.color2 = glm::vec4(0);
     this->logBtn.outlineColor = glm::vec4(0);
     this->logBtn.outlineColor2 = glm::vec4(0);
     this->logBtn.pos.z = 0.9f;
     
-    this->logBtnL = Button(ELEMENT_STYLE_SOLID, glm::vec2(3.f), colorPalette, "", appTextures.logButtonL, 0., false);
+    this->logBtnL = Button(ELEMENT_STYLE_SOLID, glm::vec2(3.f), colorPalette, "", Settings::appTextures().logButtonL, 0., false);
     this->logBtnL.color = glm::vec4(0);
     this->logBtnL.color2 = glm::vec4(0);
     this->logBtnL.outlineColor = glm::vec4(0);
     this->logBtnL.outlineColor2 = glm::vec4(0);
     this->logBtnL.pos.z = 0.9f;
     
-    this->logBtnR = Button(ELEMENT_STYLE_SOLID, glm::vec2(3.f), colorPalette, "", appTextures.logButtonR, 0., false);
+    this->logBtnR = Button(ELEMENT_STYLE_SOLID, glm::vec2(3.f), colorPalette, "", Settings::appTextures().logButtonR, 0., false);
     this->logBtnR.color = glm::vec4(0);
     this->logBtnR.color2 = glm::vec4(0);
     this->logBtnR.outlineColor = glm::vec4(0);

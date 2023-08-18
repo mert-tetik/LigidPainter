@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <iostream>
@@ -98,7 +99,7 @@ RangeBar::RangeBar(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4
 }
 
 //Style constructor
-RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,Texture texture,float panelOffset,float minValue,float maxValue,float value, AppTextures appTextures){
+RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,Texture texture,float panelOffset,float minValue,float maxValue,float value){
     
     if(style == ELEMENT_STYLE_STYLIZED){
         this->isNumeric = true;
@@ -127,7 +128,7 @@ RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::stri
     this->maxValue = maxValue;
     this->value = value;
     
-    this->appTextures = appTextures;
+    
 }
 
 void RangeBar::render(
@@ -227,7 +228,7 @@ void RangeBar::render(
     //Render the left arrow
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, appTextures.arrowL.ID);
+    glBindTexture(GL_TEXTURE_2D, Settings::appTextures().arrowL.ID);
     render(
             glm::vec3(resultPos.x - resultScale.x + (arrowBtnScale.x), resultPos.y, resultPos.z), 
             arrowBtnScale * (0.6f + (leftArrowMixVal + leftArrowClickedMixVal) / 10.f),
@@ -254,7 +255,7 @@ void RangeBar::render(
     
     //Render the right arrow
     
-    glBindTexture(GL_TEXTURE_2D, appTextures.arrowR.ID);
+    glBindTexture(GL_TEXTURE_2D, Settings::appTextures().arrowR.ID);
     render(
             glm::vec3(resultPos.x + resultScale.x - (arrowBtnScale.x), resultPos.y, resultPos.z), 
             arrowBtnScale * (0.6f + (rightArrowMixVal + rightArrowClickedMixVal) / 10.f),

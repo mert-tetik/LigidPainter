@@ -81,7 +81,6 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
                                             MATERIAL_NODE, 
                                             Library::getMaterial(contextMenus[i].selectedElement)->uniqueID,
                                             colorPalette,
-                                            appTextures,
                                             videoScale
                                         );
                 materialNode.barButton.text = Library::getMaterial(contextMenus[i].selectedElement)->title;
@@ -209,12 +208,12 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
         if(i == 9 && contextMenus[i].dialogControl.isActive()){//If node scene context menu is active
             //Add material ID node button pressed
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
-                NodeScene::addNode(Node(MATERIAL_ID_NODE, 0, colorPalette, appTextures, videoScale));
+                NodeScene::addNode(Node(MATERIAL_ID_NODE, 0, colorPalette, videoScale));
                 NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
             }
             //Add material mask node button pressed
             else if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
-                NodeScene::addNode(Node(MATERIAL_MASK_NODE, 0, colorPalette, appTextures, videoScale));
+                NodeScene::addNode(Node(MATERIAL_MASK_NODE, 0, colorPalette, videoScale));
                 NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
             }
         } 

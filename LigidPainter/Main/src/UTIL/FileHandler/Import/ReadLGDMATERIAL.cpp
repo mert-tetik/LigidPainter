@@ -47,7 +47,7 @@ bool FileHandler::readLGDMATERIALFile(
                                         std::string path, 
                                         Material& material, 
                                         ColorPalette colorPalette,
-                                        AppTextures appTextures, 
+                                        
                                         AppMaterialModifiers appMaterialModifiers
                                     )
 {

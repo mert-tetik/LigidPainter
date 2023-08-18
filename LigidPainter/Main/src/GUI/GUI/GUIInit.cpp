@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -40,14 +41,14 @@ void UI::init
             (  
                  //All the shaders
                 Context context, //window & stuff
-                AppTextures appTextures, //Textures used in GUI
+                //Textures used in GUI
                 Websites websites, //Websites related to the LigidPainter
                 glm::vec2 videoScale, //Monitor resolution
                 Model &sphereModel  //A sphere model
             ){
     
     //Take params to the class member variables
-    this->appTextures = appTextures;
+    
     this->sphereModel = sphereModel;
     this->websites = websites;
     
@@ -59,7 +60,7 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,""    ,appTextures.ligidPainterIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,""    ,Settings::appTextures().ligidPainterIcon, 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"Project"    ,Texture(), 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"Painting"    ,Texture(), 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"Help"    ,Texture(), 0.f,false)),
@@ -90,11 +91,11 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"3D Painting"         , appTextures.threeDIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"2D Painting"         , appTextures.twoDIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"Export"              , appTextures.exportIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"Displayer"           , appTextures.environmentIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"Settings"           , appTextures.gearIcon, 0.f,false))
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"3D Painting"         , Settings::appTextures().threeDIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"2D Painting"         , Settings::appTextures().twoDIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"Export"              , Settings::appTextures().exportIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"Displayer"           , Settings::appTextures().environmentIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),colorPalette,"Settings"           , Settings::appTextures().gearIcon, 0.f,false))
                                     }
                                 )
                             },
@@ -121,7 +122,7 @@ void UI::init
                             colorPalette,
                             {
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , appTextures.colorIcon, 0.f,true)),
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Settings::appTextures().colorIcon, 0.f,true)),
                                     {   
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color1"  , Texture(), 1.f, true)),
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color2"  , Texture(), 1.f, true)),
@@ -131,69 +132,69 @@ void UI::init
                                 ),
 
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Brush"  , appTextures.brushIcon, 3.f,true)),
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Brush"  , Settings::appTextures().brushIcon, 3.f,true)),
                                     {   
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Radius    "  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f,appTextures)),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Opacity   "  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f,appTextures)),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Hardness  "  , appTextures.TDModelIcon, 1.f,-100.f,100.f,0.f,appTextures)),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Spacing   "  , appTextures.TDModelIcon, 1.f,0.f,100.f,0.f,appTextures)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Radius    "  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Opacity   "  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Hardness  "  , Settings::appTextures().TDModelIcon, 1.f,-100.f,100.f,0.f)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Spacing   "  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,0.f)),
                                     }
                                 ),
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),colorPalette, "More"  , appTextures.modifierIcon, 1.f,true)),
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),colorPalette, "More"  , Settings::appTextures().modifierIcon, 1.f,true)),
                                     {   
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Size Jitter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)), //0
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Fade"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)),//1
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Size Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //0
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Fade"  , Texture(), 1.f,0.f,100.f,0.f)),//1
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Sin Wave Pattern"  , 1.f)),//2
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Scatter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)),//3
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Scatter"  , Texture(), 1.f,0.f,100.f,0.f)),//3
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Texture"  , Texture(), 1.f, false)),//4
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Remove"  , Texture(), 0.f,false)),//5
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Individual Texture"  , 1.f)),//6
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f,appTextures)), //7
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Rotation Jitter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)), //8
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Alpha Jitter"  , Texture(), 1.f,0.f,100.f,0.f,appTextures)), //9
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), //7
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Rotation Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //8
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Alpha Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //9
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),colorPalette, "Create New Brush"  , Texture(), 2.f,false)),//10
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),colorPalette, "Export"  , Texture(), 0.5f,false)),//11
                                     }
                                 ),
                                 //Section(
-                                //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Soften"  , appTextures.softenIcon, 3.f,true)),
+                                //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Soften"  , Settings::appTextures().softenIcon, 3.f,true)),
                                 //    {   
-                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette, "Quality (samples)"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette, "Quality (samples)"  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
                                 //    }
                                 //),
                                 //Section(
-                                //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Smear"  , appTextures.smearIcon, 3.f,true)),
+                                //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Smear"  , Settings::appTextures().smearIcon, 3.f,true)),
                                 //    {   
-                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette, "Quality (samples)"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette, "Quality (samples)"  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
                                 //    }
                                 //),
                                 //Section(
-                                //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Area"  , appTextures.areaPaintingIcon, 3.f,true)),
+                                //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Area"  , Settings::appTextures().areaPaintingIcon, 3.f,true)),
                                 //    {   
-                                //        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2),colorPalette, "Box"  , appTextures.TDModelIcon, 1.f,false)),
+                                //        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2),colorPalette, "Box"  , Settings::appTextures().TDModelIcon, 1.f,false)),
                                 //        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Gradient"  , 1.f)),
                                 //        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Depth Test"  , 1.f)),
-                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette, "Lasso"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette, "Polygonal Lasso"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette, "Circle"  , appTextures.TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette, "Lasso"  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette, "Polygonal Lasso"  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
+                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),colorPalette, "Circle"  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
                                 //    }
                                 //),
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Meshes"  , appTextures.modifierIcon, 3.f,true)),
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Meshes"  , Settings::appTextures().modifierIcon, 3.f,true)),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "DefaultMeshButton"  , appTextures.greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "DefaultMeshButton"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
                                     }
                                 ),
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Painting Channels"  , appTextures.modifierIcon, 3.f,true)),
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Painting Channels"  , Settings::appTextures().modifierIcon, 3.f,true)),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Albedo Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Roughness Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Metallic Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Normal Map Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Height Map Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Ambient Occlusion Texture"  , appTextures.greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Albedo Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Roughness Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Metallic Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Normal Map Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Height Map Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Ambient Occlusion Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
                                     }
                                 )
                             },
@@ -309,7 +310,7 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5.5f),colorPalette,""        , appTextures.greetingDialogImage, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5.5f),colorPalette,""        , Settings::appTextures().greetingDialogImage, 0.f,false)),
                                     }
                                 )
                             },
@@ -368,10 +369,10 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Draw"          , appTextures.brushIcon,        0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Soften"        , appTextures.softenIcon,       0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Smear"         , appTextures.smearIcon,        0.f,true)),
-                                        //Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Area"          , appTextures.areaPaintingIcon, 0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Draw"          , Settings::appTextures().brushIcon,        0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Soften"        , Settings::appTextures().softenIcon,       0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Smear"         , Settings::appTextures().smearIcon,        0.f,true)),
+                                        //Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Area"          , Settings::appTextures().areaPaintingIcon, 0.f,true)),
                                     }
                                 )
                             },
@@ -400,9 +401,9 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette, "Nodes"          , appTextures.nodeDisplayingMode,        0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette, "Painting"        , appTextures.paintingDisplayingMode,       0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette, "Solid Painting"        , appTextures.solidPaintingDisplayingMode,       0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette, "Nodes"          , Settings::appTextures().nodeDisplayingMode,        0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette, "Painting"        , Settings::appTextures().paintingDisplayingMode,       0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),colorPalette, "Solid Painting"        , Settings::appTextures().solidPaintingDisplayingMode,       0.f,true)),
                                     }
                                 )
                             },
@@ -424,16 +425,16 @@ void UI::init
                         );
 
     //Init dialogs
-    greetingDialog              = GreetingDialog(context,videoScale,colorPalette,appTextures);
-    newTextureDialog            = NewTextureDialog(context,videoScale,colorPalette,appTextures);
-    logDialog                   = LogDialog(context,videoScale,colorPalette,appTextures, materialEditorDialog.appMaterialModifiers);
-    displayerDialog             = DisplayerDialog(context,videoScale,colorPalette,appTextures,sphereModel);
-    materialEditorDialog        = MaterialEditorDialog(colorPalette, appTextures, sphereModel);
-    textureSelectionDialog      = TextureSelectionDialog(colorPalette,appTextures);
-    loadProjectDialog           = LoadProjectDialog(context,videoScale,colorPalette,appTextures, materialEditorDialog.appMaterialModifiers);
-    newProjectDialog            = NewProjectDialog(context,videoScale,colorPalette,appTextures,materialEditorDialog.appMaterialModifiers);
-    settingsDialog              = SettingsDialog(context,videoScale,colorPalette,appTextures);
-    exportDialog                = ExportDialog(context,videoScale,colorPalette,appTextures);
+    greetingDialog              = GreetingDialog(context,videoScale,colorPalette);
+    newTextureDialog            = NewTextureDialog(context,videoScale,colorPalette);
+    logDialog                   = LogDialog(context,videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
+    displayerDialog             = DisplayerDialog(context,videoScale,colorPalette,sphereModel);
+    materialEditorDialog        = MaterialEditorDialog(colorPalette, sphereModel);
+    textureSelectionDialog      = TextureSelectionDialog(colorPalette);
+    loadProjectDialog           = LoadProjectDialog(context,videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
+    newProjectDialog            = NewProjectDialog(context,videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
+    settingsDialog              = SettingsDialog(context,videoScale,colorPalette);
+    exportDialog                = ExportDialog(context,videoScale,colorPalette);
 
     char whitePixel[] = { 127, 127, 127, 127 };
     paintingPanel.sections[2].elements[4].button.textureSelection = true;

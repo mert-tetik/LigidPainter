@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-bool Project::loadProject(std::string ligidFilePath,Model &model,AppTextures appTextures,ColorPalette colorPalette, 
+bool Project::loadProject(std::string ligidFilePath,Model &model,ColorPalette colorPalette, 
                           int& textureRes,  glm::vec2 videoScale, AppMaterialModifiers& appMaterialModifiers){
 
     //Return if the ligidFilePath doesn't exists
@@ -48,7 +48,7 @@ bool Project::loadProject(std::string ligidFilePath,Model &model,AppTextures app
     time_t lastOpenedDate;
     
 
-    if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate, textureRes, colorPalette, appTextures, videoScale)){
+    if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate, textureRes, colorPalette, videoScale)){
         LGDLOG::start<< "ERROR CAN'T READ THE LIGID FILE : " << ligidFilePath << ". The file is might not be a ligid file." << LGDLOG::end;
 
         return false;
@@ -92,7 +92,7 @@ bool Project::loadProject(std::string ligidFilePath,Model &model,AppTextures app
         std::string materialPath = entry.path().string();
 
         Material material(textureRes, "", 0);;
-        if(FileHandler::readLGDMATERIALFile(materialPath, material, colorPalette, appTextures, appMaterialModifiers))
+        if(FileHandler::readLGDMATERIALFile(materialPath, material, colorPalette, appMaterialModifiers))
             Library::addMaterial(material);
     
     }

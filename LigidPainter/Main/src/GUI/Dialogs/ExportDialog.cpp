@@ -34,10 +34,10 @@
 
 ExportDialog::ExportDialog(){}
 
-ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures){
+ExportDialog::ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette){
     
     //Take the parameters to the class member variables 
-    this->appTextures = appTextures;
+    
     this->context = context;
 
     

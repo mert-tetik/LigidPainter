@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 //forward declerations of the util functions
-void readmeshNodeSceneData(std::ifstream &rf,   ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
+void readmeshNodeSceneData(std::ifstream &rf,   ColorPalette colorPalette, glm::vec2 videoScale);
 
 bool Project::readLigidFile(
                                 std::string path,
@@ -44,7 +44,7 @@ bool Project::readLigidFile(
                                 int& textureRes,
                                  
                                 ColorPalette colorPalette, 
-                                AppTextures appTextures, 
+                                
                                 glm::vec2 videoScale
                             ){ //Returns true if path is a ligid file
     
@@ -82,7 +82,7 @@ bool Project::readLigidFile(
         rf.read(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
 
         //!meshNodeScene
-        readmeshNodeSceneData(rf, colorPalette, appTextures, videoScale);
+        readmeshNodeSceneData(rf, colorPalette, videoScale);
 
         //!Texture resolution
         rf.read(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
@@ -91,7 +91,7 @@ bool Project::readLigidFile(
     }
 }
 
-void readmeshNodeSceneData(std::ifstream &rf,   ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale){
+void readmeshNodeSceneData(std::ifstream &rf,   ColorPalette colorPalette, glm::vec2 videoScale){
     
     //Read the node size
     uint64_t nodeSize;
@@ -112,7 +112,6 @@ void readmeshNodeSceneData(std::ifstream &rf,   ColorPalette colorPalette, AppTe
                             nodeIndex, 
                             0,
                             colorPalette,
-                            appTextures,
                             videoScale
                         );
 

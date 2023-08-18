@@ -348,7 +348,7 @@ class RangeBar
 {
 private:
     void render(glm::vec3 posVal,glm::vec2 scaleVal,float radiusVal,glm::vec4 color1Val, glm::vec4 color2Val,float mixVal,bool outlineExtra,float resultOutlineThickness);
-    AppTextures appTextures;
+    
 public:
     bool pointerPressed = false;
     float panelOffset = 0.f; 
@@ -390,7 +390,7 @@ public:
              bool outlineExtra,glm::vec3 outlineColor,glm::vec3 outlineColor2, float radius,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,
              float textScale,float panelOffset,float outlineThickness,float minValue,float maxValue,float value);
     RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,Texture texture,float panelOffset,
-             float minValue,float maxValue,float value,AppTextures appTextures);
+             float minValue,float maxValue,float value);
 
     /// @brief Public member function to render the text box
     void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);

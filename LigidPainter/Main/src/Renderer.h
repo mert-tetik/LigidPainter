@@ -84,7 +84,7 @@ public:
 
     TextRenderer textRenderer; 
 
-    AppTextures appTextures;
+    
 
     ColorPalette colorPalette;
 

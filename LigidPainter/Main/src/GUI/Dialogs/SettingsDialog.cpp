@@ -31,7 +31,7 @@
 
 SettingsDialog::SettingsDialog(){}
 
-SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures){
+SettingsDialog::SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette){
     this->context = context;
     
     //Create the panel

@@ -19,10 +19,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
-#include "../../thirdparty/include/glm/glm.hpp"
-#include "../../thirdparty/include/glm/gtc/matrix_transform.hpp"
-#include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
-#include "../../thirdparty/include/glm/gtx/string_cast.hpp"
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 #include "GUI/Elements/Elements.hpp"
 #include "GUI/GUI.hpp"
@@ -32,6 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ShaderSystem/Shader.hpp"
 #include "NodeSystem/Node/Node.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 bool _ligid_renderer_render_first_frame = true;
 
@@ -116,7 +117,7 @@ void Renderer::render(){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].albedo.ID);
             else
-                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+                glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
             }
         else if(painter.selectedDisplayingModeIndex == 1)
             glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[0].button.texture.ID);
@@ -127,7 +128,7 @@ void Renderer::render(){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].roughness.ID);
             else
-                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+                glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
         else if(painter.selectedDisplayingModeIndex == 1)
             glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[1].button.texture.ID);
@@ -138,7 +139,7 @@ void Renderer::render(){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].metallic.ID);
             else
-                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+                glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
         else if(painter.selectedDisplayingModeIndex == 1)
             glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[2].button.texture.ID);
@@ -149,7 +150,7 @@ void Renderer::render(){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].normalMap.ID);
             else
-                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+                glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
         else if(painter.selectedDisplayingModeIndex == 1)
             glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[3].button.texture.ID);
@@ -160,7 +161,7 @@ void Renderer::render(){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].heightMap.ID);
             else
-                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+                glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
         else if(painter.selectedDisplayingModeIndex == 1)
             glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[4].button.texture.ID);
@@ -171,7 +172,7 @@ void Renderer::render(){
             if(NodeScene::getNode(0)->IOs[i].connections.size())
                 glBindTexture(GL_TEXTURE_2D, model.meshes[i].ambientOcclusion.ID);
             else
-                glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialConnectedToTheMeshWarningImage.ID);
+                glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
         else if(painter.selectedDisplayingModeIndex == 1)
             glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[4].elements[5].button.texture.ID);

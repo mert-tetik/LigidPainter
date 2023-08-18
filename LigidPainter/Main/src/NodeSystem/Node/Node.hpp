@@ -89,7 +89,7 @@ class Node
 {
 private:
     /// @brief Textures used in the app
-    AppTextures appTextures;
+    
 
     /// @brief Resolution of the primary monitor
     glm::vec2 videoScale;
@@ -154,10 +154,9 @@ public:
     * @param buttonShader button shader used to render the GUI elements
     * @param connectionCurveShader curve shader used to render connection line curves 
     * @param colorPalette LigidPainter color theme
-    * @param appTextures textures used by the LigidPainter
     * @param videoScale primary monitor resolution value
     */
-    Node(int nodeIndex, int materialID, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
+    Node(int nodeIndex, int materialID, ColorPalette colorPalette, glm::vec2 videoScale);
 
     /// @brief Render the node & manage inputs & outputs 
     /// @param currentNodeIndex which node is rendered (index of the nodeScene)

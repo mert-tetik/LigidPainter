@@ -34,11 +34,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void paintingPanelInteraction(
                                 Panel &paintingPanel, 
-                                
                                 Painter &painter, 
                                 Dropper &dropper,
                                 ColorPalette colorPalette,
-                                AppTextures appTextures, 
                                 Model &model
                             )
 {

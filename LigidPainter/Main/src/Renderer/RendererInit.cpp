@@ -32,9 +32,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "NodeSystem/Node/Node.hpp"
+#include "SettingsSystem/Settings.hpp"
+#include "MouseSystem/Mouse.hpp"
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
-#include "MouseSystem/Mouse.hpp"
 
 #include "LigidGL/LigidGL.hpp"
 
@@ -118,7 +119,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     updateProjectionMatrix();
     
     //--Load the app textures
-    loadAppTextures();
+    Settings::loadAppTextures();
 
     //Load shaders
     ShaderSystem::initShaderSystem();
@@ -152,7 +153,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
 
     //Init the userinterface
-    userInterface.init(context, appTextures, websites, videoScale, sphereModel);
+    userInterface.init(context, websites, videoScale, sphereModel);
 
     //Init mouse class
     Mouse::setWindow(context.window);
@@ -164,7 +165,7 @@ Renderer::Renderer(glm::vec2 videoScale){//Videoscale is the resolution value th
     painter.initPainter(videoScale);
 
     //Create the mesh node
-    NodeScene::addNode(Node(MESH_NODE, 0, colorPalette, appTextures, videoScale));
+    NodeScene::addNode(Node(MESH_NODE, 0, colorPalette, videoScale));
 
     //Load the inputs of the mesh node
     NodeScene::getNode(0)->uploadNewIOs(model, colorPalette);
@@ -203,33 +204,6 @@ void Renderer::initGlad(){
     {
         LGDLOG::start<< "Failed to initialize GLAD" << LGDLOG::end;
     }    
-}
-
-void Renderer::loadAppTextures(){
-    appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/TDModel.png");
-    appTextures.softenIcon.load("./LigidPainter/Resources/Icons/Soften.png");
-    appTextures.smearIcon.load("./LigidPainter/Resources/Icons/Smear.png");
-    appTextures.modifierIcon.load("./LigidPainter/Resources/Icons/Modifier.png");
-    appTextures.environmentIcon.load("./LigidPainter/Resources/Icons/Environment.png");
-    appTextures.dropperIcon.load("./LigidPainter/Resources/Icons/Dropper.png");
-    appTextures.colorIcon.load("./LigidPainter/Resources/Icons/Color.png");
-    appTextures.brushIcon.load("./LigidPainter/Resources/Icons/Brush.png");
-    appTextures.arrowR.load("./LigidPainter/Resources/Icons/ArrowR.png");
-    appTextures.arrowL.load("./LigidPainter/Resources/Icons/ArrowL.png");
-    appTextures.threeDIcon.load("./LigidPainter/Resources/Icons/3D.png");
-    appTextures.twoDIcon.load("./LigidPainter/Resources/Icons/2D.png");
-    appTextures.exportIcon.load("./LigidPainter/Resources/Icons/Export.png");
-    appTextures.areaPaintingIcon.load("./LigidPainter/Resources/Icons/Area.png");
-    appTextures.gearIcon.load("./LigidPainter/Resources/Icons/Gear.png");
-    appTextures.nodeDisplayingMode.load("./LigidPainter/Resources/Icons/NodeDisplayingMode.png");
-    appTextures.paintingDisplayingMode.load("./LigidPainter/Resources/Icons/PaintingDisplayingMode.png");
-    appTextures.solidPaintingDisplayingMode.load("./LigidPainter/Resources/Icons/SolidPaintingDisplayingMode.png");
-    appTextures.ligidPainterIcon.load("./LigidPainter/Resources/Icons/LigidPainter.png");
-    appTextures.logButtonL.load("./LigidPainter/Resources/Icons/LogButtonL.png");
-    appTextures.logButtonR.load("./LigidPainter/Resources/Icons/LogButtonR.png");
-    appTextures.logButtonM.load("./LigidPainter/Resources/Icons/LogButtonM.png");
-    appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
-    appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
 }
 
 void Renderer::createContextMenus(){

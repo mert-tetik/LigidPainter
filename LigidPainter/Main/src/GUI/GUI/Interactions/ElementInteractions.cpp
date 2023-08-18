@@ -32,9 +32,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 //Forward declarations for the interaction functions defined in the Interactions directory 
-void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Panel &paintingPanel, Painter &painter,  Model &model, ColorPalette& colorPalette, int &textureRes,NewTextureDialog &newTextureDialog,AppTextures &appTextures, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
+void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Panel &paintingPanel, Painter &painter,  Model &model, ColorPalette& colorPalette, int &textureRes,NewTextureDialog &newTextureDialog, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer,  ColorPalette& colorPalette, int frameCounter);
-void paintingPanelInteraction(Panel &paintingPanel, Painter &painter, Dropper &dropper,ColorPalette colorPalette, AppTextures appTextures, Model &model);
+void paintingPanelInteraction(Panel &paintingPanel, Painter &painter, Dropper &dropper,ColorPalette colorPalette, Model &model);
 void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
 void nodeInteraction(Model &model, ColorPalette colorPalette,glm::vec2 videoScale, Scene scene, int textureRes);
@@ -84,11 +84,11 @@ void UI::elementInteraction(
     
     updateLibraryPanelDisplayerElements(libraryPanelDisplayer,colorPalette,frameCounter);
     
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer,paintingPanel,painter,model,colorPalette,textureRes,newTextureDialog,appTextures, appMaterialModifiers,frameCounter);
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer,paintingPanel,painter,model,colorPalette,textureRes,newTextureDialog,appMaterialModifiers,frameCounter);
     
     this->libraryPanelLeftInteraction(libraryPanelLeft);
 
-    paintingPanelInteraction(paintingPanel,painter,dropper,colorPalette,appTextures,model);
+    paintingPanelInteraction(paintingPanel,painter,dropper,colorPalette,model);
     
     windowPanelInteraction(windowPanel, painter, settingsDialog, displayerDialog,exportDialog);
 

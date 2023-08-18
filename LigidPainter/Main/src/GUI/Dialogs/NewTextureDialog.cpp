@@ -32,7 +32,7 @@
 #include "tinyfiledialogs.h"
 
 NewTextureDialog::NewTextureDialog(){}
-NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures){
+NewTextureDialog::NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette){
     this->context = context;
     
     //Create the panel

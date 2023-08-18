@@ -23,6 +23,7 @@
 
 #include "GUI/GUI.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <iostream>
@@ -30,7 +31,7 @@
 
 GreetingDialog::GreetingDialog(){}
 
-GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures){
+GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette){
     
     //First text button
     this->textButton1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2), colorPalette, "Welcome To The LigidPainter",Texture(),0.f,false);
@@ -59,7 +60,7 @@ GreetingDialog::GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette
     this->createProjectButton.textColor = glm::vec4(1);
     
     //Decoration texture displayer button
-    this->textureDisplayerButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(30,30), colorPalette, "",appTextures.greetingDialogImage,0.f,false);
+    this->textureDisplayerButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(30,30), colorPalette, "",Settings::appTextures().greetingDialogImage,0.f,false);
     this->textureDisplayerButton.pos.x = 50;
     this->textureDisplayerButton.pos.y = 50;
     this->textureDisplayerButton.pos.z = 0.8f;

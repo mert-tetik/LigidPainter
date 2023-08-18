@@ -27,6 +27,7 @@
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <iostream>
@@ -40,8 +41,6 @@ DisplayerDialog::DisplayerDialog(
                                     Context context, //Window and stuff
                                     glm::vec2 videoScale, //Monitor resolution
                                     ColorPalette colorPalette, //LigidPainter's theme
-                                     //Button shader
-                                    AppTextures appTextures, //Textures used in GUI
                                     Model &sphereModel //Skybox's displaying texture is rendered using this sphere model
                                 ){
                                     
@@ -57,11 +56,11 @@ DisplayerDialog::DisplayerDialog(
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),colorPalette, ""  , appTextures.greetingDialogImage, 1.f,true)),
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f, appTextures)), 
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Blur"  , Texture(), 1.f,0.f,100.f,0.f, appTextures)), 
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),colorPalette, "",  Settings::appTextures().greetingDialogImage, 1.f,true)),
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), 
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Blur"  , Texture(), 1.f,0.f,100.f,0.f)), 
 
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f, appTextures)), 
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f)), 
                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Texture(), 1.f, false)),
                     }
                 )

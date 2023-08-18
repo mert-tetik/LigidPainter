@@ -105,7 +105,7 @@ class SettingsDialog
 
     //Constructor
     SettingsDialog();
-    SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures);
+    SettingsDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette);
 
     //Public member functions    
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
@@ -128,7 +128,7 @@ class NewTextureDialog
      DialogControl dialogControl;
 
     //Constructor
-    NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures);
+    NewTextureDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette);
     
     //Public member function
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
@@ -151,13 +151,13 @@ public:
    Button textBtn4;
    Box box;
    
-   AppTextures appTextures;
+   
    AppMaterialModifiers appMaterialModifiers;
    DialogControl dialogControl;
 
    //Constructors
    LoadProjectDialog();
-   LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
+   LoadProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
    
    //Public member functions
    void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
@@ -181,7 +181,7 @@ class DisplayerDialog
 
     //Constructors
     DisplayerDialog();
-    DisplayerDialog(Context context, glm::vec2 videoScale, ColorPalette colorPalette, AppTextures appTextures, Model &sphereModel);
+    DisplayerDialog(Context context, glm::vec2 videoScale, ColorPalette colorPalette, Model &sphereModel);
     
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
@@ -208,7 +208,7 @@ public:
    
    //Constructors
    GreetingDialog();
-   GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures);
+   GreetingDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette);
    
    //Public member functions
    void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
@@ -257,7 +257,7 @@ public:
     
    //Constructors
    MaterialEditorDialog();
-   MaterialEditorDialog(ColorPalette colorPalette, AppTextures appTextures, Model &sphereModel);
+   MaterialEditorDialog(ColorPalette colorPalette, Model &sphereModel);
 
    //Public member functions
    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,
@@ -274,7 +274,7 @@ public:
 class NewProjectDialog
  {
  private:
-    AppTextures appTextures;
+    
     AppMaterialModifiers appMaterialModifiers;
  public:
     Panel panel;
@@ -284,7 +284,7 @@ class NewProjectDialog
 
     //Constructors
     NewProjectDialog();
-    NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
+    NewProjectDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
 
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
@@ -297,7 +297,7 @@ class NewProjectDialog
 class ExportDialog
  {
  private:
-    AppTextures appTextures;
+    
     Context context;
  public:
     Panel panel;
@@ -307,7 +307,7 @@ class ExportDialog
 
     //Constructors
     ExportDialog();
-    ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures);
+    ExportDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette);
 
     //Public member functions
     void render(LigidWindow originalWindow,ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
@@ -342,7 +342,7 @@ public:
 
    //Constructors
    TextureSelectionDialog();
-   TextureSelectionDialog( ColorPalette colorPalette, AppTextures appTextures);
+   TextureSelectionDialog( ColorPalette colorPalette);
 
 
    //Public member functions
@@ -434,7 +434,7 @@ void registerNodeAction(const std::string title, const Texture icon);
 class LogDialog
 {
  private:
-   AppTextures appTextures;
+   
    AppMaterialModifiers appMaterialModifiers;
  
  public:
@@ -455,7 +455,7 @@ class LogDialog
 
    //Constructors
    LogDialog();
-   LogDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppTextures appTextures, AppMaterialModifiers& appMaterialModifiers);
+   LogDialog(Context context,glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
 
    //Public member functions
    void render(LigidWindow originalWindow, ColorPalette colorPalette,Timer timer, TextRenderer &textRenderer, glm::vec2 videoScale);

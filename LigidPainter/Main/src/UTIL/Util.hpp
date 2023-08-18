@@ -326,12 +326,11 @@ public:
     /// @param ligidFilePath path to the ligid file
     /// @param  structure (holds the textures / materials / brushes & TDModels)
     /// @param model The 3D models
-    /// @param appTextures appTextures structure (holds all the textures used by the GUI)
     /// @param colorPalette colorPalette class (color theme of the ligidpainter)
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @return 
-    bool loadProject(std::string ligidFilePath,Model &model,AppTextures appTextures,
+    bool loadProject(std::string ligidFilePath,Model &model,
                     ColorPalette colorPalette,int &textureRes, glm::vec2 videoScale,
                     AppMaterialModifiers& appMaterialModifiers);
 
@@ -355,7 +354,7 @@ public:
     /// @param meshNodeScene 
     /// @param textureRes 
     /// @return True if success
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,  int& textureRes,  ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale);
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate,  int& textureRes,  ColorPalette colorPalette, glm::vec2 videoScale);
     
     /// @brief Write ligid file to the project folder
     /// @param meshNodeScene 
@@ -759,7 +758,7 @@ namespace FileHandler{
     
     Model readFBXFile(std::string path);
     
-    bool readLGDMATERIALFile(std::string path, Material& material, ColorPalette colorPalette,  AppTextures appTextures, 
+    bool readLGDMATERIALFile(std::string path, Material& material, ColorPalette colorPalette,  
                              AppMaterialModifiers appMaterialModifiers);
     bool writeLGDMATERIALFile(std::string path, Material &material);
     

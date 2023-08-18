@@ -42,7 +42,6 @@ void libraryPanelDisplayerInteraction(
                                         ColorPalette& colorPalette, 
                                         int &textureRes,
                                         NewTextureDialog &newTextureDialog,
-                                        AppTextures &appTextures,
                                         AppMaterialModifiers &appMaterialModifiers,
                                         int frameCounter
                                     )
@@ -127,7 +126,7 @@ void libraryPanelDisplayerInteraction(
 
             if(test.size()){
                 Material importedMaterial(textureRes, "", 0);
-                if(FileHandler::readLGDMATERIALFile(test, importedMaterial, colorPalette, appTextures, appMaterialModifiers))
+                if(FileHandler::readLGDMATERIALFile(test, importedMaterial, colorPalette, appMaterialModifiers))
                     Library::addMaterial(importedMaterial);
             }
         }

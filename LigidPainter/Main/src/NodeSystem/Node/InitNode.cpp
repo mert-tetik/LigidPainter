@@ -37,13 +37,13 @@ NodeConnection::NodeConnection(int nodeIndex,int inputIndex){
 
 Node::Node(){}
 
-Node::Node(int nodeIndex, int materialID, ColorPalette colorPalette, AppTextures appTextures, glm::vec2 videoScale){
+Node::Node(int nodeIndex, int materialID, ColorPalette colorPalette, glm::vec2 videoScale){
     
     //Get the shaders to the member variables
     this->colorPalette = colorPalette;
 
     //Get the other stuff to the member variables
-    this->appTextures = appTextures; 
+     
     this->videoScale = videoScale; 
 
     //Get the material ID data to a member variable 
@@ -71,7 +71,7 @@ Node::Node(int nodeIndex, int materialID, ColorPalette colorPalette, AppTextures
     else if(nodeIndex == MATERIAL_MASK_NODE){
         inputs =    {
             NodeIO("Put a Texture",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,"Put a Texture",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,videoScale,1),
-            NodeIO("Offset",Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,"Offset",Texture(),2.f,0.f,100.f,50.f, appTextures)),colorPalette.mainColor,colorPalette,videoScale,1),
+            NodeIO("Offset",Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,"Offset",Texture(),2.f,0.f,100.f,50.f)),colorPalette.mainColor,colorPalette,videoScale,1),
             NodeIO("Black Side",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,"Black Side",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,videoScale,0),
             NodeIO("White Side",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,"White Side",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,videoScale,0),
         };

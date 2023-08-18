@@ -36,7 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 TextureSelectionDialog::TextureSelectionDialog(){}
 
-TextureSelectionDialog::TextureSelectionDialog(ColorPalette colorPalette,AppTextures appTextures){
+TextureSelectionDialog::TextureSelectionDialog(ColorPalette colorPalette){
     this->colorPalette = colorPalette;
     
     this->bgPanel = Panel(colorPalette, {}, scale, pos, colorPalette.secondColor, colorPalette.thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
@@ -106,9 +106,9 @@ TextureSelectionDialog::TextureSelectionDialog(ColorPalette colorPalette,AppText
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Procedural Noise Textures", Texture(), 2.f, true),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette,"Normal Map", 22.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette,"Normal Gray Scale", 2.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Normal Strength", Texture(), 2.f, 0.f, 100.f, 10.f, appTextures),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Normal Strength", Texture(), 2.f, 0.f, 100.f, 10.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette,"Invert", 2.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Scale", Texture(), 2.f, 0.f, 200.f, 10.f, appTextures),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Scale", Texture(), 2.f, 0.f, 200.f, 10.f),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),colorPalette,"Select", Texture(), 2.f, false),
                                         }
                                     )

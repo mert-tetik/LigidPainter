@@ -49,7 +49,7 @@ struct AppSettings;
 
 class UI{
 private:
-	AppTextures appTextures;
+	
     Model sphereModel;
     Websites websites;
 
@@ -116,7 +116,7 @@ public:
     UI();
 
     /*! @brief Initialized all the GUI elements. Creates the panels & stuff. And takes the parameters to the member variables. */
-    void init(Context context,AppTextures appTextures,Websites websites,glm::vec2 videoScale,Model &sphereModel);
+    void init(Context context,Websites websites,glm::vec2 videoScale,Model &sphereModel);
     
     /*! @brief Renders all the GUI */
     void render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,Context context,Box box,std::vector<ContextMenu> &contextMenus, 

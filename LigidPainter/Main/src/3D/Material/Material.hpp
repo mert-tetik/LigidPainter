@@ -59,18 +59,18 @@ public:
 
     //Constructors
     MaterialModifier();
-    MaterialModifier(ColorPalette colorPalette,AppTextures appTextures,int modifierIndex);
+    MaterialModifier(ColorPalette colorPalette,int modifierIndex);
 
     //Public member functions
-    std::vector<Section> createTextureModifier(ColorPalette colorPalette,AppTextures appTextures);
-    std::vector<Section> createDustModifier(ColorPalette colorPalette,AppTextures appTextures);
-    std::vector<Section> createAsphaltModifier(ColorPalette colorPalette,AppTextures appTextures);
-    std::vector<Section> createFabricModifier(ColorPalette colorPalette,AppTextures appTextures);
-    std::vector<Section> createMossModifier(ColorPalette colorPalette,AppTextures appTextures);
-    std::vector<Section> createRustModifier(ColorPalette colorPalette,AppTextures appTextures);
-    std::vector<Section> createSkinModifier(ColorPalette colorPalette,AppTextures appTextures);
-    std::vector<Section> createWoodenModifier(ColorPalette colorPalette,AppTextures appTextures);
-    std::vector<Section> createSolidModifier(ColorPalette colorPalette,AppTextures appTextures);
+    std::vector<Section> createTextureModifier(ColorPalette colorPalette);
+    std::vector<Section> createDustModifier(ColorPalette colorPalette);
+    std::vector<Section> createAsphaltModifier(ColorPalette colorPalette);
+    std::vector<Section> createFabricModifier(ColorPalette colorPalette);
+    std::vector<Section> createMossModifier(ColorPalette colorPalette);
+    std::vector<Section> createRustModifier(ColorPalette colorPalette);
+    std::vector<Section> createSkinModifier(ColorPalette colorPalette);
+    std::vector<Section> createWoodenModifier(ColorPalette colorPalette);
+    std::vector<Section> createSolidModifier(ColorPalette colorPalette);
 
 };
 
