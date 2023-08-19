@@ -125,7 +125,7 @@ public:
     Material(std::string title,int ID);
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
-    void updateMaterialDisplayingTexture(float textureRes, Box box, Model sphereModel, bool updateMaterial, Camera matCam, int displayingMode);
+    void updateMaterialDisplayingTexture(float textureRes, Box box, bool updateMaterial, Camera matCam, int displayingMode);
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial();

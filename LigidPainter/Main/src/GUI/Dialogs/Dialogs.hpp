@@ -168,9 +168,6 @@ public:
 
 class DisplayerDialog
  {
- private:
-    
-    Model sphereModel;
  public:
     Panel panel;
     
@@ -179,7 +176,7 @@ class DisplayerDialog
 
     //Constructors
     DisplayerDialog();
-    DisplayerDialog(ColorPalette colorPalette, Model &sphereModel);
+    DisplayerDialog(ColorPalette colorPalette);
     
     //Public member functions
     void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
@@ -221,7 +218,6 @@ class MaterialEditorDialog
 private:
     
    ColorPalette colorPalette;
-   Model sphereModel;
 
    //Private member functions
    void updateLayerPanel(Material &material,Box &box);
@@ -255,7 +251,7 @@ public:
     
    //Constructors
    MaterialEditorDialog();
-   MaterialEditorDialog(ColorPalette colorPalette, Model &sphereModel);
+   MaterialEditorDialog(ColorPalette colorPalette);
 
    //Public member functions
    void render(Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,
@@ -308,8 +304,7 @@ class ExportDialog
 
     //Public member functions
     void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog
-                , Model sphereModel);
+                Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog);
  };
 
 

@@ -35,17 +35,12 @@ MaterialEditorDialog::MaterialEditorDialog(){}
 
 MaterialEditorDialog::MaterialEditorDialog
                                         (
-                                            ColorPalette colorPalette,
-                                            
-                                            Model &sphereModel
+                                            ColorPalette colorPalette
                                         )
 {
     this->displayerCamera.cameraPos = glm::vec3(0,0,-7.f);
     this->displayerCamera.radius = 7.f;
-
-    //Give params to the public class member variables
     this->colorPalette = colorPalette; 
-    this->sphereModel = sphereModel; 
 
     this->displayModeComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(7.f,2.f), colorPalette, {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Height", "Ambient Occlusion"}, "Displaying Mode", 0.f);
     

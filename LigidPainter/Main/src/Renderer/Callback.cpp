@@ -114,6 +114,13 @@ void Renderer::scrollCallback(
                                 double yoffset
                             )
 {
+    getScene()->camera.XPLocked = false;
+    getScene()->camera.XNLocked = false;
+    getScene()->camera.YPLocked = false;
+    getScene()->camera.YNLocked = false;
+    getScene()->camera.ZPLocked = false;
+    getScene()->camera.ZNLocked = false;
+
     //Update the scroll value of the mouse class
     *Mouse::mouseScroll() = yoffset;
     
@@ -148,7 +155,7 @@ void Renderer::cursorPositionCallback(
                                         double xpos, //Mouse x position
                                         double ypos  //Mouse y position
                                     )
-{
+{ 
     //Update the mouse position of the mouse class
     Mouse::cursorPos()->x = xpos;
     Mouse::cursorPos()->y = ypos;
@@ -168,11 +175,17 @@ void Renderer::cursorPositionCallback(
             !this->userInterface.anyPanelHover        //Don't move the camera if cursor hover a panel
         ) 
     { 
+        getScene()->camera.XPLocked = false;
+        getScene()->camera.XNLocked = false;
+        getScene()->camera.YPLocked = false;
+        getScene()->camera.YNLocked = false;
+        getScene()->camera.ZPLocked = false;
+        getScene()->camera.ZNLocked = false;
+
         // Straight Movement
       
         // Calculate half the sensitivity for later use
         const float half_sensitivity = sensitivity / 2.0f;
-
 
         // Calculate sine and cosine of yaw and pitch angles in radians
         const float sin_yaw = sin(glm::radians(cam->yaw));
@@ -218,7 +231,14 @@ void Renderer::cursorPositionCallback(
                 this->userInterface.materialEditorDialog.dialogControl.isActive()) &&
                 !this->userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel
             ) 
-    { 
+    {   
+        getScene()->camera.XPLocked = false;
+        getScene()->camera.XNLocked = false;
+        getScene()->camera.YPLocked = false;
+        getScene()->camera.YNLocked = false;
+        getScene()->camera.ZPLocked = false;
+        getScene()->camera.ZNLocked = false;
+
         if(this->userInterface.materialEditorDialog.dialogControl.isActive())
             cam = &this->userInterface.materialEditorDialog.displayerCamera;
 

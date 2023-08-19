@@ -39,17 +39,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void UI::init
             (  
-                 //All the shaders
-                //window & stuff
-                //Textures used in GUI
-                Websites websites, //Websites related to the LigidPainter
-                //Monitor resolution
-                Model &sphereModel  //A sphere model
+                Websites websites
             ){
     
     //Take params to the class member variables
     
-    this->sphereModel = sphereModel;
     this->websites = websites;
     
     //Init the project bar (navigation panel)
@@ -428,8 +422,8 @@ void UI::init
     greetingDialog              = GreetingDialog(colorPalette);
     newTextureDialog            = NewTextureDialog(colorPalette);
     logDialog                   = LogDialog(colorPalette,materialEditorDialog.appMaterialModifiers);
-    displayerDialog             = DisplayerDialog(colorPalette,sphereModel);
-    materialEditorDialog        = MaterialEditorDialog(colorPalette, sphereModel);
+    displayerDialog             = DisplayerDialog(colorPalette);
+    materialEditorDialog        = MaterialEditorDialog(colorPalette);
     textureSelectionDialog      = TextureSelectionDialog(colorPalette);
     loadProjectDialog           = LoadProjectDialog(colorPalette,materialEditorDialog.appMaterialModifiers);
     newProjectDialog            = NewProjectDialog(colorPalette,materialEditorDialog.appMaterialModifiers);

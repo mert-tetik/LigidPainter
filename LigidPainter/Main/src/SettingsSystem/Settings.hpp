@@ -24,6 +24,35 @@ struct Camera{
     glm::vec3 cameraPos = glm::vec3(0,0,-10.f);
     glm::vec3 originPos = glm::vec3(0,0,0);
     float radius = 10.f; 
+
+    void setCameraPosition(glm::vec3 pos){
+        
+        this->cameraPos = pos;
+
+        this->radius = glm::distance(this->cameraPos, this->originPos);
+
+        this->pitch = glm::degrees(asin((this->cameraPos.y - this->originPos.y) / -this->radius));
+        this->yaw = glm::degrees(atan2((this->cameraPos.z - this->originPos.z) / (this->radius * cos(glm::radians(this->pitch))),
+                                       (this->cameraPos.x - this->originPos.x) / (this->radius * cos(glm::radians(this->pitch)))));
+    }
+
+    void transition(glm::vec3 direction){
+        glm::vec3 camPos;
+        camPos = this->cameraPos;
+
+        camPos.x += (direction.x - this->cameraPos.x) / 20.f;
+        camPos.y += (direction.y - this->cameraPos.y) / 20.f;
+        camPos.z += (direction.z - this->cameraPos.z) / 20.f;
+    
+        this->setCameraPosition(camPos);
+    }
+
+    bool XPLocked = false;
+    bool XNLocked = false;
+    bool YPLocked = false;
+    bool YNLocked = false;
+    bool ZPLocked = false;
+    bool ZNLocked = false;
 };
 
 struct Scene{

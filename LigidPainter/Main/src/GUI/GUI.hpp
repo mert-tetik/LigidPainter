@@ -46,8 +46,6 @@ struct NodePanel{
 
 class UI{
 private:
-	
-    Model sphereModel;
     Websites websites;
 
     /*Renaming*/
@@ -113,7 +111,7 @@ public:
     UI();
 
     /*! @brief Initializes all the GUI elements. Creates the panels & stuff. And takes the parameters to the member variables. */
-    void init(Websites websites,Model &sphereModel);
+    void init(Websites websites);
     
     /*! @brief Renders all the GUI */
     void render(Timer &timer, TextRenderer &textRenderer,Box box,std::vector<ContextMenu> &contextMenus, Project &project, 

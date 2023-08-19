@@ -100,7 +100,7 @@ ExportDialog::ExportDialog(ColorPalette colorPalette){
 
 void ExportDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                           Project &project,bool &greetingDialogActive,
-                          MaterialEditorDialog &materialEditorDialog,Model sphereModel){
+                          MaterialEditorDialog &materialEditorDialog){
     
     dialogControl.updateStart();
 

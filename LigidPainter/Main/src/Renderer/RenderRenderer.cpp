@@ -107,6 +107,81 @@ void Renderer::render(){
 
     //Get the nodes connected to the mesh node (output node)
     
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_1)){
+        getScene()->camera.XPLocked = true;
+        getScene()->camera.XNLocked = false;
+        getScene()->camera.YPLocked = false;
+        getScene()->camera.YNLocked = false;
+        getScene()->camera.ZPLocked = false;
+        getScene()->camera.ZNLocked = false;
+    }
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_2)){
+        getScene()->camera.XNLocked = true;
+        getScene()->camera.XPLocked = false;
+        getScene()->camera.YPLocked = false;
+        getScene()->camera.YNLocked = false;
+        getScene()->camera.ZPLocked = false;
+        getScene()->camera.ZNLocked = false;
+        
+    }
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_3)){
+        getScene()->camera.YPLocked = true;
+        getScene()->camera.XNLocked = false;
+        getScene()->camera.XPLocked = false;
+        getScene()->camera.YNLocked = false;
+        getScene()->camera.ZPLocked = false;
+        getScene()->camera.ZNLocked = false;
+    }
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_4)){
+        getScene()->camera.YNLocked = true;
+        getScene()->camera.XNLocked = false;
+        getScene()->camera.YPLocked = false;
+        getScene()->camera.XPLocked = false;
+        getScene()->camera.ZPLocked = false;
+        getScene()->camera.ZNLocked = false;
+    }
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_5)){
+        getScene()->camera.ZPLocked = true;
+        getScene()->camera.XNLocked = false;
+        getScene()->camera.YPLocked = false;
+        getScene()->camera.YNLocked = false;
+        getScene()->camera.XPLocked = false;
+        getScene()->camera.ZNLocked = false;
+    }
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_6)){
+        getScene()->camera.ZNLocked = true;
+        getScene()->camera.XNLocked = false;
+        getScene()->camera.YPLocked = false;
+        getScene()->camera.YNLocked = false;
+        getScene()->camera.ZPLocked = false;
+        getScene()->camera.XPLocked = false;
+    }
+    
+    if(getScene()->camera.XPLocked){        
+        getScene()->camera.transition(glm::vec3(10.f, 0.f, 0.f));
+        this->updateViewMatrix();
+    }
+    if(getScene()->camera.XNLocked){        
+        getScene()->camera.transition(glm::vec3(-10.f, 0.f, 0.f));
+        this->updateViewMatrix();
+    }
+    if(getScene()->camera.YPLocked){        
+        getScene()->camera.transition(glm::vec3(0.f, 10.f, 0.f));
+        this->updateViewMatrix();
+    }
+    if(getScene()->camera.YNLocked){        
+        getScene()->camera.transition(glm::vec3(0.f, -10.f, 0.f));
+        this->updateViewMatrix();
+    }
+    if(getScene()->camera.ZPLocked){        
+        getScene()->camera.transition(glm::vec3(0.f, 0.f, 10.f));
+        this->updateViewMatrix();
+    }
+    if(getScene()->camera.ZNLocked){        
+        getScene()->camera.transition(glm::vec3(0.f, 0.f, -10.f));
+        this->updateViewMatrix();
+    }
+
     //Render each mesh
     for (size_t i = 0; i < getModel()->meshes.size(); i++)
     {
@@ -241,7 +316,7 @@ void Renderer::render(){
         {   
             //Update the material after painting
             //TODO : Do smt after painting
-            // library.materials[i].updateMaterial(this->settings.textureRes, box, context, shaders.buttonShader, shaders.tdModelShader, sphereModel);
+            // library.materials[i].updateMaterial(this->settings.textureRes, box, context, shaders.buttonShader, shaders.tdModelShader);
         }
         */
 

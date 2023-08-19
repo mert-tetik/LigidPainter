@@ -40,13 +40,8 @@ DisplayerDialog::DisplayerDialog(){}
 DisplayerDialog::DisplayerDialog(
                                     //Window and stuff
                                     //Monitor resolution
-                                    ColorPalette colorPalette, //LigidPainter's theme
-                                    Model &sphereModel //Skybox's displaying texture is rendered using this sphere model
+                                    ColorPalette colorPalette //LigidPainter's theme
                                 ){
-                                    
-    //Take the parameters to the class member variables
-    
-    this->sphereModel = sphereModel;
     
     //Create the panel
     this->panel = Panel(
@@ -59,7 +54,6 @@ DisplayerDialog::DisplayerDialog(
                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),colorPalette, "",  Settings::appTextures().greetingDialogImage, 1.f,true)),
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), 
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Blur"  , Texture(), 1.f,0.f,100.f,0.f)), 
-
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f)), 
                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Texture(), 1.f, false)),
                     }

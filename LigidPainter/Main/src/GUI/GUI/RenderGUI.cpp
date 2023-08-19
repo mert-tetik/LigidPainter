@@ -452,7 +452,7 @@ void UI::renderDialogs(Timer &timer, TextRenderer &textRenderer,  Project &proje
         displayerDialog.render(colorPalette,timer,textRenderer,skybox);
     
     if(exportDialog.dialogControl.isActive())
-        exportDialog.render(colorPalette,timer,textRenderer,project,greetingDialog.dialogControl.active,materialEditorDialog,sphereModel);
+        exportDialog.render(colorPalette,timer,textRenderer,project,greetingDialog.dialogControl.active,materialEditorDialog);
     
     if(newTextureDialog.dialogControl.isActive())
         newTextureDialog.render(colorPalette,timer,textRenderer);

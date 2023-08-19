@@ -150,7 +150,7 @@ Renderer::Renderer(){//Settings::Videoscale() is the resolution value that will 
     websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
 
     //Init the userinterface
-    userInterface.init(websites, *getSphereModel());
+    userInterface.init(websites);
 
     //Load the cursors of the LigidPainter
     Mouse::loadCursors();
