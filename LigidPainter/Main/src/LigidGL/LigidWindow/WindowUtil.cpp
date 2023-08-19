@@ -205,7 +205,7 @@ bool LigidWindow::isKeyPressed(int key){
 #if defined(_WIN32) || defined(_WIN64)
     
     //* User in windows environment
-    
+
     // Returns true if the key is pressed
     HWND foregroundWindow = GetForegroundWindow();
     if(foregroundWindow == this->window){

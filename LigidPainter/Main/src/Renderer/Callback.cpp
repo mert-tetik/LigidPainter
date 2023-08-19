@@ -282,6 +282,7 @@ void Renderer::keyCallback(
                                 int mods //Pressed with CTRL, CTRL + ALT , ALT , etc.
                             )
 {
+    std::cout << key << std::endl;
     if(action == LIGIDGL_PRESS || action == LIGIDGL_REPEAT){ //1 or 2
         this->textRenderer.keyInput = true;
         this->textRenderer.key = key;

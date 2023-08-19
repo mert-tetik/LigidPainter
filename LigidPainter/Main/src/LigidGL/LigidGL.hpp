@@ -92,6 +92,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LIGIDGL_KEY_GRAVE_ACCENT       96  
 #define LIGIDGL_KEY_WORLD_1            161 
 #define LIGIDGL_KEY_WORLD_2            162 
+#define LIGIDGL_KEY_NUMPAD_0 96
+#define LIGIDGL_KEY_NUMPAD_1 97
+#define LIGIDGL_KEY_NUMPAD_2 98
+#define LIGIDGL_KEY_NUMPAD_3 99
+#define LIGIDGL_KEY_NUMPAD_4 100
+#define LIGIDGL_KEY_NUMPAD_5 101
+#define LIGIDGL_KEY_NUMPAD_6 102
+#define LIGIDGL_KEY_NUMPAD_7 103
+#define LIGIDGL_KEY_NUMPAD_8 104
+#define LIGIDGL_KEY_NUMPAD_9 105
 
 /* Function keys */
 #define LIGIDGL_KEY_ESCAPE             27
