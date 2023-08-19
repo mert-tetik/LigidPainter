@@ -35,7 +35,7 @@
 
 NewProjectDialog::NewProjectDialog(){}
 
-NewProjectDialog::NewProjectDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
+NewProjectDialog::NewProjectDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
     
     //Take the parameters to the class member variables 
     
@@ -93,12 +93,12 @@ NewProjectDialog::NewProjectDialog(glm::vec2 videoScale,ColorPalette colorPalett
 }
 
 void NewProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen){
+                                Project &project,bool &greetingDialogActive,bool &startScreen){
     
     dialogControl.updateStart();
 
     //Render the panel
-    panel.render(videoScale,timer,textRenderer,dialogControl.isComplete());
+    panel.render(timer,textRenderer,dialogControl.isComplete());
     
     //If pressed to the last button of the panel (Create the project button)
     if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && *Mouse::LClick()){
@@ -111,7 +111,7 @@ void NewProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer
                                     std::stoi(panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex])
                                  ))
         {
-            project.loadProject(project.ligidFilePath(), colorPalette, videoScale, appMaterialModifiers);
+            project.loadProject(project.ligidFilePath(), colorPalette, appMaterialModifiers);
             
             startScreen = false;
 

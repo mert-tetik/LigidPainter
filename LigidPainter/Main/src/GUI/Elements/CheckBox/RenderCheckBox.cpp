@@ -22,13 +22,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <iostream>
 #include <vector>
 
 
-void CheckBox::render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
+void CheckBox::render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
     
     //Define the common utilities class
     ;
@@ -37,24 +38,24 @@ void CheckBox::render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRender
 
     //Original position in the screen coordinates
     glm::vec3 orgResultPos = glm::vec3( 
-                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
     //Modified position in the screen coordinates
     glm::vec3 resultPos = glm::vec3( 
-                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
     //Text position in the screen coordinates
     glm::vec3 resultTextPos = glm::vec3( 
-                          UTIL::getPercent(videoScale,glm::vec2(pos.x+2.5,pos.y)) //Don't include the depth
+                          UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x+2.5,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
     //Original scale value in the screen coordinates
-    glm::vec2 orgResultScale = UTIL::getPercent(videoScale,scale);
+    glm::vec2 orgResultScale = UTIL::getPercent(*Settings::videoScale(), scale);
     
     //Modified scale value in the screen coordinates
-    glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
+    glm::vec2 resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
     
     //Make the circle a square
     resultScale = glm::vec2(std::min(resultScale.x,resultScale.y));
@@ -66,13 +67,13 @@ void CheckBox::render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRender
     resultPos.x -= orgResultScale.x/4.f;
     
     //Radius value in the screen coordinates
-    float resultRadius = UTIL::getPercent(videoScale.x,0.35f); //0.25F = radius val
+    float resultRadius = UTIL::getPercent(Settings::videoScale()->x,0.35f); //0.25F = radius val
     
     //Text scale value in the screen coordinates
-    float resultScaleText = videoScale.x/1920/2*textScale;
+    float resultScaleText = Settings::videoScale()->x/1920/2*textScale;
     
     //Outline thickness value in the screen coordinates
-    float resultOutlineThickness = videoScale.x/1920/2 * (2.f);//2.f = outline thickness
+    float resultOutlineThickness = Settings::videoScale()->x/1920/2 * (2.f);//2.f = outline thickness
     
     //Mouse activites
     manageMouseActivity(resultScale,resultPos);

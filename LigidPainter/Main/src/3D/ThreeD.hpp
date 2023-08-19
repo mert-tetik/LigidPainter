@@ -98,7 +98,7 @@ public:
         @brief Creates the @ref IDPrefiltered. (Prefilters the skybox texture ( @ref ID ))
         @param videoScale Primary monitor resolution value
     */
-	unsigned int createPrefilterMap(glm::vec2 videoScale);
+	unsigned int createPrefilterMap();
 	
     /*!
         @brief Creates the @ref displayingTexture. Renders a sphere using skyboxBall 

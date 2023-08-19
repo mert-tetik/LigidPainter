@@ -37,7 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /// @param textRenderer local textRenderer class (manage text rendering & keyboard inputs)
 /// @param doMouseTracking don't check mouse hover if set to false
 void Button::render(
-                        glm::vec2 videoScale,
+                        
                        
                         Timer &timer,
                         TextRenderer &textRenderer,
@@ -49,20 +49,20 @@ void Button::render(
 
     //Get the real position value (0 - 100 to screen location)
     resultPos = glm::vec3( 
-                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
 
     //Get the real scale value
-    resultScale = UTIL::getPercent(videoScale,scale);
+    resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
     
     //Get the real radius value
-    float resultRadius = UTIL::getPercent(videoScale.x,radius);
+    float resultRadius = UTIL::getPercent(Settings::videoScale()->x,radius);
     
     //Get the real text scale value
-    float resultScaleText = videoScale.x/1920/2*textScale;
+    float resultScaleText = Settings::videoScale()->x/1920/2*textScale;
     
     //Get the real outline thickness value
-    float resultOutlineThickness = videoScale.x/1920/2*outlineThickness;
+    float resultOutlineThickness = Settings::videoScale()->x/1920/2*outlineThickness;
 
     //Manage mouse activites
     manageMouseActivity();
@@ -96,5 +96,5 @@ void Button::render(
     }
 
     //Render the text and the texture
-    renderTextAndTexture(textRenderer,videoScale,resultScaleText);
+    renderTextAndTexture(textRenderer,resultScaleText);
 }

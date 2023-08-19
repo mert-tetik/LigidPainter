@@ -48,7 +48,7 @@ bool __lastDisplayModeComboBoxPressed = false;
 
 void MaterialEditorDialog::render
                                 (
-                                    glm::vec2 videoScale,
+                                    
                                     Timer &timer,
                                     TextRenderer &textRenderer,
                                     TextureSelectionDialog &textureSelectionDialog,
@@ -61,17 +61,17 @@ void MaterialEditorDialog::render
     dialogControl.updateStart();
 
     //Render the panels & material displayer button
-    bgPanel.render(videoScale,timer,textRenderer,         !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
-    layerPanel.render(videoScale,timer,textRenderer,      !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
-    modifiersPanel.render(videoScale,timer,textRenderer,  !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
-    barButton.render(videoScale,timer,textRenderer,       !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    bgPanel.render(timer,textRenderer,         !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    layerPanel.render(timer,textRenderer,      !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    modifiersPanel.render(timer,textRenderer,  !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    barButton.render(timer,textRenderer,       !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
 
     barButton.pos.x = bgPanel.pos.x + bgPanel.additionalPos.x;
     barButton.pos.y = bgPanel.pos.y + bgPanel.additionalPos.y - bgPanel.scale.y - barButton.scale.y;
 
-    bgPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(getContext()->windowScale)) / videoScale * 50.f ,0);
-    layerPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(getContext()->windowScale)) / videoScale * 50.f ,0);
-    modifiersPanel.additionalPos = -glm::vec3((videoScale - glm::vec2(getContext()->windowScale)) / videoScale * 50.f ,0);
+    bgPanel.additionalPos = -glm::vec3((*Settings::videoScale() - glm::vec2(getContext()->windowScale)) / *Settings::videoScale() * 50.f ,0);
+    layerPanel.additionalPos = -glm::vec3((*Settings::videoScale() - glm::vec2(getContext()->windowScale)) / *Settings::videoScale() * 50.f ,0);
+    modifiersPanel.additionalPos = -glm::vec3((*Settings::videoScale() - glm::vec2(getContext()->windowScale)) / *Settings::videoScale() * 50.f ,0);
 
     //Update the texture, scale & position of the material displayer button
     updateMaterialDisplayerButton(materialDisplayer, material, bgPanel, modifiersPanel, layerPanel);
@@ -90,7 +90,7 @@ void MaterialEditorDialog::render
     }
 
     //Check layerpanel if any modifier is clicked & change selectedMaterialModifierIndex if clicked
-    checkLayerPanel(material,contextMenus,videoScale );
+    checkLayerPanel(material,contextMenus);
     
     //Check the modifier's panel and update the material if interacted with any of the GUI element (show the texture selection dialog if pressed to a texture modifier's channel button)
     checkModifiersPanel(material, box, textureSelectionDialog);
@@ -99,18 +99,18 @@ void MaterialEditorDialog::render
     this->manageContextMenuActions(material, box, contextMenus);
 
     //Update the layer panel recreate all the modifiers using material.materialModifiers vector & add a new modifier if add is pressed to that vector
-    updateLayerPanelElements(material, box, videoScale, contextMenus);
+    updateLayerPanelElements(material, box, contextMenus);
     
     //If texture selection done
     checkTextureSelectionDialog(textureSelectionDialog,material, box);
 
     //Render the material displayer
-    materialDisplayer.render(videoScale,timer,textRenderer,false);
+    materialDisplayer.render(timer,textRenderer,false);
 
     this->displayModeComboBox.pos = layerPanel.pos + layerPanel.additionalPos;
     this->displayModeComboBox.pos.y -= materialDisplayer.scale.y + this->displayModeComboBox.scale.y;
     this->displayModeComboBox.pos.x += layerPanel.scale.x + materialDisplayer.scale.x;
-    this->displayModeComboBox.render(videoScale, timer, textRenderer, true);
+    this->displayModeComboBox.render(timer, textRenderer, true);
     
     dialogControl.updateEnd(timer,0.15f);
 
@@ -198,7 +198,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material, Box &box){
 }
 
 
-void MaterialEditorDialog::checkLayerPanel(Material &material, std::vector<ContextMenu> &contextMenus, glm::vec2 videoScale){
+void MaterialEditorDialog::checkLayerPanel(Material &material, std::vector<ContextMenu> &contextMenus){
     //Update the selected material modifier index (pressed to a modifier)
     if(layerPanel.sections.size()){
         for (size_t i = 0; i < layerPanel.sections[0].elements.size(); i++)
@@ -305,7 +305,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material,Box box,Textur
     */
 }
 
-void MaterialEditorDialog::updateLayerPanelElements(Material &material,Box &box,glm::vec2 videoScale, std::vector<ContextMenu> contextMenus){
+void MaterialEditorDialog::updateLayerPanelElements(Material &material,Box &box,std::vector<ContextMenu> contextMenus){
     //Update layer panal elements
     if  (
             dialogControl.firstFrameActivated // Or in the first frame this dialog is activated

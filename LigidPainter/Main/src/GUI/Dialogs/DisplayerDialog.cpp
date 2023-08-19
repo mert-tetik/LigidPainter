@@ -39,7 +39,7 @@ DisplayerDialog::DisplayerDialog(){}
 
 DisplayerDialog::DisplayerDialog(
                                     //Window and stuff
-                                    glm::vec2 videoScale, //Monitor resolution
+                                    //Monitor resolution
                                     ColorPalette colorPalette, //LigidPainter's theme
                                     Model &sphereModel //Skybox's displaying texture is rendered using this sphere model
                                 ){
@@ -109,12 +109,12 @@ DisplayerDialog::DisplayerDialog(
 }
 
 void DisplayerDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-            glm::vec2 videoScale,Skybox &skybox){
+            Skybox &skybox){
     
     dialogControl.updateStart();
 
     //Render the panel
-    panel.render(videoScale, timer, textRenderer, true);
+    panel.render(timer, textRenderer, true);
     
     //Update the texture of the skybox displayer button
     panel.sections[0].elements[0].button.texture = Texture(skybox.displayingTexture);
@@ -133,12 +133,12 @@ void DisplayerDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer 
             skyboxes[i].scale.x = panel.sections[0].elements[0].button.scale.x/skyboxes.size();
 
             //Render the button
-            skyboxes[i].render(videoScale, timer, textRenderer, true);
+            skyboxes[i].render(timer, textRenderer, true);
             
             //If pressed to the skybox load the pressed skybox
             if(skyboxes[i].button.hover && *Mouse::LClick()){
                 skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky" + std::to_string(i+1));
-                skybox.createPrefilterMap(videoScale);
+                skybox.createPrefilterMap();
                 skybox.createDisplayingTxtr();
 
                 //Unpress the skybox displayer

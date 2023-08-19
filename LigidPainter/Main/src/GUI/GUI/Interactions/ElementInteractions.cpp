@@ -37,13 +37,12 @@ void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer,  ColorPal
 void paintingPanelInteraction(Panel &paintingPanel, Painter &painter, Dropper &dropper,ColorPalette colorPalette);
 void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
-void nodeInteraction(ColorPalette colorPalette,glm::vec2 videoScale);
+void nodeInteraction(ColorPalette colorPalette);
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
 void UI::elementInteraction(
                                 Painter &painter,
                                 std::vector<ContextMenu> &contextMenus,
-                                glm::vec2 &videoScale,
                                 TextRenderer &textRenderer, 
                                 Timer &timer, 
                                 float screenGapPerc,
@@ -73,7 +72,7 @@ void UI::elementInteraction(
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover;
 
-    this->contextMenuInteraction(contextMenus, videoScale, timer, textRenderer, project, painter);
+    this->contextMenuInteraction(contextMenus, timer, textRenderer, project, painter);
     
     updateLibraryPanelDisplayerElements(libraryPanelDisplayer,colorPalette,frameCounter);
     
@@ -89,7 +88,7 @@ void UI::elementInteraction(
 
     displayingModesPanelInteraction(displayingModesPanel, painter);
 
-    nodeInteraction(colorPalette,videoScale);
+    nodeInteraction(colorPalette);
     
     this->panelPositioning(screenGapPerc,painter);
 }

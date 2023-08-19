@@ -74,7 +74,7 @@ public:
     int state;
 
     //Constructor
-    NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,glm::vec2 videoScale,int state);
+    NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,int state);
 };
 
 //!------------------------------NODE-----------------------------
@@ -88,21 +88,12 @@ public:
 class Node
 {
 private:
-    /// @brief Textures used in the app
-    
-
-    /// @brief Resolution of the primary monitor
-    glm::vec2 videoScale;
-
-    /// @brief The button shader used for rendering GUI elements
-      
-    
     ColorPalette colorPalette;  
     
     //-------------------- UTILITY FUNCTIONS --------------------
 
     bool renderBarriers(Panel &nodeEditorPanel);
-    void drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel, int direction);
+    void drawLine(glm::vec2 src, glm::vec2 dest,Panel nodeEditorPanel, int direction);
     void createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI);
     void clearConnections(int nodeIParam,int IOIParam);
     bool doHaveConnection(int nodeIParam,int IOIParam);
@@ -156,11 +147,11 @@ public:
     * @param colorPalette LigidPainter color theme
     * @param videoScale primary monitor resolution value
     */
-    Node(int nodeIndex, int materialID, ColorPalette colorPalette, glm::vec2 videoScale);
+    Node(int nodeIndex, int materialID, ColorPalette colorPalette);
 
     /// @brief Render the node & manage inputs & outputs 
     /// @param currentNodeIndex which node is rendered (index of the nodeScene)
-    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel,  int textureRes);
+    void render(Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel,  int textureRes);
 
     /// @brief Replaces the IOs vector with the new inputs & outputs (+ generates the node panel)  
     void uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs);
@@ -172,7 +163,7 @@ public:
 namespace NodeScene{
 
     /// @brief Renders the node list 
-    void render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Panel nodeEditorPanel, NodePanel& nodePanel);
+    void render(Timer &timer, TextRenderer &textRenderer,  Panel nodeEditorPanel, NodePanel& nodePanel);
     
     /// @brief Adds the given node to the scene 
     void addNode(const Node node);

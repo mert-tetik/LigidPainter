@@ -102,7 +102,7 @@ TextBox::TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string
 
 
 void TextBox::render(
-                        glm::vec2 videoScale, //Resolution of the monitor
+                        //Resolution of the monitor
                         Timer &timer, //Timer that handles the animations
                         TextRenderer &textRenderer, //TextRenderer that handles text rendering
                         bool doMouseTracking //If there is need to check if mouse hover
@@ -112,17 +112,17 @@ void TextBox::render(
     this->doMouseTracking = doMouseTracking;
     
     glm::vec3 resultPos = glm::vec3( 
-                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
     
-    glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
+    glm::vec2 resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
     resultScale.x /= 1.2f;
 
-    float resultRadius = UTIL::getPercent(videoScale.x,radius);
+    float resultRadius = UTIL::getPercent(Settings::videoScale()->x, radius);
 
-    float resultScaleText = videoScale.x/1920/2*textScale;
+    float resultScaleText = Settings::videoScale()->x/1920/2*textScale;
     
-    float resultOutlineThickness = videoScale.x/1920/2 * (thickness);
+    float resultOutlineThickness = Settings::videoScale()->x/1920/2 * (thickness);
 
     //Check if mouse on top of the text box
     if(doMouseTracking)

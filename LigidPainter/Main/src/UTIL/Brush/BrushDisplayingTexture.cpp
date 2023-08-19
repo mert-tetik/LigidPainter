@@ -66,15 +66,15 @@ void Brush::updateDisplayTexture(){
     glClear(GL_COLOR_BUFFER_BIT);
 
     //Stroke resolution is 100
-    glm::vec2 videoScale = glm::vec2(100);
+    glm::vec2 displayRes = glm::vec2(100);
 
-    glViewport(0,0,videoScale.x,videoScale.y);
+    glViewport(0,0,displayRes.x,displayRes.y);
     
     ShaderSystem::twoDPainting().use();
 
-    glm::vec2 scale = videoScale / glm::vec2(2);
-    glm::vec3 pos = glm::vec3(videoScale / glm::vec2(2),1.f);
-    glm::mat4 projection = glm::ortho(0.f,videoScale.x,0.f,videoScale.y);
+    glm::vec2 scale = displayRes / glm::vec2(2);
+    glm::vec3 pos = glm::vec3(displayRes / glm::vec2(2),1.f);
+    glm::mat4 projection = glm::ortho(0.f,displayRes.x,0.f,displayRes.y);
     ShaderSystem::twoDPainting().setVec2("scale", scale); //Cover the screen
     ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
     ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
@@ -94,7 +94,7 @@ void Brush::updateDisplayTexture(){
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,texture.ID);
 
-    ShaderSystem::twoDPainting().setVec2("videoScale", videoScale); 
+    ShaderSystem::twoDPainting().setVec2("videoScale", displayRes); 
 
     //Create the stroke
     for (size_t i = 0; i < wave.size(); i++)

@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 /// @brief 
 /// @return position gap between the text start pos and ending pos  
@@ -178,7 +179,7 @@ void TextRenderer::renderLeftToRight(
 
 			//Set the transform values
 			ShaderSystem::buttonShader().setVec2("scale",glm::vec2(w/1.7,h/1.7));
-			ShaderSystem::buttonShader().setVec3("pos",glm::vec3(xpos + w/1.7,ypos - (h/1.7) + this->videoScale.y / 210, textDataPos.z));
+			ShaderSystem::buttonShader().setVec3("pos",glm::vec3(xpos + w/1.7,ypos - (h/1.7) + Settings::videoScale()->y / 210, textDataPos.z));
  
 			//Draw the char
 			glBindTexture(GL_TEXTURE_2D,ch.TextureID);

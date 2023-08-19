@@ -50,7 +50,7 @@ void Painter::updateDepthTexture(){
     //Bind the depth texture (Painter class public member variable)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthTexture, 0);
 
-    glViewport(0,0,videoScale.x,videoScale.y);
+    glViewport(0,0,Settings::videoScale()->x,Settings::videoScale()->y);
 
     //Clear the depth texture
     glClearColor(0,0,0,0);

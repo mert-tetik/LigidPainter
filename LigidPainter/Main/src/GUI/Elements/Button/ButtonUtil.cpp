@@ -111,7 +111,7 @@ bool Button::renderTheTexture(
                                 glm::vec3 resultPos,
                                 glm::vec2 resultScale,
                                 float resultScaleText,
-                                glm::vec2 videoScale,
+                                
                                 TextRenderer &textRenderer,
                                 float &textureRadius
                             ){
@@ -231,7 +231,7 @@ void Button::manageMouseActivity(
 /// @param resultScaleText scale value of the text in screen coordinates
 void Button::renderTextAndTexture(
                                     TextRenderer &textRenderer, 
-                                    glm::vec2 videoScale, 
+                                    
                                     float resultScaleText
                                 ){
     
@@ -259,7 +259,7 @@ void Button::renderTextAndTexture(
     
     //Render the texture
     float textureRadius = 0.f;
-    bool renderTheText = renderTheTexture(resultPos,resultScale,resultScaleText,videoScale,textRenderer,textureRadius);
+    bool renderTheText = renderTheTexture(resultPos,resultScale,resultScaleText,textRenderer,textureRadius);
     
     //Render the text
     if(renderTheText){

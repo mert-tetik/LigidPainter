@@ -35,7 +35,7 @@
 
 ExportDialog::ExportDialog(){}
 
-ExportDialog::ExportDialog(glm::vec2 videoScale,ColorPalette colorPalette){
+ExportDialog::ExportDialog(ColorPalette colorPalette){
     
     //Take the parameters to the class member variables 
     
@@ -99,13 +99,13 @@ ExportDialog::ExportDialog(glm::vec2 videoScale,ColorPalette colorPalette){
 }
 
 void ExportDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                          glm::vec2 videoScale,Project &project,bool &greetingDialogActive,
+                          Project &project,bool &greetingDialogActive,
                           MaterialEditorDialog &materialEditorDialog,Model sphereModel){
     
     dialogControl.updateStart();
 
     //Render the panel
-    panel.render(videoScale,timer,textRenderer,true);
+    panel.render(timer,textRenderer,true);
     
     //If pressed to the last button of the panel (Export button)
     if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && *Mouse::LClick()){

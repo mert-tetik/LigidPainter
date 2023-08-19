@@ -36,8 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void nodeInteraction(
                         
-                        ColorPalette colorPalette,
-                        glm::vec2 videoScale
+                        ColorPalette colorPalette
                     )
 {
     

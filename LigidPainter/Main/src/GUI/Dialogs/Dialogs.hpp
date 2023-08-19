@@ -105,11 +105,10 @@ class SettingsDialog
 
     //Constructor
     SettingsDialog();
-    SettingsDialog(glm::vec2 videoScale,ColorPalette colorPalette);
+    SettingsDialog(ColorPalette colorPalette);
 
     //Public member functions    
-    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                glm::vec2 videoScale);
+    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer);
  };
 
 
@@ -128,11 +127,10 @@ class NewTextureDialog
      DialogControl dialogControl;
 
     //Constructor
-    NewTextureDialog(glm::vec2 videoScale,ColorPalette colorPalette);
+    NewTextureDialog(ColorPalette colorPalette);
     
     //Public member function
-    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                glm::vec2 videoScale);
+    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer);
  };
 
 
@@ -157,10 +155,10 @@ public:
 
    //Constructors
    LoadProjectDialog();
-   LoadProjectDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
+   LoadProjectDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
    
    //Public member functions
-   void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
+   void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                Project &project,bool &greetingDialogActive,bool &startScreen);
  };
 
@@ -181,11 +179,11 @@ class DisplayerDialog
 
     //Constructors
     DisplayerDialog();
-    DisplayerDialog(glm::vec2 videoScale, ColorPalette colorPalette, Model &sphereModel);
+    DisplayerDialog(ColorPalette colorPalette, Model &sphereModel);
     
     //Public member functions
     void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                glm::vec2 videoScale,Skybox &skybox);
+                Skybox &skybox);
  };
 
 
@@ -208,11 +206,11 @@ public:
    
    //Constructors
    GreetingDialog();
-   GreetingDialog(glm::vec2 videoScale,ColorPalette colorPalette);
+   GreetingDialog(ColorPalette colorPalette);
    
    //Public member functions
    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-               glm::vec2 videoScale, NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog);
+               NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog);
 };
 
 //!------------------------------MATERIAL EDITOR DIALOG------------------------------
@@ -227,9 +225,9 @@ private:
 
    //Private member functions
    void updateLayerPanel(Material &material,Box &box);
-   void checkLayerPanel(Material &material,std::vector<ContextMenu> &contextMenus,glm::vec2 videoScale);
+   void checkLayerPanel(Material &material,std::vector<ContextMenu> &contextMenus);
    void checkModifiersPanel(Material &material,Box box,TextureSelectionDialog &textureSelectionDialog);
-   void updateLayerPanelElements(Material &material,Box &box,glm::vec2 videoScale, std::vector<ContextMenu> contextMenus);
+   void updateLayerPanelElements(Material &material,Box &box,std::vector<ContextMenu> contextMenus);
    void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Box box);
    void manageContextMenuActions( Material &material, Box box, std::vector<ContextMenu> &contextMenus);
 
@@ -260,7 +258,7 @@ public:
    MaterialEditorDialog(ColorPalette colorPalette, Model &sphereModel);
 
    //Public member functions
-   void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,
+   void render(Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,
                Material &material, Box box, std::vector<ContextMenu> &contextMenus);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
@@ -283,10 +281,10 @@ class NewProjectDialog
 
     //Constructors
     NewProjectDialog();
-    NewProjectDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
+    NewProjectDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
 
     //Public member functions
-    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
+    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                 Project &project,bool &greetingDialogActive,bool &startScreen);
  };
 
@@ -306,10 +304,10 @@ class ExportDialog
 
     //Constructors
     ExportDialog();
-    ExportDialog(glm::vec2 videoScale,ColorPalette colorPalette);
+    ExportDialog(ColorPalette colorPalette);
 
     //Public member functions
-    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale,
+    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                 Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog
                 , Model sphereModel);
  };
@@ -345,7 +343,7 @@ public:
 
 
    //Public member functions
-   void show(glm::vec2 videoScale,Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, TextRenderer& textRenderer, int displayingTextureRes);
+   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, TextRenderer& textRenderer, int displayingTextureRes);
 
    void generateDisplayingTexture(Texture& txtr, int displayingTextureRes);
 
@@ -369,7 +367,7 @@ public:
     ContextMenu(ColorPalette colorPalette,std::vector<std::string> elements);
     
     /// @brief Public member function to render the context menu
-    void render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer);
+    void render(Timer &timer,TextRenderer &textRenderer);
 };
 
 //!-------------------------------LOG DIALOG--------------------------------
@@ -454,10 +452,10 @@ class LogDialog
 
    //Constructors
    LogDialog();
-   LogDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
+   LogDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
 
    //Public member functions
-   void render(ColorPalette colorPalette,Timer timer, TextRenderer &textRenderer, glm::vec2 videoScale);
+   void render(ColorPalette colorPalette,Timer timer, TextRenderer &textRenderer);
 };
 
 #endif

@@ -23,29 +23,30 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <iostream>
 #include <vector>
     
-void Panel::render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
+void Panel::render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
     
     this->doMouseTracking = doMouseTracking;
     
     // Pos value, % of the video scale
     resultPos = glm::vec3( 
-                            UTIL::getPercent(videoScale,glm::vec2(pos.x + this->additionalPos.x, pos.y + this->additionalPos.y)), //Don't include the depth
+                            UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x + this->additionalPos.x, pos.y + this->additionalPos.y)), //Don't include the depth
                             pos.z //Use the original depth value
                         ); 
     
     // scale value % of the video scale
-    resultScale = UTIL::getPercent(videoScale,scale);
+    resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
     
     mouseTracking();
     
-    resizeThePanel(videoScale);
+    resizeThePanel();
 
-    drawPanel(videoScale,resultPos,resultScale,timer,textRenderer);
+    drawPanel(resultPos,resultScale,timer,textRenderer);
 
 }
 
@@ -110,7 +111,7 @@ static float calculateElementStartingPosition(bool vertical, std::vector<Section
     return elementPos;
 }
 
-static void renderBarButtons(std::vector<Button> &barButtons, glm::vec3 pos, glm::vec2 scale, glm::vec2 videoScale, Timer timer, TextRenderer textRenderer, bool doMouseTracking){
+static void renderBarButtons(std::vector<Button> &barButtons, glm::vec3 pos, glm::vec2 scale, Timer timer, TextRenderer textRenderer, bool doMouseTracking){
     
     for (size_t i = 0; i < barButtons.size(); i++) //Bar buttons are used only in the vertical panels
     {
@@ -124,24 +125,24 @@ static void renderBarButtons(std::vector<Button> &barButtons, glm::vec3 pos, glm
         barButtons[i].pos.y -= scale.y - barButtons[i].scale.y;
         
         barButtons[i].pos.z += 0.01f;
-        barButtons[i].render(videoScale,timer,textRenderer,doMouseTracking);
+        barButtons[i].render(timer,textRenderer,doMouseTracking);
     }
 
 }
 
-void Panel::renderTheHeader(int sectionI,float &elementPos, int &btnCounter, glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer){
+void Panel::renderTheHeader(int sectionI,float &elementPos, int &btnCounter, Timer &timer, TextRenderer &textRenderer){
     //Prepare the transform data of the button    
     if(this->vertical)
         this->prepDrawBtnVertically(sections[sectionI].header,sections[std::max(sectionI,0)].elements[sections[std::max(sectionI,0)].elements.size()-1],elementPos,btnCounter);
     else
         this->prepDrawBtnHorizontally(sections[sectionI].header,sections[std::max(sectionI,0)].elements[sections[std::max(sectionI,0)].elements.size()-1],elementPos,btnCounter);
     //Draw the button
-    this->sections[sectionI].header.render(videoScale, timer, textRenderer, this->doMouseTracking && !sliderButton.hover);
+    this->sections[sectionI].header.render(timer, textRenderer, this->doMouseTracking && !sliderButton.hover);
     btnCounter++; //Indexing buttons to position them
 }
 
 void Panel::drawPanel(
-                        glm::vec2 videoScale,
+                        
                         
                         glm::vec3 resultPos,
                         glm::vec2 resultScale,
@@ -167,7 +168,7 @@ void Panel::drawPanel(
     int btnCounter = 0; 
 
     //Render the bar buttons
-    renderBarButtons(this->barButtons, this->pos + this->additionalPos, this->scale, videoScale, timer, textRenderer, this->doMouseTracking && !sliderButton.hover); 
+    renderBarButtons(this->barButtons, this->pos + this->additionalPos, this->scale, timer, textRenderer, this->doMouseTracking && !sliderButton.hover); 
     
     //Calculate the barbuttons for positioning other elements
     if(barButtons.size())
@@ -181,7 +182,7 @@ void Panel::drawPanel(
         if(sections[sI].header.button.text.size()) //If there is a header
         { 
             //Section header button
-            this->renderTheHeader(sI, elementPos, btnCounter, videoScale, timer, textRenderer);
+            this->renderTheHeader(sI, elementPos, btnCounter, timer, textRenderer);
         }
 
         /*-- ELEMENTS --*/
@@ -207,7 +208,7 @@ void Panel::drawPanel(
                 //Don't render the unshown elements
                 if(this->sections[sI].elements[i].pos.y - this->sections[sI].elements[i].scale.y < (this->pos.y + this->additionalPos.y + this->scale.y) && this->sections[sI].elements[i].pos.y + this->sections[sI].elements[i].scale.y > (this->pos.y + this->additionalPos.y - this->scale.y)){
                     
-                    sections[sI].elements[i].render(videoScale,timer,textRenderer,doMouseTracking && !sliderButton.hover);
+                    sections[sI].elements[i].render(timer,textRenderer,doMouseTracking && !sliderButton.hover);
                     
                     /* Render the text if rendering library displayer panel*/
                     if(isLibraryDisplayer){
@@ -251,14 +252,14 @@ void Panel::drawPanel(
         if(slideRatio < 1 && vertical){
             if(sliderButton.clickState1){ //Pressed
                 //Move the slidebar
-                slideVal += Mouse::mouseOffset()->y / videoScale.y*100.f;
+                slideVal += Mouse::mouseOffset()->y / Settings::videoScale()->y*100.f;
             } 
             if(this->hover){
                 if(*Mouse::mouseScroll() > 100)
                     *Mouse::mouseScroll() = 100;
                 if(*Mouse::mouseScroll() < -100)
                     *Mouse::mouseScroll() = -100;
-                slideVal -= *Mouse::mouseScroll() / videoScale.y * 100.f * slideRatio;
+                slideVal -= *Mouse::mouseScroll() / Settings::videoScale()->y * 100.f * slideRatio;
             }
             
             if(slideVal < 0) //If the slider is out of boundaries
@@ -278,7 +279,7 @@ void Panel::drawPanel(
             sliderButton.pos.y = (pos.y + this->additionalPos.y - scale.y) + sliderButton.scale.y + slideVal;  
             sliderButton.pos.z += 0.02f;
 
-            sliderButton.render(videoScale,timer,textRenderer,doMouseTracking);
+            sliderButton.render(timer,textRenderer,doMouseTracking);
 
         }
         else

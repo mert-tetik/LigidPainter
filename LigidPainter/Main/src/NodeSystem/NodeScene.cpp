@@ -25,7 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 std::vector<Node> __nodeScene;
 
-void NodeScene::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRenderer,  Panel nodeEditorPanel, NodePanel& nodePanel){
+void NodeScene::render(Timer &timer, TextRenderer &textRenderer,  Panel nodeEditorPanel, NodePanel& nodePanel){
     
     for (size_t i = 0; i < __nodeScene.size(); i++)
     {
@@ -38,7 +38,7 @@ void NodeScene::render(glm::vec2 videoScale, Timer &timer, TextRenderer &textRen
             }
         }
 
-        __nodeScene[i].render(videoScale, timer, textRenderer, nodeEditorPanel, i, nodePanel, Settings::properties()->textureRes);
+        __nodeScene[i].render(timer, textRenderer, nodeEditorPanel, i, nodePanel, Settings::properties()->textureRes);
     }
 }
 

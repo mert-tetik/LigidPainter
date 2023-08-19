@@ -28,7 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
 
-unsigned int Skybox::createPrefilterMap(glm::vec2 videoScale){
+unsigned int Skybox::createPrefilterMap(){
 	//Creates the prefildered cubemap for the skybox
 	//Which is used for PBR
 

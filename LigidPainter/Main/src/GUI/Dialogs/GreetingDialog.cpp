@@ -31,7 +31,7 @@
 
 GreetingDialog::GreetingDialog(){}
 
-GreetingDialog::GreetingDialog(glm::vec2 videoScale,ColorPalette colorPalette){
+GreetingDialog::GreetingDialog(ColorPalette colorPalette){
     
     //First text button
     this->textButton1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2), colorPalette, "Welcome To The LigidPainter",Texture(),0.f,false);
@@ -77,21 +77,21 @@ GreetingDialog::GreetingDialog(glm::vec2 videoScale,ColorPalette colorPalette){
     this->dialogControl.activate();
 }
 
-void GreetingDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale, NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
+void GreetingDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
 
     dialogControl.updateStart();
 
     //Render elements 
     
     //Render the texture displayer button 
-    textureDisplayerButton.render(videoScale,timer,textRenderer,false);
+    textureDisplayerButton.render(timer,textRenderer,false);
 
-    //bgPanel.render(videoScale,timer,textRenderer,false);
-    loadProjectButton.render(videoScale,timer,textRenderer,dialogControl.isComplete());
-    createProjectButton.render(videoScale,timer,textRenderer,dialogControl.isComplete());
+    //bgPanel.render(timer,textRenderer,false);
+    loadProjectButton.render(timer,textRenderer,dialogControl.isComplete());
+    createProjectButton.render(timer,textRenderer,dialogControl.isComplete());
     
     //Render text elements
-    // textButton1.render(videoScale,timer,textRenderer,false);
+    // textButton1.render(timer,textRenderer,false);
     
     //Show new project dialog if create project button is pressed
     if(createProjectButton.hover && *Mouse::LClick()){

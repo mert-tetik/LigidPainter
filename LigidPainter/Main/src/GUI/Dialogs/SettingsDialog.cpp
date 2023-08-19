@@ -32,7 +32,7 @@
 
 SettingsDialog::SettingsDialog(){}
 
-SettingsDialog::SettingsDialog(glm::vec2 videoScale,ColorPalette colorPalette){
+SettingsDialog::SettingsDialog(ColorPalette colorPalette){
     
     
     //Create the panel
@@ -61,8 +61,7 @@ SettingsDialog::SettingsDialog(glm::vec2 videoScale,ColorPalette colorPalette){
     },glm::vec2(15.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
-void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer,
-                             glm::vec2 videoScale){
+void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer){
     
     dialogControl.updateStart();   
 
@@ -83,7 +82,7 @@ void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer
     Settings::properties()->backfaceCulling = panel.sections[0].elements[3].checkBox.clickState1;
 
     //Render the panel    
-    panel.render(videoScale,timer,textRenderer,true);
+    panel.render(timer,textRenderer,true);
 
     //If pressed to any of the combo box element change the texture res
     Settings::properties()->textureRes = stoi(panel.sections[0].elements[1].comboBox.texts[panel.sections[0].elements[1].comboBox.selectedIndex]);

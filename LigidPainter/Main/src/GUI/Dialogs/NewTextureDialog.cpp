@@ -32,7 +32,7 @@
 #include "tinyfiledialogs.h"
 
 NewTextureDialog::NewTextureDialog(){}
-NewTextureDialog::NewTextureDialog(glm::vec2 videoScale,ColorPalette colorPalette){
+NewTextureDialog::NewTextureDialog(ColorPalette colorPalette){
     
     
     //Create the panel
@@ -74,7 +74,7 @@ NewTextureDialog::NewTextureDialog(glm::vec2 videoScale,ColorPalette colorPalett
 
 bool __newTxtrDialog_last_texture_selection_dialog_state = false;
 
-void NewTextureDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,glm::vec2 videoScale){
+void NewTextureDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer){
     
     int textureRes = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
 
@@ -164,7 +164,7 @@ void NewTextureDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer
     __newTxtrDialog_last_texture_selection_dialog_state = panel.sections[0].elements[4].button.hover && *Mouse::LClick();
 
     //Render the panel
-    panel.render(videoScale,timer,textRenderer,true);
+    panel.render(timer,textRenderer,true);
     
     //Invert the text color of the color button
     panel.sections[0].elements[0].button.textColor = glm::vec4(glm::vec3(1.) - glm::vec3(panel.sections[0].elements[0].button.color),1);

@@ -39,7 +39,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //forward declerations for the utility functions
 static void setBrushProperties (BrushProperties brushProperties);
-static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int frameCounter);
+static void setShaderUniforms(glm::mat4 &projection, glm::vec2 resolution, int frameCounter);
 static void set3DShaderSideUniforms(int selectedColorIndex,Color color1,Color color2,Color color3,float opacity ,int selectedPaintingModeIndex);
 
 
@@ -56,7 +56,7 @@ void Painter::doPaint(glm::mat4 windowOrtho){
     }
 
     //Cover the whole monitor (since we are painting to the screen)
-    glViewport(0,0,videoScale.x,videoScale.y);
+    glViewport(0,0,Settings::videoScale()->x,Settings::videoScale()->y);
 
     //Bind the painting texture to the painting framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
@@ -75,8 +75,8 @@ void Painter::doPaint(glm::mat4 windowOrtho){
     //Prepeare the 2D painting shader
     ShaderSystem::twoDPainting().use();
 
-    //Set uniforms of the painting shader (scale, pos, projection, videoScale, mouseOffset, frame)
-    setShaderUniforms(windowOrtho,getContext()->windowScale,frameCounter);
+    //Set uniforms of the painting shader (scale, pos, projection, mouseOffset, frame)
+    setShaderUniforms(windowOrtho, getContext()->windowScale, frameCounter);
 
     //Set brush properties
     setBrushProperties(this->brushProperties);
@@ -151,15 +151,15 @@ static void setBrushProperties (
     ShaderSystem::twoDPainting().setFloat("brush.txtr", 0);
 }
 
-static void setShaderUniforms(glm::mat4 &projection, glm::vec2 videoScale, int frameCounter){
-    glm::vec2 scale = videoScale / glm::vec2(2);
-    glm::vec3 pos = glm::vec3(videoScale / glm::vec2(2),1.f);
-    projection = glm::ortho(0.f,videoScale.x,0.f,videoScale.y);
+static void setShaderUniforms(glm::mat4 &projection, glm::vec2 resolution, int frameCounter){
+    glm::vec2 scale = resolution / glm::vec2(2);
+    glm::vec3 pos = glm::vec3(resolution / glm::vec2(2),1.f);
+    projection = glm::ortho(0.f,resolution.x,0.f,resolution.y);
     
     ShaderSystem::twoDPainting().setVec2("scale", scale); //Cover the screen
     ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
     ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
-    ShaderSystem::twoDPainting().setVec2("videoScale", videoScale); 
+    ShaderSystem::twoDPainting().setVec2("videoScale", resolution); 
     ShaderSystem::twoDPainting().setVec2("mouseOffset", *Mouse::mouseOffset());
     ShaderSystem::twoDPainting().setInt("frame", frameCounter);
 }

@@ -63,14 +63,14 @@ ContextMenu::ContextMenu(ColorPalette colorPalette,std::vector<std::string> elem
     contextPanel.scale.y = elements.size();
 }
 
-void ContextMenu::render(glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer){
+void ContextMenu::render(Timer &timer,TextRenderer &textRenderer){
     dialogControl.updateStart();
     
     //Update the position of the context panel
     contextPanel.pos = pos;
 
     //Render the context panel
-    contextPanel.render(videoScale,timer,textRenderer,true);
+    contextPanel.render(timer,textRenderer,true);
     
     dialogControl.updateEnd(timer, 0.15f);
 }

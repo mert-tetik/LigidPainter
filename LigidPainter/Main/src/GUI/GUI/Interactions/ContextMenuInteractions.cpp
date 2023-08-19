@@ -36,7 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,  
-                                glm::vec2 videoScale,Timer &timer,TextRenderer &textRenderer,
+                                Timer &timer,TextRenderer &textRenderer,
                                 Project& project, Painter &painter){
 
     anyContextMenuActive = false; 
@@ -82,8 +82,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
                 Node materialNode = Node(
                                             MATERIAL_NODE, 
                                             Library::getMaterial(contextMenus[i].selectedElement)->uniqueID,
-                                            colorPalette,
-                                            videoScale
+                                            colorPalette
                                         );
                 materialNode.barButton.text = Library::getMaterial(contextMenus[i].selectedElement)->title;
                 NodeScene::addNode(materialNode); //Add material node
@@ -210,12 +209,12 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
         if(i == 9 && contextMenus[i].dialogControl.isActive()){//If node scene context menu is active
             //Add material ID node button pressed
             if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
-                NodeScene::addNode(Node(MATERIAL_ID_NODE, 0, colorPalette, videoScale));
+                NodeScene::addNode(Node(MATERIAL_ID_NODE, 0, colorPalette));
                 NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
             }
             //Add material mask node button pressed
             else if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
-                NodeScene::addNode(Node(MATERIAL_MASK_NODE, 0, colorPalette, videoScale));
+                NodeScene::addNode(Node(MATERIAL_MASK_NODE, 0, colorPalette));
                 NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
             }
         } 
@@ -233,7 +232,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
         }
         //Render the context menu if active
         if(contextMenus[i].dialogControl.isActive()){
-            contextMenus[i].render(videoScale,timer,textRenderer);
+            contextMenus[i].render(timer,textRenderer);
             if(contextMenus[i].contextPanel.hover == false)
                 contextMenus[i].dialogControl.unActivate(); 
         }
@@ -251,8 +250,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
             if(Library::getSelectedElementIndex() == 0){//To a texture
                 //Show the context menu
                 contextMenus[0].dialogControl.activate();
-                contextMenus[0].pos.x = Mouse::cursorPos()->x / videoScale.x * 100.f;
-                contextMenus[0].pos.y = Mouse::cursorPos()->y / videoScale.y * 100.f + contextMenus[0].contextPanel.scale.y;
+                contextMenus[0].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+                contextMenus[0].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[0].contextPanel.scale.y;
                 contextMenus[0].pos.z = 0.95f;
                 contextMenus[0].selectedElement = i;
                 
@@ -260,16 +259,16 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
             if(Library::getSelectedElementIndex() == 1){//To a material
                 //Show the context menu
                 contextMenus[1].dialogControl.activate();
-                contextMenus[1].pos.x = Mouse::cursorPos()->x / videoScale.x * 100.f;
-                contextMenus[1].pos.y = Mouse::cursorPos()->y / videoScale.y * 100.f + contextMenus[1].contextPanel.scale.y;
+                contextMenus[1].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+                contextMenus[1].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[1].contextPanel.scale.y;
                 contextMenus[1].pos.z = 0.95f;
                 contextMenus[1].selectedElement = i;
             }
             if(Library::getSelectedElementIndex() == 2){//To a brush
                 //Show the context menu
                 contextMenus[2].dialogControl.activate();
-                contextMenus[2].pos.x = Mouse::cursorPos()->x / videoScale.x * 100.f;
-                contextMenus[2].pos.y = Mouse::cursorPos()->y / videoScale.y * 100.f + contextMenus[2].contextPanel.scale.y;
+                contextMenus[2].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+                contextMenus[2].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[2].contextPanel.scale.y;
                 contextMenus[2].pos.z = 0.95f;
                 contextMenus[2].selectedElement = i;
             }
@@ -278,16 +277,16 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
     if(navigationPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){ //If pressed to "Project" button in the menu bar (navigation panel)
         //Show the context menu
         contextMenus[3].dialogControl.activate();
-        contextMenus[3].pos.x = Mouse::cursorPos()->x / videoScale.x * 100.f;
-        contextMenus[3].pos.y = Mouse::cursorPos()->y / videoScale.y * 100.f + contextMenus[3].contextPanel.scale.y;
+        contextMenus[3].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        contextMenus[3].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[3].contextPanel.scale.y;
         contextMenus[3].pos.z = 0.95f;
         contextMenus[3].selectedElement = 0;
     }
     if(navigationPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){ //If pressed to "Painting" button in the menu bar (navigation panel)
         //Show the context menu
         contextMenus[4].dialogControl.activate();
-        contextMenus[4].pos.x = Mouse::cursorPos()->x / videoScale.x * 100.f;
-        contextMenus[4].pos.y = Mouse::cursorPos()->y / videoScale.y * 100.f + contextMenus[4].contextPanel.scale.y;
+        contextMenus[4].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        contextMenus[4].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[4].contextPanel.scale.y;
         contextMenus[4].pos.z = 0.95f;
         contextMenus[4].selectedElement = 0;
     }
@@ -295,8 +294,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
     if(navigationPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){ //If pressed to "Help" button in the menu bar (navigation panel)
         //Show the context menu
         contextMenus[5].dialogControl.activate();
-        contextMenus[5].pos.x = Mouse::cursorPos()->x / videoScale.x * 100.f;
-        contextMenus[5].pos.y = Mouse::cursorPos()->y / videoScale.y * 100.f + contextMenus[5].contextPanel.scale.y;
+        contextMenus[5].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        contextMenus[5].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[5].contextPanel.scale.y;
         contextMenus[5].pos.z = 0.95f;
         contextMenus[5].selectedElement = 0;
     }
@@ -307,8 +306,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
             if(materialEditorDialog.layerPanel.sections[0].elements[i].button.hover && *Mouse::RClick() && materialEditorDialog.dialogControl.isActive()){
 
                 contextMenus[6].dialogControl.activate();
-                contextMenus[6].pos.x = Mouse::cursorPos()->x / videoScale.x * 100.f;
-                contextMenus[6].pos.y = Mouse::cursorPos()->y / videoScale.y * 100.f + contextMenus[6].contextPanel.scale.y;
+                contextMenus[6].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+                contextMenus[6].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[6].contextPanel.scale.y;
                 contextMenus[6].pos.z = 0.95f;
                 contextMenus[6].selectedElement = i;
 
@@ -318,8 +317,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
 
     if(materialEditorDialog.layerPanel.barButtons[0].clicked && materialEditorDialog.dialogControl.isActive()){
         contextMenus[8].dialogControl.activate();
-        contextMenus[8].pos.x = Mouse::cursorPos()->x / videoScale.x * 100.f;
-        contextMenus[8].pos.y = Mouse::cursorPos()->y / videoScale.y * 100.f + contextMenus[6].contextPanel.scale.y;
+        contextMenus[8].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        contextMenus[8].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[6].contextPanel.scale.y;
         contextMenus[8].pos.z = 0.95f;
     }
 
@@ -331,8 +330,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
 
         if((NodeScene::getNode(i)->nodePanel.hover || NodeScene::getNode(i)->barButton.hover) && *Mouse::RClick() && !NodeScene::getNode(i)->cursorOnBarriers){
             contextMenus[7].dialogControl.activate();
-            contextMenus[7].pos.x = Mouse::cursorPos()->x / videoScale.x * 100.f;
-            contextMenus[7].pos.y = Mouse::cursorPos()->y / videoScale.y * 100.f + contextMenus[7].contextPanel.scale.y;
+            contextMenus[7].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+            contextMenus[7].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[7].contextPanel.scale.y;
             contextMenus[7].pos.z = 0.95f;
             contextMenus[7].selectedElement = i;
         }
@@ -340,8 +339,8 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
     
     if((this->nodeEditorDisplayer.hover && !anyNodeHover) && *Mouse::RClick()){
         contextMenus[9].dialogControl.activate();
-        contextMenus[9].pos.x = Mouse::cursorPos()->x / videoScale.x * 100.f;
-        contextMenus[9].pos.y = Mouse::cursorPos()->y / videoScale.y * 100.f + contextMenus[7].contextPanel.scale.y;
+        contextMenus[9].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        contextMenus[9].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[7].contextPanel.scale.y;
         contextMenus[9].pos.z = 0.95f;
         contextMenus[9].selectedElement = 0;
     }

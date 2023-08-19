@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -38,10 +39,7 @@ Painter::Painter(){
     
 }
 
-void Painter::initPainter(glm::vec2 videoScale){
-    
-    //Send the parameters to the member variables
-    this->videoScale = videoScale;
+void Painter::initPainter(){
     
     //--------- init paintingTexture8 --------- 
     glActiveTexture(GL_TEXTURE0);
@@ -54,7 +52,7 @@ void Painter::initPainter(glm::vec2 videoScale){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, videoScale.x, videoScale.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Settings::videoScale()->x, Settings::videoScale()->y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
 
@@ -69,7 +67,7 @@ void Painter::initPainter(glm::vec2 videoScale){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, videoScale.x, videoScale.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Settings::videoScale()->x, Settings::videoScale()->y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
 
@@ -84,7 +82,7 @@ void Painter::initPainter(glm::vec2 videoScale){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, videoScale.x, videoScale.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, Settings::videoScale()->x, Settings::videoScale()->y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
 
@@ -99,7 +97,7 @@ void Painter::initPainter(glm::vec2 videoScale){
     //--------- init depthRBO --------- 
     glGenRenderbuffers(1,&depthRBO);
     glBindRenderbuffer(GL_RENDERBUFFER,depthRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, videoScale.x, videoScale.y);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, Settings::videoScale()->x, Settings::videoScale()->y);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
 
 

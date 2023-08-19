@@ -43,7 +43,7 @@ void UI::init
                 //window & stuff
                 //Textures used in GUI
                 Websites websites, //Websites related to the LigidPainter
-                glm::vec2 videoScale, //Monitor resolution
+                //Monitor resolution
                 Model &sphereModel  //A sphere model
             ){
     
@@ -425,16 +425,16 @@ void UI::init
                         );
 
     //Init dialogs
-    greetingDialog              = GreetingDialog(videoScale,colorPalette);
-    newTextureDialog            = NewTextureDialog(videoScale,colorPalette);
-    logDialog                   = LogDialog(videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
-    displayerDialog             = DisplayerDialog(videoScale,colorPalette,sphereModel);
+    greetingDialog              = GreetingDialog(colorPalette);
+    newTextureDialog            = NewTextureDialog(colorPalette);
+    logDialog                   = LogDialog(colorPalette,materialEditorDialog.appMaterialModifiers);
+    displayerDialog             = DisplayerDialog(colorPalette,sphereModel);
     materialEditorDialog        = MaterialEditorDialog(colorPalette, sphereModel);
     textureSelectionDialog      = TextureSelectionDialog(colorPalette);
-    loadProjectDialog           = LoadProjectDialog(videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
-    newProjectDialog            = NewProjectDialog(videoScale,colorPalette,materialEditorDialog.appMaterialModifiers);
-    settingsDialog              = SettingsDialog(videoScale,colorPalette);
-    exportDialog                = ExportDialog(videoScale,colorPalette);
+    loadProjectDialog           = LoadProjectDialog(colorPalette,materialEditorDialog.appMaterialModifiers);
+    newProjectDialog            = NewProjectDialog(colorPalette,materialEditorDialog.appMaterialModifiers);
+    settingsDialog              = SettingsDialog(colorPalette);
+    exportDialog                = ExportDialog(colorPalette);
 
     char whitePixel[] = { 127, 127, 127, 127 };
     paintingPanel.sections[2].elements[4].button.textureSelection = true;

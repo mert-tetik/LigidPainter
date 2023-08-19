@@ -256,7 +256,7 @@ static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, ColorPalette& colorPalette);
 static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex, ColorPalette& colorPalette);
 
-void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, TextRenderer& textRenderer, int displayingTextureRes){
+void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, TextRenderer& textRenderer, int displayingTextureRes){
     
     this->dialogControl.activate();
         
@@ -282,10 +282,10 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
         updateSubPanel(this->subPanel, this->selectedTextureMode, this->selectedTextureIndex, colorPalette);
 
         //Render the panel
-        this->bgPanel.render(videoScale, timer,__textRenderer,true);
+        this->bgPanel.render(timer,__textRenderer,true);
 
         //Render the texture mode selection panel
-        this->subPanel.render(videoScale, timer,__textRenderer,true);
+        this->subPanel.render(timer,__textRenderer,true);
 
         selectedTextureDisplayingPanel.scale.x = this->scale.x - subPanel.scale.x;
         selectedTextureDisplayingPanel.pos.x = this->pos.x + subPanel.scale.x;
@@ -295,11 +295,11 @@ void TextureSelectionDialog::show(glm::vec2 videoScale, Timer &timer, glm::mat4 
 
         selectedTextureDisplayingPanel.sections[0].elements[0].button.texture = displayingTexture;
 
-        this->textureSelectingPanel.render(videoScale,timer,__textRenderer,true);
+        this->textureSelectingPanel.render(timer,__textRenderer,true);
 
         ShaderSystem::buttonShader().setInt("properties.invertTheTexture", false);
         ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
-        this->selectedTextureDisplayingPanel.render(videoScale,timer,__textRenderer,true);
+        this->selectedTextureDisplayingPanel.render(timer,__textRenderer,true);
 
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
         {

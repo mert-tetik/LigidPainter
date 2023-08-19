@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <iostream>
@@ -100,41 +101,41 @@ void Panel::mouseTracking(){
         Mouse::setCursor(*Mouse::vSlideCursor());
 }
 
-void Panel::resizeThePanel(glm::vec2 videoScale){
+void Panel::resizeThePanel(){
     //Resize the panel if necessary
     if(rightSide.pressed){
-        scale.x += Mouse::mouseOffset()->x/videoScale.x * 50.f;
-        pos.x += Mouse::mouseOffset()->x/videoScale.x *50.f;
+        scale.x += Mouse::mouseOffset()->x/Settings::videoScale()->x * 50.f;
+        pos.x += Mouse::mouseOffset()->x/Settings::videoScale()->x *50.f;
         //Restrict the size of the panel
         if(scale.x < 1 || scale.x > maxScaleVal){
-            scale.x -= Mouse::mouseOffset()->x/videoScale.x * 50.f;
-            pos.x -= Mouse::mouseOffset()->x/videoScale.x * 50.f;
+            scale.x -= Mouse::mouseOffset()->x/Settings::videoScale()->x * 50.f;
+            pos.x -= Mouse::mouseOffset()->x/Settings::videoScale()->x * 50.f;
         }
     }
     else if(leftSide.pressed){
-        scale.x -= Mouse::mouseOffset()->x/videoScale.x * 50.f;
-        pos.x += Mouse::mouseOffset()->x/videoScale.x *50.f;
+        scale.x -= Mouse::mouseOffset()->x/Settings::videoScale()->x * 50.f;
+        pos.x += Mouse::mouseOffset()->x/Settings::videoScale()->x *50.f;
         //Restrict the size of the panel
         if(scale.x < 1 || scale.x > maxScaleVal){
-            scale.x += Mouse::mouseOffset()->x/videoScale.x * 50.f;
-            pos.x -= Mouse::mouseOffset()->x/videoScale.x *50.f;
+            scale.x += Mouse::mouseOffset()->x/Settings::videoScale()->x * 50.f;
+            pos.x -= Mouse::mouseOffset()->x/Settings::videoScale()->x *50.f;
         }
     }
     else if(bottomSide.pressed){
-        scale.y += Mouse::mouseOffset()->y/videoScale.y * 50.f;
-        pos.y += Mouse::mouseOffset()->y/videoScale.y *50.f;
+        scale.y += Mouse::mouseOffset()->y/Settings::videoScale()->y * 50.f;
+        pos.y += Mouse::mouseOffset()->y/Settings::videoScale()->y *50.f;
         if(scale.y < 0.5f || scale.y > maxScaleVal){
-            scale.y -= Mouse::mouseOffset()->y/videoScale.y * 50.f;
-            pos.y -= Mouse::mouseOffset()->y/videoScale.y *50.f;
+            scale.y -= Mouse::mouseOffset()->y/Settings::videoScale()->y * 50.f;
+            pos.y -= Mouse::mouseOffset()->y/Settings::videoScale()->y *50.f;
         }
     }
     
     else if(topSide.pressed){
-        scale.y -= Mouse::mouseOffset()->y/videoScale.y * 50.f;
-        pos.y += Mouse::mouseOffset()->y/videoScale.y *50.f;
+        scale.y -= Mouse::mouseOffset()->y/Settings::videoScale()->y * 50.f;
+        pos.y += Mouse::mouseOffset()->y/Settings::videoScale()->y *50.f;
         if(scale.y < 0.5f || scale.y > maxScaleVal){
-            scale.y += Mouse::mouseOffset()->y/videoScale.y * 50.f;
-            pos.y -= Mouse::mouseOffset()->y/videoScale.y *50.f;
+            scale.y += Mouse::mouseOffset()->y/Settings::videoScale()->y * 50.f;
+            pos.y -= Mouse::mouseOffset()->y/Settings::videoScale()->y *50.f;
         }
     }
 }

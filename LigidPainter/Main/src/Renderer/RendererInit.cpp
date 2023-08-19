@@ -133,14 +133,14 @@ Renderer::Renderer(){//Settings::Videoscale() is the resolution value that will 
     
     //Load the default skybox
     skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox's itself
-    skybox.createPrefilterMap(*Settings::videoScale()); //Create prefiltered skybox
+    skybox.createPrefilterMap(); //Create prefiltered skybox
     skybox.createDisplayingTxtr(); //Create displaying texture
     
     //Load the fonts
     fonts.Arial.loadFont("./LigidPainter/Resources/Fonts/Arial.ttf");
 
     //Init the text renderer
-    textRenderer = TextRenderer(fonts.Arial, *Settings::videoScale());
+    textRenderer = TextRenderer(fonts.Arial);
     
     //Create context menus
     createContextMenus();
@@ -150,16 +150,16 @@ Renderer::Renderer(){//Settings::Videoscale() is the resolution value that will 
     websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
 
     //Init the userinterface
-    userInterface.init(websites, *Settings::videoScale(), *getSphereModel());
+    userInterface.init(websites, *getSphereModel());
 
     //Load the cursors of the LigidPainter
     Mouse::loadCursors();
 
     //Init the painter
-    painter.initPainter(*Settings::videoScale());
+    painter.initPainter();
 
     //Create the mesh node
-    NodeScene::addNode(Node(MESH_NODE, 0, colorPalette, *Settings::videoScale()));
+    NodeScene::addNode(Node(MESH_NODE, 0, colorPalette));
 
     //Load the inputs of the mesh node
     NodeScene::getNode(0)->uploadNewIOs(colorPalette);

@@ -132,7 +132,7 @@ RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::stri
 }
 
 void RangeBar::render(
-                        glm::vec2 videoScale, //Resolution of the monitor
+                        //Resolution of the monitor
                         //Mouse class to access mouse events
                         Timer &timer, //Timer that handles the animations
                         TextRenderer &textRenderer, //TextRenderer that handles text rendering
@@ -142,24 +142,24 @@ void RangeBar::render(
 
     // pos value % of the video scale
     glm::vec3 resultPos = glm::vec3( 
-                          UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                          UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
                           ,pos.z); //Use the original depth value
 
 
     // scale value % of the video scale
-    glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
+    glm::vec2 resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
     glm::vec2 arrowBtnScale = glm::vec2(resultScale.y, resultScale.y);  
     resultScale.x /= 1.2f;
         
     // scale value % of the video scale
-    float resultRadius = UTIL::getPercent(videoScale.x,radius);
+    float resultRadius = UTIL::getPercent(Settings::videoScale()->x,radius);
 
     // Real value of the thickness
-    float resultOutlineThickness = videoScale.x/1920/2*outlineThickness;
+    float resultOutlineThickness = Settings::videoScale()->x/1920/2*outlineThickness;
 
     float normalizedVal = ((value+0.000001f) - minValue) / (maxValue-minValue);//0-1
     float resultVal = ((normalizedVal*2.f)-1.f)*50.f; //-50,50
-    float displayValue = UTIL::getPercent(resultScale.x,resultVal);
+    float displayValue = UTIL::getPercent(resultScale.x, resultVal);
 
         
     //Check if mouse on top of the slider
@@ -288,7 +288,7 @@ void RangeBar::render(
 
 
 
-    float resultScaleText = videoScale.x/1920/2*textScale;
+    float resultScaleText = Settings::videoScale()->x/1920/2*textScale;
 
     //Set color of the text
     ShaderSystem::buttonShader().setVec4("properties.color"  ,     textColor     );

@@ -330,7 +330,7 @@ public:
     /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @return 
     bool loadProject(std::string ligidFilePath,
-                    ColorPalette colorPalette, glm::vec2 videoScale,
+                    ColorPalette colorPalette, 
                     AppMaterialModifiers& appMaterialModifiers);
 
     /// @brief Used to save as
@@ -353,7 +353,7 @@ public:
     /// @param meshNodeScene 
     /// @param textureRes 
     /// @return True if success
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate, ColorPalette colorPalette, glm::vec2 videoScale);
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate, ColorPalette colorPalette);
     
     /// @brief Write ligid file to the project folder
     /// @param meshNodeScene 
@@ -460,14 +460,13 @@ public:
     
     /*! 
     * @brief Init the painter class. Create textures, buffer objects & get necessary member variables
-    * @param videoScale resolution value of the primary monitor
     * @param paintingShader the painting shader
     * @param buttonShader the button shader
     * @param tdModelShader the 3D model shader
     * @param depth3DShader depth shader
     * @param textureUpdatingShader texture updating shader
     */
-    void initPainter(glm::vec2 videoScale);
+    void initPainter();
     
     /*! 
     * @brief do painting (paint 2D). Called every frame if painting conditions are set. 
@@ -507,9 +506,6 @@ public:
 
 private:
     
-    /// @brief primary monitor resolution data
-    glm::vec2 videoScale;
-
     /// @brief renderbuffer object used to depth test (used to create the depth texture)
     unsigned int depthRBO; 
 

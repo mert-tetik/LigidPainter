@@ -215,7 +215,6 @@ void Renderer::render(){
     
     //Render the UI
     userInterface.render(   //Params
-                            *Settings::videoScale(),
                             timer,
                             textRenderer,
                             box,

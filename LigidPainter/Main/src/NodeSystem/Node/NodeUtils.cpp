@@ -26,26 +26,27 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ShaderSystem/Shader.hpp"
 #include "NodeSystem/Node/Node.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <iostream>
 #include <vector>
 
-void Node::drawLine(glm::vec2 src, glm::vec2 dest,glm::vec2 videoScale,Panel nodeEditorPanel, int direction){
+void Node::drawLine(glm::vec2 src, glm::vec2 dest,Panel nodeEditorPanel, int direction){
     glm::vec2 gap = src - dest;
     
     glm::vec2 pos = src - gap/2.f;
     glm::vec2 scale = glm::abs(gap/2.f);
     glm::vec3 resultPos = glm::vec3( 
-                                    UTIL::getPercent(videoScale,glm::vec2(pos.x,pos.y)) //Don't include the depth
+                                    UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
                                     ,0.9f); 
     // scale value % of the video scale
-    glm::vec2 resultScale = UTIL::getPercent(videoScale,scale);
+    glm::vec2 resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
     ShaderSystem::connectionCurve().use();
-    nodeEditorPanel.resultPos.x = videoScale.x/2.f;
-    nodeEditorPanel.resultPos.y = videoScale.y/2.f;
-    nodeEditorPanel.resultScale.x = videoScale.x/2.f;
-    nodeEditorPanel.resultScale.y = videoScale.y/2.f;
+    nodeEditorPanel.resultPos.x = Settings::videoScale()->x/2.f;
+    nodeEditorPanel.resultPos.y = Settings::videoScale()->y/2.f;
+    nodeEditorPanel.resultScale.x = Settings::videoScale()->x/2.f;
+    nodeEditorPanel.resultScale.y = Settings::videoScale()->y/2.f;
     
     ShaderSystem::connectionCurve().setVec3("pos",       nodeEditorPanel.resultPos);
     ShaderSystem::connectionCurve().setVec2("scale",     nodeEditorPanel.resultScale);
@@ -275,7 +276,7 @@ void Node::uploadNewIOs(ColorPalette colorPalette){
     std::vector <NodeIO> meshOutputNodeInputElements;
     for (size_t i = 0; i < getModel()->meshes.size(); i++)
     {
-        meshOutputNodeInputElements.push_back(NodeIO(getModel()->meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,getModel()->meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,videoScale,0));
+        meshOutputNodeInputElements.push_back(NodeIO(getModel()->meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,getModel()->meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,0));
     }
 
     //Clear the IOs vector

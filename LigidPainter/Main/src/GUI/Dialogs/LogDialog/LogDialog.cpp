@@ -100,7 +100,7 @@ namespace LGDLOG{
     std::string end = "$#";
 }
 
-LogDialog::LogDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
+LogDialog::LogDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
     this->panel = Panel(
         colorPalette,
         {
@@ -129,21 +129,21 @@ LogDialog::LogDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialM
         false
     );
 
-    this->logBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(3.f), colorPalette, "", Settings::appTextures().logButtonM, 0., false);
+    this->logBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), colorPalette, "", Settings::appTextures().logButtonM, 0., false);
     this->logBtn.color = glm::vec4(0);
     this->logBtn.color2 = glm::vec4(0);
     this->logBtn.outlineColor = glm::vec4(0);
     this->logBtn.outlineColor2 = glm::vec4(0);
     this->logBtn.pos.z = 0.9f;
     
-    this->logBtnL = Button(ELEMENT_STYLE_SOLID, glm::vec2(3.f), colorPalette, "", Settings::appTextures().logButtonL, 0., false);
+    this->logBtnL = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.8f), colorPalette, "", Settings::appTextures().logButtonL, 0., false);
     this->logBtnL.color = glm::vec4(0);
     this->logBtnL.color2 = glm::vec4(0);
     this->logBtnL.outlineColor = glm::vec4(0);
     this->logBtnL.outlineColor2 = glm::vec4(0);
     this->logBtnL.pos.z = 0.9f;
     
-    this->logBtnR = Button(ELEMENT_STYLE_SOLID, glm::vec2(3.f), colorPalette, "", Settings::appTextures().logButtonR, 0., false);
+    this->logBtnR = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.8f), colorPalette, "", Settings::appTextures().logButtonR, 0., false);
     this->logBtnR.color = glm::vec4(0);
     this->logBtnR.color2 = glm::vec4(0);
     this->logBtnR.outlineColor = glm::vec4(0);
@@ -153,25 +153,31 @@ LogDialog::LogDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialM
     this->panel.hasSlider = true;
 }
 
-void LogDialog::render(ColorPalette colorPalette,Timer timer, TextRenderer &textRenderer, glm::vec2 videoScale){
+void LogDialog::render(ColorPalette colorPalette,Timer timer, TextRenderer &textRenderer){
     
-    if(this->logBtn.clicked)
+    if(this->logBtnL.clicked)
+        messagesActive = !messagesActive;
+    if(this->logBtnR.clicked)
         actionHistoryActive = !actionHistoryActive;
+    if(this->logBtn.clicked){
+        messagesActive = false;
+        actionHistoryActive = false;
+    }
 
     if(this->logBtn.clickState1){ 
-        this->pos.x += Mouse::mouseOffset()->x / videoScale.x * 100.f;
-        this->pos.y += Mouse::mouseOffset()->y / videoScale.y * 100.f;
+        this->pos.x += Mouse::mouseOffset()->x / Settings::videoScale()->x * 100.f;
+        this->pos.y += Mouse::mouseOffset()->y / Settings::videoScale()->y * 100.f;
     }
 
     this->logBtn.pos.x = this->pos.x;
     this->logBtn.pos.y = this->pos.y;
     
-    this->logBtnL.pos.x = this->pos.x;
+    this->logBtnL.pos.x = this->pos.x - this->logBtn.scale.x;
     if(this->messagesActive)
         this->logBtnL.pos.x -= this->panel.scale.x * 2.f;
     this->logBtnL.pos.y = this->pos.y;
 
-    this->logBtnR.pos.x = this->pos.x;
+    this->logBtnR.pos.x = this->pos.x + this->logBtn.scale.x;
     if(this->actionHistoryActive)
         this->logBtnR.pos.x += this->panel.scale.x * 2.f;
     this->logBtnR.pos.y = this->pos.y;
@@ -224,9 +230,9 @@ void LogDialog::render(ColorPalette colorPalette,Timer timer, TextRenderer &text
             }
             
             this->panel.sections = logSections;
+                
         }
-        
-        if(actionHistoryActive){
+        else if(actionHistoryActive){
             std::vector<Section> logSections;
             logSections.push_back(Section(
                                             Element(),
@@ -254,64 +260,68 @@ void LogDialog::render(ColorPalette colorPalette,Timer timer, TextRenderer &text
             
             this->panel.sections = logSections;
         }
+        else if(this->panelYAxisMixVal < 0.2)
+            this->panel.sections.clear();
 
-        this->panel.render(videoScale, timer, textRenderer, true);
+        this->panel.render(timer, textRenderer, true);
 
-        if(this->panel.sections[0].elements[this->panel.sections[0].elements.size() - 1].button.clicked){
-            if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION || __actions[__actions.size()-1].ID == TEXTURE_DELETION_ACTION){
-                for (const auto& entry : std::filesystem::directory_iterator("./tmp")) {
-                    if (entry.is_regular_file()) {
-                        std::string fileName = entry.path().filename().string();
+        if(actionHistoryActive && this->panel.sections.size()){
+            if(this->panel.sections[0].elements[this->panel.sections[0].elements.size() - 1].button.clicked){
+                if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION || __actions[__actions.size()-1].ID == TEXTURE_DELETION_ACTION){
+                    for (const auto& entry : std::filesystem::directory_iterator("./tmp")) {
+                        if (entry.is_regular_file()) {
+                            std::string fileName = entry.path().filename().string();
 
-                        // Check if the file starts with "_history_"
-                        if (fileName.find("_history_") == 0) {
-                            // Use string stream to split the filename into parts
-                            std::istringstream iss(fileName);
-                            std::string part;
-                            std::getline(iss, part, '_'); // Skip the first part "_history_"
-                            std::getline(iss, part, '_'); // Read the first integer value
-                            std::getline(iss, part, '_'); // Read the first integer value
-                            int indexVal = std::stoi(part);
+                            // Check if the file starts with "_history_"
+                            if (fileName.find("_history_") == 0) {
+                                // Use string stream to split the filename into parts
+                                std::istringstream iss(fileName);
+                                std::string part;
+                                std::getline(iss, part, '_'); // Skip the first part "_history_"
+                                std::getline(iss, part, '_'); // Read the first integer value
+                                std::getline(iss, part, '_'); // Read the first integer value
+                                int indexVal = std::stoi(part);
 
-                            std::getline(iss, part, '_'); // Read the second integer value
-                            int IDVal = std::stoi(part);
-                            
-                            if(indexVal == __actions.size() - 1){
-                                if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION){
-                                    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-                                    {   
-                                        if(Library::getTexture(i)->uniqueId == IDVal){
-                                            Library::getTexture(i)->readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
+                                std::getline(iss, part, '_'); // Read the second integer value
+                                int IDVal = std::stoi(part);
+                                
+                                if(indexVal == __actions.size() - 1){
+                                    if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION){
+                                        for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+                                        {   
+                                            if(Library::getTexture(i)->uniqueId == IDVal){
+                                                Library::getTexture(i)->readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
+                                            }
                                         }
                                     }
-                                }
-                                else if(__actions[__actions.size()-1].ID == TEXTURE_DELETION_ACTION){
-                                    Texture regeneratedTxtr = Texture(nullptr, 1, 1); 
-                                    regeneratedTxtr.readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
-                                    regeneratedTxtr.title = __actions[__actions.size()-1].texture.title;
-                                    Library::getTextureVectorPointer()->insert(Library::getTextureVectorPointer()->begin() + __actions[__actions.size()-1].textureIndex, regeneratedTxtr);
-                                    Library::setChanged(true);
+                                    else if(__actions[__actions.size()-1].ID == TEXTURE_DELETION_ACTION){
+                                        Texture regeneratedTxtr = Texture(nullptr, 1, 1); 
+                                        regeneratedTxtr.readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
+                                        regeneratedTxtr.title = __actions[__actions.size()-1].texture.title;
+                                        Library::getTextureVectorPointer()->insert(Library::getTextureVectorPointer()->begin() + __actions[__actions.size()-1].textureIndex, regeneratedTxtr);
+                                        Library::setChanged(true);
+                                    }
                                 }
                             }
                         }
                     }
                 }
+                else if(__actions[__actions.size()-1].ID == TEXTURE_ADDITION_ACTION){
+                    Library::getTextureVectorPointer()->erase(Library::getTextureVectorPointer()->begin() + __actions[__actions.size()-1].textureIndex);
+                    Library::setChanged(true);
+                }
+                else if(__actions[__actions.size()-1].ID == NODE_ACTION){
+                    *NodeScene::getNodeArrayPointer() = __actions[__actions.size()-1].nodeScene;
+                    //NodeScene::updateNodeResults();
+                }
+                
+                __actions.pop_back();
             }
-            else if(__actions[__actions.size()-1].ID == TEXTURE_ADDITION_ACTION){
-                Library::getTextureVectorPointer()->erase(Library::getTextureVectorPointer()->begin() + __actions[__actions.size()-1].textureIndex);
-                Library::setChanged(true);
-            }
-            else if(__actions[__actions.size()-1].ID == NODE_ACTION){
-                *NodeScene::getNodeArrayPointer() = __actions[__actions.size()-1].nodeScene;
-                //NodeScene::updateNodeResults();
-            }
-            
-            __actions.pop_back();
         }
     }
 
     
-    this->logBtn.render(videoScale, timer, textRenderer, true);
-    this->logBtnL.render(videoScale, timer, textRenderer, true);
-    this->logBtnR.render(videoScale, timer, textRenderer, true);
+    this->logBtn.render(timer, textRenderer, true);
+    this->logBtnL.render(timer, textRenderer, true);
+    this->logBtnR.render(timer, textRenderer, true);
 }

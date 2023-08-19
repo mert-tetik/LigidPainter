@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <map>
 
 void Node::render(  
-                    glm::vec2 videoScale,
+                    
                     Timer &timer,
                     TextRenderer &textRenderer,
                     Panel nodeEditorPanel,
@@ -51,7 +51,7 @@ void Node::render(
     this->nodePanel.additionalPos.y = nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2;
 
     //Render the node panel which contains the input buttons and stuff
-    nodePanel.render(videoScale,timer,textRenderer, this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
+    nodePanel.render(timer,textRenderer, this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
 
     if(nodePanel.sections[0].elements[0].button.clicked){        
         if(this->nodeIndex == MATERIAL_ID_NODE){
@@ -60,15 +60,15 @@ void Node::render(
             std::vector<glm::vec3> palette;
             palette = nodePanel.sections[0].elements[0].button.texture.getMaterialIDPalette();
 
-            inputs.push_back(NodeIO("Texture", nodePanel.sections[0].elements[0].button, colorPalette.mainColor,colorPalette,videoScale,1));
+            inputs.push_back(NodeIO("Texture", nodePanel.sections[0].elements[0].button, colorPalette.mainColor,colorPalette,1));
 
             for (size_t i = 0; i < palette.size(); i++)
             {
-                inputs.push_back(NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, "Input1", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,videoScale,0));
+                inputs.push_back(NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, "Input1", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,0));
                 inputs[inputs.size() - 1].element.button.color = glm::vec4(palette[i], 1.f);
             }
 
-            outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, "Output", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,videoScale,2));
+            outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, "Output", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,2));
 
             this->uploadNewIOs(inputs, outputs);
         }
@@ -150,8 +150,8 @@ void Node::render(
                 //Draw a line from the circle to the cursor
                 drawLine(
                             glm::vec2(IOs[i].IOCircle.pos.x,IOs[i].IOCircle.pos.y), //Circle pos
-                            *Mouse::cursorPos()/videoScale * 100.f, //Cursor pos in the range of 0 - 100
-                            videoScale,
+                            *Mouse::cursorPos() / *Settings::videoScale() * 100.f, //Cursor pos in the range of 0 - 100
+                            
                             nodeEditorPanel,
                             IOs[i].state == 2   
                         );
@@ -218,7 +218,7 @@ void Node::render(
                     drawLine(
                                 glm::vec2(IOs[i].IOCircle.pos.x,IOs[i].IOCircle.pos.y), //Circle pos
                                 glm::vec2(connectedIO.IOCircle.pos.x,connectedIO.IOCircle.pos.y), //Connected Circle pos
-                                videoScale,
+                                
                                 nodeEditorPanel,
                                 1
                             );
@@ -229,7 +229,7 @@ void Node::render(
 
 
             //Render the IO circle
-            IOs[i].IOCircle.render(videoScale,timer,textRenderer,true);
+            IOs[i].IOCircle.render(timer,textRenderer,true);
         }
     }
 
@@ -244,7 +244,7 @@ void Node::render(
     barButton.pos.y = nodePanel.pos.y + nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2 - nodePanel.scale.y; 
     barButton.pos.z += 0.02f;
     //Render the bar button
-    barButton.render(videoScale,timer,textRenderer,!cursorOnBarriers);
+    barButton.render(timer,textRenderer,!cursorOnBarriers);
     
     //Move the node panel if bar button is pressed
     if(barButton.clickState1 && !nodePanel.topSide.pressed){ //Pressed
@@ -256,8 +256,8 @@ void Node::render(
                 NodeScene::getNode(i)->barButton.clickState1 = false;
         }
 
-        nodePanel.pos.x += Mouse::mouseOffset()->x/videoScale.x * 100.f;
-        nodePanel.pos.y += Mouse::mouseOffset()->y/videoScale.y * 100.f;
+        nodePanel.pos.x += Mouse::mouseOffset()->x/Settings::videoScale()->x * 100.f;
+        nodePanel.pos.y += Mouse::mouseOffset()->y/Settings::videoScale()->y * 100.f;
     }
     
     glClear(GL_DEPTH_BUFFER_BIT);

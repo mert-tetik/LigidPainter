@@ -35,7 +35,7 @@
 
 LoadProjectDialog::LoadProjectDialog(){}
 
-LoadProjectDialog::LoadProjectDialog(glm::vec2 videoScale,ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
+LoadProjectDialog::LoadProjectDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
     
     //Take the parameters to the class member variables 
     
@@ -133,19 +133,19 @@ LoadProjectDialog::LoadProjectDialog(glm::vec2 videoScale,ColorPalette colorPale
 }
 
 void LoadProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
-                                glm::vec2 videoScale,Project &project,bool &greetingDialogActive,bool &startScreen){
+                                Project &project,bool &greetingDialogActive,bool &startScreen){
     
     dialogControl.updateStart();
 
     //Render panels
-    bgPanel.render(videoScale,timer,textRenderer,dialogControl.isComplete());
-    loadButton.render(videoScale,timer,textRenderer,dialogControl.isComplete());
+    bgPanel.render(timer,textRenderer,dialogControl.isComplete());
+    loadButton.render(timer,textRenderer,dialogControl.isComplete());
     
     //Render texts
-    textBtn1.render(videoScale,timer,textRenderer,false);
-    textBtn2.render(videoScale,timer,textRenderer,false);
-    textBtn3.render(videoScale,timer,textRenderer,false);
-    textBtn4.render(videoScale,timer,textRenderer,false);
+    textBtn1.render(timer,textRenderer,false);
+    textBtn2.render(timer,textRenderer,false);
+    textBtn3.render(timer,textRenderer,false);
+    textBtn4.render(timer,textRenderer,false);
     
 
     if(loadButton.hover && *Mouse::LClick()){
@@ -156,7 +156,7 @@ void LoadProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRendere
         if(test.size()){
             
             //Load the project
-            if(project.loadProject(test, colorPalette, videoScale, appMaterialModifiers)){
+            if(project.loadProject(test, colorPalette, appMaterialModifiers)){
                 
                 startScreen = false;
                 
@@ -210,7 +210,7 @@ void LoadProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRendere
     projectsPanel.sections.push_back(projectSection);
     
     //After refreshing the elements render the projects panel
-    projectsPanel.render(videoScale,timer,textRenderer,dialogControl.isComplete());
+    projectsPanel.render(timer,textRenderer,dialogControl.isComplete());
     
     //Check all the projects element if one them is pressed
     for (size_t i = 0; i < projectsPanel.sections[0].elements.size(); i++)
@@ -222,7 +222,7 @@ void LoadProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRendere
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath, colorPalette, videoScale, appMaterialModifiers)){
+            if(project.loadProject(ligidFilePath, colorPalette, appMaterialModifiers)){
                 
                 startScreen = false;
                 
