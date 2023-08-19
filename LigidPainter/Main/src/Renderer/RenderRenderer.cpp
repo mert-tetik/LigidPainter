@@ -105,67 +105,67 @@ void Renderer::render(){
     glActiveTexture(GL_TEXTURE9);
     glBindTexture(GL_TEXTURE_2D,painter.depthTexture);
 
-    //Get the nodes connected to the mesh node (output node)
-    
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_0) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_0)){
-        getScene()->camera.originLocked = true;
-        
-        getScene()->camera.XPLocked = false;
-        getScene()->camera.XNLocked = false;
-        getScene()->camera.YPLocked = false;
-        getScene()->camera.YNLocked = false;
-        getScene()->camera.ZPLocked = false;
-        getScene()->camera.ZNLocked = false;
-    }
+    if(!userInterface.anyContextMenuActive && !userInterface.anyDialogActive){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_0) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_0)){
+            getScene()->camera.originLocked = true;
+            
+            getScene()->camera.XPLocked = false;
+            getScene()->camera.XNLocked = false;
+            getScene()->camera.YPLocked = false;
+            getScene()->camera.YNLocked = false;
+            getScene()->camera.ZPLocked = false;
+            getScene()->camera.ZNLocked = false;
+        }
 
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_1) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_1)){
-        getScene()->camera.XPLocked = true;
-        getScene()->camera.XNLocked = false;
-        getScene()->camera.YPLocked = false;
-        getScene()->camera.YNLocked = false;
-        getScene()->camera.ZPLocked = false;
-        getScene()->camera.ZNLocked = false;
-    }
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_2) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_2)){
-        getScene()->camera.XNLocked = true;
-        getScene()->camera.XPLocked = false;
-        getScene()->camera.YPLocked = false;
-        getScene()->camera.YNLocked = false;
-        getScene()->camera.ZPLocked = false;
-        getScene()->camera.ZNLocked = false;
-        
-    }
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_3) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_3)){
-        getScene()->camera.YPLocked = true;
-        getScene()->camera.XNLocked = false;
-        getScene()->camera.XPLocked = false;
-        getScene()->camera.YNLocked = false;
-        getScene()->camera.ZPLocked = false;
-        getScene()->camera.ZNLocked = false;
-    }
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_4) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_4)){
-        getScene()->camera.YNLocked = true;
-        getScene()->camera.XNLocked = false;
-        getScene()->camera.YPLocked = false;
-        getScene()->camera.XPLocked = false;
-        getScene()->camera.ZPLocked = false;
-        getScene()->camera.ZNLocked = false;
-    }
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_5) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_5)){
-        getScene()->camera.ZPLocked = true;
-        getScene()->camera.XNLocked = false;
-        getScene()->camera.YPLocked = false;
-        getScene()->camera.YNLocked = false;
-        getScene()->camera.XPLocked = false;
-        getScene()->camera.ZNLocked = false;
-    }
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_6) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_6)){
-        getScene()->camera.ZNLocked = true;
-        getScene()->camera.XNLocked = false;
-        getScene()->camera.YPLocked = false;
-        getScene()->camera.YNLocked = false;
-        getScene()->camera.ZPLocked = false;
-        getScene()->camera.XPLocked = false;
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_1) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_1)){
+            getScene()->camera.XPLocked = true;
+            getScene()->camera.XNLocked = false;
+            getScene()->camera.YPLocked = false;
+            getScene()->camera.YNLocked = false;
+            getScene()->camera.ZPLocked = false;
+            getScene()->camera.ZNLocked = false;
+        }
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_2) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_2)){
+            getScene()->camera.XNLocked = true;
+            getScene()->camera.XPLocked = false;
+            getScene()->camera.YPLocked = false;
+            getScene()->camera.YNLocked = false;
+            getScene()->camera.ZPLocked = false;
+            getScene()->camera.ZNLocked = false;
+            
+        }
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_3) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_3)){
+            getScene()->camera.YPLocked = true;
+            getScene()->camera.XNLocked = false;
+            getScene()->camera.XPLocked = false;
+            getScene()->camera.YNLocked = false;
+            getScene()->camera.ZPLocked = false;
+            getScene()->camera.ZNLocked = false;
+        }
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_4) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_4)){
+            getScene()->camera.YNLocked = true;
+            getScene()->camera.XNLocked = false;
+            getScene()->camera.YPLocked = false;
+            getScene()->camera.XPLocked = false;
+            getScene()->camera.ZPLocked = false;
+            getScene()->camera.ZNLocked = false;
+        }
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_5) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_5)){
+            getScene()->camera.ZPLocked = true;
+            getScene()->camera.XNLocked = false;
+            getScene()->camera.YPLocked = false;
+            getScene()->camera.YNLocked = false;
+            getScene()->camera.XPLocked = false;
+            getScene()->camera.ZNLocked = false;
+        }
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_6) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_6)){
+            getScene()->camera.ZNLocked = true;
+            getScene()->camera.XNLocked = false;
+            getScene()->camera.YPLocked = false;
+            getScene()->camera.YNLocked = false;
+            getScene()->camera.ZPLocked = false;
+            getScene()->camera.XPLocked = false;
+        }
     }
     
 
