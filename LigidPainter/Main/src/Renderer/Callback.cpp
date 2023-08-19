@@ -114,6 +114,8 @@ void Renderer::scrollCallback(
                                 double yoffset
                             )
 {
+    if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
+        getScene()->camera.originLocked = false;
     getScene()->camera.XPLocked = false;
     getScene()->camera.XNLocked = false;
     getScene()->camera.YPLocked = false;
@@ -179,6 +181,8 @@ void Renderer::cursorPositionCallback(
             !this->userInterface.anyPanelHover        //Don't move the camera if cursor hover a panel
         ) 
     { 
+        if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
+            getScene()->camera.originLocked = false;
         getScene()->camera.XPLocked = false;
         getScene()->camera.XNLocked = false;
         getScene()->camera.YPLocked = false;
@@ -236,6 +240,8 @@ void Renderer::cursorPositionCallback(
                 !this->userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel
             ) 
     {   
+        if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
+            getScene()->camera.originLocked = false;
         getScene()->camera.XPLocked = false;
         getScene()->camera.XNLocked = false;
         getScene()->camera.YPLocked = false;

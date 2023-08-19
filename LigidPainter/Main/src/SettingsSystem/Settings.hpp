@@ -50,6 +50,16 @@ struct Camera{
     
         this->setCameraPosition(camPos);
     }
+    
+    void transition(glm::vec3 direction, glm::vec3 originPos){
+        glm::vec3 camPos;
+        camPos = this->cameraPos;
+        
+        this->originPos += (originPos - this->originPos) / 20.f; 
+        
+        camPos += (direction - this->cameraPos) / 20.f;
+        this->setCameraPosition(camPos);
+    }
 
     bool XPLocked = false;
     bool XNLocked = false;
@@ -57,6 +67,7 @@ struct Camera{
     bool YNLocked = false;
     bool ZPLocked = false;
     bool ZNLocked = false;
+    bool originLocked = false;
 };
 
 struct Scene{

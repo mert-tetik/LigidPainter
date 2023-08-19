@@ -107,6 +107,17 @@ void Renderer::render(){
 
     //Get the nodes connected to the mesh node (output node)
     
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_0)){
+        getScene()->camera.originLocked = true;
+        
+        getScene()->camera.XPLocked = false;
+        getScene()->camera.XNLocked = false;
+        getScene()->camera.YPLocked = false;
+        getScene()->camera.YNLocked = false;
+        getScene()->camera.ZPLocked = false;
+        getScene()->camera.ZNLocked = false;
+    }
+
     if(getContext()->window.isKeyPressed(LIGIDGL_KEY_1)){
         getScene()->camera.XPLocked = true;
         getScene()->camera.XNLocked = false;
@@ -157,28 +168,33 @@ void Renderer::render(){
         getScene()->camera.XPLocked = false;
     }
     
+
+    if(getScene()->camera.originLocked){        
+        getScene()->camera.transition(glm::vec3(10.f, 0.f, 0.f), glm::vec3(0.f));
+        this->updateViewMatrix();
+    }
     if(getScene()->camera.XPLocked){        
-        getScene()->camera.transition(glm::vec3(10.f, 0.f, 0.f));
+        getScene()->camera.transition(glm::vec3(10.f, 0.f, 0.f) + getScene()->camera.originPos);
         this->updateViewMatrix();
     }
     if(getScene()->camera.XNLocked){        
-        getScene()->camera.transition(glm::vec3(-10.f, 0.f, 0.f));
+        getScene()->camera.transition(glm::vec3(-10.f, 0.f, 0.f) + getScene()->camera.originPos);
         this->updateViewMatrix();
     }
     if(getScene()->camera.YPLocked){        
-        getScene()->camera.transition(glm::vec3(0.f, 10.f, 0.f));
+        getScene()->camera.transition(glm::vec3(0.f, 10.f, 0.f) + getScene()->camera.originPos);
         this->updateViewMatrix();
     }
     if(getScene()->camera.YNLocked){        
-        getScene()->camera.transition(glm::vec3(0.f, -10.f, 0.f));
+        getScene()->camera.transition(glm::vec3(0.f, -10.f, 0.f) + getScene()->camera.originPos);
         this->updateViewMatrix();
     }
     if(getScene()->camera.ZPLocked){        
-        getScene()->camera.transition(glm::vec3(0.f, 0.f, 10.f));
+        getScene()->camera.transition(glm::vec3(0.f, 0.f, 10.f) + getScene()->camera.originPos);
         this->updateViewMatrix();
     }
     if(getScene()->camera.ZNLocked){        
-        getScene()->camera.transition(glm::vec3(0.f, 0.f, -10.f));
+        getScene()->camera.transition(glm::vec3(0.f, 0.f, -10.f) + getScene()->camera.originPos);
         this->updateViewMatrix();
     }
 
