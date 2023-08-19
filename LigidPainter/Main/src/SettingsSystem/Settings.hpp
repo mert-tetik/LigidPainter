@@ -18,6 +18,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
+struct Context{
+    LigidWindow window;
+    glm::ivec2 windowScale;
+};
+
+Context* getContext();
+
 struct Camera{
     float yaw = -90.f;
     float pitch = 0.f;
@@ -74,19 +81,40 @@ struct Scene{
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;
 
-    const float fov = 45.f;
-    const float aNear = 0.1f;
-    const float aFar = 1000.0f;
+    float fov = 45.f;
+    float aNear = 0.1f;
+    float aFar = 1000.0f;
+
+    void updateProjectionMatrix(){
+        if(getContext()->windowScale.x){
+            this->projectionMatrix = glm::perspective(glm::radians(this->fov), 
+                                                (float)getContext()->windowScale.x / (float)getContext()->windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
+                                                this->aNear, 
+                                                this->aFar);
+        }
+    }
+
+    
+    void updateViewMatrix(){
+        if(this->camera.isCamInverted()){
+            this->viewMatrix = glm::lookAt( 
+                                            this->camera.cameraPos, 
+                                            this->camera.originPos, 
+                                            glm::vec3(0.0, -1.0, 0.0)
+                                        );
+        }
+        else{
+            this->viewMatrix = glm::lookAt( 
+                                            this->camera.cameraPos, 
+                                            this->camera.originPos, 
+                                            glm::vec3(0.0, 1.0, 0.0)
+                                        );
+        }
+    }
 
     Camera camera;
 };
 
-struct Context{
-    LigidWindow window;
-    glm::ivec2 windowScale;
-};
-
-Context* getContext();
 Scene* getScene();
 Model* getModel();
 Model* getSphereModel();

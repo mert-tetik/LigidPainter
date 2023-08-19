@@ -111,9 +111,9 @@ Renderer::Renderer(){//Settings::Videoscale() is the resolution value that will 
     initGlad();
 
     //Update necessary data before callbacks
-    updateViewport();
-    updateViewMatrix();
-    updateProjectionMatrix();
+    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);    
+    getScene()->updateViewMatrix();
+    getScene()->updateProjectionMatrix();
     
     //--Load the app textures
     Settings::loadAppTextures();

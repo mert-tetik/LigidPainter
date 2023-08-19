@@ -102,10 +102,10 @@ void Renderer::framebufferSizeCallback(
     getContext()->windowScale.y = height;
 
     //Update the perspective projection matrix to keep the ratio of the 3D model
-    this->updateProjectionMatrix(); 
+    getScene()->updateProjectionMatrix(); 
 
     //And ofc update the OpenGL viewport
-    this->updateViewport(); 
+    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
 }
 
 void Renderer::scrollCallback(
@@ -145,7 +145,7 @@ void Renderer::scrollCallback(
         getScene()->camera.cameraPos.z = sin(glm::radians(getScene()->camera.yaw)) * cos(glm::radians(getScene()->camera.pitch)) * getScene()->camera.radius + getScene()->camera.originPos.z;
 
         //Update the view matrix after the camera position is changed
-        this->updateViewMatrix();
+        getScene()->updateViewMatrix();
 
         //Since the 3D model's position in the screen is changed update the painter's depth texture
         this->painter.updateTheDepthTexture = true;
@@ -267,7 +267,7 @@ void Renderer::cursorPositionCallback(
 
 
     //Update the view matrix after the camera position is changed
-    this->updateViewMatrix();
+    getScene()->updateViewMatrix();
     
     //This will be used as "last frame's cursor pos" for the cursor offset
     this->lastMousePos.x = Mouse::cursorPos()->x;

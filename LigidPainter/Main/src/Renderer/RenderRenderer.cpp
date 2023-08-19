@@ -49,8 +49,7 @@ void Renderer::render(){
         getContext()->window.setWindowSize(Settings::videoScale()->x, Settings::videoScale()->y);
 
     //Update OpenGL viewport every frame
-    updateViewport();
-
+    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
     //VSync
     if(Settings::properties()->VSync)
         LigidGL::setSwapInterval(1); //Enable VSync
@@ -171,31 +170,31 @@ void Renderer::render(){
 
     if(getScene()->camera.originLocked){        
         getScene()->camera.transition(glm::vec3(10.f, 0.f, 0.f), glm::vec3(0.f));
-        this->updateViewMatrix();
+        getScene()->updateViewMatrix();
     }
     if(getScene()->camera.XPLocked){        
         getScene()->camera.transition(glm::vec3(10.f, 0.f, 0.f) + getScene()->camera.originPos);
-        this->updateViewMatrix();
+        getScene()->updateViewMatrix();
     }
     if(getScene()->camera.XNLocked){        
         getScene()->camera.transition(glm::vec3(-10.f, 0.f, 0.f) + getScene()->camera.originPos);
-        this->updateViewMatrix();
+        getScene()->updateViewMatrix();
     }
     if(getScene()->camera.YPLocked){        
         getScene()->camera.transition(glm::vec3(0.f, 10.f, 0.f) + getScene()->camera.originPos);
-        this->updateViewMatrix();
+        getScene()->updateViewMatrix();
     }
     if(getScene()->camera.YNLocked){        
         getScene()->camera.transition(glm::vec3(0.f, -10.f, 0.f) + getScene()->camera.originPos);
-        this->updateViewMatrix();
+        getScene()->updateViewMatrix();
     }
     if(getScene()->camera.ZPLocked){        
         getScene()->camera.transition(glm::vec3(0.f, 0.f, 10.f) + getScene()->camera.originPos);
-        this->updateViewMatrix();
+        getScene()->updateViewMatrix();
     }
     if(getScene()->camera.ZNLocked){        
         getScene()->camera.transition(glm::vec3(0.f, 0.f, -10.f) + getScene()->camera.originPos);
-        this->updateViewMatrix();
+        getScene()->updateViewMatrix();
     }
 
     //Render each mesh
@@ -385,42 +384,6 @@ void Renderer::render(){
     getContext()->window.swapBuffers();
 
     _ligid_renderer_render_first_frame = false;
-}
-
-
-
-
-void Renderer::updateViewMatrix(){
-    if(getScene()->camera.isCamInverted()){
-        getScene()->viewMatrix = glm::lookAt( 
-                                        getScene()->camera.cameraPos, 
-                                        getScene()->camera.originPos, 
-                                        glm::vec3(0.0, -1.0, 0.0)
-                                    );
-    }
-    else{
-        getScene()->viewMatrix = glm::lookAt( 
-                                        getScene()->camera.cameraPos, 
-                                        getScene()->camera.originPos, 
-                                        glm::vec3(0.0, 1.0, 0.0)
-                                    );
-    }
-}
-
-void Renderer::updateProjectionMatrix(){
-    if(getContext()->windowScale.x){
-        getScene()->projectionMatrix = glm::perspective(glm::radians(getScene()->fov), 
-                                            (float)getContext()->windowScale.x / (float)getContext()->windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
-                                            getScene()->aNear, 
-                                            getScene()->aFar);
-    }
-}
-
-void Renderer::updateViewport(){
-    glViewport(0, 
-                0, 
-                getContext()->windowScale.x, 
-                getContext()->windowScale.y);
 }
 
 void Renderer::set3DUniforms(){

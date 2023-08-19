@@ -80,10 +80,6 @@ private:
     void loadAppTextures();
     void createContextMenus();
 
-    void updateViewMatrix();
-    void updateProjectionMatrix();
-    void updateViewport();
-
     void renderSkyBox();
     void set3DUniforms();
 

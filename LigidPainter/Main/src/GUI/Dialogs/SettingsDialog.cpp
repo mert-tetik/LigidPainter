@@ -34,31 +34,77 @@ SettingsDialog::SettingsDialog(){}
 
 SettingsDialog::SettingsDialog(ColorPalette colorPalette){
     
-    
     //Create the panel
     this->panel = Panel(colorPalette,{
         {
             Section(
                 Element(Button()),
                 {
-                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Settings",Texture(),0.f,false)), 
+                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette, "Settings",Texture(),0.f,false)), 
+                }
+            ),
+            Section(
+                Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"System",Texture(),4.f,true)),
+                {
 
-                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
+                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette,
                     {
                         "256",
                         "512",
                         "1024",
                         "2048",
                         "4096"
-                    },"Texture Resolution",4.f)),
+                    }, "Texture Resolution", 2.f)),
                     
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "VSync"  , 2.f)),
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "VSync"  , 2.f)),
                     
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Backface Culling"  , 2.f)),
+                    Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.f), colorPalette,
+                    {
+                        "1024x768",
+                        "1152x864",
+                        "1280x720",
+                        "1280x768",
+                        "1280x800",
+                        "1280x960",
+                        "1280x1024",
+                        "1360x768",
+                        "1366x768",
+                        "1400x1050",
+                        "1440x900",
+                        "1600x900",
+                        "1680x1050",
+                        "1920x1080",
+                        "2560×1,440",
+                        "3840×2,160",
+                        "7680×4,320"
+
+                    }, "Framebuffer Resolution",2.f)),
+                }
+            ),
+            Section(
+                Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Model Rendering",Texture(), 4.f,true)),
+                {
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "X : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Y : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Z : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                    
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "X : Transform",Texture(),2.f, 0.f, 360.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Y : Transform",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Z : Transform",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Fov", Texture(),2.f, 1.f, 180.f, 40.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Near", Texture(),0.f, 0.f, 1.f, 0.1f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Far", Texture(),0.f, 0.f, 1000.f, 1000.f)), 
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Orthographic projection"  , 2.f)),
+
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Backface Culling"  , 2.f)),
+                    
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Apply Height Map"  , 2.f)),
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Height Map Strength", Texture(),0.f, 0.f, 1000.f, 1000.f)), 
                 }
             )
         }
-    },glm::vec2(15.f),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
+    },glm::vec2(25.f, 40.f), glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
 void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer){
@@ -67,26 +113,33 @@ void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer
 
     //Set the combo box selected index as the textureRes
     int txtrRes = 256;
-    for (size_t i = 0; i < panel.sections[0].elements[1].comboBox.texts.size(); i++)
+    for (size_t i = 0; i < panel.sections[1].elements[0].comboBox.texts.size(); i++)
     {
         if(Settings::properties()->textureRes == txtrRes)
-            panel.sections[0].elements[1].comboBox.selectedIndex = i;
+            panel.sections[1].elements[0].comboBox.selectedIndex = i;
         
         txtrRes*=2;
     }
 
-    //Set the vsync option as the vsync checkbox element
-    Settings::properties()->VSync = panel.sections[0].elements[2].checkBox.clickState1;
-    
-    //Set the backface culling option as the backface culling checkbox element
-    Settings::properties()->backfaceCulling = panel.sections[0].elements[3].checkBox.clickState1;
+    panel.sections[2].elements[6].rangeBar.value = getScene()->fov;
 
     //Render the panel    
     panel.render(timer,textRenderer,true);
 
-    //If pressed to any of the combo box element change the texture res
-    Settings::properties()->textureRes = stoi(panel.sections[0].elements[1].comboBox.texts[panel.sections[0].elements[1].comboBox.selectedIndex]);
+    getScene()->fov = panel.sections[2].elements[6].rangeBar.value;
     
+    //Set the vsync option as the vsync checkbox element
+    Settings::properties()->VSync = panel.sections[1].elements[1].checkBox.clickState1;
+    
+    //Set the backface culling option as the backface culling checkbox element
+    Settings::properties()->backfaceCulling = panel.sections[2].elements[12].checkBox.clickState1;
+    
+    //If pressed to any of the combo box element change the texture res
+    Settings::properties()->textureRes = stoi(panel.sections[1].elements[0].comboBox.texts[panel.sections[1].elements[0].comboBox.selectedIndex]);
+    
+    getScene()->updateProjectionMatrix();
+    getScene()->updateViewMatrix();
+
     //End the dialog
     if  (
             getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Escape key pressed 
