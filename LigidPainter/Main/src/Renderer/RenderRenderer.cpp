@@ -171,30 +171,44 @@ void Renderer::render(){
     if(getScene()->camera.originLocked){        
         getScene()->camera.transition(glm::vec3(10.f, 0.f, 0.f), glm::vec3(0.f));
         getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
     }
     if(getScene()->camera.XPLocked){        
         getScene()->camera.transition(glm::vec3(10.f, 0.f, 0.f) + getScene()->camera.originPos);
         getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
     }
     if(getScene()->camera.XNLocked){        
         getScene()->camera.transition(glm::vec3(-10.f, 0.f, 0.f) + getScene()->camera.originPos);
         getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
     }
     if(getScene()->camera.YPLocked){        
         getScene()->camera.transition(glm::vec3(0.f, 10.f, 0.f) + getScene()->camera.originPos);
         getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
     }
     if(getScene()->camera.YNLocked){        
         getScene()->camera.transition(glm::vec3(0.f, -10.f, 0.f) + getScene()->camera.originPos);
         getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
     }
     if(getScene()->camera.ZPLocked){        
         getScene()->camera.transition(glm::vec3(0.f, 0.f, 10.f) + getScene()->camera.originPos);
         getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
     }
     if(getScene()->camera.ZNLocked){        
         getScene()->camera.transition(glm::vec3(0.f, 0.f, -10.f) + getScene()->camera.originPos);
         getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
     }
 
     //Render each mesh
@@ -404,13 +418,13 @@ void Renderer::set3DUniforms(){
     ShaderSystem::tdModelShader().setVec3("viewPos", getScene()->camera.cameraPos);
     ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::tdModelShader().setMat4("projection", getScene()->projectionMatrix);
-    glm::mat4 modelMatrix = glm::mat4(1);
-    ShaderSystem::tdModelShader().setMat4("modelMatrix",modelMatrix);
+    ShaderSystem::tdModelShader().setMat4("modelMatrix", getScene()->transformMatrix);
 
     //Shader (used to render the model with depth)
     ShaderSystem::depth3D().use();
     ShaderSystem::depth3D().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::depth3D().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::depth3D().setMat4("modelMatrix",getScene()->transformMatrix);
 
     //Skybox ball shader 
     ShaderSystem::skyboxBall().use();

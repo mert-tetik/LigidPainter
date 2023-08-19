@@ -146,6 +146,9 @@ void Renderer::scrollCallback(
 
         //Update the view matrix after the camera position is changed
         getScene()->updateViewMatrix();
+        getScene()->updateTransformMatrix();
+        getScene()->updateProjectionMatrix();
+
 
         //Since the 3D model's position in the screen is changed update the painter's depth texture
         this->painter.updateTheDepthTexture = true;
@@ -268,6 +271,9 @@ void Renderer::cursorPositionCallback(
 
     //Update the view matrix after the camera position is changed
     getScene()->updateViewMatrix();
+    getScene()->updateTransformMatrix();
+    getScene()->updateProjectionMatrix();
+
     
     //This will be used as "last frame's cursor pos" for the cursor offset
     this->lastMousePos.x = Mouse::cursorPos()->x;

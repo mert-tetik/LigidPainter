@@ -58,11 +58,6 @@ void Painter::updateDepthTexture(){
     
     //Use the depth 3D shader
     ShaderSystem::depth3D().use();
-    //Since that shader is using the same vertex shader with 3d model shader
-
-    //Set the model matrix
-    glm::mat4 modelMatrix = glm::mat4(1);
-    ShaderSystem::depth3D().setMat4("modelMatrix",modelMatrix);
 
     //Draw the selected mesh in 3D
     if(selectedMeshIndex < getModel()->meshes.size())

@@ -80,17 +80,29 @@ struct Camera{
 struct Scene{
     glm::mat4 projectionMatrix;
     glm::mat4 viewMatrix;
+    glm::mat4 transformMatrix;
 
     float fov = 45.f;
     float aNear = 0.1f;
     float aFar = 1000.0f;
 
+    glm::vec3 transformLocation = glm::vec3(0);
+    glm::vec3 transformRotation = glm::vec3(0);
+
+    bool useOrtho = false;
+
     void updateProjectionMatrix(){
         if(getContext()->windowScale.x){
-            this->projectionMatrix = glm::perspective(glm::radians(this->fov), 
-                                                (float)getContext()->windowScale.x / (float)getContext()->windowScale.y, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
-                                                this->aNear, 
-                                                this->aFar);
+            float videoRatio = (float)getContext()->windowScale.x / (float)getContext()->windowScale.y;
+            if(!useOrtho){
+                this->projectionMatrix = glm::perspective(glm::radians(this->fov), 
+                                                    videoRatio, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
+                                                    this->aNear, 
+                                                    this->aFar);
+            }
+            else{
+                this->projectionMatrix = glm::ortho((-this->fov * videoRatio)/10.f * this->camera.radius, (this->fov * videoRatio)/10.f * this->camera.radius, (-this->fov)/10.f * this->camera.radius, (this->fov)/10.f * this->camera.radius, (this->aNear), (this->aFar));
+            }
         }
     }
 
@@ -110,6 +122,14 @@ struct Scene{
                                             glm::vec3(0.0, 1.0, 0.0)
                                         );
         }
+    }
+
+    void updateTransformMatrix(){
+        this->transformMatrix = glm::mat4(1.f);
+        this->transformMatrix = glm::translate(this->transformMatrix, transformLocation);
+        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.x), glm::vec3(1.f, 0.f, 0.f));
+        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.y), glm::vec3(0.f, 1.f, 0.f));
+        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.z), glm::vec3(0.f, 0.f, 1.f));
     }
 
     Camera camera;

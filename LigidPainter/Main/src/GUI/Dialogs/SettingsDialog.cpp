@@ -88,9 +88,9 @@ SettingsDialog::SettingsDialog(ColorPalette colorPalette){
                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Y : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Z : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
                     
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "X : Transform",Texture(),2.f, 0.f, 360.f, 0.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Y : Transform",Texture(),0.f, 0.f, 360.f, 0.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Z : Transform",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "X : Transform",Texture(),2.f, -50.f, 50.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Y : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Z : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
                 
                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Fov", Texture(),2.f, 1.f, 180.f, 40.f)), 
                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Near", Texture(),0.f, 0.f, 1.f, 0.1f)), 
@@ -121,12 +121,34 @@ void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer
         txtrRes*=2;
     }
 
+    panel.sections[2].elements[0].rangeBar.value = getScene()->transformRotation.x;
+    panel.sections[2].elements[1].rangeBar.value = getScene()->transformRotation.y;
+    panel.sections[2].elements[2].rangeBar.value = getScene()->transformRotation.z;
+    
+    panel.sections[2].elements[3].rangeBar.value = getScene()->transformLocation.x;
+    panel.sections[2].elements[4].rangeBar.value = getScene()->transformLocation.y;
+    panel.sections[2].elements[5].rangeBar.value = getScene()->transformLocation.z;
+    
     panel.sections[2].elements[6].rangeBar.value = getScene()->fov;
+    panel.sections[2].elements[7].rangeBar.value = getScene()->aNear;
+    panel.sections[2].elements[8].rangeBar.value = getScene()->aFar;
+    panel.sections[2].elements[9].checkBox.clickState1 = getScene()->useOrtho;
 
     //Render the panel    
     panel.render(timer,textRenderer,true);
 
+    getScene()->transformRotation.x = panel.sections[2].elements[0].rangeBar.value;
+    getScene()->transformRotation.y = panel.sections[2].elements[1].rangeBar.value;
+    getScene()->transformRotation.z = panel.sections[2].elements[2].rangeBar.value;
+    
+    getScene()->transformLocation.x = panel.sections[2].elements[3].rangeBar.value;
+    getScene()->transformLocation.y = panel.sections[2].elements[4].rangeBar.value;
+    getScene()->transformLocation.z = panel.sections[2].elements[5].rangeBar.value;
+
     getScene()->fov = panel.sections[2].elements[6].rangeBar.value;
+    getScene()->aNear = panel.sections[2].elements[7].rangeBar.value;
+    getScene()->aFar = panel.sections[2].elements[8].rangeBar.value;
+    getScene()->useOrtho = panel.sections[2].elements[9].checkBox.clickState1;
     
     //Set the vsync option as the vsync checkbox element
     Settings::properties()->VSync = panel.sections[1].elements[1].checkBox.clickState1;
@@ -139,6 +161,7 @@ void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer
     
     getScene()->updateProjectionMatrix();
     getScene()->updateViewMatrix();
+    getScene()->updateTransformMatrix();
 
     //End the dialog
     if  (
