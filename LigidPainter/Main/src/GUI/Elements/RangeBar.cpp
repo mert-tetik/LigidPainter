@@ -187,7 +187,7 @@ void RangeBar::render(
                 value--;
         }
         else
-            value += Mouse::mouseOffset()->x;
+            value += Mouse::mouseOffset()->x / Settings::videoScale()->x * (this->maxValue - this->minValue);
         
         if(value < minValue)
             value = minValue;
