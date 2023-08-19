@@ -164,6 +164,10 @@ void Renderer::cursorPositionCallback(
     Mouse::mouseOffset()->x = Mouse::cursorPos()->x - lastMousePos.x;
     Mouse::mouseOffset()->y = Mouse::cursorPos()->y - lastMousePos.y;
 
+    glm::vec2 mouseOffset = *Mouse::mouseOffset();
+    if(getScene()->camera.isCamInverted())
+        mouseOffset.x *= -1;
+
     const float sensitivity = 0.2f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
     
     Camera* cam = &getScene()->camera;
@@ -194,19 +198,19 @@ void Renderer::cursorPositionCallback(
         const float cos_pitch = cos(glm::radians(cam->pitch));
 
         // Calculate the x and z offsets based on yaw angle, mouse movement, sensitivity, and half sensitivity
-        float x_offset = sin_yaw * Mouse::mouseOffset()->x * sensitivity * half_sensitivity;
-        float z_offset = cos_yaw * Mouse::mouseOffset()->x * sensitivity * half_sensitivity;
+        float x_offset = sin_yaw * mouseOffset.x * sensitivity * half_sensitivity;
+        float z_offset = cos_yaw * mouseOffset.x * sensitivity * half_sensitivity;
 
         // Check if pitch is greater than 60 degrees or less than -60 degrees
         if (cam->pitch > 60.0f || cam->pitch < -60.0f) {
             
             // Add additional x and z offsets based on yaw, pitch, mouse movement, sensitivity, and half sensitivity
-            x_offset += cos_yaw * sin_pitch * Mouse::mouseOffset()->y * sensitivity * half_sensitivity;
-            z_offset -= sin_yaw * sin_pitch * Mouse::mouseOffset()->y * sensitivity * half_sensitivity;
+            x_offset += cos_yaw * sin_pitch * mouseOffset.y * sensitivity * half_sensitivity;
+            z_offset -= sin_yaw * sin_pitch * mouseOffset.y * sensitivity * half_sensitivity;
         }
 
         // Calculate the y offset based on pitch, mouse movement, sensitivity, and half sensitivity
-        const float y_offset = cos_pitch * Mouse::mouseOffset()->y * sensitivity * half_sensitivity;
+        const float y_offset = cos_pitch * mouseOffset.y * sensitivity * half_sensitivity;
 
         // Update camera's x position and origin position by subtracting x offset
         cam->cameraPos.x -= x_offset;
@@ -242,14 +246,8 @@ void Renderer::cursorPositionCallback(
         if(this->userInterface.materialEditorDialog.dialogControl.isActive())
             cam = &this->userInterface.materialEditorDialog.displayerCamera;
 
-        cam->yaw += Mouse::mouseOffset()->x * sensitivity;
-        cam->pitch -= Mouse::mouseOffset()->y * sensitivity;
-
-        //Disable 90+ degrees rotations in y axis
-        if (cam->pitch > 89.0f)
-            cam->pitch = 89.0f;
-        if (cam->pitch < -89.0f)
-            cam->pitch = -89.0f;
+        cam->yaw += mouseOffset.x * sensitivity;
+        cam->pitch -= mouseOffset.y * sensitivity;
 
         //Helical Movement
         //Rotates the Camera in 3 axis using yaw, pitch & radius values

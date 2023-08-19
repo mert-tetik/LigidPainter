@@ -375,11 +375,20 @@ void Renderer::render(){
 
 
 void Renderer::updateViewMatrix(){
-    getScene()->viewMatrix = glm::lookAt( 
-                                    getScene()->camera.cameraPos, 
-                                    getScene()->camera.originPos, 
-                                    glm::vec3(0.0, 1.0, 0.0)
-                                );
+    if(getScene()->camera.isCamInverted()){
+        getScene()->viewMatrix = glm::lookAt( 
+                                        getScene()->camera.cameraPos, 
+                                        getScene()->camera.originPos, 
+                                        glm::vec3(0.0, -1.0, 0.0)
+                                    );
+    }
+    else{
+        getScene()->viewMatrix = glm::lookAt( 
+                                        getScene()->camera.cameraPos, 
+                                        getScene()->camera.originPos, 
+                                        glm::vec3(0.0, 1.0, 0.0)
+                                    );
+    }
 }
 
 void Renderer::updateProjectionMatrix(){

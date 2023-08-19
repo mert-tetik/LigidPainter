@@ -25,6 +25,10 @@ struct Camera{
     glm::vec3 originPos = glm::vec3(0,0,0);
     float radius = 10.f; 
 
+    bool isCamInverted(){
+        return ((int)std::floor((std::abs(this->pitch) + 90.f) / 180.f) % 2 == 1);
+    }
+
     void setCameraPosition(glm::vec3 pos){
         
         this->cameraPos = pos;
