@@ -127,8 +127,8 @@ struct Scene{
     void updateTransformMatrix(){
         this->transformMatrix = glm::mat4(1.f);
         this->transformMatrix = glm::translate(this->transformMatrix, transformLocation);
-        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.x), glm::vec3(1.f, 0.f, 0.f));
-        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.y), glm::vec3(0.f, 1.f, 0.f));
+        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.x), glm::vec3(0.f, 1.f, 0.f));
+        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.y), glm::vec3(1.f, 0.f, 0.f));
         this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.z), glm::vec3(0.f, 0.f, 1.f));
     }
 
