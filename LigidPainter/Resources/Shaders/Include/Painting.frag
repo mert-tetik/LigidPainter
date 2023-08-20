@@ -157,13 +157,13 @@ vec3 getSmearedTexture(
 {
     
     
-    float intensity = brushTxtr.a;
+    float intensity = brushTxtr.a/2.;
     
     //Get the direction value from the painted texture (which direction the painting made in the current texture coordinates)
     vec2 Direction = brushTxtr.rg / 20.;
 
     //Samples (multiple of 2)
-    const int Samples = 64*4;
+    const int Samples = 64;
      
     //Get the blurred color (directional)
     vec4 blurredColor = vec4(0.0);  
@@ -175,8 +175,6 @@ vec3 getSmearedTexture(
         blurredColor += texture(txtr,pUV) / vec4(Samples);
         blurredColor += texture(txtr,mUV) / vec4(Samples);
     }
-    
-    blurredColor = blurredColor / float(Samples);    
     
     //TODO : Write smt better to that returning value
 
