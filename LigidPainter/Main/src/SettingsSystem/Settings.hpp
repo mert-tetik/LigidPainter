@@ -17,6 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define SETTINGS_HPP
 
 #include "UTIL/Util.hpp"
+#include "3D/ThreeD.hpp"
 
 struct Context{
     LigidWindow window;
@@ -106,7 +107,6 @@ struct Scene{
         }
     }
 
-    
     void updateViewMatrix(){
         if(this->camera.isCamInverted()){
             this->viewMatrix = glm::lookAt( 
@@ -131,6 +131,8 @@ struct Scene{
         this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.y), glm::vec3(0.f, 1.f, 0.f));
         this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.z), glm::vec3(0.f, 0.f, 1.f));
     }
+
+    SceneTiles tiles;
 
     Camera camera;
 };

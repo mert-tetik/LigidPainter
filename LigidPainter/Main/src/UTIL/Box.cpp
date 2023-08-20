@@ -13,10 +13,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ---------------------------------------------------------------------------
 
 Box.hpp : Is used to render a single 2D square.
-          Mostly used by GUI elements. (GUI folder)
+          Mostly used by GUI elements.
 */
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>

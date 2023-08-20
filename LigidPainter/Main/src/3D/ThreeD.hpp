@@ -186,4 +186,26 @@ public:
     void loadModel(std::string const &path,bool triangulate);
 };
 
+class SceneTiles
+{
+public:
+    unsigned int VBO;
+    unsigned int VAO;
+
+    /// @brief Default constructor (does nothing) (use @ref init instead to init the OpenGL objects)
+    SceneTiles();
+
+    /// @brief Initializes / Creates OpenGL vertex objects regarding 2D square rendering
+    void init();
+
+    /// @brief Binds the 2D square vertex objects
+    void bindBuffers();
+    
+    /// @brief Unbinds the 2D square vertex objects
+    void unbindBuffers();
+    
+    /// @brief Draw the square (is not used) 
+    void draw();
+};
+
 #endif

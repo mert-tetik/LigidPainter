@@ -101,6 +101,7 @@ namespace ShaderSystem{
     Shader colorIDMaskingShader();
     Shader grayScaleIDMaskingShader();
     Shader to2DProcedural();
+    Shader sceneTilesShader();
 
     void initShaderSystem();
 };

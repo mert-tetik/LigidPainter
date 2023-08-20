@@ -110,6 +110,8 @@ Renderer::Renderer(){//Settings::Videoscale() is the resolution value that will 
     //Initialize the GLAD
     initGlad();
 
+    getScene()->tiles.init();
+
     //Update necessary data before callbacks
     glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);    
     getScene()->updateViewMatrix();

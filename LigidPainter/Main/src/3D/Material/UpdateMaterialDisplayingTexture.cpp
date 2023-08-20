@@ -29,7 +29,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-
 void Material::updateMaterialDisplayingTexture(
                                                 float textureRes,
                                                 Box box,
