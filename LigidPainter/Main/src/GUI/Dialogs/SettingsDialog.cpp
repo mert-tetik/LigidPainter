@@ -95,12 +95,15 @@ SettingsDialog::SettingsDialog(ColorPalette colorPalette){
                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Fov", Texture(),2.f, 1.f, 180.f, 40.f)), 
                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Near", Texture(),0.f, 0.f, 1.f, 0.1f)), 
                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Far", Texture(),0.f, 0.f, 1000.f, 1000.f)), 
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Orthographic projection"  , 2.f)),
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Orthographic projection"  , 0.f)),
 
                     Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Backface Culling"  , 2.f)),
                     
                     Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Apply Height Map"  , 2.f)),
                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Height Map Strength", Texture(),0.f, 0.f, 1.f, 0.1f)), 
+                    
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Render scene tiles/grid"  , 2.f)),
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Render scene axis displayer"  , 0.f))
                 }
             )
         }
@@ -162,6 +165,9 @@ void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer
     
     Settings::properties()->useHeightMap = panel.sections[2].elements[11].checkBox.clickState1;
     Settings::properties()->heightMapStrength = panel.sections[2].elements[12].rangeBar.value;
+
+    getScene()->renderTiles = panel.sections[2].elements[13].checkBox.clickState1;
+    getScene()->renderAxisDisplayer = panel.sections[2].elements[14].checkBox.clickState1;
     
     //Set the vsync option as the vsync checkbox element
     Settings::properties()->VSync = panel.sections[1].elements[1].checkBox.clickState1;

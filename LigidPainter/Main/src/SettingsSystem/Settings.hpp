@@ -132,8 +132,10 @@ struct Scene{
         this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.z), glm::vec3(0.f, 0.f, 1.f));
     }
 
+    bool renderTiles = true;
     SceneTiles tiles;
     
+    bool renderAxisDisplayer = false;
     SceneAxisDisplayer axisDisplayer;
 
     Camera camera;

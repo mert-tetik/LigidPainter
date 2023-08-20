@@ -85,14 +85,17 @@ void Renderer::render(){
     else
         glDisable(GL_CULL_FACE);
 
-    ShaderSystem::sceneTilesShader().use();
-    getScene()->tiles.draw();
-    glClear(GL_DEPTH_BUFFER_BIT);
+    if(getScene()->renderTiles){
+        ShaderSystem::sceneTilesShader().use();
+        getScene()->tiles.draw();
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
     
-    ShaderSystem::sceneAxisDisplayerShader().use();
-    getScene()->axisDisplayer.draw();
-    glClear(GL_DEPTH_BUFFER_BIT);
-
+    if(getScene()->renderAxisDisplayer){
+        ShaderSystem::sceneAxisDisplayerShader().use();
+        getScene()->axisDisplayer.draw();
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
 
     //3D Model    
     ShaderSystem::tdModelShader().use();
