@@ -177,25 +177,25 @@ void UI::init
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Meshes"  , Settings::appTextures().modifierIcon, 3.f,true)),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "DefaultMeshButton"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "DefaultMeshButton"  , Texture(), 1.f,true)),//4
                                     }
                                 ),
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Painting Channels"  , Settings::appTextures().modifierIcon, 3.f,true)),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Albedo Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Roughness Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Metallic Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Normal Map Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Height Map Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Ambient Occlusion Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Albedo Texture"  , Texture(), 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Roughness Texture"  , Texture(), 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Metallic Texture"  , Texture(), 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Normal Map Texture"  , Texture(), 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Height Map Texture"  , Texture(), 1.f,true)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Ambient Occlusion Texture"  , Texture(), 1.f,true)),//4
                                     }
                                 ),
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Painting Over"  , Settings::appTextures().modifierIcon, 3.f,true)),
                                     {   
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Use Painting Over", 1.f)), //0
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Painting Over Texture"  , Settings::appTextures().greetingDialogImage, 1.f,false)), //1
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Painting Over Texture"  , Texture(), 1.f,false)), //1
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Grayscale Masking", 1.f)),// 2
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Wrap", 1.f)), //3
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), //4 
