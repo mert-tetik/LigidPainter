@@ -202,7 +202,6 @@ void UI::renderPanels(Timer &timer, TextRenderer &textRenderer, Painter &painter
     }
     
     if(nodeEditorDisplayer.hover){
-        
         if(*Mouse::MPressed()){
             this->nodePanel.position += *Mouse::mouseOffset();
             
@@ -354,6 +353,10 @@ void UI::renderPanels(Timer &timer, TextRenderer &textRenderer, Painter &painter
         ShaderSystem::twoDPaintingModeAreaShader().setInt("txtr", 5);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingTexture", 6);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("depthTexture", 7);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverTexture", 10);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", painter.usePaintingOver);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverGrayScale", painter.paintingOverGrayScale);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverWraping", painter.paintingOverWraping);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", painter.selectedPaintingModeIndex);
         ShaderSystem::twoDPaintingModeAreaShader().setFloat("paintingOpacity", painter.brushProperties.opacity / 100.f);
         ShaderSystem::twoDPaintingModeAreaShader().setVec3("paintingColor", painter.getSelectedColor().getRGB_normalized());
@@ -374,6 +377,10 @@ void UI::renderPanels(Timer &timer, TextRenderer &textRenderer, Painter &painter
         glActiveTexture(GL_TEXTURE5);
         glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
         
+        // Painting over texture
+        glActiveTexture(GL_TEXTURE10);
+        glBindTexture(GL_TEXTURE_2D, painter.paintingOverTexture);
+        
         //paintingTexture 
         glActiveTexture(GL_TEXTURE6);
         if(painter.selectedDisplayingModeIndex == 0)
@@ -392,6 +399,72 @@ void UI::renderPanels(Timer &timer, TextRenderer &textRenderer, Painter &painter
 
         ShaderSystem::buttonShader().use();
     }
+
+
+    //---------------- Updating the painting over texture ----------------- 
+    
+    painter.usePaintingOver = this->paintingPanel.sections[5].elements[0].checkBox.clickState1;
+    painter.paintingOverGrayScale = this->paintingPanel.sections[5].elements[2].checkBox.clickState1;
+    painter.paintingOverWraping = this->paintingPanel.sections[5].elements[3].checkBox.clickState1;
+    
+    bool valueChanged = this->paintingPanel.sections[5].elements[1].button.clicked ||
+                        this->paintingPanel.sections[5].elements[4].rangeBar.valueDoneChanging ||
+                        this->paintingPanel.sections[5].elements[5].rangeBar.valueDoneChanging ||
+                        this->paintingPanel.sections[5].elements[6].rangeBar.valueDoneChanging ||
+                        this->paintingPanel.sections[5].elements[7].rangeBar.valueDoneChanging ||
+                        this->paintingPanel.sections[5].elements[8].rangeBar.valueDoneChanging;
+
+    bool displayingMode = getContext()->window.isKeyPressed(LIGIDGL_KEY_O) ||
+                        this->paintingPanel.sections[5].elements[4].rangeBar.pointerPressed ||
+                        this->paintingPanel.sections[5].elements[5].rangeBar.pointerPressed ||
+                        this->paintingPanel.sections[5].elements[6].rangeBar.pointerPressed ||
+                        this->paintingPanel.sections[5].elements[7].rangeBar.pointerPressed ||
+                        this->paintingPanel.sections[5].elements[8].rangeBar.pointerPressed;
+
+    if(valueChanged || displayingMode){
+        unsigned int paintOverFBO = 0;
+        if(valueChanged){
+            glGenFramebuffers(1, &paintOverFBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, paintOverFBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, painter.paintingOverTexture, 0);
+        }
+
+        glViewport(0,0,Settings::videoScale()->x, Settings::videoScale()->y);
+
+        ShaderSystem::paintOverTextureGen().use();
+        ShaderSystem::paintOverTextureGen().setMat4("projection", glm::ortho(0.f, Settings::videoScale()->x, Settings::videoScale()->y, 0.f));
+        ShaderSystem::paintOverTextureGen().setVec2("scale", glm::vec2(Settings::videoScale()->x / 2.f, Settings::videoScale()->y / 2.f));
+        ShaderSystem::paintOverTextureGen().setVec3("pos", glm::vec3(Settings::videoScale()->x / 2.f, Settings::videoScale()->y / 2.f, 0.9f));
+        ShaderSystem::paintOverTextureGen().setVec2("fragScale", glm::vec2(this->paintingPanel.sections[5].elements[5].rangeBar.value, this->paintingPanel.sections[5].elements[6].rangeBar.value));
+        ShaderSystem::paintOverTextureGen().setVec2("fragMove", glm::vec2(this->paintingPanel.sections[5].elements[7].rangeBar.value, this->paintingPanel.sections[5].elements[8].rangeBar.value));
+        ShaderSystem::paintOverTextureGen().setFloat("rotation", this->paintingPanel.sections[5].elements[4].rangeBar.value);
+        ShaderSystem::paintOverTextureGen().setInt("txtr", 1);
+
+        if(valueChanged)
+            ShaderSystem::paintOverTextureGen().setFloat("opacity", 1.);
+        else
+            ShaderSystem::paintOverTextureGen().setFloat("opacity", 0.5);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, this->paintingPanel.sections[5].elements[1].button.texture.ID);
+
+        if(!painter.paintingOverWraping || valueChanged)
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        else{
+            ShaderSystem::tdModelShader().use(); 
+            ShaderSystem::tdModelShader().setInt("paintingOverDisplayinMode", 1);
+            ShaderSystem::paintOverTextureGen().use();
+        }
+        glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        
+        ShaderSystem::buttonShader().use();
+        if(valueChanged)
+            glDeleteFramebuffers(1, &paintOverFBO);
+    }
+
+
+
 
     paintingModesPanel.render(timer,textRenderer,!anyDialogActive);
     if(paintingModesPanel.resizingDone){

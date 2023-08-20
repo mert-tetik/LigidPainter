@@ -103,6 +103,7 @@ namespace ShaderSystem{
     Shader to2DProcedural();
     Shader sceneTilesShader();
     Shader sceneAxisDisplayerShader();
+    Shader paintOverTextureGen();
 
     void initShaderSystem();
 };

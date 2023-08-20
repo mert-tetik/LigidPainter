@@ -190,6 +190,20 @@ void UI::init
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Height Map Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Ambient Occlusion Texture"  , Settings::appTextures().greetingDialogImage, 1.f,true)),//4
                                     }
+                                ),
+                                Section(
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Painting Over"  , Settings::appTextures().modifierIcon, 3.f,true)),
+                                    {   
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Use Painting Over", 1.f)), //0
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "Painting Over Texture"  , Settings::appTextures().greetingDialogImage, 1.f,false)), //1
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Grayscale Masking", 1.f)),// 2
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Wrap", 1.f)), //3
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), //4 
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "X : Scale"  , Texture(), 1.f,0.f,2.f,1.f)), //5
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Y : Scale"  , Texture(), 1.f,0.f,2.f,1.f)), //6
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "X : Move"  , Texture(), 1.f, -1.f,1.f,0.f)), //7
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),colorPalette, "Y : Move"  , Texture(), 1.f, -1.f,1.f,0.f)), //8
+                                    }
                                 )
                             },
                             
@@ -456,4 +470,6 @@ void UI::init
     renamingTextBox.thickness = 0.f;
     renamingTextBox.animationStyle = 1;
     renamingTextBox.radius = 10000.f;
+
+    paintingPanel.sections[5].elements[1].button.textureSelection = true;
 }   

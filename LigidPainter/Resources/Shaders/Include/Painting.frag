@@ -211,15 +211,40 @@ vec3 getPaintedTexture  (
                             sampler2D txtr, //The texture that will be painted  
                             vec4 brushTxtr, //Brush value (painted texture value)
                             vec2 TexCoords,  //The texture coordinates
-                            vec3 paintingColor //Painting color
+                            vec2 modelCoord,  //The texture coordinates
+                            vec3 paintingColor, //Painting color
+                            sampler2D paintingOverTexture, //Painting color
+                            int usePaintingOver,
+                            int paintingOverGrayScale,
+                            int paintingOverWraping
                         )
 {
+    vec4 paintingOverTxtrVal;
+    if(paintingOverWraping == 0)
+        paintingOverTxtrVal = texture(paintingOverTexture, modelCoord);
+    else 
+        paintingOverTxtrVal = texture(paintingOverTexture, TexCoords);
+
     float intensity = brushTxtr.a;
 
     //Mix the original color data with painting color using the intensity of the painted texture
+    vec3 destColor = vec3(0);
+    if(usePaintingOver == 1){
+        if(paintingOverGrayScale == 1){
+            destColor = paintingColor;
+            intensity *= paintingOverTxtrVal.r;
+        }
+        else{
+            destColor = paintingOverTxtrVal.rgb;
+            intensity *= paintingOverTxtrVal.a;
+        }
+    }
+    else
+        destColor = paintingColor;
+
     return mix  (
                     texture(txtr,TexCoords).rgb,
-                    paintingColor,
+                    destColor, //paintingColor
                     intensity
                 );
 }
@@ -244,13 +269,18 @@ vec3 getBrushedTexture (
                             sampler2D txtr, //The texture that will be painted  
                             vec4 brushTxtr, //Brush value (painted texture value)
                             vec2 TexCoords,  //The texture coordinates
+                            vec2 modelCoord,  //The texture coordinates
                             vec3 paintingColor, //Painting color (used for painting with color (if brushModeState == 0))
-                            int brushModeState //Decide which painting mode will be used
+                            sampler2D paintingOverTexture, //Painting color (used for painting with color (if brushModeState == 0))
+                            int brushModeState, //Decide which painting mode will be used
+                            int usePaintingOver,
+                            int paintingOverGrayScale,
+                            int paintingOverWraping
                         )
 {
     //Apply painting with color
     if(brushModeState == 0)
-        return getPaintedTexture(txtr,brushTxtr,TexCoords,paintingColor);
+        return getPaintedTexture(txtr,brushTxtr,TexCoords, modelCoord, paintingColor, paintingOverTexture, usePaintingOver, paintingOverGrayScale, paintingOverWraping);
 
     //Apply painting with softening
     if(brushModeState == 1)
@@ -270,18 +300,17 @@ vec3 getBrushedTexture (
 vec4 getBrushValue(
                     sampler2D paintingTexture, //Painting texture 
                     sampler2D depthTexture, //Model depth texture
-                    vec4 ProjectedPos, //Screen pos of the model 
+                    vec3 modelCoords, //Screen pos of the model 
                     float opacity, //Brush opacity
                     int testDepth
                 )
 {
     
-    vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w);
-    vec4 brushTxtr = texture(paintingTexture, screenPos.xy);
+    vec4 brushTxtr = texture(paintingTexture, modelCoords.xy);
     brushTxtr.a *= opacity; 
 
     if(testDepth == 1){
-        if(!isPainted(screenPos,depthTexture))
+        if(!isPainted(modelCoords,depthTexture))
             brushTxtr = vec4(0);
     }
 

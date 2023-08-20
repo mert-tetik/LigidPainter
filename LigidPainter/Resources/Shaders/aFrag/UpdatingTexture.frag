@@ -45,6 +45,11 @@ uniform float paintingOpacity;
 //Selected color for painting
 uniform vec3 paintingColor;
 
+uniform sampler2D paintingOverTexture;
+uniform int usePaintingOver;
+uniform int paintingOverGrayScale;
+uniform int paintingOverWraping;
+
 //Do depth testing (painting) if set to 1
 uniform int doDepthTest;
 
@@ -52,9 +57,11 @@ uniform int doDepthTest;
 out vec4 fragColor;
 
 void main(){
-    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, ProjectedPos, paintingOpacity, doDepthTest);
+    vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w);
+
+    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, screenPos, paintingOpacity, doDepthTest);
 
     float txtrAlpha = texture(txtr, TexCoords).a; 
 
-    fragColor = vec4(getBrushedTexture(txtr, brushTxtr, TexCoords, paintingColor, brushModeState),txtrAlpha);
+    fragColor = vec4(getBrushedTexture(txtr, brushTxtr, TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping), txtrAlpha);
 }

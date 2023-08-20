@@ -3,7 +3,6 @@
 //Painting
 #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Painting.frag)
 
-
 //Functions related to PBR 
 #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Physics_Math.frag)
 
@@ -36,6 +35,12 @@ uniform sampler2D ambientOcclusionTxtr; //Ambient occlusion (ao)
 
 //Contains the brush strokes
 uniform sampler2D paintingTexture;
+
+uniform sampler2D paintingOverTexture;
+uniform int usePaintingOver;
+uniform int paintingOverGrayScale;
+uniform int paintingOverWraping;
+uniform int paintingOverDisplayinMode;
 
 //3D Model rendered with depth shader (to compare depth)
 uniform sampler2D depthTexture;
@@ -77,46 +82,48 @@ void main() {
     float height;
     float ao;
 
+    vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w);
+
     // Brush value (mask) (painting texture) 
-    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, ProjectedPos, paintingOpacity, 1);
+    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, screenPos, paintingOpacity, 1);
     
     //Get Albedo
     if(paintedTxtrStateIndex == 0)
-        albedo = getBrushedTexture(albedoTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).rgb;
+        albedo = getBrushedTexture(albedoTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).rgb;
     else
         albedo = texture(albedoTxtr,TexCoords).rgb;
     
 
     //Get Roughness
     if(paintedTxtrStateIndex == 1)
-        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
+        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).r;
     else
         roughness = texture(roughnessTxtr,TexCoords).r;
     
 
     //Get Metallic
     if(paintedTxtrStateIndex == 2)
-        metallic = getBrushedTexture(metallicTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
+        metallic = getBrushedTexture(metallicTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).r;
     else
         metallic = texture(metallicTxtr,TexCoords).r;
 
 
     //Get Normal Map
     if(paintedTxtrStateIndex == 3)
-        normal = getBrushedTexture(normalMapTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).rgb;
+        normal = getBrushedTexture(normalMapTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).rgb;
     else
         normal = texture(normalMapTxtr,TexCoords).rgb;
     
     //Get Height
     if(paintedTxtrStateIndex == 4)
-        height = getBrushedTexture(heightMapTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
+        height = getBrushedTexture(heightMapTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).r;
     else
         height = texture(heightMapTxtr,TexCoords).r;
     
 
     //Get Ambient Occlusion
     if(paintedTxtrStateIndex == 5)
-        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,TexCoords, paintingColor, brushModeState).r;
+        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).r;
     else
         ao = texture(ambientOcclusionTxtr,TexCoords).r;
 
@@ -142,6 +149,10 @@ void main() {
         pbrResult = vec3(height);
     if(displayingMode == 6)
         pbrResult = vec3(ao);
+
+    if(paintingOverDisplayinMode == 1){
+        pbrResult = mix(pbrResult, texture(paintingOverTexture, TexCoords).rgb, 0.5 * texture(paintingOverTexture, TexCoords).a);
+    }
 
     fragColor = vec4(
                         pbrResult, 

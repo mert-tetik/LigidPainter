@@ -87,6 +87,22 @@ void Painter::initPainter(){
 
 
 
+
+    //--------- init paintingOverTexture --------- 
+    glGenTextures(1, &this->paintingOverTexture);
+    glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
+ 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, Settings::videoScale()->x, Settings::videoScale()->y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+
+
     //--------- init paintingFBO --------- 
     glGenFramebuffers(1, &this->paintingFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, this->paintingFBO);

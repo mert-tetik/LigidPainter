@@ -148,16 +148,18 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         ShaderSystem::textureUpdatingShader().setInt("txtr", 5);
         ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6);
         ShaderSystem::textureUpdatingShader().setInt("depthTexture", 7);
+        ShaderSystem::textureUpdatingShader().setInt("paintingOverTexture", 10);
         ShaderSystem::textureUpdatingShader().setInt("brushModeState", this->selectedPaintingModeIndex);
         ShaderSystem::textureUpdatingShader().setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
+        ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", this->usePaintingOver);
+        ShaderSystem::textureUpdatingShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
+        ShaderSystem::textureUpdatingShader().setInt("paintingOverWraping", this->paintingOverWraping);
         ShaderSystem::textureUpdatingShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
-
 
         //*Vertex
         ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
         ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
         ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->viewMatrix);
-
 
         //* Bind the textures
         //painted texture
@@ -171,6 +173,10 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         ///@ref depthTexture 
         glActiveTexture(GL_TEXTURE7);
         glBindTexture(GL_TEXTURE_2D, this->depthTexture);
+        
+        ///@ref paintingOverTexture 
+        glActiveTexture(GL_TEXTURE10);
+        glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
 
         //Draw the UV of the selected model
         if(selectedMeshIndex < getModel()->meshes.size())
@@ -185,8 +191,12 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         ShaderSystem::twoDPaintingModeAreaShader().setInt("txtr", 5);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingTexture", 6);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("depthTexture", 7);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverTexture", 10);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", this->selectedPaintingModeIndex);
         ShaderSystem::twoDPaintingModeAreaShader().setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", this->usePaintingOver);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverWraping", this->paintingOverWraping);
         ShaderSystem::twoDPaintingModeAreaShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
 
         //*Vertex
@@ -207,6 +217,10 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         //depthTexture 
         glActiveTexture(GL_TEXTURE7);
         glBindTexture(GL_TEXTURE_2D, this->depthTexture);
+
+        ///paintingOverTexture 
+        glActiveTexture(GL_TEXTURE10);
+        glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
 
         //Render
         glDrawArrays(GL_TRIANGLES,0,6);

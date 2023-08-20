@@ -414,6 +414,11 @@ public:
     /// @brief 3D model linearized depth texture (3d model rendered with a depth shader) 
     unsigned int depthTexture;
 
+    unsigned int paintingOverTexture;
+    bool usePaintingOver = false;
+    bool paintingOverGrayScale = false;
+    bool paintingOverWraping = false;
+
     /// @brief Is set to true in the callbacks and is set to false after updating the depth texture
     ///  (Update the depth texture if set to true)
     bool updateTheDepthTexture = false;

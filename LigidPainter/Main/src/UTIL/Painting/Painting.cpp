@@ -40,7 +40,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //forward declerations for the utility functions
 static void setBrushProperties (BrushProperties brushProperties);
 static void setShaderUniforms(glm::mat4 &projection, glm::vec2 resolution, int frameCounter);
-static void set3DShaderSideUniforms(int selectedColorIndex,Color color1,Color color2,Color color3,float opacity ,int selectedPaintingModeIndex);
+static void set3DShaderSideUniforms(int selectedColorIndex,Color color1,Color color2,Color color3,float opacity,
+                                    int selectedPaintingModeIndex,bool usePaintingOver, bool paintingOverGrayScale, bool paintingOverWraping);
 
 
 
@@ -83,7 +84,7 @@ void Painter::doPaint(glm::mat4 windowOrtho){
 
     //3D Model shader side of the painting  (set the painting mode, colors, and painting opacity)        
     ShaderSystem::tdModelShader().use();
-    set3DShaderSideUniforms(selectedColorIndex,color1,color2,color3,this->brushProperties.opacity,selectedPaintingModeIndex);
+    set3DShaderSideUniforms(selectedColorIndex,color1,color2,color3,this->brushProperties.opacity,selectedPaintingModeIndex, this->usePaintingOver, this->paintingOverGrayScale, this->paintingOverWraping);
     
     //Back to 2D painting
     ShaderSystem::twoDPainting().use();
@@ -164,7 +165,7 @@ static void setShaderUniforms(glm::mat4 &projection, glm::vec2 resolution, int f
     ShaderSystem::twoDPainting().setInt("frame", frameCounter);
 }
 
-static void set3DShaderSideUniforms(int selectedColorIndex, Color color1, Color color2, Color color3, float opacity, int selectedPaintingModeIndex){
+static void set3DShaderSideUniforms(int selectedColorIndex, Color color1, Color color2, Color color3, float opacity, int selectedPaintingModeIndex, bool usePaintingOver, bool paintingOverGrayScale, bool paintingOverWraping){
     ShaderSystem::tdModelShader().setInt("brushModeState", selectedPaintingModeIndex);
     if(selectedColorIndex == 0)
         ShaderSystem::tdModelShader().setVec3("paintingColor", color1.getRGB_normalized());
@@ -174,4 +175,7 @@ static void set3DShaderSideUniforms(int selectedColorIndex, Color color1, Color 
         ShaderSystem::tdModelShader().setVec3("paintingColor", color3.getRGB_normalized());
     
     ShaderSystem::tdModelShader().setFloat("paintingOpacity", opacity / 100);
+    ShaderSystem::tdModelShader().setInt("usePaintingOver", usePaintingOver);
+    ShaderSystem::tdModelShader().setInt("paintingOverGrayScale", paintingOverGrayScale);
+    ShaderSystem::tdModelShader().setInt("paintingOverWraping", paintingOverWraping);
 }

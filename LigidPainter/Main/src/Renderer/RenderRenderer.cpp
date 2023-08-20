@@ -225,8 +225,7 @@ void Renderer::render(){
 
     //Render each mesh
     for (size_t i = 0; i < getModel()->meshes.size(); i++)
-    {
-        
+    {   
         /* Albedo */
         glActiveTexture(GL_TEXTURE2);
         if(painter.selectedDisplayingModeIndex == 0){
@@ -295,6 +294,10 @@ void Renderer::render(){
 
         ShaderSystem::tdModelShader().setInt("paintedTxtrStateIndex", painter.selectedPaintingChannelIndex);
         
+        // Painting over texture
+        glActiveTexture(GL_TEXTURE10);
+        glBindTexture(GL_TEXTURE_2D, painter.paintingOverTexture);
+        
         if(painter.selectedDisplayingModeIndex == 2){
             ShaderSystem::tdModelShader().setInt("paintedTxtrStateIndex", 0);
             ShaderSystem::tdModelShader().setInt("displayingMode", 1);
@@ -317,8 +320,9 @@ void Renderer::render(){
         //Draw the mesh
         getModel()->meshes[i].Draw();
     }
+    
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
-
+    ShaderSystem::tdModelShader().setInt("paintingOverDisplayinMode", 0);
 
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -427,6 +431,7 @@ void Renderer::set3DUniforms(){
     ShaderSystem::tdModelShader().setInt("ambientOcclusionTxtr",7);
     ShaderSystem::tdModelShader().setInt("paintingTexture",8);
     ShaderSystem::tdModelShader().setInt("depthTexture",9);
+    ShaderSystem::tdModelShader().setInt("paintingOverTexture",10);
     ShaderSystem::tdModelShader().setVec3("viewPos", getScene()->camera.cameraPos);
     ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::tdModelShader().setMat4("projection", getScene()->projectionMatrix);
@@ -453,7 +458,6 @@ void Renderer::set3DUniforms(){
     ShaderSystem::skyboxBall().use();
     ShaderSystem::skyboxBall().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::skyboxBall().setMat4("projection", getScene()->projectionMatrix);
-
 }
 
 
