@@ -426,7 +426,6 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
             material.materialModifiers[i].updateMaterialChannels(material, msh, textureRes, i);
         }
 
-        
         //Return mesh by creating using material modifiers
         return msh;
     }
@@ -486,6 +485,7 @@ void NodeScene::updateNodeResults( int textureRes, int updateNodeI){
                             getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].heightMap.ID = retMesh.heightMap.ID; 
                             getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].ambientOcclusion.ID = retMesh.ambientOcclusion.ID;
 
+                            getModel()->meshes[__nodeScene[nodeI].IOs[IOI].connections[conI].inputIndex].processHeightMap();
                         }
                     }
                 }

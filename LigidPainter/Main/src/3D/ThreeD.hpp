@@ -155,11 +155,13 @@ public:
 
     unsigned int VBO, EBO, VAO; //Vertex buffer object, element buffer object
 
+    void processHeightMap();
 private:
     /*! @brief initializes all the buffer objects/arrays */
     void setupMesh();
 
     void generateUVMask();
+
 };
 
 

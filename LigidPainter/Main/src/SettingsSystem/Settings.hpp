@@ -178,6 +178,9 @@ namespace Settings{
 
         /*! @brief Textures will be generated with that resolution value */
         int textureRes = 1024; 
+
+        int useHeightMap;
+        float heightMapStrength;
     };
 
     void loadAppTextures();

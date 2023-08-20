@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 static void initTexture(unsigned int &txtr,int textureRes){
     glActiveTexture(GL_TEXTURE0);
@@ -95,6 +96,43 @@ void Mesh::Draw()
     glBindVertexArray(0);
     
     // always good practice to set everything back to defaults once configured.
+}
+
+void Mesh::processHeightMap(){
+
+    std::vector<Vertex> newVertArray = this->vertices;
+
+    char* txtr = new char[this->heightMap.getResolution().x * this->heightMap.getResolution().y * 4];
+    this->heightMap.getData(txtr);
+    if(Settings::properties()->useHeightMap){
+        for (size_t i = 0; i < this->vertices.size(); i++)
+        {
+            glm::vec2 uv = this->vertices[i].TexCoords;
+            glm::ivec2 pixelDest = this->vertices[i].TexCoords * glm::vec2(this->heightMap.getResolution()); 
+            
+            int pixelIndex = (pixelDest.y * this->heightMap.getResolution().x + pixelDest.x) * 4; // Each pixel has 4 components (R, G, B, A)
+            if(pixelIndex < this->heightMap.getResolution().x * this->heightMap.getResolution().y * 4){
+                char red = txtr[pixelIndex];
+                char green = txtr[pixelIndex + 1];
+                char blue = txtr[pixelIndex + 2];
+                char alpha = txtr[pixelIndex + 3]; 
+                
+                newVertArray[i].Position += glm::vec3(((float)red / 127.f - 0.5) * Settings::properties()->heightMapStrength) * newVertArray[i].Normal;
+            }
+        }
+    }
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindVertexArray(VAO);
+    // load data into vertex buffers
+    // A great thing about structs is that their memory layout is sequential for all its items.
+    // The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
+    // again translates to 3/2 floats which translates to a byte array.
+    glBufferData(GL_ARRAY_BUFFER, newVertArray.size() * sizeof(Vertex), &newVertArray[0], GL_STATIC_DRAW);  
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    delete[] txtr;
 }
 
 // initializes all the buffer objects/arrays

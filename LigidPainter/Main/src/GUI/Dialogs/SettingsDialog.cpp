@@ -100,7 +100,7 @@ SettingsDialog::SettingsDialog(ColorPalette colorPalette){
                     Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Backface Culling"  , 2.f)),
                     
                     Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Apply Height Map"  , 2.f)),
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Height Map Strength", Texture(),0.f, 0.f, 1000.f, 1000.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Height Map Strength", Texture(),0.f, 0.f, 1.f, 0.1f)), 
                 }
             )
         }
@@ -133,6 +133,16 @@ void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer
     panel.sections[2].elements[7].rangeBar.value = getScene()->aNear;
     panel.sections[2].elements[8].rangeBar.value = getScene()->aFar;
     panel.sections[2].elements[9].checkBox.clickState1 = getScene()->useOrtho;
+    
+    panel.sections[2].elements[11].checkBox.clickState1 = Settings::properties()->useHeightMap;
+    panel.sections[2].elements[12].rangeBar.value = Settings::properties()->heightMapStrength;
+
+    if(panel.sections[2].elements[12].rangeBar.pointerPressed && !*Mouse::LPressed() && panel.sections[2].elements[11].checkBox.clickState1){
+        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        {
+            getModel()->meshes[i].processHeightMap();
+        }
+    }
 
     //Render the panel    
     panel.render(timer,textRenderer,true);
@@ -150,14 +160,24 @@ void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer
     getScene()->aFar = panel.sections[2].elements[8].rangeBar.value;
     getScene()->useOrtho = panel.sections[2].elements[9].checkBox.clickState1;
     
+    Settings::properties()->useHeightMap = panel.sections[2].elements[11].checkBox.clickState1;
+    Settings::properties()->heightMapStrength = panel.sections[2].elements[12].rangeBar.value;
+    
     //Set the vsync option as the vsync checkbox element
     Settings::properties()->VSync = panel.sections[1].elements[1].checkBox.clickState1;
     
     //Set the backface culling option as the backface culling checkbox element
-    Settings::properties()->backfaceCulling = panel.sections[2].elements[12].checkBox.clickState1;
+    Settings::properties()->backfaceCulling = panel.sections[2].elements[10].checkBox.clickState1;
     
     //If pressed to any of the combo box element change the texture res
     Settings::properties()->textureRes = stoi(panel.sections[1].elements[0].comboBox.texts[panel.sections[1].elements[0].comboBox.selectedIndex]);
+    
+    if(panel.sections[2].elements[11].checkBox.hover && *Mouse::LClick()){
+        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        {
+            getModel()->meshes[i].processHeightMap();
+        }
+    }
     
     getScene()->updateProjectionMatrix();
     getScene()->updateViewMatrix();
