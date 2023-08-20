@@ -69,6 +69,22 @@ void Renderer::render(){
     //Render skybox
     renderSkyBox();
 
+    box.bindBuffers();
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, userInterface.displayerDialog.panel.sections[0].elements[5].button.texture.ID);
+    ShaderSystem::buttonShader().use();
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(getContext()->windowScale / glm::ivec2(2), 0.1));
+    ShaderSystem::buttonShader().setVec2("scale", getContext()->windowScale / glm::ivec2(2));
+    ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
+    ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
+    ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
+    glClear(GL_DEPTH_BUFFER_BIT);
+    box.unbindBuffers();
+
+
     //Set the uniforms regarding 3D models (mostly vertex shader) 
     set3DUniforms();
 

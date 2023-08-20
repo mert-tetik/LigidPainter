@@ -42,7 +42,15 @@ DisplayerDialog::DisplayerDialog(
                                     //Monitor resolution
                                     ColorPalette colorPalette //LigidPainter's theme
                                 ){
-    
+    Texture bgTxtr0;
+    bgTxtr0.load("./LigidPainter/Resources/Images/BGTexture0.jpg");
+    Texture bgTxtr1;
+    bgTxtr1.load("./LigidPainter/Resources/Images/BGTexture1.jpg");
+    Texture bgTxtr2;
+    bgTxtr2.load("./LigidPainter/Resources/Images/BGTexture2.jpg");
+    Texture bgTxtr3;
+    bgTxtr3.load("./LigidPainter/Resources/Images/BGTexture3.jpg");
+
     //Create the panel
     this->panel = Panel(
         colorPalette,
@@ -56,11 +64,16 @@ DisplayerDialog::DisplayerDialog(
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Blur"  , Texture(), 1.f,0.f,100.f,0.f)), 
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f)), 
                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Texture(), 1.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr0, 2.f,false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr0, 2.f,false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr1, 2.f,false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr2, 2.f,false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr3, 2.f,false)),
                     }
                 )
             }
         },
-        glm::vec2(15.f),
+        glm::vec2(20.f),
         glm::vec3(50.f,50.f,0.8f),
         colorPalette.mainColor,
         colorPalette.thirdColor,
@@ -145,7 +158,7 @@ void DisplayerDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer 
     panel.sections[0].elements[4].button.color = glm::vec4(skybox.bgColor,1);
     
     //If pressed to the bg color element show color picker dialog
-    if(panel.sections[0].elements[4].button.hover && *Mouse::LClick()){
+    if(panel.sections[0].elements[4].button.clicked){
         unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
         const char* hex0Val = "#000000";
         auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);
@@ -156,6 +169,25 @@ void DisplayerDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer 
             skybox.bgColor = clr.getRGB_normalized();
         }
     }
+
+    if(panel.sections[0].elements[5].button.clicked){
+        std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+
+        if(test.size()){
+            if( 
+                panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[6].button.texture.ID &&
+                panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[7].button.texture.ID &&
+                panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[8].button.texture.ID &&
+                panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[9].button.texture.ID
+            )
+                glDeleteTextures(1, &panel.sections[0].elements[5].button.texture.ID);
+            
+            Texture uploadedTexture;
+            uploadedTexture.load(test.c_str());
+            panel.sections[0].elements[5].button.texture = uploadedTexture;
+        }
+    }
+
     
     //Change the transform matrix of the skybox (rotate it using the rotation range bar element)
     skybox.transformMatrix = glm::mat4(1);
