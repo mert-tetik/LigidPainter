@@ -111,6 +111,7 @@ Renderer::Renderer(){//Settings::Videoscale() is the resolution value that will 
     initGlad();
 
     getScene()->tiles.init();
+    getScene()->axisDisplayer.init();
 
     //Update necessary data before callbacks
     glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);    

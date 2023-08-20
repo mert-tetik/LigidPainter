@@ -102,6 +102,7 @@ namespace ShaderSystem{
     Shader grayScaleIDMaskingShader();
     Shader to2DProcedural();
     Shader sceneTilesShader();
+    Shader sceneAxisDisplayerShader();
 
     void initShaderSystem();
 };

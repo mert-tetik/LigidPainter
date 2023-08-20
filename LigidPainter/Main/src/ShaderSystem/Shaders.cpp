@@ -44,6 +44,7 @@ Shader __colorIDMaskingShader;
 Shader __grayScaleIDMaskingShader;
 Shader __to2DProcedural;
 Shader __sceneTilesShader;
+Shader __sceneAxisDisplayerShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader =                 Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/PBR.frag"                                   ,nullptr    ,nullptr,   nullptr      );
@@ -68,6 +69,7 @@ void ShaderSystem::initShaderSystem(){
     __colorIDMaskingShader =          Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/MaterialID.frag"                            ,nullptr    ,nullptr,   nullptr      );
     __grayScaleIDMaskingShader =      Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/GrayScaleMasking.frag"                      ,nullptr    ,nullptr,   nullptr      );
     __sceneTilesShader =              Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/SceneTiles.frag"                            ,nullptr    ,nullptr,   nullptr      );
+    __sceneAxisDisplayerShader =      Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/SceneAxisDisplayer.frag"              ,nullptr    ,nullptr,   nullptr      );
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -135,4 +137,7 @@ Shader ShaderSystem::to2DProcedural(){
 }
 Shader ShaderSystem::sceneTilesShader(){
     return __sceneTilesShader;
+}
+Shader ShaderSystem::sceneAxisDisplayerShader(){
+    return __sceneAxisDisplayerShader;
 }

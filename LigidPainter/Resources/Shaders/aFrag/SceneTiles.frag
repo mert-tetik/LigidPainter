@@ -32,5 +32,5 @@ void main(){
     float dist = distance(camPos, Pos);
 
     // Output to screen
-    fragColor = vec4(vec3(1),m/4. / (dist/10));
+    fragColor = vec4(vec3(1),m/4. / (dist/20));
 }

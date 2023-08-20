@@ -133,6 +133,8 @@ struct Scene{
     }
 
     SceneTiles tiles;
+    
+    SceneAxisDisplayer axisDisplayer;
 
     Camera camera;
 };

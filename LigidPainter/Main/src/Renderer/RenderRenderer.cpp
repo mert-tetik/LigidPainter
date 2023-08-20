@@ -87,8 +87,12 @@ void Renderer::render(){
 
     ShaderSystem::sceneTilesShader().use();
     getScene()->tiles.draw();
-
     glClear(GL_DEPTH_BUFFER_BIT);
+    
+    ShaderSystem::sceneAxisDisplayerShader().use();
+    getScene()->axisDisplayer.draw();
+    glClear(GL_DEPTH_BUFFER_BIT);
+
 
     //3D Model    
     ShaderSystem::tdModelShader().use();
@@ -437,6 +441,11 @@ void Renderer::set3DUniforms(){
     ShaderSystem::sceneTilesShader().setMat4("modelMatrix",glm::mat4(1));
     ShaderSystem::sceneTilesShader().setVec3("camPos", getScene()->camera.cameraPos);
 
+    ShaderSystem::sceneAxisDisplayerShader().use();
+    ShaderSystem::sceneAxisDisplayerShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::sceneAxisDisplayerShader().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::sceneAxisDisplayerShader().setMat4("modelMatrix",glm::mat4(1));
+    
     //Skybox ball shader 
     ShaderSystem::skyboxBall().use();
     ShaderSystem::skyboxBall().setMat4("view", getScene()->viewMatrix);
