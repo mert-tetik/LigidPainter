@@ -544,7 +544,7 @@ void UI::renderDropper(Painter &painter){
         //Dropper active pick color
         glm::vec3 cursorHoverPixelRGBData;
         //Read the cursor position from the default frame buffer
-        glReadPixels(Mouse::cursorPos()->x,Mouse::cursorPos()->y,1,1,GL_RGB,GL_FLOAT,&cursorHoverPixelRGBData);
+        glReadPixels(Mouse::cursorPos()->x, Mouse::cursorPos()->y,1,1,GL_RGB,GL_FLOAT,&cursorHoverPixelRGBData);
         
         dropper.value = cursorHoverPixelRGBData; 
     

@@ -55,29 +55,32 @@ void Painter::changeColor(Color &color){
 }
 
 std::vector<glm::vec2> Painter::getCursorSubstitution(float spacing){
+    
+    glm::vec2 cursorPos = *Mouse::cursorPos();
+    
     std::vector<glm::vec2> holdLocations;
     
-    glm::vec2 fstrokeLocation = glm::vec2(*Mouse::cursorPos());
+    glm::vec2 fstrokeLocation = glm::vec2(cursorPos);
     holdLocations.push_back(fstrokeLocation);
     
     //----------------------PAINTING----------------------\\
 
-    int differenceBetweenMousePoints = glm::distance(*Mouse::cursorPos(), lastCursorPos);
+    int differenceBetweenMousePoints = glm::distance(cursorPos, lastCursorPos);
     if(spacing > 5)
         differenceBetweenMousePoints = 1; 
 
-    float xposDif = (Mouse::cursorPos()->x - lastCursorPos.x) / differenceBetweenMousePoints;
-    float yposDif = (Mouse::cursorPos()->y - lastCursorPos.y) / differenceBetweenMousePoints;
+    float xposDif = (cursorPos.x - lastCursorPos.x) / differenceBetweenMousePoints;
+    float yposDif = (cursorPos.y - lastCursorPos.y) / differenceBetweenMousePoints;
 
     for (size_t i = 0; i < differenceBetweenMousePoints; i++)
     {
         ////differenceBetweenMousePoints > 10
         if (true) {
-            Mouse::cursorPos()->x -= xposDif;
-            Mouse::cursorPos()->y -= yposDif;
+            cursorPos.x -= xposDif;
+            cursorPos.y -= yposDif;
         }
         if(true){
-            glm::vec2 strokeLocation = *Mouse::cursorPos();
+            glm::vec2 strokeLocation = cursorPos;
             holdLocations.push_back(strokeLocation);
         }
     }
