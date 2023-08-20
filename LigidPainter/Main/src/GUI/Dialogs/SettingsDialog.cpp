@@ -140,6 +140,9 @@ void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer
     panel.sections[2].elements[11].checkBox.clickState1 = Settings::properties()->useHeightMap;
     panel.sections[2].elements[12].rangeBar.value = Settings::properties()->heightMapStrength;
 
+    panel.sections[2].elements[13].checkBox.clickState1 = getScene()->renderTiles ;
+    panel.sections[2].elements[14].checkBox.clickState1 = getScene()->renderAxisDisplayer ;
+
     if(panel.sections[2].elements[12].rangeBar.pointerPressed && !*Mouse::LPressed() && panel.sections[2].elements[11].checkBox.clickState1){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {
