@@ -65,10 +65,11 @@ DisplayerDialog::DisplayerDialog(
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f)), 
                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Texture(), 1.f, false)),
                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr0, 2.f,false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr0, 2.f,false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr1, 2.f,false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr2, 2.f,false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr3, 2.f,false)),
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Image Opacity"  , Texture(), 1.f,0.f,1.f,0.f)), 
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, "",  bgTxtr0, 0.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, "",  bgTxtr1, 0.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, "",  bgTxtr2, 0.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, "",  bgTxtr3, 0.f, false)),
                     }
                 )
             }
@@ -170,15 +171,24 @@ void DisplayerDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer 
         }
     }
 
+    if(panel.sections[0].elements[7].button.clicked)
+        panel.sections[0].elements[5].button.texture.ID = panel.sections[0].elements[7].button.texture.ID;
+    if(panel.sections[0].elements[8].button.clicked)
+        panel.sections[0].elements[5].button.texture.ID = panel.sections[0].elements[8].button.texture.ID;
+    if(panel.sections[0].elements[9].button.clicked)
+        panel.sections[0].elements[5].button.texture.ID = panel.sections[0].elements[9].button.texture.ID;
+    if(panel.sections[0].elements[10].button.clicked)
+        panel.sections[0].elements[5].button.texture.ID = panel.sections[0].elements[10].button.texture.ID;
+
     if(panel.sections[0].elements[5].button.clicked){
         std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
         if(test.size()){
             if( 
-                panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[6].button.texture.ID &&
                 panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[7].button.texture.ID &&
                 panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[8].button.texture.ID &&
-                panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[9].button.texture.ID
+                panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[9].button.texture.ID &&
+                panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[10].button.texture.ID
             )
                 glDeleteTextures(1, &panel.sections[0].elements[5].button.texture.ID);
             

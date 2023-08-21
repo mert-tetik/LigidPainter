@@ -167,13 +167,11 @@ vec3 getSmearedTexture(
      
     //Get the blurred color (directional)
     vec4 blurredColor = vec4(0.0);  
-    for (int i=0; i<=Samples/2; i++)
+    
+    const float delta = 2.0 / float(Samples);
+    for(float i = -1.0; i <= 1.0; i += delta)
     {
-        vec2 mUV = TexCoords - float(i) * (intensity) / float(Samples/2) * Direction;
-        vec2 pUV = TexCoords + float(i) * (intensity) / float(Samples/2) * Direction;
-        
-        blurredColor += texture(txtr,pUV) / vec4(Samples);
-        blurredColor += texture(txtr,mUV) / vec4(Samples);
+        blurredColor += texture(txtr, TexCoords - vec2(Direction.x * i, Direction.y * i)) * delta * .5;
     }
     
     //TODO : Write smt better to that returning value
@@ -185,6 +183,8 @@ vec3 getSmearedTexture(
     //If not
     else
         return texture(txtr,TexCoords).rgb;
+
+    return vec3(0.);
 
 }
 
