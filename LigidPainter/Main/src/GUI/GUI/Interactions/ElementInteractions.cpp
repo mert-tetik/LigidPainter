@@ -60,6 +60,7 @@ void UI::elementInteraction(
                     settingsDialog.dialogControl.isActive()         || 
                     newProjectDialog.dialogControl.isActive()       || 
                     newTextureDialog.dialogControl.isActive()       || 
+                    textureEditorDialog.dialogControl.isActive()    || 
                     loadProjectDialog.dialogControl.isActive();   
 
     this->anyPanelHover = 

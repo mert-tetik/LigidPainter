@@ -163,7 +163,7 @@ public:
  };
 
 
-//!------------------------------GREETING DIALOG DIALOG------------------------------
+//!------------------------------ DISPLAYER DIALOG ------------------------------
 
 
 class DisplayerDialog
@@ -181,6 +181,39 @@ class DisplayerDialog
     //Public member functions
     void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
                 Skybox &skybox);
+ };
+
+
+//!------------------------------ DISPLAYER DIALOG ------------------------------
+
+
+class TextureEditorDialog
+ {
+ public:
+   Panel bgPanel;
+   Panel sectionPanel;
+   
+   DialogControl dialogControl;
+   std::vector<Element> resizeElements;
+   std::vector<Element> bluringElement;
+   std::vector<Element> noiseElements;
+   std::vector<Element> normalMapElements;
+   std::vector<Element> distortionElements;
+   std::vector<Element> imagesElements;
+
+   Button displayerBtn;
+
+   unsigned int displayingTexture;
+
+   int selectedSection = 0;
+
+   //Constructors
+   TextureEditorDialog();
+   TextureEditorDialog(ColorPalette colorPalette);
+   
+   //Public member functions
+   void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection);
+ 
  };
 
 

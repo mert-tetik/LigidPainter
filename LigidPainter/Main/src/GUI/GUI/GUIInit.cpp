@@ -437,6 +437,7 @@ void UI::init
     newTextureDialog            = NewTextureDialog(colorPalette);
     logDialog                   = LogDialog(colorPalette,materialEditorDialog.appMaterialModifiers);
     displayerDialog             = DisplayerDialog(colorPalette);
+    textureEditorDialog         = TextureEditorDialog(colorPalette);
     materialEditorDialog        = MaterialEditorDialog(colorPalette);
     textureSelectionDialog      = TextureSelectionDialog(colorPalette);
     loadProjectDialog           = LoadProjectDialog(colorPalette,materialEditorDialog.appMaterialModifiers);

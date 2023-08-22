@@ -46,6 +46,10 @@ Shader __to2DProcedural;
 Shader __sceneTilesShader;
 Shader __sceneAxisDisplayerShader;
 Shader __paintOverTextureGen;
+Shader __txtrEditorResizeShader;
+Shader __txtrEditorBlurShader;
+Shader __txtrEditorDistortionShader;
+Shader __txtrEditorNormalMapShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader =                 Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/PBR.frag"                                   ,nullptr    ,nullptr,   nullptr      );
@@ -72,6 +76,10 @@ void ShaderSystem::initShaderSystem(){
     __sceneTilesShader =              Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/SceneTiles.frag"                            ,nullptr    ,nullptr,   nullptr      );
     __sceneAxisDisplayerShader =      Shader("LigidPainter/Resources/Shaders/aVert/3D_model.vert"           ,   "LigidPainter/Resources/Shaders/aFrag/SceneAxisDisplayer.frag"                    ,nullptr    ,nullptr,   nullptr      );
     __paintOverTextureGen =           Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/aFrag/PaintOverTextureGen.frag"                   ,nullptr    ,nullptr,   nullptr      );
+    __txtrEditorResizeShader =        Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/TextureEditor/Resize.frag"                        ,nullptr    ,nullptr,   nullptr      );
+    __txtrEditorBlurShader =          Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/TextureEditor/Blur.frag"                          ,nullptr    ,nullptr,   nullptr      );
+    __txtrEditorDistortionShader =    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"        ,   "LigidPainter/Resources/Shaders/TextureEditor/Distortion.frag"                    ,nullptr    ,nullptr,   nullptr      );
+    __txtrEditorNormalMapShader =    Shader("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert"         ,   "LigidPainter/Resources/Shaders/TextureEditor/NormalMap.frag"                     ,nullptr    ,nullptr,   nullptr      );
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -145,4 +153,16 @@ Shader ShaderSystem::sceneAxisDisplayerShader(){
 }
 Shader ShaderSystem::paintOverTextureGen(){
     return __paintOverTextureGen;
+}
+Shader ShaderSystem::txtrEditorResizeShader(){
+    return __txtrEditorResizeShader;
+}
+Shader ShaderSystem::txtrEditorBlurShader(){
+    return __txtrEditorBlurShader;
+}
+Shader ShaderSystem::txtrEditorDistortionShader(){
+    return __txtrEditorDistortionShader;
+}
+Shader ShaderSystem::txtrEditorNormalMapShader(){
+    return __txtrEditorNormalMapShader;
 }

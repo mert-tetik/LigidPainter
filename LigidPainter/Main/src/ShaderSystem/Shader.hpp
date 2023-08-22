@@ -104,6 +104,10 @@ namespace ShaderSystem{
     Shader sceneTilesShader();
     Shader sceneAxisDisplayerShader();
     Shader paintOverTextureGen();
+    Shader txtrEditorResizeShader();
+    Shader txtrEditorBlurShader();
+    Shader txtrEditorDistortionShader();
+    Shader txtrEditorNormalMapShader();
 
     void initShaderSystem();
 };
