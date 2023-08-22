@@ -1,0 +1,14 @@
+#ligidFilter
+
+in vec2 TexCoords;
+uniform sampler2D txtr;
+out vec4 fragColor;
+
+void main(){
+    fragColor = vec4(texture(txtr, TexCoords).rgb, 1.);
+    fragColor.a = texture(txtr, TexCoords).a;
+
+    fragColor.r = 0.;
+    fragColor.g = max(max(fragColor.r, fragColor.g), fragColor.b);
+    fragColor.b = 0.;
+}
