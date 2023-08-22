@@ -50,8 +50,8 @@ public:
     /// @brief Creates shader program using vertex shader source code & fragment shader path
     void loadShaderSP(std::string vertexCode, std::string fragmentPath);
     
-    /// @brief Creates shader program using vertex shader source code & fragment shader path
-    void loadShaderPP(std::string vertexCode, std::string fragmentPath);
+    /// @brief Creates shader program using vertex shader path & fragment shader path
+    void loadShaderPP(std::string vertexPath, std::string fragmentPath);
 
     /// @brief replace the #pragma LIGID_INCLUDE with the code in the given path (LIGID_INCLUDE(givenPath))
     /// @param code the code

@@ -110,55 +110,55 @@ MaterialModifier::MaterialModifier(ColorPalette colorPalette, int modifierIndex)
     if(modifierIndex == TEXTURE_MATERIAL_MODIFIER){
         this->sections = createTextureModifier(colorPalette);
         this->title = "Texture Modifier";    
-        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag",nullptr,nullptr,nullptr);
+        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag");
         this->updateMaterialChannels = textureModifierUpdateMat;
     }
     else if(modifierIndex == DUST_MATERIAL_MODIFIER){
         this->sections = createDustModifier(colorPalette);
         this->title = "Dust Modifier";    
-        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag",nullptr,nullptr,nullptr);
+        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag");
         this->updateMaterialChannels = dustModifierUpdateMat;
     }
     else if(modifierIndex == ASPHALT_MATERIAL_MODIFIER){
         this->sections = createAsphaltModifier(colorPalette);
         this->title = "Asphalt Modifier";    
-        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/AsphaltModifier.frag",nullptr,nullptr,nullptr);
+        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/AsphaltModifier.frag");
         this->updateMaterialChannels = asphaltModifierUpdateMat;
     }
     else if(modifierIndex == FABRIC_MATERIAL_MODIFIER){
         this->sections = createFabricModifier(colorPalette);
         this->title = "Fabric Modifier";    
-        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/FabricModifier.frag",nullptr,nullptr,nullptr);
+        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/FabricModifier.frag");
         this->updateMaterialChannels = fabricModifierUpdateMat;
     }
     else if(modifierIndex == MOSS_MATERIAL_MODIFIER){
         this->sections = createMossModifier(colorPalette);
         this->title = "Moss Modifier";    
-        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MossModifier.frag",nullptr,nullptr,nullptr);
+        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MossModifier.frag");
         this->updateMaterialChannels = mossModifierUpdateMat;
     }
     else if(modifierIndex == RUST_MATERIAL_MODIFIER){
         this->sections = createRustModifier(colorPalette);
         this->title = "Rust Modifier";    
-        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/RustModifier.frag",nullptr,nullptr,nullptr);
+        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/RustModifier.frag");
         this->updateMaterialChannels = rustModifierUpdateMat;
     }
     else if(modifierIndex == SKIN_MATERIAL_MODIFIER){
         this->sections = createSkinModifier(colorPalette);
         this->title = "Skin Modifier";    
-        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SkinModifier.frag",nullptr,nullptr,nullptr);
+        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SkinModifier.frag");
         this->updateMaterialChannels = skinModifierUpdateMat;
     }
     else if(modifierIndex == SOLID_MATERIAL_MODIFIER){
         this->sections = createSolidModifier(colorPalette);
         this->title = "Solid Modifier";    
-        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SolidModifier.frag",nullptr,nullptr,nullptr);
+        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SolidModifier.frag");
         this->updateMaterialChannels = solidModifierUpdateMat;
     }
     else if(modifierIndex == WOODEN_MATERIAL_MODIFIER){
         this->sections = createWoodenModifier(colorPalette);
         this->title = "Wooden Modifier";    
-        this->shader = Shader("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/WoodenModifier.frag",nullptr,nullptr,nullptr);
+        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/WoodenModifier.frag");
         this->updateMaterialChannels = woodenModifierUpdateMat;
     }
 

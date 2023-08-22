@@ -1,0 +1,13 @@
+#ligidFilter
+
+in vec2 TexCoords;
+uniform sampler2D txtr;
+out vec4 fragColor;
+
+void main(){
+    fragColor = vec4(texture(txtr, TexCoords).rgb, 1.);
+    fragColor.a = texture(txtr, TexCoords).a;
+
+    fragColor.b *= 1.2;
+    fragColor.b += 0.1;
+}

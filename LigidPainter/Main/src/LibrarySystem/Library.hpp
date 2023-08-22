@@ -53,6 +53,8 @@ namespace Library{
     void addBrush       (Brush brush);
     /// @brief Pushes the element parameter back to the Models array 
     void addModel       (Model model);
+    /// @brief Pushes the element parameter back to the Filters array 
+    void addFilter      (Filter model);
     
     //----------- Get elements -----------
     /// @brief Returns the pointer of the element at the corresponding index from the Textures array 
@@ -63,6 +65,8 @@ namespace Library{
     Brush* getBrush       (int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Models array
     Model* getModel       (int index);
+    /// @brief Returns the pointer of the element at the corresponding index from the Filters array
+    Filter* getFilter      (int index);
 
     //----------- Get element array sizes -----------
     /// @brief Returns the size of the Textures array
@@ -73,6 +77,8 @@ namespace Library{
     int getBrushArraySize    ();
     /// @brief Returns the size of the Models array
     int getModelArraySize    ();
+    /// @brief Returns the size of the Filters array
+    int getFilterArraySize   ();
 
     //----------- Erase elements -------------
     /// @brief Erases the element at the corresponding index from the Textures array 
@@ -83,6 +89,8 @@ namespace Library{
     void eraseBrush     (int index);
     /// @brief Erases the element at the corresponding index from the Models array 
     void eraseModel     (int index);
+    /// @brief Erases the element at the corresponding index from the Filters array 
+    void eraseFilter     (int index);
     
     //----------- Clear vectors -------------
     /// @brief Clears the Textures array 
@@ -93,8 +101,11 @@ namespace Library{
     void clearBrushes    ();
     /// @brief Clears the TDModels array 
     void clearModels     ();
+    /// @brief Clears the Filters array 
+    void clearFilters    ();
 
     //----------- Vector Pointers -------------
+    //TODO Remove this function
     std::vector<Texture>* getTextureVectorPointer();
 
     //----------- Selected Library Element -------------

@@ -118,6 +118,18 @@ std::string showFileSystemObjectSelectionDialog
                                         );
         }
 
+        else if(filterTemplate == FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_FILTER){
+            const char* filters[1] = { "*.lgdfilter" };
+            path = tinyfd_openFileDialog(
+                                            title.c_str(), //Title of the dialog
+                                            defaultPath.c_str(), //The default path
+                                            1,  //Size of the filters array
+                                            filters, //File extension filters
+                                            "", //Single extension description (not used)
+                                            multipleSelection //Enable multiple selections
+                                        );
+        }
+
     }
     
     //Export (extract / save) file dialog

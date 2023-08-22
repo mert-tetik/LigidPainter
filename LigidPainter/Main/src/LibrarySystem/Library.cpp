@@ -25,6 +25,7 @@ std::vector<Texture> __textures;
 std::vector<Material> __materials;
 std::vector<Brush> __brushes;
 std::vector<Model> __TDModels;
+std::vector<Filter> __filters;
 
 int __selectedElementIndex = 0;
 
@@ -86,6 +87,20 @@ void Library::uniqueNameControl(){
             __changed = true;
         }    
     }
+    
+    for (int i = __filters.size() - 1; i >= 0; i--)
+    {
+        std::vector<std::string> filtersStr;
+        for (size_t istr = 0; istr < __filters.size(); istr++)
+        {
+            if(i != istr)
+                filtersStr.push_back(__filters[istr].title);
+        }
+
+        if(UTIL::uniqueName(__filters[i].title, filtersStr)){
+            __changed = true;
+        }    
+    }
 }
 
 void Library::addTexture(Texture texture){
@@ -120,6 +135,12 @@ void Library::addModel(Model model){
     __changed = true;
     
     __TDModels.push_back(model);
+}
+
+void Library::addFilter(Filter filter){
+    __changed = true;
+    
+    __filters.push_back(filter);
 }
 
 void Library::eraseTexture   (int index){
@@ -190,6 +211,20 @@ void Library::eraseModel     (int index){
     __TDModels.erase(__TDModels.begin() + index);
 }
 
+void Library::eraseFilter     (int index){
+    
+    if(index >= __filters.size()){
+        LGDLOG::start<< "ERROR! : Couldn't erase the filter : Requested filter index is out of boundaries." << LGDLOG::end;
+        return;
+    }
+
+    __changed = true;
+    
+    //TODO Delete the displaying texture
+
+    __filters.erase(__filters.begin() + index);
+}
+
 void Library::clearTextures   (){
     __changed = true;
     
@@ -239,6 +274,17 @@ void Library::clearModels     (){
     }
 
     __TDModels.clear();
+}
+
+void Library::clearFilters     (){
+    __changed = true;
+    
+    for (size_t i = 0; i < __filters.size(); i++)
+    {
+        //TODO Delete displaying texture
+    }
+
+    __filters.clear();
 }
 
 void Library::changeSelectedElementIndex(int newI){
@@ -292,6 +338,15 @@ Model* Library::getModel(int index){
     return &__TDModels[index];
 }
 
+Filter* Library::getFilter(int index){
+    if(index >= __filters.size()){
+        LGDLOG::start<< "ERROR! : Couldn't get the filter : Requested filter index is out of boundaries." << LGDLOG::end;
+        Filter a = Filter();
+        return &a;
+    }
+    return &__filters[index];
+}
+
 int Library::getTextureArraySize(){
     return __textures.size();
 }
@@ -303,6 +358,9 @@ int Library::getBrushArraySize(){
 }
 int Library::getModelArraySize(){
     return __TDModels.size();
+}
+int Library::getFilterArraySize(){
+    return __filters.size();
 }
 
 void Library::textureGiveUniqueId(int index){

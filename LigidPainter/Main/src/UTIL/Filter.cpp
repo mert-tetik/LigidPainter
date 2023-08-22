@@ -52,14 +52,78 @@ int Filter::load(std::string path){
     }
 
     std::string code;
+
+    code += "#version 400 core\n";
     
     std::string line;
     while (std::getline(rf, line))
     {
-        code += line;
+        code += line + "\n";
     }
     
     this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", code);
 
+    this->generateDisplayingTexture();
+
     return 1;
+}
+
+void Filter::generateDisplayingTexture(){
+    int frameCounter = 0;
+    
+    glm::vec2 txtrRes = Settings::appTextures().greetingDialogImage.getResolution();
+
+    glGenTextures(1, &this->displayingTxtr);
+    glActiveTexture(GL_TEXTURE0);
+
+    glBindTexture(GL_TEXTURE_2D, this->displayingTxtr);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 100, 100, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    //Create the framebuffer
+    unsigned int captureFBO;
+    glGenFramebuffers(1,&captureFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
+    
+    //Bind the displaying texture to the capture framebuffer
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->displayingTxtr, 0);
+
+    //Clear the capture frame buffer(displaying texture) with color alpha zero
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    //Stroke resolution is 100
+    glm::vec2 displayRes = glm::vec2(100);
+
+    glViewport(0, 0, displayRes.x, displayRes.y);
+    
+    this->shader.use();
+
+    glm::vec2 scale = displayRes / glm::vec2(2);
+    glm::vec3 pos = glm::vec3(displayRes / glm::vec2(2),1.f);
+    glm::mat4 projection = glm::ortho(0.f, displayRes.x, displayRes.y, 0.f);
+    this->shader.setVec2("scale", scale); //Cover the screen
+    this->shader.setVec3("pos", pos); //Cover the screen
+    this->shader.setMat4("projection", projection); //Cover the screen
+    
+    this->shader.setInt("txtr", 0); //Cover the screen
+    this->shader.setVec2("txtrResolution", txtrRes); //Cover the screen
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, Settings::appTextures().greetingDialogImage.ID);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    //Finish
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ShaderSystem::buttonShader().use();
+
+    glDeleteFramebuffers(1,&captureFBO);
 }

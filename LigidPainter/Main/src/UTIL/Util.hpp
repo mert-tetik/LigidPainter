@@ -29,6 +29,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string> //std::string
 #include <map> //std::map
 
+#include "ShaderSystem/Shader.hpp"
+
 //forward declerations :
 
 /// @brief forward declared Library AppTextures structure
@@ -300,11 +302,15 @@ public:
 class Filter{
 public:
     Shader shader;
+    unsigned int displayingTxtr;
+
+    std::string title;
 
     Filter();
 
     int load(std::string path);
-}
+    void generateDisplayingTexture();
+};
 
 class Project
 {
@@ -474,11 +480,6 @@ public:
     
     /*! 
     * @brief Init the painter class. Create textures, buffer objects & get necessary member variables
-    * @param paintingShader the painting shader
-    * @param buttonShader the button shader
-    * @param tdModelShader the 3D model shader
-    * @param depth3DShader depth shader
-    * @param textureUpdatingShader texture updating shader
     */
     void initPainter();
     
