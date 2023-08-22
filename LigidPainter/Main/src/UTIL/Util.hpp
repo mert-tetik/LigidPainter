@@ -297,6 +297,15 @@ public:
 
 };
 
+class Filter{
+public:
+    Shader shader;
+
+    Filter();
+
+    int load(std::string path);
+}
+
 class Project
 {
 public:

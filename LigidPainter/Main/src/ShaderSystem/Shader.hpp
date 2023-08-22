@@ -41,13 +41,17 @@ public:
     /// @brief Default constructor (is not used) 
     Shader();
 
-    /// @brief Create the shader program compiling the shader code in the given paths (give nullptr if the shader is not used)
-    /// @param vertexPath Vertex shader file (.vert file)
-    /// @param fragmentPath Fragment shader file (.frag file)
-    /// @param geometryPath Geometry shader file (.geom file)
-    /// @param tessControlPath Tessellation control shader file (.tc file)
-    /// @param tessEvalPath Tessellation evaluation shader file (.te file)
-    Shader(const char* vertexPath, const char* fragmentPath, const char* geometryPath, const char* tessControlPath, const char* tessEvalPath);
+    /// @brief Creates shader program using source codes
+    void loadShader(std::string vertexCode, std::string fragmentCode);
+    
+    /// @brief Creates shader program using vertex shader path & fragment shader source code
+    void loadShaderPS(std::string vertexPath, std::string fragmentCode);
+    
+    /// @brief Creates shader program using vertex shader source code & fragment shader path
+    void loadShaderSP(std::string vertexCode, std::string fragmentPath);
+    
+    /// @brief Creates shader program using vertex shader source code & fragment shader path
+    void loadShaderPP(std::string vertexCode, std::string fragmentPath);
 
     /// @brief replace the #pragma LIGID_INCLUDE with the code in the given path (LIGID_INCLUDE(givenPath))
     /// @param code the code

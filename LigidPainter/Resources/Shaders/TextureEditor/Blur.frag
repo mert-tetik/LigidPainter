@@ -27,7 +27,6 @@ vec4 boxBlur(vec2 uv)
 	return avg;
 }
 
-
 #define pow2(x) (x * x)
 
 const float pi = atan(1.0) * 4.0;
