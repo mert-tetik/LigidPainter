@@ -225,9 +225,10 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
 
 
         if (   //Conditions to turn any context menu off
-                *Mouse::LClick()|| //Mouse left click
-                *Mouse::RClick()|| //Mouse right click
-                *Mouse::MClick()|| //Mouse middle click
+                *Mouse::LClick() || //Mouse left click
+                *Mouse::RClick() || //Mouse right click
+                *Mouse::MClick() || //Mouse middle click
+                *Mouse::mouseScroll() || //Mouse middle click
                 getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS|| //Pressed to escape key 
                 getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS //Pressed to enter key
             )
