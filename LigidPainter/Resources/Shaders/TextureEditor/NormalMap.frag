@@ -26,7 +26,7 @@ vec2 texNormalMap(in vec2 uv)
     #define pow2(x) (x * x)
 
 const float pi = atan(1.0) * 4.0;
-const int samples = 35;
+const int samples = 16;
 const float sigma = float(samples) * 0.25;
 
 float gaussian(vec2 i) {
@@ -46,14 +46,14 @@ void main()
             offset = vec2(x, y);
             weight = gaussian(offset);
                 
-            normal += texNormalMap(uv + (1./txtrResolution) * offset) * weight;
+            normal += texNormalMap(uv + (1./txtrResolution) * offset * (blurVal * 5.)) * weight;
             accum += weight;
         }
     }
 
     //normal /= accum;
 
-    normal *= strength;
+    normal *= (strength * 5.);
     normal += 0.5;
     
     if(grayScale == 0)

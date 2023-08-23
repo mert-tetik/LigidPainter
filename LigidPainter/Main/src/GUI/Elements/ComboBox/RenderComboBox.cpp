@@ -41,6 +41,8 @@ void ComboBox::render(
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
     
+    selectionDone = false;
+
     if(this->pressed)
         glDepthFunc(GL_ALWAYS);
     
@@ -141,6 +143,7 @@ void ComboBox::render(
                 //Mouse left button pressed on top of the button
                 selectedIndex = i;
                 pressed = false;
+                selectionDone = true;
                 *Mouse::LClick() = false;
             }
             else

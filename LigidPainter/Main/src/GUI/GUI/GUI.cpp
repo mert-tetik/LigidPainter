@@ -111,7 +111,7 @@ bool Element::isInteracted(){
         return true;
     if(this->state == 2 && this->checkBox.hover && Mouse::LClick())
         return true;
-    if(this->state == 3 && this->comboBox.pressed)
+    if(this->state == 3 && this->comboBox.selectionDone)
         return true;
     if(this->state == 4 && this->textBox.active)
         return true;

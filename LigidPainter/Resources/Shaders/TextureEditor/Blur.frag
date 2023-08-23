@@ -17,7 +17,7 @@ vec4 boxBlur(vec2 uv)
     vec4 avg = vec4(0.0);
     for (int i=-kSize; i <= kSize; ++i) {
         for (int j = -kSize; j <= kSize; ++j) {
-            vec2 coord = (uv + vec2(float(i), float(j)) / txtrResolution.xy * strength);
+            vec2 coord = (uv + vec2(float(i), float(j)) / txtrResolution.xy * (strength * 6.));
             avg += texture(txtr, coord);
         }
     }
@@ -46,9 +46,9 @@ vec4 blur(sampler2D sp, vec2 uv, vec2 scale) {
     for (int x = -samples / 2; x < samples / 2; ++x) {
         for (int y = -samples / 2; y < samples / 2; ++y) {
             offset = vec2(x, y);
-            weight = gaussian(offset);
+            weight = gaussian(offset); 
                 
-            col += texture(sp, uv + scale * offset) * weight;
+            col += texture(sp, uv + scale * offset * (strength * 6.)) * weight;
             accum += weight;
         }
     }
@@ -80,7 +80,7 @@ vec4 directionalBlur(vec2 uv)
     float r = radians(directionalDirection);
     vec2 direction = vec2(sin(r), cos(r));
     
-    return dirBlur(txtr, uv, strength*direction);
+    return dirBlur(txtr, uv, (strength / 5.) * direction);
 }
 
 // radial blur via https://developer.nvidia.com/gpugems/GPUGems3/gpugems3_ch13.html
@@ -122,12 +122,18 @@ vec4 radialBlur()
 
 float gamma = 1.;
 float BRIGHT_SPOT_TRESHOLD = 0.5;
-int CONV_SIDE = int(strength * 40.); //20 (bigger blur and performance comparation with separable one)
-float BLUR_RADIUS = strength * 40.; //20 (bigger blur and performance comparation with separable one)
+int CONV_SIDE = int(strength * 20.); //20 (bigger blur and performance comparation with separable one)
+float BLUR_RADIUS = strength * 20.; //20 (bigger blur and performance comparation with separable one)
 
 vec4 BriSp(vec4 p){
-    if(p.x + p.y + p.z > BRIGHT_SPOT_TRESHOLD * 3. )p = (1. / (1. - p) - 1.) * (1. - BRIGHT_SPOT_TRESHOLD);
+    vec4 a = p;
+    if(p.x + p.y + p.z > BRIGHT_SPOT_TRESHOLD * 3. )
+        p = (1. / (1. - p) - 1.) * (1. - BRIGHT_SPOT_TRESHOLD);
+
     p = clamp(p,0.,500.);
+    
+    p = mix(a, p, strength);
+    
     return p;
 }
 
@@ -139,9 +145,7 @@ vec4 clring(vec2 n){
 
 vec4 lensBlur(){
     
-    vec2 un = TexCoords * txtrResolution;
-    
-    un.x -= txtrResolution.y / 2.;
+    vec2 un = TexCoords * txtrResolution.y;
     
     vec2 u_=vec2(0);
     float n=0.;

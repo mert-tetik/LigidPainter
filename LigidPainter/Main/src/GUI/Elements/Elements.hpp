@@ -209,6 +209,7 @@ public:
     glm::vec4 textColor2;
     glm::vec4 bgColor;
     bool pressed = false;
+    bool selectionDone = false;
     float textScale;
     glm::vec3 outlineColor;
     glm::vec3 outlineColor2;

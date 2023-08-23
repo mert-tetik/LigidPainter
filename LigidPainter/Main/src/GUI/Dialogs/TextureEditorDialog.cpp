@@ -185,7 +185,10 @@ TextureEditorDialog::TextureEditorDialog(
 void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsigned int destTxtr){
     
     //Displaying resolution
+    glm::vec2 txtrRes = receivedTexture.getResolution();
     glm::vec2 displayRes = receivedTexture.getResolution();
+    if(this->selectedSection == 0 && resizeElements[5].textBox.text != "" && resizeElements[6].textBox.text != "")
+        displayRes = glm::vec2(std::stoi(resizeElements[5].textBox.text), std::stoi(resizeElements[6].textBox.text));
 
     glm::mat4 projection = glm::ortho(0.f, displayRes.x, displayRes.y, 0.f);
     glm::vec3 pos = glm::vec3(displayRes.x / 2.f, displayRes.y / 2.f, 0.9f);
@@ -217,9 +220,8 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         ShaderSystem::txtrEditorResizeShader().setVec2("scale", scale);
     
         ShaderSystem::txtrEditorResizeShader().setInt("txtr", 0);
-        ShaderSystem::txtrEditorResizeShader().setVec2("txtrResolution", receivedTexture.getResolution());
-        if(resizeElements[5].textBox.text != "" && resizeElements[6].textBox.text != "")
-            ShaderSystem::txtrEditorResizeShader().setVec2("destTxtrResolution", glm::vec2(std::stoi(resizeElements[5].textBox.text), std::stoi(resizeElements[6].textBox.text)));
+        ShaderSystem::txtrEditorResizeShader().setVec2("txtrResolution", txtrRes);
+        ShaderSystem::txtrEditorResizeShader().setVec2("destTxtrResolution", displayRes);
         
         ShaderSystem::txtrEditorResizeShader().setInt("wrapingIndex", resizeElements[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorResizeShader().setVec3("wrapingColor", resizeElements[1].button.color);
@@ -251,7 +253,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         ShaderSystem::txtrEditorBlurShader().setVec2("scale", scale);
     
         ShaderSystem::txtrEditorBlurShader().setInt("txtr", 0);
-        ShaderSystem::txtrEditorBlurShader().setVec2("txtrResolution", receivedTexture.getResolution());
+        ShaderSystem::txtrEditorBlurShader().setVec2("txtrResolution", displayRes);
         ShaderSystem::txtrEditorBlurShader().setInt("blurIndex", bluringElement[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorBlurShader().setFloat("directionalDirection", bluringElement[1].rangeBar.value);
         ShaderSystem::txtrEditorBlurShader().setVec2("radialPos", glm::vec2(bluringElement[2].rangeBar.value, bluringElement[3].rangeBar.value));
@@ -270,8 +272,10 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         ShaderSystem::txtrEditorNormalMapShader().setVec2("scale", scale);
     
         ShaderSystem::txtrEditorNormalMapShader().setInt("txtr", 0);
+        ShaderSystem::txtrEditorNormalMapShader().setVec2("txtrResolution", displayRes);
         ShaderSystem::txtrEditorNormalMapShader().setInt("grayScale", normalMapElements[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorNormalMapShader().setFloat("strength", normalMapElements[1].rangeBar.value);
+        ShaderSystem::txtrEditorNormalMapShader().setFloat("blurVal", normalMapElements[2].rangeBar.value);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
@@ -287,7 +291,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     
         ShaderSystem::txtrEditorDistortionShader().setInt("txtr", 0);
         ShaderSystem::txtrEditorDistortionShader().setInt("distortionTxtr", 1);
-        ShaderSystem::txtrEditorDistortionShader().setVec2("txtrResolution", receivedTexture.getResolution());
+        ShaderSystem::txtrEditorDistortionShader().setVec2("txtrResolution", displayRes);
         ShaderSystem::txtrEditorDistortionShader().setInt("distortionIndex", distortionElements[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorDistortionShader().setFloat("fbmRoughness", distortionElements[1].rangeBar.value);
         ShaderSystem::txtrEditorDistortionShader().setInt("fbmOctaves", distortionElements[2].rangeBar.value);
@@ -315,7 +319,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
             this->filter.shader.setVec2("scale", scale);
         
             this->filter.shader.setInt("txtr", 0);
-            this->filter.shader.setVec2("txtrResolution", receivedTexture.getResolution());
+            this->filter.shader.setVec2("txtrResolution", displayRes);
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
