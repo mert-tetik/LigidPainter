@@ -581,15 +581,12 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
         Library::addTexture(newTxtr);
     }
 
-    /*
     //End the dialog
-    if((panel.sections[0].elements[2].button.hover && *Mouse::LClick()) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
-            panel.sections[0].elements[0].button.clickState1 = false;
             dialogControl.unActivate();
         }
     }
-    */
 
     dialogControl.updateEnd(timer,0.15f);
 }
