@@ -120,13 +120,14 @@ TextureEditorDialog::TextureEditorDialog(
 
     this->resizeElements = {
         ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), colorPalette, {"Stretch", "Alpha Zero", "Color", "Repeat", "Mirror"}, "Wraping Function", 0.f),
-        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Wraping Color", Texture(), 1.f, true),
+        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Wraping Color", Texture(), 1.f, false),
         ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), colorPalette, {"Top Left", "Top Right", "Bottom Left", "Bottom Right", "Center", "Custom"}, "Origin Point", 0.f),
         RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Origin Point X", Texture(), 0.f, 0.f, 1.f, 0.f),
         RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Origin Point Y", Texture(), 0.f, 0.f, 1.f, 0.f),
         TextBox(0, glm::vec2(8.f, 2.f), colorPalette, "1024", 0.f, false),
         TextBox(0, glm::vec2(8.f, 2.f), colorPalette, "1024", 0.f, false)
     };
+    this->resizeElements[1].button.colorSelection = true;
     
     this->bluringElement = {
         ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), colorPalette, {"Box", "Gaussian", "Directional", "Radial", "Lens"}, "Bluring Function", 0.f),
@@ -194,7 +195,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     glm::vec2 scale = glm::vec2(displayRes.x / 2.f, displayRes.y / 2.f);
     
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, displayingTexture);
+    glBindTexture(GL_TEXTURE_2D, destTxtr);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes.x, displayRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -241,7 +242,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         }
         if(resizeElements[0].comboBox.selectedIndex == 2){
             wrapParam = GL_CLAMP_TO_BORDER;
-            GLfloat borderColor[] = { resizeElements[0].button.color.r, resizeElements[0].button.color.g, resizeElements[0].button.color.b, 1. };  // Replace r, g, b, a with the desired color values
+            GLfloat borderColor[] = { resizeElements[1].button.color.r, resizeElements[1].button.color.g, resizeElements[1].button.color.b, 1. };  // Replace r, g, b, a with the desired color values
             glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
         }
         if(resizeElements[0].comboBox.selectedIndex == 3)
@@ -451,11 +452,8 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
             if(resizeElements[i].isInteracted())
                 anyInteraction = true;
             
-            
-
             eCnt++;
         }
-
     }
     
     if(this->selectedSection == 1){
