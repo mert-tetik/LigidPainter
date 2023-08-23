@@ -50,6 +50,7 @@ Shader __txtrEditorResizeShader;
 Shader __txtrEditorBlurShader;
 Shader __txtrEditorDistortionShader;
 Shader __txtrEditorNormalMapShader;
+Shader __splitTexturesShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -80,6 +81,7 @@ void ShaderSystem::initShaderSystem(){
     __txtrEditorBlurShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/TextureEditor/Blur.frag");
     __txtrEditorDistortionShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/TextureEditor/Distortion.frag");
     __txtrEditorNormalMapShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/TextureEditor/NormalMap.frag");
+    __splitTexturesShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/SplitTextures.frag");
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -165,4 +167,7 @@ Shader ShaderSystem::txtrEditorDistortionShader(){
 }
 Shader ShaderSystem::txtrEditorNormalMapShader(){
     return __txtrEditorNormalMapShader;
+}
+Shader ShaderSystem::splitTexturesShader(){
+    return __splitTexturesShader;
 }

@@ -107,6 +107,16 @@ bool Project::loadProject(std::string ligidFilePath,ColorPalette colorPalette, A
             Library::addBrush(brush);
         }
     }
+
+    //Load the filters
+    Library::clearFilters();
+    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Filters")){
+        std::string filterPath = entry.path().string();
+
+        Filter filter;
+        filter.load(filterPath);
+        Library::addFilter(filter);
+    }
     
     //Load the tdmodels
     Library::clearModels();

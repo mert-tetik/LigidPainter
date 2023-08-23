@@ -35,6 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #define TD_MODEL_FOLDER_CREATION 0
 #define BRUSH_FOLDER_CREATION 1
+#define FILTER_FOLDER_CREATION 2
 
 //Forward declaration for the util functions
 void completeFolder(std::string path, int action);
@@ -145,5 +146,20 @@ void completeFolder(std::string path, int action){
         std::filesystem::copy("./LigidPainter/Resources/3D Models/sphere.fbx", path + UTIL::folderDistinguisher() + "sphere.fbx");
         std::filesystem::copy("./LigidPainter/Resources/3D Models/plane.fbx", path + UTIL::folderDistinguisher() + "plane.fbx");
     }
-
+    else if(action == FILTER_FOLDER_CREATION){
+        for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Filters/")) {
+            if (std::filesystem::is_regular_file(entry)) {
+                // Get the filename from the full path
+                std::string filename = entry.path().filename().string();
+                
+                // Create the destination path by combining the destination folder path and filename
+                std::filesystem::path destinationPath = std::filesystem::path(path) / filename;
+                
+                // Copy the file
+                std::filesystem::copy_file(entry.path(), destinationPath, std::filesystem::copy_options::overwrite_existing);
+                
+                std::cout << "Copied: " << filename << std::endl;
+            }
+        }
+    }
 }

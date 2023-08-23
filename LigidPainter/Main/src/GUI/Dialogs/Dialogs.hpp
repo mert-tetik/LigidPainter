@@ -374,7 +374,7 @@ public:
    //Public member functions
    void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, TextRenderer& textRenderer, int displayingTextureRes);
 
-   void generateDisplayingTexture(Texture& txtr, int displayingTextureRes);
+   void generateDisplayingTexture(Texture& txtr, Filter filter, int displayingTextureRes, bool filterSelection);
 
 };
 

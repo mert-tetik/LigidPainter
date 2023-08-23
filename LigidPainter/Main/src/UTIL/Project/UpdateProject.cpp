@@ -85,7 +85,6 @@ void Project::updateProject(){
         FileHandler::writeLGDBRUSHFile(brushFolderPath, *Library::getBrush(i));
     }
     
-    
     //!3D Models
     std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
 
