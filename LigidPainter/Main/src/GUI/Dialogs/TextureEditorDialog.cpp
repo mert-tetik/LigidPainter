@@ -183,7 +183,6 @@ TextureEditorDialog::TextureEditorDialog(
 }
 
 void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsigned int destTxtr){
-    
     //Displaying resolution
     glm::vec2 txtrRes = receivedTexture.getResolution();
     glm::vec2 displayRes = receivedTexture.getResolution();
@@ -219,6 +218,9 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         ShaderSystem::txtrEditorResizeShader().setVec3("pos", pos);
         ShaderSystem::txtrEditorResizeShader().setVec2("scale", scale);
     
+        if(resizeElements[0].comboBox.selectedIndex == 0)
+            txtrRes = displayRes;
+
         ShaderSystem::txtrEditorResizeShader().setInt("txtr", 0);
         ShaderSystem::txtrEditorResizeShader().setVec2("txtrResolution", txtrRes);
         ShaderSystem::txtrEditorResizeShader().setVec2("destTxtrResolution", displayRes);
@@ -232,6 +234,16 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
 
         unsigned int wrapParam = GL_REPEAT;
 
+        if(resizeElements[0].comboBox.selectedIndex == 1){
+            wrapParam = GL_CLAMP_TO_BORDER;
+            GLfloat borderColor[] = { 0.f, 0.f, 0.f, 0.f };  // Replace r, g, b, a with the desired color values
+            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+        }
+        if(resizeElements[0].comboBox.selectedIndex == 2){
+            wrapParam = GL_CLAMP_TO_BORDER;
+            GLfloat borderColor[] = { resizeElements[0].button.color.r, resizeElements[0].button.color.g, resizeElements[0].button.color.b, 1. };  // Replace r, g, b, a with the desired color values
+            glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+        }
         if(resizeElements[0].comboBox.selectedIndex == 3)
             wrapParam = GL_REPEAT;
         else if(resizeElements[0].comboBox.selectedIndex == 4)
@@ -333,6 +345,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     ShaderSystem::buttonShader().use();
     glDeleteFramebuffers(1, &captureFBO);
     glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+
 }
 
 void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture){
@@ -349,7 +362,12 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
     
     if(dialogControl.firstFrameActivated){
         resizeElements[5].textBox.text = std::to_string(receivedTexture.getResolution().x); 
+        resizeElements[5].textBox.activeChar = resizeElements[5].textBox.text.size()-1; 
+        resizeElements[5].textBox.activeChar2 = resizeElements[5].textBox.text.size()-1;
+         
         resizeElements[6].textBox.text = std::to_string(receivedTexture.getResolution().y);
+        resizeElements[6].textBox.activeChar = resizeElements[6].textBox.text.size()-1; 
+        resizeElements[6].textBox.activeChar2 = resizeElements[6].textBox.text.size()-1;
         this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
     }
 
@@ -432,6 +450,8 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
 
             if(resizeElements[i].isInteracted())
                 anyInteraction = true;
+            
+            
 
             eCnt++;
         }
