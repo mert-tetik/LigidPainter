@@ -332,6 +332,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     ShaderSystem::buttonShader().use();
     glDeleteFramebuffers(1, &captureFBO);
+    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
 }
 
 void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture){
@@ -346,10 +347,17 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
     this->bgPanel.render(timer, textRenderer, true);
     this->sectionPanel.render(timer, textRenderer, true);
     
+    if(dialogControl.firstFrameActivated){
+        resizeElements[5].textBox.text = std::to_string(receivedTexture.getResolution().x); 
+        resizeElements[6].textBox.text = std::to_string(receivedTexture.getResolution().y);
+        this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
+    }
+
     for (size_t i = 0; i < this->sectionPanel.sections[0].elements.size(); i++)
     {
         if(this->sectionPanel.sections[0].elements[i].button.clickState1 && this->selectedSection != i){
             this->selectedSection = i;
+            this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
             break;
         }
     }
