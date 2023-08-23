@@ -202,6 +202,9 @@ class TextureEditorDialog
    std::vector<Element> distortionElements;
    std::vector<Element> imagesElements;
 
+   Button saveButton;
+   Button saveAsButton;
+   
    Button filterBtn;
    Filter filter;
 
@@ -216,9 +219,9 @@ class TextureEditorDialog
    TextureEditorDialog(ColorPalette colorPalette);
    
    //Public member functions
-   void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection);
+   void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture);
 
-   void updateDisplayingTexture(Texture& receivedTexture);
+   void updateDisplayingTexture(Texture& receivedTexture, unsigned int destTxtr);
  };
 
 

@@ -66,7 +66,11 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
                 duplicatedTexture.ID = Library::getTexture(contextMenus[i].selectedElement)->duplicateTexture();
                 Library::addTexture(duplicatedTexture);
             }
-            if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to delete button
+            if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to edit button
+                textureEditorSelectedTxtr = *Library::getTexture(contextMenus[i].selectedElement);
+                this->textureEditorDialog.dialogControl.activate();
+            }
+            if(contextMenus[i].contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){//Clicked to delete button
                 Library::eraseTexture(contextMenus[i].selectedElement);
             }
         }
@@ -242,7 +246,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
     }
 
 
-        //*Show context menu
+    //*Show context menu
     //For library panel displayer
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++)
     {

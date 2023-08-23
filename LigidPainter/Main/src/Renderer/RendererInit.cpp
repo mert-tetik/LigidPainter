@@ -208,7 +208,7 @@ void Renderer::createContextMenus(){
 
     //!Create context menus                                                   0            1                  2               3                     4           5  
     //Library panel
-    contextMenus.push_back(ContextMenu(colorPalette,{"Rename"  , "Duplicate"       , "Copy Path"   , "Delete"})); //Textures  0
+    contextMenus.push_back(ContextMenu(colorPalette,{"Rename"  , "Duplicate"       , "Copy Path"   , "Edit"        ,    "Delete"})); //Textures  0
     contextMenus.push_back(ContextMenu(colorPalette,{"Edit"    , "Add To Scene"    , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete",   "Export"}));    //Materials 1
     contextMenus.push_back(ContextMenu(colorPalette,{"Use"     , "Apply Current"   , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"}));    //Brushes   2
     

@@ -28,6 +28,7 @@
 #include "3D/ThreeD.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <iostream>
@@ -67,7 +68,7 @@ TextureEditorDialog::TextureEditorDialog(
                 )
             }
         },
-        glm::vec2(34.f, 38.f),
+        glm::vec2(34.f, 34.f),
         glm::vec3(50.f,50.f,0.8f),
         colorPalette.mainColor,
         colorPalette.thirdColor,
@@ -101,7 +102,7 @@ TextureEditorDialog::TextureEditorDialog(
                 )
             }
         },
-        glm::vec2(6.f, 38.f),
+        glm::vec2(6.f, 34.f),
         glm::vec3(50.f,50.f,0.8f),
         colorPalette.secondColor,
         colorPalette.thirdColor,
@@ -173,12 +174,15 @@ TextureEditorDialog::TextureEditorDialog(
     };
 
     this->filterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), colorPalette, "Filter", Texture(), 1.f, false);
-    displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), colorPalette, "", this->displayingTexture, 1.f,true);
+    this->displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), colorPalette, "", this->displayingTexture, 1.f,true);
+    
+    this->saveButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), colorPalette, "Save", Texture(), 1.f, false);
+    this->saveAsButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), colorPalette, "Save As", Texture(), 1.f, false);
 
     distortionElements[8].button.textureSelection = true;
 }
 
-void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture){
+void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsigned int destTxtr){
     
     //Displaying resolution
     glm::vec2 displayRes = receivedTexture.getResolution();
@@ -198,7 +202,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture){
     glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
     
     //Bind the displaying texture to the capture framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->displayingTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, destTxtr, 0);
 
     //Clear the capture frame buffer(displaying texture) with color alpha zero
     glClearColor(0,0,0,0);
@@ -326,11 +330,8 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture){
     glDeleteFramebuffers(1, &captureFBO);
 }
 
-void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection){
+void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture){
     
-    Texture receivedTexture = Settings::appTextures().noMaterialConnectedToTheMeshWarningImage;
-
-    this->dialogControl.activate();
     dialogControl.updateStart();
 
     this->sectionPanel.pos = this->bgPanel.pos;
@@ -557,8 +558,28 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
 
     }
 
+    this->saveButton.pos = displayerBtn.pos;
+    this->saveButton.pos.y += displayerBtn.scale.y * 1.2;
+    this->saveButton.render(timer, textRenderer, true);
+    this->saveAsButton.pos = displayerBtn.pos;
+    this->saveAsButton.pos.y += displayerBtn.scale.y * 1.2 + saveButton.scale.y * 4.f;
+    this->saveAsButton.render(timer, textRenderer, true);
+
     if(anyInteraction)
-        this->updateDisplayingTexture(receivedTexture);
+        this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
+
+    if(this->saveButton.clicked){
+        Texture txtr = receivedTexture.duplicateTexture();
+        this->updateDisplayingTexture(txtr, receivedTexture.ID);
+        glDeleteTextures(1, &txtr.ID);
+    }
+
+    if(this->saveAsButton.clicked){
+        Texture newTxtr;
+        newTxtr = Texture(nullptr, receivedTexture.getResolution().x, receivedTexture.getResolution().y);
+        this->updateDisplayingTexture(receivedTexture, newTxtr.ID);
+        Library::addTexture(newTxtr);
+    }
 
     /*
     //End the dialog
