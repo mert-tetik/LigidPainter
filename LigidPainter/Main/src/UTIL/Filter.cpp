@@ -69,8 +69,6 @@ int Filter::load(std::string path){
 }
 
 void Filter::generateDisplayingTexture(){
-    int frameCounter = 0;
-    
     glm::vec2 txtrRes = Settings::appTextures().greetingDialogImage.getResolution();
 
     glGenTextures(1, &this->displayingTxtr);

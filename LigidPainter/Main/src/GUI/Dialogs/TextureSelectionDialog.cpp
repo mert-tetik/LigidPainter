@@ -276,8 +276,7 @@ static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, ColorPalette& colorPalette, bool filterSelection);
 static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex, ColorPalette& colorPalette);
 
-void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, TextRenderer& textRenderer, int displayingTextureRes){
-    bool filterSelection = true; 
+void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, Filter& receivedFilter, TextRenderer& textRenderer, int displayingTextureRes, bool filterSelection){
     
     this->dialogControl.activate();
         
@@ -296,7 +295,10 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         dialogControl.updateStart();
 
-        generateDisplayingTexture(displayingTexture, *Library::getFilter(this->selectedTextureIndex), 512, filterSelection);
+        if(filterSelection && this->selectedTextureIndex < Library::getFilterArraySize())
+            generateDisplayingTexture(displayingTexture, *Library::getFilter(this->selectedTextureIndex), 512, filterSelection);
+        else
+            generateDisplayingTexture(displayingTexture, Filter(), 512, filterSelection);
 
         updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, colorPalette, filterSelection);
 
@@ -364,15 +366,21 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         // Pressed to the select button
         if(this->subPanel.sections[0].elements[8].button.clicked){
-            receivedTexture.proceduralScale = this->subPanel.sections[0].elements[7].rangeBar.value / 10.f;
-            receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[6].checkBox.clickState1;
-            receivedTexture.proceduralNormalMap = this->subPanel.sections[0].elements[3].checkBox.clickState1;
-            receivedTexture.proceduralNormalGrayScale = this->subPanel.sections[0].elements[4].checkBox.clickState1;
-            receivedTexture.proceduralNormalStrength = this->subPanel.sections[0].elements[5].rangeBar.value;
-            
-            generateDisplayingTexture(receivedTexture, Filter(), displayingTextureRes, filterSelection);
-            
-            receivedTexture.title = "SelectedTexture";
+
+            if(filterSelection && this->selectedTextureIndex < Library::getFilterArraySize())
+                receivedFilter = *Library::getFilter(this->selectedTextureIndex);
+
+            if(!filterSelection){
+                receivedTexture.proceduralScale = this->subPanel.sections[0].elements[7].rangeBar.value / 10.f;
+                receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[6].checkBox.clickState1;
+                receivedTexture.proceduralNormalMap = this->subPanel.sections[0].elements[3].checkBox.clickState1;
+                receivedTexture.proceduralNormalGrayScale = this->subPanel.sections[0].elements[4].checkBox.clickState1;
+                receivedTexture.proceduralNormalStrength = this->subPanel.sections[0].elements[5].rangeBar.value;
+                
+                generateDisplayingTexture(receivedTexture, Filter(), displayingTextureRes, filterSelection);
+                
+                receivedTexture.title = "SelectedTexture";
+            }
             
             dialogControl.unActivate();
         }

@@ -52,7 +52,7 @@ TextureEditorDialog::TextureEditorDialog(
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 400, 400, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     //Create the panel
@@ -172,9 +172,158 @@ TextureEditorDialog::TextureEditorDialog(
         RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Scale",  Texture(), 0.f, 0.f, 10.f, 1.f),
     };
 
-    displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), colorPalette, "Resize", Texture(), 1.f,true);
+    this->filterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), colorPalette, "Filter", Texture(), 1.f, false);
+    displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), colorPalette, "", this->displayingTexture, 1.f,true);
 
     distortionElements[8].button.textureSelection = true;
+}
+
+void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture){
+    
+    //Displaying resolution
+    glm::vec2 displayRes = receivedTexture.getResolution();
+
+    glm::mat4 projection = glm::ortho(0.f, displayRes.x, displayRes.y, 0.f);
+    glm::vec3 pos = glm::vec3(displayRes.x / 2.f, displayRes.y / 2.f, 0.9f);
+    glm::vec2 scale = glm::vec2(displayRes.x / 2.f, displayRes.y / 2.f);
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, displayingTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes.x, displayRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    //Create the framebuffer
+    unsigned int captureFBO;
+    glGenFramebuffers(1,&captureFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
+    
+    //Bind the displaying texture to the capture framebuffer
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->displayingTexture, 0);
+
+    //Clear the capture frame buffer(displaying texture) with color alpha zero
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glViewport(0, 0, displayRes.x, displayRes.y);
+    
+    if(this->selectedSection == 0){
+        ShaderSystem::txtrEditorResizeShader().use();
+        ShaderSystem::txtrEditorResizeShader().setMat4("projection", projection);
+        ShaderSystem::txtrEditorResizeShader().setVec3("pos", pos);
+        ShaderSystem::txtrEditorResizeShader().setVec2("scale", scale);
+    
+        ShaderSystem::txtrEditorResizeShader().setInt("txtr", 0);
+        ShaderSystem::txtrEditorResizeShader().setVec2("txtrResolution", receivedTexture.getResolution());
+        if(resizeElements[5].textBox.text != "" && resizeElements[6].textBox.text != "")
+            ShaderSystem::txtrEditorResizeShader().setVec2("destTxtrResolution", glm::vec2(std::stoi(resizeElements[5].textBox.text), std::stoi(resizeElements[6].textBox.text)));
+        
+        ShaderSystem::txtrEditorResizeShader().setInt("wrapingIndex", resizeElements[0].comboBox.selectedIndex);
+        ShaderSystem::txtrEditorResizeShader().setVec3("wrapingColor", resizeElements[1].button.color);
+        ShaderSystem::txtrEditorResizeShader().setVec2("originPoint", glm::vec2(resizeElements[3].rangeBar.value, resizeElements[4].rangeBar.value));
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
+
+        unsigned int wrapParam = GL_REPEAT;
+
+        if(resizeElements[0].comboBox.selectedIndex == 3)
+            wrapParam = GL_REPEAT;
+        else if(resizeElements[0].comboBox.selectedIndex == 4)
+            wrapParam = GL_MIRRORED_REPEAT;
+        
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParam);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    }
+    else if(this->selectedSection == 1){
+        ShaderSystem::txtrEditorBlurShader().use();
+        ShaderSystem::txtrEditorBlurShader().setMat4("projection", projection);
+        ShaderSystem::txtrEditorBlurShader().setVec3("pos", pos);
+        ShaderSystem::txtrEditorBlurShader().setVec2("scale", scale);
+    
+        ShaderSystem::txtrEditorBlurShader().setInt("txtr", 0);
+        ShaderSystem::txtrEditorBlurShader().setVec2("txtrResolution", receivedTexture.getResolution());
+        ShaderSystem::txtrEditorBlurShader().setInt("blurIndex", bluringElement[0].comboBox.selectedIndex);
+        ShaderSystem::txtrEditorBlurShader().setFloat("directionalDirection", bluringElement[1].rangeBar.value);
+        ShaderSystem::txtrEditorBlurShader().setVec2("radialPos", glm::vec2(bluringElement[2].rangeBar.value, bluringElement[3].rangeBar.value));
+        ShaderSystem::txtrEditorBlurShader().setFloat("strength", bluringElement[4].rangeBar.value);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    }
+    else if(this->selectedSection == 3){
+        ShaderSystem::txtrEditorNormalMapShader().use();
+        ShaderSystem::txtrEditorNormalMapShader().setMat4("projection", projection);
+        ShaderSystem::txtrEditorNormalMapShader().setVec3("pos", pos);
+        ShaderSystem::txtrEditorNormalMapShader().setVec2("scale", scale);
+    
+        ShaderSystem::txtrEditorNormalMapShader().setInt("txtr", 0);
+        ShaderSystem::txtrEditorNormalMapShader().setInt("grayScale", normalMapElements[0].comboBox.selectedIndex);
+        ShaderSystem::txtrEditorNormalMapShader().setFloat("strength", normalMapElements[1].rangeBar.value);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    }
+    else if(this->selectedSection == 4){
+        ShaderSystem::txtrEditorDistortionShader().use();
+        ShaderSystem::txtrEditorDistortionShader().setMat4("projection", projection);
+        ShaderSystem::txtrEditorDistortionShader().setVec3("pos", pos);
+        ShaderSystem::txtrEditorDistortionShader().setVec2("scale", scale);
+    
+        ShaderSystem::txtrEditorDistortionShader().setInt("txtr", 0);
+        ShaderSystem::txtrEditorDistortionShader().setInt("distortionTxtr", 1);
+        ShaderSystem::txtrEditorDistortionShader().setVec2("txtrResolution", receivedTexture.getResolution());
+        ShaderSystem::txtrEditorDistortionShader().setInt("distortionIndex", distortionElements[0].comboBox.selectedIndex);
+        ShaderSystem::txtrEditorDistortionShader().setFloat("fbmRoughness", distortionElements[1].rangeBar.value);
+        ShaderSystem::txtrEditorDistortionShader().setInt("fbmOctaves", distortionElements[2].rangeBar.value);
+        ShaderSystem::txtrEditorDistortionShader().setFloat("xStrength", distortionElements[3].rangeBar.value);
+        ShaderSystem::txtrEditorDistortionShader().setFloat("yStrength", distortionElements[4].rangeBar.value);
+        ShaderSystem::txtrEditorDistortionShader().setFloat("effectRadius", distortionElements[5].rangeBar.value);
+        ShaderSystem::txtrEditorDistortionShader().setFloat("effectAngle", distortionElements[6].rangeBar.value);
+        ShaderSystem::txtrEditorDistortionShader().setFloat("rainScale", distortionElements[7].rangeBar.value);
+        ShaderSystem::txtrEditorDistortionShader().setFloat("strength", distortionElements[9].rangeBar.value);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, distortionElements[8].button.texture.ID);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    }
+    else if(this->selectedSection == 5){
+        if(this->filter.shader.ID){
+            this->filter.shader.use();
+            this->filter.shader.setMat4("projection", projection);
+            this->filter.shader.setVec3("pos", pos);
+            this->filter.shader.setVec2("scale", scale);
+        
+            this->filter.shader.setInt("txtr", 0);
+            this->filter.shader.setVec2("txtrResolution", receivedTexture.getResolution());
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
+
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+        }
+    }
+
+    //Finish
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ShaderSystem::buttonShader().use();
+    glDeleteFramebuffers(1, &captureFBO);
 }
 
 void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection){
@@ -219,8 +368,11 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
     this->displayerBtn.pos.x = this->sectionPanel.pos.x + this->sectionPanel.scale.x + this->displayerBtn.scale.x * 1.1f;
     this->displayerBtn.pos.y -= this->bgPanel.scale.y - this->displayerBtn.scale.y * 1.1f;
     this->displayerBtn.pos.z += 0.001f;
+    
     this->displayerBtn.render(timer, textRenderer, true);
-     
+
+    bool anyInteraction = false;
+
     if(this->selectedSection == 0){
         int eCnt = 0;
         
@@ -264,42 +416,13 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
             resizeElements[i].pos.y -= displayerBtn.scale.y * .5f;
             resizeElements[i].pos.y += 8.f * eCnt;
             resizeElements[i].render(timer,textRenderer,true);
+
+            if(resizeElements[i].isInteracted())
+                anyInteraction = true;
+
             eCnt++;
         }
 
-        ShaderSystem::txtrEditorResizeShader().use();
-        ShaderSystem::txtrEditorResizeShader().setMat4("projection", projection);
-        ShaderSystem::txtrEditorResizeShader().setVec3("pos", this->displayerBtn.resultPos);
-        ShaderSystem::txtrEditorResizeShader().setVec2("scale", this->displayerBtn.resultScale);
-    
-        ShaderSystem::txtrEditorResizeShader().setInt("txtr", 0);
-        ShaderSystem::txtrEditorResizeShader().setVec2("txtrResolution", receivedTexture.getResolution());
-        if(resizeElements[5].textBox.text != "" && resizeElements[6].textBox.text != "")
-            ShaderSystem::txtrEditorResizeShader().setVec2("destTxtrResolution", glm::vec2(std::stoi(resizeElements[5].textBox.text), std::stoi(resizeElements[6].textBox.text)));
-        
-        ShaderSystem::txtrEditorResizeShader().setInt("wrapingIndex", resizeElements[0].comboBox.selectedIndex);
-        ShaderSystem::txtrEditorResizeShader().setVec3("wrapingColor", resizeElements[1].button.color);
-        ShaderSystem::txtrEditorResizeShader().setVec2("originPoint", glm::vec2(resizeElements[3].rangeBar.value, resizeElements[4].rangeBar.value));
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
-
-        unsigned int wrapParam = GL_REPEAT;
-
-        if(resizeElements[0].comboBox.selectedIndex == 3)
-            wrapParam = GL_REPEAT;
-        else if(resizeElements[0].comboBox.selectedIndex == 4)
-            wrapParam = GL_MIRRORED_REPEAT;
-        
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParam);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam);
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        ShaderSystem::buttonShader().use();
     }
     
     if(this->selectedSection == 1){
@@ -322,26 +445,11 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
             bluringElement[i].pos.y += 8.f * eCnt;
             bluringElement[i].render(timer,textRenderer,true);
             eCnt++;
+
+            if(bluringElement[i].isInteracted())
+                anyInteraction = true;
         }
 
-        ShaderSystem::txtrEditorBlurShader().use();
-        ShaderSystem::txtrEditorBlurShader().setMat4("projection", projection);
-        ShaderSystem::txtrEditorBlurShader().setVec3("pos", this->displayerBtn.resultPos);
-        ShaderSystem::txtrEditorBlurShader().setVec2("scale", this->displayerBtn.resultScale);
-    
-        ShaderSystem::txtrEditorBlurShader().setInt("txtr", 0);
-        ShaderSystem::txtrEditorBlurShader().setVec2("txtrResolution", receivedTexture.getResolution());
-        ShaderSystem::txtrEditorBlurShader().setInt("blurIndex", bluringElement[0].comboBox.selectedIndex);
-        ShaderSystem::txtrEditorBlurShader().setFloat("directionalDirection", bluringElement[1].rangeBar.value);
-        ShaderSystem::txtrEditorBlurShader().setVec2("radialPos", glm::vec2(bluringElement[2].rangeBar.value, bluringElement[3].rangeBar.value));
-        ShaderSystem::txtrEditorBlurShader().setFloat("strength", bluringElement[4].rangeBar.value);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        ShaderSystem::buttonShader().use();
     }
 
     if(this->selectedSection == 2){
@@ -366,6 +474,9 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
             noiseElements[i].pos.y += 8.f * eCnt;
             noiseElements[i].render(timer,textRenderer,true);
             eCnt++;
+            
+            if(noiseElements[i].isInteracted())
+                anyInteraction = true;
         }
     }
 
@@ -380,23 +491,10 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
             normalMapElements[i].pos.y += 8.f * eCnt;
             normalMapElements[i].render(timer,textRenderer,true);
             eCnt++;
+            if(normalMapElements[i].isInteracted())
+                anyInteraction = true;
         }
         
-        ShaderSystem::txtrEditorNormalMapShader().use();
-        ShaderSystem::txtrEditorNormalMapShader().setMat4("projection", projection);
-        ShaderSystem::txtrEditorNormalMapShader().setVec3("pos", this->displayerBtn.resultPos);
-        ShaderSystem::txtrEditorNormalMapShader().setVec2("scale", this->displayerBtn.resultScale);
-    
-        ShaderSystem::txtrEditorNormalMapShader().setInt("txtr", 0);
-        ShaderSystem::txtrEditorNormalMapShader().setInt("grayScale", normalMapElements[0].comboBox.selectedIndex);
-        ShaderSystem::txtrEditorNormalMapShader().setFloat("strength", normalMapElements[1].rangeBar.value);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        ShaderSystem::buttonShader().use();
     }
 
     if(this->selectedSection == 4){
@@ -435,36 +533,32 @@ void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRen
             distortionElements[i].pos.y += 8.f * eCnt;
             distortionElements[i].render(timer,textRenderer,true);
             eCnt++;
+            
+            if(distortionElements[i].isInteracted())
+                anyInteraction = true;
         }
 
-        ShaderSystem::txtrEditorDistortionShader().use();
-        ShaderSystem::txtrEditorDistortionShader().setMat4("projection", projection);
-        ShaderSystem::txtrEditorDistortionShader().setVec3("pos", this->displayerBtn.resultPos);
-        ShaderSystem::txtrEditorDistortionShader().setVec2("scale", this->displayerBtn.resultScale);
-    
-        ShaderSystem::txtrEditorDistortionShader().setInt("txtr", 0);
-        ShaderSystem::txtrEditorDistortionShader().setInt("distortionTxtr", 1);
-        ShaderSystem::txtrEditorDistortionShader().setVec2("txtrResolution", receivedTexture.getResolution());
-        ShaderSystem::txtrEditorDistortionShader().setInt("distortionIndex", distortionElements[0].comboBox.selectedIndex);
-        ShaderSystem::txtrEditorDistortionShader().setFloat("fbmRoughness", distortionElements[1].rangeBar.value);
-        ShaderSystem::txtrEditorDistortionShader().setInt("fbmOctaves", distortionElements[2].rangeBar.value);
-        ShaderSystem::txtrEditorDistortionShader().setFloat("xStrength", distortionElements[3].rangeBar.value);
-        ShaderSystem::txtrEditorDistortionShader().setFloat("yStrength", distortionElements[4].rangeBar.value);
-        ShaderSystem::txtrEditorDistortionShader().setFloat("effectRadius", distortionElements[5].rangeBar.value);
-        ShaderSystem::txtrEditorDistortionShader().setFloat("effectAngle", distortionElements[6].rangeBar.value);
-        ShaderSystem::txtrEditorDistortionShader().setFloat("rainScale", distortionElements[7].rangeBar.value);
-        ShaderSystem::txtrEditorDistortionShader().setFloat("strength", distortionElements[9].rangeBar.value);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, distortionElements[8].button.texture.ID);
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        ShaderSystem::buttonShader().use();
     }
+    
+    if(this->selectedSection == 5){
+
+        filterBtn.pos = displayerBtn.pos;
+        filterBtn.pos.x += displayerBtn.scale.x * 2.f;
+        filterBtn.pos.y -= displayerBtn.scale.y * .5f;
+        filterBtn.pos.y += 8.f;
+        filterBtn.texture = filter.displayingTxtr;
+        filterBtn.render(timer,textRenderer,true);
+
+        if(filterBtn.clicked){
+            Texture txtr;
+            showTextureSelectionDialog(txtr, filter, 512, true);
+            anyInteraction = true;
+        }        
+
+    }
+
+    if(anyInteraction)
+        this->updateDisplayingTexture(receivedTexture);
 
     /*
     //End the dialog

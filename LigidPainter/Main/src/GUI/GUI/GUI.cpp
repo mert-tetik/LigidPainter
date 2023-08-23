@@ -50,6 +50,7 @@ Example :
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <fstream>
@@ -101,6 +102,21 @@ Element::Element(TextBox textBox){
     scale = textBox.scale;
     panelOffset = textBox.panelOffset;
     state = 4;
+}
+
+bool Element::isInteracted(){
+    if(this->state == 0 && this->button.clicked)
+        return true;
+    if(this->state == 1 && this->rangeBar.pointerPressed)
+        return true;
+    if(this->state == 2 && this->checkBox.hover && Mouse::LClick())
+        return true;
+    if(this->state == 3 && this->comboBox.pressed)
+        return true;
+    if(this->state == 4 && this->textBox.active)
+        return true;
+        
+    return false;
 }
 
 void Element::render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){

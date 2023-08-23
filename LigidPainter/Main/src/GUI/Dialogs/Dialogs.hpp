@@ -202,6 +202,9 @@ class TextureEditorDialog
    std::vector<Element> distortionElements;
    std::vector<Element> imagesElements;
 
+   Button filterBtn;
+   Filter filter;
+
    Button displayerBtn;
 
    unsigned int displayingTexture;
@@ -214,7 +217,8 @@ class TextureEditorDialog
    
    //Public member functions
    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection);
- 
+
+   void updateDisplayingTexture(Texture& receivedTexture);
  };
 
 
@@ -344,7 +348,7 @@ class ExportDialog
 
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
-void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes);
+void showTextureSelectionDialog(Texture& txtr, Filter& filter, int displayingTextureRes, bool filterSelection);
 bool wasTextureSelectionDialogActive();
 
 class TextureSelectionDialog
@@ -372,7 +376,7 @@ public:
 
 
    //Public member functions
-   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, TextRenderer& textRenderer, int displayingTextureRes);
+   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, Filter& receivedFilter, TextRenderer& textRenderer, int displayingTextureRes, bool filterSelection);
 
    void generateDisplayingTexture(Texture& txtr, Filter filter, int displayingTextureRes, bool filterSelection);
 

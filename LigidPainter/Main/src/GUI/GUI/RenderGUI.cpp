@@ -47,8 +47,8 @@ glm::mat4 __projection;
 Timer __timer; 
 bool __wasTextureSelectionDialogActive = false;
 
-void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes){
-    __texture_selection_dialog.show(__timer, __projection, txtr, __render_gui_textRenderer, displayingTextureRes);
+void showTextureSelectionDialog(Texture& txtr, Filter& filter, int displayingTextureRes, bool filterSelection){
+    __texture_selection_dialog.show(__timer, __projection, txtr, filter, __render_gui_textRenderer, displayingTextureRes, filterSelection);
     __wasTextureSelectionDialogActive = true;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
@@ -524,7 +524,7 @@ void UI::renderDialogs(Timer &timer, TextRenderer &textRenderer,  Project &proje
     if(displayerDialog.dialogControl.isActive())
         displayerDialog.render(colorPalette,timer,textRenderer,skybox);
     
-    // textureEditorDialog.render(colorPalette,timer,textRenderer,skybox,this->projection);
+    textureEditorDialog.render(colorPalette,timer,textRenderer,skybox,this->projection);
     
     if(exportDialog.dialogControl.isActive())
         exportDialog.render(colorPalette,timer,textRenderer,project,greetingDialog.dialogControl.active,materialEditorDialog);

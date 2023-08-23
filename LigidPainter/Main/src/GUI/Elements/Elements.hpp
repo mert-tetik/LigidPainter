@@ -430,6 +430,8 @@ struct Element{
     Element(ComboBox comboBox);
     Element(TextBox textBox);
 
+    bool isInteracted();
+
     //Public member function
     void render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
 };
