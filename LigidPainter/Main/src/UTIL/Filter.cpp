@@ -84,7 +84,10 @@ void Filter::generateDisplayingTexture(){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 100, 100, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    //Displaying resolution
+    glm::vec2 displayRes = glm::vec2(256);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes.x, displayRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     //Create the framebuffer
@@ -98,9 +101,6 @@ void Filter::generateDisplayingTexture(){
     //Clear the capture frame buffer(displaying texture) with color alpha zero
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    //Stroke resolution is 100
-    glm::vec2 displayRes = glm::vec2(100);
 
     glViewport(0, 0, displayRes.x, displayRes.y);
     
