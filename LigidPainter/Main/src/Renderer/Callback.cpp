@@ -35,8 +35,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 
-void __getTextRendererDataToTheTextureSelection(TextRenderer& textRenderer);
-
 void Renderer::mouseButtonCallback(
                                         LigidWindow window,
                                         int button, 
@@ -289,11 +287,9 @@ void Renderer::keyCallback(
                             )
 {
     if(action == LIGIDGL_PRESS || action == LIGIDGL_REPEAT){ //1 or 2
-        this->textRenderer.keyInput = true;
-        this->textRenderer.key = key;
-        this->textRenderer.mods = mods;
-        this->textRenderer.action = action;
+        textRenderer.keyInput = true;
+        textRenderer.key = key;
+        textRenderer.mods = mods;
+        textRenderer.action = action;
     }
-
-    __getTextRendererDataToTheTextureSelection(textRenderer);
 }

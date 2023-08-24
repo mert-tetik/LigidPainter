@@ -113,22 +113,22 @@ public:
     void init(Websites websites);
     
     /*! @brief Renders all the GUI */
-    void render(Timer &timer, TextRenderer &textRenderer,Box box,std::vector<ContextMenu> &contextMenus, Project &project, 
+    void render(Timer &timer,Box box,std::vector<ContextMenu> &contextMenus, Project &project, 
                 Painter &painter, Skybox &skybox);
 
 private: 
-    void elementInteraction(Painter &painter,std::vector<ContextMenu> &contextMenus,TextRenderer &textRenderer, Timer &timer, float screenGapPerc,
+    void elementInteraction(Painter &painter,std::vector<ContextMenu> &contextMenus, Timer &timer, float screenGapPerc,
                             Project& project, AppMaterialModifiers& appMaterialModifiers);
 
-    void renderPanels(Timer &timer, TextRenderer &textRenderer, Painter &painter, float screenGapPerc);
+    void renderPanels(Timer &timer, Painter &painter, float screenGapPerc);
 
-    void renderRenamingTextbox(Timer &timer, TextRenderer &textRenderer, Painter &painter);
+    void renderRenamingTextbox(Timer &timer, Painter &painter);
 
-    void renderDialogs(Timer &timer, TextRenderer &textRenderer, Project &project, Skybox &skybox, Box &box, std::vector<ContextMenu> &contextMenus);
+    void renderDialogs(Timer &timer, Project &project, Skybox &skybox, Box &box, std::vector<ContextMenu> &contextMenus);
 
     void renderDropper(Painter &painter);
 
-    void contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Timer &timer, TextRenderer &textRenderer, Project& project, Painter &painter);
+    void contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Timer &timer, Project& project, Painter &painter);
 
     void libraryPanelLeftInteraction(Panel &libraryPanelLeft);
 

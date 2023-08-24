@@ -133,20 +133,20 @@ LoadProjectDialog::LoadProjectDialog(AppMaterialModifiers& appMaterialModifiers)
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::render(Timer timer,TextRenderer &textRenderer,
+void LoadProjectDialog::render(Timer timer,
                                 Project &project,bool &greetingDialogActive,bool &startScreen){
     
     dialogControl.updateStart();
 
     //Render panels
-    bgPanel.render(timer,textRenderer,dialogControl.isComplete());
-    loadButton.render(timer,textRenderer,dialogControl.isComplete());
+    bgPanel.render(timer,dialogControl.isComplete());
+    loadButton.render(timer,dialogControl.isComplete());
     
     //Render texts
-    textBtn1.render(timer,textRenderer,false);
-    textBtn2.render(timer,textRenderer,false);
-    textBtn3.render(timer,textRenderer,false);
-    textBtn4.render(timer,textRenderer,false);
+    textBtn1.render(timer,false);
+    textBtn2.render(timer,false);
+    textBtn3.render(timer,false);
+    textBtn4.render(timer,false);
     
 
     if(loadButton.hover && *Mouse::LClick()){
@@ -218,7 +218,7 @@ void LoadProjectDialog::render(Timer timer,TextRenderer &textRenderer,
     projectsPanel.sections.push_back(projectSection);
     
     //After refreshing the elements render the projects panel
-    projectsPanel.render(timer,textRenderer,dialogControl.isComplete());
+    projectsPanel.render(timer,dialogControl.isComplete());
     
     //Check all the projects element if one them is pressed
     for (size_t i = 0; i < projectsPanel.sections[0].elements.size(); i++)

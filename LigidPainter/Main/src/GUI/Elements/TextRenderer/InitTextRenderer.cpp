@@ -33,6 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "UTIL/Util.hpp"
 
+TextRenderer textRenderer;
 
 /// @brief default constructor (ignore)
 TextRenderer::TextRenderer(/* args */){}

@@ -93,13 +93,13 @@ NewProjectDialog::NewProjectDialog(AppMaterialModifiers& appMaterialModifiers){
     this->panel.sections[0].elements[0].button.outlineColor2 = ColorPalette::thirdColor;
 }
 
-void NewProjectDialog::render(Timer timer,TextRenderer &textRenderer,
+void NewProjectDialog::render(Timer timer,
                                 Project &project,bool &greetingDialogActive,bool &startScreen){
     
     dialogControl.updateStart();
 
     //Render the panel
-    panel.render(timer,textRenderer,dialogControl.isComplete());
+    panel.render(timer,dialogControl.isComplete());
     
     //If pressed to the last button of the panel (Create the project button)
     if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && *Mouse::LClick()){

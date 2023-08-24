@@ -72,7 +72,7 @@ NewTextureDialog::NewTextureDialog(){
 
 bool __newTxtrDialog_last_texture_selection_dialog_state = false;
 
-void NewTextureDialog::render(Timer timer,TextRenderer &textRenderer){
+void NewTextureDialog::render(Timer timer){
     
     int textureRes = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
 
@@ -163,7 +163,7 @@ void NewTextureDialog::render(Timer timer,TextRenderer &textRenderer){
     __newTxtrDialog_last_texture_selection_dialog_state = panel.sections[0].elements[4].button.hover && *Mouse::LClick();
 
     //Render the panel
-    panel.render(timer,textRenderer,true);
+    panel.render(timer,true);
     
     //Invert the text color of the color button
     panel.sections[0].elements[0].button.textColor = glm::vec4(glm::vec3(1.) - glm::vec3(panel.sections[0].elements[0].button.color),1);

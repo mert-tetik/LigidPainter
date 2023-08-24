@@ -111,13 +111,13 @@ DisplayerDialog::DisplayerDialog(){
     }
 }
 
-void DisplayerDialog::render(Timer timer,TextRenderer &textRenderer,
+void DisplayerDialog::render(Timer timer,
             Skybox &skybox){
     
     dialogControl.updateStart();
 
     //Render the panel
-    panel.render(timer, textRenderer, true);
+    panel.render(timer, true);
     
     //Update the texture of the skybox displayer button
     panel.sections[0].elements[0].button.texture = Texture(skybox.displayingTexture);
@@ -136,7 +136,7 @@ void DisplayerDialog::render(Timer timer,TextRenderer &textRenderer,
             skyboxes[i].scale.x = panel.sections[0].elements[0].button.scale.x/skyboxes.size();
 
             //Render the button
-            skyboxes[i].render(timer, textRenderer, true);
+            skyboxes[i].render(timer, true);
             
             //If pressed to the skybox load the pressed skybox
             if(skyboxes[i].button.hover && *Mouse::LClick()){

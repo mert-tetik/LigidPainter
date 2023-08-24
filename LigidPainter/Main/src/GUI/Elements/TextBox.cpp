@@ -103,9 +103,7 @@ TextBox::TextBox(int style,glm::vec2 scale,std::string text,float panelOffset,in
 
 
 void TextBox::render(
-                        //Resolution of the monitor
                         Timer &timer, //Timer that handles the animations
-                        TextRenderer &textRenderer, //TextRenderer that handles text rendering
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
     

@@ -90,14 +90,14 @@ ExportDialog::ExportDialog(){
     this->panel.sections[0].elements[0].button.outlineColor2 = ColorPalette::thirdColor;
 }
 
-void ExportDialog::render(Timer timer,TextRenderer &textRenderer,
+void ExportDialog::render(Timer timer,
                           Project &project,bool &greetingDialogActive,
                           MaterialEditorDialog &materialEditorDialog){
     
     dialogControl.updateStart();
 
     //Render the panel
-    panel.render(timer,textRenderer,true);
+    panel.render(timer,true);
     
     //If pressed to the last button of the panel (Export button)
     if(panel.sections[0].elements[panel.sections[0].elements.size()-1].button.hover && *Mouse::LClick()){

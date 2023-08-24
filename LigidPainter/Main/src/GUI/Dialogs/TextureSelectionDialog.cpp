@@ -134,12 +134,6 @@ TextureSelectionDialog::TextureSelectionDialog(){
 }
 
 
-TextRenderer __textRenderer;
-
-void __getTextRendererDataToTheTextureSelection(TextRenderer& textRenderer){
-    __textRenderer = textRenderer;
-}
-
 void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, Filter filter, int displayingTextureRes, bool filterSelection){
     
     GLint viewport[4]; 
@@ -268,18 +262,18 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, Filter fil
 
 
 //Forward declarations for the utility functions
-static void initTextureSelectionDialog(TextRenderer& textRenderer, int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, int& selectedTextureIndex, Texture& receivedTexture);
+static void initTextureSelectionDialog(int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, int& selectedTextureIndex, Texture& receivedTexture);
 static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, bool filterSelection);
 static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex);
 
-void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, Filter& receivedFilter, TextRenderer& textRenderer, int displayingTextureRes, bool filterSelection){
+void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, Filter& receivedFilter, int displayingTextureRes, bool filterSelection){
     
     this->dialogControl.activate();
         
     unsigned int bgTexture; 
     glm::ivec2 windowSize;
-    initTextureSelectionDialog(textRenderer, this->selectedTextureMode, bgTexture, windowSize, this->subPanel, this->selectedTextureIndex, receivedTexture);
+    initTextureSelectionDialog(this->selectedTextureMode, bgTexture, windowSize, this->subPanel, this->selectedTextureIndex, receivedTexture);
 
     while (!getContext()->window.shouldClose())
     {
@@ -302,10 +296,10 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         updateSubPanel(this->subPanel, this->selectedTextureMode, this->selectedTextureIndex);
 
         //Render the panel
-        this->bgPanel.render(timer,__textRenderer,true);
+        this->bgPanel.render(timer, true);
 
         //Render the texture mode selection panel
-        this->subPanel.render(timer,__textRenderer,true);
+        this->subPanel.render(timer, true);
 
         selectedTextureDisplayingPanel.scale.x = this->scale.x - subPanel.scale.x;
         selectedTextureDisplayingPanel.pos.x = this->pos.x + subPanel.scale.x;
@@ -315,11 +309,11 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         selectedTextureDisplayingPanel.sections[0].elements[0].button.texture = displayingTexture;
 
-        this->textureSelectingPanel.render(timer,__textRenderer,true);
+        this->textureSelectingPanel.render(timer, true);
 
         ShaderSystem::buttonShader().setInt("properties.invertTheTexture", false);
         ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
-        this->selectedTextureDisplayingPanel.render(timer,__textRenderer,true);
+        this->selectedTextureDisplayingPanel.render(timer, true);
 
         if(!filterSelection){
             for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
@@ -406,8 +400,8 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         *Mouse::action() = 0;
 
         //Set keyboard states to default
-        __textRenderer.keyInput = false;
-        __textRenderer.mods = 0;
+        textRenderer.keyInput = false;
+        textRenderer.mods = 0;
     }
 }
 
@@ -417,7 +411,6 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
 // ---------- UTILITY FUNCTIONS -----------
 static void initTextureSelectionDialog(
-                                        TextRenderer& textRenderer, 
                                         int &selectedTextureMode, 
                                         unsigned int& bgTexture, 
                                         glm::ivec2& windowSize, 
@@ -426,8 +419,6 @@ static void initTextureSelectionDialog(
                                         Texture& receivedTexture
                                     )
 {
-    __textRenderer = textRenderer;
-
     // Get the viewport size
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);

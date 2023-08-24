@@ -154,7 +154,7 @@ LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
     this->panel.hasSlider = true;
 }
 
-void LogDialog::render(Timer timer, TextRenderer &textRenderer){
+void LogDialog::render(Timer timer){
     
     if(this->logBtnL.clicked)
         messagesActive = !messagesActive;
@@ -264,7 +264,7 @@ void LogDialog::render(Timer timer, TextRenderer &textRenderer){
         else if(this->panelYAxisMixVal < 0.2)
             this->panel.sections.clear();
 
-        this->panel.render(timer, textRenderer, true);
+        this->panel.render(timer, true);
 
         if(actionHistoryActive && this->panel.sections.size()){
             if(this->panel.sections[0].elements[this->panel.sections[0].elements.size() - 1].button.clicked){
@@ -328,7 +328,7 @@ void LogDialog::render(Timer timer, TextRenderer &textRenderer){
     }
 
     
-    this->logBtn.render(timer, textRenderer, true);
-    this->logBtnL.render(timer, textRenderer, true);
-    this->logBtnR.render(timer, textRenderer, true);
+    this->logBtn.render(timer, true);
+    this->logBtnL.render(timer, true);
+    this->logBtnR.render(timer, true);
 }

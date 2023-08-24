@@ -29,7 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
     
-void Panel::render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
+void Panel::render(Timer &timer,bool doMouseTracking){
     
     this->doMouseTracking = doMouseTracking;
     
@@ -46,7 +46,7 @@ void Panel::render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking)
     
     resizeThePanel();
 
-    drawPanel(resultPos,resultScale,timer,textRenderer);
+    drawPanel(resultPos,resultScale,timer);
 
 }
 
@@ -111,7 +111,7 @@ static float calculateElementStartingPosition(bool vertical, std::vector<Section
     return elementPos;
 }
 
-static void renderBarButtons(std::vector<Button> &barButtons, glm::vec3 pos, glm::vec2 scale, Timer timer, TextRenderer textRenderer, bool doMouseTracking){
+static void renderBarButtons(std::vector<Button> &barButtons, glm::vec3 pos, glm::vec2 scale, Timer timer, bool doMouseTracking){
     
     for (size_t i = 0; i < barButtons.size(); i++) //Bar buttons are used only in the vertical panels
     {
@@ -125,29 +125,26 @@ static void renderBarButtons(std::vector<Button> &barButtons, glm::vec3 pos, glm
         barButtons[i].pos.y -= scale.y - barButtons[i].scale.y;
         
         barButtons[i].pos.z += 0.01f;
-        barButtons[i].render(timer,textRenderer,doMouseTracking);
+        barButtons[i].render(timer,doMouseTracking);
     }
 
 }
 
-void Panel::renderTheHeader(int sectionI,float &elementPos, int &btnCounter, Timer &timer, TextRenderer &textRenderer){
+void Panel::renderTheHeader(int sectionI,float &elementPos, int &btnCounter, Timer &timer){
     //Prepare the transform data of the button    
     if(this->vertical)
         this->prepDrawBtnVertically(sections[sectionI].header,sections[std::max(sectionI,0)].elements[sections[std::max(sectionI,0)].elements.size()-1],elementPos,btnCounter);
     else
         this->prepDrawBtnHorizontally(sections[sectionI].header,sections[std::max(sectionI,0)].elements[sections[std::max(sectionI,0)].elements.size()-1],elementPos,btnCounter);
     //Draw the button
-    this->sections[sectionI].header.render(timer, textRenderer, this->doMouseTracking && !sliderButton.hover);
+    this->sections[sectionI].header.render(timer, this->doMouseTracking && !sliderButton.hover);
     btnCounter++; //Indexing buttons to position them
 }
 
 void Panel::drawPanel(
-                        
-                        
                         glm::vec3 resultPos,
                         glm::vec2 resultScale,
-                        Timer &timer,
-                        TextRenderer &textRenderer
+                        Timer &timer
                     )
 {
 
@@ -168,7 +165,7 @@ void Panel::drawPanel(
     int btnCounter = 0; 
 
     //Render the bar buttons
-    renderBarButtons(this->barButtons, this->pos + this->additionalPos, this->scale, timer, textRenderer, this->doMouseTracking && !sliderButton.hover); 
+    renderBarButtons(this->barButtons, this->pos + this->additionalPos, this->scale, timer, this->doMouseTracking && !sliderButton.hover); 
     
     //Calculate the barbuttons for positioning other elements
     if(barButtons.size())
@@ -182,7 +179,7 @@ void Panel::drawPanel(
         if(sections[sI].header.button.text.size()) //If there is a header
         { 
             //Section header button
-            this->renderTheHeader(sI, elementPos, btnCounter, timer, textRenderer);
+            this->renderTheHeader(sI, elementPos, btnCounter, timer);
         }
 
         /*-- ELEMENTS --*/
@@ -208,7 +205,7 @@ void Panel::drawPanel(
                 //Don't render the unshown elements
                 if(this->sections[sI].elements[i].pos.y - this->sections[sI].elements[i].scale.y < (this->pos.y + this->additionalPos.y + this->scale.y) && this->sections[sI].elements[i].pos.y + this->sections[sI].elements[i].scale.y > (this->pos.y + this->additionalPos.y - this->scale.y)){
                     
-                    sections[sI].elements[i].render(timer,textRenderer,doMouseTracking && !sliderButton.hover);
+                    sections[sI].elements[i].render(timer,doMouseTracking && !sliderButton.hover);
                     
                     /* Render the text if rendering library displayer panel*/
                     if(isLibraryDisplayer){
@@ -279,7 +276,7 @@ void Panel::drawPanel(
             sliderButton.pos.y = (pos.y + this->additionalPos.y - scale.y) + sliderButton.scale.y + slideVal;  
             sliderButton.pos.z += 0.02f;
 
-            sliderButton.render(timer,textRenderer,doMouseTracking);
+            sliderButton.render(timer,doMouseTracking);
 
         }
         else

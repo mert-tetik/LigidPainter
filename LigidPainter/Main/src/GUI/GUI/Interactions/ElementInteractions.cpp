@@ -43,7 +43,6 @@ void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &paint
 void UI::elementInteraction(
                                 Painter &painter,
                                 std::vector<ContextMenu> &contextMenus,
-                                TextRenderer &textRenderer, 
                                 Timer &timer, 
                                 float screenGapPerc,
                                 Project& project,
@@ -73,7 +72,7 @@ void UI::elementInteraction(
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover;
 
-    this->contextMenuInteraction(contextMenus, timer, textRenderer, project, painter);
+    this->contextMenuInteraction(contextMenus, timer, project, painter);
     
     updateLibraryPanelDisplayerElements(libraryPanelDisplayer, frameCounter);
     

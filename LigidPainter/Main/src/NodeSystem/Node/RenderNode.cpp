@@ -34,9 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <map>
 
 void Node::render(  
-                    
                     Timer &timer,
-                    TextRenderer &textRenderer,
                     Panel nodeEditorPanel,
                     int currentNodeIndex,
                     NodePanel& nodePanelData,
@@ -52,7 +50,7 @@ void Node::render(
     this->nodePanel.additionalPos.y = nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2;
 
     //Render the node panel which contains the input buttons and stuff
-    nodePanel.render(timer,textRenderer, this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
+    nodePanel.render(timer,this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
 
     if(nodePanel.sections[0].elements[0].button.clicked){        
         if(this->nodeIndex == MATERIAL_ID_NODE){
@@ -230,7 +228,7 @@ void Node::render(
 
 
             //Render the IO circle
-            IOs[i].IOCircle.render(timer,textRenderer,true);
+            IOs[i].IOCircle.render(timer,true);
         }
     }
 
@@ -245,7 +243,7 @@ void Node::render(
     barButton.pos.y = nodePanel.pos.y + nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2 - nodePanel.scale.y; 
     barButton.pos.z += 0.02f;
     //Render the bar button
-    barButton.render(timer,textRenderer,!cursorOnBarriers);
+    barButton.render(timer,!cursorOnBarriers);
     
     //Move the node panel if bar button is pressed
     if(barButton.clickState1 && !nodePanel.topSide.pressed){ //Pressed

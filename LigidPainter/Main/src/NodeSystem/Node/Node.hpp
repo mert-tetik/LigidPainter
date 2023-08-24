@@ -34,7 +34,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 
 //Forward declarations
-class TextRenderer; 
 struct Element;
 struct NodePanel;
 
@@ -147,7 +146,7 @@ public:
 
     /// @brief Render the node & manage inputs & outputs 
     /// @param currentNodeIndex which node is rendered (index of the nodeScene)
-    void render(Timer &timer,TextRenderer &textRenderer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel,  int textureRes);
+    void render(Timer &timer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel,  int textureRes);
 
     /// @brief Replaces the IOs vector with the new inputs & outputs (+ generates the node panel)  
     void uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs);
@@ -159,7 +158,7 @@ public:
 namespace NodeScene{
 
     /// @brief Renders the node list 
-    void render(Timer &timer, TextRenderer &textRenderer,  Panel nodeEditorPanel, NodePanel& nodePanel);
+    void render(Timer &timer,  Panel nodeEditorPanel, NodePanel& nodePanel);
     
     /// @brief Adds the given node to the scene 
     void addNode(const Node node);

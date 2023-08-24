@@ -48,9 +48,7 @@ bool __lastDisplayModeComboBoxPressed = false;
 
 void MaterialEditorDialog::render
                                 (
-                                    
                                     Timer &timer,
-                                    TextRenderer &textRenderer,
                                     TextureSelectionDialog &textureSelectionDialog,
                                     Material &material,
                                     Box box,
@@ -61,10 +59,10 @@ void MaterialEditorDialog::render
     dialogControl.updateStart();
 
     //Render the panels & material displayer button
-    bgPanel.render(timer,textRenderer,         !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
-    layerPanel.render(timer,textRenderer,      !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
-    modifiersPanel.render(timer,textRenderer,  !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
-    barButton.render(timer,textRenderer,       !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    bgPanel.render(timer,        !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    layerPanel.render(timer,     !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    modifiersPanel.render(timer, !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
+    barButton.render(timer,      !(textureSelectionDialog.dialogControl.isActive() || contextMenus[6].dialogControl.isActive() || contextMenus[8].dialogControl.isActive()));
 
     barButton.pos.x = bgPanel.pos.x + bgPanel.additionalPos.x;
     barButton.pos.y = bgPanel.pos.y + bgPanel.additionalPos.y - bgPanel.scale.y - barButton.scale.y;
@@ -105,12 +103,12 @@ void MaterialEditorDialog::render
     checkTextureSelectionDialog(textureSelectionDialog,material, box);
 
     //Render the material displayer
-    materialDisplayer.render(timer,textRenderer,false);
+    materialDisplayer.render(timer,false);
 
     this->displayModeComboBox.pos = layerPanel.pos + layerPanel.additionalPos;
     this->displayModeComboBox.pos.y -= materialDisplayer.scale.y + this->displayModeComboBox.scale.y;
     this->displayModeComboBox.pos.x += layerPanel.scale.x + materialDisplayer.scale.x;
-    this->displayModeComboBox.render(timer, textRenderer, true);
+    this->displayModeComboBox.render(timer, true);
     
     dialogControl.updateEnd(timer,0.15f);
 

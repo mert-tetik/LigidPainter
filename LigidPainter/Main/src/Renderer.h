@@ -53,8 +53,6 @@ public:
 
     Websites websites;
 
-    TextRenderer textRenderer; 
-
     std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials, 2 for brushes
 
     Project project;

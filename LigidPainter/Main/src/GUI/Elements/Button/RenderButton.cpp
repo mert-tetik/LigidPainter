@@ -37,10 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /// @param textRenderer local textRenderer class (manage text rendering & keyboard inputs)
 /// @param doMouseTracking don't check mouse hover if set to false
 void Button::render(
-                        
-                       
                         Timer &timer,
-                        TextRenderer &textRenderer,
                         bool doMouseTracking
                     ){
     
@@ -98,5 +95,5 @@ void Button::render(
     }
 
     //Render the text and the texture
-    renderTextAndTexture(textRenderer,resultScaleText);
+    renderTextAndTexture(resultScaleText);
 }

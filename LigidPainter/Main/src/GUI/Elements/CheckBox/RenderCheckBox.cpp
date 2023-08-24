@@ -29,7 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 
-void CheckBox::render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking){
+void CheckBox::render(Timer &timer,bool doMouseTracking){
     
     //Define the common utilities class
     ;

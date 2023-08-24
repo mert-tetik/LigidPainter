@@ -107,7 +107,7 @@ class SettingsDialog
     SettingsDialog();
 
     //Public member functions    
-    void render(Timer timer,TextRenderer &textRenderer);
+    void render(Timer timer);
  };
 
 
@@ -128,7 +128,7 @@ public:
    NewTextureDialog();
     
    //Public member function
-   void render(Timer timer,TextRenderer &textRenderer);
+   void render(Timer timer);
  };
 
 
@@ -156,7 +156,7 @@ public:
    LoadProjectDialog(AppMaterialModifiers& appMaterialModifiers);
    
    //Public member functions
-   void render(Timer timer,TextRenderer &textRenderer,
+   void render(Timer timer,
                Project &project,bool &greetingDialogActive,bool &startScreen);
  };
 
@@ -176,7 +176,7 @@ class DisplayerDialog
     DisplayerDialog();
     
     //Public member functions
-    void render(Timer timer,TextRenderer &textRenderer,
+    void render(Timer timer,
                 Skybox &skybox);
  };
 
@@ -214,7 +214,7 @@ class TextureEditorDialog
    TextureEditorDialog();
    
    //Public member functions
-   void render(Timer timer,TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture);
+   void render(Timer timer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture);
 
    void updateDisplayingTexture(Texture& receivedTexture, unsigned int destTxtr);
  };
@@ -241,7 +241,7 @@ public:
    GreetingDialog();
    
    //Public member functions
-   void render(Timer timer,TextRenderer &textRenderer,
+   void render(Timer timer,
                NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog);
 };
 
@@ -285,7 +285,7 @@ public:
    MaterialEditorDialog();
 
    //Public member functions
-   void render(Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,
+   void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog,
                Material &material, Box box, std::vector<ContextMenu> &contextMenus);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
@@ -311,7 +311,7 @@ class NewProjectDialog
     NewProjectDialog(AppMaterialModifiers& appMaterialModifiers);
 
     //Public member functions
-    void render(Timer timer,TextRenderer &textRenderer,
+    void render(Timer timer,
                 Project &project,bool &greetingDialogActive,bool &startScreen);
  };
 
@@ -333,7 +333,7 @@ class ExportDialog
     ExportDialog();
 
     //Public member functions
-    void render(Timer timer,TextRenderer &textRenderer,
+    void render(Timer timer,
                 Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog);
  };
 
@@ -365,7 +365,7 @@ public:
 
 
    //Public member functions
-   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, Filter& receivedFilter, TextRenderer& textRenderer, int displayingTextureRes, bool filterSelection);
+   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, Filter& receivedFilter, int displayingTextureRes, bool filterSelection);
 
    void generateDisplayingTexture(Texture& txtr, Filter filter, int displayingTextureRes, bool filterSelection);
 
@@ -389,7 +389,7 @@ public:
     ContextMenu(std::vector<std::string> elements);
     
     /// @brief Public member function to render the context menu
-    void render(Timer &timer,TextRenderer &textRenderer);
+    void render(Timer &timer);
 };
 
 //!-------------------------------LOG DIALOG--------------------------------
@@ -477,7 +477,7 @@ class LogDialog
    LogDialog(AppMaterialModifiers& appMaterialModifiers);
 
    //Public member functions
-   void render(Timer timer, TextRenderer &textRenderer);
+   void render(Timer timer);
 };
 
 #endif

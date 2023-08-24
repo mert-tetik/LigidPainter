@@ -109,7 +109,7 @@ SettingsDialog::SettingsDialog(){
     },glm::vec2(25.f, 40.f), glm::vec3(50.f,50.f,0.8f),ColorPalette::mainColor,ColorPalette::thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
-void SettingsDialog::render(Timer timer, TextRenderer &textRenderer){
+void SettingsDialog::render(Timer timer){
     
     dialogControl.updateStart();   
 
@@ -150,7 +150,7 @@ void SettingsDialog::render(Timer timer, TextRenderer &textRenderer){
     }
 
     //Render the panel    
-    panel.render(timer,textRenderer,true);
+    panel.render(timer,true);
 
     getScene()->transformRotation.x = panel.sections[2].elements[0].rangeBar.value;
     getScene()->transformRotation.y = panel.sections[2].elements[1].rangeBar.value;

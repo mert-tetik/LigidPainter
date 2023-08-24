@@ -42,13 +42,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <cstdlib>
 
 TextureSelectionDialog __texture_selection_dialog;
-TextRenderer __render_gui_textRenderer;
 glm::mat4 __projection;
 Timer __timer; 
 bool __wasTextureSelectionDialogActive = false;
 
 void showTextureSelectionDialog(Texture& txtr, Filter& filter, int displayingTextureRes, bool filterSelection){
-    __texture_selection_dialog.show(__timer, __projection, txtr, filter, __render_gui_textRenderer, displayingTextureRes, filterSelection);
+    __texture_selection_dialog.show(__timer, __projection, txtr, filter, displayingTextureRes, filterSelection);
     __wasTextureSelectionDialogActive = true;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
@@ -62,13 +61,12 @@ bool wasTextureSelectionDialogActive(){
 
 static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection);
 
-void UI::render(Timer &timer, TextRenderer &textRenderer,Box box,
+void UI::render(Timer &timer,Box box,
             std::vector<ContextMenu> &contextMenus, Project &project, Painter &painter, Skybox &skybox){
     
     __texture_selection_dialog = this->textureSelectionDialog;
     __projection = this->projection;
     __timer = timer; 
-    __render_gui_textRenderer = textRenderer; 
 
 
     //Set pass less or equal
@@ -104,16 +102,16 @@ void UI::render(Timer &timer, TextRenderer &textRenderer,Box box,
     Library::uniqueNameControl();
 
     //Render the panels
-    renderPanels(timer, textRenderer, painter, screenGapPerc);
+    renderPanels(timer, painter, screenGapPerc);
 
     //Render renaming textbox
-    renderRenamingTextbox(timer, textRenderer, painter);
+    renderRenamingTextbox(timer, painter);
     
     //Render the nodes
-    NodeScene::render(timer,textRenderer,nodeEditorDisplayer, nodePanel);
+    NodeScene::render(timer,nodeEditorDisplayer, nodePanel);
     
     //Render the dialogs
-    renderDialogs(timer, textRenderer, project, skybox, box, contextMenus);
+    renderDialogs(timer, project, skybox, box, contextMenus);
     
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(painter);
@@ -125,7 +123,7 @@ void UI::render(Timer &timer, TextRenderer &textRenderer,Box box,
         getContext()->window.setCursorVisibility(true);
 
     //Interactions of the UI elements
-    elementInteraction(painter, contextMenus, textRenderer, timer, screenGapPerc, project, this->materialEditorDialog.appMaterialModifiers);
+    elementInteraction(painter, contextMenus, timer, screenGapPerc, project, this->materialEditorDialog.appMaterialModifiers);
 
     frameCounter++;
 
@@ -163,39 +161,39 @@ static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection){
     ShaderSystem::buttonShader().use();
 }
 
-void UI::renderPanels(Timer &timer, TextRenderer &textRenderer, Painter &painter,  float screenGapPerc){
-    navigationPanel.render(timer,textRenderer,!anyDialogActive);
+void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
+    navigationPanel.render(timer,!anyDialogActive);
     if(navigationPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    windowPanel.render(timer,textRenderer,!anyDialogActive);
+    windowPanel.render(timer,!anyDialogActive);
     if(windowPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    paintingPanel.render(timer,textRenderer,!anyDialogActive);
+    paintingPanel.render(timer,!anyDialogActive);
     if(paintingPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
     
-    libraryPanelLeft.render(timer,textRenderer,!anyDialogActive);
+    libraryPanelLeft.render(timer,!anyDialogActive);
     if(libraryPanelLeft.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    libraryPanelDisplayer.render(timer,textRenderer,!anyDialogActive);
+    libraryPanelDisplayer.render(timer,!anyDialogActive);
     if(libraryPanelDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    nodeEditorDisplayer.render(timer,textRenderer,!anyDialogActive);
+    nodeEditorDisplayer.render(timer,!anyDialogActive);
     if(nodeEditorDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    selectedTextureDisplayer.render(timer,textRenderer,false);
+    selectedTextureDisplayer.render(timer,false);
     if(selectedTextureDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
@@ -316,7 +314,7 @@ void UI::renderPanels(Timer &timer, TextRenderer &textRenderer, Painter &painter
 
 
         //Render the 2D painting panel
-        twoDPaintingPanel.render(timer,textRenderer,false);
+        twoDPaintingPanel.render(timer,false);
         if(twoDPaintingPanel.resizingDone){
             for (size_t i = 0; i < 5; i++)
                 this->panelPositioning(screenGapPerc, painter);
@@ -466,22 +464,22 @@ void UI::renderPanels(Timer &timer, TextRenderer &textRenderer, Painter &painter
 
 
 
-    paintingModesPanel.render(timer,textRenderer,!anyDialogActive);
+    paintingModesPanel.render(timer,!anyDialogActive);
     if(paintingModesPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    displayingModesPanel.render(timer,textRenderer,!anyDialogActive);
+    displayingModesPanel.render(timer,!anyDialogActive);
     if(displayingModesPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
 }
 
-void UI::renderRenamingTextbox(Timer &timer, TextRenderer &textRenderer, Painter &painter){
+void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
     
     if(renamingTextBox.active){
-        renamingTextBox.render(timer,textRenderer,false);
+        renamingTextBox.render(timer,false);
         renamingTextBoxClosed = false;
     }
     else{
@@ -511,35 +509,35 @@ void UI::renderRenamingTextbox(Timer &timer, TextRenderer &textRenderer, Painter
     }
 }
 
-void UI::renderDialogs(Timer &timer, TextRenderer &textRenderer,  Project &project, Skybox &skybox, Box &box,  std::vector<ContextMenu> &contextMenus){
+void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Box &box,  std::vector<ContextMenu> &contextMenus){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(timer,textRenderer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
+        newProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(timer,textRenderer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
+        loadProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
     
     if(greetingDialog.dialogControl.isActive())
-        greetingDialog.render(timer,textRenderer,newProjectDialog,loadProjectDialog);
+        greetingDialog.render(timer,newProjectDialog,loadProjectDialog);
 
     if(displayerDialog.dialogControl.isActive())
-        displayerDialog.render(timer,textRenderer,skybox);
+        displayerDialog.render(timer,skybox);
     
     if(textureEditorDialog.dialogControl.isActive())
-        textureEditorDialog.render(timer,textRenderer,skybox,this->projection, this->textureEditorSelectedTxtr);
+        textureEditorDialog.render(timer,skybox,this->projection, this->textureEditorSelectedTxtr);
     
     if(exportDialog.dialogControl.isActive())
-        exportDialog.render(timer,textRenderer,project,greetingDialog.dialogControl.active,materialEditorDialog);
+        exportDialog.render(timer,project,greetingDialog.dialogControl.active,materialEditorDialog);
     
     if(newTextureDialog.dialogControl.isActive())
-        newTextureDialog.render(timer,textRenderer);
+        newTextureDialog.render(timer);
     
     if(settingsDialog.dialogControl.isActive())
-        settingsDialog.render(timer, textRenderer);
+        settingsDialog.render(timer);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
-        materialEditorDialog.render(timer,textRenderer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex), box, contextMenus);
+        materialEditorDialog.render(timer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex), box, contextMenus);
     
-    logDialog.render(timer, textRenderer);
+    logDialog.render(timer);
 }
 
 void UI::renderDropper(Painter &painter){

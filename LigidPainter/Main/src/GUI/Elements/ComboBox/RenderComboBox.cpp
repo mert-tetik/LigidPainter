@@ -34,10 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <cstdlib>
 
 void ComboBox::render(
-                        //Resolution of the monitor
-                        //Mouse class to access mouse events
                         Timer &timer, //Timer that handles the animations
-                        TextRenderer &textRenderer, //TextRenderer that handles text rendering
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
     

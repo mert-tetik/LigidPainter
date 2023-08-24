@@ -353,7 +353,7 @@ void Renderer::render(){
     //Render the UI
     userInterface.render(   //Params
                             timer,
-                            textRenderer,
+                            
                             box,
                             contextMenus,
                             project,

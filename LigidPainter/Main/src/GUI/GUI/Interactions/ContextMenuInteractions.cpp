@@ -36,7 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,  
-                                Timer &timer,TextRenderer &textRenderer,
+                                Timer &timer,
                                 Project& project, Painter &painter){
 
     anyContextMenuActive = false; 
@@ -236,7 +236,7 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
         }
         //Render the context menu if active
         if(contextMenus[i].dialogControl.isActive()){
-            contextMenus[i].render(timer,textRenderer);
+            contextMenus[i].render(timer);
             if(contextMenus[i].contextPanel.hover == false)
                 contextMenus[i].dialogControl.unActivate(); 
         }

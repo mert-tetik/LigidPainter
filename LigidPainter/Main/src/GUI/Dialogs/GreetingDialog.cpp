@@ -76,21 +76,21 @@ GreetingDialog::GreetingDialog(){
     this->dialogControl.activate();
 }
 
-void GreetingDialog::render(Timer timer,TextRenderer &textRenderer,NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
+void GreetingDialog::render(Timer timer,NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
 
     dialogControl.updateStart();
 
     //Render elements 
     
     //Render the texture displayer button 
-    textureDisplayerButton.render(timer,textRenderer,false);
+    textureDisplayerButton.render(timer,false);
 
-    //bgPanel.render(timer,textRenderer,false);
-    loadProjectButton.render(timer,textRenderer,dialogControl.isComplete());
-    createProjectButton.render(timer,textRenderer,dialogControl.isComplete());
+    //bgPanel.render(timer,false);
+    loadProjectButton.render(timer,dialogControl.isComplete());
+    createProjectButton.render(timer,dialogControl.isComplete());
     
     //Render text elements
-    // textButton1.render(timer,textRenderer,false);
+    // textButton1.render(timer,false);
     
     //Show new project dialog if create project button is pressed
     if(createProjectButton.hover && *Mouse::LClick()){
