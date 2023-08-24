@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ShaderSystem/Shader.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -99,30 +100,30 @@ RangeBar::RangeBar(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4
 }
 
 //Style constructor
-RangeBar::RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,Texture texture,float panelOffset,float minValue,float maxValue,float value){
+RangeBar::RangeBar(int style,glm::vec2 scale,std::string text,Texture texture,float panelOffset,float minValue,float maxValue,float value){
     
     if(style == ELEMENT_STYLE_STYLIZED){
         this->isNumeric = true;
     }
 
     this->text = text;
-    this->color = colorPalette.secondColor;
-    this->color2 = colorPalette.mainColor;
+    this->color = ColorPalette::secondColor;
+    this->color2 = ColorPalette::mainColor;
     
-    this->pointerColor = colorPalette.thirdColor;
-    this->pointerColor2 = colorPalette.themeColor;
+    this->pointerColor = ColorPalette::thirdColor;
+    this->pointerColor2 = ColorPalette::themeColor;
     this->scale = scale;
     this->radius = 0.2f;
-    this->textColor = colorPalette.oppositeColor;
-    this->textColor2 = colorPalette.secondColor;
+    this->textColor = ColorPalette::oppositeColor;
+    this->textColor2 = ColorPalette::secondColor;
     this->texture = texture;
     this->textScale = 0.5f;
     this->panelOffset = panelOffset;
     
     this->outlineExtra = true;
     
-    this->outlineColor = colorPalette.thirdColor;
-    this->outlineColor2 = colorPalette.themeColor;
+    this->outlineColor = ColorPalette::thirdColor;
+    this->outlineColor2 = ColorPalette::themeColor;
     this->outlineThickness = 2.4f;
     this->minValue = minValue;
     this->maxValue = maxValue;

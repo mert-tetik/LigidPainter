@@ -46,7 +46,6 @@ struct PanelSide{
 };
 
 //Forward declarations
-class ColorPalette;
 class TextRenderer; 
 struct Element;
 
@@ -138,7 +137,7 @@ public:
     Button(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, bool outline, float radius, 
            int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,float textScale,float panelOffset,
            bool outlineExtra,glm::vec3 outlineColor,glm::vec3 outlineColor2,float outlineThickness,bool keepPressingState);
-    Button(int style, glm::vec2 scale, ColorPalette colorPalette, std::string text, Texture texture, float panelOffset, bool keepPressingState);
+    Button(int style, glm::vec2 scale, std::string text, Texture texture, float panelOffset, bool keepPressingState);
 
     //Public member functions
     void render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
@@ -183,7 +182,7 @@ public:
     TextBox();
     TextBox(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
             float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2,int openSelectFolderDialog);
-    TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset,int openSelectFolderDialog);
+    TextBox(int style,glm::vec2 scale,std::string text,float panelOffset,int openSelectFolderDialog);
     
     /// @brief Public member function to render the text box
     void render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
@@ -226,7 +225,7 @@ public:
     ComboBox(std::vector<std::string> texts, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 textColor,glm::vec4 textColor2,
            float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2);
 
-    ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::vector<std::string> texts,std::string text,float panelOffset);
+    ComboBox(int style,glm::vec2 scale,std::vector<std::string> texts,std::string text,float panelOffset);
 
     //Public member functions
     void render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
@@ -332,7 +331,7 @@ public:
     CheckBox();
     CheckBox(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
              float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2);
-    CheckBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset);
+    CheckBox(int style,glm::vec2 scale,std::string text,float panelOffset);
 
     //Public member functions
     void render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
@@ -389,7 +388,7 @@ public:
     RangeBar(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2,glm::vec4 pointerColor,glm::vec4 pointerColor2,
              bool outlineExtra,glm::vec3 outlineColor,glm::vec3 outlineColor2, float radius,glm::vec4 textColor,glm::vec4 textColor2,Texture texture,
              float textScale,float panelOffset,float outlineThickness,float minValue,float maxValue,float value);
-    RangeBar(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,Texture texture,float panelOffset,
+    RangeBar(int style,glm::vec2 scale,std::string text,Texture texture,float panelOffset,
              float minValue,float maxValue,float value);
 
     /// @brief Public member function to render the text box
@@ -585,37 +584,12 @@ public:
         @param maxScaleVal 
         @param hasSlider 
     */
-    Panel(ColorPalette colorPalette,std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,
+    Panel(std::vector<Section> sections,glm::vec2 scale,glm::vec3 pos,glm::vec4 color,glm::vec4 color2,
           bool vertical,bool lockL,bool lockR,bool lockB,bool lockT,float outlineThickness,int rowCount,std::vector<Button> barButtons,float maxScaleVal,
           bool hasSlider);
 
     /// @brief Renders the panel
     void render(Timer &timer,TextRenderer &textRenderer,bool doMouseTracking);
 };
-
-
-
-//!------------------------------COLOR PALETTE-----------------------------
-
-class ColorPalette
-{
-private:
-    /* data */
-public:
-    ColorPalette(/* args */);
-    
-    glm::vec4 themeColor = glm::vec4(       0.043f      ,0.635f     ,0.823f     ,1.f / 1.2f    );  //LigidPainter's theme color which is cyan-like light blue 
-    glm::vec4 mainColor = glm::vec4(        0.26        ,0.26       ,0.26       ,0.9f / 1.2f   );  //That color will be used oftenly
-    glm::vec4 secondColor = glm::vec4(      0.16        ,0.16       ,0.16       ,1.f / 1.2f    );  //That too
-    glm::vec4 thirdColor = glm::vec4(       0.46        ,0.46       ,0.46       ,1.f / 1.2f    );  //Will be used few times
-    glm::vec4 oppositeColor = glm::vec4(    0.8         ,0.8        ,0.8        ,1.f / 1.2f    );  //Will be used for text / icon color etc.
-
-    void newPalette(glm::vec4 themeColor,glm::vec4 mainColor,glm::vec4 secondColor,glm::vec4 thirdColor,glm::vec4 oppositeColor);
-};
-
-
-
-
-
 
 #endif //ELEMENTS_HPP

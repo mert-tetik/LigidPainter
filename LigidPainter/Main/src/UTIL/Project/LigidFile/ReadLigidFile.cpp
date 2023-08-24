@@ -35,14 +35,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 //forward declerations of the util functions
-void readmeshNodeSceneData(std::ifstream &rf,   ColorPalette colorPalette);
+void readmeshNodeSceneData(std::ifstream &rf);
 
 //Returns true if path is a ligid file
 bool Project::readLigidFile(
                                 std::string path,
                                 time_t &creationDate,
-                                time_t &lastOpenedDate, 
-                                ColorPalette colorPalette 
+                                time_t &lastOpenedDate
                             )
 { 
     
@@ -80,7 +79,7 @@ bool Project::readLigidFile(
         rf.read(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
 
         //!meshNodeScene
-        readmeshNodeSceneData(rf, colorPalette);
+        readmeshNodeSceneData(rf);
 
         //!Texture resolution
         rf.read(reinterpret_cast<char*>(   &Settings::properties()->textureRes    ),sizeof(int));
@@ -89,7 +88,7 @@ bool Project::readLigidFile(
     }
 }
 
-void readmeshNodeSceneData(std::ifstream &rf,   ColorPalette colorPalette){
+void readmeshNodeSceneData(std::ifstream &rf){
     
     //Read the node size
     uint64_t nodeSize;
@@ -108,8 +107,7 @@ void readmeshNodeSceneData(std::ifstream &rf,   ColorPalette colorPalette){
 
         Node node = Node(
                             nodeIndex, 
-                            0,
-                            colorPalette
+                            0
                         );
 
         //Read the material ID 

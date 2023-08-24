@@ -55,8 +55,6 @@ public:
 
     TextRenderer textRenderer; 
 
-    ColorPalette colorPalette;
-
     std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials, 2 for brushes
 
     Project project;
@@ -65,8 +63,9 @@ public:
 
     Painter painter;
 
-    //Constructor
     Renderer();
+
+    void initRenderer();
 
     void render();
 private:

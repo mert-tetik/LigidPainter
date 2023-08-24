@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "GUI/Elements/Elements.hpp"
 #include "NodeSystem/Node/Node.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -37,11 +38,8 @@ NodeConnection::NodeConnection(int nodeIndex,int inputIndex){
 
 Node::Node(){}
 
-Node::Node(int nodeIndex, int materialID, ColorPalette colorPalette){
+Node::Node(int nodeIndex, int materialID){
     
-    //Get the shaders to the member variables
-    this->colorPalette = colorPalette;
-
     //Get the material ID data to a member variable 
     this->materialID = materialID;
 
@@ -54,11 +52,11 @@ Node::Node(int nodeIndex, int materialID, ColorPalette colorPalette){
     if(nodeIndex == MATERIAL_NODE){
         //Material node
         inputs =    {
-                        NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,"Input1",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,1),
+                        NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),"Input1",Texture(),2.f,false)),ColorPalette::mainColor,1),
                     };
             
         outputs =   {
-                        NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,"Input1",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,2),
+                        NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"Input1",Texture(),2.f,false)),ColorPalette::mainColor,2),
                     };
     }    
     else if(nodeIndex == MESH_NODE){
@@ -66,12 +64,12 @@ Node::Node(int nodeIndex, int materialID, ColorPalette colorPalette){
     }
     else if(nodeIndex == MATERIAL_MASK_NODE){
         inputs =    {
-            NodeIO("Put a Texture",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,"Put a Texture",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,1),
-            NodeIO("Offset",Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,"Offset",Texture(),2.f,0.f,100.f,50.f)),colorPalette.mainColor,colorPalette,1),
-            NodeIO("Black Side",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,"Black Side",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,0),
-            NodeIO("White Side",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,"White Side",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,0),
+            NodeIO("Put a Texture",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),"Put a Texture",Texture(),2.f,false)),ColorPalette::mainColor,1),
+            NodeIO("Offset",Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"Offset",Texture(),2.f,0.f,100.f,50.f)),ColorPalette::mainColor,1),
+            NodeIO("Black Side",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"Black Side",Texture(),2.f,false)),ColorPalette::mainColor,0),
+            NodeIO("White Side",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"White Side",Texture(),2.f,false)),ColorPalette::mainColor,0),
         };
-        outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, "Output", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,2));
+        outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Output", Texture(), 2.f,false)),ColorPalette::mainColor,2));
         inputs[0].element.button.textureSelection = true;
         
         inputs[2].element.button.color = glm::vec4(glm::vec3(0.f), 1.f);
@@ -79,7 +77,7 @@ Node::Node(int nodeIndex, int materialID, ColorPalette colorPalette){
     }
     else if(nodeIndex == MATERIAL_ID_NODE){
             inputs =    {
-                NodeIO("Put a Texture",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),colorPalette,"Put a Texture",Texture(),2.f,false)),colorPalette.mainColor,colorPalette,1),
+                NodeIO("Put a Texture",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),"Put a Texture",Texture(),2.f,false)),ColorPalette::mainColor,1),
             };
             inputs[0].element.button.textureSelection = true;
     }
@@ -107,14 +105,14 @@ Node::Node(int nodeIndex, int materialID, ColorPalette colorPalette){
 
     this->nodePanel = Panel(
         
-        colorPalette,
+        
         {
             //Sections
         },
         this->scale, //Scale of the node
         this->pos, //Pos of the node 
         glm::vec4(panelColor, 0.5f),
-        colorPalette.secondColor,
+        ColorPalette::secondColor,
         true,
         false,
         false,
@@ -131,7 +129,7 @@ Node::Node(int nodeIndex, int materialID, ColorPalette colorPalette){
     nodePanel.clearDepthBuffer = false;
     
     //Create the barbutton
-    this->barButton = Button(ELEMENT_STYLE_BASIC,nodePanel.scale,colorPalette,"Node",Texture(),0.f,false);
+    this->barButton = Button(ELEMENT_STYLE_BASIC,nodePanel.scale,"Node",Texture(),0.f,false);
     if(nodeIndex == MATERIAL_ID_NODE){
         this->barButton.text = "Material ID Node";
     }

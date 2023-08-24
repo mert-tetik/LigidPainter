@@ -34,10 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-void nodeInteraction(
-                        
-                        ColorPalette colorPalette
-                    )
+void nodeInteraction()
 {
     
     //Update the mesh node if a new model is added
@@ -45,7 +42,7 @@ void nodeInteraction(
         
         Node previousNode = *NodeScene::getNode(0); //(Current node (unchanged))
 
-        NodeScene::getNode(0)->uploadNewIOs(colorPalette);
+        NodeScene::getNode(0)->uploadNewIOs();
 
         for (size_t i = 0; i < previousNode.IOs.size(); i++)
         {

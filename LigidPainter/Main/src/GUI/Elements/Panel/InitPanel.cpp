@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/Elements/Elements.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -32,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 Panel::Panel(){}
 
 Panel::Panel(
-                ColorPalette colorPalette,
+                
                 std::vector<Section> sections,
                 glm::vec2 scale,
                 glm::vec3 pos,
@@ -65,9 +66,9 @@ Panel::Panel(
     this->rowCount = rowCount; 
     this->maxScaleVal = maxScaleVal; 
     this->barButtons = barButtons; 
-    this->sliderButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(0.25f,20), colorPalette, "", Texture(), 0.f, false);
-    this->sliderButton.color = colorPalette.mainColor;
-    this->sliderButton.color2 = colorPalette.themeColor;
+    this->sliderButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(0.25f,20), "", Texture(), 0.f, false);
+    this->sliderButton.color = ColorPalette::mainColor;
+    this->sliderButton.color2 = ColorPalette::themeColor;
     this->sliderButton.radius = 0.25f;
     this->hasSlider = hasSlider;
 

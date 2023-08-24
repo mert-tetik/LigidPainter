@@ -29,7 +29,8 @@
 #include "MouseSystem/Mouse.hpp" 
 #include "LibrarySystem/Library.hpp" 
 #include "NodeSystem/Node/Node.hpp" 
-#include "SettingsSystem/Settings.hpp" 
+#include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp" 
 
 #include <string>
 #include <iostream>
@@ -100,9 +101,9 @@ namespace LGDLOG{
     std::string end = "$#";
 }
 
-LogDialog::LogDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
+LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
     this->panel = Panel(
-        colorPalette,
+        
         {
             {
                 Section(
@@ -115,8 +116,8 @@ LogDialog::LogDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterial
         },
         glm::vec2(10.f,16.f),
         glm::vec3(50.f,50.f,0.8f),
-        colorPalette.mainColor,
-        colorPalette.thirdColor,
+        ColorPalette::mainColor,
+        ColorPalette::thirdColor,
         true,
         true,
         true,
@@ -129,21 +130,21 @@ LogDialog::LogDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterial
         false
     );
 
-    this->logBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), colorPalette, "", Settings::appTextures().logButtonM, 0., false);
+    this->logBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", Settings::appTextures().logButtonM, 0., false);
     this->logBtn.color = glm::vec4(0);
     this->logBtn.color2 = glm::vec4(0);
     this->logBtn.outlineColor = glm::vec4(0);
     this->logBtn.outlineColor2 = glm::vec4(0);
     this->logBtn.pos.z = 0.9f;
     
-    this->logBtnL = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.8f), colorPalette, "", Settings::appTextures().logButtonL, 0., false);
+    this->logBtnL = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.8f), "", Settings::appTextures().logButtonL, 0., false);
     this->logBtnL.color = glm::vec4(0);
     this->logBtnL.color2 = glm::vec4(0);
     this->logBtnL.outlineColor = glm::vec4(0);
     this->logBtnL.outlineColor2 = glm::vec4(0);
     this->logBtnL.pos.z = 0.9f;
     
-    this->logBtnR = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.8f), colorPalette, "", Settings::appTextures().logButtonR, 0., false);
+    this->logBtnR = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.8f), "", Settings::appTextures().logButtonR, 0., false);
     this->logBtnR.color = glm::vec4(0);
     this->logBtnR.color2 = glm::vec4(0);
     this->logBtnR.outlineColor = glm::vec4(0);
@@ -153,7 +154,7 @@ LogDialog::LogDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterial
     this->panel.hasSlider = true;
 }
 
-void LogDialog::render(ColorPalette colorPalette,Timer timer, TextRenderer &textRenderer){
+void LogDialog::render(Timer timer, TextRenderer &textRenderer){
     
     if(this->logBtnL.clicked)
         messagesActive = !messagesActive;
@@ -225,7 +226,7 @@ void LogDialog::render(ColorPalette colorPalette,Timer timer, TextRenderer &text
                                 );
             for (size_t i = 0; i < messages.size(); i++)
             {
-                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), colorPalette, messages[i], Texture(), 0., false));
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), messages[i], Texture(), 0., false));
                 logSections[0].elements[logSections[0].elements.size() - 1].button.color = glm::vec4(0.56f, 0.37f, 0.11f, 1.f);
             }
             
@@ -243,7 +244,7 @@ void LogDialog::render(ColorPalette colorPalette,Timer timer, TextRenderer &text
                                 );
             for (size_t i = 0; i < __actions.size(); i++)
             {
-                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), colorPalette, __actions[i].title, Texture(), 0., false));
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), __actions[i].title, Texture(), 0., false));
                 logSections[0].elements[logSections[0].elements.size() - 1].button.color = glm::vec4(0.11f, 0.55f, 0.38f, 1.f);
             }
 
@@ -253,10 +254,10 @@ void LogDialog::render(ColorPalette colorPalette,Timer timer, TextRenderer &text
                     logSections[0].elements.push_back(this->panel.sections[0].elements[this->panel.sections[0].elements.size()-1].button);
                 }
                 else
-                    logSections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), colorPalette, "Undo", Texture(), 0., false));
+                    logSections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo", Texture(), 0., false));
             }
             else
-                logSections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), colorPalette, "Undo", Texture(), 0., false));
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo", Texture(), 0., false));
             
             this->panel.sections = logSections;
         }

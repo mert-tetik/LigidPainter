@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -28,18 +29,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 ContextMenu::ContextMenu(){}
 
-ContextMenu::ContextMenu(ColorPalette colorPalette,std::vector<std::string> elements){
+ContextMenu::ContextMenu(std::vector<std::string> elements){
     
     //Create the context panel
     contextPanel = Panel(
-        colorPalette,
         {
             //Sections
         },
         glm::vec2(5.f,5.f), //Scale
         glm::vec3(50.f,50.f,0.95f), //Pos
-        colorPalette.mainColor,
-        colorPalette.secondColor,
+        ColorPalette::mainColor,
+        ColorPalette::secondColor,
         true,
         true,
         true,
@@ -56,7 +56,7 @@ ContextMenu::ContextMenu(ColorPalette colorPalette,std::vector<std::string> elem
     Section section;
     for (size_t i = 0; i < elements.size(); i++)
     {
-        section.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1), colorPalette, elements[i], Texture(), 0.f, false)));
+        section.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1), elements[i], Texture(), 0.f, false)));
     }
     
     contextPanel.sections.push_back(section);

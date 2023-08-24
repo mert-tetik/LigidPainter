@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/Elements/Elements.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <fstream>
@@ -56,18 +57,18 @@ ComboBox::ComboBox(std::vector<std::string> texts, glm::vec2 scale, glm::vec4 co
 }
 
 //Style constructor
-ComboBox::ComboBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::vector<std::string> texts,std::string text,float panelOffset){
+ComboBox::ComboBox(int style,glm::vec2 scale,std::vector<std::string> texts,std::string text,float panelOffset){
     this->texts = texts;
     this->text = text;
     this->scale = scale;
     this->panelOffset = panelOffset;
     
     if(style == ELEMENT_STYLE_BASIC){
-        this->bgColor = colorPalette.secondColor;
-        this->color = colorPalette.oppositeColor;
-        this->color2 = colorPalette.themeColor;
-        this->textColor = colorPalette.oppositeColor;
-        this->textColor2 = colorPalette.themeColor;
+        this->bgColor = ColorPalette::secondColor;
+        this->color = ColorPalette::oppositeColor;
+        this->color2 = ColorPalette::themeColor;
+        this->textColor = ColorPalette::oppositeColor;
+        this->textColor2 = ColorPalette::themeColor;
         this->textScale = 0.5f;
         this->outlineColor = {};
         this->outlineColor2 = {};

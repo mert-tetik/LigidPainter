@@ -29,6 +29,7 @@
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -36,11 +37,7 @@
 
 #include "tinyfiledialogs.h"
 
-TextureEditorDialog::TextureEditorDialog(){}
-
-TextureEditorDialog::TextureEditorDialog(
-                                            ColorPalette colorPalette //LigidPainter's theme
-                                        ){
+TextureEditorDialog::TextureEditorDialog(){
     
     //Init displaying texture
     glActiveTexture(GL_TEXTURE0);
@@ -58,7 +55,7 @@ TextureEditorDialog::TextureEditorDialog(
 
     //Create the panel
     this->bgPanel = Panel(
-        colorPalette,
+        
         {
             {
                 Section(
@@ -70,8 +67,8 @@ TextureEditorDialog::TextureEditorDialog(
         },
         glm::vec2(34.f, 34.f),
         glm::vec3(50.f,50.f,0.8f),
-        colorPalette.mainColor,
-        colorPalette.thirdColor,
+        ColorPalette::mainColor,
+        ColorPalette::thirdColor,
         true,
         true,
         true,
@@ -85,27 +82,27 @@ TextureEditorDialog::TextureEditorDialog(
     );
 
     this->sectionPanel = Panel(
-        colorPalette,
+        
         {
             {
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), colorPalette, "Resize", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), colorPalette, "Blur", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), colorPalette, "Noise", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), colorPalette, "Normal Map", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), colorPalette, "Distortion", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), colorPalette, "Filters", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), colorPalette, "Images", Settings::appTextures().brushIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Resize", Settings::appTextures().brushIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Blur", Settings::appTextures().brushIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Noise", Settings::appTextures().brushIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Normal Map", Settings::appTextures().brushIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Distortion", Settings::appTextures().brushIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Filters", Settings::appTextures().brushIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Images", Settings::appTextures().brushIcon, 1.f,true)),
                     }
                 )
             }
         },
         glm::vec2(6.f, 34.f),
         glm::vec3(50.f,50.f,0.8f),
-        colorPalette.secondColor,
-        colorPalette.thirdColor,
+        ColorPalette::secondColor,
+        ColorPalette::thirdColor,
         true,
         true,
         true,
@@ -119,66 +116,66 @@ TextureEditorDialog::TextureEditorDialog(
     );
 
     this->resizeElements = {
-        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), colorPalette, {"Stretch", "Alpha Zero", "Color", "Repeat", "Mirror"}, "Wraping Function", 0.f),
-        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Wraping Color", Texture(), 1.f, false),
-        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), colorPalette, {"Top Left", "Top Right", "Bottom Left", "Bottom Right", "Center", "Custom"}, "Origin Point", 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Origin Point X", Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Origin Point Y", Texture(), 0.f, 0.f, 1.f, 0.f),
-        TextBox(0, glm::vec2(8.f, 2.f), colorPalette, "1024", 0.f, false),
-        TextBox(0, glm::vec2(8.f, 2.f), colorPalette, "1024", 0.f, false)
+        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Stretch", "Alpha Zero", "Color", "Repeat", "Mirror"}, "Wraping Function", 0.f),
+        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Wraping Color", Texture(), 1.f, false),
+        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Top Left", "Top Right", "Bottom Left", "Bottom Right", "Center", "Custom"}, "Origin Point", 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Origin Point X", Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Origin Point Y", Texture(), 0.f, 0.f, 1.f, 0.f),
+        TextBox(0, glm::vec2(8.f, 2.f), "1024", 0.f, false),
+        TextBox(0, glm::vec2(8.f, 2.f), "1024", 0.f, false)
     };
     this->resizeElements[1].button.colorSelection = true;
     
     this->bluringElement = {
-        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), colorPalette, {"Box", "Gaussian", "Directional", "Radial", "Lens"}, "Bluring Function", 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Directional Direction", Texture(), 0.f, 0.f, 360.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Radial Pos Y", Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Radial Pos Y", Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Strength", Texture(), 0.f, 0.f, 1.f, 0.f),
+        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Box", "Gaussian", "Directional", "Radial", "Lens"}, "Bluring Function", 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Directional Direction", Texture(), 0.f, 0.f, 360.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Radial Pos Y", Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Radial Pos Y", Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Strength", Texture(), 0.f, 0.f, 1.f, 0.f),
     };
     
     this->noiseElements = {
-        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), colorPalette, {"FBM", "Cloud", "Golden"}, "Noise Function", 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Cloud Radius",  Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Frequency",     Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Octaves",       Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Roughness",     Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Scale",         Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Strength",      Texture(), 0.f, 0.f, 1.f, 0.f),
-        CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), colorPalette, "Color Mix", 0.f),
-        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Mixing Color", Texture(), 1.f, true),
+        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"FBM", "Cloud", "Golden"}, "Noise Function", 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Cloud Radius",  Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Frequency",     Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Octaves",       Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Roughness",     Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Scale",         Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Strength",      Texture(), 0.f, 0.f, 1.f, 0.f),
+        CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), "Color Mix", 0.f),
+        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Mixing Color", Texture(), 1.f, true),
     };
 
     this->normalMapElements = {
-        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), colorPalette, {"Blue Scale", "Gray Scale"}, "Normal Map Function", 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Strength",  Texture(), 0.f, 0.f, 1.0f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Blur",  Texture(), 0.f, 0.f, 1.f, 0.f),
+        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Blue Scale", "Gray Scale"}, "Normal Map Function", 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Strength",  Texture(), 0.f, 0.f, 1.0f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Blur",  Texture(), 0.f, 0.f, 1.f, 0.f),
     };
 
     this->distortionElements = {
-        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), colorPalette, {"Ripple", "Sin Wave", "Swirl", "Rain", "Texture"}, "Distortion Type", 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Ripple Roughness",  Texture(), 0.f, 0.f, 1.f, 0.1f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Ripple Octaves",  Texture(), 0.f, 0, 12, 8),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Sin X Strength",  Texture(), 0.f, 0.f, 1.f, 0.1f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Sin Y Strength",  Texture(), 0.f, 0.f, 40.f, 20.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Swirl Radius",  Texture(), 0.f, 0.f, 1.f, 0.5f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Swirl Angle",  Texture(), 0.f, 0.f, 10.f, 4.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Rain Scale",  Texture(), 0.f, 0.f, 50.f, 40.f),
-        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Texture", Texture(), 1.f, false),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Strength",  Texture(), 0.f, 0.f, 1.f, 0.2f),
+        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Ripple", "Sin Wave", "Swirl", "Rain", "Texture"}, "Distortion Type", 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Ripple Roughness",  Texture(), 0.f, 0.f, 1.f, 0.1f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Ripple Octaves",  Texture(), 0.f, 0, 12, 8),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Sin X Strength",  Texture(), 0.f, 0.f, 1.f, 0.1f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Sin Y Strength",  Texture(), 0.f, 0.f, 40.f, 20.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Swirl Radius",  Texture(), 0.f, 0.f, 1.f, 0.5f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Swirl Angle",  Texture(), 0.f, 0.f, 10.f, 4.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Rain Scale",  Texture(), 0.f, 0.f, 50.f, 40.f),
+        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Texture", Texture(), 1.f, false),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Strength",  Texture(), 0.f, 0.f, 1.f, 0.2f),
     };
 
     this->imagesElements = {
-        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Image", Texture(), 1.f, true),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Strength",  Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), colorPalette, "Scale",  Texture(), 0.f, 0.f, 10.f, 1.f),
+        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Image", Texture(), 1.f, true),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Strength",  Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Scale",  Texture(), 0.f, 0.f, 10.f, 1.f),
     };
 
-    this->filterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), colorPalette, "Filter", Texture(), 1.f, false);
-    this->displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), colorPalette, "", this->displayingTexture, 1.f,true);
+    this->filterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), "Filter", Texture(), 1.f, false);
+    this->displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), "", this->displayingTexture, 1.f,true);
     
-    this->saveButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), colorPalette, "Save", Texture(), 1.f, false);
-    this->saveAsButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), colorPalette, "Save As", Texture(), 1.f, false);
+    this->saveButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save", Texture(), 1.f, false);
+    this->saveAsButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save As", Texture(), 1.f, false);
 
     distortionElements[8].button.textureSelection = true;
 }
@@ -349,7 +346,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
 
 }
 
-void TextureEditorDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture){
+void TextureEditorDialog::render(Timer timer, TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture){
     
     dialogControl.updateStart();
 

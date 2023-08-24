@@ -117,6 +117,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
     std::string filtersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Filters";
     if(!std::filesystem::create_directory(filtersFolderPath))
         LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << filtersFolderPath << LGDLOG::end; 
+    completeFolder(filtersFolderPath, FILTER_FOLDER_CREATION);
     
     //Layers
     std::string layersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Layers";

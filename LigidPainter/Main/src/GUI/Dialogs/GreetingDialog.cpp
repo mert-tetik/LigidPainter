@@ -24,17 +24,16 @@
 #include "GUI/GUI.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
 #include <vector>
 
-GreetingDialog::GreetingDialog(){}
-
-GreetingDialog::GreetingDialog(ColorPalette colorPalette){
+GreetingDialog::GreetingDialog(){
     
     //First text button
-    this->textButton1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2), colorPalette, "Welcome To The LigidPainter",Texture(),0.f,false);
+    this->textButton1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2), "Welcome To The LigidPainter",Texture(),0.f,false);
     this->textButton1.color = glm::vec4(0);
     this->textButton1.pos.x = 40;
     this->textButton1.pos.y = 40;
@@ -42,7 +41,7 @@ GreetingDialog::GreetingDialog(ColorPalette colorPalette){
     this->textButton1.textScale = 1.0f;
     
     //Load project button
-    this->loadProjectButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2), colorPalette, "Load",Texture(),0.f,false);
+    this->loadProjectButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2), "Load",Texture(),0.f,false);
     this->loadProjectButton.pos.x = 45;
     this->loadProjectButton.pos.y = 58;
     this->loadProjectButton.pos.z = 0.9f;
@@ -51,7 +50,7 @@ GreetingDialog::GreetingDialog(ColorPalette colorPalette){
     this->loadProjectButton.textColor = glm::vec4(1);
     
     //Create project button
-    this->createProjectButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2), colorPalette, "Create",Texture(),0.f,false);
+    this->createProjectButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2), "Create",Texture(),0.f,false);
     this->createProjectButton.pos.x = 55;
     this->createProjectButton.pos.y = 58;
     this->createProjectButton.pos.z = 0.9f;
@@ -60,7 +59,7 @@ GreetingDialog::GreetingDialog(ColorPalette colorPalette){
     this->createProjectButton.textColor = glm::vec4(1);
     
     //Decoration texture displayer button
-    this->textureDisplayerButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(30,30), colorPalette, "",Settings::appTextures().greetingDialogImage,0.f,false);
+    this->textureDisplayerButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(30,30), "",Settings::appTextures().greetingDialogImage,0.f,false);
     this->textureDisplayerButton.pos.x = 50;
     this->textureDisplayerButton.pos.y = 50;
     this->textureDisplayerButton.pos.z = 0.8f;
@@ -70,14 +69,14 @@ GreetingDialog::GreetingDialog(ColorPalette colorPalette){
     this->textureDisplayerButton.outlineColor2 = glm::vec4(0);
     
     //Background panel
-    this->bgPanel = Panel(colorPalette,{},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f,false);
+    this->bgPanel = Panel({},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),ColorPalette::mainColor,ColorPalette::thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f,false);
 
     bgPanel.scale.x = textureDisplayerButton.scale.x;
 
     this->dialogControl.activate();
 }
 
-void GreetingDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
+void GreetingDialog::render(Timer timer,TextRenderer &textRenderer,NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
 
     dialogControl.updateStart();
 

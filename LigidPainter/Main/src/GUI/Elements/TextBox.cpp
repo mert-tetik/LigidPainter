@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <iostream>
 #include <string>
@@ -79,7 +80,7 @@ TextBox::TextBox(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 c
 }
 
 //Style constructor
-TextBox::TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset,int openSelectFolderDialog){
+TextBox::TextBox(int style,glm::vec2 scale,std::string text,float panelOffset,int openSelectFolderDialog){
     this->text = text;
     this->scale = scale;
     this->panelOffset = panelOffset;
@@ -88,11 +89,11 @@ TextBox::TextBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string
     activeChar = text.size()-1;
     activeChar2 = text.size()-1;
     if(style == 0){
-        this->color = colorPalette.oppositeColor;
-        this->color2 = colorPalette.themeColor;
+        this->color = ColorPalette::oppositeColor;
+        this->color2 = ColorPalette::themeColor;
         this->animationStyle = 0;
-        this->textColor = colorPalette.oppositeColor;
-        this->textColor2 = colorPalette.themeColor;
+        this->textColor = ColorPalette::oppositeColor;
+        this->textColor2 = ColorPalette::themeColor;
         this->textScale = 0.7f;
         this->outlineColor = {};
         this->outlineColor2 = {};

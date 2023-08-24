@@ -28,6 +28,7 @@
 #include "3D/ThreeD.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -35,13 +36,7 @@
 
 #include "tinyfiledialogs.h"
 
-DisplayerDialog::DisplayerDialog(){}
-
-DisplayerDialog::DisplayerDialog(
-                                    //Window and stuff
-                                    //Monitor resolution
-                                    ColorPalette colorPalette //LigidPainter's theme
-                                ){
+DisplayerDialog::DisplayerDialog(){
     Texture bgTxtr0;
     bgTxtr0.load("./LigidPainter/Resources/Images/BGTexture0.jpg");
     Texture bgTxtr1;
@@ -53,31 +48,31 @@ DisplayerDialog::DisplayerDialog(
 
     //Create the panel
     this->panel = Panel(
-        colorPalette,
+        
         {
             {
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),colorPalette, "",  Settings::appTextures().greetingDialogImage, 1.f,true)),
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), 
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Blur"  , Texture(), 1.f,0.f,100.f,0.f)), 
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Opacity"  , Texture(), 1.f,0.f,100.f,0.f)), 
-                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Texture(), 1.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),colorPalette, "",  bgTxtr0, 2.f,false)),
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),colorPalette, "Image Opacity"  , Texture(), 1.f,0.f,1.f,0.f)), 
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, "",  bgTxtr0, 0.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, "",  bgTxtr1, 0.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, "",  bgTxtr2, 0.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, "",  bgTxtr3, 0.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),"",  Settings::appTextures().greetingDialogImage, 1.f,true)),
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), 
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Blur"  , Texture(), 1.f,0.f,100.f,0.f)), 
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Opacity"  , Texture(), 1.f,0.f,100.f,0.f)), 
+                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color"  , Texture(), 1.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"",  bgTxtr0, 2.f,false)),
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Image Opacity"  , Texture(), 1.f,0.f,1.f,0.f)), 
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr0, 0.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr1, 0.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr2, 0.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr3, 0.f, false)),
                     }
                 )
             }
         },
         glm::vec2(20.f),
         glm::vec3(50.f,50.f,0.8f),
-        colorPalette.mainColor,
-        colorPalette.thirdColor,
+        ColorPalette::mainColor,
+        ColorPalette::thirdColor,
         true,
         true,
         true,
@@ -95,7 +90,7 @@ DisplayerDialog::DisplayerDialog(
     {
         //Create the button
         Element btn;
-        btn = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,""    ,Texture(), 0.f,false));
+        btn = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),""    ,Texture(), 0.f,false));
         
         //Unique color for the button (color represents the skybox)
         if(i == 0)
@@ -116,7 +111,7 @@ DisplayerDialog::DisplayerDialog(
     }
 }
 
-void DisplayerDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+void DisplayerDialog::render(Timer timer,TextRenderer &textRenderer,
             Skybox &skybox){
     
     dialogControl.updateStart();

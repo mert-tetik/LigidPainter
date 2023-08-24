@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "GUI/Elements/Elements.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -100,7 +101,7 @@ Button::Button(
 Button::Button(
                     int style,
                     glm::vec2 scale,
-                    ColorPalette colorPalette,
+                    
                     std::string text,
                     Texture texture,
                     float panelOffset,
@@ -114,13 +115,13 @@ Button::Button(
     this->keepPressingState = keepPressingState;
     
     if(style == ELEMENT_STYLE_STYLIZED){
-        this->color = colorPalette.oppositeColor;
-        this->color2 = colorPalette.themeColor;
+        this->color = ColorPalette::oppositeColor;
+        this->color2 = ColorPalette::themeColor;
         this->outline = true;
         this->radius = 0.5f;
         this->animationStyle = 0;
-        this->textColor = colorPalette.oppositeColor;
-        this->textColor2 = colorPalette.themeColor;
+        this->textColor = ColorPalette::oppositeColor;
+        this->textColor2 = ColorPalette::themeColor;
         this->textScale = 0.5f;
         this->outlineExtra = false;
         this->outlineColor = {};
@@ -128,32 +129,32 @@ Button::Button(
         this->outlineThickness = 3.f;
     }
     if(style == ELEMENT_STYLE_SOLID){
-        this->color = colorPalette.secondColor;
-        this->color2 = colorPalette.themeColor;
+        this->color = ColorPalette::secondColor;
+        this->color2 = ColorPalette::themeColor;
         this->outline = false;
         this->radius = 0.1f;
         this->animationStyle = 1;
-        this->textColor = colorPalette.oppositeColor;
-        this->textColor2 = colorPalette.thirdColor;
+        this->textColor = ColorPalette::oppositeColor;
+        this->textColor2 = ColorPalette::thirdColor;
         this->textScale = 0.5f;
         this->outlineExtra = true;
-        this->outlineColor = colorPalette.oppositeColor;
-        this->outlineColor2 = colorPalette.thirdColor;
+        this->outlineColor = ColorPalette::oppositeColor;
+        this->outlineColor2 = ColorPalette::thirdColor;
         this->outlineThickness = 1.f;
         this->textureSizeScale = 1.f;
     }
     if(style == ELEMENT_STYLE_BASIC){
-        this->color = colorPalette.secondColor;
-        this->color2 = colorPalette.themeColor;
+        this->color = ColorPalette::secondColor;
+        this->color2 = ColorPalette::themeColor;
         this->outline = false;
         this->radius = 0.25f;
         this->animationStyle = 1;
-        this->textColor = colorPalette.oppositeColor;
-        this->textColor2 = colorPalette.thirdColor;
+        this->textColor = ColorPalette::oppositeColor;
+        this->textColor2 = ColorPalette::thirdColor;
         this->textScale = 0.5f;
         this->outlineExtra = true;
-        this->outlineColor = colorPalette.oppositeColor;
-        this->outlineColor2 = colorPalette.thirdColor;
+        this->outlineColor = ColorPalette::oppositeColor;
+        this->outlineColor2 = ColorPalette::thirdColor;
         this->outlineThickness = 2.f;
         this->textureSizeScale = 2.f;
     }

@@ -27,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "NodeSystem/Node/Node.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -271,12 +272,12 @@ void Node::uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs)
     createPanelUsingIOs();
 }
 
-void Node::uploadNewIOs(ColorPalette colorPalette){
+void Node::uploadNewIOs(){
     
     std::vector <NodeIO> meshOutputNodeInputElements;
     for (size_t i = 0; i < getModel()->meshes.size(); i++)
     {
-        meshOutputNodeInputElements.push_back(NodeIO(getModel()->meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),colorPalette,getModel()->meshes[i].materialName,Texture(),2.f,false)),colorPalette.mainColor,colorPalette,0));
+        meshOutputNodeInputElements.push_back(NodeIO(getModel()->meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),getModel()->meshes[i].materialName,Texture(),2.f,false)),ColorPalette::mainColor,0));
     }
 
     //Clear the IOs vector

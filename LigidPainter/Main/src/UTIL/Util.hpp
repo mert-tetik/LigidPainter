@@ -35,8 +35,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 /// @brief forward declared Library AppTextures structure
 struct AppTextures;
-/// @brief forward declared ColorPalette class
-class ColorPalette;
 /// @brief forward declared Model class
 class Model;
 /// @brief forward declared Texture class
@@ -338,15 +336,8 @@ public:
     
     /// @brief load an existing project using ligid file path
     /// @param ligidFilePath path to the ligid file
-    /// @param  structure (holds the textures / materials / brushes & TDModels)
-    /// @param model The 3D models
-    /// @param colorPalette colorPalette class (color theme of the ligidpainter)
-    /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
-    /// @param meshNodeScene The main meshNodeScene which has the mesh node
     /// @return 
-    bool loadProject(std::string ligidFilePath,
-                    ColorPalette colorPalette, 
-                    AppMaterialModifiers& appMaterialModifiers);
+    bool loadProject(std::string ligidFilePath, AppMaterialModifiers& appMaterialModifiers);
 
     /// @brief Used to save as
     /// @param dstPath where to duplicate
@@ -368,7 +359,7 @@ public:
     /// @param meshNodeScene 
     /// @param textureRes 
     /// @return True if success
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate, ColorPalette colorPalette);
+    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate);
     
     /// @brief Write ligid file to the project folder
     /// @param meshNodeScene 
@@ -738,7 +729,7 @@ namespace FileHandler{
     
     Model readFBXFile(std::string path);
     
-    bool readLGDMATERIALFile(std::string path, Material& material, ColorPalette colorPalette,  
+    bool readLGDMATERIALFile(std::string path, Material& material,  
                              AppMaterialModifiers appMaterialModifiers);
     bool writeLGDMATERIALFile(std::string path, Material &material);
     

@@ -186,7 +186,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material, Box &box){
     //Push the elements one by one from the materialModifiers of the material
     for (size_t i = 0; i < material.materialModifiers.size(); i++)
     {
-        Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), colorPalette, material.materialModifiers[i].title , material.materialModifiers[i].maskTexture, 0.f, true));
+        Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), material.materialModifiers[i].title , material.materialModifiers[i].maskTexture, 0.f, true));
         layerPanelSection.elements.push_back(btn);
     }
 

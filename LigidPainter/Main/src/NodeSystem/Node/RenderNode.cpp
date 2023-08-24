@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "LibrarySystem/Library.hpp"
 #include "NodeSystem/Node/Node.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -60,15 +61,15 @@ void Node::render(
             std::vector<glm::vec3> palette;
             palette = nodePanel.sections[0].elements[0].button.texture.getMaterialIDPalette();
 
-            inputs.push_back(NodeIO("Texture", nodePanel.sections[0].elements[0].button, colorPalette.mainColor,colorPalette,1));
+            inputs.push_back(NodeIO("Texture", nodePanel.sections[0].elements[0].button, ColorPalette::mainColor,1));
 
             for (size_t i = 0; i < palette.size(); i++)
             {
-                inputs.push_back(NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, "Input1", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,0));
+                inputs.push_back(NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Input1", Texture(), 2.f,false)),ColorPalette::mainColor,0));
                 inputs[inputs.size() - 1].element.button.color = glm::vec4(palette[i], 1.f);
             }
 
-            outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), this->colorPalette, "Output", Texture(), 2.f,false)),colorPalette.mainColor,colorPalette,2));
+            outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Output", Texture(), 2.f,false)),ColorPalette::mainColor,2));
 
             this->uploadNewIOs(inputs, outputs);
         }

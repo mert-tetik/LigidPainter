@@ -34,7 +34,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 
 //Forward declarations
-class ColorPalette;
 class TextRenderer; 
 struct Element;
 struct NodePanel;
@@ -74,7 +73,7 @@ public:
     int state;
 
     //Constructor
-    NodeIO(std::string title ,Element element,glm::vec4 color,ColorPalette colorPalette,int state);
+    NodeIO(std::string title ,Element element,glm::vec4 color,int state);
 };
 
 //!------------------------------NODE-----------------------------
@@ -88,8 +87,6 @@ public:
 class Node
 {
 private:
-    ColorPalette colorPalette;  
-    
     //-------------------- UTILITY FUNCTIONS --------------------
 
     bool renderBarriers(Panel &nodeEditorPanel);
@@ -144,10 +141,9 @@ public:
     * @param materialID used if the nodeIndex is : @ref MATERIAL_NODE indicates the unique ID value of the material used by the material node 
     * @param buttonShader button shader used to render the GUI elements
     * @param connectionCurveShader curve shader used to render connection line curves 
-    * @param colorPalette LigidPainter color theme
     * @param videoScale primary monitor resolution value
     */
-    Node(int nodeIndex, int materialID, ColorPalette colorPalette);
+    Node(int nodeIndex, int materialID);
 
     /// @brief Render the node & manage inputs & outputs 
     /// @param currentNodeIndex which node is rendered (index of the nodeScene)
@@ -157,7 +153,7 @@ public:
     void uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs);
     
     /// @brief Replaces the IOs vector with the new IOs generated with meshes of the 3D model (used for the mesh node) (+ generates the node panel)  
-    void uploadNewIOs(ColorPalette colorPalette);
+    void uploadNewIOs();
 };
 
 namespace NodeScene{

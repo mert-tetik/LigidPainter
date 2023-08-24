@@ -513,33 +513,33 @@ void UI::renderRenamingTextbox(Timer &timer, TextRenderer &textRenderer, Painter
 
 void UI::renderDialogs(Timer &timer, TextRenderer &textRenderer,  Project &project, Skybox &skybox, Box &box,  std::vector<ContextMenu> &contextMenus){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(colorPalette,timer,textRenderer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
+        newProjectDialog.render(timer,textRenderer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(colorPalette,timer,textRenderer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
+        loadProjectDialog.render(timer,textRenderer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
     
     if(greetingDialog.dialogControl.isActive())
-        greetingDialog.render(colorPalette,timer,textRenderer,newProjectDialog,loadProjectDialog);
+        greetingDialog.render(timer,textRenderer,newProjectDialog,loadProjectDialog);
 
     if(displayerDialog.dialogControl.isActive())
-        displayerDialog.render(colorPalette,timer,textRenderer,skybox);
+        displayerDialog.render(timer,textRenderer,skybox);
     
     if(textureEditorDialog.dialogControl.isActive())
-        textureEditorDialog.render(colorPalette,timer,textRenderer,skybox,this->projection, this->textureEditorSelectedTxtr);
+        textureEditorDialog.render(timer,textRenderer,skybox,this->projection, this->textureEditorSelectedTxtr);
     
     if(exportDialog.dialogControl.isActive())
-        exportDialog.render(colorPalette,timer,textRenderer,project,greetingDialog.dialogControl.active,materialEditorDialog);
+        exportDialog.render(timer,textRenderer,project,greetingDialog.dialogControl.active,materialEditorDialog);
     
     if(newTextureDialog.dialogControl.isActive())
-        newTextureDialog.render(colorPalette,timer,textRenderer);
+        newTextureDialog.render(timer,textRenderer);
     
     if(settingsDialog.dialogControl.isActive())
-        settingsDialog.render(colorPalette, timer, textRenderer);
+        settingsDialog.render(timer, textRenderer);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
         materialEditorDialog.render(timer,textRenderer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex), box, contextMenus);
     
-    logDialog.render(colorPalette, timer, textRenderer);
+    logDialog.render(timer, textRenderer);
 }
 
 void UI::renderDropper(Painter &painter){

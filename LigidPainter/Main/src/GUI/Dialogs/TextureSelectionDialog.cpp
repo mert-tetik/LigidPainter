@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "LibrarySystem/Library.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -34,28 +35,24 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE 29
 #define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 37
 
-TextureSelectionDialog::TextureSelectionDialog(){}
-
-TextureSelectionDialog::TextureSelectionDialog(ColorPalette colorPalette){
-    this->colorPalette = colorPalette;
-    
-    this->bgPanel = Panel(colorPalette, {}, scale, pos, colorPalette.secondColor, colorPalette.thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
+TextureSelectionDialog::TextureSelectionDialog(){
+    this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
     this->textureSelectingPanel = Panel(
-                                                    colorPalette,
+                                                    
                                                     {
                                                         /*
                                                         Section(
                                                             Button(),
                                                             {
-                                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2, scale.y / 2.f),colorPalette,"", Texture(), 0.f, true),
+                                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2, scale.y / 2.f),"", Texture(), 0.f, true),
                                                             }
                                                         )
                                                         */
                                                     },
                                                     glm::vec2(scale.x / 6.f, scale.y / 2.f),
                                                     glm::vec3(pos.x, pos.y + scale.y - scale.y / 2.f, pos.z),
-                                                    colorPalette.mainColor,
-                                                    colorPalette.thirdColor,
+                                                    ColorPalette::mainColor,
+                                                    ColorPalette::thirdColor,
                                                     true,
                                                     true,
                                                     false,
@@ -70,19 +67,19 @@ TextureSelectionDialog::TextureSelectionDialog(ColorPalette colorPalette){
     
     this->selectedTextureDisplayingPanel = Panel(
                                                     
-                                                    colorPalette,
+                                                    
                                                     {
                                                         Section(
                                                             Button(),
                                                             {
-                                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2, scale.y / 2.f),colorPalette,"", Texture(), 0.f, true),
+                                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2, scale.y / 2.f),"", Texture(), 0.f, true),
                                                             }
                                                         )
                                                     },
                                                     glm::vec2(scale.x / 6.f, scale.y / 2.f),
                                                     glm::vec3(pos.x, pos.y - scale.y + scale.y / 2.f, pos.z),
-                                                    colorPalette.mainColor,
-                                                    colorPalette.thirdColor,
+                                                    ColorPalette::mainColor,
+                                                    ColorPalette::thirdColor,
                                                     true,
                                                     true,
                                                     false,
@@ -96,27 +93,27 @@ TextureSelectionDialog::TextureSelectionDialog(ColorPalette colorPalette){
                                                 );
     this->subPanel = Panel(
                                 
-                                colorPalette,
+                                
                                 {
                                     Section(
                                         Button(),
                                         {
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Library Textures", Texture(), 5.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Procedural Pattern Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Procedural Noise Textures", Texture(), 2.f, true),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette,"Normal Map", 22.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette,"Normal Gray Scale", 2.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Normal Strength", Texture(), 2.f, 0.f, 100.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette,"Invert", 2.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette,"Scale", Texture(), 2.f, 0.f, 200.f, 10.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),colorPalette,"Select", Texture(), 2.f, false),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Library Textures", Texture(), 5.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Pattern Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 22.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 2.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Normal Strength", Texture(), 2.f, 0.f, 100.f, 10.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 2.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Scale", Texture(), 2.f, 0.f, 200.f, 10.f),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false),
                                         }
                                     )
                                 },
                                 glm::vec2(scale.x / 6.f, scale.y),
                                 glm::vec3(pos.x - scale.x + (scale.x / 6.f) , pos.y, pos.z),
-                                colorPalette.mainColor,
-                                colorPalette.thirdColor,
+                                ColorPalette::mainColor,
+                                ColorPalette::thirdColor,
                                 true,
                                 true,
                                 false,
@@ -273,8 +270,8 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, Filter fil
 //Forward declarations for the utility functions
 static void initTextureSelectionDialog(TextRenderer& textRenderer, int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, int& selectedTextureIndex, Texture& receivedTexture);
 static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
-static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, ColorPalette& colorPalette, bool filterSelection);
-static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex, ColorPalette& colorPalette);
+static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, bool filterSelection);
+static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex);
 
 void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, Filter& receivedFilter, TextRenderer& textRenderer, int displayingTextureRes, bool filterSelection){
     
@@ -300,9 +297,9 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         else
             generateDisplayingTexture(displayingTexture, Filter(), 512, filterSelection);
 
-        updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, colorPalette, filterSelection);
+        updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, filterSelection);
 
-        updateSubPanel(this->subPanel, this->selectedTextureMode, this->selectedTextureIndex, colorPalette);
+        updateSubPanel(this->subPanel, this->selectedTextureMode, this->selectedTextureIndex);
 
         //Render the panel
         this->bgPanel.render(timer,__textRenderer,true);
@@ -487,33 +484,33 @@ static void drawBG(
     ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
 }
 
-static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, ColorPalette& colorPalette, bool filterSelection){
+static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, bool filterSelection){
     textureSelectingPanel.sections.clear();
     std::vector<Element> sectionElements;
     if(!filterSelection){
         if(selectedTextureMode == 0){
             for (size_t i = 0; i < Library::getTextureArraySize(); i++)
             {
-                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),colorPalette, ""       , Texture(), 0.f,false)));
+                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),""       , Texture(), 0.f,false)));
             }
         }
         else if(selectedTextureMode == 1){
             for (size_t i = 0; i < MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE; i++)
             {
-                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),colorPalette,""       , Texture(), 0.f,false)));
+                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),""       , Texture(), 0.f,false)));
             }
         }
         else if(selectedTextureMode == 2){
             for (size_t i = 0; i < MAX_PROCEDURAL_NOISE_TEXTURE_SIZE; i++)
             {
-                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),colorPalette,""       , Texture(), 0.f,false)));
+                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),""       , Texture(), 0.f,false)));
             }
         }
     }
     else{
         for (size_t i = 0; i < Library::getFilterArraySize(); i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 3.f),colorPalette, "", Library::getFilter(i)->displayingTxtr, 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 3.f),"", Library::getFilter(i)->displayingTxtr, 0.f,false)));
         }
     }
 
@@ -527,7 +524,7 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
                                             );  
 }
 
-static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex, ColorPalette& colorPalette){
+static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex){
     for (size_t i = 0; i < 3; i++)
     {
         if(subPanel.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){

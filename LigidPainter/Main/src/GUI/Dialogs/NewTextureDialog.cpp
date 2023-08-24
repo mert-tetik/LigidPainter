@@ -24,6 +24,7 @@
 #include "GUI/GUI.hpp"
 #include "LibrarySystem/Library.hpp"
 #include "MouseSystem/Mouse.hpp" 
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -31,31 +32,28 @@
 
 #include "tinyfiledialogs.h"
 
-NewTextureDialog::NewTextureDialog(){}
-NewTextureDialog::NewTextureDialog(ColorPalette colorPalette){
-    
-    
+NewTextureDialog::NewTextureDialog(){
     //Create the panel
     this->panel = Panel(
-        colorPalette,
+        
         {
             {
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),colorPalette, "Color"  , Texture(), 1.f, false)),
-                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"NewTexture",1.f,false)),
-                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), colorPalette,  {"256", "512", "1024", "2048", "4096"} , "Resolution", 1.f)),
-                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2), colorPalette, "Create"  , Texture(), 4.f, true)),
-                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(3,2), colorPalette, "Create With The Texture Selection Dialog"  , Texture(), 1.f, true))
+                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color"  , Texture(), 1.f, false)),
+                        Element(TextBox(0,glm::vec2(4,2),"NewTexture",1.f,false)),
+                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2),  {"256", "512", "1024", "2048", "4096"} , "Resolution", 1.f)),
+                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2), "Create"  , Texture(), 4.f, true)),
+                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(3,2), "Create With The Texture Selection Dialog"  , Texture(), 1.f, true))
                     }
                 )
             }
         },
         glm::vec2(16.f),
         glm::vec3(50.f,50.f,0.8f),
-        colorPalette.mainColor,
-        colorPalette.thirdColor,
+        ColorPalette::mainColor,
+        ColorPalette::thirdColor,
         true,
         true,
         true,
@@ -74,7 +72,7 @@ NewTextureDialog::NewTextureDialog(ColorPalette colorPalette){
 
 bool __newTxtrDialog_last_texture_selection_dialog_state = false;
 
-void NewTextureDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer){
+void NewTextureDialog::render(Timer timer,TextRenderer &textRenderer){
     
     int textureRes = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
 

@@ -28,6 +28,7 @@
 #include "GUI/GUI.hpp" 
 #include "MouseSystem/Mouse.hpp" 
 #include "SettingsSystem/Settings.hpp" 
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -35,7 +36,7 @@
 
 NewProjectDialog::NewProjectDialog(){}
 
-NewProjectDialog::NewProjectDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
+NewProjectDialog::NewProjectDialog(AppMaterialModifiers& appMaterialModifiers){
     
     //Take the parameters to the class member variables 
     
@@ -43,18 +44,18 @@ NewProjectDialog::NewProjectDialog(ColorPalette colorPalette,AppMaterialModifier
     
     //Create the panel
     this->panel = Panel(
-                            colorPalette,
+                            
                             {
                                 Section(
                                     Element(Button()),
                                     {
                                         //Project settings
 
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"New Project",Texture(),0.f,false)), 
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"MyProject",2.f,false)),
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"./Projects",2.f,true)),
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"New Project",Texture(),0.f,false)), 
+                                        Element(TextBox(0,glm::vec2(4,2),"MyProject",2.f,false)),
+                                        Element(TextBox(0,glm::vec2(4,2),"./Projects",2.f,true)),
                                         
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
                                         {
                                             "256",
                                             "512",
@@ -63,18 +64,18 @@ NewProjectDialog::NewProjectDialog(ColorPalette colorPalette,AppMaterialModifier
                                             "4096"
                                         },"Texture Resolution",4.f)),
 
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Large",2.f)),
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Medium",0.f)),
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Small",0.f)),
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"3D Model",2.f,2)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(4,2),colorPalette,"Create",Texture(),2.f,false))
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Large",2.f)),
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Medium",0.f)),
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Small",0.f)),
+                                        Element(TextBox(0,glm::vec2(4,2),"3D Model",2.f,2)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(4,2),"Create",Texture(),2.f,false))
                                     }
                                 )
                             },
                             glm::vec2(15,30),
                             glm::vec3(50.f,50.f,0.8f),
-                            colorPalette.mainColor,
-                            colorPalette.thirdColor,
+                            ColorPalette::mainColor,
+                            ColorPalette::thirdColor,
                             true,
                             true,
                             true,
@@ -86,13 +87,13 @@ NewProjectDialog::NewProjectDialog(ColorPalette colorPalette,AppMaterialModifier
                             0.25f,
                             false
                         );
-    this->panel.sections[0].elements[0].button.color = colorPalette.secondColor;
-    this->panel.sections[0].elements[0].button.color2 = colorPalette.thirdColor;
-    this->panel.sections[0].elements[0].button.outlineColor = colorPalette.thirdColor;
-    this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
+    this->panel.sections[0].elements[0].button.color = ColorPalette::secondColor;
+    this->panel.sections[0].elements[0].button.color2 = ColorPalette::thirdColor;
+    this->panel.sections[0].elements[0].button.outlineColor = ColorPalette::thirdColor;
+    this->panel.sections[0].elements[0].button.outlineColor2 = ColorPalette::thirdColor;
 }
 
-void NewProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+void NewProjectDialog::render(Timer timer,TextRenderer &textRenderer,
                                 Project &project,bool &greetingDialogActive,bool &startScreen){
     
     dialogControl.updateStart();
@@ -111,7 +112,7 @@ void NewProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer
                                     std::stoi(panel.sections[0].elements[3].comboBox.texts[panel.sections[0].elements[3].comboBox.selectedIndex])
                                  ))
         {
-            project.loadProject(project.ligidFilePath(), colorPalette, appMaterialModifiers);
+            project.loadProject(project.ligidFilePath(), appMaterialModifiers);
             
             startScreen = false;
 

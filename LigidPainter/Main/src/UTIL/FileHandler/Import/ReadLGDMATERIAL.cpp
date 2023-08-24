@@ -46,7 +46,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 bool FileHandler::readLGDMATERIALFile(
                                         std::string path, 
                                         Material& material, 
-                                        ColorPalette colorPalette,
+                                        
                                         
                                         AppMaterialModifiers appMaterialModifiers
                                     )

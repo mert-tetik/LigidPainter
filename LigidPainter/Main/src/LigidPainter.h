@@ -23,6 +23,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "Renderer.h"
 
+Renderer::Renderer(){
+
+}
+
 class LigidPainter{
 public:
     int run(){
@@ -31,8 +35,20 @@ public:
         LigidGL::getPrimaryMonitorData(primaryMonitorData.x, primaryMonitorData.y, primaryMonitorData.z);
 
         *Settings::videoScale() = glm::vec2(primaryMonitorData.x, primaryMonitorData.y);
+        //Create the window and make it's OpenGL context current    
+        getContext()->window.createWindow(Settings::videoScale()->x, Settings::videoScale()->y, L"LigidPainter");
 
-        Renderer renderer = Renderer();
+        //Show the created window
+        getContext()->window.show();
+       
+        //Init GLAD
+        if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
+        {
+            LGDLOG::start<< "Failed to initialize GLAD" << LGDLOG::end;
+        }    
+
+        Renderer renderer;
+        renderer.initRenderer();
         
         while(!getContext()->window.shouldClose())
         {   

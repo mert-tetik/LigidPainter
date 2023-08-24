@@ -41,23 +41,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "tinyfiledialogs.h"
 
-typedef const char* (WINAPI* PFNWGLGETEXTENSIONSSTRINGARBPROC)(HDC hdc);
-
-Renderer::Renderer(){//Settings::Videoscale() is the resolution value that will be used for viewport & window size
-
-    if(!LigidGL::isAdmin()){
-        int res = tinyfd_messageBox("Warning!", "LigidPainter has no admin priviliges (run the app as administrator)! std::filesystem might cause a crash. Do you want to proceed?", "yesno", "warning", 0);
-        if(res == 0){
-            LigidGL::forceClose();
-        }
-    }
-
-    //Create the window and make it's OpenGL context current    
-    getContext()->window.createWindow(Settings::videoScale()->x, Settings::videoScale()->y, L"LigidPainter");
-    
-    //Show the created window
-    getContext()->window.show();
-
+void Renderer::initRenderer(){
     if(!getContext()->window.setWindowIcon(L"./LigidPainter/Resources/Icons/logo-1080x.ico"))
         LGDLOG::start<< "ERROR : Can't change the icon of the window" << LGDLOG::end;
 
@@ -163,10 +147,10 @@ Renderer::Renderer(){//Settings::Videoscale() is the resolution value that will 
     painter.initPainter();
 
     //Create the mesh node
-    NodeScene::addNode(Node(MESH_NODE, 0, colorPalette));
+    NodeScene::addNode(Node(MESH_NODE, 0));
 
     //Load the inputs of the mesh node
-    NodeScene::getNode(0)->uploadNewIOs(colorPalette);
+    NodeScene::getNode(0)->uploadNewIOs();
 
     //Create the projects folder if not exists
     if(!std::filesystem::exists("./Projects")){
@@ -197,35 +181,31 @@ Renderer::Renderer(){//Settings::Videoscale() is the resolution value that will 
 
 
 void Renderer::initGlad(){
-    //Init GLAD
-    if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
-    {
-        LGDLOG::start<< "Failed to initialize GLAD" << LGDLOG::end;
-    }    
+
 }
 
 void Renderer::createContextMenus(){
 
     //!Create context menus                                                   0            1                  2               3                     4           5  
     //Library panel
-    contextMenus.push_back(ContextMenu(colorPalette,{"Rename"  , "Duplicate"       , "Copy Path"   , "Edit"        ,    "Delete"})); //Textures  0
-    contextMenus.push_back(ContextMenu(colorPalette,{"Edit"    , "Add To Scene"    , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete",   "Export"}));    //Materials 1
-    contextMenus.push_back(ContextMenu(colorPalette,{"Use"     , "Apply Current"   , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"}));    //Brushes   2
+    contextMenus.push_back(ContextMenu({"Rename"  , "Duplicate"       , "Copy Path"   , "Edit"        ,    "Delete"})); //Textures  0
+    contextMenus.push_back(ContextMenu({"Edit"    , "Add To Scene"    , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete",   "Export"}));    //Materials 1
+    contextMenus.push_back(ContextMenu({"Use"     , "Apply Current"   , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"}));    //Brushes   2
     
     //Menu Bar (navigation panel)
-    contextMenus.push_back(ContextMenu(colorPalette,{"Save"    , "Save as"         , "Create new"  , "Load new"    ,    "Copy Path", "File Explorer"})); //Project   3 
-    contextMenus.push_back(ContextMenu(colorPalette,{"Undo"    , "Redo"    })); //Painting  4
-    contextMenus.push_back(ContextMenu(colorPalette,{"Website" , "YouTube" })); //Help      5
+    contextMenus.push_back(ContextMenu({"Save"    , "Save as"         , "Create new"  , "Load new"    ,    "Copy Path", "File Explorer"})); //Project   3 
+    contextMenus.push_back(ContextMenu({"Undo"    , "Redo"    })); //Painting  4
+    contextMenus.push_back(ContextMenu({"Website" , "YouTube" })); //Help      5
     
     //Material editor
-    contextMenus.push_back(ContextMenu(colorPalette,{"Delete"  , "Move To Top"     , "Move To Bottom", "Change Mask"}));// Material modifier context menu 6                                           
+    contextMenus.push_back(ContextMenu({"Delete"  , "Move To Top"     , "Move To Bottom", "Change Mask"}));// Material modifier context menu 6                                           
     
     //Nodes
-    contextMenus.push_back(ContextMenu(colorPalette,{"Delete"})); //Node context menu 7
+    contextMenus.push_back(ContextMenu({"Delete"})); //Node context menu 7
 
     //Material editor
-    contextMenus.push_back(ContextMenu(colorPalette,{"Texture Modifier", "Dust Modifier", "Asphalt Modifier", "Fabric Modifier", "Moss Modifier", "Rust Modifier", "Skin Modifier", "Solid Modifier", "Wooden Modifier"}));// Material modifier selection context menu 8                                        
+    contextMenus.push_back(ContextMenu({"Texture Modifier", "Dust Modifier", "Asphalt Modifier", "Fabric Modifier", "Moss Modifier", "Rust Modifier", "Skin Modifier", "Solid Modifier", "Wooden Modifier"}));// Material modifier selection context menu 8                                        
     
     //Node panel
-    contextMenus.push_back(ContextMenu(colorPalette,{"Add Material ID Node", "Add Material Mask Node"}));// Mesh node scene panel context menu 9                                        
+    contextMenus.push_back(ContextMenu({"Add Material ID Node", "Add Material Mask Node"}));// Mesh node scene panel context menu 9                                        
 }

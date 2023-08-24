@@ -25,6 +25,7 @@
 #include "GUI/GUI.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
  
 #include <string>
 #include <iostream>
@@ -35,7 +36,7 @@
 
 LoadProjectDialog::LoadProjectDialog(){}
 
-LoadProjectDialog::LoadProjectDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers){
+LoadProjectDialog::LoadProjectDialog(AppMaterialModifiers& appMaterialModifiers){
     
     //Take the parameters to the class member variables 
     
@@ -43,19 +44,19 @@ LoadProjectDialog::LoadProjectDialog(ColorPalette colorPalette,AppMaterialModifi
 
     //Create the bg panel
     this->bgPanel = Panel(
-                            colorPalette,
+                            
                             {
                                 Section(
                                     Element(Button()),
                                     {
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Load Project",Texture(),0.f,false)), 
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Load Project",Texture(),0.f,false)), 
                                     }
                                 )
                             },
                             glm::vec2(30,30),
                             glm::vec3(50.f,50.f,0.8f),
-                            colorPalette.mainColor,
-                            colorPalette.thirdColor,
+                            ColorPalette::mainColor,
+                            ColorPalette::thirdColor,
                             true,
                             true,
                             true,
@@ -71,13 +72,13 @@ LoadProjectDialog::LoadProjectDialog(ColorPalette colorPalette,AppMaterialModifi
     //Create the projects panel                        
     this->projectsPanel = Panel(
                             
-                            colorPalette,
+                            
                             {
                             },
                             glm::vec2(20,25),
                             glm::vec3(60.f,50.f,0.8f),
-                            colorPalette.secondColor,
-                            colorPalette.thirdColor,
+                            ColorPalette::secondColor,
+                            ColorPalette::thirdColor,
                             true,
                             true,
                             true,
@@ -91,17 +92,17 @@ LoadProjectDialog::LoadProjectDialog(ColorPalette colorPalette,AppMaterialModifi
                         );
 
     //Panel's navigation (kinda) bar
-    this->bgPanel.sections[0].elements[0].button.color = colorPalette.secondColor;
-    this->bgPanel.sections[0].elements[0].button.color2 = colorPalette.thirdColor;
-    this->bgPanel.sections[0].elements[0].button.outlineColor = colorPalette.thirdColor;
-    this->bgPanel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
+    this->bgPanel.sections[0].elements[0].button.color = ColorPalette::secondColor;
+    this->bgPanel.sections[0].elements[0].button.color2 = ColorPalette::thirdColor;
+    this->bgPanel.sections[0].elements[0].button.outlineColor = ColorPalette::thirdColor;
+    this->bgPanel.sections[0].elements[0].button.outlineColor2 = ColorPalette::thirdColor;
     
     //The load a project button
-    this->loadButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,"Load",Texture(),0.f,false);
+    this->loadButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),"Load",Texture(),0.f,false);
     this->loadButton.pos.x = 30;
     this->loadButton.pos.y = 35;
     this->loadButton.pos.z = 0.9f;
-    this->textBtn1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,"Load a *.ligid file",Texture(),0.f,false);
+    this->textBtn1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),"Load a *.ligid file",Texture(),0.f,false);
     this->textBtn1.color = glm::vec4(0);
     this->textBtn1.pos.x = 30;
     this->textBtn1.pos.y = 30;
@@ -110,21 +111,21 @@ LoadProjectDialog::LoadProjectDialog(ColorPalette colorPalette,AppMaterialModifi
     
     //Texts
 
-    this->textBtn2 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,"The *.ligid file is a binary file located",Texture(),0.f,false);
+    this->textBtn2 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),"The *.ligid file is a binary file located",Texture(),0.f,false);
     this->textBtn2.color = glm::vec4(0);
     this->textBtn2.pos.x = 30;
     this->textBtn2.pos.y = 45;
     this->textBtn2.pos.z = 0.9f;
     this->textBtn2.textScale = 0.7f;
     
-    this->textBtn3 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,"in a project folder capable of contain project data.",Texture(),0.f,false);
+    this->textBtn3 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),"in a project folder capable of contain project data.",Texture(),0.f,false);
     this->textBtn3.color = glm::vec4(0);
     this->textBtn3.pos.x = 30;
     this->textBtn3.pos.y = 48;
     this->textBtn3.pos.z = 0.9f;
     this->textBtn3.textScale = 0.7f;
     
-    this->textBtn4 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),colorPalette,"Please create a project folder if you don't have access to one",Texture(),0.f,false);
+    this->textBtn4 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),"Please create a project folder if you don't have access to one",Texture(),0.f,false);
     this->textBtn4.color = glm::vec4(0);
     this->textBtn4.pos.x = 30;
     this->textBtn4.pos.y = 54;
@@ -132,7 +133,7 @@ LoadProjectDialog::LoadProjectDialog(ColorPalette colorPalette,AppMaterialModifi
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+void LoadProjectDialog::render(Timer timer,TextRenderer &textRenderer,
                                 Project &project,bool &greetingDialogActive,bool &startScreen){
     
     dialogControl.updateStart();
@@ -156,7 +157,7 @@ void LoadProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRendere
         if(test.size()){
             
             //Load the project
-            if(project.loadProject(test, colorPalette, appMaterialModifiers)){
+            if(project.loadProject(test, appMaterialModifiers)){
                 
                 startScreen = false;
                 
@@ -189,7 +190,7 @@ void LoadProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRendere
         std::string projectPath = entry.path().string();
         
         //Create the button for the project path
-        Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,projectPath,Texture(),0.f,false);
+        Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),projectPath,Texture(),0.f,false);
         
         //Scale the button in x axis
         btn.scale.x = projectsPanel.scale.x;
@@ -222,7 +223,7 @@ void LoadProjectDialog::render(ColorPalette colorPalette,Timer timer,TextRendere
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath, colorPalette, appMaterialModifiers)){
+            if(project.loadProject(ligidFilePath, appMaterialModifiers)){
                 
                 startScreen = false;
                 

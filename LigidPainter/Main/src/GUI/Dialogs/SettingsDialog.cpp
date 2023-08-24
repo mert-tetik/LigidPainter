@@ -25,29 +25,28 @@
 #include "GUI/GUI.hpp"
 #include "MouseSystem/Mouse.hpp" 
 #include "SettingsSystem/Settings.hpp" 
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
 #include <vector>
 
-SettingsDialog::SettingsDialog(){}
-
-SettingsDialog::SettingsDialog(ColorPalette colorPalette){
+SettingsDialog::SettingsDialog(){
     
     //Create the panel
-    this->panel = Panel(colorPalette,{
+    this->panel = Panel({
         {
             Section(
                 Element(Button()),
                 {
-                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette, "Settings",Texture(),0.f,false)), 
+                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Settings",Texture(),0.f,false)), 
                 }
             ),
             Section(
-                Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"System",Texture(),4.f,true)),
+                Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"System",Texture(),4.f,true)),
                 {
 
-                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette,
+                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),
                     {
                         "256",
                         "512",
@@ -56,9 +55,9 @@ SettingsDialog::SettingsDialog(ColorPalette colorPalette){
                         "4096"
                     }, "Texture Resolution", 2.f)),
                     
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "VSync"  , 2.f)),
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"VSync"  , 2.f)),
                     
-                    Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.f), colorPalette,
+                    Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.f), 
                     {
                         "1024x768",
                         "1152x864",
@@ -82,35 +81,35 @@ SettingsDialog::SettingsDialog(ColorPalette colorPalette){
                 }
             ),
             Section(
-                Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Model Rendering",Texture(), 4.f,true)),
+                Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Model Rendering",Texture(), 4.f,true)),
                 {
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "X : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Y : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Z : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"X : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Y : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Z : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
                     
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "X : Transform",Texture(),2.f, -50.f, 50.f, 0.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Y : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Z : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"X : Transform",Texture(),2.f, -50.f, 50.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Y : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Z : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
                 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Fov", Texture(),2.f, 1.f, 180.f, 40.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Near", Texture(),0.f, 0.f, 1.f, 0.1f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Far", Texture(),0.f, 0.f, 1000.f, 1000.f)), 
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Orthographic projection"  , 0.f)),
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Fov", Texture(),2.f, 1.f, 180.f, 40.f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Near", Texture(),0.f, 0.f, 1.f, 0.1f)), 
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Far", Texture(),0.f, 0.f, 1000.f, 1000.f)), 
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Orthographic projection"  , 0.f)),
 
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Backface Culling"  , 2.f)),
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Backface Culling"  , 2.f)),
                     
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Apply Height Map"  , 2.f)),
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),colorPalette, "Height Map Strength", Texture(),0.f, 0.f, 1.f, 0.1f)), 
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Apply Height Map"  , 2.f)),
+                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Height Map Strength", Texture(),0.f, 0.f, 1.f, 0.1f)), 
                     
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Render scene tiles/grid"  , 2.f)),
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),colorPalette, "Render scene axis displayer"  , 0.f))
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Render scene tiles/grid"  , 2.f)),
+                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Render scene axis displayer"  , 0.f))
                 }
             )
         }
-    },glm::vec2(25.f, 40.f), glm::vec3(50.f,50.f,0.8f),colorPalette.mainColor,colorPalette.thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
+    },glm::vec2(25.f, 40.f), glm::vec3(50.f,50.f,0.8f),ColorPalette::mainColor,ColorPalette::thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
 }
 
-void SettingsDialog::render(ColorPalette colorPalette, Timer timer, TextRenderer &textRenderer){
+void SettingsDialog::render(Timer timer, TextRenderer &textRenderer){
     
     dialogControl.updateStart();   
 

@@ -26,36 +26,28 @@
 #include "NodeSystem/Node/Node.hpp" 
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
 #include <vector>
 #include <filesystem>
 
-
-ExportDialog::ExportDialog(){}
-
-ExportDialog::ExportDialog(ColorPalette colorPalette){
+ExportDialog::ExportDialog(){
     
-    //Take the parameters to the class member variables 
-    
-    
-
-    
-
     //Create the panel
     this->panel = Panel(
-                            colorPalette,
+                            
                             {
                                 Section(
                                     Element(Button()),
                                     {
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,"Export",Texture(),0.f,false)), 
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Export",Texture(),0.f,false)), 
                                         
                                         //Project settings
-                                        Element(TextBox(0,glm::vec2(4,2),colorPalette,"Select A Path",2.f,true)),
+                                        Element(TextBox(0,glm::vec2(4,2),"Select A Path",2.f,true)),
                                         
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
                                         {
                                             "256",
                                             "512",
@@ -64,7 +56,7 @@ ExportDialog::ExportDialog(ColorPalette colorPalette){
                                             "4096"
                                         },"Texture Resolution",4.f)),
                                         
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),colorPalette,
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
                                         {
                                             "PNG", 
                                             "JPEG", 
@@ -72,14 +64,14 @@ ExportDialog::ExportDialog(ColorPalette colorPalette){
                                             "TGA"
                                         },"File Format",4.f)),
 
-                                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),colorPalette,"Export",Texture(),5.f,false))
+                                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),"Export",Texture(),5.f,false))
                                     }
                                 )
                             },
                             glm::vec2(15,30),
                             glm::vec3(50.f,50.f,0.8f),
-                            colorPalette.mainColor,
-                            colorPalette.thirdColor,
+                            ColorPalette::mainColor,
+                            ColorPalette::thirdColor,
                             true,
                             true,
                             true,
@@ -92,13 +84,13 @@ ExportDialog::ExportDialog(ColorPalette colorPalette){
                             false
                         );
 
-    this->panel.sections[0].elements[0].button.color = colorPalette.secondColor;
-    this->panel.sections[0].elements[0].button.color2 = colorPalette.thirdColor;
-    this->panel.sections[0].elements[0].button.outlineColor = colorPalette.thirdColor;
-    this->panel.sections[0].elements[0].button.outlineColor2 = colorPalette.thirdColor;
+    this->panel.sections[0].elements[0].button.color = ColorPalette::secondColor;
+    this->panel.sections[0].elements[0].button.color2 = ColorPalette::thirdColor;
+    this->panel.sections[0].elements[0].button.outlineColor = ColorPalette::thirdColor;
+    this->panel.sections[0].elements[0].button.outlineColor2 = ColorPalette::thirdColor;
 }
 
-void ExportDialog::render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+void ExportDialog::render(Timer timer,TextRenderer &textRenderer,
                           Project &project,bool &greetingDialogActive,
                           MaterialEditorDialog &materialEditorDialog){
     

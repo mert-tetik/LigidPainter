@@ -36,8 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void paintingPanelInteraction(
                                 Panel &paintingPanel, 
                                 Painter &painter, 
-                                Dropper &dropper,
-                                ColorPalette colorPalette
+                                Dropper &dropper
                             )
 {
 
@@ -139,7 +138,7 @@ void paintingPanelInteraction(
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {
 
-            Element meshButton = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),colorPalette, getModel()->meshes[i].materialName , Texture(), 0.f,true));
+            Element meshButton = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),getModel()->meshes[i].materialName , Texture(), 0.f,true));
 
             paintingPanel.sections[3].elements.push_back(meshButton);
         

@@ -106,9 +106,6 @@ public:
     //Example : L = 0, R = 1920, B = 1080, T = 0  
     glm::mat4 projection; 
 
-    /*! @brief LigidPainter color theme */
-    ColorPalette colorPalette;
-
     /*! @brief Default constructor */
     UI();
 

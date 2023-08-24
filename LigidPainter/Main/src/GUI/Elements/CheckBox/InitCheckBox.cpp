@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/Elements/Elements.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -46,17 +47,17 @@ CheckBox::CheckBox(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4
 }
 
 //Style constructor
-CheckBox::CheckBox(int style,glm::vec2 scale,ColorPalette colorPalette,std::string text,float panelOffset){
+CheckBox::CheckBox(int style,glm::vec2 scale,std::string text,float panelOffset){
     this->text = text;
     this->scale = scale;
     this->panelOffset = panelOffset;
     
     if(style == ELEMENT_STYLE_BASIC){
-        this->color = colorPalette.oppositeColor;
-        this->color2 = colorPalette.themeColor;
+        this->color = ColorPalette::oppositeColor;
+        this->color2 = ColorPalette::themeColor;
         this->animationStyle = 0;
-        this->textColor = colorPalette.oppositeColor;
-        this->textColor2 = colorPalette.themeColor;
+        this->textColor = ColorPalette::oppositeColor;
+        this->textColor2 = ColorPalette::themeColor;
         this->textScale = 0.5f;
         this->outlineColor = {};
         this->outlineColor2 = {};

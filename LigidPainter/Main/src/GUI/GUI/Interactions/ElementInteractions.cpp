@@ -32,12 +32,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 //Forward declarations for the interaction functions defined in the Interactions directory 
-void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Panel &paintingPanel, Painter &painter,  ColorPalette& colorPalette, NewTextureDialog &newTextureDialog, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
-void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer,  ColorPalette& colorPalette, int frameCounter);
-void paintingPanelInteraction(Panel &paintingPanel, Painter &painter, Dropper &dropper,ColorPalette colorPalette);
+void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Panel &paintingPanel, Painter &painter, NewTextureDialog &newTextureDialog, AppMaterialModifiers& appMaterialModifiers, int frameCounter);
+void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int frameCounter);
+void paintingPanelInteraction(Panel &paintingPanel, Painter &painter, Dropper &dropper);
 void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
-void nodeInteraction(ColorPalette colorPalette);
+void nodeInteraction();
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
 void UI::elementInteraction(
@@ -75,13 +75,13 @@ void UI::elementInteraction(
 
     this->contextMenuInteraction(contextMenus, timer, textRenderer, project, painter);
     
-    updateLibraryPanelDisplayerElements(libraryPanelDisplayer,colorPalette,frameCounter);
+    updateLibraryPanelDisplayerElements(libraryPanelDisplayer, frameCounter);
     
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer,paintingPanel,painter,colorPalette,newTextureDialog,appMaterialModifiers,frameCounter);
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer, paintingPanel, painter, newTextureDialog, appMaterialModifiers,frameCounter);
     
     this->libraryPanelLeftInteraction(libraryPanelLeft);
 
-    paintingPanelInteraction(paintingPanel, painter, dropper, colorPalette);
+    paintingPanelInteraction(paintingPanel, painter, dropper);
     
     windowPanelInteraction(windowPanel, painter, settingsDialog, displayerDialog,exportDialog);
 
@@ -89,7 +89,7 @@ void UI::elementInteraction(
 
     displayingModesPanelInteraction(displayingModesPanel, painter);
 
-    nodeInteraction(colorPalette);
+    nodeInteraction();
     
     this->panelPositioning(screenGapPerc,painter);
 }

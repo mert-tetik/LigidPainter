@@ -36,7 +36,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "SettingsSystem/Settings.hpp"
 
 //Forward declarations
-class ColorPalette;
 class ContextMenu;
 
 class DialogControl
@@ -106,10 +105,9 @@ class SettingsDialog
 
     //Constructor
     SettingsDialog();
-    SettingsDialog(ColorPalette colorPalette);
 
     //Public member functions    
-    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer);
+    void render(Timer timer,TextRenderer &textRenderer);
  };
 
 
@@ -117,21 +115,20 @@ class SettingsDialog
 
 
 class NewTextureDialog
- {
- private:
-    
- public:
+{
+private:
+   
+public:
      
-     Panel panel;
-     NewTextureDialog();
+   Panel panel;
      
-     DialogControl dialogControl;
+   DialogControl dialogControl;
 
-    //Constructor
-    NewTextureDialog(ColorPalette colorPalette);
+   //Constructor
+   NewTextureDialog();
     
-    //Public member function
-    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer);
+   //Public member function
+   void render(Timer timer,TextRenderer &textRenderer);
  };
 
 
@@ -156,10 +153,10 @@ public:
 
    //Constructors
    LoadProjectDialog();
-   LoadProjectDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
+   LoadProjectDialog(AppMaterialModifiers& appMaterialModifiers);
    
    //Public member functions
-   void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+   void render(Timer timer,TextRenderer &textRenderer,
                Project &project,bool &greetingDialogActive,bool &startScreen);
  };
 
@@ -177,10 +174,9 @@ class DisplayerDialog
 
     //Constructors
     DisplayerDialog();
-    DisplayerDialog(ColorPalette colorPalette);
     
     //Public member functions
-    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+    void render(Timer timer,TextRenderer &textRenderer,
                 Skybox &skybox);
  };
 
@@ -216,10 +212,9 @@ class TextureEditorDialog
 
    //Constructors
    TextureEditorDialog();
-   TextureEditorDialog(ColorPalette colorPalette);
    
    //Public member functions
-   void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture);
+   void render(Timer timer,TextRenderer &textRenderer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture);
 
    void updateDisplayingTexture(Texture& receivedTexture, unsigned int destTxtr);
  };
@@ -244,10 +239,9 @@ public:
    
    //Constructors
    GreetingDialog();
-   GreetingDialog(ColorPalette colorPalette);
    
    //Public member functions
-   void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+   void render(Timer timer,TextRenderer &textRenderer,
                NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog);
 };
 
@@ -257,9 +251,6 @@ public:
 class MaterialEditorDialog
 {
 private:
-    
-   ColorPalette colorPalette;
-
    //Private member functions
    void updateLayerPanel(Material &material,Box &box);
    void checkLayerPanel(Material &material,std::vector<ContextMenu> &contextMenus);
@@ -292,7 +283,6 @@ public:
     
    //Constructors
    MaterialEditorDialog();
-   MaterialEditorDialog(ColorPalette colorPalette);
 
    //Public member functions
    void render(Timer &timer,TextRenderer &textRenderer,TextureSelectionDialog &textureSelectionDialog,
@@ -318,10 +308,10 @@ class NewProjectDialog
 
     //Constructors
     NewProjectDialog();
-    NewProjectDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
+    NewProjectDialog(AppMaterialModifiers& appMaterialModifiers);
 
     //Public member functions
-    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+    void render(Timer timer,TextRenderer &textRenderer,
                 Project &project,bool &greetingDialogActive,bool &startScreen);
  };
 
@@ -341,10 +331,9 @@ class ExportDialog
 
     //Constructors
     ExportDialog();
-    ExportDialog(ColorPalette colorPalette);
 
     //Public member functions
-    void render(ColorPalette colorPalette,Timer timer,TextRenderer &textRenderer,
+    void render(Timer timer,TextRenderer &textRenderer,
                 Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog);
  };
 
@@ -357,8 +346,6 @@ bool wasTextureSelectionDialogActive();
 class TextureSelectionDialog
 {
 private:
-    ColorPalette colorPalette;
-    
     int selectedTextureMode = 0;
 public:
    Panel bgPanel;
@@ -375,7 +362,6 @@ public:
 
    //Constructors
    TextureSelectionDialog();
-   TextureSelectionDialog( ColorPalette colorPalette);
 
 
    //Public member functions
@@ -400,7 +386,7 @@ public:
     
     //Constructors
     ContextMenu();
-    ContextMenu(ColorPalette colorPalette,std::vector<std::string> elements);
+    ContextMenu(std::vector<std::string> elements);
     
     /// @brief Public member function to render the context menu
     void render(Timer &timer,TextRenderer &textRenderer);
@@ -488,10 +474,10 @@ class LogDialog
 
    //Constructors
    LogDialog();
-   LogDialog(ColorPalette colorPalette,AppMaterialModifiers& appMaterialModifiers);
+   LogDialog(AppMaterialModifiers& appMaterialModifiers);
 
    //Public member functions
-   void render(ColorPalette colorPalette,Timer timer, TextRenderer &textRenderer);
+   void render(Timer timer, TextRenderer &textRenderer);
 };
 
 #endif
