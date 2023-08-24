@@ -74,7 +74,7 @@ void updateLibraryPanelDisplayerElements(
             for (size_t i = 0; i < Library::getModelArraySize(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, Library::getModel(i)->title       , Texture(), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),colorPalette, Library::getModel(i)->title       , Library::getModel(i)->displayingTxtr, 0.f,false))) ;
             }
         }
         else if(Library::getSelectedElementIndex() == 4){ //Fonts

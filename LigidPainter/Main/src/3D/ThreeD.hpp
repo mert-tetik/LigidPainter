@@ -177,13 +177,15 @@ public:
         @brief Is true in the same frame a new model is imported.
                 And is set to false back in the renderer.render  
     */
-    bool newModelAdded = false; 
+    bool newModelAdded = false;
+
+    unsigned int displayingTxtr = 0; 
 
     //Public member functions
     
     void Draw();
     void exportModel(std::string path);
-    void loadModel(std::string const &path,bool triangulate);
+    void loadModel(std::string const &path, bool triangulate);
 };
 
 class SceneTiles

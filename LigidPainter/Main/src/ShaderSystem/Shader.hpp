@@ -113,6 +113,7 @@ namespace ShaderSystem{
     Shader txtrEditorDistortionShader();
     Shader txtrEditorNormalMapShader();
     Shader splitTexturesShader();
+    Shader solidShadingShader();
 
     void initShaderSystem();
 };
