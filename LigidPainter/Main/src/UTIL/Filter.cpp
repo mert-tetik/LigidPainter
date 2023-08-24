@@ -65,6 +65,8 @@ int Filter::load(std::string path){
 
     this->generateDisplayingTexture();
 
+    this->title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
+
     return 1;
 }
 
