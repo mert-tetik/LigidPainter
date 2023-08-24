@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include <string>
 #include <iostream>
@@ -73,4 +74,17 @@ void ContextMenu::render(Timer &timer){
     contextPanel.render(timer,true);
     
     dialogControl.updateEnd(timer, 0.15f);
+
+    if (   //Conditions to turn any context menu off
+        *Mouse::LClick() || //Mouse left cli                       2.ck
+        *Mouse::RClick() || //Mouse right click
+        *Mouse::MClick() || //Mouse middle click11
+        *Mouse::mouseScroll() || //Mouse middle click
+        getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Pressed to escape key 
+        getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || //Pressed to enter key
+        !this->contextPanel.hover
+    )
+    {
+        this->dialogControl.unActivate(); //Turn the context menu offs
+    }
 }

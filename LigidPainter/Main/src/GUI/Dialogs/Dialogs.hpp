@@ -253,11 +253,11 @@ class MaterialEditorDialog
 private:
    //Private member functions
    void updateLayerPanel(Material &material,Box &box);
-   void checkLayerPanel(Material &material,std::vector<ContextMenu> &contextMenus);
+   void checkLayerPanel(Material &material);
    void checkModifiersPanel(Material &material,Box box,TextureSelectionDialog &textureSelectionDialog);
-   void updateLayerPanelElements(Material &material,Box &box,std::vector<ContextMenu> contextMenus);
+   void updateLayerPanelElements(Material &material,Box &box);
    void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Box box);
-   void manageContextMenuActions( Material &material, Box box, std::vector<ContextMenu> &contextMenus);
+   void manageContextMenuActions( Material &material, Box box);
 
    bool updateTheMaterial = false;
    bool prevUpdateTheMaterial = false;
@@ -286,7 +286,7 @@ public:
 
    //Public member functions
    void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog,
-               Material &material, Box box, std::vector<ContextMenu> &contextMenus);
+               Material &material, Box box);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
 };

@@ -53,8 +53,6 @@ public:
 
     Websites websites;
 
-    std::vector<ContextMenu> contextMenus; //0 for textures , 1 for materials, 2 for brushes
-
     Project project;
 
     Skybox skybox;
@@ -73,9 +71,7 @@ private:
     */
     bool previousModelNewModelAdded = false;
 
-    void initGlad();
     void loadAppTextures();
-    void createContextMenus();
 
     void renderSkyBox();
     void set3DUniforms();

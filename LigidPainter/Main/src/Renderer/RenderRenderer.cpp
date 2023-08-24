@@ -353,9 +353,7 @@ void Renderer::render(){
     //Render the UI
     userInterface.render(   //Params
                             timer,
-                            
                             box,
-                            contextMenus,
                             project,
                             painter,
                             skybox

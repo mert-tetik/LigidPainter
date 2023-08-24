@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "GUI/Dialogs/Dialogs.hpp"
+#include "ContextMenuSystem/ContextMenus.hpp"
 
 struct Dropper{
     glm::vec3 value;
@@ -113,22 +114,22 @@ public:
     void init(Websites websites);
     
     /*! @brief Renders all the GUI */
-    void render(Timer &timer,Box box,std::vector<ContextMenu> &contextMenus, Project &project, 
+    void render(Timer &timer,Box box,Project &project, 
                 Painter &painter, Skybox &skybox);
 
 private: 
-    void elementInteraction(Painter &painter,std::vector<ContextMenu> &contextMenus, Timer &timer, float screenGapPerc,
+    void elementInteraction(Painter &painter,Timer &timer, float screenGapPerc,
                             Project& project, AppMaterialModifiers& appMaterialModifiers);
 
     void renderPanels(Timer &timer, Painter &painter, float screenGapPerc);
 
     void renderRenamingTextbox(Timer &timer, Painter &painter);
 
-    void renderDialogs(Timer &timer, Project &project, Skybox &skybox, Box &box, std::vector<ContextMenu> &contextMenus);
+    void renderDialogs(Timer &timer, Project &project, Skybox &skybox, Box &box);
 
     void renderDropper(Painter &painter);
 
-    void contextMenuInteraction(std::vector<ContextMenu> &contextMenus, Timer &timer, Project& project, Painter &painter);
+    void contextMenuInteraction(Timer &timer, Project& project, Painter &painter);
 
     void libraryPanelLeftInteraction(Panel &libraryPanelLeft);
 

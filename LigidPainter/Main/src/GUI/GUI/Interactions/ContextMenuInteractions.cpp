@@ -35,215 +35,247 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,  
-                                Timer &timer,
-                                Project& project, Painter &painter){
+void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter){
 
-    anyContextMenuActive = false; 
-    for (size_t i = 0; i < contextMenus.size(); i++)//Check all the contextMenus
-    {
-        if(contextMenus[i].dialogControl.isActive()) //Set anyContextMenuActive UI class variable 
-            anyContextMenuActive = true;
-        
-        //CONTEXT MENU BUTTONS
-        if(i == 0 && Library::getSelectedElementIndex() == 0 && contextMenus[i].dialogControl.isActive() && Library::getTextureArraySize()){ //If texture context menu is active
-            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){//Clicked to rename button
-                renamingTextBox.active = true;
-                Library::setChanged(true);
-                renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
-                renamingTextBox.pos.y += 2.8f;
-                lastTitleBeforeRenaming = Library::getTexture(contextMenus[i].selectedElement)->title;
-                Library::getTexture(contextMenus[i].selectedElement)->title = "";
-                renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
-                renamingTextBox.activeChar = renamingTextBox.text.size()-1;
-                renamingTextBox.activeChar2 = renamingTextBox.activeChar;
-                renamingIndices.x = 0;
-                renamingIndices.y = contextMenus[i].selectedElement;
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){//Clicked to duplicate button
-                Texture duplicatedTexture;
-                duplicatedTexture = *Library::getTexture(contextMenus[i].selectedElement);
-                duplicatedTexture.ID = Library::getTexture(contextMenus[i].selectedElement)->duplicateTexture();
-                Library::addTexture(duplicatedTexture);
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to edit button
-                textureEditorSelectedTxtr = *Library::getTexture(contextMenus[i].selectedElement);
-                this->textureEditorDialog.dialogControl.activate();
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){//Clicked to delete button
-                Library::eraseTexture(contextMenus[i].selectedElement);
-            }
-        }
-        
-        if(i == 1 && Library::getSelectedElementIndex() == 1 && contextMenus[i].dialogControl.isActive()){ //If material context menu is active
-            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){//Clicked to edit button
-                //Select the material that material editor will edit & show the material editor dialog
-                selectedMaterialIndex = contextMenus[i].selectedElement;
-                materialEditorDialog.activate();
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){//Clicked to add to scene button
-                //Create the node of the materail an add to the node scene
-                Node materialNode = Node(
-                                            MATERIAL_NODE, 
-                                            Library::getMaterial(contextMenus[i].selectedElement)->uniqueID
-                                        );
-                materialNode.barButton.text = Library::getMaterial(contextMenus[i].selectedElement)->title;
-                NodeScene::addNode(materialNode); //Add material node
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){//Clicked to rename button
-                renamingTextBox.active = true;
-                Library::setChanged(true);
-                renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
-                renamingTextBox.pos.y += 2.8f;
-                lastTitleBeforeRenaming = Library::getMaterial(contextMenus[i].selectedElement)->title;
-                Library::getMaterial(contextMenus[i].selectedElement)->title = "";
-                renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
-                renamingTextBox.activeChar = renamingTextBox.text.size()-1;
-                renamingTextBox.activeChar2 = renamingTextBox.activeChar;
-                renamingIndices.x = 1;
-                renamingIndices.y = contextMenus[i].selectedElement;
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to duplicate button
-                Material duplicatedMaterial = Library::getMaterial(contextMenus[i].selectedElement)->duplicateMaterial();
-                Library::addMaterial(duplicatedMaterial);
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Clicked to delete button
-                
-                //Delete the nodes using same material
-                for (int nodeI = 0; nodeI < NodeScene::getArraySize(); nodeI++)
-                {
-                    if(NodeScene::getNode(nodeI)->materialID == Library::getMaterial(contextMenus[i].selectedElement)->uniqueID && NodeScene::getNode(nodeI)->nodeIndex == MATERIAL_NODE){
-                        NodeScene::deleteNode( nodeI);
-                        nodeI--;
-                    }
-                }
-                
-                //Delete the material
-                Library::eraseMaterial(contextMenus[i].selectedElement);
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[6].button.hover && *Mouse::LClick()){//Clicked to export button
-                std::string exportingPath = showFileSystemObjectSelectionDialog("Export the lgdmaterial file", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false,FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE);
-                if(exportingPath.size())
-                    FileHandler::writeLGDMATERIALFile(exportingPath, *Library::getMaterial(contextMenus[i].selectedElement));
-            }
-        }
-        if(i == 2 && Library::getSelectedElementIndex() == 2 && contextMenus[i].dialogControl.isActive()){ //If brush context menu is active
-            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){//Clicked to use brush button
-                
-                Library::getBrush(contextMenus[i].selectedElement)->useBrush(paintingPanel);
+    anyContextMenuActive = ContextMenus::texture.dialogControl.isActive() ||
+                           ContextMenus::material.dialogControl.isActive() ||
+                           ContextMenus::brush.dialogControl.isActive() ||
+                           ContextMenus::menuBarProject.dialogControl.isActive() ||
+                           ContextMenus::menuBarPainting.dialogControl.isActive() ||
+                           ContextMenus::menuBarHelp.dialogControl.isActive() ||
+                           ContextMenus::materialModifier.dialogControl.isActive() ||
+                           ContextMenus::node.dialogControl.isActive() ||
+                           ContextMenus::addMaterialModifier.dialogControl.isActive() ||
+                           ContextMenus::nodeScenePanel.dialogControl.isActive(); 
 
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){//Clicked to apply brush settings
-
-                Library::getBrush(contextMenus[i].selectedElement)->applyToBrush(paintingPanel);
-
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){//Clicked to rename button
-                renamingTextBox.active = true;
-                Library::setChanged(true);
-                renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.pos;
-                renamingTextBox.pos.y += 2.8f;
-                lastTitleBeforeRenaming = Library::getBrush(contextMenus[i].selectedElement)->title;
-                Library::getBrush(contextMenus[i].selectedElement)->title = "";
-                renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[contextMenus[i].selectedElement].button.text;
-                renamingTextBox.activeChar = renamingTextBox.text.size()-1;
-                renamingTextBox.activeChar2 = renamingTextBox.activeChar;
-                renamingIndices.x = 2;
-                renamingIndices.y = contextMenus[i].selectedElement;
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to duplicate button
-                Library::addBrush(*Library::getBrush(contextMenus[i].selectedElement));
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Clicked to delete button
-                Library::eraseBrush(contextMenus[i].selectedElement);
-            }
+                              
+    if(Library::getSelectedElementIndex() == 0 && ContextMenus::texture.dialogControl.isActive() && Library::getTextureArraySize()){ //If texture context menu is active
+        if(ContextMenus::texture.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){//Clicked to rename button
+            renamingTextBox.active = true;
+            Library::setChanged(true);
+            renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[ContextMenus::texture.selectedElement].button.pos;
+            renamingTextBox.pos.y += 2.8f;
+            lastTitleBeforeRenaming = Library::getTexture(ContextMenus::texture.selectedElement)->title;
+            Library::getTexture(ContextMenus::texture.selectedElement)->title = "";
+            renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[ContextMenus::texture.selectedElement].button.text;
+            renamingTextBox.activeChar = renamingTextBox.text.size()-1;
+            renamingTextBox.activeChar2 = renamingTextBox.activeChar;
+            renamingIndices.x = 0;
+            renamingIndices.y = ContextMenus::texture.selectedElement;
         }
-        if(i == 3 && contextMenus[i].dialogControl.isActive()){ //If project context menu is active
-            //Save
-            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
-                project.updateProject();
-            }
-            
-            //Save as
-            if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
-                project.updateProject();
-                project.duplicateFolder("");
-            }
-            
-            //Create new
-            if(contextMenus[i].contextPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){
-                newProjectDialog.dialogControl.activate();
-            }
-            
-            //Load new
-            if(contextMenus[i].contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){
-                loadProjectDialog.dialogControl.activate();
-            }
-            
-            //Copy path
-            if(contextMenus[i].contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){
-                project.copyTheProjectPathToTheClipboard();
-            }
-
-            //Open in file explorer
-            if(contextMenus[i].contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){
-                UTIL::openInFileExplorer(std::filesystem::absolute(project.folderPath).string().c_str());
-            }
+        if(ContextMenus::texture.contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){//Clicked to duplicate button
+            Texture duplicatedTexture;
+            duplicatedTexture = *Library::getTexture(ContextMenus::texture.selectedElement);
+            duplicatedTexture.ID = Library::getTexture(ContextMenus::texture.selectedElement)->duplicateTexture();
+            Library::addTexture(duplicatedTexture);
         }
-        if(i == 4 && contextMenus[i].dialogControl.isActive()){ //If painting context menu is active
-            //TODO REMOVE THE PAINTING CONTEXT MENU            
+        if(ContextMenus::texture.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to edit button
+            textureEditorSelectedTxtr = *Library::getTexture(ContextMenus::texture.selectedElement);
+            this->textureEditorDialog.dialogControl.activate();
         }
-        if(i == 5 && contextMenus[i].dialogControl.isActive()){ //If help context menu is active
-            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
-                websites.ligidTools.open();
-            }
-            if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
-                websites.youTube.open();
-            }
-        }
-        
-        if(i == 7 && contextMenus[i].dialogControl.isActive()){ //If node context menu is active
-            //Delete the node
-            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick() && contextMenus[i].selectedElement){
-                NodeScene::deleteNode(contextMenus[i].selectedElement);                
-            }
-        }
-
-        if(i == 9 && contextMenus[i].dialogControl.isActive()){//If node scene context menu is active
-            //Add material ID node button pressed
-            if(contextMenus[i].contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
-                NodeScene::addNode(Node(MATERIAL_ID_NODE, 0));
-                NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
-            }
-            //Add material mask node button pressed
-            else if(contextMenus[i].contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
-                NodeScene::addNode(Node(MATERIAL_MASK_NODE, 0));
-                NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
-            }
-        } 
-
-
-        if (   //Conditions to turn any context menu off
-                *Mouse::LClick() || //Mouse left click
-                *Mouse::RClick() || //Mouse right click
-                *Mouse::MClick() || //Mouse middle click
-                *Mouse::mouseScroll() || //Mouse middle click
-                getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS|| //Pressed to escape key 
-                getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS //Pressed to enter key
-            )
-        {
-           contextMenus[i].dialogControl.unActivate(); //Turn the context menu offs
-        }
-        //Render the context menu if active
-        if(contextMenus[i].dialogControl.isActive()){
-            contextMenus[i].render(timer);
-            if(contextMenus[i].contextPanel.hover == false)
-                contextMenus[i].dialogControl.unActivate(); 
-        }
-        else{
-            contextMenus[i].selectedElement = 0;
+        if(ContextMenus::texture.contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){//Clicked to delete button
+            Library::eraseTexture(ContextMenus::texture.selectedElement);
         }
     }
+    
+    if(Library::getSelectedElementIndex() == 1 && ContextMenus::material.dialogControl.isActive()){ //If material context menu is active
+        if(ContextMenus::material.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){//Clicked to edit button
+            //Select the material that material editor will edit & show the material editor dialog
+            selectedMaterialIndex = ContextMenus::material.selectedElement;
+            materialEditorDialog.activate();
+        }
+        if(ContextMenus::material.contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){//Clicked to add to scene button
+            //Create the node of the materail an add to the node scene
+            Node materialNode = Node(
+                                        MATERIAL_NODE, 
+                                        Library::getMaterial(ContextMenus::material.selectedElement)->uniqueID
+                                    );
+            materialNode.barButton.text = Library::getMaterial(ContextMenus::material.selectedElement)->title;
+            NodeScene::addNode(materialNode); //Add material node
+        }
+        if(ContextMenus::material.contextPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){//Clicked to rename button
+            renamingTextBox.active = true;
+            Library::setChanged(true);
+            renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[ContextMenus::material.selectedElement].button.pos;
+            renamingTextBox.pos.y += 2.8f;
+            lastTitleBeforeRenaming = Library::getMaterial(ContextMenus::material.selectedElement)->title;
+            Library::getMaterial(ContextMenus::material.selectedElement)->title = "";
+            renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[ContextMenus::material.selectedElement].button.text;
+            renamingTextBox.activeChar = renamingTextBox.text.size()-1;
+            renamingTextBox.activeChar2 = renamingTextBox.activeChar;
+            renamingIndices.x = 1;
+            renamingIndices.y = ContextMenus::material.selectedElement;
+        }
+        if(ContextMenus::material.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to duplicate button
+            Material duplicatedMaterial = Library::getMaterial(ContextMenus::material.selectedElement)->duplicateMaterial();
+            Library::addMaterial(duplicatedMaterial);
+        }
+        if(ContextMenus::material.contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Clicked to delete button
+            
+            //Delete the nodes using same material
+            for (int nodeI = 0; nodeI < NodeScene::getArraySize(); nodeI++)
+            {
+                if(NodeScene::getNode(nodeI)->materialID == Library::getMaterial(ContextMenus::material.selectedElement)->uniqueID && NodeScene::getNode(nodeI)->nodeIndex == MATERIAL_NODE){
+                    NodeScene::deleteNode( nodeI);
+                    nodeI--;
+                }
+            }
+            
+            //Delete the material
+            Library::eraseMaterial(ContextMenus::material.selectedElement);
+        }
+        if(ContextMenus::material.contextPanel.sections[0].elements[6].button.hover && *Mouse::LClick()){//Clicked to export button
+            std::string exportingPath = showFileSystemObjectSelectionDialog("Export the lgdmaterial file", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false,FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE);
+            if(exportingPath.size())
+                FileHandler::writeLGDMATERIALFile(exportingPath, *Library::getMaterial(ContextMenus::material.selectedElement));
+        }
+    }
+    if(Library::getSelectedElementIndex() == 2 && ContextMenus::brush.dialogControl.isActive()){ //If brush context menu is active
+        if(ContextMenus::brush.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){//Clicked to use brush button
+            
+            Library::getBrush(ContextMenus::brush.selectedElement)->useBrush(paintingPanel);
+
+        }
+        if(ContextMenus::brush.contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){//Clicked to apply brush settings
+
+            Library::getBrush(ContextMenus::brush.selectedElement)->applyToBrush(paintingPanel);
+
+        }
+        if(ContextMenus::brush.contextPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){//Clicked to rename button
+            renamingTextBox.active = true;
+            Library::setChanged(true);
+            renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[ContextMenus::brush.selectedElement].button.pos;
+            renamingTextBox.pos.y += 2.8f;
+            lastTitleBeforeRenaming = Library::getBrush(ContextMenus::brush.selectedElement)->title;
+            Library::getBrush(ContextMenus::brush.selectedElement)->title = "";
+            renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[ContextMenus::brush.selectedElement].button.text;
+            renamingTextBox.activeChar = renamingTextBox.text.size()-1;
+            renamingTextBox.activeChar2 = renamingTextBox.activeChar;
+            renamingIndices.x = 2;
+            renamingIndices.y = ContextMenus::brush.selectedElement;
+        }
+        if(ContextMenus::brush.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to duplicate button
+            Library::addBrush(*Library::getBrush(ContextMenus::brush.selectedElement));
+        }
+        if(ContextMenus::brush.contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Clicked to delete button
+            Library::eraseBrush(ContextMenus::brush.selectedElement);
+        }
+    }
+    if(ContextMenus::menuBarProject.dialogControl.isActive()){ //If project context menu is active
+        //Save
+        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
+            project.updateProject();
+        }
+        
+        //Save as
+        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
+            project.updateProject();
+            project.duplicateFolder("");
+        }
+        
+        //Create new
+        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){
+            newProjectDialog.dialogControl.activate();
+        }
+        
+        //Load new
+        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){
+            loadProjectDialog.dialogControl.activate();
+        }
+        
+        //Copy path
+        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){
+            project.copyTheProjectPathToTheClipboard();
+        }
+
+        //Open in file explorer
+        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){
+            UTIL::openInFileExplorer(std::filesystem::absolute(project.folderPath).string().c_str());
+        }
+    }
+    if(ContextMenus::menuBarPainting.dialogControl.isActive()){ //If painting context menu is active
+        //TODO REMOVE THE PAINTING CONTEXT MENU            
+    }
+    if(ContextMenus::menuBarHelp.dialogControl.isActive()){ //If help context menu is active
+        if(ContextMenus::menuBarHelp.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
+            websites.ligidTools.open();
+        }
+        if(ContextMenus::menuBarHelp.contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
+            websites.youTube.open();
+        }
+    }
+    
+    if(ContextMenus::node.dialogControl.isActive()){ //If node context menu is active
+        //Delete the node
+        if(ContextMenus::node.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick() && ContextMenus::node.selectedElement){
+            NodeScene::deleteNode(ContextMenus::node.selectedElement);                
+        }
+    }
+
+    if(ContextMenus::nodeScenePanel.dialogControl.isActive()){//If node scene context menu is active
+        //Add material ID node button pressed
+        if(ContextMenus::nodeScenePanel.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
+            NodeScene::addNode(Node(MATERIAL_ID_NODE, 0));
+            NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
+        }
+        //Add material mask node button pressed
+        else if(ContextMenus::nodeScenePanel.contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
+            NodeScene::addNode(Node(MATERIAL_MASK_NODE, 0));
+            NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
+        }
+    } 
+
+
+    if(ContextMenus::texture.dialogControl.isActive())
+        ContextMenus::texture.render(timer);
+    else
+        ContextMenus::texture.selectedElement = 0;
+
+    if(ContextMenus::material.dialogControl.isActive())
+        ContextMenus::material.render(timer);
+    else
+        ContextMenus::material.selectedElement = 0;
+
+    if(ContextMenus::brush.dialogControl.isActive())
+        ContextMenus::brush.render(timer);
+    else
+        ContextMenus::brush.selectedElement = 0;
+
+    if(ContextMenus::menuBarProject.dialogControl.isActive())
+        ContextMenus::menuBarProject.render(timer);
+    else
+        ContextMenus::menuBarProject.selectedElement = 0;
+
+    if(ContextMenus::menuBarPainting.dialogControl.isActive())
+        ContextMenus::menuBarPainting.render(timer);
+    else
+        ContextMenus::menuBarPainting.selectedElement = 0;
+
+    if(ContextMenus::menuBarHelp.dialogControl.isActive())
+        ContextMenus::menuBarHelp.render(timer);
+    else
+        ContextMenus::menuBarHelp.selectedElement = 0;
+
+    if(ContextMenus::materialModifier.dialogControl.isActive())
+        ContextMenus::materialModifier.render(timer);
+    else
+        ContextMenus::materialModifier.selectedElement = 0;
+
+    if(ContextMenus::node.dialogControl.isActive())
+        ContextMenus::node.render(timer);
+    else
+        ContextMenus::node.selectedElement = 0;
+
+    if(ContextMenus::addMaterialModifier.dialogControl.isActive())
+        ContextMenus::addMaterialModifier.render(timer);
+    else
+        ContextMenus::addMaterialModifier.selectedElement = 0;
+
+    if(ContextMenus::nodeScenePanel.dialogControl.isActive())
+        ContextMenus::nodeScenePanel.render(timer);
+    else
+        ContextMenus::nodeScenePanel.selectedElement = 0;
+
 
 
     //*Show context menu
@@ -253,55 +285,55 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
         if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::RClick()){ //Right clicked to an element
             if(Library::getSelectedElementIndex() == 0){//To a texture
                 //Show the context menu
-                contextMenus[0].dialogControl.activate();
-                contextMenus[0].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-                contextMenus[0].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[0].contextPanel.scale.y;
-                contextMenus[0].pos.z = 0.95f;
-                contextMenus[0].selectedElement = i;
+                ContextMenus::texture.dialogControl.activate();
+                ContextMenus::texture.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+                ContextMenus::texture.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::texture.contextPanel.scale.y;
+                ContextMenus::texture.pos.z = 0.95f;
+                ContextMenus::texture.selectedElement = i;
                 
             }
             if(Library::getSelectedElementIndex() == 1){//To a material
                 //Show the context menu
-                contextMenus[1].dialogControl.activate();
-                contextMenus[1].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-                contextMenus[1].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[1].contextPanel.scale.y;
-                contextMenus[1].pos.z = 0.95f;
-                contextMenus[1].selectedElement = i;
+                ContextMenus::material.dialogControl.activate();
+                ContextMenus::material.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+                ContextMenus::material.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::material.contextPanel.scale.y;
+                ContextMenus::material.pos.z = 0.95f;
+                ContextMenus::material.selectedElement = i;
             }
             if(Library::getSelectedElementIndex() == 2){//To a brush
                 //Show the context menu
-                contextMenus[2].dialogControl.activate();
-                contextMenus[2].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-                contextMenus[2].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[2].contextPanel.scale.y;
-                contextMenus[2].pos.z = 0.95f;
-                contextMenus[2].selectedElement = i;
+                ContextMenus::brush.dialogControl.activate();
+                ContextMenus::brush.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+                ContextMenus::brush.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::brush.contextPanel.scale.y;
+                ContextMenus::brush.pos.z = 0.95f;
+                ContextMenus::brush.selectedElement = i;
             }
         }
     }
     if(navigationPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){ //If pressed to "Project" button in the menu bar (navigation panel)
         //Show the context menu
-        contextMenus[3].dialogControl.activate();
-        contextMenus[3].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-        contextMenus[3].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[3].contextPanel.scale.y;
-        contextMenus[3].pos.z = 0.95f;
-        contextMenus[3].selectedElement = 0;
+        ContextMenus::menuBarProject.dialogControl.activate();
+        ContextMenus::menuBarProject.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        ContextMenus::menuBarProject.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::menuBarProject.contextPanel.scale.y;
+        ContextMenus::menuBarProject.pos.z = 0.95f;
+        ContextMenus::menuBarProject.selectedElement = 0;
     }
     if(navigationPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){ //If pressed to "Painting" button in the menu bar (navigation panel)
         //Show the context menu
-        contextMenus[4].dialogControl.activate();
-        contextMenus[4].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-        contextMenus[4].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[4].contextPanel.scale.y;
-        contextMenus[4].pos.z = 0.95f;
-        contextMenus[4].selectedElement = 0;
+        ContextMenus::menuBarPainting.dialogControl.activate();
+        ContextMenus::menuBarPainting.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        ContextMenus::menuBarPainting.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::menuBarPainting.contextPanel.scale.y;
+        ContextMenus::menuBarPainting.pos.z = 0.95f;
+        ContextMenus::menuBarPainting.selectedElement = 0;
     }
     
     if(navigationPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){ //If pressed to "Help" button in the menu bar (navigation panel)
         //Show the context menu
-        contextMenus[5].dialogControl.activate();
-        contextMenus[5].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-        contextMenus[5].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[5].contextPanel.scale.y;
-        contextMenus[5].pos.z = 0.95f;
-        contextMenus[5].selectedElement = 0;
+        ContextMenus::menuBarHelp.dialogControl.activate();
+        ContextMenus::menuBarHelp.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        ContextMenus::menuBarHelp.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::menuBarHelp.contextPanel.scale.y;
+        ContextMenus::menuBarHelp.pos.z = 0.95f;
+        ContextMenus::menuBarHelp.selectedElement = 0;
     }
     
     if(materialEditorDialog.layerPanel.sections.size()){
@@ -309,21 +341,21 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
         {
             if(materialEditorDialog.layerPanel.sections[0].elements[i].button.hover && *Mouse::RClick() && materialEditorDialog.dialogControl.isActive()){
 
-                contextMenus[6].dialogControl.activate();
-                contextMenus[6].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-                contextMenus[6].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[6].contextPanel.scale.y;
-                contextMenus[6].pos.z = 0.95f;
-                contextMenus[6].selectedElement = i;
+                ContextMenus::materialModifier.dialogControl.activate();
+                ContextMenus::materialModifier.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+                ContextMenus::materialModifier.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::materialModifier.contextPanel.scale.y;
+                ContextMenus::materialModifier.pos.z = 0.95f;
+                ContextMenus::materialModifier.selectedElement = i;
 
             }
         }
     }
 
     if(materialEditorDialog.layerPanel.barButtons[0].clicked && materialEditorDialog.dialogControl.isActive()){
-        contextMenus[8].dialogControl.activate();
-        contextMenus[8].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-        contextMenus[8].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[6].contextPanel.scale.y;
-        contextMenus[8].pos.z = 0.95f;
+        ContextMenus::addMaterialModifier.dialogControl.activate();
+        ContextMenus::addMaterialModifier.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        ContextMenus::addMaterialModifier.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::materialModifier.contextPanel.scale.y;
+        ContextMenus::addMaterialModifier.pos.z = 0.95f;
     }
 
     bool anyNodeHover = false;
@@ -333,19 +365,19 @@ void UI::contextMenuInteraction(std::vector<ContextMenu> &contextMenus,
             anyNodeHover = true;
 
         if((NodeScene::getNode(i)->nodePanel.hover || NodeScene::getNode(i)->barButton.hover) && *Mouse::RClick() && !NodeScene::getNode(i)->cursorOnBarriers){
-            contextMenus[7].dialogControl.activate();
-            contextMenus[7].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-            contextMenus[7].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[7].contextPanel.scale.y;
-            contextMenus[7].pos.z = 0.95f;
-            contextMenus[7].selectedElement = i;
+            ContextMenus::node.dialogControl.activate();
+            ContextMenus::node.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+            ContextMenus::node.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::node.contextPanel.scale.y;
+            ContextMenus::node.pos.z = 0.95f;
+            ContextMenus::node.selectedElement = i;
         }
     }
     
     if((this->nodeEditorDisplayer.hover && !anyNodeHover) && *Mouse::RClick()){
-        contextMenus[9].dialogControl.activate();
-        contextMenus[9].pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-        contextMenus[9].pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextMenus[7].contextPanel.scale.y;
-        contextMenus[9].pos.z = 0.95f;
-        contextMenus[9].selectedElement = 0;
+        ContextMenus::nodeScenePanel.dialogControl.activate();
+        ContextMenus::nodeScenePanel.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        ContextMenus::nodeScenePanel.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::nodeScenePanel.contextPanel.scale.y;
+        ContextMenus::nodeScenePanel.pos.z = 0.95f;
+        ContextMenus::nodeScenePanel.selectedElement = 0;
     }
 }

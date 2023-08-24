@@ -91,9 +91,6 @@ void Renderer::initRenderer(){
     //Get the window size
     getContext()->windowScale = *Settings::videoScale();
 
-    //Initialize the GLAD
-    initGlad();
-
     getScene()->tiles.init();
     getScene()->axisDisplayer.init();
 
@@ -129,9 +126,6 @@ void Renderer::initRenderer(){
 
     //Init the text renderer
     textRenderer = TextRenderer(fonts.Arial);
-    
-    //Create context menus
-    createContextMenus();
     
     //Init websites
     websites.ligidTools     =   Website("https://ligidtools.com/");
@@ -178,40 +172,4 @@ void Renderer::initRenderer(){
     catch (const std::filesystem::filesystem_error& ex) {
         LGDLOG::start << "ERROR : Filesystem : Location ID 963654 " << ex.what() << LGDLOG::end;
     }
-}
-
-
-
-
-//FUNCTIONS
-
-
-void Renderer::initGlad(){
-
-}
-
-void Renderer::createContextMenus(){
-
-    //!Create context menus                                                   0            1                  2               3                     4           5  
-    //Library panel
-    contextMenus.push_back(ContextMenu({"Rename"  , "Duplicate"       , "Copy Path"   , "Edit"        ,    "Delete"})); //Textures  0
-    contextMenus.push_back(ContextMenu({"Edit"    , "Add To Scene"    , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete",   "Export"}));    //Materials 1
-    contextMenus.push_back(ContextMenu({"Use"     , "Apply Current"   , "Rename"      , "Duplicate"   ,    "Copy Path" ,  "Delete"}));    //Brushes   2
-    
-    //Menu Bar (navigation panel)
-    contextMenus.push_back(ContextMenu({"Save"    , "Save as"         , "Create new"  , "Load new"    ,    "Copy Path", "File Explorer"})); //Project   3 
-    contextMenus.push_back(ContextMenu({"Undo"    , "Redo"    })); //Painting  4
-    contextMenus.push_back(ContextMenu({"Website" , "YouTube" })); //Help      5
-    
-    //Material editor
-    contextMenus.push_back(ContextMenu({"Delete"  , "Move To Top"     , "Move To Bottom", "Change Mask"}));// Material modifier context menu 6                                           
-    
-    //Nodes
-    contextMenus.push_back(ContextMenu({"Delete"})); //Node context menu 7
-
-    //Material editor
-    contextMenus.push_back(ContextMenu({"Texture Modifier", "Dust Modifier", "Asphalt Modifier", "Fabric Modifier", "Moss Modifier", "Rust Modifier", "Skin Modifier", "Solid Modifier", "Wooden Modifier"}));// Material modifier selection context menu 8                                        
-    
-    //Node panel
-    contextMenus.push_back(ContextMenu({"Add Material ID Node", "Add Material Mask Node"}));// Mesh node scene panel context menu 9                                        
 }

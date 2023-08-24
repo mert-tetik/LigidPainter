@@ -62,7 +62,7 @@ bool wasTextureSelectionDialogActive(){
 static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection);
 
 void UI::render(Timer &timer,Box box,
-            std::vector<ContextMenu> &contextMenus, Project &project, Painter &painter, Skybox &skybox){
+            Project &project, Painter &painter, Skybox &skybox){
     
     __texture_selection_dialog = this->textureSelectionDialog;
     __projection = this->projection;
@@ -111,7 +111,7 @@ void UI::render(Timer &timer,Box box,
     NodeScene::render(timer,nodeEditorDisplayer, nodePanel);
     
     //Render the dialogs
-    renderDialogs(timer, project, skybox, box, contextMenus);
+    renderDialogs(timer, project, skybox, box);
     
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(painter);
@@ -123,7 +123,7 @@ void UI::render(Timer &timer,Box box,
         getContext()->window.setCursorVisibility(true);
 
     //Interactions of the UI elements
-    elementInteraction(painter, contextMenus, timer, screenGapPerc, project, this->materialEditorDialog.appMaterialModifiers);
+    elementInteraction(painter, timer, screenGapPerc, project, this->materialEditorDialog.appMaterialModifiers);
 
     frameCounter++;
 
@@ -509,7 +509,7 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
     }
 }
 
-void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Box &box,  std::vector<ContextMenu> &contextMenus){
+void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Box &box){
     if(newProjectDialog.dialogControl.isActive())
         newProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
     
@@ -535,7 +535,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Box &box
         settingsDialog.render(timer);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
-        materialEditorDialog.render(timer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex), box, contextMenus);
+        materialEditorDialog.render(timer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex), box);
     
     logDialog.render(timer);
 }
