@@ -152,25 +152,31 @@ void Renderer::initRenderer(){
     //Load the inputs of the mesh node
     NodeScene::getNode(0)->uploadNewIOs();
 
-    //Create the projects folder if not exists
-    if(!std::filesystem::exists("./Projects")){
-        if(!std::filesystem::create_directory("./Projects"))
-            LGDLOG::start<< "ERROR : Creating projects folder." << LGDLOG::end;
-    }
-    
-    //If the tmp directory doesn't exist then create 
-    if(!std::filesystem::exists("./tmp")){
-        if(!std::filesystem::create_directory("./tmp"))
-            LGDLOG::start<< "ERROR : Creating tmp folder." << LGDLOG::end;
-    }
+    try
+    {
+        //Create the projects folder if not exists
+        if(!std::filesystem::exists("./Projects")){
+            if(!std::filesystem::create_directory("./Projects"))
+                LGDLOG::start<< "ERROR : Creating projects folder." << LGDLOG::end;
+        }
+        
+        //If the tmp directory doesn't exist then create 
+        if(!std::filesystem::exists("./tmp")){
+            if(!std::filesystem::create_directory("./tmp"))
+                LGDLOG::start<< "ERROR : Creating tmp folder." << LGDLOG::end;
+        }
 
-    //If the tmp directory exists empty the folder
-    else{
-        if(!std::filesystem::remove_all("./tmp"))
-            LGDLOG::start<< "ERROR : Deleting tmp folder. (after deleting)" << LGDLOG::end;
-        if(!std::filesystem::create_directory("./tmp"))
-            LGDLOG::start<< "ERROR : Creating tmp folder. (after deleting)" << LGDLOG::end;
+        //If the tmp directory exists empty the folder
+        else{
+            if(!std::filesystem::remove_all("./tmp"))
+                LGDLOG::start<< "ERROR : Deleting tmp folder. (after deleting)" << LGDLOG::end;
+            if(!std::filesystem::create_directory("./tmp"))
+                LGDLOG::start<< "ERROR : Creating tmp folder. (after deleting)" << LGDLOG::end;
 
+        }
+    }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 963654 " << ex.what() << LGDLOG::end;
     }
 }
 

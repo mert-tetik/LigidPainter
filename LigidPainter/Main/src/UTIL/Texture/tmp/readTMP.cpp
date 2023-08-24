@@ -34,10 +34,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void Texture::readTMP(std::string tmpTitle){
     
     //If the tmp directory doesn't exist then create it
-    if(!std::filesystem::exists("./tmp")){
-        if(!std::filesystem::create_directories("./tmp"))
-            LGDLOG::start<< "ERROR : Reading TMP file : Creating tmp folder." << LGDLOG::end; 
+    try
+    {
+        if(!std::filesystem::exists("./tmp")){
+            if(!std::filesystem::create_directories("./tmp"))
+                LGDLOG::start<< "ERROR : Reading TMP file : Creating tmp folder." << LGDLOG::end; 
+        }
     }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 555546 " << ex.what() << LGDLOG::end;
+    }
+
+    
 
     //Destination path of the tmp file (smt like ./tmp/13_3.tmp)
     std::string tmpFilePath = (std::string)"./tmp/" + tmpTitle + (std::string)".tmp"; 

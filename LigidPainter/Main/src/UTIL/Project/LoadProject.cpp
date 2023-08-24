@@ -62,87 +62,96 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
 
     //writeLigidFile(meshNodeScene);
 
-    //Load the textures
-    Library::clearTextures();
-    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
-        std::string texturePath = entry.path().string();
+    try
+    {
+        //Load the textures
+        Library::clearTextures();
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
+            std::string texturePath = entry.path().string();
 
-        Texture texture;
-        texture.load(texturePath.c_str());
+            Texture texture;
+            texture.load(texturePath.c_str());
 
-        //Check if the texture is a png file
-        if(UTIL::getLastWordBySeparatingWithChar(texturePath, '.') != "png"){
-            //The texture in the project folder is not an png file
+            //Check if the texture is a png file
+            if(UTIL::getLastWordBySeparatingWithChar(texturePath, '.') != "png"){
+                //The texture in the project folder is not an png file
 
-            //Delete the non-png file
-            std::filesystem::remove(texturePath);
+                //Delete the non-png file
+                std::filesystem::remove(texturePath);
+            
+                //Recreate the png file
+                texture.exportTexture(UTIL::removeLastWordBySeparatingWithChar(texturePath, UTIL::folderDistinguisher()), "PNG");
+            }
+
+
+            Library::addTexture(texture);
+        }
+
+        //Load the materials
+        Library::clearMaterials();
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
+            std::string materialPath = entry.path().string();
+
+            Material material("", 0);
+            if(FileHandler::readLGDMATERIALFile(materialPath, material, appMaterialModifiers))
+                Library::addMaterial(material);
         
-            //Recreate the png file
-            texture.exportTexture(UTIL::removeLastWordBySeparatingWithChar(texturePath, UTIL::folderDistinguisher()), "PNG");
         }
-
-
-        Library::addTexture(texture);
-    }
-
-    //Load the materials
-    Library::clearMaterials();
-    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
-        std::string materialPath = entry.path().string();
-
-        Material material("", 0);
-        if(FileHandler::readLGDMATERIALFile(materialPath, material, appMaterialModifiers))
-            Library::addMaterial(material);
-    
-    }
-    
-    //Load the brushes
-    Library::clearBrushes();
-    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Brushes")){
-        std::string brushPath = entry.path().string();
-
-        Brush brush;
-        if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
-            brush.updateDisplayTexture();
-            Library::addBrush(brush);
-        }
-    }
-
-    //Load the filters
-    Library::clearFilters();
-    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Filters")){
-        std::string filterPath = entry.path().string();
-
-        Filter filter;
-        filter.load(filterPath);
-        Library::addFilter(filter);
-    }
-    
-    //Load the tdmodels
-    Library::clearModels();
-    for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
-        std::string modelPath = entry.path().string();
-
-        Model TDModel;
-        TDModel.loadModel(modelPath, true);
-
-        //Check if the model is an obj file
-        if(UTIL::getLastWordBySeparatingWithChar(modelPath, '.') != "obj"){
-            //The 3D model in the project folder is not an obj file
-
-            //Delete the non-obj file
-            std::filesystem::remove(modelPath);
         
-            //Recreate the obj file
-            FileHandler::writeOBJFile(UTIL::removeExtension(modelPath) + ".obj",TDModel);
+        //Load the brushes
+        Library::clearBrushes();
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Brushes")){
+            std::string brushPath = entry.path().string();
+
+            Brush brush;
+            if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
+                brush.updateDisplayTexture();
+                Library::addBrush(brush);
+            }
         }
 
-        if(TDModel.meshes.size())
-            Library::addModel(TDModel);
-        else
-            LGDLOG::start<< "ERROR : Can't add the 3D model to the Library:: Mesh size is 0!" << LGDLOG::end;
+        //Load the filters
+        Library::clearFilters();
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Filters")){
+            std::string filterPath = entry.path().string();
 
+            Filter filter;
+            filter.load(filterPath);
+            Library::addFilter(filter);
+        }
+        
+        //Load the tdmodels
+        Library::clearModels();
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
+            std::string modelPath = entry.path().string();
+
+            Model TDModel;
+            TDModel.loadModel(modelPath, true);
+
+            //Check if the model is an obj file
+            if(UTIL::getLastWordBySeparatingWithChar(modelPath, '.') != "obj"){
+                //The 3D model in the project folder is not an obj file
+
+                //Delete the non-obj file
+                std::filesystem::remove(modelPath);
+            
+                //Recreate the obj file
+                FileHandler::writeOBJFile(UTIL::removeExtension(modelPath) + ".obj",TDModel);
+            }
+
+            if(TDModel.meshes.size())
+                Library::addModel(TDModel);
+            else
+                LGDLOG::start<< "ERROR : Can't add the 3D model to the Library:: Mesh size is 0!" << LGDLOG::end;
+
+        }
     }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 658972 " << ex.what() << LGDLOG::end;
+    }
+
+    
+
 
     if(Library::getModelArraySize())
         *getModel() = *Library::getModel(0);

@@ -34,8 +34,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
     
 #define LGDBRUSH_WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
                                     LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << loc << LGDLOG::end;\
-                                    if(std::filesystem::exists(path)){\
-                                        std::filesystem::remove(path);\
+                                    try{\
+                                        if(std::filesystem::exists(path)){\
+                                            std::filesystem::remove(path);\
+                                        }\
+                                    }\
+                                    catch (const std::filesystem::filesystem_error& ex) {\
+                                        LGDLOG::start << "ERROR : Filesystem : Location ID 745113 " << ex.what() << LGDLOG::end;\
                                     }\
                                     return false; \
                                 }
@@ -170,9 +175,16 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         
         if(!wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
             LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << "Property texture - texture pixels" << LGDLOG::end;
-            if(std::filesystem::exists(path)){
-                std::filesystem::remove(path);
+            try
+            {
+                if(std::filesystem::exists(path)){
+                    std::filesystem::remove(path);
+                }
             }
+            catch (const std::filesystem::filesystem_error& ex) {
+                LGDLOG::start << "ERROR : Filesystem : Location ID 969718 " << ex.what() << LGDLOG::end;
+            }
+            
             return false; 
         }
     

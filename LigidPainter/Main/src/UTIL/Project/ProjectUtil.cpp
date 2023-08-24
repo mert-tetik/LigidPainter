@@ -21,7 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "UTIL/Util.hpp"
-#include "GUI/Elements/Elements.hpp"
+#include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 
 #include <string>
@@ -38,13 +38,19 @@ std::string Project::locateLigidFileInFolder(const std::string& folderPath)
     const std::string extension = ".ligid";
     std::vector<std::string> matchingFiles;
 
-    for (const auto& entry : std::filesystem::directory_iterator(folderPath))
+    try
     {
-        if (entry.is_regular_file() && entry.path().extension() == extension)
+        for (const auto& entry : std::filesystem::directory_iterator(folderPath))
         {
-            matchingFiles.push_back(entry.path().string());
+            if (entry.is_regular_file() && entry.path().extension() == extension)
+            {
+                matchingFiles.push_back(entry.path().string());
+            }
         }
     }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 789215 " << ex.what() << LGDLOG::end;
+    }    
 
     if (matchingFiles.empty())
     {

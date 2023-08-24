@@ -157,32 +157,46 @@ char UTIL::folderDistinguisher(){
 }
 
 void UTIL::deleteFilesInFolder(const std::string folderPath) {
-    for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
-        if (entry.is_regular_file()) {
-            std::filesystem::remove(entry.path());
+    try
+    {
+        for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
+            if (entry.is_regular_file()) {
+                std::filesystem::remove(entry.path());
+            }
         }
+    }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 994456 " << ex.what() << LGDLOG::end;
     }
 }
 
 void UTIL::duplicateFolder(const std::string src, const std::string dest){
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(src)){
-        
-		std::string file = entry.path().string();  
+	
+    try
+    {
+        for (const auto& entry : std::filesystem::recursive_directory_iterator(src)){
+            
+            std::string file = entry.path().string();  
 
-        std::string dst = dest + UTIL::folderDistinguisher() + UTIL::rmvPath(src, file);
-        
-        //If a folder then create a folder
-        if(!std::filesystem::is_directory(file)){
-            if(!std::filesystem::create_directories(dst))
-                LGDLOG::start<< "ERROR : Duplicating folder : " << src << " to " << dest << ". Couldn't create : " << dst <<LGDLOG::end;
-        }
+            std::string dst = dest + UTIL::folderDistinguisher() + UTIL::rmvPath(src, file);
+            
+            //If a folder then create a folder
+            if(!std::filesystem::is_directory(file)){
+                if(!std::filesystem::create_directories(dst))
+                    LGDLOG::start<< "ERROR : Duplicating folder : " << src << " to " << dest << ". Couldn't create : " << dst <<LGDLOG::end;
+            }
 
-        //If a file then duplicate the file
-        else{
-            if(!std::filesystem::copy_file(file, dst))
-                LGDLOG::start<< "ERROR : Duplicating folder : " << src << " to " << dest << ". Copying file : " << file << " to " << dst << LGDLOG::end;
+            //If a file then duplicate the file
+            else{
+                if(!std::filesystem::copy_file(file, dst))
+                    LGDLOG::start<< "ERROR : Duplicating folder : " << src << " to " << dest << ". Copying file : " << file << " to " << dst << LGDLOG::end;
+            }
         }
     }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 482555 " << ex.what() << LGDLOG::end;
+    }
+    
 }
 
 bool UTIL::uniqueName(std::string &s, std::vector<std::string> sArray){

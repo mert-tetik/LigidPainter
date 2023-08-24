@@ -128,16 +128,22 @@ void ExportDialog::render(Timer timer,TextRenderer &textRenderer,
 
             std::string materialFolderPath = destPath + UTIL::folderDistinguisher() + getModel()->meshes[i].materialName;
             
-            std::vector<std::string> filesInTheFolder;
-            for (const auto& entry : std::filesystem::directory_iterator(destPath)) {
-                filesInTheFolder.push_back(entry.path().string());
-            }            
+            try
+            {
+                std::vector<std::string> filesInTheFolder;
+                for (const auto& entry : std::filesystem::directory_iterator(destPath)) {
+                    filesInTheFolder.push_back(entry.path().string());
+                }            
+                
+                UTIL::uniqueName(materialFolderPath, filesInTheFolder);
+
+                if(!std::filesystem::create_directories(materialFolderPath))
+                    LGDLOG::start << "ERROR : Exporting. Can't create folder in the location : " << materialFolderPath << LGDLOG::end;
+            }
+            catch (const std::filesystem::filesystem_error& ex) {
+                LGDLOG::start << "ERROR : Filesystem : Location ID 772611 " << ex.what() << LGDLOG::end;
+            }
             
-            UTIL::uniqueName(materialFolderPath, filesInTheFolder);
-
-            if(!std::filesystem::create_directories(materialFolderPath))
-                LGDLOG::start<< "ERROR : Exporting. Can't create folder in the location : " << materialFolderPath << LGDLOG::end;
-
             //For all the channels
             for (size_t channelI = 0; channelI < 6; channelI++)
             {

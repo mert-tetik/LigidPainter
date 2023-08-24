@@ -35,9 +35,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #define LGDMATERIAL_WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
                                     LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << loc << LGDLOG::end;\
-                                    if(std::filesystem::exists(path)){\
-                                        std::filesystem::remove(path);\
-                                    }\
                                     return false; \
                                 }
 
@@ -61,9 +58,6 @@ bool FileHandler::writeLGDMATERIALFile(
 
         if(!wf) {
             LGDLOG::start<< "ERROR WHILE WRITING MATERIAL FILE! Cannot open file : " << path << LGDLOG::end;
-            
-            if(std::filesystem::exists(path))
-                std::filesystem::remove(path);
             
             return false;
         }
@@ -109,9 +103,6 @@ bool FileHandler::writeLGDMATERIALFile(
             material.materialModifiers[i].maskTexture.getData(pixels);
             if(!wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
                 LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << "Mask texture - texture pixels" << LGDLOG::end;
-                if(std::filesystem::exists(path)){
-                    std::filesystem::remove(path);
-                }
                 return false; 
             }
         
@@ -138,9 +129,6 @@ bool FileHandler::writeLGDMATERIALFile(
                         LGDLOG::start<< "ERROR : Unknown GUI element type : " << material.materialModifiers[i].sections[sI].elements[eI].state << ". Failed to write the material file" << LGDLOG::end;
                         wf.close();
                         
-                        if(std::filesystem::exists(path))
-                            std::filesystem::remove(path);
-
                         return false;
                     }
                 }
@@ -194,9 +182,6 @@ bool FileHandler::writeLGDMATERIALFile(
                         
                         if(!wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
                             LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << "Property texture - texture pixels" << LGDLOG::end;
-                            if(std::filesystem::exists(path)){
-                                std::filesystem::remove(path);
-                            }
                             return false; 
                         }
                     

@@ -184,28 +184,35 @@ void LoadProjectDialog::render(Timer timer,TextRenderer &textRenderer,
     //Clear the elements of the projects panel (will be updated)
     projectsPanel.sections.clear();
     
-    for (const auto& entry : std::filesystem::directory_iterator("./Projects")) {
-        
-        //Project folder path inside of the ./Projects directory
-        std::string projectPath = entry.path().string();
-        
-        //Create the button for the project path
-        Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),projectPath,Texture(),0.f,false);
-        
-        //Scale the button in x axis
-        btn.scale.x = projectsPanel.scale.x;
-        
-        //Get the ligid file path inside of the project folder 
-        std::string ligidFilePath = project.locateLigidFileInFolder(projectPath);
-        
-        //If a ligid file is loacted
-        if(ligidFilePath.size()){
-            //Transfer the button to the new section
-            projectSection.elements.push_back(btn);
+    try
+    {
+        for (const auto& entry : std::filesystem::directory_iterator("./Projects")) {
             
-            counter++;
+            //Project folder path inside of the ./Projects directory
+            std::string projectPath = entry.path().string();
+            
+            //Create the button for the project path
+            Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),projectPath,Texture(),0.f,false);
+            
+            //Scale the button in x axis
+            btn.scale.x = projectsPanel.scale.x;
+            
+            //Get the ligid file path inside of the project folder 
+            std::string ligidFilePath = project.locateLigidFileInFolder(projectPath);
+            
+            //If a ligid file is loacted
+            if(ligidFilePath.size()){
+                //Transfer the button to the new section
+                projectSection.elements.push_back(btn);
+                
+                counter++;
+            }
         }
     }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 894682 " << ex.what() << LGDLOG::end;
+    }
+    
     
     //Give the new section to the projects panel
     projectsPanel.sections.push_back(projectSection);

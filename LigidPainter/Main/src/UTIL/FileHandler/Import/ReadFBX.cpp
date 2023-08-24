@@ -678,7 +678,6 @@ bool ReadNestedNodes(std::ifstream& file, const std::string fileName, std::vecto
             __lastEndOffset = endOffset; 
         else{
             std::uintmax_t fileSize = std::filesystem::file_size(fileName);
-
             //endOffset = 105559;
         }
 
