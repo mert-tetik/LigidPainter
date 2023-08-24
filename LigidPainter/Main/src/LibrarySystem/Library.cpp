@@ -169,6 +169,7 @@ void Library::eraseMaterial  (int index){
     __changed = true;
 
     glDeleteFramebuffers(1, &__materials[index].displayingFBO);
+    glDeleteRenderbuffers(1, &__materials[index].displayingRBO);
     glDeleteTextures(1, &__materials[index].displayingTexture);
     
     __materials.erase(__materials.begin() + index);
@@ -191,9 +192,10 @@ void Library::eraseModel     (int index){
         LGDLOG::start<< "ERROR! : Couldn't erase the model : Requested model index is out of boundaries." << LGDLOG::end;
         return;
     }
-        
-    
+          
     __changed = true;
+    
+    glDeleteTextures(1, &__TDModels[index].displayingTxtr);
     
     for (size_t mshI = 0; mshI < __TDModels[index].meshes.size(); mshI++)
     {
@@ -242,6 +244,7 @@ void Library::clearMaterials  (){
     
     for (size_t i = 0; i < __materials.size(); i++)
     {
+        glDeleteRenderbuffers(1, &__materials[i].displayingRBO);
         glDeleteFramebuffers(1, &__materials[i].displayingFBO);
         glDeleteTextures(1, &__materials[i].displayingTexture);
     }
@@ -260,6 +263,8 @@ void Library::clearModels     (){
     
     for (size_t i = 0; i < __TDModels.size(); i++)
     {
+        glDeleteTextures(1, &__TDModels[i].displayingTxtr);
+
         for (size_t mshI = 0; mshI < __TDModels[i].meshes.size(); mshI++)
         {
             glDeleteVertexArrays(1, &__TDModels[i].meshes[mshI].VAO);

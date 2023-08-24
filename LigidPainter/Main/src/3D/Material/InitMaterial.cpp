@@ -64,15 +64,14 @@ Material::Material(std::string title,int ID){
     glViewport(0,0,displayRes,displayRes);
 
     //Render buffer to render the sphere 3D model (for depth testing)
-    unsigned int RBO;
-	glGenRenderbuffers(1,&RBO);
-	glBindRenderbuffer(GL_RENDERBUFFER,RBO);
+	glGenRenderbuffers(1,&displayingRBO);
+	glBindRenderbuffer(GL_RENDERBUFFER,displayingRBO);
 	
     //Set the renderbuffer to store depth
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, displayRes, displayRes);
 	
     //Give the renderbuffer to the framebuffer
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, displayingRBO);
     
     //Bind the displaying texture of the material to the capture framebuffer
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->displayingTexture, 0);

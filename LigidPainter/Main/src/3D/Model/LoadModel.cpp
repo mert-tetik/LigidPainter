@@ -58,6 +58,8 @@ void Model::loadModel(std::string const &path,bool triangulate)
         return;
     }
 
+    //Generating the displaying texture
+
     if(this->displayingTxtr == 0)
         glGenTextures(1, &this->displayingTxtr);
 
@@ -149,4 +151,6 @@ void Model::loadModel(std::string const &path,bool triangulate)
     
     //Set the OpenGL viewport to default
     glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+    glDeleteFramebuffers(1, &FBO);
+    glDeleteRenderbuffers(1, &RBO);
 }

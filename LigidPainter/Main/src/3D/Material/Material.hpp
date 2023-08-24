@@ -106,8 +106,8 @@ public:
     /// @brief texture used to render the material to display
     unsigned int displayingTexture;
 
-    /// @brief Framebuffer object used to render the material to display
-    unsigned int displayingFBO;
+    /// @brief Framebuffer & Renderbuffer objects used to render the material to display
+    unsigned int displayingFBO, displayingRBO;
     
     /// @brief Unique id to distinguish the materials & connect them to the nodes 
     int uniqueID;
