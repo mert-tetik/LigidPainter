@@ -101,7 +101,6 @@ Button::Button(
 Button::Button(
                     int style,
                     glm::vec2 scale,
-                    
                     std::string text,
                     Texture texture,
                     float panelOffset,

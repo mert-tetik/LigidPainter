@@ -333,8 +333,27 @@ class ExportDialog
     ExportDialog();
 
     //Public member functions
-    void render(Timer timer,
-                Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog);
+    void render(Timer timer,Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog);
+ };
+
+//!------------------------------EXPORT DIALOG------------------------------
+
+class MaterialDisplayerDialog
+ {
+ public:
+   Panel panel;
+   
+   DialogControl dialogControl;
+   
+   Material material;
+
+   Camera displayingCam;
+
+   //Constructors
+   MaterialDisplayerDialog();
+
+   //Public member functions
+   void render(Timer timer);
  };
 
 

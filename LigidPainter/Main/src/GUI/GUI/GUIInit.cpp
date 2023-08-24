@@ -445,6 +445,7 @@ void UI::init
     newProjectDialog            = NewProjectDialog(materialEditorDialog.appMaterialModifiers);
     settingsDialog              = SettingsDialog();
     exportDialog                = ExportDialog();
+    materialDisplayerDialog     = MaterialDisplayerDialog();
 
     char whitePixel[] = { 127, 127, 127, 127 };
     paintingPanel.sections[2].elements[4].button.textureSelection = true;

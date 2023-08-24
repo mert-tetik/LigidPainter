@@ -534,6 +534,9 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Box &box
     if(settingsDialog.dialogControl.isActive())
         settingsDialog.render(timer);
     
+    if(materialDisplayerDialog.dialogControl.isActive())
+        materialDisplayerDialog.render(timer);
+    
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
         materialEditorDialog.render(timer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex), box);
     

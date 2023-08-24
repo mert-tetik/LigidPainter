@@ -160,6 +160,13 @@ void Panel::drawPanel(
     //Starting pos
     float elementStartPos = calculateElementStartingPosition(this->vertical, this->sections, this->pos + this->additionalPos, this->scale);
     float elementPos = elementStartPos;
+    if(sections.size() && vertical){
+        if(sections[0].header.button.text.size())
+            elementStartPos -= sections[0].header.scale.y;
+        else if(sections[0].elements.size()){
+            elementStartPos -= sections[0].elements[0].scale.y;
+        }
+    }
 
     //Indexing buttons to position them
     int btnCounter = 0; 
@@ -200,6 +207,7 @@ void Panel::drawPanel(
                     sections[sI].elements[i].button.textureStickToTop = true;
                     sections[sI].elements[i].button.textureSizeScale = 1.5f;
                 }
+                
                 lastElementScale = sections[sI].elements[i].scale.y; 
                 
                 //Don't render the unshown elements
@@ -242,8 +250,8 @@ void Panel::drawPanel(
         else
             sliderButton.pos.x = pos.x + this->additionalPos.x + sliderButton.scale.x - scale.x;
         
-        float elementHeight = (elementPos - elementStartPos)/2.f + lastElementScale;
-
+        float elementHeight = (elementPos - elementStartPos + lastElementScale)/2.f;
+        
         slideRatio = scale.y/elementHeight;
 
         if(slideRatio < 1 && vertical){

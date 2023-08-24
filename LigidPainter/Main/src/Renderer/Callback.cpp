@@ -237,7 +237,8 @@ void Renderer::cursorPositionCallback(
     else if (
                 getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
                 (!this->userInterface.anyDialogActive || //If there is no active dialog (don't move the camera if a dialog is active)
-                this->userInterface.materialEditorDialog.dialogControl.isActive()) &&
+                this->userInterface.materialEditorDialog.dialogControl.isActive() ||
+                this->userInterface.materialDisplayerDialog.dialogControl.isActive()) &&
                 !this->userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel
             ) 
     {   
@@ -252,6 +253,8 @@ void Renderer::cursorPositionCallback(
 
         if(this->userInterface.materialEditorDialog.dialogControl.isActive())
             cam = &this->userInterface.materialEditorDialog.displayerCamera;
+        else if(this->userInterface.materialDisplayerDialog.dialogControl.isActive())
+            cam = &this->userInterface.materialDisplayerDialog.displayingCam;
 
         cam->yaw += mouseOffset.x * sensitivity;
         cam->pitch -= mouseOffset.y * sensitivity;

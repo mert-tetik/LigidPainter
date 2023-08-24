@@ -39,15 +39,15 @@ void libraryPanelDisplayerInteraction(
                                         Painter &painter, 
                                         NewTextureDialog &newTextureDialog,
                                         AppMaterialModifiers &appMaterialModifiers,
+                                        MaterialDisplayerDialog &materialDisplayerDialog,
                                         int frameCounter
                                     )
 {
-    
     //Update the selected texture
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
     {
         if(Library::getSelectedElementIndex() == 0){ //Textures selected
-            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LClick()){
+            if(libraryPanelDisplayer.sections[0].elements[i].button.clicked){
                 painter.selectedTexture = *Library::getTexture(i); //Select the texture 
                 paintingPanel.sections[4].elements[painter.selectedPaintingChannelIndex].button.texture = painter.selectedTexture;
             } //If any texture button element is pressed
@@ -55,8 +55,14 @@ void libraryPanelDisplayerInteraction(
             if(Library::getTexture(i)->ID == painter.selectedTexture.ID) //Highlight the selected texture
                 libraryPanelDisplayer.sections[0].elements[i].button.clickState1 = true;
         }
+        if(Library::getSelectedElementIndex() == 1){ //Materials selected
+            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
+                materialDisplayerDialog.dialogControl.activate();
+                materialDisplayerDialog.material = *Library::getMaterial(i);
+            } 
+        }
         if(Library::getSelectedElementIndex() == 3){ //Models selected
-            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LClick()){
+            if(libraryPanelDisplayer.sections[0].elements[i].button.clicked){
                 *getModel() = *Library::getModel(i); //Select the model
                 getModel()->newModelAdded = true; 
             } 
