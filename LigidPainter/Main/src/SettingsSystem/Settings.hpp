@@ -170,6 +170,12 @@ namespace Settings{
         Texture logButtonL;
         Texture logButtonR;
         Texture logButtonM;
+        Texture colorGearIcon;
+        Texture filterIcon;
+        Texture resizingIcon;
+        Texture blurIcon;
+        Texture distortionIcon;
+        Texture normalMapIcon;
         
         //--Textures
         Texture greetingDialogImage;  

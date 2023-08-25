@@ -54,6 +54,12 @@ void Settings::loadAppTextures(){
     __appTextures.logButtonL.load("./LigidPainter/Resources/Icons/LogButtonL.png");
     __appTextures.logButtonR.load("./LigidPainter/Resources/Icons/LogButtonR.png");
     __appTextures.logButtonM.load("./LigidPainter/Resources/Icons/LogButtonM.png");
+    __appTextures.colorGearIcon.load("./LigidPainter/Resources/Icons/ColorGear.png");
+    __appTextures.filterIcon.load("./LigidPainter/Resources/Icons/Filter.png");
+    __appTextures.resizingIcon.load("./LigidPainter/Resources/Icons/Resizing.png");
+    __appTextures.blurIcon.load("./LigidPainter/Resources/Icons/Blur.png");
+    __appTextures.distortionIcon.load("./LigidPainter/Resources/Icons/Distortion.png");
+    __appTextures.normalMapIcon.load("./LigidPainter/Resources/Icons/NormalMap.png");
     __appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
     __appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
 }

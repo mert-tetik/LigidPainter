@@ -88,13 +88,13 @@ TextureEditorDialog::TextureEditorDialog(){
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Resize", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Blur", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Coloring", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Normal Map", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Distortion", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Filters", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Images", Settings::appTextures().brushIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Resize", Settings::appTextures().resizingIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Blur", Settings::appTextures().blurIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Coloring", Settings::appTextures().colorGearIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Normal Map", Settings::appTextures().normalMapIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Distortion", Settings::appTextures().distortionIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Filters", Settings::appTextures().filterIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Images", Settings::appTextures().solidPaintingDisplayingMode, 1.f,true)),
                     }
                 )
             }
@@ -181,6 +181,7 @@ TextureEditorDialog::TextureEditorDialog(){
 }
 
 void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsigned int destTxtr){
+    
     //Displaying resolution
     glm::vec2 txtrRes = receivedTexture.getResolution();
     glm::vec2 displayRes = receivedTexture.getResolution();
@@ -372,6 +373,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     glDeleteFramebuffers(1, &captureFBO);
     glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
 
+
 }
 
 void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture){
@@ -525,7 +527,7 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
             }
             
             if(i == 6 && coloringElements[0].comboBox.selectedIndex != 2)
-                i++;
+                break;
 
             coloringElements[i].pos = displayerBtn.pos;
             coloringElements[i].pos.x += displayerBtn.scale.x * 2.f;
