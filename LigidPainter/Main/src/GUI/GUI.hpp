@@ -52,6 +52,7 @@ private:
     /*Renaming*/
     /*! @brief Textbox element used to rename library elements */
     TextBox renamingTextBox; 
+    Button zoomingDisplayingButton;
     bool renamingTextBoxClosed = false;
     glm::ivec2 renamingIndices = glm::vec2(0,0); //x for the context menu index, y for the element index
     std::string lastTitleBeforeRenaming;

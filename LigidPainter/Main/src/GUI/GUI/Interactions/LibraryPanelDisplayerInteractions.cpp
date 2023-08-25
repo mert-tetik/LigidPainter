@@ -33,6 +33,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
+size_t __libraryPanelDisplayerInteractionHoverStartSecond = 0.f;
+bool __libraryPanelDisplayerInteractionFirstHover = false;
+int __libraryPanelDisplayerInteractionFocusedElementIndex = 0;
+
 void libraryPanelDisplayerInteraction(
                                         Panel &libraryPanelDisplayer, 
                                         Panel &paintingPanel, 
@@ -40,12 +44,36 @@ void libraryPanelDisplayerInteraction(
                                         NewTextureDialog &newTextureDialog,
                                         AppMaterialModifiers &appMaterialModifiers,
                                         MaterialDisplayerDialog &materialDisplayerDialog,
-                                        int frameCounter
+                                        Button& zoomingDisplayingButton,
+                                        Timer& timer
                                     )
 {
+    bool anyElementHover = false;
     //Update the selected texture
     for (size_t i = 0; i < libraryPanelDisplayer.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
     {
+        anyElementHover = true;
+        if(libraryPanelDisplayer.sections[0].elements[i].button.hover){
+            
+            zoomingDisplayingButton.pos = libraryPanelDisplayer.sections[0].elements[i].button.pos;
+            zoomingDisplayingButton.texture = libraryPanelDisplayer.sections[0].elements[i].button.texture;
+            
+            if(i !=__libraryPanelDisplayerInteractionFocusedElementIndex){
+                __libraryPanelDisplayerInteractionFocusedElementIndex = i;
+                __libraryPanelDisplayerInteractionFirstHover = false;
+            }
+
+            if(!__libraryPanelDisplayerInteractionFirstHover)
+                __libraryPanelDisplayerInteractionHoverStartSecond = timer.seconds;
+            
+            __libraryPanelDisplayerInteractionFirstHover = true;
+
+            if(timer.seconds - __libraryPanelDisplayerInteractionHoverStartSecond > 1){
+                __libraryPanelDisplayerInteractionFocusedElementIndex = i;
+                zoomingDisplayingButton.render(timer, false);
+            }
+        }
+
         if(Library::getSelectedElementIndex() == 0){ //Textures selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.clicked){
                 painter.selectedTexture = *Library::getTexture(i); //Select the texture 
@@ -69,6 +97,13 @@ void libraryPanelDisplayerInteraction(
         }
     }
 
+    if(!anyElementHover){
+
+        __libraryPanelDisplayerInteractionFirstHover = false;
+    }
+
+
+    
     //Add button from the barButtons in the library displayer panel clicked 
     if(libraryPanelDisplayer.barButtons[0].clicked){
         if(Library::getSelectedElementIndex() == 0){//Textures

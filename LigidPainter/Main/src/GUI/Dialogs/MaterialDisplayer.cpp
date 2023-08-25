@@ -43,7 +43,7 @@ MaterialDisplayerDialog::MaterialDisplayerDialog(){
                                     Element(Button()),
                                     {
                                         Element(Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Material Displayer", Texture(),0.f,false)), 
-                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(20, 20), "ababab", this->material.displayingTexture, 0.f, false)), 
+                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(20, 20), "", this->material.displayingTexture, 0.f, false)), 
                                     }
                                 )
                             },
