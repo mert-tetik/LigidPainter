@@ -193,7 +193,7 @@ class TextureEditorDialog
    DialogControl dialogControl;
    std::vector<Element> resizeElements;
    std::vector<Element> bluringElement;
-   std::vector<Element> noiseElements;
+   std::vector<Element> coloringElements;
    std::vector<Element> normalMapElements;
    std::vector<Element> distortionElements;
    std::vector<Element> imagesElements;

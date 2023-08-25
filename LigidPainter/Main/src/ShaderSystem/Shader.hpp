@@ -112,6 +112,7 @@ namespace ShaderSystem{
     Shader txtrEditorBlurShader();
     Shader txtrEditorDistortionShader();
     Shader txtrEditorNormalMapShader();
+    Shader txtrEditorColoringShader();
     Shader splitTexturesShader();
     Shader solidShadingShader();
 

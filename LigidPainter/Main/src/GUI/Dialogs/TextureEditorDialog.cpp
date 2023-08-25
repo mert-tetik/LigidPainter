@@ -90,7 +90,7 @@ TextureEditorDialog::TextureEditorDialog(){
                     {
                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Resize", Settings::appTextures().brushIcon, 1.f,true)),
                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Blur", Settings::appTextures().brushIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Noise", Settings::appTextures().brushIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Coloring", Settings::appTextures().brushIcon, 1.f,true)),
                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Normal Map", Settings::appTextures().brushIcon, 1.f,true)),
                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Distortion", Settings::appTextures().brushIcon, 1.f,true)),
                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Filters", Settings::appTextures().brushIcon, 1.f,true)),
@@ -134,17 +134,17 @@ TextureEditorDialog::TextureEditorDialog(){
         RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Strength", Texture(), 0.f, 0.f, 1.f, 0.f),
     };
     
-    this->noiseElements = {
-        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"FBM", "Cloud", "Golden"}, "Noise Function", 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Cloud Radius",  Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Frequency",     Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Octaves",       Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Roughness",     Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Scale",         Texture(), 0.f, 0.f, 1.f, 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Strength",      Texture(), 0.f, 0.f, 1.f, 0.f),
-        CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), "Color Mix", 0.f),
-        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Mixing Color", Texture(), 1.f, true),
+    this->coloringElements = {
+        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"HSV", "Single Color", "Brightness"}, "Coloring Function", 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Hue",      Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Saturation",      Texture(), 0.f, 0.f, 1.f, 1.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Value",      Texture(), 0.f, 0.f, 1.f, 1.f),
+        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Multiply", "Hue"}, "Coloring Function", 0.f),
+        Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Color", Texture(), 1.f, false),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Brightness",      Texture(), 0.f, 0.f, 2.f, 1.f),
     };
+    this->coloringElements[5].button.colorSelection = true;
+    this->coloringElements[5].button.color = glm::vec4(0.f, 0.23f, 1.f, 1.f);
 
     this->normalMapElements = {
         ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Blue Scale", "Gray Scale"}, "Normal Map Function", 0.f),
@@ -275,6 +275,27 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         ShaderSystem::txtrEditorBlurShader().setFloat("directionalDirection", bluringElement[1].rangeBar.value);
         ShaderSystem::txtrEditorBlurShader().setVec2("radialPos", glm::vec2(bluringElement[2].rangeBar.value, bluringElement[3].rangeBar.value));
         ShaderSystem::txtrEditorBlurShader().setFloat("strength", bluringElement[4].rangeBar.value);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    }
+    else if(this->selectedSection == 2){
+        ShaderSystem::txtrEditorColoringShader().use();
+        ShaderSystem::txtrEditorColoringShader().setMat4("projection", projection);
+        ShaderSystem::txtrEditorColoringShader().setVec3("pos", pos);
+        ShaderSystem::txtrEditorColoringShader().setVec2("scale", scale);
+    
+        ShaderSystem::txtrEditorColoringShader().setInt("txtr", 0);
+        ShaderSystem::txtrEditorColoringShader().setVec2("txtrResolution", displayRes);
+
+        ShaderSystem::txtrEditorColoringShader().setInt("coloringIndex", coloringElements[0].comboBox.selectedIndex);
+        ShaderSystem::txtrEditorColoringShader().setVec3("hsv", glm::vec3(coloringElements[1].rangeBar.value, coloringElements[2].rangeBar.value, coloringElements[3].rangeBar.value));
+        ShaderSystem::txtrEditorColoringShader().setInt("singleColorIndex", coloringElements[4].comboBox.selectedIndex);
+        ShaderSystem::txtrEditorColoringShader().setVec3("singleColor", coloringElements[5].button.color);
+        ShaderSystem::txtrEditorColoringShader().setFloat("brightness", coloringElements[6].rangeBar.value);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
@@ -490,27 +511,30 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
     if(this->selectedSection == 2){
         int eCnt = 0;
         
-        for (size_t i = 0; i < noiseElements.size(); i++)
+        for (size_t i = 0; i < coloringElements.size(); i++)
         {
-            noiseElementsLoopReturn:
+            coloringElementsLoopReturn:
 
-            if(i == 1 && noiseElements[0].comboBox.selectedIndex != 1)
+            if((i == 1 || i == 2 || i == 3) && coloringElements[0].comboBox.selectedIndex != 0){
                 i++;
-            if((i == 2 || i == 3 || i == 4) && noiseElements[0].comboBox.selectedIndex != 0){
-                i++;
-                goto noiseElementsLoopReturn;
+                goto coloringElementsLoopReturn;
             }
-            if(i == 8 && !noiseElements[7].checkBox.clickState1)
+            if((i == 4 || i == 5) && coloringElements[0].comboBox.selectedIndex != 1){
+                i++;
+                goto coloringElementsLoopReturn;
+            }
+            
+            if(i == 6 && coloringElements[0].comboBox.selectedIndex != 2)
                 i++;
 
-            noiseElements[i].pos = displayerBtn.pos;
-            noiseElements[i].pos.x += displayerBtn.scale.x * 2.f;
-            noiseElements[i].pos.y -= displayerBtn.scale.y * .5f;
-            noiseElements[i].pos.y += 8.f * eCnt;
-            noiseElements[i].render(timer,true);
+            coloringElements[i].pos = displayerBtn.pos;
+            coloringElements[i].pos.x += displayerBtn.scale.x * 2.f;
+            coloringElements[i].pos.y -= displayerBtn.scale.y * .5f;
+            coloringElements[i].pos.y += 8.f * eCnt;
+            coloringElements[i].render(timer,true);
             eCnt++;
             
-            if(noiseElements[i].isInteracted())
+            if(coloringElements[i].isInteracted())
                 anyInteraction = true;
         }
     }
