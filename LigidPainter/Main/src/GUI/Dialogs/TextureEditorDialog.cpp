@@ -211,9 +211,16 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     glViewport(0, 0, displayRes.x, displayRes.y);
     
     if(this->selectedSection == 0){
+
+        glm::vec2 originPoint = glm::vec2(resizeElements[3].rangeBar.value, resizeElements[4].rangeBar.value);
+
         ShaderSystem::txtrEditorResizeShader().use();
         ShaderSystem::txtrEditorResizeShader().setMat4("projection", projection);
-        ShaderSystem::txtrEditorResizeShader().setVec3("pos", pos);
+        if(resizeElements[0].comboBox.selectedIndex == 1 || resizeElements[0].comboBox.selectedIndex == 2)
+            ShaderSystem::txtrEditorResizeShader().setVec3("pos", glm::vec3(pos.x + (originPoint.x * displayRes.x), pos.y + (originPoint.y * displayRes.y), pos.z));
+        else
+            ShaderSystem::txtrEditorResizeShader().setVec3("pos", pos);
+        
         ShaderSystem::txtrEditorResizeShader().setVec2("scale", scale);
     
         if(resizeElements[0].comboBox.selectedIndex == 0)
@@ -225,7 +232,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         
         ShaderSystem::txtrEditorResizeShader().setInt("wrapingIndex", resizeElements[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorResizeShader().setVec3("wrapingColor", resizeElements[1].button.color);
-        ShaderSystem::txtrEditorResizeShader().setVec2("originPoint", glm::vec2(resizeElements[3].rangeBar.value, resizeElements[4].rangeBar.value));
+        ShaderSystem::txtrEditorResizeShader().setVec2("originPoint", originPoint);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
