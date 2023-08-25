@@ -44,6 +44,7 @@ void libraryPanelDisplayerInteraction(
                                         NewTextureDialog &newTextureDialog,
                                         AppMaterialModifiers &appMaterialModifiers,
                                         MaterialDisplayerDialog &materialDisplayerDialog,
+                                        FilterDisplayerDialog &filterDisplayerDialog,
                                         Button& zoomingDisplayingButton,
                                         Timer& timer
                                     )
@@ -93,6 +94,12 @@ void libraryPanelDisplayerInteraction(
             if(libraryPanelDisplayer.sections[0].elements[i].button.clicked){
                 *getModel() = *Library::getModel(i); //Select the model
                 getModel()->newModelAdded = true; 
+            } 
+        }
+        if(Library::getSelectedElementIndex() == 6){ //Filters selected
+            if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
+                filterDisplayerDialog.dialogControl.activate();
+                filterDisplayerDialog.filter = *Library::getFilter(i);
             } 
         }
     }

@@ -336,7 +336,7 @@ class ExportDialog
     void render(Timer timer,Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog);
  };
 
-//!------------------------------EXPORT DIALOG------------------------------
+//!------------------------------MATERIAL DISPLAYER------------------------------
 
 class MaterialDisplayerDialog
  {
@@ -353,8 +353,27 @@ class MaterialDisplayerDialog
    MaterialDisplayerDialog();
 
    //Public member functions
-   void render(Timer timer);
+   void render(Timer timer, Box& box);
  };
+
+
+//!------------------------------MATERIAL DISPLAYER------------------------------
+
+class FilterDisplayerDialog
+{
+public:
+   Panel panel;
+   
+   DialogControl dialogControl;
+   
+   Filter filter;
+
+   //Constructors
+   FilterDisplayerDialog();
+
+   //Public member functions
+   void render(Timer timer, glm::mat4 projection);
+};
 
 
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------

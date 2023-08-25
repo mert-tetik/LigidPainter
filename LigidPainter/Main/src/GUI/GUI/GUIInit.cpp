@@ -446,6 +446,7 @@ void UI::init
     settingsDialog              = SettingsDialog();
     exportDialog                = ExportDialog();
     materialDisplayerDialog     = MaterialDisplayerDialog();
+    filterDisplayerDialog       = FilterDisplayerDialog();
 
     char whitePixel[] = { 127, 127, 127, 127 };
     paintingPanel.sections[2].elements[4].button.textureSelection = true;

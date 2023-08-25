@@ -33,7 +33,7 @@
 #include <vector>
 #include <filesystem>
 
-MaterialDisplayerDialog::MaterialDisplayerDialog(){
+FilterDisplayerDialog::FilterDisplayerDialog(){
     
     //Create the panel
     this->panel = Panel(
@@ -42,8 +42,8 @@ MaterialDisplayerDialog::MaterialDisplayerDialog(){
                                 Section(
                                     Element(Button()),
                                     {
-                                        Element(Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Material Displayer", Texture(),0.f,false)), 
-                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(20, 20), "", this->material.displayingTexture, 0.f, false)), 
+                                        Element(Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Filter Displayer", Texture(),0.f,false)), 
+                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(20, 20), "", Texture(), 0.f, false)), 
                                     }
                                 )
                             },
@@ -62,17 +62,13 @@ MaterialDisplayerDialog::MaterialDisplayerDialog(){
                             0.25f,
                             false
                         );
-
-    this->displayingCam.cameraPos = glm::vec3(0,0,-7.f);
-    this->displayingCam.radius = 7.f;
 }
 
-void MaterialDisplayerDialog::render(Timer timer, Box& box){
+void FilterDisplayerDialog::render(Timer timer, glm::mat4 projection){
     
     dialogControl.updateStart();
 
     //Render the panel
-    this->panel.sections[0].elements[1].button.texture = this->material.displayingTexture;
     panel.render(timer,true);
      
     //Close the dialog
@@ -81,7 +77,23 @@ void MaterialDisplayerDialog::render(Timer timer, Box& box){
             this->dialogControl.unActivate();
     }
 
-    this->material.updateMaterialDisplayingTexture(512, box, false, this->displayingCam, 0);
-    
+    ShaderSystem::splitTexturesShader().use();
+    ShaderSystem::splitTexturesShader().setMat4("projection"  ,   projection);
+    ShaderSystem::splitTexturesShader().setVec3("pos"         ,   panel.sections[0].elements[1].button.resultPos);
+    ShaderSystem::splitTexturesShader().setVec2("scale"       ,   glm::vec2(std::min(panel.sections[0].elements[1].button.resultScale.x, panel.sections[0].elements[1].button.resultScale.y)));
+
+    ShaderSystem::splitTexturesShader().setInt("texture1", 0);
+    ShaderSystem::splitTexturesShader().setInt("texture2", 1);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, Settings::appTextures().greetingDialogImage.ID);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, filter.displayingTxtr);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
     dialogControl.updateEnd(timer,0.15f);
+
+    ShaderSystem::buttonShader().use();
 }

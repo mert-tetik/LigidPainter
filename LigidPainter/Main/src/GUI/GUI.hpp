@@ -81,6 +81,7 @@ public:
     NewProjectDialog newProjectDialog;
     ExportDialog exportDialog;
     MaterialDisplayerDialog materialDisplayerDialog;
+    FilterDisplayerDialog filterDisplayerDialog;
     LoadProjectDialog loadProjectDialog;
     //ColorPickerDialog colorPickerDialog;
     MaterialEditorDialog materialEditorDialog;
