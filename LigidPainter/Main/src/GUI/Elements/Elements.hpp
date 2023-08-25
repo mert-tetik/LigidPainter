@@ -154,6 +154,8 @@ private:
     void render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadius,float resultOutlineThickness);
 public:
     bool active = false;
+    bool clicked = false;
+    bool rangeBar = false;
     float panelOffset = 0.f; 
     std::string text; 
     glm::vec4 color;

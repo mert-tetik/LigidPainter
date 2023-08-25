@@ -107,6 +107,7 @@ void TextBox::render(
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
     
+    this->clicked = false;
     
     this->doMouseTracking = doMouseTracking;
     
@@ -135,6 +136,7 @@ void TextBox::render(
     if(hover && *Mouse::LClick()){
         //Mouse left button pressed on top of the button
         active = !active;
+        this->clicked = true;
     }
     
     //Deactivate the textbox
@@ -146,6 +148,30 @@ void TextBox::render(
     timer.transition(hover,hoverMixVal,0.2f); 
     timer.transition(active,clickedMixVal,0.15f); 
     
+    if(*Mouse::LPressed() && this->hover && Mouse::mouseOffset()->x)
+        this->rangeBar = true;
+
+    if(!*Mouse::LPressed()){
+        if(this->rangeBar)
+            this->active = false;
+
+        this->rangeBar = false;
+    }
+
+    if(this->rangeBar){
+        int textIntVal = std::stoi(this->text);
+        textIntVal += Mouse::mouseOffset()->x;
+        
+        if(textIntVal < 0)
+            textIntVal = 0;
+
+        this->text = std::to_string(textIntVal);
+    
+        if(Mouse::mouseOffset()->x)
+            this->active = true;
+    }
+
+
     //---Get the input
     if(active){
         if(openSelectFolderDialog == 1){
