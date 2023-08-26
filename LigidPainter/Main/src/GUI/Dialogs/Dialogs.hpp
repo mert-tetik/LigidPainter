@@ -378,7 +378,7 @@ public:
 
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
-void showTextureSelectionDialog(Texture& txtr, Filter& filter, int displayingTextureRes, bool filterSelection);
+void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes);
 bool wasTextureSelectionDialogActive();
 
 class TextureSelectionDialog
@@ -403,15 +403,15 @@ public:
 
 
    //Public member functions
-   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, Filter& receivedFilter, int displayingTextureRes, bool filterSelection);
+   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes);
 
-   void generateDisplayingTexture(Texture& txtr, Filter filter, int displayingTextureRes, bool filterSelection);
+   void generateDisplayingTexture(Texture& txtr, int displayingTextureRes);
 
 };
 
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
-void showFilterSelectionDialog(Filter& filter, int displayingTextureRes, bool filterSelection);
+void showFilterSelectionDialog(Filter& filter, int displayingTextureRes);
 
 class FilterSelectionDialog
 {

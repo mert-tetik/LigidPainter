@@ -388,8 +388,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material, Box box
         
         //Change mask button pressed
         if(ContextMenus::materialModifier.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){ 
-            Filter filter;
-            showTextureSelectionDialog(material.materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture, filter, 512, false);
+            showTextureSelectionDialog(material.materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture, 512);
 
             dialogControl.firstFrameActivated = true;
         }

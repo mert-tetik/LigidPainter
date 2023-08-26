@@ -78,8 +78,7 @@ void Button::render(
     
     if(this->clicked){
         if(this->textureSelection){
-            Filter filter;
-            showTextureSelectionDialog(this->texture, filter, 512, false);
+            showTextureSelectionDialog(this->texture, 512);
         }
         if(this->colorSelection){
             unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0

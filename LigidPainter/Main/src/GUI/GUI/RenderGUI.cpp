@@ -47,14 +47,14 @@ glm::mat4 __projection;
 Timer __timer; 
 bool __wasTextureSelectionDialogActive = false;
 
-void showTextureSelectionDialog(Texture& txtr, Filter& filter, int displayingTextureRes, bool filterSelection){
-    __texture_selection_dialog.show(__timer, __projection, txtr, filter, displayingTextureRes, filterSelection);
+void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes){
+    __texture_selection_dialog.show(__timer, __projection, txtr, displayingTextureRes);
     __wasTextureSelectionDialogActive = true;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
 }
 
-void showFilterSelectionDialog(Filter& filter, int displayingTextureRes, bool filterSelection){
+void showFilterSelectionDialog(Filter& filter, int displayingTextureRes){
     __filter_selection_dialog.show(__timer, __projection, filter, displayingTextureRes);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
