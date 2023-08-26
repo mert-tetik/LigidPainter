@@ -24,7 +24,7 @@ void main()
 {
     vec2 uv = TexCoords;
     uv = rotate2D(uv, 50.);
-    uv += 0.2;
+    uv += 0.0;
     float size = 1.6;
     float c = checkerboard(uv,size);
     vec4 txtr1 = texture(texture1, TexCoords);

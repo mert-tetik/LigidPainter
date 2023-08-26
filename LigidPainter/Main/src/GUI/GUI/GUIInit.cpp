@@ -441,6 +441,7 @@ void UI::init
     textureEditorDialog         = TextureEditorDialog();
     materialEditorDialog        = MaterialEditorDialog();
     textureSelectionDialog      = TextureSelectionDialog();
+    filterSelectionDialog       = FilterSelectionDialog();
     loadProjectDialog           = LoadProjectDialog(materialEditorDialog.appMaterialModifiers);
     newProjectDialog            = NewProjectDialog(materialEditorDialog.appMaterialModifiers);
     settingsDialog              = SettingsDialog();

@@ -611,8 +611,7 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
         filterBtn.render(timer,true);
 
         if(filterBtn.clicked){
-            Texture txtr;
-            showTextureSelectionDialog(txtr, filter, 512, true);
+            showFilterSelectionDialog(this->filter, 512, true);
             anyInteraction = true;
         }        
 

@@ -409,6 +409,34 @@ public:
 
 };
 
+//!------------------------------TEXTURE SELECTION DIALOG------------------------------
+
+void showFilterSelectionDialog(Filter& filter, int displayingTextureRes, bool filterSelection);
+
+class FilterSelectionDialog
+{
+private:
+    int selectedTextureMode = 0;
+public:
+   Panel bgPanel;
+   Panel subPanel;
+   Panel selectedTextureDisplayingPanel;
+   Panel textureSelectingPanel;
+
+   Texture displayingTexture;
+   int selectedTextureIndex = 0; 
+   bool clicked = false; 
+   glm::vec3 pos = glm::vec3(50,50,0.95f);
+   glm::vec2 scale = glm::vec2(40); 
+   DialogControl dialogControl;
+
+   //Constructors
+   FilterSelectionDialog();
+
+   //Public member functions
+   void show(Timer &timer, glm::mat4 guiProjection, Filter& receivedFilter, int displayingTextureRes);
+};
+
 //!------------------------------CONTEXT MENU------------------------------
 
 
