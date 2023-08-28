@@ -127,3 +127,52 @@ void Filter::generateDisplayingTexture(){
 
     glDeleteFramebuffers(1,&captureFBO);
 }
+
+void Filter::applyFilter(unsigned int txtr){
+
+    Texture txtrObject = txtr;
+    glm::vec2 txtrRes = txtrObject.getResolution();
+
+    Texture duplicatedTxtr = txtrObject.duplicateTexture();  
+
+    //Displaying resolution
+    glm::vec2 displayRes = txtrRes;
+
+    //Create the framebuffer
+    unsigned int captureFBO;
+    glGenFramebuffers(1,&captureFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
+    
+    //Bind the displaying texture to the capture framebuffer
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr, 0);
+
+    //Clear the capture frame buffer(displaying texture) with color alpha zero
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glViewport(0, 0, displayRes.x, displayRes.y);
+    
+    this->shader.use();
+
+    glm::vec2 scale = displayRes / glm::vec2(2);
+    glm::vec3 pos = glm::vec3(displayRes / glm::vec2(2),1.f);
+    glm::mat4 projection = glm::ortho(0.f, displayRes.x, displayRes.y, 0.f);
+    this->shader.setVec2("scale", scale); //Cover the screen
+    this->shader.setVec3("pos", pos); //Cover the screen
+    this->shader.setMat4("projection", projection); //Cover the screen
+    
+    this->shader.setInt("txtr", 0); //Cover the screen
+    this->shader.setVec2("txtrResolution", txtrRes); //Cover the screen
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, duplicatedTxtr.ID);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    //Finish
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    ShaderSystem::buttonShader().use();
+
+    glDeleteTextures(1, &duplicatedTxtr.ID);
+    glDeleteFramebuffers(1,&captureFBO);
+}

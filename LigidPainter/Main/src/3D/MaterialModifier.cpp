@@ -199,6 +199,12 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f),
             }
+        ),
+        Section(
+            Element(Button()),
+            {
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
         )
     };
 
@@ -209,6 +215,8 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
     sections[0].elements[4].button.textureSelection = true;
     sections[0].elements[5].button.textureSelection = true;
 
+    sections[sections.size() - 1].elements[0].button.filterSelection = true;
+    
     return sections;
 }
 
@@ -244,6 +252,12 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
+        ),
+        Section(
+            Element(Button()),
+            {
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
         )
     };
 
@@ -255,6 +269,8 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
     sections[0].elements[8].button.colorSelection = true;
     sections[0].elements[10].button.colorSelection = true;
 
+    sections[sections.size() - 1].elements[0].button.filterSelection = true;
+    
     return sections;
 }
 
@@ -295,6 +311,12 @@ std::vector<Section> MaterialModifier::createFabricModifier(){
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f),
             }
+        ),
+        Section(
+            Element(Button()),
+            {
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
         )
     };
 
@@ -302,6 +324,8 @@ std::vector<Section> MaterialModifier::createFabricModifier(){
 
     sections[0].elements[0].button.color = glm::vec4(glm::vec3(0.79f, 0.79f, 0.73f), 1.f);
 
+    sections[sections.size() - 1].elements[0].button.filterSelection = true;
+    
     return sections;
 } 
 
@@ -376,6 +400,12 @@ std::vector<Section> MaterialModifier::createMossModifier()
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
+        ),
+        Section(
+            Element(Button()),
+            {
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
         )
     };
 
@@ -388,6 +418,8 @@ std::vector<Section> MaterialModifier::createMossModifier()
     sections[0].elements[2].button.color = glm::vec4(glm::vec3(0.27f, 0.22f, 0.15f), 1.f);
     
 
+    sections[sections.size() - 1].elements[0].button.filterSelection = true;
+    
     return sections;
 }
 
@@ -463,6 +495,12 @@ std::vector<Section> MaterialModifier::createRustModifier()
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
+        ),
+        Section(
+            Element(Button()),
+            {
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
         )
     };
     
@@ -477,6 +515,8 @@ std::vector<Section> MaterialModifier::createRustModifier()
     sections[0].elements[3].button.color = glm::vec4(glm::vec3(0.49f, 0.3f, 0.2f), 1.f);
     
 
+    sections[sections.size() - 1].elements[0].button.filterSelection = true;
+    
     return sections;
 }
 
@@ -546,9 +586,17 @@ std::vector<Section> MaterialModifier::createSkinModifier()
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
+        ),
+        Section(
+            Element(Button()),
+            {
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
         )
     };
 
+    sections[sections.size() - 1].elements[0].button.filterSelection = true;
+    
     return sections;
 }
 
@@ -626,6 +674,12 @@ std::vector<Section> MaterialModifier::createWoodenModifier()
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
+        ),
+        Section(
+            Element(Button()),
+            {
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
         )
     };
 
@@ -638,6 +692,8 @@ std::vector<Section> MaterialModifier::createWoodenModifier()
     sections[0].elements[2].button.color = glm::vec4(glm::vec3(0.52f, 0.32f, 0.19f), 1.f);
 
 
+    sections[sections.size() - 1].elements[0].button.filterSelection = true;
+    
     return sections;
 }
 
@@ -703,6 +759,12 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f),
             }
+        ),
+        Section(
+            Element(Button()),
+            {
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
         )
     };
     sections[0].elements[0].button.colorSelection = true;
@@ -710,6 +772,8 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
     
     sections[0].elements[0].button.color = glm::vec4(glm::vec3(0.25f), 1.f);
     sections[0].elements[1].button.color = glm::vec4(glm::vec3(0.23f, 0.25f, 0.27f), 1.f);
+    
+    sections[sections.size() - 1].elements[0].button.filterSelection = true;
     
     return sections;
 }
@@ -779,9 +843,17 @@ std::vector<Section> MaterialModifier::createDustModifier(){
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 100.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
             }
+        ),
+        Section(
+            Element(Button()),
+            {
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
         )
     };
 
+    sections[sections.size() - 1].elements[0].button.filterSelection = true;
+    
     return sections;
 }
 
@@ -896,8 +968,6 @@ glm::vec2 getDirectionVector(float rotation) {
 
 void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
@@ -916,6 +986,8 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
+        //Set the OpenGL viewport to the texture resolution
+        glViewport(0,0,textureResolution,textureResolution);
     
         unsigned int FBO;
         Texture currentTexture;
@@ -931,8 +1003,8 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         material.materialModifiers[curModI].shader.setInt("theTexture",0); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("mask", 1); //Set the texture slot
         material.materialModifiers[curModI].shader.setInt("previousTxtr", 2); //Set the texture slot
-        material.materialModifiers[curModI].shader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
-        material.materialModifiers[curModI].shader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        material.materialModifiers[curModI].shader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value / 100.f); 
+        material.materialModifiers[curModI].shader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value / 100.f); 
         material.materialModifiers[curModI].shader.setInt( "depthTxtr" , 3);
 
         //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
@@ -972,6 +1044,8 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
+        if(channelI == 0)
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
         if(material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralID != -1)
             glDeleteTextures(1, &proceduralChannelTexture);
@@ -984,8 +1058,6 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
@@ -1004,6 +1076,8 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
+        //Set the OpenGL viewport to the texture resolution
+        glViewport(0,0,textureResolution,textureResolution);
     
         unsigned int FBO;
         Texture currentTexture;
@@ -1022,8 +1096,8 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f);
-        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f);
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value / 100.f);
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value / 100.f);
         modifierShader.setInt( "depthTxtr" , 2);
 
         /* Noise */
@@ -1078,7 +1152,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         //Generating the normal map
         if(channelI == 4){
-            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
@@ -1087,6 +1161,8 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
+        if(channelI == 0)
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1097,8 +1173,6 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
@@ -1117,6 +1191,8 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
     proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
+        //Set the OpenGL viewport to the texture resolution
+        glViewport(0,0,textureResolution,textureResolution);
     
         unsigned int FBO;
         Texture currentTexture;
@@ -1136,7 +1212,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
         modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[0].elements[channelI * 2 + 1].rangeBar.value / 100.f); //Set the channel opacity
-        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value / 100.f); 
         modifierShader.setInt( "depthTxtr" , 2); //Set the channel opacity
         modifierShader.setVec3( "value" , glm::vec3(
                                                         material.materialModifiers[curModI].sections[0].elements[channelI * 2].button.color.r, 
@@ -1174,6 +1250,8 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
+        if(channelI == 0)
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1185,8 +1263,6 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
 
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
@@ -1205,6 +1281,8 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
+        //Set the OpenGL viewport to the texture resolution
+        glViewport(0,0,textureResolution,textureResolution);
     
         unsigned int FBO;
         Texture currentTexture;
@@ -1223,8 +1301,8 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
-        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value / 100.f); 
         modifierShader.setInt( "depthTxtr" , 2);
 
         /* Colors */
@@ -1288,6 +1366,8 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
+        if(channelI == 0)
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1299,8 +1379,6 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
 
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
@@ -1319,6 +1397,8 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
+        //Set the OpenGL viewport to the texture resolution
+        glViewport(0,0,textureResolution,textureResolution);
     
         unsigned int FBO;
         Texture currentTexture;
@@ -1337,8 +1417,8 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
-        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value / 100.f); 
         modifierShader.setInt( "depthTxtr" , 2);
 
         /* Stripes */
@@ -1390,6 +1470,8 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
+        if(channelI == 0)
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1402,8 +1484,6 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
 
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
@@ -1422,6 +1502,8 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
     proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
+        //Set the OpenGL viewport to the texture resolution
+        glViewport(0,0,textureResolution,textureResolution);
     
         unsigned int FBO;
         Texture currentTexture;
@@ -1440,8 +1522,8 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
-        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value / 100.f); 
         modifierShader.setInt( "depthTxtr" , 2);
 
         /* Colors */
@@ -1506,7 +1588,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Generating the normal map
         if(channelI == 4){
-            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
@@ -1514,6 +1596,8 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
+        if(channelI == 0)
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1525,8 +1609,6 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
 
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
@@ -1545,6 +1627,8 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
+        //Set the OpenGL viewport to the texture resolution
+        glViewport(0,0,textureResolution,textureResolution);
     
         unsigned int FBO;
         Texture currentTexture;
@@ -1563,8 +1647,8 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
-        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value / 100.f); 
         modifierShader.setInt( "depthTxtr" , 2);
 
         /* Color */
@@ -1626,7 +1710,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
@@ -1634,6 +1718,8 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
+        if(channelI == 0)
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1645,8 +1731,6 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
 
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
@@ -1665,6 +1749,8 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
+        //Set the OpenGL viewport to the texture resolution
+        glViewport(0,0,textureResolution,textureResolution);
     
         unsigned int FBO;
         Texture currentTexture;
@@ -1683,8 +1769,8 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
-        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value / 100.f); 
         modifierShader.setInt( "depthTxtr" , 2);
 
         /* Colors */
@@ -1747,7 +1833,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
@@ -1755,6 +1841,8 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
+        if(channelI == 0)
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);
@@ -1765,8 +1853,6 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
     
-    //Set the OpenGL viewport to the texture resolution
-    glViewport(0,0,textureResolution,textureResolution);
 
     //Set the orthographic projection to the texture resolution
     glm::mat4 projection = glm::ortho(0.f,1.f,0.f,1.f);
@@ -1785,6 +1871,8 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
     proceduralTexture = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
+        //Set the OpenGL viewport to the texture resolution
+        glViewport(0,0,textureResolution,textureResolution);
     
         unsigned int FBO;
         Texture currentTexture;
@@ -1803,8 +1891,8 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setInt("state", channelI); //Set the channel state
         modifierShader.setInt("mask", 0); //Set the mask texture slot
         modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[channelI].rangeBar.value / 100.f); 
-        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value / 100.f); 
+        modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value / 100.f); 
         modifierShader.setInt( "depthTxtr" , 2);
 
         /* Droplets */
@@ -1864,7 +1952,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         
         //Generating the normal map
         if(channelI == 4){
-            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size() - 1].elements[1].checkBox.clickState1)
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].checkBox.clickState1)
                 blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
@@ -1872,6 +1960,8 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
+        if(channelI == 0)
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
     glDeleteTextures(1, &prevDepthTexture.ID);

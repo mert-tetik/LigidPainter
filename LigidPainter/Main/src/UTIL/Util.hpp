@@ -308,6 +308,10 @@ public:
 
     int load(std::string path);
     void generateDisplayingTexture();
+
+    /// @brief Applies the @ref (*this).shader to the given texture
+    void applyFilter(unsigned int txtr);
+
 };
 
 class Project
