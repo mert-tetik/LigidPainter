@@ -1161,13 +1161,13 @@ static void parseFBXMeshData(
                 meshIndices[materialI].push_back(posData[materialI][std::make_pair(facePos.z, faceEdge.z)]);
 
                 /* Tangent calculations */
-                meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Tangent = glm::vec3(0); 
-                meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Bitangent = glm::vec3(0); 
-                meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]].Tangent = glm::vec3(0); 
-                meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]].Bitangent = glm::vec3(0); 
-                meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]].Tangent = glm::vec3(0);
-                meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]].Bitangent = glm::vec3(0);
-                calculateTangentBitangent(meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]], meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]], meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]]);
+                //meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Tangent = glm::vec3(0); 
+                //meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Bitangent = glm::vec3(0); 
+                //meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]].Tangent = glm::vec3(0); 
+                //meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]].Bitangent = glm::vec3(0); 
+                //meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]].Tangent = glm::vec3(0);
+                //meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]].Bitangent = glm::vec3(0);
+                calculateTangentBitangent(meshVertices[materialI][posData[materialI][std::make_pair(facePos.y, faceEdge.y)]], meshVertices[materialI][posData[materialI][std::make_pair(facePos.z, faceEdge.z)]], meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]]);
                 
                 /* Normalize tangent values */
                 meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Tangent = glm::normalize(meshVertices[materialI][posData[materialI][std::make_pair(facePos.x, faceEdge.x)]].Tangent); 

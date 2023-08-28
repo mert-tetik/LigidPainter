@@ -289,12 +289,6 @@ static void parseOBJMeshData(
                 /* Ignore untriangulated vertices */
                 
                 /* Tangent calculations */
-                vert1.Tangent = glm::vec3(0);
-                vert1.Bitangent = glm::vec3(0);
-                vert2.Tangent = glm::vec3(0);
-                vert2.Bitangent = glm::vec3(0);
-                vert3.Tangent = glm::vec3(0);
-                vert3.Bitangent = glm::vec3(0);
                 calculateTangentBitangent(vert1, vert2, vert3);
 
                 /* Normalize tangent values */

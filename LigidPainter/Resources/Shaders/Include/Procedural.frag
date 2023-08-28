@@ -1402,21 +1402,6 @@ float dropletsNoise5(vec3 pos){
 
 float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, vec2 uv){
     
-    //pos = normalize(pos);
-    /*
-    vec2 uv;
-    if(pos.x > pos.z)
-        uv = vec2(pos.x + pos.y, pos.z );
-    else
-        uv = vec2(pos.x , pos.z + pos.y);
-    uv.x = maxValue((abs(Pos)));
-    uv.y = secondBiggestValue((abs(Pos))); 
-    
-    uv = abs(uv);
-    */
-    
-    //pos = normalize((pos));
-    
     pos *= scale;
     uv *= scale;
     

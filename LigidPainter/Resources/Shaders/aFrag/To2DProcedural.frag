@@ -28,15 +28,17 @@ vec3 iabs(vec3 v){
 }
 
 void main(){
-    // Calculate the bitangent (cross product of normal and tangent)
-    
-    // Map the transformed x and y components of the tangent space position to [0, 1]
-    vec2 uv;
-    if(iabs(Pos).x > iabs(Pos).z)
-        uv.x = iabs(Pos).x;
-    else
-        uv.x = iabs(Pos).z;
-    uv.y = Pos.y;  // Combining y and z
+
+    vec2 uv = Pos.xy;
+
+    uv = abs(uv);
+    if(Pos.z < 0.3 && Pos.z > -0.3){
+        if(Pos.z > 0.)
+            uv.xy += (0.3 - Pos.z) / 4.;
+        else if(Pos.z < 0.)
+            uv.xy += (0.3 + Pos.z) / 4.;
+        //uv.xy *= 0.;
+    }
 
     vec4 procedural = getProcedural(Pos, proceduralID, proceduralTexture, uv, proceduralScale, proceduralInverted);
     fragColor = vec4(procedural);
