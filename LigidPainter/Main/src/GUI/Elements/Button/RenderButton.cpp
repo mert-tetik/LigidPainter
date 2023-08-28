@@ -80,6 +80,10 @@ void Button::render(
         if(this->textureSelection){
             showTextureSelectionDialog(this->texture, 512);
         }
+        if(this->filterSelection){
+            showFilterSelectionDialog(this->filter, 512);
+            this->texture.ID = this->filter.displayingTxtr;
+        }
         if(this->colorSelection){
             unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
             const char* hex0Val = "#000000";

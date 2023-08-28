@@ -172,6 +172,7 @@ TextureEditorDialog::TextureEditorDialog(){
     };
 
     this->filterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), "Filter", Texture(), 1.f, false);
+    this->filterBtn.filterSelection = true;
     this->displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), "", this->displayingTexture, 1.f,true);
     
     this->saveButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save", Texture(), 1.f, false);
@@ -351,14 +352,14 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
 
     }
     else if(this->selectedSection == 5){
-        if(this->filter.shader.ID){
-            this->filter.shader.use();
-            this->filter.shader.setMat4("projection", projection);
-            this->filter.shader.setVec3("pos", pos);
-            this->filter.shader.setVec2("scale", scale);
+        if(this->filterBtn.filter.shader.ID){
+            this->filterBtn.filter.shader.use();
+            this->filterBtn.filter.shader.setMat4("projection", projection);
+            this->filterBtn.filter.shader.setVec3("pos", pos);
+            this->filterBtn.filter.shader.setVec2("scale", scale);
         
-            this->filter.shader.setInt("txtr", 0);
-            this->filter.shader.setVec2("txtrResolution", displayRes);
+            this->filterBtn.filter.shader.setInt("txtr", 0);
+            this->filterBtn.filter.shader.setVec2("txtrResolution", displayRes);
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
@@ -607,11 +608,9 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
         filterBtn.pos.x += displayerBtn.scale.x * 2.f;
         filterBtn.pos.y -= displayerBtn.scale.y * .5f;
         filterBtn.pos.y += 8.f;
-        filterBtn.texture = filter.displayingTxtr;
         filterBtn.render(timer,true);
 
         if(filterBtn.clicked){
-            showFilterSelectionDialog(this->filter, 512);
             anyInteraction = true;
         }        
 

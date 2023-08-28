@@ -108,7 +108,11 @@ public:
     //Thickness value of the button
     float outlineThickness;
 
+    /// @brief Displays texture selection dialog using @ref (*this).texture on button click
     bool textureSelection = false;
+    /// @brief Displays filter selection dialog using @ref (*this).filter on button click
+    bool filterSelection = false;
+    /// @brief Displays color selection dialog using @ref (*this).color on button click
     bool colorSelection = false;
     
     glm::vec3 outlineColor;
@@ -116,7 +120,8 @@ public:
     bool keepPressingState;
     float radius;  
     int animationStyle;
-    Texture texture; 
+    Texture texture;
+    Filter filter;
     glm::vec2 scale;  
     glm::vec3 pos;
     glm::vec3 resultPos;
