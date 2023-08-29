@@ -297,21 +297,39 @@ public:
 
 };
 
+/// @brief Image filter library element. 
 class Filter{
 public:
+    /// @brief Filtering shader
     Shader shader;
+    std::string title;
     unsigned int displayingTxtr;
 
-    std::string title;
-
+    /// @brief Default constructor
     Filter();
 
+    /// @brief Loads lgdfilter files and generates the displaying texture
     int load(std::string path);
+
     void generateDisplayingTexture();
 
     /// @brief Applies the @ref (*this).shader to the given texture
     void applyFilter(unsigned int txtr);
 
+};
+
+/// @brief Responsible of holding and managing multiple relevant textures and a library element. 
+class TexturePack{
+public:
+    std::string title;
+
+    std::vector<Texture> textures;
+
+    /// @brief Default constructor
+    TexturePack();
+
+    /// @brief Loads a folder that contains the textures
+    int load(std::string path);
 };
 
 class Project

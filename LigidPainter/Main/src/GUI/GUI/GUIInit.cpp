@@ -240,6 +240,7 @@ void UI::init
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Scripts"         , Texture(), 0.f,true)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Filters"         , Texture(), 0.f,true)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Layers"          , Texture(), 0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Texture Packs"   , Texture(), 0.f,true)),
                                     }
                                 )
                             },

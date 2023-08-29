@@ -119,6 +119,16 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
             filter.load(filterPath);
             Library::addFilter(filter);
         }
+   
+        //Load the texture packs
+        Library::clearTexturePacks();
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Texture Packs")){
+            std::string filterPath = entry.path().string();
+
+            TexturePack texturePack;
+            texturePack.load(filterPath);
+            Library::addTexturePack(texturePack);
+        }
         
         //Load the tdmodels
         Library::clearModels();

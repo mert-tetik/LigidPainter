@@ -121,6 +121,11 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         if(!std::filesystem::create_directory(scriptsFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << scriptsFolderPath << LGDLOG::end; 
         
+        //Texture Packs
+        std::string texturePacksFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Texture Packs";
+        if(!std::filesystem::create_directory(texturePacksFolderPath))
+            LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << texturePacksFolderPath << LGDLOG::end; 
+        
         //Filters
         std::string filtersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Filters";
         if(!std::filesystem::create_directory(filtersFolderPath))

@@ -26,6 +26,7 @@ std::vector<Material> __materials;
 std::vector<Brush> __brushes;
 std::vector<Model> __TDModels;
 std::vector<Filter> __filters;
+std::vector<TexturePack> __texturePacks;
 
 int __selectedElementIndex = 0;
 
@@ -101,6 +102,20 @@ void Library::uniqueNameControl(){
             __changed = true;
         }    
     }
+
+    for (int i = __texturePacks.size() - 1; i >= 0; i--)
+    {
+        std::vector<std::string> texturePacksStr;
+        for (size_t istr = 0; istr < __texturePacks.size(); istr++)
+        {
+            if(i != istr)
+                texturePacksStr.push_back(__texturePacks[istr].title);
+        }
+
+        if(UTIL::uniqueName(__texturePacks[i].title, texturePacksStr)){
+            __changed = true;
+        }    
+    }
 }
 
 void Library::addTexture(Texture texture){
@@ -141,6 +156,12 @@ void Library::addFilter(Filter filter){
     __changed = true;
     
     __filters.push_back(filter);
+}
+
+void Library::addTexturePack(TexturePack texturePack){
+    __changed = true;
+    
+    __texturePacks.push_back(texturePack);
 }
 
 void Library::eraseTexture   (int index){
@@ -228,6 +249,23 @@ void Library::eraseFilter     (int index){
     __filters.erase(__filters.begin() + index);
 }
 
+void Library::eraseTexturePack     (int index){
+    
+    if(index >= __texturePacks.size()){
+        LGDLOG::start<< "ERROR! : Couldn't erase the texture pack : Requested texture pack index is out of boundaries." << LGDLOG::end;
+        return;
+    }
+
+    for (size_t i = 0; i < __texturePacks[index].textures.size(); i++)
+    {
+        glDeleteTextures(1, &__texturePacks[index].textures[i].ID); 
+    }
+
+    __changed = true;
+    
+    __texturePacks.erase(__texturePacks.begin() + index);
+}
+
 void Library::clearTextures   (){
     __changed = true;
     
@@ -294,6 +332,20 @@ void Library::clearFilters     (){
     __filters.clear();
 }
 
+void Library::clearTexturePacks     (){
+    __changed = true;
+    
+    for (size_t i = 0; i < __texturePacks.size(); i++)
+    {
+        for (size_t j = 0; j < __texturePacks[i].textures.size(); j++)
+        {
+            glDeleteTextures(1, &__texturePacks[i].textures[j].ID);
+        }
+    }
+
+    __texturePacks.clear();
+}
+
 void Library::changeSelectedElementIndex(int newI){
     __changed = true;
     
@@ -354,6 +406,15 @@ Filter* Library::getFilter(int index){
     return &__filters[index];
 }
 
+TexturePack* Library::getTexturePack(int index){
+    if(index >= __texturePacks.size()){
+        LGDLOG::start << "ERROR! : Couldn't get the texture pack : Requested texture pack index is out of boundaries." << LGDLOG::end;
+        TexturePack a = TexturePack();
+        return &a;
+    }
+    return &__texturePacks[index];
+}
+
 int Library::getTextureArraySize(){
     return __textures.size();
 }
@@ -368,6 +429,9 @@ int Library::getModelArraySize(){
 }
 int Library::getFilterArraySize(){
     return __filters.size();
+}
+int Library::getTexturePackArraySize(){
+    return __texturePacks.size();
 }
 
 void Library::textureGiveUniqueId(int index){

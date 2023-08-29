@@ -217,5 +217,14 @@ void libraryPanelDisplayerInteraction(
                 Library::addFilter(filter);
             }
         }
+        if(Library::getSelectedElementIndex() == 5){ //Texture Packs
+            std::string test = showFileSystemObjectSelectionDialog("Select a texture pack folder.", "", 0, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
+
+            if(test.size()){
+                TexturePack texturePack;
+                texturePack.load(test);
+                Library::addTexturePack(texturePack);
+            }
+        }
     }
 }

@@ -54,7 +54,9 @@ namespace Library{
     /// @brief Pushes the element parameter back to the Models array 
     void addModel       (Model model);
     /// @brief Pushes the element parameter back to the Filters array 
-    void addFilter      (Filter model);
+    void addFilter      (Filter filter);
+    /// @brief Pushes the element parameter back to the Texture Packs array 
+    void addTexturePack (TexturePack texturePack);
     
     //----------- Get elements -----------
     /// @brief Returns the pointer of the element at the corresponding index from the Textures array 
@@ -67,6 +69,8 @@ namespace Library{
     Model* getModel       (int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Filters array
     Filter* getFilter      (int index);
+    /// @brief Returns the pointer of the element at the corresponding index from the Texture Packs array
+    TexturePack* getTexturePack(int index);
 
     //----------- Get element array sizes -----------
     /// @brief Returns the size of the Textures array
@@ -79,6 +83,8 @@ namespace Library{
     int getModelArraySize    ();
     /// @brief Returns the size of the Filters array
     int getFilterArraySize   ();
+    /// @brief Returns the size of the Texture Pack array
+    int getTexturePackArraySize();
 
     //----------- Erase elements -------------
     /// @brief Erases the element at the corresponding index from the Textures array 
@@ -90,7 +96,9 @@ namespace Library{
     /// @brief Erases the element at the corresponding index from the Models array 
     void eraseModel     (int index);
     /// @brief Erases the element at the corresponding index from the Filters array 
-    void eraseFilter     (int index);
+    void eraseFilter    (int index);
+    /// @brief Erases the element at the corresponding index from the Texture Pack array 
+    void eraseTexturePack(int index);
     
     //----------- Clear vectors -------------
     /// @brief Clears the Textures array 
@@ -103,6 +111,8 @@ namespace Library{
     void clearModels     ();
     /// @brief Clears the Filters array 
     void clearFilters    ();
+    /// @brief Clears the Filters array 
+    void clearTexturePacks();
 
     //----------- Vector Pointers -------------
     //TODO Remove this function
