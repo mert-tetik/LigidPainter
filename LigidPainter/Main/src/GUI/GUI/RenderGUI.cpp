@@ -43,6 +43,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 TextureSelectionDialog __texture_selection_dialog;
 FilterSelectionDialog __filter_selection_dialog;
+TexturePackEditorDialog __texture_Pack_Editor_Dialog;
 glm::mat4 __projection;
 Timer __timer; 
 bool __wasTextureSelectionDialogActive = false;
@@ -58,7 +59,12 @@ void showFilterSelectionDialog(Filter& filter, int displayingTextureRes){
     __filter_selection_dialog.show(__timer, __projection, filter, displayingTextureRes);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
+}
 
+void showTexturePackEditorDialog(TexturePack& texturePack){
+    __texture_Pack_Editor_Dialog.show(__timer, __projection, texturePack);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
 }
 
 bool wasTextureSelectionDialogActive(){
@@ -74,6 +80,7 @@ void UI::render(Timer &timer,Box box,
     
     __texture_selection_dialog = this->textureSelectionDialog;
     __filter_selection_dialog = this->filterSelectionDialog;
+    __texture_Pack_Editor_Dialog = this->texturePackEditorDialog;
     __projection = this->projection;
     __timer = timer; 
 

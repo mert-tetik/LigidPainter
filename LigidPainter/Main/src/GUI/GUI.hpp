@@ -91,6 +91,7 @@ public:
     SettingsDialog settingsDialog;
     DisplayerDialog displayerDialog;
     TextureEditorDialog textureEditorDialog;
+    TexturePackEditorDialog texturePackEditorDialog;
 
     float twoDPaintingSceneScroll = 2.f;
     glm::vec2 twoDPaintingScenePos = glm::vec2(0.f);

@@ -43,12 +43,10 @@ int TexturePack::load(std::string path){
             this->textures.push_back(txtr);
         }     
     }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 448993 " << ex.what() << LGDLOG::end;
     }
     
-
     this->title = UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher());
 
     return 1;

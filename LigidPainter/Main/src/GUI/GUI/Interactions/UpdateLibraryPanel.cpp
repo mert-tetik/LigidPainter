@@ -88,6 +88,13 @@ void updateLibraryPanelDisplayerElements(
                 libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getFilter(i)->title, Library::getFilter(i)->displayingTxtr, 0.f,false))) ;
             }
         }
+        else if(Library::getSelectedElementIndex() == 7){ //Texture packs
+            for (size_t i = 0; i < Library::getTexturePackArraySize(); i++)
+            {
+                //Push texture elements into the section
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getTexturePack(i)->title, Settings::appTextures().exportIcon, 0.f,false))) ;
+            }
+        }
 
         //Give the section
         libraryPanelDisplayer.sections.push_back(Section(Element(Button()),libSection.elements));

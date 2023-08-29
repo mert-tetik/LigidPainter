@@ -102,6 +102,11 @@ void libraryPanelDisplayerInteraction(
                 filterDisplayerDialog.filter = *Library::getFilter(i);
             } 
         }
+        if(Library::getSelectedElementIndex() == 7){ //Texture Packs selected
+            if(libraryPanelDisplayer.sections[0].elements[i].button.clicked){
+                showTexturePackEditorDialog(*Library::getTexturePack(i));
+            } 
+        }
     }
 
     if(!anyElementHover){
@@ -217,7 +222,7 @@ void libraryPanelDisplayerInteraction(
                 Library::addFilter(filter);
             }
         }
-        if(Library::getSelectedElementIndex() == 5){ //Texture Packs
+        if(Library::getSelectedElementIndex() == 7){ //Texture Packs
             std::string test = showFileSystemObjectSelectionDialog("Select a texture pack folder.", "", 0, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
 
             if(test.size()){

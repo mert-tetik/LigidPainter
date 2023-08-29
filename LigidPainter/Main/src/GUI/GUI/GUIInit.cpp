@@ -440,6 +440,7 @@ void UI::init
     logDialog                   = LogDialog(materialEditorDialog.appMaterialModifiers);
     displayerDialog             = DisplayerDialog();
     textureEditorDialog         = TextureEditorDialog();
+    texturePackEditorDialog     = TexturePackEditorDialog();
     materialEditorDialog        = MaterialEditorDialog();
     textureSelectionDialog      = TextureSelectionDialog();
     filterSelectionDialog       = FilterSelectionDialog();
