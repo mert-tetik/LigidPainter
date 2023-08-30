@@ -187,7 +187,7 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
 
         this->textureSelectingPanel.render(timer, true);
 
-        this->selectedTextureDisplayingPanel.render(timer, true);
+        this->selectedTextureDisplayingPanel.render(timer, false);
 
         if(this->sapSpritesPanelActive){
             this->sapSpritesPanel.render(timer, true);
