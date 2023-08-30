@@ -451,6 +451,9 @@ public:
    Panel selectedTextureDisplayingPanel;
    Panel textureSelectingPanel;
 
+   bool sapSpritesPanelActive = false;
+   Panel sapSpritesPanel;
+
    Texture displayingTexture;
    int selectedTextureIndex = 0; 
    bool clicked = false; 

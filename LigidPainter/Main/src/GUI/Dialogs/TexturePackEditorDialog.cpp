@@ -95,12 +95,38 @@ TexturePackEditorDialog::TexturePackEditorDialog(){
                                     Section(
                                         Button(),
                                         {
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Strength", Texture(), 65.f, 0.f, 1.f, 1.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false)
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Saperate Sprites", Texture(), 2.f, false)
                                         }
                                     )
                                 },
                                 glm::vec2(scale.x / 6.f, scale.y),
+                                glm::vec3(pos.x - scale.x + (scale.x / 6.f) , pos.y, pos.z),
+                                ColorPalette::mainColor,
+                                ColorPalette::thirdColor,
+                                true,
+                                true,
+                                false,
+                                true,
+                                true,
+                                1.f,
+                                1.f,
+                                {},
+                                20.f,
+                                true
+                            );
+    
+    this->sapSpritesPanel = Panel(
+                                {
+                                    Section(
+                                        Button(),
+                                        {
+                                            Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2.f),"Sprite Texture", Texture(), 1.f, false),
+                                            Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2.f),"Alpha Map", Texture(), 0.f, false),
+                                            Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2,2.f),"Generate", Texture(), 2.f, false)
+                                        }
+                                    )
+                                },
+                                glm::vec2(9.f),
                                 glm::vec3(pos.x - scale.x + (scale.x / 6.f) , pos.y, pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
@@ -163,6 +189,33 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
 
         this->selectedTextureDisplayingPanel.render(timer, true);
 
+        if(this->sapSpritesPanelActive){
+            this->sapSpritesPanel.render(timer, true);
+
+            if(this->sapSpritesPanel.sections[0].elements[0].button.clicked){
+                std::string test = showFileSystemObjectSelectionDialog("Select a sprite texture.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+
+                if(test.size()){
+                    this->sapSpritesPanel.sections[0].elements[0].button.texture.load(test.c_str());
+                }
+            }
+            else if(this->sapSpritesPanel.sections[0].elements[1].button.clicked){
+                std::string test = showFileSystemObjectSelectionDialog("Select an alpha texture.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+
+                if(test.size()){
+                    this->sapSpritesPanel.sections[0].elements[1].button.texture.load(test.c_str());
+                }
+            }
+            else if(this->sapSpritesPanel.sections[0].elements[2].button.clicked){
+                receivedTexturePack.saperateSprites(this->sapSpritesPanel.sections[0].elements[0].button.texture);
+                this->sapSpritesPanelActive = false;
+            }
+            else{
+                if(!this->sapSpritesPanel.hover && *Mouse::LClick())
+                    this->sapSpritesPanelActive = false;
+            }
+        }
+
         dialogControl.updateEnd(timer,0.15f);
 
         ShaderSystem::buttonShader().use();
@@ -177,15 +230,14 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
         }
 
         // Pressed to the select button
-        if(this->subPanel.sections[0].elements[1].button.clicked){
+        if(this->subPanel.sections[0].elements[0].button.clicked){
+            
+            this->sapSpritesPanelActive = true;
+            sapSpritesPanel.pos = this->subPanel.pos;
+            sapSpritesPanel.pos.x += this->subPanel.scale.x + sapSpritesPanel.scale.x;
+            sapSpritesPanel.pos.y -= this->subPanel.scale.y - sapSpritesPanel.scale.y;
+            sapSpritesPanel.pos.y += this->subPanel.sections[0].elements[0].button.panelOffset;
 
-            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
-
-            if(test.size()){
-                Texture uploadedTexture;
-                uploadedTexture.load(test.c_str());
-                receivedTexturePack.saperateSprites(uploadedTexture);
-            }
         }
 
         //End the dialog
