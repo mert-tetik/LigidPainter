@@ -179,10 +179,13 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
         // Pressed to the select button
         if(this->subPanel.sections[0].elements[1].button.clicked){
 
-            //if(this->selectedTextureIndex < Library::getFilterArraySize())
-            //    receivedFilter = *Library::getFilter(this->selectedTextureIndex);
+            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
-            dialogControl.unActivate();
+            if(test.size()){
+                Texture uploadedTexture;
+                uploadedTexture.load(test.c_str());
+                receivedTexturePack.saperateSprites(uploadedTexture);
+            }
         }
 
         //End the dialog

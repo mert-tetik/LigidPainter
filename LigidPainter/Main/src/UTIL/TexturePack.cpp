@@ -18,6 +18,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include <string>
 #include <fstream>
@@ -52,83 +53,116 @@ int TexturePack::load(std::string path){
     return 1;
 }
 
-static struct Region{
+struct Region{
     glm::ivec2 startPos;
     glm::ivec2 endPos;
 };
 
-static int findMostRightPhase1(Texture txtr, char*& pixels, glm::ivec2 foundingPos, float maxY){
-    glm::ivec2 curPos = foundingPos;
+static bool checkSqr(Texture txtr, char*& pixels, glm::ivec2& foundingPos, glm::ivec2 dest, bool& restrictX, bool& restrictY){
     
-    bool fullAlphaZeroLineDetected = false;
+    if(dest.x >= txtr.getResolution().x)
+        return false;
 
-    while (!fullAlphaZeroLineDetected)
+    if(dest.y >= txtr.getResolution().y)
+        return false;
+    
+    float xPosC = foundingPos.x;
+    int pixelIndex = 0; // Each pixel has 4 components (R, G, B, A)
+    char pxAlpha = 6;
+    
+    int ind = xPosC;
+
+    while (pxAlpha > 5)
     {
-        bool opaquePixelDetected = false;
-        for (size_t y = foundingPos.y; y < maxY; y++)
-        {
-            int pixelIndex = (y * txtr.getResolution().x + curPos.x) * 4; // Each pixel has 4 components (R, G, B, A)
+        xPosC--;
         
-            char pxAlpha = pixels[pixelIndex + 3];
+        if(pixelIndex < 0)
+            break;
 
-            if(pxAlpha > 5)
-                opaquePixelDetected = true; 
-        }
+        pixelIndex = (dest.y * txtr.getResolution().x + xPosC) * 4; // Each pixel has 4 components (R, G, B, A)
 
-        if(!opaquePixelDetected)
-            fullAlphaZeroLineDetected = true;
+        pxAlpha = pixels[pixelIndex + 3];
 
-        curPos.x++;
+        if(pxAlpha > 5)
+            ind--;
     }
 
-    return curPos.x;
-}
-
-static int findMostBottomPhase1(Texture txtr, char*& pixels, glm::ivec2 foundingPos, float maxX){
-    glm::ivec2 curPos = foundingPos;
-    
-    bool fullAlphaZeroLineDetected = false;
-
-    while (!fullAlphaZeroLineDetected)
-    {
-        bool opaquePixelDetected = false;
-        for (size_t x = foundingPos.x; x < maxX; x++)
-        {
-            int pixelIndex = (x * txtr.getResolution().y + curPos.y) * 4; // Each pixel has 4 components (R, G, B, A)
-        
-            char pxAlpha = pixels[pixelIndex + 3];
-
-            if(pxAlpha > 5)
-                opaquePixelDetected = true; 
-        }
-
-        if(!opaquePixelDetected)
-            fullAlphaZeroLineDetected = true;
-
-        curPos.y++;
+    if(foundingPos.x != ind){
+        restrictX = false;
+        restrictY = false;
+        foundingPos.x = ind;
+        dest = foundingPos;
     }
 
-    return curPos.y;
+
+    bool opaquePixelDetectedX = false;
+    bool a = false;
+    for (size_t x = foundingPos.x; x < dest.x; x++)
+    {
+        a = true;
+
+        int pixelIndex = (dest.y * txtr.getResolution().x + x) * 4; // Each pixel has 4 components (R, G, B, A)
+    
+        char pxAlpha = pixels[pixelIndex + 3];
+
+        if(pxAlpha > 5)
+            opaquePixelDetectedX = true; 
+    }
+
+    
+
+    if(!opaquePixelDetectedX && a)
+        restrictY = true;
+
+    bool opaquePixelDetectedY = false;
+
+    for (size_t y = foundingPos.y; y < dest.y; y++)
+    {
+        a = true;
+        
+        int pixelIndex = (y * txtr.getResolution().y + dest.x) * 4; // Each pixel has 4 components (R, G, B, A)
+    
+        char pxAlpha = pixels[pixelIndex + 3];
+
+        if(pxAlpha > 5){
+            opaquePixelDetectedY = true; 
+        }
+    }
+
+    if(!opaquePixelDetectedY && a)
+        restrictX = true;
+
+    if((opaquePixelDetectedX && !restrictY) || !a)
+        return true;
+    
+    if((opaquePixelDetectedY && !restrictX) || !a)
+        return true;
+
+    return false;
 }
 
 static Region processRegion(Texture txtr, char*& pixels, glm::ivec2 foundingPos){
     
     Region region;
-    
-    glm::ivec2 phase1DestPos = glm::ivec2(0);
 
-    phase1DestPos.x = findMostRightPhase1(txtr, pixels, foundingPos, txtr.getResolution().y);
-    
-    phase1DestPos.y = findMostBottomPhase1(txtr, pixels, foundingPos, phase1DestPos.x);
-    
-    glm::ivec2 phase2DestPos = glm::ivec2(0);
+    int i = 0;
 
-    phase2DestPos.x = findMostRightPhase1(txtr, pixels, foundingPos, phase1DestPos.y);
-    
-    phase2DestPos.y = findMostBottomPhase1(txtr, pixels, foundingPos, phase2DestPos.x);
+    glm::ivec2 destPos = foundingPos;
 
+    bool restrictX = false;
+    bool restrictY = false;
+
+    while (checkSqr(txtr, pixels, foundingPos, destPos, restrictX, restrictY))
+    {
+        if(!restrictX)
+            destPos.x++;
+        if(!restrictY)
+            destPos.y++;
+        i++;
+    }
+    
     region.startPos = foundingPos;
-    region.endPos = phase2DestPos;
+    region.endPos = destPos;
 
     return region;
 }
@@ -137,8 +171,8 @@ static bool isPixelIndexIsInAnyRegion(std::vector<Region> regions, glm::ivec2 px
     for (size_t i = 0; i < regions.size(); i++)
     {
         Region reg = regions[i];
-        if(pxPos.x > reg.startPos.x && pxPos.x < reg.endPos.x){
-            if(pxPos.y > reg.startPos.y && pxPos.y < reg.endPos.y){
+        if(pxPos.x >= reg.startPos.x && pxPos.x <= reg.endPos.x){
+            if(pxPos.y >= reg.startPos.y && pxPos.y <= reg.endPos.y){
                 return true;
             }
         }
@@ -166,7 +200,6 @@ void TexturePack::saperateSprites(Texture txtr){
             bool pixelIndexIsInAnyRegion = isPixelIndexIsInAnyRegion(regions, glm::ivec2(x,y));
 
             // If opaque pixel found
-            // TODO Check if already processed
             if(pxAlpha > 5 && !pixelIndexIsInAnyRegion){
                 regions.push_back(processRegion(txtr, pixels, glm::ivec2(x,y)));
             }
@@ -181,16 +214,16 @@ void TexturePack::saperateSprites(Texture txtr){
 
     for (size_t i = 0; i < regions.size(); i++)
     {
-        int regionW = regions[i].startPos.x - regions[i].endPos.x;
-        int regionH = regions[i].startPos.y - regions[i].endPos.y;
+        int regionW = regions[i].endPos.x - regions[i].startPos.x;
+        int regionH = regions[i].endPos.y - regions[i].startPos.y;
 
         char* regionPxs = new char[regionW * regionH * 4];
 
         glReadPixels(
                             regions[i].startPos.x, 
                             regions[i].startPos.y, 
-                            regions[i].startPos.x - regions[i].endPos.x, 
-                            regions[i].startPos.y - regions[i].endPos.y, 
+                            regionW, 
+                            regionH, 
                             GL_RGBA, 
                             GL_BYTE,
                             regionPxs
