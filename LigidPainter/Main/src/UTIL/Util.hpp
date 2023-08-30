@@ -331,7 +331,7 @@ public:
     /// @brief Loads a folder that contains the textures
     int load(std::string path);
 
-    void saperateSprites(Texture txtr);
+    void saperateSprites(Texture txtr, Texture alphaMap);
 };
 
 class Project

@@ -207,7 +207,7 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
                 }
             }
             else if(this->sapSpritesPanel.sections[0].elements[2].button.clicked){
-                receivedTexturePack.saperateSprites(this->sapSpritesPanel.sections[0].elements[0].button.texture);
+                receivedTexturePack.saperateSprites(this->sapSpritesPanel.sections[0].elements[0].button.texture, this->sapSpritesPanel.sections[0].elements[1].button.texture);
                 this->sapSpritesPanelActive = false;
             }
             else{
