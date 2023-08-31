@@ -215,8 +215,10 @@ void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
             int alphaPixelIndex = ((y * ratio.y) * alphaMap.getResolution().x + (x * ratio.x)) * 4; // Each pixel has 4 components (R, G, B, A)
             
             char pxAlpha = pixels[pixelIndex + 3]; 
-            if(alphaMap.ID)
+            if(alphaMap.ID){
                 pxAlpha = opacityPixels[alphaPixelIndex];
+                pixels[pixelIndex + 3] = pxAlpha;
+            }
 
             bool pixelIndexIsInAnyRegion = isPixelIndexIsInAnyRegion(regions, glm::ivec2(x,y));
 
@@ -225,6 +227,12 @@ void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
                 regions.push_back(processRegion(txtr, alphaMap, pixels, opacityPixels, glm::ivec2(x,y)));
             }
         }
+    }
+
+    if(alphaMap.ID){
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, txtr.ID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, txtr.getResolution().x, txtr.getResolution().y, 0, GL_RGBA, GL_BYTE, pixels);
     }
 
     unsigned int FBO;
