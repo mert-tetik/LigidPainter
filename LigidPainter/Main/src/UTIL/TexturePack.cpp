@@ -80,11 +80,13 @@ static bool checkSqr(Texture txtr, Texture alphaMap, char*& pixels, char*& opaci
             break;
 
         pixelIndex = (dest.y * txtr.getResolution().x + xPosC) * 4; // Each pixel has 4 components (R, G, B, A)
+        glm::ivec2 ratio = alphaMap.getResolution() / txtr.getResolution();
+        int alphaPixelIndex = ((dest.y * ratio.y) * alphaMap.getResolution().x + (xPosC * ratio.x)) * 4; // Each pixel has 4 components (R, G, B, A)
 
         pxAlpha = pixels[pixelIndex + 3];
 
         if(alphaMap.ID)
-            pxAlpha = opacityPixels[pixelIndex];
+            pxAlpha = opacityPixels[alphaPixelIndex];
 
         if(pxAlpha > 5)
             ind--;
@@ -105,10 +107,12 @@ static bool checkSqr(Texture txtr, Texture alphaMap, char*& pixels, char*& opaci
         a = true;
 
         int pixelIndex = (dest.y * txtr.getResolution().x + x) * 4; // Each pixel has 4 components (R, G, B, A)
+        glm::ivec2 ratio = alphaMap.getResolution() / txtr.getResolution();
+        int alphaPixelIndex = ((dest.y * ratio.y) * alphaMap.getResolution().x + (x * ratio.x)) * 4; // Each pixel has 4 components (R, G, B, A)
     
         char pxAlpha = pixels[pixelIndex + 3];
         if(alphaMap.ID)
-            pxAlpha = opacityPixels[pixelIndex];
+            pxAlpha = opacityPixels[alphaPixelIndex];
 
         if(pxAlpha > 5)
             opaquePixelDetectedX = true; 
@@ -126,10 +130,12 @@ static bool checkSqr(Texture txtr, Texture alphaMap, char*& pixels, char*& opaci
         a = true;
         
         int pixelIndex = (y * txtr.getResolution().y + dest.x) * 4; // Each pixel has 4 components (R, G, B, A)
+        glm::ivec2 ratio = alphaMap.getResolution() / txtr.getResolution();
+        int alphaPixelIndex = ((y * ratio.y) * alphaMap.getResolution().x + (dest.x * ratio.x)) * 4; // Each pixel has 4 components (R, G, B, A)
     
         char pxAlpha = pixels[pixelIndex + 3];
         if(alphaMap.ID)
-            pxAlpha = opacityPixels[pixelIndex];
+            pxAlpha = opacityPixels[alphaPixelIndex];
 
         if(pxAlpha > 5){
             opaquePixelDetectedY = true; 
@@ -189,9 +195,9 @@ static bool isPixelIndexIsInAnyRegion(std::vector<Region> regions, glm::ivec2 px
 }
 
 void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
-    //TODO : Alpha map stretch
+   
     //TODO : Alpha map change alpha
-    
+
     char* pixels = new char[txtr.getResolution().x * txtr.getResolution().y * 4];
     char* opacityPixels = new char[alphaMap.getResolution().x * alphaMap.getResolution().y * 4];
     
@@ -205,10 +211,12 @@ void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
         for (size_t x = 0; x < txtr.getResolution().x; x++)
         {
             int pixelIndex = (y * txtr.getResolution().x + x) * 4; // Each pixel has 4 components (R, G, B, A)
+            glm::ivec2 ratio = alphaMap.getResolution() / txtr.getResolution();
+            int alphaPixelIndex = ((y * ratio.y) * alphaMap.getResolution().x + (x * ratio.x)) * 4; // Each pixel has 4 components (R, G, B, A)
             
             char pxAlpha = pixels[pixelIndex + 3]; 
             if(alphaMap.ID)
-                pxAlpha = opacityPixels[pixelIndex];
+                pxAlpha = opacityPixels[alphaPixelIndex];
 
             bool pixelIndexIsInAnyRegion = isPixelIndexIsInAnyRegion(regions, glm::ivec2(x,y));
 
