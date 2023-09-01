@@ -33,6 +33,7 @@ TexturePack::TexturePack(){
 
 }
 
+
 int TexturePack::load(std::string path){
 
     try
@@ -51,6 +52,13 @@ int TexturePack::load(std::string path){
     this->title = UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher());
 
     return 1;
+}
+
+static char* accessCharArray(char*& array, int arraySize, int i){
+    if(i < arraySize)
+        return &array[i];
+    
+    return &array[0];
 }
 
 struct Region{
@@ -196,8 +204,6 @@ static bool isPixelIndexIsInAnyRegion(std::vector<Region> regions, glm::ivec2 px
 
 void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
    
-    //TODO : Alpha map change alpha
-
     char* pixels = new char[txtr.getResolution().x * txtr.getResolution().y * 4];
     char* opacityPixels = new char[alphaMap.getResolution().x * alphaMap.getResolution().y * 4];
     
@@ -225,7 +231,8 @@ void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
             // If opaque pixel found
             if(pxAlpha > 5 && !pixelIndexIsInAnyRegion){
                 regions.push_back(processRegion(txtr, alphaMap, pixels, opacityPixels, glm::ivec2(x,y)));
-            }
+            };
+
         }
     }
 
