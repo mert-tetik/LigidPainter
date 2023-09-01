@@ -124,7 +124,7 @@ void libraryPanelDisplayerInteraction(
         if(Library::getSelectedElementIndex() == 1){ //Materials
             //Add new material to the library & not the panel
             //Will be displayed right after library panel is updated
-            Library::addMaterial(Material("material", 0));
+            Library::addMaterial(Material("NewMaterial", 0));
         }
         if(Library::getSelectedElementIndex() == 2){ //Brushes
             Library::addBrush(
@@ -138,7 +138,7 @@ void libraryPanelDisplayerInteraction(
                                                 painter.brushProperties.alphaJitter,
                                                 painter.brushProperties.individualTexture,
                                                 painter.brushProperties.sinWavePattern,
-                                                "brush_1",
+                                                "NewBrush",
                                                 painter.brushProperties.brushTexture
                                             )
                                     );
@@ -157,7 +157,11 @@ void libraryPanelDisplayerInteraction(
                 else
                     LGDLOG::start<< "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << LGDLOG::end;
             }
-            
+        }
+        if(Library::getSelectedElementIndex() == 8){ //Texture Packs
+            TexturePack texturePack;
+            texturePack.title = "NewTexturePack";
+            Library::addTexturePack(texturePack);
         }
     }
     if(libraryPanelDisplayer.barButtons[1].clicked){ //Import button

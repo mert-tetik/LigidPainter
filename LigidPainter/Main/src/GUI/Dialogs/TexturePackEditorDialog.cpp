@@ -99,7 +99,7 @@ TexturePackEditorDialog::TexturePackEditorDialog(){
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Add Texture From The Computer", Texture(), 2.f, false),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Add Texture From The Library", Texture(), 2.f, false),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Add Folder From The Computer", Texture(), 2.f, false),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Delete The Selected Texture", Texture(), 2.f, false),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Delete The Selected Texture", Texture(), 2.f, false)
                                         }
                                     )
                                 },
