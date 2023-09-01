@@ -209,10 +209,23 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
             else if(this->sapSpritesPanel.sections[0].elements[2].button.clicked){
                 receivedTexturePack.saperateSprites(this->sapSpritesPanel.sections[0].elements[0].button.texture, this->sapSpritesPanel.sections[0].elements[1].button.texture);
                 this->sapSpritesPanelActive = false;
+                glDeleteTextures(1, &this->sapSpritesPanel.sections[0].elements[0].button.texture.ID);
+                this->sapSpritesPanel.sections[0].elements[0].button.texture.ID = 0;
+                this->sapSpritesPanel.sections[0].elements[0].button.texture.title = "";
+                glDeleteTextures(1, &this->sapSpritesPanel.sections[0].elements[1].button.texture.ID);
+                this->sapSpritesPanel.sections[0].elements[0].button.texture.ID = 0;
+                this->sapSpritesPanel.sections[0].elements[0].button.texture.title = "";
             }
             else{
-                if(!this->sapSpritesPanel.hover && *Mouse::LClick())
+                if(!this->sapSpritesPanel.hover && *Mouse::LClick()){
                     this->sapSpritesPanelActive = false;
+                    glDeleteTextures(1, &this->sapSpritesPanel.sections[0].elements[0].button.texture.ID);
+                    this->sapSpritesPanel.sections[0].elements[0].button.texture.ID = 0;
+                    this->sapSpritesPanel.sections[0].elements[0].button.texture.title = "";
+                    glDeleteTextures(1, &this->sapSpritesPanel.sections[0].elements[1].button.texture.ID);
+                    this->sapSpritesPanel.sections[0].elements[0].button.texture.ID = 0;
+                    this->sapSpritesPanel.sections[0].elements[0].button.texture.title = "";
+                }
             }
         }
 
