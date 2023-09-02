@@ -317,7 +317,7 @@ void TexturePack::apply(Texture txtr){
                 glBindTexture(GL_TEXTURE_2D, sprite.ID);
                 ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, (float)range, 0.f, (float)range));
                 ShaderSystem::buttonShader().setVec3("pos", glm::vec3((float)x, (float)y, 0.1));
-                ShaderSystem::buttonShader().setVec2("scale", glm::vec2((float)intHash));
+                ShaderSystem::buttonShader().setVec2("scale", glm::vec2((float)intHash / 20.f));
                 ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
                 ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
                 ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
@@ -329,4 +329,9 @@ void TexturePack::apply(Texture txtr){
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDeleteFramebuffers(1, &FBO);
+
+    //Set the OpenGL viewport to default
+    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+    ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, (float)getContext()->windowScale.x, 0.f, (float)getContext()->windowScale.y));
+
 }
