@@ -109,6 +109,7 @@ void NewTextureDialog::render(Timer timer){
             Library::addTexture(txtr);
         }
     }
+    
     if(panel.sections[0].elements[3].button.hover && *Mouse::LClick() && !panel.sections[0].elements[2].comboBox.pressed){
         
         //Create the texture class

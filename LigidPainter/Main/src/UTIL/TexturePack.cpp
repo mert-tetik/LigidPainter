@@ -49,7 +49,8 @@ int TexturePack::load(std::string path){
         LGDLOG::start << "ERROR : Filesystem : Location ID 448993 " << ex.what() << LGDLOG::end;
     }
     
-    this->title = UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher());
+    if(this->title == "")
+        this->title = UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher());
 
     return 1;
 }

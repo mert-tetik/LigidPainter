@@ -177,7 +177,6 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
         //Render the panel
         this->bgPanel.render(timer, true);
 
-        //Render the texture mode selection panel
         this->subPanel.render(timer, true);
 
         selectedTextureDisplayingPanel.scale.x = this->scale.x - subPanel.scale.x;
@@ -237,7 +236,6 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
 
         ShaderSystem::buttonShader().use();
 
-
         //If pressed any of the texture select the texture
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
         {
@@ -248,19 +246,62 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
 
         // Pressed to the select button
         if(this->subPanel.sections[0].elements[0].button.clicked){
-            
             this->sapSpritesPanelActive = true;
             sapSpritesPanel.pos = this->subPanel.pos;
             sapSpritesPanel.pos.x += this->subPanel.scale.x + sapSpritesPanel.scale.x;
             sapSpritesPanel.pos.y -= this->subPanel.scale.y - sapSpritesPanel.scale.y;
             sapSpritesPanel.pos.y += this->subPanel.sections[0].elements[0].button.panelOffset;
+        }
+        
+        // Pressed to the add texture from the computer button
+        if(this->subPanel.sections[0].elements[1].button.clicked){
+            std::string test = showFileSystemObjectSelectionDialog("Select a texture.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            
+            if(test.size()){
+                Texture txtr;
+                txtr.load(test.c_str());
+                receivedTexturePack.textures.push_back(txtr);
+            }
+        }
 
+        // Pressed to the add texture from the library button
+        if(this->subPanel.sections[0].elements[2].button.clicked){
+        
+            //Create the texture class
+            Texture txtr;
+            txtr.title = "TextureSelectionDialogRes";
+
+            showTextureSelectionDialog(txtr, 512);
+
+            //Send the created texture to the library
+            if(txtr.ID){
+                receivedTexturePack.textures.push_back(txtr);
+            }
+        }
+
+        // Pressed to the add folder from the computer button
+        if(this->subPanel.sections[0].elements[3].button.clicked){
+            std::string test = showFileSystemObjectSelectionDialog("Select a folder.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
+            
+            if(test.size()){
+                receivedTexturePack.load(test);
+            }
+        }
+        
+        if(this->subPanel.sections[0].elements[4].button.clicked){
+            if(this->selectedTextureIndex < receivedTexturePack.textures.size()){
+                receivedTexturePack.textures.erase(receivedTexturePack.textures.begin() + this->selectedTextureIndex);
+                if(this->selectedTextureIndex != 0)
+                    this->selectedTextureIndex--;
+            }
         }
 
         //End the dialog
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && *Mouse::LClick())){
-            dialogControl.unActivate();
-            selectedTextureIndex = 0;
+            if(!this->subPanel.sections[0].elements[2].button.clicked){
+                dialogControl.unActivate();
+                selectedTextureIndex = 0;
+            }
         }
 
         if(!this->dialogControl.isActive())

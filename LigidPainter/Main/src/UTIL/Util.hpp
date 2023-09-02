@@ -321,7 +321,7 @@ public:
 /// @brief Responsible of holding and managing multiple relevant textures and a library element. 
 class TexturePack{
 public:
-    std::string title;
+    std::string title = "";
 
     std::vector<Texture> textures;
 
