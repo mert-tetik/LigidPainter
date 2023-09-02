@@ -274,3 +274,59 @@ void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
     glDeleteFramebuffers(1, &FBO);
     delete[] pixels;
 }
+
+static float hash(glm::vec2 uv){
+    // This is a simple hash function that takes a 2D vector as input and returns a pseudo-random float in the range [0, 1].
+    // You can replace 17 and 19 with any prime numbers you like.
+    glm::vec2 seed = glm::vec2(17.0, 19.0);
+    float h = glm::dot(seed, uv);
+    return glm::fract(sin(h) * 43758.5453123);
+}
+
+void TexturePack::apply(Texture txtr){
+    
+    glm::ivec2 txtrRes = txtr.getResolution();
+    
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.ID, 0);
+    glViewport(0, 0, txtrRes.x, txtrRes.y);
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    const int range = 100;
+
+    const float spawnChance = 0.01;
+
+    ShaderSystem::buttonShader().use();
+
+    for (size_t x = 0; x < range; x++)
+    {
+        for (size_t y = 0; y < range; y++){
+            float rand = hash(glm::vec2((float)x / (float)range, (float)y / (float)range));
+            if(rand < spawnChance){
+                ShaderSystem::buttonShader().use();
+                
+                int intHash = ((float)rand * (float)range) / spawnChance;
+
+                Texture& sprite = this->textures[intHash]; 
+
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, sprite.ID);
+                ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, (float)range, 0.f, (float)range));
+                ShaderSystem::buttonShader().setVec3("pos", glm::vec3((float)x, (float)y, 0.1));
+                ShaderSystem::buttonShader().setVec2("scale", glm::vec2((float)intHash));
+                ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
+                ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
+                ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+                ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
+            }
+        }
+    }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &FBO);
+}
