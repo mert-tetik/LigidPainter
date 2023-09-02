@@ -176,6 +176,7 @@ namespace Settings{
         Texture blurIcon;
         Texture distortionIcon;
         Texture normalMapIcon;
+        Texture packageIcon;
         
         //--Textures
         Texture greetingDialogImage;  
