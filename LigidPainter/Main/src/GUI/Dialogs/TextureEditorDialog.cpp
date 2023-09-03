@@ -175,9 +175,11 @@ TextureEditorDialog::TextureEditorDialog(){
     this->filterBtn.filterSelection = true;
     this->displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), "", this->displayingTexture, 1.f,true);
     
+    this->maskTextureButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Mask Texture", Texture(), 1.f, false);
     this->saveButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save", Texture(), 1.f, false);
     this->saveAsButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save As", Texture(), 1.f, false);
 
+    this->maskTextureButton.textureSelection = true;
     distortionElements[8].button.textureSelection = true;
 }
 
@@ -368,10 +370,33 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         }
     }
 
+    ShaderSystem::grayScaleIDMaskingShader().use();
+    ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", projection);
+    ShaderSystem::grayScaleIDMaskingShader().setVec3("pos", pos);
+    ShaderSystem::grayScaleIDMaskingShader().setVec2("scale", scale);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
+    ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f);
+    
+    Texture destTxtrObj = destTxtr;
+    Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, this->maskTextureButton.texture.ID);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, copiedDestTxtr.ID);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
     //Finish
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     ShaderSystem::buttonShader().use();
     glDeleteFramebuffers(1, &captureFBO);
+    glDeleteTextures(1, &copiedDestTxtr.ID);
     glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
 
 
@@ -616,12 +641,18 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
 
     }
 
+    this->maskTextureButton.pos = displayerBtn.pos;
+    this->maskTextureButton.pos.y += displayerBtn.scale.y * 1.2;
+    this->maskTextureButton.render(timer, true);
     this->saveButton.pos = displayerBtn.pos;
-    this->saveButton.pos.y += displayerBtn.scale.y * 1.2;
+    this->saveButton.pos.y += displayerBtn.scale.y * 1.2 + maskTextureButton.scale.y * 3.f;
     this->saveButton.render(timer, true);
-    this->saveAsButton.pos = displayerBtn.pos;
-    this->saveAsButton.pos.y += displayerBtn.scale.y * 1.2 + saveButton.scale.y * 4.f;
+    this->saveAsButton.pos = saveButton.pos;
+    this->saveAsButton.pos.y += saveButton.scale.y * 3.f;
     this->saveAsButton.render(timer, true);
+
+    if(this->maskTextureButton.clicked)
+       anyInteraction = true; 
 
     if(anyInteraction)
         this->updateDisplayingTexture(receivedTexture, this->displayingTexture);

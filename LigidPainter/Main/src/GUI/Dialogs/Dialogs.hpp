@@ -200,6 +200,7 @@ class TextureEditorDialog
 
    Button saveButton;
    Button saveAsButton;
+   Button maskTextureButton;
    
    Button filterBtn;
    Filter filter;
