@@ -173,6 +173,8 @@ TextureEditorDialog::TextureEditorDialog(){
 
     this->filterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), "Filter", Texture(), 1.f, false);
     this->filterBtn.filterSelection = true;
+    this->textureBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), "texture", Texture(), 1.f, false);
+    this->textureBtn.textureSelection = true;
     this->displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), "", this->displayingTexture, 1.f,true);
     
     this->maskTextureButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Mask Texture", Texture(), 1.f, false);
@@ -388,7 +390,11 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, copiedDestTxtr.ID);
+    if(this->selectedSection == 6){
+        glBindTexture(GL_TEXTURE_2D, this->textureBtn.texture.ID);
+    }
+    else
+        glBindTexture(GL_TEXTURE_2D, copiedDestTxtr.ID);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
@@ -638,7 +644,19 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
         if(filterBtn.clicked){
             anyInteraction = true;
         }        
+    }
+    
+    if(this->selectedSection == 6){
 
+        textureBtn.pos = displayerBtn.pos;
+        textureBtn.pos.x += displayerBtn.scale.x * 2.f;
+        textureBtn.pos.y -= displayerBtn.scale.y * .5f;
+        textureBtn.pos.y += 8.f;
+        textureBtn.render(timer,true);
+
+        if(textureBtn.clicked){
+            anyInteraction = true;
+        }        
     }
 
     this->maskTextureButton.pos = displayerBtn.pos;

@@ -203,6 +203,7 @@ class TextureEditorDialog
    Button maskTextureButton;
    
    Button filterBtn;
+   Button textureBtn;
    Filter filter;
 
    Button displayerBtn;
