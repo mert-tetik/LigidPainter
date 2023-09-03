@@ -17,7 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define UTILS_HPP
 
 //OpenGL & window 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 //OpenGL Math Library GLM
@@ -294,7 +294,6 @@ public:
     void removeSeams(Mesh& mesh, glm::ivec2 textureResolution);
     unsigned int generateProceduralTexture(Mesh &mesh, int textureRes);
     void generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale);
-
 };
 
 /// @brief Image filter library element. 
@@ -321,8 +320,10 @@ public:
 /// @brief Responsible of holding and managing multiple relevant textures and a library element. 
 class TexturePack{
 public:
+    /// @brief Title of the texture pack. For instance : NewTexturePack
     std::string title = "";
 
+    /// @brief The textures inside of the texture pack
     std::vector<Texture> textures;
 
     /// @brief Default constructor
@@ -334,7 +335,12 @@ public:
     /// @brief Applies the textures to the given texture
     void apply(Texture txtr);
 
+    /// @brief Locates and saperates the sprites in the given param txtr.
+    ///        Uses the alpha map's red channel if the param alphaMap's OpenGL texture buffer object ID is not set to 0 
     void saperateSprites(Texture txtr, Texture alphaMap);
+
+    /// @brief Generates a single sprite texture using the this->textures
+    Texture generateSpriteTexture();
 };
 
 class Project

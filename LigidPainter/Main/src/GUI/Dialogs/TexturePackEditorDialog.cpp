@@ -99,7 +99,8 @@ TexturePackEditorDialog::TexturePackEditorDialog(){
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Add Texture From The Computer", Texture(), 2.f, false),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Add Texture From The Library", Texture(), 2.f, false),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Add Folder From The Computer", Texture(), 2.f, false),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Delete The Selected Texture", Texture(), 2.f, false)
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Delete The Selected Texture", Texture(), 2.f, false),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Generate Sprite Texture", Texture(), 2.f, false)
                                         }
                                     )
                                 },
@@ -294,6 +295,10 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
                 if(this->selectedTextureIndex != 0)
                     this->selectedTextureIndex--;
             }
+        }
+
+        if(this->subPanel.sections[0].elements[5].button.clicked){
+            Library::addTexture(receivedTexturePack.generateSpriteTexture());
         }
 
         //End the dialog

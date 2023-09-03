@@ -65,6 +65,8 @@ static char* accessCharArray(char*& array, int arraySize, int i){
 struct Region{
     glm::ivec2 startPos;
     glm::ivec2 endPos;
+
+    Texture sprite;
 };
 
 static bool checkSqr(Texture txtr, Texture alphaMap, char*& pixels, char*& opacityPixels, glm::ivec2& foundingPos, glm::ivec2 dest, bool& restrictX, bool& restrictY){
@@ -283,6 +285,118 @@ static float hash(glm::vec2 uv){
     return glm::fract(sin(h) * 43758.5453123);
 }
 
+static bool doRegionsCollide(const Region& region1, const Region& region2) {
+    if(region1.startPos.x >= region2.startPos.x && region1.startPos.x <= region2.endPos.x){
+        if(region1.startPos.y >= region2.startPos.y && region1.startPos.y <= region2.endPos.y){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+static bool doesRegionCollideWithRegions(const Region& region, const std::vector<Region>& regions) {
+    for (const Region& otherRegion : regions) {
+        if (doRegionsCollide(region, otherRegion)) {
+            return true; // Collision detected
+        }
+    }
+    return false; // No collision detected with any of the regions
+}
+
+static void assertSprite(Texture& srcTxtr, Texture sprite, std::vector<Region>& regions){
+    
+    for (size_t y = 0; y < srcTxtr.getResolution().x; y++){
+        for (size_t x = 0; x < srcTxtr.getResolution().y; x++){
+            if(x + sprite.getResolution().x <= srcTxtr.getResolution().x){
+                if(y + sprite.getResolution().y <= srcTxtr.getResolution().y){
+                    Region reg;
+                    reg.sprite = sprite;
+                    reg.startPos = glm::ivec2(x, y);
+                    reg.endPos = glm::ivec2(x + sprite.getResolution().x, y + sprite.getResolution().y);
+                    if(!doesRegionCollideWithRegions(reg, regions)){
+                        regions.push_back(reg);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
+        
+    glm::ivec2 srcTxtrRes = srcTxtr.getResolution();
+    glm::ivec2 spriteTxtrRes = sprite.getResolution();
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, srcTxtr.ID);
+
+    glTexImage2D(
+                    GL_TEXTURE_2D, 
+                    0, 
+                    GL_RGBA, 
+                    srcTxtrRes.x + spriteTxtrRes.x, 
+                    srcTxtrRes.y + spriteTxtrRes.y, 
+                    0, 
+                    GL_RGBA, 
+                    GL_UNSIGNED_BYTE, 
+                    nullptr
+                );
+    
+    assertSprite(srcTxtr, sprite, regions);
+}
+
+Texture TexturePack::generateSpriteTexture(){
+    Texture txtr = Texture(nullptr, this->textures[0].getResolution().x, this->textures[0].getResolution().y);
+
+    std::vector<Region> regions;
+
+    for (size_t i = 0; i < this->textures.size(); i++)
+    {
+        assertSprite(txtr, this->textures[i], regions);
+    }
+
+    glm::ivec2 txtrRes = txtr.getResolution();
+
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.ID, 0);
+    glViewport(0, 0, txtrRes.x, txtrRes.y);
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    ShaderSystem::buttonShader().use();
+
+    for (size_t i = 0; i < regions.size(); i++)
+    {
+        glm::ivec2 scale = (regions[i].endPos - regions[i].startPos) / glm::ivec2(2);
+        glm::ivec2 pos = regions[i].startPos;
+        pos.x += scale.x;
+        pos.y += scale.y;
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, regions[i].sprite.ID);
+        ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, (float)txtrRes.x, (float)txtrRes.y, 0.f));
+        ShaderSystem::buttonShader().setVec3("pos", glm::vec3(pos, 0.1));
+        ShaderSystem::buttonShader().setVec2("scale", scale);
+        ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
+        ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
+        ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
+    }
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &FBO);
+
+    //Set the OpenGL viewport to default
+    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+    ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, (float)getContext()->windowScale.x, 0.f, (float)getContext()->windowScale.y));
+
+    return txtr;
+}
+
 void TexturePack::apply(Texture txtr){
     
     glm::ivec2 txtrRes = txtr.getResolution();
@@ -335,3 +449,4 @@ void TexturePack::apply(Texture txtr){
     ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, (float)getContext()->windowScale.x, 0.f, (float)getContext()->windowScale.y));
 
 }
+
