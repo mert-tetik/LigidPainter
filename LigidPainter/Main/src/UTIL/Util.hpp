@@ -237,6 +237,7 @@ public:
     bool proceduralNormalGrayScale = false;
     float proceduralNormalStrength = 10.f;
     unsigned int proceduralTextureID = 0;
+    bool proceduralUseTexCoords = false;
 
     /// @brief Title of the texture (myTexture)
     std::string title = "";
