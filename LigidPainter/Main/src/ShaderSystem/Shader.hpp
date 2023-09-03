@@ -115,6 +115,7 @@ namespace ShaderSystem{
     Shader txtrEditorColoringShader();
     Shader splitTexturesShader();
     Shader solidShadingShader();
+    Shader textureRenderingShader();
 
     void initShaderSystem();
 };

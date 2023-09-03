@@ -75,6 +75,8 @@ uniform vec3 pos;
 //Scale value of the box
 uniform vec2 scale;
 
+uniform float rotation = 0.;
+
 
 
 
@@ -106,6 +108,16 @@ void setOutputs(){
     fragPos = aPos;
 }
 
+vec2 rotate2D(vec2 v, float angleDegrees) {
+    float angleRadians = radians(angleDegrees);
+    float cosA = cos(angleRadians);
+    float sinA = sin(angleRadians);
+
+    mat2 rotationMatrix = mat2(cosA, -sinA, sinA, cosA);
+
+    return rotationMatrix * v;
+}
+
 void main() {
     
     //Equate the vertex data to the output values
@@ -113,11 +125,16 @@ void main() {
 
     //Scale the position data of the vertex
     vec3 scaledPos = aPos * vec3(scale,1);
+    
+    if(rotation != 0.){
+        scaledPos.xy = rotate2D(scaledPos.xy, rotation);
+    }
 
     //Move the position data of the vertex to the pos uniform 
     vec3 positionedPos = scaledPos + pos;
 
     ProjectedPos = projectedPosProjection * vec4(positionedPos, 1.0); 
 
-    gl_Position = projection * vec4(positionedPos, 1.0);;
+    gl_Position = projection * vec4(positionedPos, 1.0);
+
 }

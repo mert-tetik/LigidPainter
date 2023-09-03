@@ -388,6 +388,7 @@ private:
 public:
    Panel bgPanel;
    Panel subPanel;
+   Panel subPanelTxtrPack;
    Panel selectedTextureDisplayingPanel;
    Panel textureSelectingPanel;
 

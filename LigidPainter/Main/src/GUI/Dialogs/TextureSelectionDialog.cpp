@@ -127,9 +127,49 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                 true
                             );
 
+    this->subPanelTxtrPack = Panel(
+                                {
+                                    Section(
+                                        Button(),
+                                        {
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Library Textures", Texture(), 5.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Pattern Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 4.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 1.f, 0.f, 100.f, 10.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 2.f, 0.f, 200.f, 10.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Count", Texture(), 1.f, 0.f, 0.5f, 0.05f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rotation Jitter", Texture(), 1.f, 0.f, 1.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Size Jitter", Texture(), 1.f, 0.f, 1.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Opacity Jitter", Texture(), 1.f, 0.f, 1.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scatter", Texture(), 1.f, 0.f, 1.f, 1.f),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false)
+                                        }
+                                    )
+                                },
+                                glm::vec2(scale.x / 6.f, scale.y),
+                                glm::vec3(pos.x - scale.x + (scale.x / 6.f) , pos.y, pos.z),
+                                ColorPalette::mainColor,
+                                ColorPalette::thirdColor,
+                                true,
+                                true,
+                                false,
+                                true,
+                                true,
+                                1.f,
+                                1.f,
+                                {},
+                                20.f,
+                                true
+                            );
+
     for (size_t i = 0; i < 4; i++)
     {
         this->subPanel.sections[0].elements[i].button.color = glm::vec4(0);
+        this->subPanelTxtrPack.sections[0].elements[i].button.color = glm::vec4(0);
     }
 
 }
@@ -151,8 +191,12 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         txtr.proceduralID = this->selectedTextureIndex;
         txtr.proceduralTextureID = 0;
     }
-    else{
+    else if(this->selectedTextureMode == 2){
         txtr.proceduralID = this->selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
+        txtr.proceduralTextureID = 0;
+    }
+    else if(this->selectedTextureMode == 3){
+        txtr.proceduralID = 1000;
         txtr.proceduralTextureID = 0;
     }
     
@@ -176,40 +220,62 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes, displayRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
+    
     /* Capturing FBO */
     unsigned int FBO; 
     glGenFramebuffers(1,&FBO);
     glBindFramebuffer(GL_FRAMEBUFFER,FBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.ID, 0);
-    glViewport(0, 0, displayRes, displayRes);
-
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    /* Displaying texture */
-    ShaderSystem::proceduralDisplayerShader().use();
-    glm::mat4 projection = glm::ortho(0.f, (float)displayRes, (float)displayRes, 0.f);
-    ShaderSystem::proceduralDisplayerShader().setMat4("projection"  ,       projection);
-    ShaderSystem::proceduralDisplayerShader().setVec3("pos"         ,       glm::vec3((float)displayRes / 2.f, (float)displayRes / 2.f,0.9f));
-    ShaderSystem::proceduralDisplayerShader().setVec2("scale"       ,       glm::vec2((float)displayRes / 2.f));
-    
-    if(this->selectedTextureMode == 0)
-        ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", -1);
-    else if(this->selectedTextureMode == 1)
-        ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex);
-    else
-        ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE);                
-    
-    ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->subPanel.sections[0].elements[8].rangeBar.value / 10.f);
-    ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", this->subPanel.sections[0].elements[7].checkBox.clickState1);
+    if(this->selectedTextureMode == 3){
+        if(this->selectedTextureIndex < Library::getTexturePackArraySize()){
+            Library::getTexturePack(this->selectedTextureIndex)->apply(
+                                                                            txtr,
+                                                                            this->subPanelTxtrPack.sections[0].elements[8].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[9].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[10].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[11].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[12].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[13].rangeBar.value
+                                                                        );
+            ShaderSystem::buttonShader().use();
+        }
+        
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    }
 
-    ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, txtr.proceduralTextureID);
-    
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glViewport(0, 0, displayRes, displayRes);
 
-    if(this->subPanel.sections[0].elements[4].checkBox.clickState1){
+    if(this->selectedTextureMode != 3){
+
+        /* Displaying texture */
+        ShaderSystem::proceduralDisplayerShader().use();
+        glm::mat4 projection = glm::ortho(0.f, (float)displayRes, (float)displayRes, 0.f);
+        ShaderSystem::proceduralDisplayerShader().setMat4("projection"  ,       projection);
+        ShaderSystem::proceduralDisplayerShader().setVec3("pos"         ,       glm::vec3((float)displayRes / 2.f, (float)displayRes / 2.f,0.9f));
+        ShaderSystem::proceduralDisplayerShader().setVec2("scale"       ,       glm::vec2((float)displayRes / 2.f));
+        
+        if(this->selectedTextureMode == 0)
+            ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", -1);
+        else if(this->selectedTextureMode == 1)
+            ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex);
+        else
+            ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE);                
+        
+        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->subPanel.sections[0].elements[8].rangeBar.value / 10.f);
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", this->subPanel.sections[0].elements[7].checkBox.clickState1);
+
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, txtr.proceduralTextureID);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+
+
+    if(this->subPanel.sections[0].elements[4].checkBox.clickState1 || this->subPanelTxtrPack.sections[0].elements[4].checkBox.clickState1){
         Texture txtrObject = Texture(txtr.ID);
 
         unsigned int normalMapRes;
@@ -245,7 +311,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
 static void initTextureSelectionDialog(int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, int& selectedTextureIndex, Texture& receivedTexture);
 static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode);
-static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex);
+static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, int& selectedTextureMode, int& selectedTextureIndex);
 
 void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes){
     
@@ -266,24 +332,20 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         dialogControl.updateStart();
 
-        if(this->selectedTextureMode == 3){
-            if(this->selectedTextureIndex < Library::getTexturePackArraySize())
-                Library::getTexturePack(this->selectedTextureIndex)->apply(displayingTexture);
-        }
-        else
-            generateDisplayingTexture(displayingTexture, 512);
-
-
+        generateDisplayingTexture(displayingTexture, 512);
 
         updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode);
 
-        updateSubPanel(this->subPanel, this->selectedTextureMode, this->selectedTextureIndex);
+        updateSubPanel(this->subPanel, this->subPanelTxtrPack, this->selectedTextureMode, this->selectedTextureIndex);
 
         //Render the panel
         this->bgPanel.render(timer, true);
 
         //Render the texture mode selection panel
-        this->subPanel.render(timer, true);
+        if(this->selectedTextureMode == 3)
+            this->subPanelTxtrPack.render(timer, true);
+        else
+            this->subPanel.render(timer, true);
 
         selectedTextureDisplayingPanel.scale.x = this->scale.x - subPanel.scale.x;
         selectedTextureDisplayingPanel.pos.x = this->pos.x + subPanel.scale.x;
@@ -340,13 +402,23 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
 
         // Pressed to the select button
-        if(this->subPanel.sections[0].elements[9].button.clicked){
-
-            receivedTexture.proceduralScale = this->subPanel.sections[0].elements[8].rangeBar.value / 10.f;
-            receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[7].checkBox.clickState1;
-            receivedTexture.proceduralNormalMap = this->subPanel.sections[0].elements[4].checkBox.clickState1;
-            receivedTexture.proceduralNormalGrayScale = this->subPanel.sections[0].elements[5].checkBox.clickState1;
-            receivedTexture.proceduralNormalStrength = this->subPanel.sections[0].elements[6].rangeBar.value;
+        if((this->subPanel.sections[0].elements[9].button.clicked && this->selectedTextureMode != 3) || (this->subPanelTxtrPack.sections[0].elements[14].button.clicked && this->selectedTextureMode == 3)){
+            
+            if(this->selectedTextureMode != 3){
+                receivedTexture.proceduralScale = this->subPanel.sections[0].elements[8].rangeBar.value / 10.f;
+                receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[7].checkBox.clickState1;
+                receivedTexture.proceduralNormalMap = this->subPanel.sections[0].elements[4].checkBox.clickState1;
+                receivedTexture.proceduralNormalGrayScale = this->subPanel.sections[0].elements[5].checkBox.clickState1;
+                receivedTexture.proceduralNormalStrength = this->subPanel.sections[0].elements[6].rangeBar.value;
+            }
+            
+            if(this->selectedTextureMode == 3){
+                receivedTexture.proceduralScale = 1.f;
+                receivedTexture.proceduralnverted = this->subPanelTxtrPack.sections[0].elements[7].checkBox.clickState1;
+                receivedTexture.proceduralNormalMap = this->subPanelTxtrPack.sections[0].elements[4].checkBox.clickState1;
+                receivedTexture.proceduralNormalGrayScale = this->subPanelTxtrPack.sections[0].elements[5].checkBox.clickState1;
+                receivedTexture.proceduralNormalStrength = this->subPanelTxtrPack.sections[0].elements[6].rangeBar.value;
+            }
             
             generateDisplayingTexture(receivedTexture, displayingTextureRes);
             
@@ -492,19 +564,37 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
                                             );  
 }
 
-static void updateSubPanel(Panel& subPanel, int& selectedTextureMode, int& selectedTextureIndex){
-    for (size_t i = 0; i < 4; i++)
-    {
-        if(subPanel.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
-            selectedTextureMode = i;
-            selectedTextureIndex = 0;
-            for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++)
-                subPanel.sections[0].elements[i].button.clickState1 = false;
-        }
+static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, int& selectedTextureMode, int& selectedTextureIndex){
+        for (size_t i = 0; i < 4; i++)
+        {
+            if(selectedTextureMode != 3){
+                if(subPanel.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
+                    selectedTextureMode = i;
+                    selectedTextureIndex = 0;
+                    for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
+                        subPanel.sections[0].elements[i].button.clickState1 = false;
+                        subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
+                    }
+                }
+            }
+            else{
+                if(subPanelTxtrPack.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
+                    selectedTextureMode = i;
+                    selectedTextureIndex = 0;
+                    for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
+                        subPanel.sections[0].elements[i].button.clickState1 = false;
+                        subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
+                    }
+                }
+            }
 
-        if(selectedTextureMode == i)
-            subPanel.sections[0].elements[i].button.clickState1 = true;
-        else
-            subPanel.sections[0].elements[i].button.clickState1 = false;
-    }
+            if(selectedTextureMode == i){
+                subPanel.sections[0].elements[i].button.clickState1 = true;
+                subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
+            }
+            else{
+                subPanel.sections[0].elements[i].button.clickState1 = false;
+                subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
+            }
+        }
 }

@@ -290,7 +290,11 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
     
     ShaderSystem::to2DProcedural().use();
 
-    ShaderSystem::to2DProcedural().setInt("proceduralID", this->proceduralID);
+    if(this->proceduralID == 1000)
+        ShaderSystem::to2DProcedural().setInt("proceduralID", -1);
+    else
+        ShaderSystem::to2DProcedural().setInt("proceduralID", this->proceduralID);
+
     ShaderSystem::to2DProcedural().setFloat("proceduralScale", this->proceduralScale);
     ShaderSystem::to2DProcedural().setInt("proceduralInverted", this->proceduralnverted);
     
@@ -300,7 +304,10 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
 
     ShaderSystem::to2DProcedural().setInt("proceduralTexture", 1);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, this->proceduralTextureID);
+    if(this->proceduralID == 1000)
+        glBindTexture(GL_TEXTURE_2D, this->ID);
+    else
+        glBindTexture(GL_TEXTURE_2D, this->proceduralTextureID);
 
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1,&proceduralTxtr);

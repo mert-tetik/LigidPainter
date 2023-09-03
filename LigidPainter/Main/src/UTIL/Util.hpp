@@ -228,7 +228,8 @@ public:
     unsigned int ID = 0; 
 
     /// @brief Indicates which procedural texture shader function will be used (indexing the getProcedural function in the Shaders/Include/Procedural.frag)
-    ///         -1 : No procedural shader will be used. Use the @ref ID instead.
+    ///         -1 : Using the proceduralTextureID
+    ///         1000 : Using the ID
     int proceduralID = -1;
     float proceduralScale = 1.f;
     int proceduralnverted = 0;
@@ -333,7 +334,7 @@ public:
     int load(std::string path);
 
     /// @brief Applies the textures to the given texture
-    void apply(Texture txtr);
+    void apply(Texture txtr, float scale, float count, float rotationJitter, float sizeJitter, float opacityJitter, float allignmentCorruption);
 
     /// @brief Locates and saperates the sprites in the given param txtr.
     ///        Uses the alpha map's red channel if the param alphaMap's OpenGL texture buffer object ID is not set to 0 
