@@ -1425,6 +1425,37 @@ float smartPos(vec3 pos, float offset, float yaw, float pitch, float position){
     return pos.y * offset;
 }
 
+float smartPos2(vec3 pos, float offset, float yaw, float pitch, float position){
+    float val = smartPos(pos, offset, yaw, pitch, position);
+    
+    float noise = musgraveDefNoiseA(pos);
+
+    if(val < 1. && val > 0.){
+        if(val > 0.5)
+            val = mix(val * noise, val, val);
+        else
+            val *= noise;
+    }
+
+    return val;
+}
+
+float smartPos3(vec3 pos, float offset, float yaw, float pitch, float position){
+    float val = smartPos(pos, offset, yaw, pitch, position);
+    
+    float noise = innerWorleyNoiseA(pos) * 2.;
+
+    if(val < 1. && val > 0.){
+        if(val > 0.5)
+            val = mix(val * noise, val, val);
+        else
+            val *= noise;
+    }
+
+    return val;
+}
+
+
 float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, vec2 uv, vec4 smartProperties){
     
     pos *= scale;
@@ -1574,6 +1605,10 @@ float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, ve
 
     else if(proceduralID == 66)
         res = smartPos(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 67)
+        res = smartPos2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 68)
+        res = smartPos3(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
     else
         res = 1.;
 

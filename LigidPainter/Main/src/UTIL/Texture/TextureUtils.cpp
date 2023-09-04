@@ -295,8 +295,6 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
     else
         ShaderSystem::to2DProcedural().setInt("proceduralID", this->proceduralID);
     
-    std::cout << "proceduralID : " << proceduralID << std::endl;
-
     ShaderSystem::to2DProcedural().setFloat("proceduralScale", this->proceduralScale);
     ShaderSystem::to2DProcedural().setInt("proceduralInverted", this->proceduralnverted);
     ShaderSystem::to2DProcedural().setInt("proceduralUseTexCoords", this->proceduralUseTexCoords);

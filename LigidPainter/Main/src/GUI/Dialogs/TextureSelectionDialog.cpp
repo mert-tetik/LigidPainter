@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #define MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE 29
 #define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 37
-#define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 1
+#define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 3
 
 TextureSelectionDialog::TextureSelectionDialog(){
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
@@ -446,7 +446,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
             if(this->textureSelectingPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
                 selectedTextureIndex = i;
                 if(this->selectedTextureMode == 4){
-                    if(selectedTextureIndex == 0){
+                    if(selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){
                         smartPositionTexturePanelActive = true;
                     }
                 }
@@ -469,7 +469,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                 if(this->selectedTextureMode == 4){
                     
                     Panel* smartPropPanel;
-                    if(this->selectedTextureIndex == 0){
+                    if(this->selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){
                         smartPropPanel = &this->smartPositionTexturePanel;
                     }
 
