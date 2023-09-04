@@ -46,10 +46,11 @@ FilterSelectionDialog __filter_selection_dialog;
 TexturePackEditorDialog __texture_Pack_Editor_Dialog;
 glm::mat4 __projection;
 Timer __timer; 
+Box __box;
 bool __wasTextureSelectionDialogActive = false;
 
 void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes){
-    __texture_selection_dialog.show(__timer, __projection, txtr, displayingTextureRes);
+    __texture_selection_dialog.show(__timer, __projection, txtr, displayingTextureRes, __box);
     __wasTextureSelectionDialogActive = true;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
@@ -75,15 +76,14 @@ bool wasTextureSelectionDialogActive(){
 
 static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection);
 
-void UI::render(Timer &timer,Box box,
-            Project &project, Painter &painter, Skybox &skybox){
+void UI::render(Timer &timer,Box box,Project &project, Painter &painter, Skybox &skybox){
     
     __texture_selection_dialog = this->textureSelectionDialog;
     __filter_selection_dialog = this->filterSelectionDialog;
     __texture_Pack_Editor_Dialog = this->texturePackEditorDialog;
     __projection = this->projection;
     __timer = timer; 
-
+    __box = box;
 
     //Set pass less or equal
     glDepthFunc(GL_LEQUAL);

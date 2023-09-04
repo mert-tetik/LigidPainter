@@ -235,7 +235,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
 }
 
 
-void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displayingTextureRes){
+void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displayingTextureRes, Box& box){
     
     GLint viewport[4]; 
     glGetIntegerv(GL_VIEWPORT, viewport);
@@ -291,7 +291,20 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     glBindFramebuffer(GL_FRAMEBUFFER,FBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.ID, 0);
     glClearColor(0,0,0,0);
+
+    unsigned int RBO;
+	glGenRenderbuffers(1,&RBO);
+	glBindRenderbuffer(GL_RENDERBUFFER,RBO);
+	
+    //Set the renderbuffer to store depth
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, displayRes, displayRes);
+	
+    //Give the renderbuffer to the framebuffer
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glDepthFunc(GL_LEQUAL);
 
     if(this->selectedTextureMode == 3){
         if(this->selectedTextureIndex < Library::getTexturePackArraySize()){
@@ -312,7 +325,85 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
 
     glViewport(0, 0, displayRes, displayRes);
 
-    if(this->selectedTextureMode != 3){
+    if(this->selectedTextureMode == 4){
+
+        Camera matCam;
+
+        //Move the camera to the side
+        glm::mat4 view = glm::lookAt(matCam.cameraPos, 
+                                     glm::vec3(0), 
+                                     glm::vec3(0.0, 1.0, 0.0));
+
+        //The perspective projection matrix    
+        glm::mat4 projectionMatrix = glm::perspective(
+                                                        glm::radians(35.f), //Fov  
+                                                        -1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
+                                                        100.f,  //Near (the material is pretty close to the camera actually  ) 
+                                                        0.1f    //Far
+                                                    );
+
+        //Use the 3D model rendering shader
+        ShaderSystem::tdModelShader().use();
+
+        //Throw the camera data to the shader
+        ShaderSystem::tdModelShader().setInt("displayingMode", 0);
+        ShaderSystem::tdModelShader().setVec3("viewPos",matCam.cameraPos);
+        ShaderSystem::tdModelShader().setMat4("view",view);
+        ShaderSystem::tdModelShader().setMat4("projection",projectionMatrix);
+
+        Panel* smartPropPanel;
+        if(this->selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){
+            smartPropPanel = &this->smartPositionTexturePanel;
+        }
+        if(this->selectedTextureIndex == 3 || selectedTextureIndex == 4){
+            smartPropPanel = &this->smartStripesTexturePanel;
+        }
+
+        txtr.smartProperties = glm::vec4(
+                                            smartPropPanel->sections[0].elements[0].rangeBar.value,
+                                            smartPropPanel->sections[0].elements[1].rangeBar.value,
+                                            smartPropPanel->sections[0].elements[2].rangeBar.value,
+                                            smartPropPanel->sections[0].elements[3].rangeBar.value
+                                        );
+
+        unsigned int proc = txtr.generateProceduralTexture(getSphereModel()->meshes[0], 512);
+        glViewport(0, 0, displayRes, displayRes);
+        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+        ShaderSystem::tdModelShader().use();
+
+        //Bind the channels of the material
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, proc);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, proc);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, proc);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, proc);
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, proc);
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, proc);
+
+        //Draw the sphere
+        getSphereModel()->Draw();
+
+        ShaderSystem::tdModelShader().setInt("displayingMode", 0);
+
+        //Just in case (Is not necessary (probably (I guess))) !!Actually I'm 100% sure that's not necessary but u know. Just in case. lol
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        //!Finish (prepare rendering the GUI)
+
+        //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
+        ShaderSystem::buttonShader().use();
+
+        box.bindBuffers();
+        glDeleteTextures(1, &proc);
+    }
+
+
+    if(this->selectedTextureMode != 3 && this->selectedTextureMode != 4){
 
         /* Displaying texture */
         ShaderSystem::proceduralDisplayerShader().use();
@@ -369,6 +460,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDeleteFramebuffers(1, &FBO);
+    glDeleteRenderbuffers(1, &RBO);
     glViewport(0, 0, viewportResolution.x, viewportResolution.y);
 }
 
@@ -379,7 +471,7 @@ static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode);
 static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, int& selectedTextureMode, int& selectedTextureIndex);
 
-void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes){
+void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes, Box& box){
     
     this->dialogControl.activate();
         
@@ -398,7 +490,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         dialogControl.updateStart();
 
-        generateDisplayingTexture(displayingTexture, 512);
+        generateDisplayingTexture(displayingTexture, 512, box);
 
         updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode);
 
@@ -502,24 +594,6 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                 receivedTexture.proceduralNormalGrayScale = this->subPanel.sections[0].elements[6].checkBox.clickState1;
                 receivedTexture.proceduralNormalStrength = this->subPanel.sections[0].elements[7].rangeBar.value;
                 receivedTexture.proceduralUseTexCoords = this->subPanel.sections[0].elements[10].checkBox.clickState1;
-
-                if(this->selectedTextureMode == 4){
-                    
-                    Panel* smartPropPanel;
-                    if(this->selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){
-                        smartPropPanel = &this->smartPositionTexturePanel;
-                    }
-                    if(this->selectedTextureIndex == 3 || selectedTextureIndex == 4){
-                        smartPropPanel = &this->smartStripesTexturePanel;
-                    }
-
-                    receivedTexture.smartProperties = glm::vec4(
-                                                                    smartPropPanel->sections[0].elements[0].rangeBar.value,
-                                                                    smartPropPanel->sections[0].elements[1].rangeBar.value,
-                                                                    smartPropPanel->sections[0].elements[2].rangeBar.value,
-                                                                    smartPropPanel->sections[0].elements[3].rangeBar.value
-                                                                );
-                }
             }
             
             if(this->selectedTextureMode == 3){
@@ -531,7 +605,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                 receivedTexture.proceduralUseTexCoords = this->subPanelTxtrPack.sections[0].elements[15].checkBox.clickState1;
             }
             
-            generateDisplayingTexture(receivedTexture, displayingTextureRes);
+            generateDisplayingTexture(receivedTexture, displayingTextureRes, box);
             
             receivedTexture.title = "SelectedTexture";
             

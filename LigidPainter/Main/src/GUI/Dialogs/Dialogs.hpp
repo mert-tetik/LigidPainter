@@ -411,9 +411,9 @@ public:
 
 
    //Public member functions
-   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes);
+   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes, Box& box);
 
-   void generateDisplayingTexture(Texture& txtr, int displayingTextureRes);
+   void generateDisplayingTexture(Texture& txtr, int displayingTextureRes, Box& box);
 
 };
 
