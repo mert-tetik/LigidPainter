@@ -1400,7 +1400,32 @@ float dropletsNoise5(vec3 pos){
     return innergetDroplets(pos, dropletsCount, dropletsOpacityJitter, dropletsSize, 0, 1);
 }
 
-float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, vec2 uv){
+//0
+float smartPos(vec3 pos, float offset, float yaw, float pitch, float position){
+
+    yaw = radians(yaw);
+    pitch = radians(pitch);
+
+    // Calculate the axis of rotation for yaw (vertical axis)
+    vec3 yawAxis = vec3(0.0, 1.0, 0.0);
+
+    // Calculate the axis of rotation for pitch (horizontal axis)
+    vec3 pitchAxis = vec3(1.0, 0.0, 0.0);
+
+    // Combine the yaw and pitch rotations
+    vec3 combinedAxis = normalize(cos(pitch) * yawAxis + sin(pitch) * pitchAxis);
+    
+    // Calculate the combined angle
+    float combinedAngle = length(vec2(yaw, pitch));
+
+    pos = innerrotate(pos, combinedAxis, combinedAngle);
+
+    pos += vec3(position);
+
+    return pos.y * offset;
+}
+
+float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, vec2 uv, vec4 smartProperties){
     
     pos *= scale;
     uv *= scale;
@@ -1543,6 +1568,12 @@ float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, ve
         res = dropletsNoise4(pos);
     else if(proceduralID == 65)
         res = dropletsNoise5(pos);
+    
+    
+
+
+    else if(proceduralID == 66)
+        res = smartPos(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
     else
         res = 1.;
 
@@ -1565,9 +1596,9 @@ float GMC(vec3 val, int inverted){
         return 1. - max(max(val.r, val.g), val.b);
 }
 
-vec4 getProcedural(vec3 pos, int proceduralID, sampler2D texture, vec2 texCoord, float scale, int inverted){
+vec4 getProcedural(vec3 pos, int proceduralID, sampler2D texture, vec2 texCoord, float scale, int inverted, vec4 smartProperties){
     if(proceduralID != -1)
-        return vec4(vec3(getProceduralVal(pos, proceduralID, scale, inverted, texCoord)), 1);
+        return vec4(vec3(getProceduralVal(pos, proceduralID, scale, inverted, texCoord, smartProperties)), 1);
     else{
         if(inverted == 0)
             return texture(texture, texCoord * scale);

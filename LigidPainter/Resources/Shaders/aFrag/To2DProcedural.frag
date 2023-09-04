@@ -13,6 +13,7 @@ uniform float proceduralScale;
 uniform int proceduralInverted;
 uniform sampler2D proceduralTexture;
 uniform int proceduralUseTexCoords;
+uniform vec4 smartProperties;
 
 out vec4 fragColor;
 
@@ -43,6 +44,6 @@ void main(){
     if(proceduralUseTexCoords == 1)
         uv = TexCoords;
 
-    vec4 procedural = getProcedural(Pos, proceduralID, proceduralTexture, uv, proceduralScale, proceduralInverted);
+    vec4 procedural = getProcedural(Pos, proceduralID, proceduralTexture, uv, proceduralScale, proceduralInverted, smartProperties);
     fragColor = vec4(procedural);
 }

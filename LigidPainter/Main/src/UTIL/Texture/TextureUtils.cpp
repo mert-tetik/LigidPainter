@@ -294,10 +294,13 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         ShaderSystem::to2DProcedural().setInt("proceduralID", -1);
     else
         ShaderSystem::to2DProcedural().setInt("proceduralID", this->proceduralID);
+    
+    std::cout << "proceduralID : " << proceduralID << std::endl;
 
     ShaderSystem::to2DProcedural().setFloat("proceduralScale", this->proceduralScale);
     ShaderSystem::to2DProcedural().setInt("proceduralInverted", this->proceduralnverted);
     ShaderSystem::to2DProcedural().setInt("proceduralUseTexCoords", this->proceduralUseTexCoords);
+    ShaderSystem::to2DProcedural().setVec4("smartProperties", this->smartProperties);
     
     ShaderSystem::to2DProcedural().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
     ShaderSystem::to2DProcedural().setMat4("perspectiveProjection", getScene()->projectionMatrix);

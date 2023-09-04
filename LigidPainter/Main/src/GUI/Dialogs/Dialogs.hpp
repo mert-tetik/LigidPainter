@@ -394,6 +394,9 @@ public:
    Panel selectedTextureDisplayingPanel;
    Panel textureSelectingPanel;
 
+   Panel smartPositionTexturePanel;
+   bool smartPositionTexturePanelActive = false;
+
    Texture displayingTexture;
    int selectedTextureIndex = 0; 
    bool clicked = false; 

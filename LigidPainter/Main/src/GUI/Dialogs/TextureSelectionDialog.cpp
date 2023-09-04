@@ -34,6 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #define MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE 29
 #define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 37
+#define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 1
 
 TextureSelectionDialog::TextureSelectionDialog(){
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
@@ -102,6 +103,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Pattern Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 10.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 2.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Normal Strength", Texture(), 2.f, 0.f, 100.f, 10.f),
@@ -137,6 +139,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Pattern Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 4.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 1.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 1.f, 0.f, 100.f, 10.f),
@@ -167,8 +170,36 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                 20.f,
                                 true
                             );
+  
+    this->smartPositionTexturePanel = Panel(
+                                {
+                                    Section(
+                                        Button(),
+                                        {
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Offset", Texture(), 1.f, 0.f, 10.f, 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Yaw", Texture(), 2.f, 0.f, 360.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Pitch", Texture(), 1.f, 0.f, 360.f, 0.0f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Position", Texture(), 1.f, -1.f, 1.f, 0.f)
+                                        }
+                                    )
+                                },
+                                glm::vec2(20.f),
+                                glm::vec3(glm::vec2(50.f, 70.f), pos.z),
+                                ColorPalette::mainColor,
+                                ColorPalette::thirdColor,
+                                true,
+                                true,
+                                false,
+                                true,
+                                true,
+                                1.f,
+                                1.f,
+                                {},
+                                20.f,
+                                true
+                            );
 
-    for (size_t i = 0; i < 4; i++)
+    for (size_t i = 0; i < 5; i++)
     {
         this->subPanel.sections[0].elements[i].button.color = glm::vec4(0);
         this->subPanelTxtrPack.sections[0].elements[i].button.color = glm::vec4(0);
@@ -199,6 +230,10 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     }
     else if(this->selectedTextureMode == 3){
         txtr.proceduralID = 1000;
+        txtr.proceduralTextureID = 0;
+    }
+    else if(this->selectedTextureMode == 4){
+        txtr.proceduralID = this->selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE + MAX_PROCEDURAL_NOISE_TEXTURE_SIZE;
         txtr.proceduralTextureID = 0;
     }
     
@@ -235,12 +270,12 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         if(this->selectedTextureIndex < Library::getTexturePackArraySize()){
             Library::getTexturePack(this->selectedTextureIndex)->apply(
                                                                             txtr,
-                                                                            this->subPanelTxtrPack.sections[0].elements[8].rangeBar.value,
                                                                             this->subPanelTxtrPack.sections[0].elements[9].rangeBar.value,
                                                                             this->subPanelTxtrPack.sections[0].elements[10].rangeBar.value,
                                                                             this->subPanelTxtrPack.sections[0].elements[11].rangeBar.value,
                                                                             this->subPanelTxtrPack.sections[0].elements[12].rangeBar.value,
-                                                                            this->subPanelTxtrPack.sections[0].elements[13].rangeBar.value
+                                                                            this->subPanelTxtrPack.sections[0].elements[13].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[14].rangeBar.value
                                                                         );
             ShaderSystem::buttonShader().use();
         }
@@ -263,11 +298,13 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", -1);
         else if(this->selectedTextureMode == 1)
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex);
-        else
+        else if(this->selectedTextureMode == 2)
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE);                
+        else if(this->selectedTextureMode == 4)
+            ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE + MAX_PROCEDURAL_NOISE_TEXTURE_SIZE);                
         
-        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->subPanel.sections[0].elements[8].rangeBar.value / 10.f);
-        ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", this->subPanel.sections[0].elements[7].checkBox.clickState1);
+        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->subPanel.sections[0].elements[9].rangeBar.value / 10.f);
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", this->subPanel.sections[0].elements[8].checkBox.clickState1);
 
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
         glActiveTexture(GL_TEXTURE0);
@@ -277,7 +314,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     }
 
 
-    if(this->subPanel.sections[0].elements[4].checkBox.clickState1 || this->subPanelTxtrPack.sections[0].elements[4].checkBox.clickState1){
+    if(this->subPanel.sections[0].elements[5].checkBox.clickState1 || this->subPanelTxtrPack.sections[0].elements[5].checkBox.clickState1){
         Texture txtrObject = Texture(txtr.ID);
 
         unsigned int normalMapRes;
@@ -295,7 +332,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes, displayRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        txtrObject.generateNormalMap(normalMapRes, displayRes, this->subPanel.sections[0].elements[6].rangeBar.value, this->subPanel.sections[0].elements[5].checkBox.clickState1); 
+        txtrObject.generateNormalMap(normalMapRes, displayRes, this->subPanel.sections[0].elements[7].rangeBar.value, this->subPanel.sections[0].elements[6].checkBox.clickState1); 
 
         glDeleteTextures(1,&txtr.ID);
         txtr.ID = normalMapRes;
@@ -363,7 +400,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
         this->selectedTextureDisplayingPanel.render(timer, true);
 
-        if(this->selectedTextureMode == 0 || this->selectedTextureMode == 1 || this->selectedTextureMode == 2){
+        if(this->selectedTextureMode == 0 || this->selectedTextureMode == 1 || this->selectedTextureMode == 2 || this->selectedTextureMode == 4){
             for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
             {
                 ShaderSystem::proceduralDisplayerShader().use();
@@ -377,6 +414,8 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                     ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", i);
                 else if(this->selectedTextureMode == 2)
                     ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", i + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE);
+                else if(this->selectedTextureMode == 4)
+                    ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", i + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE + MAX_PROCEDURAL_NOISE_TEXTURE_SIZE);
 
 
                 ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", 1.f);
@@ -394,34 +433,62 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         ShaderSystem::buttonShader().use();
 
+        if(smartPositionTexturePanelActive){
+            this->smartPositionTexturePanel.render(timer, true);
+            if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->smartPositionTexturePanel.hover && *Mouse::LClick())){
+                smartPositionTexturePanelActive = false;
+            }
+        }
+        
         //If pressed any of the texture select the texture
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
         {
             if(this->textureSelectingPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
                 selectedTextureIndex = i;
+                if(this->selectedTextureMode == 4){
+                    if(selectedTextureIndex == 0){
+                        smartPositionTexturePanelActive = true;
+                    }
+                }
             }
         }
 
 
+
         // Pressed to the select button
-        if((this->subPanel.sections[0].elements[10].button.clicked && this->selectedTextureMode != 3) || (this->subPanelTxtrPack.sections[0].elements[15].button.clicked && this->selectedTextureMode == 3)){
+        if((this->subPanel.sections[0].elements[11].button.clicked && this->selectedTextureMode != 3) || (this->subPanelTxtrPack.sections[0].elements[16].button.clicked && this->selectedTextureMode == 3)){
             
             if(this->selectedTextureMode != 3){
-                receivedTexture.proceduralScale = this->subPanel.sections[0].elements[8].rangeBar.value / 10.f;
-                receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[7].checkBox.clickState1;
-                receivedTexture.proceduralNormalMap = this->subPanel.sections[0].elements[4].checkBox.clickState1;
-                receivedTexture.proceduralNormalGrayScale = this->subPanel.sections[0].elements[5].checkBox.clickState1;
-                receivedTexture.proceduralNormalStrength = this->subPanel.sections[0].elements[6].rangeBar.value;
-                receivedTexture.proceduralUseTexCoords = this->subPanel.sections[0].elements[9].checkBox.clickState1;
+                receivedTexture.proceduralScale = this->subPanel.sections[0].elements[9].rangeBar.value / 10.f;
+                receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[8].checkBox.clickState1;
+                receivedTexture.proceduralNormalMap = this->subPanel.sections[0].elements[5].checkBox.clickState1;
+                receivedTexture.proceduralNormalGrayScale = this->subPanel.sections[0].elements[6].checkBox.clickState1;
+                receivedTexture.proceduralNormalStrength = this->subPanel.sections[0].elements[7].rangeBar.value;
+                receivedTexture.proceduralUseTexCoords = this->subPanel.sections[0].elements[10].checkBox.clickState1;
+
+                if(this->selectedTextureMode == 4){
+                    
+                    Panel* smartPropPanel;
+                    if(this->selectedTextureIndex == 0){
+                        smartPropPanel = &this->smartPositionTexturePanel;
+                    }
+
+                    receivedTexture.smartProperties = glm::vec4(
+                                                                    smartPropPanel->sections[0].elements[0].rangeBar.value,
+                                                                    smartPropPanel->sections[0].elements[1].rangeBar.value,
+                                                                    smartPropPanel->sections[0].elements[2].rangeBar.value,
+                                                                    smartPropPanel->sections[0].elements[3].rangeBar.value
+                                                                );
+                }
             }
             
             if(this->selectedTextureMode == 3){
                 receivedTexture.proceduralScale = 1.f;
-                receivedTexture.proceduralnverted = this->subPanelTxtrPack.sections[0].elements[7].checkBox.clickState1;
-                receivedTexture.proceduralNormalMap = this->subPanelTxtrPack.sections[0].elements[4].checkBox.clickState1;
-                receivedTexture.proceduralNormalGrayScale = this->subPanelTxtrPack.sections[0].elements[5].checkBox.clickState1;
-                receivedTexture.proceduralNormalStrength = this->subPanelTxtrPack.sections[0].elements[6].rangeBar.value;
-                receivedTexture.proceduralUseTexCoords = this->subPanelTxtrPack.sections[0].elements[14].checkBox.clickState1;
+                receivedTexture.proceduralnverted = this->subPanelTxtrPack.sections[0].elements[8].checkBox.clickState1;
+                receivedTexture.proceduralNormalMap = this->subPanelTxtrPack.sections[0].elements[5].checkBox.clickState1;
+                receivedTexture.proceduralNormalGrayScale = this->subPanelTxtrPack.sections[0].elements[6].checkBox.clickState1;
+                receivedTexture.proceduralNormalStrength = this->subPanelTxtrPack.sections[0].elements[7].rangeBar.value;
+                receivedTexture.proceduralUseTexCoords = this->subPanelTxtrPack.sections[0].elements[15].checkBox.clickState1;
             }
             
             generateDisplayingTexture(receivedTexture, displayingTextureRes);
@@ -505,11 +572,11 @@ static void initTextureSelectionDialog(
             selectedTextureIndex -= MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
         }
 
-        subPanel.sections[0].elements[7].checkBox.clickState1 = receivedTexture.proceduralnverted;
-        subPanel.sections[0].elements[8].rangeBar.value = receivedTexture.proceduralScale * 10.f;  
-        subPanel.sections[0].elements[4].checkBox.clickState1 = receivedTexture.proceduralNormalMap;
-        subPanel.sections[0].elements[5].checkBox.clickState1 = receivedTexture.proceduralNormalGrayScale;
-        subPanel.sections[0].elements[6].rangeBar.value = receivedTexture.proceduralNormalStrength;
+        subPanel.sections[0].elements[8].checkBox.clickState1 = receivedTexture.proceduralnverted;
+        subPanel.sections[0].elements[9].rangeBar.value = receivedTexture.proceduralScale * 10.f;  
+        subPanel.sections[0].elements[5].checkBox.clickState1 = receivedTexture.proceduralNormalMap;
+        subPanel.sections[0].elements[6].checkBox.clickState1 = receivedTexture.proceduralNormalGrayScale;
+        subPanel.sections[0].elements[7].rangeBar.value = receivedTexture.proceduralNormalStrength;
     }
 }
 
@@ -557,6 +624,12 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
             sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),Library::getTexturePack(i)->title   , Texture(), 0.f,false)));
         }
     }
+    else if(selectedTextureMode == 4){
+        for (size_t i = 0; i < MAX_PROCEDURAL_SMART_TEXTURE_SIZE; i++)
+        {
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),""       , Texture(), 0.f,false)));
+        }
+    }
 
     textureSelectingPanel.sections.push_back
                                             (
@@ -569,7 +642,7 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
 }
 
 static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, int& selectedTextureMode, int& selectedTextureIndex){
-        for (size_t i = 0; i < 4; i++)
+        for (size_t i = 0; i < 5; i++)
         {
             if(selectedTextureMode != 3){
                 if(subPanel.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
