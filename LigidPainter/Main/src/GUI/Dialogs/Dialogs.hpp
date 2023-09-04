@@ -396,6 +396,8 @@ public:
 
    Panel smartPositionTexturePanel;
    bool smartPositionTexturePanelActive = false;
+   Panel smartStripesTexturePanel;
+   bool smartStripesTexturePanelActive = false;
 
    Texture displayingTexture;
    int selectedTextureIndex = 0; 

@@ -144,6 +144,7 @@ struct Scene{
 Scene* getScene();
 Model* getModel();
 Model* getSphereModel();
+Model* getMaterialDisplayerModel();
 
 namespace Settings{
     struct AppTextures{ 

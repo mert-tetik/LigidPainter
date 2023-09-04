@@ -108,7 +108,8 @@ void Renderer::initRenderer(){
 
     //Load the sphere model
     getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
-    getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
+    getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj",true);
+    getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj",true);
 
     //Init the skybox    
     skybox.init();

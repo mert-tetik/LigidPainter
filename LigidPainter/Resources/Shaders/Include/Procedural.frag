@@ -1455,8 +1455,55 @@ float smartPos3(vec3 pos, float offset, float yaw, float pitch, float position){
     return val;
 }
 
+float smartStripes(vec3 pos, float linesRows, float thickness, float blur, float rotation, vec2 txtrRes){
+    
+    vec2 iResolution = txtrRes;
+    vec2 fragCoord = pos.xy * iResolution.x; 
 
-float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, vec2 uv, vec4 smartProperties){
+    // update layout params
+    float rows = linesRows * 0.5;
+    
+    // Initialize color accumulation
+    vec3 colorAccumulator = vec3(0.0);
+
+    const int samples = 8;
+
+    // Iterate over samples within the pixel
+    for (int i = 0; i < samples; i++) {
+        // Offset UV coordinates for supersampling
+        vec2 uv = (2.0 * (fragCoord + vec2(mod(float(i), 2.0), floor(float(i) / 2.0)) * 0.5) - iResolution.xy) / iResolution.y;
+
+        vec2 uvRepeat = fract(uv * rows);
+        
+        float aa = iResolution.y * blur; // Use blur to control blur strength
+        float col = smoothstep(thickness - aa, thickness + aa, length(uvRepeat.y - 0.5));
+
+        // Accumulate colors
+        colorAccumulator += vec3(col);
+    }
+
+    // Average the accumulated colors
+    vec3 finalColor = colorAccumulator / float(samples);
+
+    return finalColor.r;
+}
+
+float smartStripes2(vec3 pos, float offset, float yaw, float pitch, float position, vec2 txtrRes){
+    float val = smartStripes(pos, offset, yaw, pitch, position, txtrRes);
+    
+    float noise = musgraveDefNoiseA(pos);
+
+    if(val < 1. && val > 0.){
+        if(val > 0.5)
+            val = mix(val * noise, val, val);
+        else
+            val *= noise;
+    }
+
+    return val;
+}
+
+float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, vec2 uv, vec4 smartProperties, vec2 txtrRes){
     
     pos *= scale;
     uv *= scale;
@@ -1609,6 +1656,10 @@ float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, ve
         res = smartPos2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
     else if(proceduralID == 68)
         res = smartPos3(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 69)
+        res = smartStripes(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
+    else if(proceduralID == 70)
+        res = smartStripes2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
     else
         res = 1.;
 
@@ -1631,9 +1682,9 @@ float GMC(vec3 val, int inverted){
         return 1. - max(max(val.r, val.g), val.b);
 }
 
-vec4 getProcedural(vec3 pos, int proceduralID, sampler2D texture, vec2 texCoord, float scale, int inverted, vec4 smartProperties){
+vec4 getProcedural(vec3 pos, int proceduralID, sampler2D texture, vec2 texCoord, float scale, int inverted, vec4 smartProperties, vec2 txtrRes){
     if(proceduralID != -1)
-        return vec4(vec3(getProceduralVal(pos, proceduralID, scale, inverted, texCoord, smartProperties)), 1);
+        return vec4(vec3(getProceduralVal(pos, proceduralID, scale, inverted, texCoord, smartProperties, txtrRes)), 1);
     else{
         if(inverted == 0)
             return texture(texture, texCoord * scale);

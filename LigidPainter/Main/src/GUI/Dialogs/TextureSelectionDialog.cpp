@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #define MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE 29
 #define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 37
-#define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 3
+#define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 5
 
 TextureSelectionDialog::TextureSelectionDialog(){
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
@@ -199,12 +199,39 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                 true
                             );
 
+    this->smartStripesTexturePanel = Panel(
+                                {
+                                    Section(
+                                        Button(),
+                                        {
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rows", Texture(), 1.f, 0.f, 10.f, 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Thickness", Texture(), 2.f, 0.f, 1.f, 0.25f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Blur", Texture(), 1.f, 0.f, 0.001, 0.0005f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rotation", Texture(), 1.f, 0.f, 360.f, 0.f)
+                                        }
+                                    )
+                                },
+                                glm::vec2(20.f),
+                                glm::vec3(glm::vec2(50.f, 70.f), pos.z),
+                                ColorPalette::mainColor,
+                                ColorPalette::thirdColor,
+                                true,
+                                true,
+                                false,
+                                true,
+                                true,
+                                1.f,
+                                1.f,
+                                {},
+                                20.f,
+                                true
+                            );
+
     for (size_t i = 0; i < 5; i++)
     {
         this->subPanel.sections[0].elements[i].button.color = glm::vec4(0);
         this->subPanelTxtrPack.sections[0].elements[i].button.color = glm::vec4(0);
     }
-
 }
 
 
@@ -439,6 +466,13 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                 smartPositionTexturePanelActive = false;
             }
         }
+
+        if(smartStripesTexturePanelActive){
+            this->smartStripesTexturePanel.render(timer, true);
+            if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->smartStripesTexturePanel.hover && *Mouse::LClick())){
+                smartStripesTexturePanelActive = false;
+            }
+        }
         
         //If pressed any of the texture select the texture
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
@@ -448,6 +482,9 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                 if(this->selectedTextureMode == 4){
                     if(selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){
                         smartPositionTexturePanelActive = true;
+                    }
+                    if(selectedTextureIndex == 3 || selectedTextureIndex == 4){
+                        smartStripesTexturePanelActive = true;
                     }
                 }
             }
@@ -471,6 +508,9 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                     Panel* smartPropPanel;
                     if(this->selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){
                         smartPropPanel = &this->smartPositionTexturePanel;
+                    }
+                    if(this->selectedTextureIndex == 3 || selectedTextureIndex == 4){
+                        smartPropPanel = &this->smartStripesTexturePanel;
                     }
 
                     receivedTexture.smartProperties = glm::vec4(
