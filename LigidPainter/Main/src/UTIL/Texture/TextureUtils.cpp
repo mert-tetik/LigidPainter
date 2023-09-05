@@ -288,8 +288,6 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
 unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
     unsigned int proceduralTxtr;
     
-    std::cout << "proceduralID : " << proceduralID << std::endl; 
-
     if(this->proceduralID == 71){
         Texture normalMapTxtr = Texture(nullptr, textureRes, textureRes);
         Texture normalMapTxtrBlurred = Texture(nullptr, textureRes, textureRes);
@@ -323,7 +321,6 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
     
         mesh.Draw();
 
-
         // Blured normal vector txtr
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMapTxtrBlurred.ID, 0);
 
@@ -341,6 +338,8 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
         ShaderSystem::bluringShader().setVec3("pos"         ,       glm::vec3((float)textureRes / 2.f, (float)textureRes / 2.f, 0.9f));
         ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureRes / 2.f));
+        ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->smartProperties.x);
+
         
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, normalMapTxtr.ID);

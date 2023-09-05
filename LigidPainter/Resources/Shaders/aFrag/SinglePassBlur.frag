@@ -11,6 +11,7 @@ in vec2 TexCoords;
 uniform sampler2D txtr;
 uniform sampler2D uvMask;
 uniform vec2 txtrRes;
+uniform float blurVal;
 
 out vec4 fragColor;
 
@@ -28,12 +29,13 @@ vec3 blur(sampler2D sp, vec2 uv, vec2 scale) {
         for (int y = -samples / 2; y < samples / 2; ++y) {
             offset = vec2(x, y);
             weight = gaussian(offset);
-            if(texture(uvMask, uv + scale * vec2(offset.x, 0.)).r < 0.5)
+            
+            if(texture(uvMask, uv + scale * offset * (blurVal)).r < 0.5){
                 offset.x = 0.;
-            if(texture(uvMask, uv + scale * vec2(0., offset.y)).r < 0.5)
-                offset.y  = 0.;
+                offset.y = 0.;
+            }
                 
-            col += texture(sp, uv + scale * offset).rgb * weight;
+            col += texture(sp, uv + scale * offset * (blurVal)).rgb * weight;
             accum += weight;
         }
     }

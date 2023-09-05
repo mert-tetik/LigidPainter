@@ -940,6 +940,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
     ShaderSystem::bluringShader().setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
     ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
+    ShaderSystem::bluringShader().setFloat("blurVal"     ,     1.f);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureCopy);

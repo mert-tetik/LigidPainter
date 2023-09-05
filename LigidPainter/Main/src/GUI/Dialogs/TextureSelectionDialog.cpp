@@ -227,6 +227,32 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                 true
                             );
 
+    this->edgeWearTexturePanel = Panel(
+                                {
+                                    Section(
+                                        Button(),
+                                        {
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Radius", Texture(), 1.f, 0.f, 10.f, 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Softness", Texture(), 2.f, 0.f, 1.f, 0.25f)
+                                        }
+                                    )
+                                },
+                                glm::vec2(20.f),
+                                glm::vec3(glm::vec2(50.f, 70.f), pos.z),
+                                ColorPalette::mainColor,
+                                ColorPalette::thirdColor,
+                                true,
+                                true,
+                                false,
+                                true,
+                                true,
+                                1.f,
+                                1.f,
+                                {},
+                                20.f,
+                                true
+                            );
+
     for (size_t i = 0; i < 5; i++)
     {
         this->subPanel.sections[0].elements[i].button.color = glm::vec4(0);
@@ -359,16 +385,29 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         else if(this->selectedTextureIndex == 3 || selectedTextureIndex == 4){
             smartPropPanel = &this->smartStripesTexturePanel;
         }
+        else if(this->selectedTextureIndex == 5){
+            smartPropPanel = &this->edgeWearTexturePanel;
+        }
         else{
             skipPanel = true;
         }
         if(!skipPanel){
-            txtr.smartProperties = glm::vec4(
-                                                smartPropPanel->sections[0].elements[0].rangeBar.value,
-                                                smartPropPanel->sections[0].elements[1].rangeBar.value,
-                                                smartPropPanel->sections[0].elements[2].rangeBar.value,
-                                                smartPropPanel->sections[0].elements[3].rangeBar.value
-                                            );
+            if(this->selectedTextureIndex == 5){
+                txtr.smartProperties = glm::vec4(
+                                                    smartPropPanel->sections[0].elements[0].rangeBar.value,
+                                                    smartPropPanel->sections[0].elements[1].rangeBar.value,
+                                                    0,
+                                                    0
+                                                );
+            }
+            else{
+                txtr.smartProperties = glm::vec4(
+                                                    smartPropPanel->sections[0].elements[0].rangeBar.value,
+                                                    smartPropPanel->sections[0].elements[1].rangeBar.value,
+                                                    smartPropPanel->sections[0].elements[2].rangeBar.value,
+                                                    smartPropPanel->sections[0].elements[3].rangeBar.value
+                                                );
+            }
         }
 
         unsigned int proc = txtr.generateProceduralTexture(getMaterialDisplayerModel()->meshes[0], 512);
@@ -570,6 +609,12 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                 smartStripesTexturePanelActive = false;
             }
         }
+        if(edgeWearTexturePanelActive){
+            this->edgeWearTexturePanel.render(timer, true);
+            if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->edgeWearTexturePanel.hover && *Mouse::LClick())){
+                edgeWearTexturePanelActive = false;
+            }
+        }
         
         //If pressed any of the texture select the texture
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
@@ -582,6 +627,9 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                     }
                     if(selectedTextureIndex == 3 || selectedTextureIndex == 4){
                         smartStripesTexturePanelActive = true;
+                    }
+                    if(selectedTextureIndex == 5){
+                        edgeWearTexturePanelActive = true;
                     }
                 }
             }
