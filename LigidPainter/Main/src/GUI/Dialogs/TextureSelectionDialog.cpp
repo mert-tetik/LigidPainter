@@ -37,6 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 6
 
 TextureSelectionDialog::TextureSelectionDialog(){
+
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
     this->textureSelectingPanel = Panel(
                                                     
@@ -104,12 +105,12 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 2.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Normal Strength", Texture(), 2.f, 0.f, 100.f, 10.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 6.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 1.f, 0.f, 100.f, 10.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 2.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Scale", Texture(), 2.f, 0.f, 200.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 2.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 1.f, 0.f, 200.f, 10.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 1.f),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false)
                                         }
                                     )
@@ -177,14 +178,14 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         Button(),
                                         {
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Offset", Texture(), 1.f, 0.f, 10.f, 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Yaw", Texture(), 2.f, 0.f, 360.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Yaw", Texture(), 1.f, 0.f, 360.f, 0.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Pitch", Texture(), 1.f, 0.f, 360.f, 0.0f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Position", Texture(), 1.f, -1.f, 1.f, 0.f)
                                         }
                                     )
                                 },
-                                glm::vec2(20.f),
-                                glm::vec3(glm::vec2(50.f, 70.f), pos.z),
+                                glm::vec2(8.f, 7.f),
+                                glm::vec3(glm::vec2(50.f, 80.f), pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
                                 true,
@@ -205,14 +206,14 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         Button(),
                                         {
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rows", Texture(), 1.f, 0.f, 10.f, 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Thickness", Texture(), 2.f, 0.f, 1.f, 0.25f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Thickness", Texture(), 1.f, 0.f, 1.f, 0.25f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Blur", Texture(), 1.f, 0.f, 0.001, 0.0005f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rotation", Texture(), 1.f, 0.f, 360.f, 0.f)
                                         }
                                     )
                                 },
-                                glm::vec2(20.f),
-                                glm::vec3(glm::vec2(50.f, 70.f), pos.z),
+                                glm::vec2(8.f, 7.f),
+                                glm::vec3(glm::vec2(50.f, 80.f), pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
                                 true,
@@ -233,12 +234,12 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         Button(),
                                         {
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Radius", Texture(), 1.f, 0.f, 10.f, 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Softness", Texture(), 2.f, 0.f, 1.f, 0.25f)
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Softness", Texture(), 1.f, 0.f, 1.f, 0.25f)
                                         }
                                     )
                                 },
-                                glm::vec2(20.f),
-                                glm::vec3(glm::vec2(50.f, 70.f), pos.z),
+                                glm::vec2(8.f, 4.f),
+                                glm::vec3(glm::vec2(50.f, 80.f), pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
                                 true,
@@ -352,8 +353,10 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     glViewport(0, 0, displayRes, displayRes);
 
     if(this->selectedTextureMode == 4){
-
         Camera matCam;
+        matCam.cameraPos = glm::vec3(0,0,-8.f);
+        matCam.radius = 8.f;
+
 
         //Move the camera to the side
         glm::mat4 view = glm::lookAt(matCam.cameraPos, 
@@ -427,23 +430,18 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         glActiveTexture(GL_TEXTURE6);
         glBindTexture(GL_TEXTURE_2D, proc);
         glActiveTexture(GL_TEXTURE7);
-        glBindTexture(GL_TEXTURE_2D, proc);
+        if(this->selectedTextureIndex == 5)
+            glBindTexture(GL_TEXTURE_2D, proc);
+        else
+            glBindTexture(GL_TEXTURE_2D, this->whiteTxtr.ID);
 
-        //Draw the sphere
         getMaterialDisplayerModel()->Draw();
-
-        ShaderSystem::tdModelShader().setInt("displayingMode", 0);
-
-        //Just in case (Is not necessary (probably (I guess))) !!Actually I'm 100% sure that's not necessary but u know. Just in case. lol
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //!Finish (prepare rendering the GUI)
 
         //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
         ShaderSystem::buttonShader().use();
 
         getBox()->bindBuffers();
-        glDeleteTextures(1, &proc);
+        //glDeleteTextures(1, &proc);
     }
 
 
@@ -528,6 +526,11 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
             this->generateDisplayingTexture(dispTxtr, 256);
             this->smartTextureDisplayingTextures.push_back(dispTxtr);
         }
+    }
+
+    if(this->whiteTxtr.ID == 0){
+        std::vector<char> whitePx = {127, 127, 127, 127}; 
+        this->whiteTxtr = Texture(&whitePx[0], 1, 1, GL_NEAREST);
     }
     
     unsigned int bgTexture; 
@@ -636,12 +639,18 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                 if(this->selectedTextureMode == 4){
                     if(selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){
                         smartPositionTexturePanelActive = true;
+                        smartPositionTexturePanel.pos = this->textureSelectingPanel.sections[0].elements[i].button.pos;
+                        smartPositionTexturePanel.pos.y += this->textureSelectingPanel.sections[0].elements[i].button.scale.y + smartPositionTexturePanel.scale.y;
                     }
                     if(selectedTextureIndex == 3 || selectedTextureIndex == 4){
                         smartStripesTexturePanelActive = true;
+                        smartStripesTexturePanel.pos = this->textureSelectingPanel.sections[0].elements[i].button.pos;
+                        smartStripesTexturePanel.pos.y += this->textureSelectingPanel.sections[0].elements[i].button.scale.y + smartStripesTexturePanel.scale.y;
                     }
                     if(selectedTextureIndex == 5){
                         edgeWearTexturePanelActive = true;
+                        edgeWearTexturePanel.pos = this->textureSelectingPanel.sections[0].elements[i].button.pos;
+                        edgeWearTexturePanel.pos.y += this->textureSelectingPanel.sections[0].elements[i].button.scale.y + edgeWearTexturePanel.scale.y;
                     }
                 }
             }
@@ -800,7 +809,7 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
     else if(selectedTextureMode == 3){
         for (size_t i = 0; i < Library::getTexturePackArraySize(); i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),Library::getTexturePack(i)->title   , Texture(), 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),Library::getTexturePack(i)->title   , Texture(), 0.f,false)));
         }
     }
     else if(selectedTextureMode == 4){

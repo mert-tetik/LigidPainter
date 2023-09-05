@@ -396,6 +396,8 @@ public:
    Panel edgeWearTexturePanel;
    bool edgeWearTexturePanelActive = false;
 
+   Texture whiteTxtr;
+
    std::vector<Texture> smartTextureDisplayingTextures;
 
    Texture displayingTexture;
