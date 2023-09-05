@@ -64,6 +64,7 @@ void Settings::loadAppTextures(){
     __appTextures.packageIcon.load("./LigidPainter/Resources/Icons/Package.png");
     __appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
     __appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
+    __appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.load("./LigidPainter/Resources/Images/NoMaterialModifierIsConnectedToMaterial.jpg");
 }
 
 Context* getContext(){

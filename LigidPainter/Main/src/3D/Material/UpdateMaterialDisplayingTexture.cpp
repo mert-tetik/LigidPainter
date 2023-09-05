@@ -86,18 +86,34 @@ void Material::updateMaterialDisplayingTexture(
     ShaderSystem::tdModelShader().setMat4("projection",projectionMatrix);
     
     //Bind the channels of the material
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].albedo.ID);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].roughness.ID);
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].metallic.ID);
-    glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].normalMap.ID);
-    glActiveTexture(GL_TEXTURE6);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].heightMap.ID);
-    glActiveTexture(GL_TEXTURE7);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].ambientOcclusion.ID);
+    if(!this->materialModifiers.size()){
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+    }
+    else{
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].albedo.ID);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].roughness.ID);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].metallic.ID);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].normalMap.ID);
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].heightMap.ID);
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].ambientOcclusion.ID);
+    }
     
     //Draw the sphere
     getSphereModel()->Draw();

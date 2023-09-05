@@ -182,6 +182,7 @@ namespace Settings{
         //--Textures
         Texture greetingDialogImage;  
         Texture noMaterialConnectedToTheMeshWarningImage;  
+        Texture noMaterialModifierIsConnectedToMaterialWarningImage;
     };
 
     struct Properties{
