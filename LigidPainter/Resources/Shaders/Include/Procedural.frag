@@ -1660,6 +1660,8 @@ float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, ve
         res = smartStripes(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
     else if(proceduralID == 70)
         res = smartStripes2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
+    //else if(proceduralID == 71)
+    //   edge wear
     else
         res = 1.;
 

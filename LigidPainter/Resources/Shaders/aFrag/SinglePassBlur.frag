@@ -45,6 +45,6 @@ void main() {
     vec2 ps = vec2(1.0) / txtrRes;
     vec2 uv = TexCoords;
     
-    fragColor.rgb = vec3(blur(txtr, uv, ps).r);
+    fragColor.rgb = vec3(blur(txtr, uv, ps));
     fragColor.a = 1.0;
 }

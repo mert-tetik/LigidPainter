@@ -54,6 +54,8 @@ Shader __txtrEditorColoringShader;
 Shader __splitTexturesShader;
 Shader __solidShadingShader;
 Shader __textureRenderingShader;
+Shader __normalVectorShader;
+Shader __edgeWearShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -75,6 +77,7 @@ void ShaderSystem::initShaderSystem(){
     __bluringShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/SinglePassBlur.frag");
     __proceduralDisplayerShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/TextureSelectionProceduralDisplayer.frag");
     __to2DProcedural.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/To2DProcedural.frag");
+    __normalVectorShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/NormalVector.frag");
     __colorIDMaskingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/MaterialID.frag");
     __grayScaleIDMaskingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/GrayScaleMasking.frag");
     __sceneTilesShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/SceneTiles.frag");
@@ -88,6 +91,7 @@ void ShaderSystem::initShaderSystem(){
     __splitTexturesShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/SplitTextures.frag");
     __solidShadingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/SolidShading.frag");
     __textureRenderingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/TextureRendering.frag");
+    __edgeWearShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/EdgeWear.frag");
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -185,4 +189,10 @@ Shader ShaderSystem::solidShadingShader(){
 }
 Shader ShaderSystem::textureRenderingShader(){
     return __textureRenderingShader;
+}
+Shader ShaderSystem::normalVectorShader(){
+    return __normalVectorShader;
+}
+Shader ShaderSystem::edgeWearShader(){
+    return __edgeWearShader;
 }

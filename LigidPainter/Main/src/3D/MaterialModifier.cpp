@@ -926,6 +926,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    //TODO : Remove the box
     Box box;
     box.init();
     box.bindBuffers();

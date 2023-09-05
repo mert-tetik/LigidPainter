@@ -116,6 +116,8 @@ namespace ShaderSystem{
     Shader splitTexturesShader();
     Shader solidShadingShader();
     Shader textureRenderingShader();
+    Shader normalVectorShader();
+    Shader edgeWearShader();
 
     void initShaderSystem();
 };

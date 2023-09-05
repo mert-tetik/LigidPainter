@@ -273,7 +273,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
             glDrawArrays(GL_TRIANGLES, 0 , 6);
             
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glDeleteFramebuffers(0, &FBO);
+            glDeleteFramebuffers(1, &FBO);
         }
 
 
@@ -397,7 +397,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
             glDrawArrays(GL_TRIANGLES, 0 , 6);
             
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            glDeleteFramebuffers(0, &FBO);
+            glDeleteFramebuffers(1, &FBO);
         }
         
         // DELETE ALL THE MESH CHANNEL TEXTURES

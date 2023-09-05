@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #define MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE 29
 #define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 37
-#define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 5
+#define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 6
 
 TextureSelectionDialog::TextureSelectionDialog(){
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
@@ -352,21 +352,26 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         ShaderSystem::tdModelShader().setMat4("projection",projectionMatrix);
 
         Panel* smartPropPanel;
+        bool skipPanel = false;
         if(this->selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){
             smartPropPanel = &this->smartPositionTexturePanel;
         }
-        if(this->selectedTextureIndex == 3 || selectedTextureIndex == 4){
+        else if(this->selectedTextureIndex == 3 || selectedTextureIndex == 4){
             smartPropPanel = &this->smartStripesTexturePanel;
         }
+        else{
+            skipPanel = true;
+        }
+        if(!skipPanel){
+            txtr.smartProperties = glm::vec4(
+                                                smartPropPanel->sections[0].elements[0].rangeBar.value,
+                                                smartPropPanel->sections[0].elements[1].rangeBar.value,
+                                                smartPropPanel->sections[0].elements[2].rangeBar.value,
+                                                smartPropPanel->sections[0].elements[3].rangeBar.value
+                                            );
+        }
 
-        txtr.smartProperties = glm::vec4(
-                                            smartPropPanel->sections[0].elements[0].rangeBar.value,
-                                            smartPropPanel->sections[0].elements[1].rangeBar.value,
-                                            smartPropPanel->sections[0].elements[2].rangeBar.value,
-                                            smartPropPanel->sections[0].elements[3].rangeBar.value
-                                        );
-
-        unsigned int proc = txtr.generateProceduralTexture(getSphereModel()->meshes[0], 512);
+        unsigned int proc = txtr.generateProceduralTexture(getMaterialDisplayerModel()->meshes[0], 512);
         glViewport(0, 0, displayRes, displayRes);
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
         ShaderSystem::tdModelShader().use();
@@ -386,7 +391,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         glBindTexture(GL_TEXTURE_2D, proc);
 
         //Draw the sphere
-        getSphereModel()->Draw();
+        getMaterialDisplayerModel()->Draw();
 
         ShaderSystem::tdModelShader().setInt("displayingMode", 0);
 
