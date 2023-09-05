@@ -234,7 +234,8 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         Button(),
                                         {
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Radius", Texture(), 1.f, 0.f, 10.f, 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Softness", Texture(), 1.f, 0.f, 1.f, 0.25f)
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Multiply", Texture(), 1.f, 0.f, 10.f, 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Blur", Texture(), 1.f, 0.f, 10.f, 1.f)
                                         }
                                     )
                                 },
@@ -333,6 +334,24 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     
     glDepthFunc(GL_LEQUAL);
 
+    if(this->selectedTextureMode != 3){
+        txtr.proceduralScale = this->subPanel.sections[0].elements[9].rangeBar.value / 10.f;
+        txtr.proceduralnverted = this->subPanel.sections[0].elements[8].checkBox.clickState1;
+        txtr.proceduralNormalMap = this->subPanel.sections[0].elements[5].checkBox.clickState1;
+        txtr.proceduralNormalGrayScale = this->subPanel.sections[0].elements[6].checkBox.clickState1;
+        txtr.proceduralNormalStrength = this->subPanel.sections[0].elements[7].rangeBar.value;
+        txtr.proceduralUseTexCoords = this->subPanel.sections[0].elements[10].checkBox.clickState1;
+    }
+    
+    if(this->selectedTextureMode == 3){
+        txtr.proceduralScale = 1.f;
+        txtr.proceduralnverted = this->subPanelTxtrPack.sections[0].elements[8].checkBox.clickState1;
+        txtr.proceduralNormalMap = this->subPanelTxtrPack.sections[0].elements[5].checkBox.clickState1;
+        txtr.proceduralNormalGrayScale = this->subPanelTxtrPack.sections[0].elements[6].checkBox.clickState1;
+        txtr.proceduralNormalStrength = this->subPanelTxtrPack.sections[0].elements[7].rangeBar.value;
+        txtr.proceduralUseTexCoords = this->subPanelTxtrPack.sections[0].elements[15].checkBox.clickState1;
+    }
+
     if(this->selectedTextureMode == 3){
         if(this->selectedTextureIndex < Library::getTexturePackArraySize()){
             Library::getTexturePack(this->selectedTextureIndex)->apply(
@@ -399,7 +418,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
                 txtr.smartProperties = glm::vec4(
                                                     smartPropPanel->sections[0].elements[0].rangeBar.value,
                                                     smartPropPanel->sections[0].elements[1].rangeBar.value,
-                                                    0,
+                                                    smartPropPanel->sections[0].elements[2].rangeBar.value,
                                                     0
                                                 );
             }
@@ -474,7 +493,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     }
 
 
-    if(this->subPanel.sections[0].elements[5].checkBox.clickState1 || this->subPanelTxtrPack.sections[0].elements[5].checkBox.clickState1){
+    if((this->subPanel.sections[0].elements[5].checkBox.clickState1 || this->subPanelTxtrPack.sections[0].elements[5].checkBox.clickState1) && this->selectedTextureMode != 4){
         Texture txtrObject = Texture(txtr.ID);
 
         unsigned int normalMapRes;
@@ -660,24 +679,6 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         // Pressed to the select button
         if((this->subPanel.sections[0].elements[11].button.clicked && this->selectedTextureMode != 3) || (this->subPanelTxtrPack.sections[0].elements[16].button.clicked && this->selectedTextureMode == 3)){
-            
-            if(this->selectedTextureMode != 3){
-                receivedTexture.proceduralScale = this->subPanel.sections[0].elements[9].rangeBar.value / 10.f;
-                receivedTexture.proceduralnverted = this->subPanel.sections[0].elements[8].checkBox.clickState1;
-                receivedTexture.proceduralNormalMap = this->subPanel.sections[0].elements[5].checkBox.clickState1;
-                receivedTexture.proceduralNormalGrayScale = this->subPanel.sections[0].elements[6].checkBox.clickState1;
-                receivedTexture.proceduralNormalStrength = this->subPanel.sections[0].elements[7].rangeBar.value;
-                receivedTexture.proceduralUseTexCoords = this->subPanel.sections[0].elements[10].checkBox.clickState1;
-            }
-            
-            if(this->selectedTextureMode == 3){
-                receivedTexture.proceduralScale = 1.f;
-                receivedTexture.proceduralnverted = this->subPanelTxtrPack.sections[0].elements[8].checkBox.clickState1;
-                receivedTexture.proceduralNormalMap = this->subPanelTxtrPack.sections[0].elements[5].checkBox.clickState1;
-                receivedTexture.proceduralNormalGrayScale = this->subPanelTxtrPack.sections[0].elements[6].checkBox.clickState1;
-                receivedTexture.proceduralNormalStrength = this->subPanelTxtrPack.sections[0].elements[7].rangeBar.value;
-                receivedTexture.proceduralUseTexCoords = this->subPanelTxtrPack.sections[0].elements[15].checkBox.clickState1;
-            }
             
             generateDisplayingTexture(receivedTexture, displayingTextureRes);
             

@@ -6,6 +6,8 @@ out vec4 fragColor;
 
 uniform sampler2D normalVectorTxtr;
 uniform sampler2D normalVectorTxtrBlurred;
+uniform int invert;
+uniform float softness;
 
 vec4 difference(vec4 baseColor, vec4 blendColor) {
     vec4 resultColor;
@@ -19,5 +21,10 @@ void main(){
     fragColor = difference(texture(normalVectorTxtr, TexCoords), texture(normalVectorTxtrBlurred, TexCoords));
     fragColor.r = max(max(fragColor.r, fragColor.g), fragColor.b); 
     fragColor.g = fragColor.r; 
-    fragColor.b = fragColor.r; 
+    fragColor.b = fragColor.r;
+
+    if(invert == 1)
+        fragColor.rgb = vec3(1.) - fragColor.rgb;
+
+    fragColor.rgb *= softness;  
 }

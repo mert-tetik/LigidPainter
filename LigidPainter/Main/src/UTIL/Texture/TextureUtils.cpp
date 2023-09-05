@@ -348,11 +348,13 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         ShaderSystem::edgeWearShader().use();
         ShaderSystem::edgeWearShader().setInt("normalVectorTxtr", 0);
         ShaderSystem::edgeWearShader().setInt("normalVectorTxtrBlurred", 1);
+        ShaderSystem::edgeWearShader().setInt("invert", this->proceduralnverted);
+        ShaderSystem::edgeWearShader().setFloat("softness", this->smartProperties.y);
         ShaderSystem::edgeWearShader().setVec2("txtrRes", glm::vec2(textureRes));
-        ShaderSystem::edgeWearShader().setMat4("projection"  ,       projection);
-        ShaderSystem::edgeWearShader().setMat4("projectedPosProjection"  ,       projection);
-        ShaderSystem::edgeWearShader().setVec3("pos"         ,       glm::vec3((float)textureRes / 2.f, (float)textureRes / 2.f, 0.9f));
-        ShaderSystem::edgeWearShader().setVec2("scale"       ,       glm::vec2((float)textureRes / 2.f));
+        ShaderSystem::edgeWearShader().setMat4("projection", projection);
+        ShaderSystem::edgeWearShader().setMat4("projectedPosProjection", projection);
+        ShaderSystem::edgeWearShader().setVec3("pos", glm::vec3((float)textureRes / 2.f, (float)textureRes / 2.f, 0.9f));
+        ShaderSystem::edgeWearShader().setVec2("scale", glm::vec2((float)textureRes / 2.f));
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, normalMapTxtr.ID);
         glActiveTexture(GL_TEXTURE1);
@@ -360,10 +362,34 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
+
+        //Bluring the result        
+        ShaderSystem::bluringShader().use();
+        ShaderSystem::bluringShader().setInt("txtr", 0);
+        ShaderSystem::bluringShader().setInt("uvMask", 1);
+        ShaderSystem::bluringShader().setVec2("txtrRes", glm::vec2(textureRes));
+        ShaderSystem::bluringShader().setMat4("projection"  ,       projection);
+        ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
+        ShaderSystem::bluringShader().setVec3("pos"         ,       glm::vec3((float)textureRes / 2.f, (float)textureRes / 2.f, 0.9f));
+        ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureRes / 2.f));
+        ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->smartProperties.z);
+        
+        Texture procObject = proceduralTxtr;
+        Texture procCopy = procObject.duplicateTexture();
+        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, procCopy.ID);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glDeleteFramebuffers(1, &FBO);
         glDeleteTextures(1, &normalMapTxtr.ID);
         glDeleteTextures(1, &normalMapTxtrBlurred.ID);
+        glDeleteTextures(1, &procCopy.ID);
     }
     else{
         ShaderSystem::to2DProcedural().use();
