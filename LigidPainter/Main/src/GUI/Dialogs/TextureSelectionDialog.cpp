@@ -233,13 +233,14 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                     Section(
                                         Button(),
                                         {
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Radius", Texture(), 1.f, 0.f, 10.f, 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Multiply", Texture(), 1.f, 0.f, 10.f, 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Blur", Texture(), 1.f, 0.f, 10.f, 1.f)
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Radius", Texture(), 1.f, 0.f, 10.f, 0.15f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Multiply", Texture(), 1.f, 0.f, 10.f, 3.37f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Blur", Texture(), 1.f, 0.f, 10.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Noise Strength", Texture(), 1.f, 0.f, 1.f, 1.f)
                                         }
                                     )
                                 },
-                                glm::vec2(8.f, 4.f),
+                                glm::vec2(8.f, 7.f),
                                 glm::vec3(glm::vec2(50.f, 80.f), pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
@@ -414,22 +415,12 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
             skipPanel = true;
         }
         if(!skipPanel){
-            if(this->selectedTextureIndex == 5){
-                txtr.smartProperties = glm::vec4(
-                                                    smartPropPanel->sections[0].elements[0].rangeBar.value,
-                                                    smartPropPanel->sections[0].elements[1].rangeBar.value,
-                                                    smartPropPanel->sections[0].elements[2].rangeBar.value,
-                                                    0
-                                                );
-            }
-            else{
-                txtr.smartProperties = glm::vec4(
-                                                    smartPropPanel->sections[0].elements[0].rangeBar.value,
-                                                    smartPropPanel->sections[0].elements[1].rangeBar.value,
-                                                    smartPropPanel->sections[0].elements[2].rangeBar.value,
-                                                    smartPropPanel->sections[0].elements[3].rangeBar.value
-                                                );
-            }
+            txtr.smartProperties = glm::vec4(
+                                                smartPropPanel->sections[0].elements[0].rangeBar.value,
+                                                smartPropPanel->sections[0].elements[1].rangeBar.value,
+                                                smartPropPanel->sections[0].elements[2].rangeBar.value,
+                                                smartPropPanel->sections[0].elements[3].rangeBar.value
+                                            );
         }
 
         unsigned int proc = txtr.generateProceduralTexture(getMaterialDisplayerModel()->meshes[0], 512);

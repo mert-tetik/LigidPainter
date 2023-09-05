@@ -287,6 +287,9 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
     if(this->proceduralID == 71){
         Texture normalMapTxtr = Texture(nullptr, textureRes, textureRes);
         Texture normalMapTxtrBlurred = Texture(nullptr, textureRes, textureRes);
+        Texture noiseTxtr;
+        noiseTxtr.proceduralID = 37;
+        noiseTxtr = noiseTxtr.generateProceduralTexture(mesh, textureRes);
 
         glActiveTexture(GL_TEXTURE0);
         glGenTextures(1,&proceduralTxtr);
@@ -348,8 +351,10 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         ShaderSystem::edgeWearShader().use();
         ShaderSystem::edgeWearShader().setInt("normalVectorTxtr", 0);
         ShaderSystem::edgeWearShader().setInt("normalVectorTxtrBlurred", 1);
+        ShaderSystem::edgeWearShader().setInt("noiseTexture", 2);
         ShaderSystem::edgeWearShader().setInt("invert", this->proceduralnverted);
         ShaderSystem::edgeWearShader().setFloat("softness", this->smartProperties.y);
+        ShaderSystem::edgeWearShader().setFloat("noiseStrength", this->smartProperties.w);
         ShaderSystem::edgeWearShader().setVec2("txtrRes", glm::vec2(textureRes));
         ShaderSystem::edgeWearShader().setMat4("projection", projection);
         ShaderSystem::edgeWearShader().setMat4("projectedPosProjection", projection);
@@ -359,6 +364,8 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         glBindTexture(GL_TEXTURE_2D, normalMapTxtr.ID);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, normalMapTxtrBlurred.ID);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, noiseTxtr.ID);
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -390,6 +397,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         glDeleteTextures(1, &normalMapTxtr.ID);
         glDeleteTextures(1, &normalMapTxtrBlurred.ID);
         glDeleteTextures(1, &procCopy.ID);
+        glDeleteTextures(1, &noiseTxtr.ID);
     }
     else{
         ShaderSystem::to2DProcedural().use();
