@@ -34,10 +34,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class Renderer
 {
 public:
-    /*!
-        @brief Render 2D square 
-    */
-    Box box; 
 
     /*!
         @brief The GUI

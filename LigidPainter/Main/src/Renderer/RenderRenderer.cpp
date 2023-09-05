@@ -69,7 +69,7 @@ void Renderer::render(){
     //Render skybox
     renderSkyBox();
 
-    box.bindBuffers();
+    getBox()->bindBuffers();
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, userInterface.displayerDialog.panel.sections[0].elements[5].button.texture.ID);
     ShaderSystem::buttonShader().use();
@@ -84,7 +84,7 @@ void Renderer::render(){
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
     ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
     glClear(GL_DEPTH_BUFFER_BIT);
-    box.unbindBuffers();
+    getBox()->unbindBuffers();
 
     //Set the uniforms regarding 3D models (mostly vertex shader) 
     set3DUniforms();
@@ -345,7 +345,7 @@ void Renderer::render(){
     glClear(GL_DEPTH_BUFFER_BIT);
 
     //Bind 2D square vertex buffers
-    box.bindBuffers();
+    getBox()->bindBuffers();
     
     //Update the UI projection using window size
     userInterface.projection = glm::ortho(0.f,(float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
@@ -353,7 +353,6 @@ void Renderer::render(){
     //Render the UI
     userInterface.render(   //Params
                             timer,
-                            box,
                             project,
                             painter,
                             skybox
@@ -376,7 +375,7 @@ void Renderer::render(){
         {   
             //Update the material after painting
             //TODO : Do smt after painting
-            // library.materials[i].updateMaterial(this->settings.textureRes, box, context, shaders.buttonShader, shaders.tdModelShader);
+            // library.materials[i].updateMaterial(this->settings.textureRes, context, shaders.buttonShader, shaders.tdModelShader);
         }
         */
 
@@ -389,7 +388,7 @@ void Renderer::render(){
     }
 
 
-    box.unbindBuffers(); //Finish rendering the UI
+    getBox()->unbindBuffers(); //Finish rendering the UI
 
 
     //Set mouse states to default

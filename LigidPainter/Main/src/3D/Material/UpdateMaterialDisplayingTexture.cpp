@@ -31,7 +31,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Material::updateMaterialDisplayingTexture(
                                                 float textureRes,
-                                                Box box,
                                                 bool updateMaterial,
                                                 Camera matCam,
                                                 int displayingMode

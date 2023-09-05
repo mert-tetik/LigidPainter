@@ -216,9 +216,7 @@ void Texture::removeSeams(Mesh& mesh, int textureResolution){
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Box box;
-    box.init();
-    box.bindBuffers();
+    getBox()->bindBuffers();
     
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
     ShaderSystem::boundaryExpandingShader().use();
@@ -258,9 +256,7 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Box box;
-    box.init();
-    box.bindBuffers();
+    getBox()->bindBuffers();
     
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution.x, (float)textureResolution.y, 0.f); 
     ShaderSystem::boundaryExpandingShader().use();
@@ -325,9 +321,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMapTxtrBlurred.ID, 0);
 
         //TODO : Remove the box
-        Box box;
-        box.init();
-        box.bindBuffers();
+        getBox()->bindBuffers();
         
         glm::mat4 projection = glm::ortho(0.f, (float)textureRes, (float)textureRes, 0.f); 
         ShaderSystem::bluringShader().use();
@@ -463,9 +457,7 @@ void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution, 
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    Box box;
-    box.init();
-    box.bindBuffers();
+    getBox()->bindBuffers();
     
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
     ShaderSystem::heightToNormalMap().use();

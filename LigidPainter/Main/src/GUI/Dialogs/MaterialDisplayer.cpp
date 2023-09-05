@@ -67,7 +67,7 @@ MaterialDisplayerDialog::MaterialDisplayerDialog(){
     this->displayingCam.radius = 7.f;
 }
 
-void MaterialDisplayerDialog::render(Timer timer, Box& box){
+void MaterialDisplayerDialog::render(Timer timer){
     
     dialogControl.updateStart();
 
@@ -81,7 +81,7 @@ void MaterialDisplayerDialog::render(Timer timer, Box& box){
             this->dialogControl.unActivate();
     }
 
-    this->material.updateMaterialDisplayingTexture(512, box, false, this->displayingCam, 0);
+    this->material.updateMaterialDisplayingTexture(512, false, this->displayingCam, 0);
     
     dialogControl.updateEnd(timer,0.15f);
 }

@@ -145,8 +145,6 @@ public:
    Button textBtn2;
    Button textBtn3;
    Button textBtn4;
-   Box box;
-   
    
    AppMaterialModifiers appMaterialModifiers;
    DialogControl dialogControl;
@@ -234,7 +232,6 @@ public:
    Button textButton1;
    Panel bgPanel;
    
-   Box box;
    DialogControl dialogControl;
 
    bool startScreen = true;
@@ -254,12 +251,12 @@ class MaterialEditorDialog
 {
 private:
    //Private member functions
-   void updateLayerPanel(Material &material,Box &box);
+   void updateLayerPanel(Material &material);
    void checkLayerPanel(Material &material);
-   void checkModifiersPanel(Material &material,Box box,TextureSelectionDialog &textureSelectionDialog);
-   void updateLayerPanelElements(Material &material,Box &box);
-   void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material,Box box);
-   void manageContextMenuActions( Material &material, Box box);
+   void checkModifiersPanel(Material &material, TextureSelectionDialog &textureSelectionDialog);
+   void updateLayerPanelElements(Material &material);
+   void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material);
+   void manageContextMenuActions( Material &material);
 
    bool updateTheMaterial = false;
    bool prevUpdateTheMaterial = false;
@@ -288,7 +285,7 @@ public:
 
    //Public member functions
    void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog,
-               Material &material, Box box);
+               Material &material);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
 };
@@ -304,7 +301,6 @@ class NewProjectDialog
     AppMaterialModifiers appMaterialModifiers;
  public:
     Panel panel;
-    Box box;
     
     DialogControl dialogControl;
 
@@ -327,7 +323,6 @@ class ExportDialog
     
  public:
     Panel panel;
-    Box box;
     
     DialogControl dialogControl;
 
@@ -355,7 +350,7 @@ class MaterialDisplayerDialog
    MaterialDisplayerDialog();
 
    //Public member functions
-   void render(Timer timer, Box& box);
+   void render(Timer timer);
  };
 
 
@@ -401,6 +396,8 @@ public:
    Panel edgeWearTexturePanel;
    bool edgeWearTexturePanelActive = false;
 
+   std::vector<Texture> smartTextureDisplayingTextures;
+
    Texture displayingTexture;
    int selectedTextureIndex = 0; 
    bool clicked = false; 
@@ -411,11 +408,10 @@ public:
    //Constructors
    TextureSelectionDialog();
 
-
    //Public member functions
-   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes, Box& box);
+   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes);
 
-   void generateDisplayingTexture(Texture& txtr, int displayingTextureRes, Box& box);
+   void generateDisplayingTexture(Texture& txtr, int displayingTextureRes);
 
 };
 

@@ -261,7 +261,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
 }
 
 
-void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displayingTextureRes, Box& box){
+void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displayingTextureRes){
     
     GLint viewport[4]; 
     glGetIntegerv(GL_VIEWPORT, viewport);
@@ -442,7 +442,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
         ShaderSystem::buttonShader().use();
 
-        box.bindBuffers();
+        getBox()->bindBuffers();
         glDeleteTextures(1, &proc);
     }
 
@@ -512,16 +512,28 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
 //Forward declarations for the utility functions
 static void initTextureSelectionDialog(int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, int& selectedTextureIndex, Texture& receivedTexture);
 static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
-static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode);
+static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, std::vector<Texture> smartTextureDisplayingTextures);
 static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, int& selectedTextureMode, int& selectedTextureIndex);
 
-void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes, Box& box){
+void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes){
     
     this->dialogControl.activate();
         
+    if(!this->smartTextureDisplayingTextures.size()){
+        for (size_t i = 0; i < MAX_PROCEDURAL_SMART_TEXTURE_SIZE; i++)
+        {
+            Texture dispTxtr;
+            this->selectedTextureMode = 4;
+            this->selectedTextureIndex = i;
+            this->generateDisplayingTexture(dispTxtr, 256);
+            this->smartTextureDisplayingTextures.push_back(dispTxtr);
+        }
+    }
+    
     unsigned int bgTexture; 
     glm::ivec2 windowSize;
     initTextureSelectionDialog(this->selectedTextureMode, bgTexture, windowSize, this->subPanel, this->selectedTextureIndex, receivedTexture);
+
 
     while (!getContext()->window.shouldClose())
     {
@@ -534,9 +546,9 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         dialogControl.updateStart();
 
-        generateDisplayingTexture(displayingTexture, 512, box);
+        generateDisplayingTexture(displayingTexture, 512);
 
-        updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode);
+        updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, this->smartTextureDisplayingTextures);
 
         updateSubPanel(this->subPanel, this->subPanelTxtrPack, this->selectedTextureMode, this->selectedTextureIndex);
 
@@ -563,7 +575,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
         this->selectedTextureDisplayingPanel.render(timer, true);
 
-        if(this->selectedTextureMode == 0 || this->selectedTextureMode == 1 || this->selectedTextureMode == 2 || this->selectedTextureMode == 4){
+        if(this->selectedTextureMode == 0 || this->selectedTextureMode == 1 || this->selectedTextureMode == 2){
             for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
             {
                 ShaderSystem::proceduralDisplayerShader().use();
@@ -658,7 +670,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                 receivedTexture.proceduralUseTexCoords = this->subPanelTxtrPack.sections[0].elements[15].checkBox.clickState1;
             }
             
-            generateDisplayingTexture(receivedTexture, displayingTextureRes, box);
+            generateDisplayingTexture(receivedTexture, displayingTextureRes);
             
             receivedTexture.title = "SelectedTexture";
             
@@ -764,7 +776,7 @@ static void drawBG(
     ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
 }
 
-static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode){
+static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, std::vector<Texture> smartTextureDisplayingTextures){
     textureSelectingPanel.sections.clear();
     std::vector<Element> sectionElements;
     if(selectedTextureMode == 0){
@@ -794,7 +806,7 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
     else if(selectedTextureMode == 4){
         for (size_t i = 0; i < MAX_PROCEDURAL_SMART_TEXTURE_SIZE; i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),""       , Texture(), 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),""       , smartTextureDisplayingTextures[i], 0.f,false)));
         }
     }
 

@@ -30,6 +30,8 @@ Scene __scene; //3D Scene structure
 Model __model;
 Model __sphereModel;
 Model __materialDisplayerModel;
+Box __box;
+
 glm::vec2 __videoScale;
 
 void Settings::loadAppTextures(){
@@ -81,6 +83,9 @@ Model* getSphereModel(){
 }
 Model* getMaterialDisplayerModel(){
     return &__materialDisplayerModel;
+}
+Box* getBox(){
+    return &__box;
 }
 
 

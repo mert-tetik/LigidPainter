@@ -115,7 +115,7 @@ void Renderer::initRenderer(){
     skybox.init();
 
     //Create 2D square vertex buffers
-    box.init();
+    getBox()->init();
     
     //Load the default skybox
     skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox's itself

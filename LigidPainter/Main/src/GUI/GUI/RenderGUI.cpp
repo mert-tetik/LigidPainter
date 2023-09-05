@@ -46,11 +46,10 @@ FilterSelectionDialog __filter_selection_dialog;
 TexturePackEditorDialog __texture_Pack_Editor_Dialog;
 glm::mat4 __projection;
 Timer __timer; 
-Box __box;
 bool __wasTextureSelectionDialogActive = false;
 
 void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes){
-    __texture_selection_dialog.show(__timer, __projection, txtr, displayingTextureRes, __box);
+    __texture_selection_dialog.show(__timer, __projection, txtr, displayingTextureRes);
     __wasTextureSelectionDialogActive = true;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
@@ -76,14 +75,13 @@ bool wasTextureSelectionDialogActive(){
 
 static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection);
 
-void UI::render(Timer &timer,Box box,Project &project, Painter &painter, Skybox &skybox){
+void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox){
     
     __texture_selection_dialog = this->textureSelectionDialog;
     __filter_selection_dialog = this->filterSelectionDialog;
     __texture_Pack_Editor_Dialog = this->texturePackEditorDialog;
     __projection = this->projection;
     __timer = timer; 
-    __box = box;
 
     //Set pass less or equal
     glDepthFunc(GL_LEQUAL);
@@ -127,7 +125,7 @@ void UI::render(Timer &timer,Box box,Project &project, Painter &painter, Skybox 
     NodeScene::render(timer,nodeEditorDisplayer, nodePanel);
     
     //Render the dialogs
-    renderDialogs(timer, project, skybox, box);
+    renderDialogs(timer, project, skybox);
     
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(painter);
@@ -525,7 +523,7 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
     }
 }
 
-void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Box &box){
+void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox){
     if(newProjectDialog.dialogControl.isActive())
         newProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
     
@@ -551,13 +549,13 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Box &box
         settingsDialog.render(timer);
     
     if(materialDisplayerDialog.dialogControl.isActive())
-        materialDisplayerDialog.render(timer, box);
+        materialDisplayerDialog.render(timer);
     
     if(filterDisplayerDialog.dialogControl.isActive())
         filterDisplayerDialog.render(timer, projection);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
-        materialEditorDialog.render(timer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex), box);
+        materialEditorDialog.render(timer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex));
     
     logDialog.render(timer);
 }

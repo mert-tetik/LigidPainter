@@ -119,8 +119,7 @@ public:
     void init(Websites websites);
     
     /*! @brief Renders all the GUI */
-    void render(Timer &timer,Box box,Project &project, 
-                Painter &painter, Skybox &skybox);
+    void render(Timer &timer,Project &project, Painter &painter, Skybox &skybox);
 
 private: 
     void elementInteraction(Painter &painter,Timer &timer, float screenGapPerc,
@@ -130,7 +129,7 @@ private:
 
     void renderRenamingTextbox(Timer &timer, Painter &painter);
 
-    void renderDialogs(Timer &timer, Project &project, Skybox &skybox, Box &box);
+    void renderDialogs(Timer &timer, Project &project, Skybox &skybox);
 
     void renderDropper(Painter &painter);
 

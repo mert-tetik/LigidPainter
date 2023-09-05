@@ -203,9 +203,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
         glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
         ShaderSystem::colorIDMaskingShader().use();
                 
-        Box box;
-        box.init();
-        box.bindBuffers();
+        getBox()->bindBuffers();
 
         for (size_t channelI = 0; channelI < 6; channelI++)
         {
@@ -356,9 +354,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
         glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
         ShaderSystem::grayScaleIDMaskingShader().use();
                 
-        Box box;
-        box.init();
-        box.bindBuffers();
+        getBox()->bindBuffers();
 
         for (size_t channelI = 0; channelI < 6; channelI++)
         {
