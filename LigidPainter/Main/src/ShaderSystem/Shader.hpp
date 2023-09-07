@@ -118,6 +118,7 @@ namespace ShaderSystem{
     Shader textureRenderingShader();
     Shader normalVectorShader();
     Shader edgeWearShader();
+    Shader bakingShader();
 
     void initShaderSystem();
 };

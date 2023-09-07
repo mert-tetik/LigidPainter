@@ -135,7 +135,7 @@ void main() {
         pbrResult = getPBR(
                                 albedo, roughness, metallic, normal, ao, 
                                 Pos, Normal, Tangent, Bitangent, 
-                                skybox, prefilterMap, viewPos
+                                skybox, prefilterMap, viewPos, 1
                             );
     if(displayingMode == 1)
         pbrResult = albedo;

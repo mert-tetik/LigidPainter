@@ -205,7 +205,7 @@ public:
    BakingDialog();
    
    //Public member functions
-   void render(Timer timer);
+   void render(Timer timer, Skybox skybox);
 };
 
 

@@ -239,7 +239,7 @@ vec3 getPBR
             (
                 /* Material Channels */     vec3 albedo, float roughness, float metallic, vec3 normal, float ao, 
                 /* Vertex Data */           vec3 Pos, vec3 Normal, vec3 Tangent, vec3 Bitangent, 
-                /* Other Stuff */           samplerCube skybox, samplerCube prefilterMap, vec3 viewPos  
+                /* Other Stuff */           samplerCube skybox, samplerCube prefilterMap, vec3 viewPos, int useLights 
             ) 
 {
     
@@ -276,7 +276,9 @@ vec3 getPBR
     // Initialize the outgoing radiance (Lo)
     vec3 Lo = vec3(0.0);
 
-    const int lightSourceCount = 2;
+    int lightSourceCount = 2;
+    if(useLights  == 0)
+        lightSourceCount = 0;
 
     // Calculate lighting for each light source
     for (int i = 0; i < lightSourceCount; ++i) {

@@ -56,11 +56,13 @@ Shader __solidShadingShader;
 Shader __textureRenderingShader;
 Shader __normalVectorShader;
 Shader __edgeWearShader;
+Shader __bakingShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
     __depth3D.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag");
     __skyboxBall.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag");
+    __bakingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/Baking.frag");
     __textureUpdatingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag");
     __skyboxShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert", "LigidPainter/Resources/Shaders/aFrag/Skybox.frag");
     __prefilteringShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert", "LigidPainter/Resources/Shaders/aFrag/PrefilterSkybox.frag");
@@ -195,4 +197,7 @@ Shader ShaderSystem::normalVectorShader(){
 }
 Shader ShaderSystem::edgeWearShader(){
     return __edgeWearShader;
+}
+Shader ShaderSystem::bakingShader(){
+    return __bakingShader;
 }

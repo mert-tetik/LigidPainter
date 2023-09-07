@@ -114,7 +114,7 @@ BakingDialog::BakingDialog(){
     bakeButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(7.f,2), "Bake", Texture(), 1.f, false);
 }
 
-void BakingDialog::render(Timer timer){
+void BakingDialog::render(Timer timer, Skybox skybox){
     
     dialogControl.updateStart();
 
@@ -221,6 +221,92 @@ void BakingDialog::render(Timer timer){
                 if(this->exportChannelsIntoLibraryPanel.sections[0].elements[channelI].checkBox.clickState1)
                     Library::addTexture(channelTxtr.duplicateTexture());
             }
+        }
+    }
+
+    if(this->bakeButton.clicked){
+        
+        Camera cam;
+
+        //Move the camera to the side
+        glm::mat4 view = glm::lookAt(cam.cameraPos, 
+                                     glm::vec3(0), 
+                                     glm::vec3(0.0, 1.0, 0.0));
+
+        //The perspective projection matrix    
+        glm::mat4 projectionMatrix = glm::perspective(
+                                                        glm::radians(35.f), //Fov  
+                                                        -1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
+                                                        100.f,  //Near (the material is pretty close to the camera actually  ) 
+                                                        0.1f    //Far
+                                                    );
+
+        ShaderSystem::bakingShader().use();
+        ShaderSystem::bakingShader().setVec3("viewPos", cam.cameraPos); 
+        ShaderSystem::bakingShader().setInt("skybox", 0); 
+        ShaderSystem::bakingShader().setInt("prefilterMap", 1); 
+        ShaderSystem::bakingShader().setInt("albedoTxtr", 2); 
+        ShaderSystem::bakingShader().setInt("roughnessTxtr", 3); 
+        ShaderSystem::bakingShader().setInt("metallicTxtr", 4); 
+        ShaderSystem::bakingShader().setInt("normalMapTxtr", 5); 
+        ShaderSystem::bakingShader().setInt("heightMapTxtr", 6); 
+        ShaderSystem::bakingShader().setInt("ambientOcclusionTxtr", 7); 
+        ShaderSystem::bakingShader().setInt("modeIndex", this->selectedBakeMode); 
+        ShaderSystem::bakingShader().setInt("useLights", this->pbrUseLightingCheckbox.clickState1); 
+
+        ShaderSystem::bakingShader().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f)); 
+        ShaderSystem::bakingShader().setMat4("perspectiveProjection", projectionMatrix); 
+        ShaderSystem::bakingShader().setMat4("view", view); 
+
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.ID);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
+
+        for (size_t i = 0; i < getModel()->meshes.size(); i++){
+            Texture txtr = Texture(nullptr, Settings::properties()->textureRes, Settings::properties()->textureRes);
+
+            /* Capturing FBO */
+            unsigned int FBO; 
+            glGenFramebuffers(1,&FBO);
+            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.ID, 0);
+            glClearColor(0,0,0,0);
+
+            unsigned int RBO;
+            glGenRenderbuffers(1,&RBO);
+            glBindRenderbuffer(GL_RENDERBUFFER,RBO);
+            
+            //Set the renderbuffer to store depth
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, Settings::properties()->textureRes, Settings::properties()->textureRes);
+            
+            //Give the renderbuffer to the framebuffer
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
+            glDepthFunc(GL_LEQUAL);
+            
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].albedo.ID);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].roughness.ID);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].metallic.ID);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].normalMap.ID);
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].heightMap.ID);
+            glActiveTexture(GL_TEXTURE7);
+            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].ambientOcclusion.ID);
+            
+            getModel()->meshes[i].Draw();
+
+            glDeleteFramebuffers(1, &FBO);
+            glDeleteRenderbuffers(1, &RBO);
+
+            Library::addTexture(txtr);
         }
     }
     

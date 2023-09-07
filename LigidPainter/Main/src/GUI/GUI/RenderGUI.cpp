@@ -555,7 +555,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox){
         filterDisplayerDialog.render(timer, projection);
     
     if(bakingDialog.dialogControl.isActive())
-        bakingDialog.render(timer);
+        bakingDialog.render(timer, skybox);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
         materialEditorDialog.render(timer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex));

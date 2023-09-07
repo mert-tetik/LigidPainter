@@ -26,6 +26,8 @@ uniform sampler2D metallicTxtr; //Metallic
 uniform sampler2D normalMapTxtr; //Normal Map
 uniform sampler2D heightMapTxtr; //Ambient occlusion (ao)
 uniform sampler2D ambientOcclusionTxtr; //Ambient occlusion (ao)
+uniform int modeIndex; 
+uniform int useLights; 
 
 //Fragment shader output
 out vec4 fragColor;
@@ -43,9 +45,16 @@ void main() {
     vec3 pbrResult = getPBR(
                             albedo, roughness, metallic, normal, ao, 
                             Pos, Normal, Tangent, Bitangent, 
-                            skybox, prefilterMap, viewPos
+                            skybox, prefilterMap, viewPos, useLights
                         );
     
+    if(modeIndex == 0)
+        pbrResult = Pos;
+    if(modeIndex == 1)
+        pbrResult = Normal;
+    if(modeIndex == 2)
+        pbrResult = textureLod(prefilterMap, reflect(-normalize(viewPos - Pos), Normal), roughness * 4.0).rgb;    
+
     fragColor = vec4(
                         pbrResult, 
                         1.
