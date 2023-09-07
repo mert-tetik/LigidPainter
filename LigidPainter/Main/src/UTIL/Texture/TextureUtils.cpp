@@ -284,11 +284,11 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
 unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
     unsigned int proceduralTxtr;
     
-    if(this->proceduralID == 71){
+    if(this->proceduralID == 106){
         Texture normalMapTxtr = Texture(nullptr, textureRes, textureRes);
         Texture normalMapTxtrBlurred = Texture(nullptr, textureRes, textureRes);
         Texture noiseTxtr;
-        noiseTxtr.proceduralID = 37;
+        noiseTxtr.proceduralID = 71;
         noiseTxtr = noiseTxtr.generateProceduralTexture(mesh, textureRes);
 
         glActiveTexture(GL_TEXTURE0);

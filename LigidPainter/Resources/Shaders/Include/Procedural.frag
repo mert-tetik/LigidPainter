@@ -1,3 +1,4 @@
+
 /*
 ---------------------------------------------------------------------------
 LigidPainter - 3D Model texturing software / Texture generator   
@@ -15,6 +16,457 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #define PI 3.141592
+
+#define bpm 120.
+
+#define AA 5.
+
+#define pi 3.141592
+
+mat2 r2d(float a) {
+    float c = cos(a), s = sin(a);
+    return mat2(c, s, -s, c);
+}
+
+float fill(float d) {
+    return 1. - smoothstep(0., 0.001, d);
+}
+
+// inspired by Pixel Spirit Deck: https://patriciogonzalezvivo.github.io/PixelSpiritDeck/
+// + https://www.shadertoy.com/view/tsSXRz
+float stroke(float d, float width) {
+	return 1. - smoothstep(0., 0.001, abs(d) - width * .5);
+}
+
+float bridge(float mask, float sdf, float w) {
+    mask *= 1. - stroke(sdf, w * 2.);
+    return mask + stroke(sdf, w);
+}
+
+float circle(vec2 p, float radius) {
+  return length(p) - radius;
+}
+
+float rect(vec2 p, vec2 size) {
+  vec2 d = abs(p) - size;
+  return min(max(d.x, d.y), 0.0) + length(max(d,0.0));
+}
+
+float easeInOutQuad(float t) {
+    if ((t *= 2.) < 1.) {
+        return .5 * t * t;
+    } else {
+        return -.5 * ((t - 1.) * (t - 3.) - 1.);
+    }
+}
+
+float circleX(vec2 uv, float cross_height, float cross_width, float circle_radius, float circle_stroke)
+{
+    uv /= 10.;
+    
+    float t1 = fract(1. * .25);// sliding
+    float t2 = fract(1.);// rotation
+    t2 = easeInOutQuad(t2);
+    
+    uv *= r2d(pi * .25);
+    vec2 uv1 = fract((uv + t1) * 4.) - .5;
+    vec2 uv2 = fract(((uv-vec2(t1, 0)) * 4.)+.5) - .5;
+
+    // layer1 - cross
+    float mask = fill(rect(uv1 * r2d(t2 * pi), vec2(cross_height, cross_width)));
+    mask += fill(rect(uv1 * r2d(t2 * pi), vec2(cross_width, cross_height)));
+    
+    // layer2 - circle
+    mask = bridge(mask, circle(uv2, circle_radius), circle_stroke) ;
+    
+    mask = clamp(mask, 0., 1.);
+    
+    return mask;
+}
+
+#define lmac(a)  2.6*(a)*(a)                             // approx of spiral arc-length
+
+float greekFriezeX(vec2 U, float val) //From : https://www.shadertoy.com/view/XtSBDK
+{
+    float O = 0.;
+    
+    U -= 40.;
+    
+	vec2 V;
+    U = vec2( atan(U.y,U.x)/6.283 +.5, length(U) );   // polar coordinates
+    U.y-= U.x;                                        // lenght along spiral
+    U.x = lmac( ceil(U.y)+U.x );                 // arc-length
+    O   = 1.- pow( abs( 2.*fract(U.y)-1.),10.); // inter-spires antialiasing
+    V   = ceil(U); 
+    U = fract(U)-.5;                   // cell along spiral: id + loc coords
+ // vortices (small spirals) : assume col = step(0,y) then rotate( (0,0), space&time*(.5-dist) )
+    U.y = dot( U, cos( vec2(-33,0)                    // U *= rot, only need U.y -> (-sin,cos)
+                       +  .3*(val)          // rot amount inc with space/time
+                         * max( 0., .5 - length(U) )  // rot amount dec with dist
+             )       );
+	O *= smoothstep( -1., 1., U / fwidth(U) ).y;        // draw antialiased vortices
+
+    return O;
+}
+
+float basket(vec2 u, int s){ //From https://www.shadertoy.com/view/tdVGzz
+    vec2 uv = u / 10.;
+    float col = 1.;
+   
+	vec2 fuv = fract(uv*6.);
+    vec2 id = floor(uv*6.);
+    
+    float chk = mod(id.y+id.x,2.);
+    
+    if(s == 0){
+        if(chk > 0.){
+            col -= (sin(fuv.x*76.+.5))*.5;	
+            col *= smoothstep(.6, 0.,abs(fuv.y-0.5));
+        }
+        else{
+           col -= (sin(fuv.y*76.))*.5;
+           col *= smoothstep(.6, 0.,abs(fuv.x-0.5));
+        }
+    }
+    else{
+        col -= (sin(fuv.x*76.+.5))*.5;	
+        col *= smoothstep(.6, 0.,abs(fuv.y-0.5));
+    }
+    
+    
+    return col * .8;
+}
+
+vec2 s = vec2(1,1.73);
+
+vec2 rot(vec2 a, float t)
+{
+    float s = sin(t);
+    float c = cos(t);
+    return vec2(a.x*c-a.y*s,
+                a.x*s+a.y*c);
+}
+
+//thanks to BigWIngs/The Art Of Code's videos on hex tiling and truchet patterns
+vec4 hexCoords(vec2 p)
+{
+    vec2 hs = s*.5,
+         c1 = mod(p,s)-hs,
+         c2 = mod(p-hs,s)-hs;
+    vec2 hc= dot(c1, c1)<dot(c2,c2)?c1:c2;
+    return vec4(hc, p-hc);
+    
+}
+
+float li(float px, float lt, float d, vec2 hc)
+{
+    return smoothstep(0.,px,length(hc.x+d)-lt);
+}
+
+float hexaWeawing(vec2 U, float s)
+{
+    float N = 3.,              // number of axis
+          S = 1.,              // scale
+          a = 3.14/N;
+
+    float O = 0.; 
+    
+    O -= O;
+    
+    for (float i=0.; i<N; i++)
+        O = max( O,    smoothstep(0.01, 0., abs(fract(U.x+.1)-.6)-s)            // strip
+                   * ( .7 + .3* sin(6.28* ( U.y*1.73/2. + .5*floor(U.x) ))) ),  // waves
+        U *= mat2(cos(a),-sin(a),sin(a),cos(a));
+    
+    return O;
+} 
+
+float hexaWeawing2(vec2 U, float s)
+{
+    float N = 3.,              // number of axis
+          S = 1.,              // scale
+          a = 3.14/N;
+
+    float O = 0.; 
+    
+    O -= O;
+    
+    for (float i=0.; i<N; i++)
+        O = max( O,    smoothstep(.0, 0., abs(fract(U.x+.1)-.6)-s)            // strip
+                   * ( .7 + .3* sin(6.28* ( U.y*1.73/2. + .5*floor(U.x) ))) ),  // waves
+        U *= mat2(cos(a),-sin(a),sin(a),cos(a));
+    
+    return O;
+} 
+
+// Fork of "Hexagonal Interlacing" https://shadertoy.com/view/llfcWs
+// isolating the base weaving
+
+float rad2 = .666,
+      TAU = 6.283;
+
+#define rnd(p)   fract(sin(dot(p, vec2(411.3, 2899.7)))*43758.5453)
+#define rotX(a)   mat2(cos(a), sin(a), -sin(a), cos(a))
+
+vec4 getHex(vec2 p){
+    vec4 hC = floor( vec4( p, p - vec2(vec2( 3, sqrt(3.)).y, vec2( 3, sqrt(3.)).y/2.))/vec2( 3, sqrt(3.)).xyxy ) + .5;
+    vec2 a = p -  hC.xy *vec2( 3, sqrt(3.)), 
+         b = p - (hC.zw + .5) *vec2( 3, sqrt(3.));
+    return dot(a,a) < dot(b,b) 
+        ? vec4(a, hC.xy) 
+        : vec4(b, hC.zw+.5); 
+}
+
+float mask( vec2 p) {
+    float ia = floor( atan(p.y,p.x) *3./TAU) + .5;
+    p *= rotX(ia *TAU/3.); 
+    p.x -= 1.; 
+    return length(p) - rad2;
+}
+
+float r1 = .40,     // original: .38
+      r2 = .41,     // original: .45
+      S =  .577;    // 1./sqrt(3.) 
+
+#define DY(U,r) smoothstep(-0.01, 0.01, r - length(U) ) // disc
+
+float C( vec2 U, vec2 d )   // --- draw one layer
+{
+    U.y *= S+S;
+    U -= d;
+    if ( mod(U.y, 2.) > 1.) U.x += .5;
+ 
+    U = fract(U) - S;
+    U.y += .1;      // required. why ?
+	U.y /= S+S;
+    
+    float v = DY(U, r2), a = 0.;
+    for ( ; a++ < 3.;  ) 
+        v -= DY(U + sin( a*2.1 + vec2(0,33) )*S, r2);
+
+   return v * DY(U, r1);
+}
+
+// IQ's vec2 to float hash.
+float hash21(vec2 p){  return fract(sin(dot(p, vec2(27.619, 57.583)))*43758.5453); }
+
+// IQ's animated vec2 to float hash.
+float hash21A(vec2 p){  
+    float x = fract(sin(dot(p, vec2(27.619, 57.583)))*43758.5453); 
+    return sin(x*6.2831)*.5 + .5;
+}
+
+// The Truchet distance field. Truchet patterns, in their various forms, are 
+// pretty easy to put together; Render some rotationally symmetric tiles, then
+// randomly rotate them. If you know how to render simple 2D objects like 
+// squares, circles, arcs, etc, you should be good to go. As you can see from
+// the imagery, these tiles consist of a line of circles and some chopped
+// out circles.
+// Written by the Shadertoy user FabriceNeyret2
+float distField(vec2 p, int randS){
+    
+    // Saving the original position.
+    vec2 oP = p;
+ 
+    // Cell ID and local coordinates.
+    vec2 ip = floor(p);
+    p -= ip + .5;
+    
+    // Random value for the tile. This one is time based.
+    float rndX;
+    if(randS == 0)
+        rndX = hash21A(ip);
+    else if(randS == 1){
+        rndX = 1.;
+    }
+    else if(randS == 2){
+        rndX = 0.;
+    }
+    
+    // If the random number generated by the unique ID for the
+    // tile is above a certain threshold, flip it upside down.
+    if(rndX<.5) p.y = -p.y;
+  
+    
+    // Distance field.
+    float d = 1e5;
+    
+    // Radius.
+    float r = .09;
+    
+    // Two circles on diagonally opposite corners.
+    d = min(d, length((p) - vec2(-.5, .5)) - .5);
+    d = min(d, length((p) - vec2(.5, -.5)) - .5);
+
+    // Some small circles down the center.
+    float d2 = length(p - .3) - r*.9;
+    d2 = min(d2, length(p - .1) - r*.7); 
+    d2 = min(d2, length(p + .1) - r*.7); 
+    d2 = min(d2, length(p + .3) - r*.9);  
+    
+    // Flip checkered tiles. It's a necessary operation to perform
+    // for this style of Truchet tile.
+    if(mod(ip.x + ip.y, 2.)<.5) d = -d;
+    if(rndX>=.5) d = -d;
+    
+    // Put in some decorative borders. I like them, but you can take
+    // them out if you feel it's too much.
+    d = max((d - r*1.25), -(abs(abs(d ) - .05) - r/3.));
+    
+    // Combining the dotted lines and circles, whilst allowing for
+    // the checkerboard flipping.
+    if(mod(ip.x + ip.y, 2.)<.5){
+        if(rndX<.5) d = max(d, -d2);
+        else d = min(d, d2);
+    }
+    else {
+       if(rndX<.5) d = min(d, d2);
+        else d = max(d, -d2); 
+    }
+    
+    // Adding a grid. Not necessary, but I like it.
+    p = abs(p);
+    float grid = abs(max(p.x, p.y) - .5) - .015;
+    d = min(d, grid);
+    
+   
+    // Rendering circles at the grid vertices, whilst accounting
+    // for checkerboard flipping.
+    vec2  q = oP - .5;
+    vec2 iq = floor(q);
+    q -= iq + .5;
+
+    if(mod(iq.x + iq.y, 2.)<.5){
+        d = min(d, length(q) - r*1.4);
+    }
+    else {
+       d = max(d, -(length(q) - r*1.4));
+    }
+    
+
+    // Return the distance field value.
+    return d;
+}
+
+// Hexagonal grid coordinates. This returns the local coordinates and the cell's center.
+// The process is explained in more detail here:
+//
+// Minimal Hexagon Grid - Shane
+// https://www.shadertoy.com/view/Xljczw
+//
+vec4 getGrid(vec2 p){
+    
+    vec4 ip = floor(vec4(p/s, p/s - .5));
+    vec4 q = p.xyxy - vec4(ip.xy + .5, ip.zw + 1.)*s.xyxy;
+    return dot(q.xy, q.xy)<dot(q.zw, q.zw)? vec4(q.xy, ip.xy) : vec4(q.zw, ip.zw + .5);
+    //return getHex(q.xy)<getHex(q.zw)? vec4(q.xy, ip.xy) : vec4(q.zw, ip.zw + .5);
+
+}
+
+// Hexagonal bound: Not technically a distance function, but it's
+// good enough for this example.
+float getHexX(vec2 p){
+    
+    // Flat top and pointed top hexagons.
+    #ifdef FLAT_TOP
+    return max(dot(abs(p.xy), s/2.), abs(p.y*s.y));
+    #else   
+    return max(dot(abs(p.xy), s/2.), abs(p.x*s.x));
+    #endif
+}
+
+// Domain (space) warp
+
+// http://wiki.inkscape.org/wiki/index.php/Tiled-Clones
+// https://en.wikipedia.org/wiki/Wallpaper_group
+
+vec2 p2mm_symmetry(vec2 uv)
+{
+	return abs(uv);
+}
+
+vec2 p6m_symmetry(vec2 uv)
+{
+	float s = 0.5;
+	float c = sqrt(3.0) / 2.0;
+
+	mat2 rot = mat2(c, s, -s, c);
+
+	uv = p2mm_symmetry(uv);
+	uv = p2mm_symmetry(rot*uv);
+	uv = p2mm_symmetry(rot*uv);
+
+	return uv;
+}
+
+
+vec2 tile(vec2 uv, vec2 dimensions)
+{
+    return mod(uv, dimensions) - dimensions / 2.0;
+}
+
+
+// Primitives
+
+float dist_capsule(vec2 p, vec2 a, vec2 b, float r)
+{
+	vec2 pa = p - a;
+	vec2 ba = b - a;
+	float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+
+	return length( pa - ba*h ) - r;
+}
+
+
+// Compound objects
+
+float dist_star_fragment(vec2 uv, float r)
+{
+	return min(
+		dist_capsule(uv, vec2(0.0, 0.0), vec2(0.0,             0.5), r),
+		dist_capsule(uv, vec2(0.0, 0.0), vec2(sqrt(3.0) / 6.0, 0.5), r)
+	);
+}
+
+float dist_star(vec2 uv, float r)
+{
+	return dist_star_fragment(
+		p6m_symmetry(uv),
+		r
+	);
+}
+
+float dist_tiled_stars(vec2 uv, float r)
+{
+	return dist_star(
+		tile(uv, vec2(sqrt(3.0), 1.0)),
+		r
+	);
+}
+
+float dist_asa_no_ha(vec2 uv, float r)
+{
+	return min(
+		dist_tiled_stars(uv,                              r),
+		dist_tiled_stars(uv + vec2(sqrt(3.0) / 2.0, 0.5), r)
+	);
+}
+
+
+// Main scene
+
+float scene(vec2 uv, float AA_epsilon)
+{
+	float dist = dist_asa_no_ha(uv, 0.01);
+	float mask = smoothstep(0.0, AA_epsilon, -dist);
+
+	vec3 col_bg = vec3(0.1, 0.1, 0.8);
+	vec3 col_fg = vec3(0.8, 0.8, 0.8);
+
+    return mask;
+}
+
+
 
 /* --------------------------------------------------------- PATTERN FUNCTIONS --------------------------------------------------------- */
 
@@ -350,7 +802,7 @@ float diamondPattern(
     https://www.shadertoy.com/view/4lGyz3 by FabriceNeyret2
 ---------------------------------------------------------
 */
-#define D(U) .004/abs(length(mod(U,d+d)-d)-d.x)
+#define DX(U) .004/abs(length(mod(U,d+d)-d)-d.x)
 
 float rosettePattern(
                         vec2 p
@@ -360,7 +812,7 @@ float rosettePattern(
     
     vec4 O = vec4(0);
     
-    for ( ; O.a++ < 4.; O += D(p) +D(p += d*.5)) 
+    for ( ; O.a++ < 4.; O += DX(p) +DX(p += d*.5)) 
         p.x += d.x;
     
     return O.x;
@@ -530,7 +982,515 @@ float brickPattern4(vec2 p){
     return brickGetBricks(p, 3) + 0.4;
 }
 
+//29
+float rhombPattern2( 
+                        vec2 p
+                    ) 
+{
+    p.y = p.y * 0.866 + p.x * 0.5;
+    float t = fract(p.y) - fract(p.x);
+    return t;
+}
 
+//30
+float truchetPattern(vec2 p){
+    float o = 0.;
+    p *= 50.;
+    p.x *= sign(cos(length(ceil(p /= 50.))*99.));
+    o = o - o + cos(min(length(p = fract(p)), length(--p))*44.); // --p - Thanks, Coyote.
+    return o; 
+}
+
+//31
+float greekFriezePattern1(vec2 U){
+    return greekFriezeX(U, 20.); 
+}
+
+//32
+float greekFriezePattern2(vec2 U){
+    return greekFriezeX(U, 50.); 
+}
+
+//33
+float basketPattern4(vec2 uv){
+    return basket(uv, 0);
+}
+
+//34
+float basketPattern5(vec2 uv){
+    return basket(uv, 1);
+}
+
+//35
+float pipelinePattern(vec2 p) //From : https://www.shadertoy.com/view/tsV3Rd
+{
+    vec4 hc = hexCoords(p+10.);
+    float id = hc.z*hc.w*2.1238712;
+    if(mod(id,3.)<=1.)hc.xy=rot(hc.xy,PI/3.);
+    else if(mod(id,4.)<=2.)hc.xy=rot(hc.xy,-PI/3.);
+    float px = 0.01, d = 0.25, lt = .075, 
+        t =li(px,lt,d, hc.xy)*li(px,lt,-d, hc.xy);
+
+    return (1.-t);
+}
+
+//36
+float hexaWeawingPattern1(vec2 p){
+    return hexaWeawing(p, .2);
+}
+
+//37
+float hexaWeawingPattern2(vec2 p){
+    return hexaWeawing(p, .1);
+}
+
+//38
+float hexagonalInterlacingPattern(vec2 u){ //From https://www.shadertoy.com/view/tsyXRh
+
+    float O;
+
+	vec2  R = vec2(1.);
+    vec2  U = u;
+    vec4 hp = getHex(U);
+  
+    vec2 D = vec2( mask(hp.xy), mask(hp.xy*rotX(-TAU/6.) ) ),      // axial distance of the 2 layers
+         M = smoothstep(-5. / 100., 5. / 100., D),                       // masks
+         B = smoothstep(0.,.05, D);                               // border decoration
+    float m = rnd(hp.zw) > .5 ? M.x : 1.-M.y;                     // layer-preserving random control
+
+    O += mix( B.y*.5, B.x, m );                                   // 2-tints display
+                                             // --- for next ones uncomment original random control
+    return O;
+}
+
+
+float W( vec2 U ) { //From https://www.shadertoy.com/view/ldGSDG
+    U = 2.* mod(U*5.,vec2(1,1.4)) - vec2(1,1.9);           // tiling
+    float l = length(U);
+    l = U.y/l > -.7 ?  l                                   // loop top = 3/4 ring
+                    :  length( U - vec2 (sign(U.x),-1) );  // loop bottom = 2x half 3/4 ring
+    return smoothstep(.1,.0, abs(l-.7) -.1) * ( .5+.4*abs(U.y+.6) );    // face A
+}
+
+//39
+float chainPattern1(vec2 U ) 
+{
+    U /= 10.;
+    return max( W(U), W( U+vec2(0,.7) ) ) ; // inter-weaving    
+}
+
+//40
+float chainPattern2(vec2 U ) 
+{
+    U /= 10.;
+    return max( W(U), W( U+vec2(0,.5) ) ) ; // inter-weaving    
+}
+
+//41
+float chainPattern3(vec2 U )
+{
+    U /= 10.;
+    return max( W(U), W( U+vec2(.05,.7) ) ) ; // inter-weaving    
+}
+
+//42
+float circleXPattern1(vec2 uv){
+    float cross_height = .2;
+    float cross_width = .4;
+    float circle_radius = .25;
+    float circle_stroke = .2;
+    
+    return circleX(uv, cross_height, cross_width, circle_radius, circle_stroke);
+}
+
+//43
+float circleXPattern2(vec2 uv){
+    float cross_height = .1;
+    float cross_width = .4;
+    float circle_radius = .21;
+    float circle_stroke = .2;
+    
+    return circleX(uv, cross_height, cross_width, circle_radius, circle_stroke);
+}
+
+//44
+float circleXPattern3(vec2 uv){
+    float cross_height = .1;
+    float cross_width = .1;
+    float circle_radius = .21;
+    float circle_stroke = .1;
+    
+    return circleX(uv, cross_height, cross_width, circle_radius, circle_stroke);
+}
+
+//45
+float circleXPattern4(vec2 uv){
+    float cross_height = .1;
+    float cross_width = .4;
+    float circle_radius = .0;
+    float circle_stroke = .2;
+    
+    return circleX(uv, cross_height, cross_width, circle_radius, circle_stroke);
+}
+
+//46
+float circleXPattern5(vec2 uv){
+    float cross_height = .1;
+    float cross_width = .3;
+    float circle_radius = .0;
+    float circle_stroke = -.1;
+    
+    return circleX(uv, cross_height, cross_width, circle_radius, circle_stroke);
+}
+
+//47
+float circleXPattern6(vec2 uv){
+    float cross_height = .1;
+    float cross_width = .5;
+    float circle_radius = .1;
+    float circle_stroke = .1;
+    
+    return circleX(uv, cross_height, cross_width, circle_radius, circle_stroke);
+}
+
+//48
+float fabricArmorPattern(vec2 U) { 
+    vec2 d = vec2(1,.65);
+    
+    float a = C(U, d-d );
+    float b = C(U, d/2.);
+    float c = C(U, d   );
+    
+    float res = a + (b/2.) + (c/4.);
+    
+    return res;;
+}
+
+//49
+float arrowPattern(vec2 p)
+{
+    float t = 100.;
+
+    vec2 p1 = vec2(p.x+p.y,p.x-p.y);
+    vec2 f1xy = abs(fract(p1 / sqrt(8.0)) - 0.5) - 0.25;
+    f1xy = clamp(f1xy*t+0.5,0.0,1.0);
+    float f1 = mix(f1xy.x, 1.0 - f1xy.x, f1xy.y);
+
+    vec2 fxy = vec2(p.x - sqrt(0.125), p.y);
+  	fxy = abs(fract((fxy * sqrt(2.0) + 0.5) / 2.0) - 0.5) - 0.25;
+    fxy = clamp(fxy * t / sqrt(2.0) + 0.5, 0.0, 1.0);
+    float f = mix(fxy.x, 1.0 - f1, fxy.y);
+
+	return f;
+}
+#define S(x,y,l) smoothstep(e,-e, length(U+vec2(x,y))-l)
+
+//50
+float discPattern1(vec2 U ) 
+{
+    vec2 V = ceil(U);
+    float e = 0.01, l=U.y;
+    float O = 0.;
+    O = 0.; 
+    U = 2.*fract(U)-1.;
+	O +=   S(0,0,.9) - S(0,0,.53);         // white disk + central dot
+	O -=   S(-1,0,.3) + S(1,0,.3)         // rotating dots
+         + S(0,-1,.3) + S(0,1,.3);
+
+    return O;
+}
+
+//51 
+float discPattern2(vec2 U ) 
+{
+    vec2 V = ceil(U);
+    float e = 0.01, l=U.y;
+    float O = 0.;
+    O = 0.; 
+    U = 2.*fract(U)-1.;
+	O +=   S(0,0,.9) - S(0,0,.53);         // white disk + central dot
+	O -=   S(-1,0,.6) + S(1,0,.6)         // rotating dots
+         + S(0,-1,.6) + S(0,1,.6);
+
+    return O;
+}
+
+#define rx l = abs(length(U-vec2(i,0))-.85); z= smoothstep(.06,.0, l-.08) *(.7+.4*(U.x-i++)); if (z>M) L=l, M=z;
+
+//52
+float chainClothPattern(vec2 U) 
+{
+    U /= 10.;
+    
+    float l = 0.;
+    float L = 0.; 
+    float z = 0.;
+    float M = 0.; 
+    float i = -1.;
+    
+    U = 2.*fract(U*5.) -1.;
+    
+    rx rx rx     // offset i = -1, 0, 1    // even lines: tile = 1 circle + 2 half circles
+
+    U.x = -U.x;                          // odd line: horizontal 1/2 offset + symmetry
+    U.y -= sign(U.y);
+    i=-1.; 
+    
+    rx rx rx    // offset i = -1, 0, 1 
+
+    return (1.1-L/.1) * M; // tore shading * pseudo-deph * gold
+}
+
+//53
+float circlePattern(vec2 U)
+{
+    float Pi = 3.14159265359;
+    float e = 0.005; 
+    float v = 0.;
+    
+    float O = 1.;
+    
+    v = ceil(U.y);
+    U.x += .5*v;
+    U = 2.*fract(U)-1.;
+
+	O *= smoothstep(e,-e, length(U)-.6);
+    
+    return O;
+}
+
+//54
+float geometricPattern1(in vec2 uv){
+    float d = distField(uv,0);
+    // Output to screen
+    return (1. - smoothstep(0., 0.01, d));
+}
+
+//55
+float geometricPattern2(in vec2 uv){
+    float d = distField(uv,1);
+    // Output to screen
+    return (1. - smoothstep(0., 0.01, d));
+}
+
+//56
+float whirlPattern(vec2 uv)
+{ 
+    vec4 O;
+    vec2 U = uv;          // centered coords
+    
+    U *= mat2(1,-1./1.73, 0,2./1.73);                     // conversion to
+    vec3 g = vec3(U, 1.-U.x-U.y), g2,                     // hexagonal coordinates
+         id = floor(g);                                   // cell id
+    
+    g = fract(g); g.z = 1.-g.x-g.y;                       // triangle coords     
+    g2 = abs(2.*g-1.);                                    // distance to borders
+
+    U = id.xy * mat2(1,.5, 0,1.73/2.);
+    float l00 = length(U-uv),                    // screenspace distance to nodes
+          l10 = length(U+vec2(1,0)-uv), 
+          l01 = length(U+vec2(.5,1.73/2.)-uv),
+          l11 = length(U+vec2(1.5,1.73/2.)-uv),
+            l = min(min(l00, l10), min( l01, l11)); // closest node: l=dist, C=coord
+    vec2 C = U+ ( l==l00 ? vec2(0) : l==l10 ? vec2(1,0) : l==l01 ? vec2(.5,1.73/2.) : vec2(1.5,1.73/2.) );
+    U = uv-C;
+    float  s = 2.*mod(ceil(C.x+C.y),2.)-1.,
+           r = length(U)/(1.73/2.)*3.,
+           a = atan(U.y,U.x) - 3.;
+    O = pow(.5+.5*s*sin(8.*log(r)+a),1.) * exp(-.3*r*r) * sin(r+vec4(1,2.1,-2.1,0));
+    return O.r;
+}
+
+//57
+float hexagonalPipelinePattern(in vec2 fragCoord){
+
+    // Aspect correct screen coordinates.
+    vec2 uv = fragCoord;
+    uv /= 20.;
+    
+    // Scaling and translation.
+    const float sc = 3.;
+    vec2 p = uv*sc - vec2(-1, -.5);
+    
+    // Smoothing factor.
+    float sf = 0.0001;
+    
+    
+    // Hexagonal grid coordinates.
+    vec4 p4 = getGrid(p);
+    
+    
+    // Hexagon vertex IDs. They're useful for neighboring edge comparisons, etc.
+    // Multiplying them by "s" gives the actual vertex postion.
+    #ifdef FLAT_TOP
+    // Vertices: Clockwise from the left.
+
+	vec2[6] vID = vec2[6](vec2(-1./3., 0), vec2(-1./6., .5), vec2(1./6., .5), 
+                          vec2(1./3., 0), vec2(1./6., -.5), vec2(-1./6., -.5)); 
+    
+    //vec2[6] eID = vec2[6](vec2(-.25, .25), vec2(0, .5), vec2(.25, .25), 
+                         // vec2(.25, -.25), vec2(0, -.5), vec2(-.25, -.25));
+    
+    #else
+    // Vertices: Clockwise from the bottom left. -- Basically, the ones 
+    // above rotated anticlockwise. :)
+    vec2[6] vID = vec2[6](vec2(-.5, -1./6.), vec2(-.5, 1./6.), vec2(0, 1./3.), 
+                          vec2(.5, 1./6.), vec2(.5, -1./6.), vec2(0, -1./3.));
+     
+    //vec2[6] eID = vec2[6](vec2(-.5, 0), vec2(-.25, .25), vec2(.25, .25), vec2(.5, 0), 
+                          //vec2(.25, -.25), vec2(-.25, -.25));
+ 
+    #endif
+
+   
+    // The scene color.
+    vec3 col = vec3(1);
+
+    
+    // Rendering the six overlapping hexagons within each cell.
+    for(int i = 0; i<6; i++){
+        
+  
+        // Corner hexagon.
+        vec2 q = abs(p4.xy - vID[5-i]*s*.5);
+        float hx = getHexX(q) - .265;
+        float oHx = hx;
+
+        // Using the neighboring hexagon to chop out one third. This way, the final
+        // hexagon will look like it's tucked in behind the previous one... Comment
+        // out the third (hx) line to see what I mean. By the way, you don't have to
+        // do this, but I prefer this particular look.
+        q = abs(p4.xy - vID[(5-i + 5)%6]*s/2.);
+        float hx2 = getHexX(q) - .27;
+        hx = max(hx, -hx2);
+
+        // Using the triangle wave formula to render some concentric lines on each
+        // hexagon.
+        float pat = (1. - abs(fract(oHx*16. + .2) - .5)*2.) - .55;
+        pat = smoothstep(0., .2, pat);
+        
+        // Rendering the chopped out hexagon and a smaller white center.
+        col = mix(col, vec3(1)*pat, 1. - smoothstep(0., sf, hx));  
+        col = mix(col, vec3(1), 1. - smoothstep(0., sf, max(oHx + .22, -hx2)));
+        // A colorful center, if preferred.
+        //col = mix(col, vec3(1, .05, .1), 1. - smoothstep(0., sf, max(oHx + .22, -hx2))); 
+        
+        // Applying a shadow behind the hexagon. I thought it added more visual interest, 
+        // but for something like wallpaper, or whatever, you could comment it out.
+        vec3 sh = mix(col, vec3(0), (1. - smoothstep(0., sf, hx)));
+        col = mix(col, sh, (1. - smoothstep(0., sf*8., max(max(hx, hx2), - hx2)))*.5);
+
+    }
+    
+        
+    // Rendering the grid boundaries, or just some black hexagons in the center.
+    float gHx = getHexX(p4.xy);
+    
+    #ifdef SHOW_GRID 
+    // Grid lines.
+    col = mix(col, vec3(0), 1. - smoothstep(0., sf, abs(gHx - .5) - .035));  
+    col = mix(col, vec3(1, .05, .1)*1.5, 1. - smoothstep(0., sf, abs(gHx - .5) - .0075));  
+    col = mix(col, vec3(0), (1. - smoothstep(0., sf*5., gHx - .02 - .025))*.5);
+    // Colored center hexagon.
+    col = mix(col, vec3(0), 1. - smoothstep(0., sf, gHx - .02 - .025));   
+    col = mix(col, vec3(1, .05, .2), 1. - smoothstep(0., sf, gHx - .015));   
+    #else
+    // Small shadowed center hexagon.
+    col = mix(col, vec3(0), (1. - smoothstep(0., sf*5., gHx - .02))*.5);   
+    col = mix(col, vec3(0), 1. - smoothstep(0., sf, gHx - .02));  
+    #endif
+    
+    // Vignette.
+    //uv = fragCoord/iResolution.xy;
+    //col *= pow(16.*uv.x*uv.y*(1. - uv.x)*(1. - uv.y) , .0625);
+
+    // Rough gamma correction.
+    return sqrt(max(col.r, 0.));
+}
+
+//58
+float windTurbinePattern(vec2 U )
+{
+    float O = 0.;
+    
+    vec2 f = floor(U), u = 2. * fract(U) - 1.;
+    float b = mod(f.x + f.y, 2.), y;
+
+    for(int i = 0; i < 4; i++){
+        u *= mat2(0,-1,1,0);
+        y = 0.7;
+	    O += smoothstep(.55,.45, length(u-vec2(.5,1.5*y)));
+    } 
+        
+   
+    if (b>0.) 
+        O = 1.-O;
+        
+    return O;
+}
+
+//59
+float hexaWeawingPattern3(vec2 p){
+    return hexaWeawing2(p, .2);
+}
+
+//60
+float asaNoHaPattern(vec2 uv) //From https://www.shadertoy.com/view/MtlXDS
+{
+	float scale = 1.7;
+	float AA_epsilon = 0.0001;
+
+	return scene(uv, AA_epsilon);
+}
+
+//61
+float smoothCirclePattern1(vec2 uv)
+{
+    float v = ceil(uv.y);
+    uv.x += .5*v;
+    uv = fract(uv);
+	
+	vec2 muv = vec2(0.001);
+	vec2 muv2 = 2.0*(muv-0.5);
+	float rigid = length(muv2);
+	
+	vec2 uv2 = 2.0*(uv-0.5);
+	float r = length(uv2);	
+	float StartPos = 1.0-rigid;
+	float EndPos = 1.0;
+	
+	float Value =1.0;
+	if(r>StartPos)
+	{
+		Value = 1.0-(r-StartPos)/(EndPos-StartPos);
+	}
+    
+    return Value;
+}
+
+//62
+float smoothCirclePattern2(vec2 uv)
+{
+    uv = fract(uv);
+	
+	vec2 muv = vec2(0.001);
+	vec2 muv2 = 2.0*(muv-0.5);
+	float rigid = length(muv2);
+	
+	vec2 uv2 = 2.0*(uv-0.5);
+	float r = length(uv2);	
+	float StartPos = 1.0-rigid;
+	float EndPos = 1.0;
+	
+	float Value =1.0;
+	if(r>StartPos)
+	{
+		Value = 1.0-(r-StartPos)/(EndPos-StartPos);
+	}
+    
+    return Value;
+}
+	
 
 /* --------------------------------------------------------- NOISE FUNCTIONS ---------------------------------------------------------*/
 
@@ -1400,25 +2360,159 @@ float dropletsNoise5(vec3 pos){
     return innergetDroplets(pos, dropletsCount, dropletsOpacityJitter, dropletsSize, 0, 1);
 }
 
+// marble variant: https://www.shadertoy.com/view/Xs3fR4
+// integrated with cracks here: https://www.shadertoy.com/view/Xd3fRN
+
+#define MM 0
+
+#define VARIANT 0              // 1: amplifies Voronoi cell jittering
+#if VARIANT
+      float ofs = .5;          // jitter Voronoi centers in -ofs ... 1.+ofs
+#else
+      float ofs = 0.;
+#endif
+    
+int FAULT = 1;                 // 0: crest 1: fault
+
+float RATIO = 2.,              // stone length/width ratio
+      STONE_slope = .3,        // 0.  .3  .3  -.3
+      STONE_height = 1.,       // 1.  1.  .6   .7
+      profile = 1.,            // z = height + slope * dist ^ prof
+    
+      CRACK_zebra_scale = 1.5, // fractal shape of the fault zebra
+      CRACK_zebra_amp = 1.7,
+      CRACK_profile = .2,      // fault vertical shape  1.  .2 
+      CRACK_slope = 1.4,       //                      10.  1.4
+      CRACK_width = .0;
+    
+
+// std int hash, inspired from https://www.shadertoy.com/view/XlXcW4
+vec3 hash3( uvec3 x ) 
+{
+#   define scramble  x = ( (x>>8U) ^ x.yzx ) * 1103515245U // GLIB-C const
+    scramble; scramble; scramble; 
+    return vec3(x) / float(0xffffffffU) +1e-30; // <- eps to fix a windows/angle bug
+}
+
+// === Voronoi =====================================================
+// --- Base Voronoi. inspired by https://www.shadertoy.com/view/MslGD8
+
+#define hash22(p)  fract( 18.5453 * sin( p * mat2(127.1,311.7,269.5,183.3)) )
+#define disp(p) ( -ofs + (1.+2.*ofs) * hash22(p) )
+
+vec3 voronoi( vec2 u )  // returns len + id
+{
+    vec2 iu = floor(u), v;
+	float m = 1e9,d;
+#if VARIANT
+    for( int k=0; k < 25; k++ ) {
+        vec2  p = iu + vec2(k%5-2,k/5-2),
+#else
+    for( int k=0; k < 9; k++ ) {
+        vec2  p = iu + vec2(k%3-1,k/3-1),
+#endif
+            o = disp(p),
+      	      r = p - u + o;
+		d = dot(r,r);
+        if( d < m ) m = d, v = r;
+    }
+
+    return vec3( sqrt(m), v+u );
+}
+
+// --- Voronoi distance to borders. inspired by https://www.shadertoy.com/view/ldl3W8
+vec3 voronoiB( vec2 u )  // returns len + id
+{
+    vec2 iu = floor(u), C, P;
+	float m = 1e9,d;
+#if VARIANT
+    for( int k=0; k < 25; k++ ) {
+        vec2  p = iu + vec2(k%5-2,k/5-2),
+#else
+    for( int k=0; k < 9; k++ ) {
+        vec2  p = iu + vec2(k%3-1,k/3-1),
+#endif
+              o = disp(p),
+      	      r = p - u + o;
+		d = dot(r,r);
+        if( d < m ) m = d, C = p-iu, P = r;
+    }
+
+    m = 1e9;
+    
+    for( int k=0; k < 25; k++ ) {
+        vec2 p = iu+C + vec2(k%5-2,k/5-2),
+		     o = disp(p),
+             r = p-u + o;
+
+        if( dot(P-r,P-r)>1e-5 )
+        m = min( m, .5*dot( (P+r), normalize(r-P) ) );
+    }
+
+    return vec3( m, P+u );
+}
+
+// === pseudo Perlin noise =============================================
+#define rotXX(a) mat2(cos(a),-sin(a),sin(a),cos(a))
+int MOD = 1;  // type of Perlin noise
+
+// --- 3D 
+#define hash31(p) fract(sin(dot(p,vec3(127.1,311.7, 74.7)))*43758.5453123)
+float noise13(vec3 p) {
+    vec3 i = floor(p);
+    vec3 f = fract(p); f = f*f*(3.-2.*f); // smoothstep
+
+    float v= mix( mix( mix(hash31(i+vec3(0,0,0)),hash31(i+vec3(1,0,0)),f.x),
+                       mix(hash31(i+vec3(0,1,0)),hash31(i+vec3(1,1,0)),f.x), f.y), 
+                  mix( mix(hash31(i+vec3(0,0,1)),hash31(i+vec3(1,0,1)),f.x),
+                       mix(hash31(i+vec3(0,1,1)),hash31(i+vec3(1,1,1)),f.x), f.y), f.z);
+	return   MOD==0 ? v
+	       : MOD==1 ? 2.*v-1.
+           : MOD==2 ? abs(2.*v-1.)
+                    : 1.-abs(2.*v-1.);
+}
+
+float fbm3(vec3 p) {
+    float v = 0.,  a = .5;
+    mat2 R = rotXX(.37);
+
+    for (int i = 0; i < 9; i++, p*=2.,a/=2.) 
+        p.xy *= R, p.yz *= R,
+        v += a * noise13(p);
+
+    return v;
+}
+
+float crackNoise(vec3 U )
+{
+    vec4 O = vec4(1.);
+ // O = vec4( 1.-voronoiB(U).x,voronoi(U).x, 0,0 );   // for tests
+    
+    vec3 V =  U / vec3(RATIO,1,RATIO),                      // voronoi cell shape
+         D = vec3(fbm3(CRACK_zebra_scale*U) / CRACK_zebra_scale / CRACK_zebra_amp);
+    vec3  H = vec3(innerVoronoi( V + D ));
+    float d = H.x,                                    // distance to cracks
+          r = innerVoronoi(V),                           // distance to center
+          s = STONE_height-STONE_slope*pow(r,profile);// stone interior
+                                                      // cracks
+    d = min( 1., CRACK_slope * pow(max(0.,d-CRACK_width),CRACK_profile) );
+  
+    O = vec4( 
+        FAULT==1 ? d * s                              // fault * stone
+                 : mix(1.,s, d)                       // crest or stone
+            );
+
+    return O.r;
+}
+
 //0
 float smartPos(vec3 pos, float offset, float yaw, float pitch, float position){
 
     yaw = radians(yaw);
     pitch = radians(pitch);
 
-    // Calculate the axis of rotation for yaw (vertical axis)
-    vec3 yawAxis = vec3(0.0, 1.0, 0.0);
-
-    // Calculate the axis of rotation for pitch (horizontal axis)
-    vec3 pitchAxis = vec3(1.0, 0.0, 0.0);
-
-    // Combine the yaw and pitch rotations
-    vec3 combinedAxis = normalize(cos(pitch) * yawAxis + sin(pitch) * pitchAxis);
-    
-    // Calculate the combined angle
-    float combinedAngle = length(vec2(yaw, pitch));
-
-    pos = innerrotate(pos, combinedAxis, combinedAngle);
+    pos = innerrotate(pos, vec3(0.,1.,0.), yaw);
+    pos = innerrotate(pos, vec3(1.,0.,0.), pitch);
 
     pos += vec3(position);
 
@@ -1457,6 +2551,8 @@ float smartPos3(vec3 pos, float offset, float yaw, float pitch, float position){
 
 float smartStripes(vec3 pos, float linesRows, float thickness, float blur, float rotation, vec2 txtrRes){
     
+    pos = innerrotate(pos, vec3(0., 0., 1.), radians(rotation));
+
     vec2 iResolution = txtrRes;
     vec2 fragCoord = pos.xy * iResolution.x; 
 
@@ -1501,6 +2597,62 @@ float smartStripes2(vec3 pos, float offset, float yaw, float pitch, float positi
     }
 
     return val;
+}
+
+#define pow2(x) (x * x)
+
+
+
+float gaussian(vec3 i) {
+    const int samples = 16;
+    const float piX = atan(1.0) * 4.0;
+    const float sigma = float(samples) * 0.25;
+    
+    return 1.0 / (2.0 * piX * pow2(sigma)) * exp(-((pow2(i.x) + pow2(i.y)) / (2.0 * pow2(sigma))));
+}
+
+float smartDistance(vec3 pos, float mn, float mx, float blurStrength, float noiseStrength, vec2 txtrRes){
+    const vec3 originPos = vec3(0);
+
+    float accum = 0.0;
+    float weight;
+    vec3 offset;
+
+    const int samples = 8;
+
+    float res = 0.;
+    for (int x = -samples / 2; x < samples / 2; ++x) {
+        for (int y = -samples / 2; y < samples / 2; ++y) {
+            for (int z = -samples / 2; z < samples / 2; ++z){
+                offset = vec3(x, y, z);
+                weight = gaussian(offset); 
+                    
+                vec3 p = pos + (1./txtrRes.x) * offset * (blurStrength);
+
+                float dist = distance(p, originPos);
+                if(dist > mn && dist < mx)
+                    res += 1. * weight;
+
+                accum += weight;
+            }
+        }
+    }
+    
+    float m = res / accum;
+    float orgM = m;
+
+    float noise = musgraveDefNoiseA(pos);
+
+    if(m < 1. && m > 0.){
+        if(m > 0.5)
+            m = mix(m * noise, m, m);
+        else
+            m *= noise;
+    }
+
+    m = mix(orgM, m, noiseStrength);
+
+    return m;
 }
 
 float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, vec2 uv, vec4 smartProperties, vec2 txtrRes){
@@ -1568,100 +2720,174 @@ float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, ve
         res = brickPattern3(uv);
     else if(proceduralID == 28)
         res = brickPattern4(uv);
-
-
-
-
     else if(proceduralID == 29)
-        res = basicNoiseA(pos);
+        res = rhombPattern2(uv);
     else if(proceduralID == 30)
-        res = basicStretchedNoiseA(pos);
+        res = truchetPattern(uv);
     else if(proceduralID == 31)
-        res = fbmNoiseA(pos);
+        res = greekFriezePattern1(uv);
     else if(proceduralID == 32)
-        res = fbmHightPersistanceNoiseA(pos);
+        res = greekFriezePattern2(uv);
     else if(proceduralID == 33)
-        res = fbmLowOctaveNoiseA(pos);
+        res = basketPattern4(uv);
     else if(proceduralID == 34)
-        res = fbmWaveNoiseA(pos);
+        res = basketPattern5(uv);
     else if(proceduralID == 35)
-        res = fbmWaveLowPersistanceNoiseA(pos);
+        res = pipelinePattern(uv);
     else if(proceduralID == 36)
-        res = fbmWaveHighPersistanceNoiseA(pos);
+        res = hexaWeawingPattern1(uv);
     else if(proceduralID == 37)
-        res = musgraveDefNoiseA(pos);
+        res = hexaWeawingPattern2(uv);
     else if(proceduralID == 38)
-        res = musgraveHighDimensionalNoiseA(pos);
+        res = hexagonalInterlacingPattern(uv);
     else if(proceduralID == 39)
-        res = gradientDefNoiseA(pos);
+        res = chainPattern1(uv);
     else if(proceduralID == 40)
-        res = innerWorleyNoiseA(pos);
+        res = chainPattern2(uv);
     else if(proceduralID == 41)
-        res = worleyPatternalNoiseA(pos);
+        res = chainPattern3(uv);
     else if(proceduralID == 42)
-        res = circularPerlinNoiseA(pos);
+        res = circleXPattern1(uv);
     else if(proceduralID == 43)
-        res = voronoiNoiseA(pos);
+        res = circleXPattern2(uv);
     else if(proceduralID == 44)
-        res = voronoiDeeperNoiseA(pos);
+        res = circleXPattern3(uv);
     else if(proceduralID == 45)
-        res = staticNoiseA(pos);
+        res = circleXPattern4(uv);
     else if(proceduralID == 46)
-        res = wallNoise1(pos);
+        res = circleXPattern5(uv);
     else if(proceduralID == 47)
-        res = wallNoise2(pos);
+        res = circleXPattern6(uv);
     else if(proceduralID == 48)
-        res = wallNoise3(pos);
+        res = fabricArmorPattern(uv);
     else if(proceduralID == 49)
-        res = wallNoise4(pos);
+        res = arrowPattern(uv);
     else if(proceduralID == 50)
-        res = wallNoise5(pos);
+        res = discPattern1(uv);
     else if(proceduralID == 51)
-        res = wallNoise6(pos);
+        res = discPattern2(uv);
     else if(proceduralID == 52)
-        res = pebbleNoise1(pos);
+        res = chainClothPattern(uv);
     else if(proceduralID == 53)
-        res = pebbleNoise2(pos);
+        res = circlePattern(uv);
     else if(proceduralID == 54)
-        res = pebbleNoise3(pos);
+        res = geometricPattern1(uv);
     else if(proceduralID == 55)
-        res = pebbleNoise4(pos);
+        res = geometricPattern2(uv);
     else if(proceduralID == 56)
-        res = pebbleNoise5(pos);
+        res = whirlPattern(uv);
     else if(proceduralID == 57)
-        res = pebbleNoise6(pos);
+        res = hexagonalPipelinePattern(uv);
     else if(proceduralID == 58)
-        res = pebbleNoise7(pos);
+        res = windTurbinePattern(uv);
     else if(proceduralID == 59)
-        res = scratchNoise1(pos);
+        res = hexaWeawingPattern3(uv);
     else if(proceduralID == 60)
-        res = scratchNoise2(pos);
+        res = asaNoHaPattern(uv);
     else if(proceduralID == 61)
-        res = dropletsNoise1(pos);
+        res = smoothCirclePattern1(uv);
     else if(proceduralID == 62)
-        res = dropletsNoise2(pos);
+        res = smoothCirclePattern2(uv);
+
+
+
+
+
+
     else if(proceduralID == 63)
-        res = dropletsNoise3(pos);
+        res = basicNoiseA(pos);
     else if(proceduralID == 64)
-        res = dropletsNoise4(pos);
+        res = basicStretchedNoiseA(pos);
     else if(proceduralID == 65)
-        res = dropletsNoise5(pos);
-    
-    
-
-
+        res = fbmNoiseA(pos);
     else if(proceduralID == 66)
-        res = smartPos(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+        res = fbmHightPersistanceNoiseA(pos);
     else if(proceduralID == 67)
-        res = smartPos2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+        res = fbmLowOctaveNoiseA(pos);
     else if(proceduralID == 68)
-        res = smartPos3(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+        res = fbmWaveNoiseA(pos);
     else if(proceduralID == 69)
-        res = smartStripes(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
+        res = fbmWaveLowPersistanceNoiseA(pos);
     else if(proceduralID == 70)
+        res = fbmWaveHighPersistanceNoiseA(pos);
+    else if(proceduralID == 71)
+        res = musgraveDefNoiseA(pos);
+    else if(proceduralID == 72)
+        res = musgraveHighDimensionalNoiseA(pos);
+    else if(proceduralID == 73)
+        res = gradientDefNoiseA(pos);
+    else if(proceduralID == 74)
+        res = innerWorleyNoiseA(pos);
+    else if(proceduralID == 75)
+        res = worleyPatternalNoiseA(pos);
+    else if(proceduralID == 76)
+        res = circularPerlinNoiseA(pos);
+    else if(proceduralID == 77)
+        res = voronoiNoiseA(pos);
+    else if(proceduralID == 78)
+        res = voronoiDeeperNoiseA(pos);
+    else if(proceduralID == 79)
+        res = staticNoiseA(pos);
+    else if(proceduralID == 80)
+        res = wallNoise1(pos);
+    else if(proceduralID == 81)
+        res = wallNoise2(pos);
+    else if(proceduralID == 82)
+        res = wallNoise3(pos);
+    else if(proceduralID == 83)
+        res = wallNoise4(pos);
+    else if(proceduralID == 84)
+        res = wallNoise5(pos);
+    else if(proceduralID == 85)
+        res = wallNoise6(pos);
+    else if(proceduralID == 86)
+        res = pebbleNoise1(pos);
+    else if(proceduralID == 87)
+        res = pebbleNoise2(pos);
+    else if(proceduralID == 88)
+        res = pebbleNoise3(pos);
+    else if(proceduralID == 89)
+        res = pebbleNoise4(pos);
+    else if(proceduralID == 90)
+        res = pebbleNoise5(pos);
+    else if(proceduralID == 91)
+        res = pebbleNoise6(pos);
+    else if(proceduralID == 92)
+        res = pebbleNoise7(pos);
+    else if(proceduralID == 93)
+        res = scratchNoise1(pos);
+    else if(proceduralID == 94)
+        res = scratchNoise2(pos);
+    else if(proceduralID == 95)
+        res = dropletsNoise1(pos);
+    else if(proceduralID == 96)
+        res = dropletsNoise2(pos);
+    else if(proceduralID == 97)
+        res = dropletsNoise3(pos);
+    else if(proceduralID == 98)
+        res = dropletsNoise4(pos);
+    else if(proceduralID == 99)
+        res = dropletsNoise5(pos);
+    else if(proceduralID == 100)
+        res = crackNoise(pos);
+    
+    
+
+
+    else if(proceduralID == 101)
+        res = smartPos(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 102)
+        res = smartPos2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 103)
+        res = smartPos3(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 104)
+        res = smartStripes(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
+    else if(proceduralID == 105)
         res = smartStripes2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
-    //else if(proceduralID == 71)
+    //else if(proceduralID == 106)
     //   edge wear
+    else if(proceduralID == 107)
+        res = smartDistance(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
     else
         res = 1.;
 
@@ -1684,13 +2910,13 @@ float GMC(vec3 val, int inverted){
         return 1. - max(max(val.r, val.g), val.b);
 }
 
-vec4 getProcedural(vec3 pos, int proceduralID, sampler2D texture, vec2 texCoord, float scale, int inverted, vec4 smartProperties, vec2 txtrRes){
+vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, float scale, int inverted, vec4 smartProperties, vec2 txtrRes){
     if(proceduralID != -1)
         return vec4(vec3(getProceduralVal(pos, proceduralID, scale, inverted, texCoord, smartProperties, txtrRes)), 1);
     else{
         if(inverted == 0)
-            return texture(texture, texCoord * scale);
+            return texture(txtr, texCoord * scale);
         else
-            return 1. - texture(texture, texCoord * scale);
+            return 1. - texture(txtr, texCoord * scale);
     }
 }

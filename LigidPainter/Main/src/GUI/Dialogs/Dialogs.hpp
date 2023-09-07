@@ -384,8 +384,11 @@ private:
     int selectedTextureMode = 0;
 public:
    Panel bgPanel;
+   
    Panel subPanel;
    Panel subPanelTxtrPack;
+   Panel subPanelSmartTextures;
+   
    Panel selectedTextureDisplayingPanel;
    Panel textureSelectingPanel;
 
@@ -395,6 +398,8 @@ public:
    bool smartStripesTexturePanelActive = false;
    Panel edgeWearTexturePanel;
    bool edgeWearTexturePanelActive = false;
+   Panel smartDistanceTexturePanel;
+   bool smartDistanceTexturePanelActive = false;
 
    Texture whiteTxtr;
 
