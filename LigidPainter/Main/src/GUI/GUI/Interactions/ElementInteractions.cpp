@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Panel &paintingPanel, Painter &painter, NewTextureDialog &newTextureDialog, AppMaterialModifiers& appMaterialModifiers, MaterialDisplayerDialog &materialDisplayerDialog, FilterDisplayerDialog &filterDisplayerDialog, Button& zoomingDisplayingButton, Timer& timer);
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int frameCounter);
 void paintingPanelInteraction(Panel &paintingPanel, Painter &painter, Dropper &dropper);
-void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog);
+void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog,BakingDialog &bakingDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
 void nodeInteraction();
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
@@ -83,7 +83,7 @@ void UI::elementInteraction(
 
     paintingPanelInteraction(paintingPanel, painter, dropper);
     
-    windowPanelInteraction(windowPanel, painter, settingsDialog, displayerDialog,exportDialog);
+    windowPanelInteraction(windowPanel, painter, this->settingsDialog, this->displayerDialog, this->exportDialog, this->bakingDialog);
 
     paintingModesPanelInteraction(paintingModesPanel,painter);
 

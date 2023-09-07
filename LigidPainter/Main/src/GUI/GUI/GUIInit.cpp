@@ -79,7 +79,7 @@ void UI::init
                         );
 
     //Init the window panel
-    windowPanel  = Panel(
+    windowPanel = Panel(
                             
                             
                             {
@@ -90,7 +90,8 @@ void UI::init
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"2D Painting"         , Settings::appTextures().twoDIcon, 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Export"              , Settings::appTextures().exportIcon, 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Displayer"           , Settings::appTextures().environmentIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Settings"           , Settings::appTextures().gearIcon, 0.f,false))
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Settings"           , Settings::appTextures().gearIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Baking"           , Settings::appTextures().gearIcon, 0.f,false))
                                     }
                                 )
                             },
@@ -443,6 +444,7 @@ void UI::init
     texturePackEditorDialog     = TexturePackEditorDialog();
     materialEditorDialog        = MaterialEditorDialog();
     textureSelectionDialog      = TextureSelectionDialog();
+    bakingDialog                = BakingDialog();
     filterSelectionDialog       = FilterSelectionDialog();
     loadProjectDialog           = LoadProjectDialog(materialEditorDialog.appMaterialModifiers);
     newProjectDialog            = NewProjectDialog(materialEditorDialog.appMaterialModifiers);

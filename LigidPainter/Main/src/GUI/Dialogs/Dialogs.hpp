@@ -179,6 +179,36 @@ class DisplayerDialog
  };
 
 
+//!------------------------------ BAKING DIALOG ------------------------------
+
+
+class BakingDialog
+{
+public:
+   Panel bgPanel;
+   Panel exportChannelsIntoLibraryPanel;
+   CheckBox pbrResultCheckbox;
+   CheckBox pbrUseLightingCheckbox;
+   CheckBox pbrRayTracingCheckbox;
+   CheckBox vertexPositionCheckbox;
+   CheckBox vertexNormalsCheckbox;
+   CheckBox reflectanceCheckbox;
+   Button bakeButton;
+
+   short selectedBakeMode = 0;  
+
+
+   DialogControl dialogControl;
+   std::vector<Element> skyboxes;
+
+   //Constructors
+   BakingDialog();
+   
+   //Public member functions
+   void render(Timer timer);
+};
+
+
 //!------------------------------ DISPLAYER DIALOG ------------------------------
 
 

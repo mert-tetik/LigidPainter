@@ -33,11 +33,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void windowPanelInteraction(
                                 Panel &windowPanel, 
-                                
                                 Painter &painter, 
                                 SettingsDialog &settingsDialog, 
                                 DisplayerDialog &displayerDialog,
-                                ExportDialog &exportDialog
+                                ExportDialog &exportDialog,
+                                BakingDialog &bakingDialog
                             )
 {
     //!WINDOW PANEL BUTTONS
@@ -47,13 +47,16 @@ void windowPanelInteraction(
     else if(windowPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){//Pressed to the 2D painting button of the window panel
         painter.threeDimensionalMode = false;
     }
-    else if(windowPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){//Pressed to the settings button of the window panel
-        settingsDialog.dialogControl.activate();
+    else if(windowPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){//Pressed to the export button of the window panel
+        exportDialog.dialogControl.activate();
     }
     else if(windowPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Pressed to the displayer button of the window panel
         displayerDialog.dialogControl.activate();
     }
-    else if(windowPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){//Pressed to the export button of the window panel
-        exportDialog.dialogControl.activate();
+    else if(windowPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){//Pressed to the settings button of the window panel
+        settingsDialog.dialogControl.activate();
+    }
+    else if(windowPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Pressed to the settings button of the window panel
+        bakingDialog.dialogControl.activate();
     }
 }

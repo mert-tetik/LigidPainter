@@ -86,6 +86,7 @@ public:
     //ColorPickerDialog colorPickerDialog;
     MaterialEditorDialog materialEditorDialog;
     TextureSelectionDialog textureSelectionDialog;
+    BakingDialog bakingDialog;
     FilterSelectionDialog filterSelectionDialog;
     NewTextureDialog newTextureDialog;
     SettingsDialog settingsDialog;
