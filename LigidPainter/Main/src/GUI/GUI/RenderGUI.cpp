@@ -488,6 +488,54 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+
+    
+    
+    bool anyVectorPointHover = false;
+    for (size_t i = 0; i < painter.vectorStrokes.size(); i++){
+        if(painter.vectorStrokes[i].endPointHover || painter.vectorStrokes[i].startPointHover || painter.vectorStrokes[i].offsetPointHover)
+            anyVectorPointHover = true;
+    }
+
+
+    if(*Mouse::LClick() && painter.selectedPaintingModeIndex == 3 && !anyVectorPointHover){
+        VectorStroke vecStroke;
+        if(!painter.vectorStrokes.size()){
+            vecStroke.startPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f; 
+            vecStroke.endPos = vecStroke.startPos;
+            vecStroke.offsetPos = vecStroke.startPos;
+            painter.vectorStrokes.push_back(vecStroke);
+        }
+        else{
+            if(painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos == painter.vectorStrokes[painter.vectorStrokes.size() - 1].startPos){
+                painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+                painter.vectorStrokes[painter.vectorStrokes.size() - 1].offsetPos = painter.vectorStrokes[painter.vectorStrokes.size() - 1].startPos - (painter.vectorStrokes[painter.vectorStrokes.size() - 1].startPos - painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos) / 2.f;
+            }
+            else{
+                vecStroke.startPos = painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos; 
+                vecStroke.endPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+                vecStroke.offsetPos = vecStroke.startPos - (vecStroke.startPos - vecStroke.endPos) /2.f;
+                painter.vectorStrokes.push_back(vecStroke);
+            }
+        }
+    }
+
+    if(*Mouse::RClick()){
+        painter.vectorStrokes[0].offsetPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+    }
+
+    if(painter.selectedPaintingModeIndex == 3){
+        for (size_t i = 0; i < painter.vectorStrokes.size(); i++)
+        {
+            painter.vectorStrokes[i].draw(0.0005);
+
+            VectorStroke offsetStrokeEnd = VectorStroke(painter.vectorStrokes[i].endPos, painter.vectorStrokes[i].offsetPos, painter.vectorStrokes[i].offsetPos); 
+            VectorStroke offsetStrokeStart = VectorStroke(painter.vectorStrokes[i].startPos, painter.vectorStrokes[i].offsetPos, painter.vectorStrokes[i].offsetPos); 
+        
+            offsetStrokeEnd.draw(0.0001);
+            offsetStrokeStart.draw(0.000112);
+        }
+    }
 }
 
 void UI::renderRenamingTextbox(Timer &timer, Painter &painter){

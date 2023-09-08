@@ -383,6 +383,7 @@ void UI::init
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Draw"          , Settings::appTextures().brushIcon,        0.f,true)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Soften"        , Settings::appTextures().softenIcon,       0.f,true)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smear"         , Settings::appTextures().smearIcon,        0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Vector"         , Settings::appTextures().smearIcon,        0.f,true)),
                                         //Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Area"          , Settings::appTextures().areaPaintingIcon, 0.f,true)),
                                     }
                                 )

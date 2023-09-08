@@ -433,6 +433,29 @@ struct BrushProperties{
     Texture brushTexture;
 };
 
+struct VectorStroke{
+    glm::vec2 startPos;
+    glm::vec2 endPos;
+    glm::vec2 offsetPos;
+
+    bool endPointPressed = false;
+    bool startPointPressed = false;
+    bool offsetPointPressed = false;
+    
+    bool endPointHover = false;
+    bool startPointHover = false;
+    bool offsetPointHover = false;
+    
+    VectorStroke(){}
+    VectorStroke(glm::vec2 startPos, glm::vec2 endPos, glm::vec2 offsetPos){
+        this->startPos = startPos;
+        this->endPos = endPos;
+        this->offsetPos = offsetPos;
+    }
+    
+    void draw(float edge);
+};
+
 class Painter
 {
 public:
@@ -468,6 +491,8 @@ public:
     /// @brief The selected texture selected by user from the library.textures
     /// (This texture's id will be painted) 
     Texture selectedTexture;
+
+    std::vector<VectorStroke> vectorStrokes;
 
     /*!
     * @brief Indicates which painting mode is selected
