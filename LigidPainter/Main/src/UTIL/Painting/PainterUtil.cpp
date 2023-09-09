@@ -100,9 +100,9 @@ Color Painter::getSelectedColor(){
 
 void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos){
     
-    int textureResolution = 1920;
+    int textureResolution = 256;
 
-    Texture txtr = Texture(nullptr, textureResolution, textureResolution);
+    Texture txtr = Texture(nullptr, textureResolution, textureResolution, GL_NEAREST);
 
     unsigned int FBO;
     glGenFramebuffers(1,&FBO);
