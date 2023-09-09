@@ -169,8 +169,6 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
         }
     }
 
-    std::cout << "strokePositions : " << strokePositions.size() << std::endl; 
-
     const int paintingMode = 0;
 
     const int maxStrokeSize = 50;
@@ -197,10 +195,9 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
         
     }
 
-    // this->paintingTexture = txtr.ID;
-
     this->updateTexture(twoDPaintingPanel, windowOrtho, twoDSceneScroll, twoDScenePos, paintingMode);
-    
+
+    this->refreshPainting();
 }
 
 bool __anyVectoralPointMoving = false;
