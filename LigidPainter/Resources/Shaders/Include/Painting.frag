@@ -287,7 +287,7 @@ vec3 getBrushedTexture (
     //Apply painting with smearing
     if(brushModeState == 2)
         return getSmearedTexture(txtr,brushTxtr,TexCoords);
-
+    
     //If the brushModeState value is not valid
     return vec3(0);
 }

@@ -45,7 +45,7 @@ static void set3DShaderSideUniforms(int selectedColorIndex,Color color1,Color co
 
 
 
-void Painter::doPaint(glm::mat4 windowOrtho){
+void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode){
 
     glm::vec2 firstCursorPos = *Mouse::cursorPos();
     
@@ -62,7 +62,7 @@ void Painter::doPaint(glm::mat4 windowOrtho){
     //Bind the painting texture to the painting framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
 
-    if(selectedPaintingModeIndex == 2){//If smearing 
+    if(paintingMode == 2){//If smearing 
         //(Use the 16-bit floating-point RGBA color format)
         paintingTexture = paintingTexture16f; //Bind the 16-bit floating-point RGBA color format to the framebuffer
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture16f, 0);
@@ -84,13 +84,16 @@ void Painter::doPaint(glm::mat4 windowOrtho){
 
     //3D Model shader side of the painting  (set the painting mode, colors, and painting opacity)        
     ShaderSystem::tdModelShader().use();
-    set3DShaderSideUniforms(selectedColorIndex,color1,color2,color3,this->brushProperties.opacity,selectedPaintingModeIndex, this->usePaintingOver, this->paintingOverGrayScale, this->paintingOverWraping);
+    set3DShaderSideUniforms(selectedColorIndex, color1, color2, color3, this->brushProperties.opacity, paintingMode, this->usePaintingOver, this->paintingOverGrayScale, this->paintingOverWraping);
     
     //Back to 2D painting
     ShaderSystem::twoDPainting().use();
 
     //Stroke positions
     std::vector<glm::vec2> holdLocations = getCursorSubstitution(this->brushProperties.spacing);
+    if(strokeLocations.size())
+        holdLocations = strokeLocations; 
+
     ShaderSystem::twoDPainting().setInt("posCount",holdLocations.size());
     for (int i = 0; i < holdLocations.size(); i++)
     {
@@ -104,10 +107,14 @@ void Painter::doPaint(glm::mat4 windowOrtho){
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
     //Painting
-    if(glm::distance(startCursorPos,*Mouse::cursorPos()) > this->brushProperties.spacing){ //Provide spacing
-        startCursorPos = *Mouse::cursorPos();            
-        glDrawArrays(GL_TRIANGLES,0,6);
+    if(!strokeLocations.size()){
+        if(glm::distance(startCursorPos,*Mouse::cursorPos()) > this->brushProperties.spacing){ //Provide spacing
+            startCursorPos = *Mouse::cursorPos();            
+            glDrawArrays(GL_TRIANGLES,0,6);
+        }
     }
+    else
+        glDrawArrays(GL_TRIANGLES,0,6);
     
     //Finish
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

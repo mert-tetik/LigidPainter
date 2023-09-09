@@ -56,7 +56,8 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,Panel nodeEditorPanel, int dir
     
     ShaderSystem::connectionCurve().setVec2("startPos",       src);
     ShaderSystem::connectionCurve().setVec2("destPos",       dest);
-    ShaderSystem::connectionCurve().setVec2("percScale",       nodeEditorPanel.scale);
+    ShaderSystem::connectionCurve().setVec2("percScale", nodeEditorPanel.resultScale);
+    ShaderSystem::connectionCurve().setInt("lineCapturingMode", 0);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
     ShaderSystem::buttonShader().use();

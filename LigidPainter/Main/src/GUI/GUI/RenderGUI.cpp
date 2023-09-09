@@ -479,6 +479,10 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
 
     paintingModesPanel.render(timer,!anyDialogActive);
+
+    if(painter.selectedPaintingModeIndex == 3)
+        vectorPaintingModePropertyPanel.render(timer, !anyDialogActive); 
+
     if(paintingModesPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
@@ -498,7 +502,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
 
 
-    if(*Mouse::LClick() && painter.selectedPaintingModeIndex == 3 && !anyVectorPointHover){
+    if(*Mouse::LClick() && painter.selectedPaintingModeIndex == 3 && !anyVectorPointHover && !anyDialogActive && !anyContextMenuActive && !anyPanelHover){
         VectorStroke vecStroke;
         if(!painter.vectorStrokes.size()){
             vecStroke.startPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f; 
@@ -520,20 +524,16 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         }
     }
 
-    if(*Mouse::RClick()){
-        painter.vectorStrokes[0].offsetPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
-    }
-
     if(painter.selectedPaintingModeIndex == 3){
-        for (size_t i = 0; i < painter.vectorStrokes.size(); i++)
+        for (int i = painter.vectorStrokes.size() - 1; i >= 0; i--)
         {
-            painter.vectorStrokes[i].draw(0.0005);
+            painter.vectorStrokes[i].draw(0.0005, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
 
             VectorStroke offsetStrokeEnd = VectorStroke(painter.vectorStrokes[i].endPos, painter.vectorStrokes[i].offsetPos, painter.vectorStrokes[i].offsetPos); 
             VectorStroke offsetStrokeStart = VectorStroke(painter.vectorStrokes[i].startPos, painter.vectorStrokes[i].offsetPos, painter.vectorStrokes[i].offsetPos); 
         
-            offsetStrokeEnd.draw(0.0001);
-            offsetStrokeStart.draw(0.000112);
+            offsetStrokeEnd.draw(0.0001, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
+            offsetStrokeStart.draw(0.0001, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
         }
     }
 }

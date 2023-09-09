@@ -36,7 +36,7 @@ void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Panel &paint
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int frameCounter);
 void paintingPanelInteraction(Panel &paintingPanel, Painter &painter, Dropper &dropper);
 void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog,BakingDialog &bakingDialog);
-void paintingModesPanelInteraction(Panel &paintingModesPanel, Painter &painter);
+void paintingModesPanelInteraction(Panel &paintingModesPanel, Panel& vectorPaintingModePropertyPanel, Painter &painter, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos);
 void nodeInteraction();
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
@@ -71,7 +71,8 @@ void UI::elementInteraction(
                     libraryPanelDisplayer.hover         ||
                     nodeEditorDisplayer.hover           ||
                     selectedTextureDisplayer.hover      || 
-                    paintingModesPanel.hover;
+                    paintingModesPanel.hover            ||
+                    vectorPaintingModePropertyPanel.hover;
 
     this->contextMenuInteraction(timer, project, painter);
     
@@ -85,7 +86,7 @@ void UI::elementInteraction(
     
     windowPanelInteraction(windowPanel, painter, this->settingsDialog, this->displayerDialog, this->exportDialog, this->bakingDialog);
 
-    paintingModesPanelInteraction(paintingModesPanel,painter);
+    paintingModesPanelInteraction(paintingModesPanel, this->vectorPaintingModePropertyPanel, painter, twoDPaintingPanel, this->projection, this->twoDPaintingSceneScroll, this->twoDPaintingScenePos);
 
     displayingModesPanelInteraction(displayingModesPanel, painter);
 

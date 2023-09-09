@@ -442,6 +442,10 @@ struct VectorStroke{
     bool startPointPressed = false;
     bool offsetPointPressed = false;
     
+    bool endPointClicked = false;
+    bool startPointClicked = false;
+    bool offsetPointClicked = false;
+    
     bool endPointHover = false;
     bool startPointHover = false;
     bool offsetPointHover = false;
@@ -453,7 +457,7 @@ struct VectorStroke{
         this->offsetPos = offsetPos;
     }
     
-    void draw(float edge);
+    void draw(float edge, bool sceneState, std::vector<VectorStroke>& strokes, int curI);
 };
 
 class Painter
@@ -538,10 +542,9 @@ public:
     /*! 
     * @brief do painting (paint 2D). Called every frame if painting conditions are set. 
     *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
-    * @param windowOrtho orthographics projection matrix created with window size value.
-    * @param textures textures in the library
+    * @param windowOrtho orthographic projection matrix created with window size value.
     */
-    void doPaint(glm::mat4 windowOrtho);
+    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -557,7 +560,7 @@ public:
     * @param scene structure contains matrices related to 3D model rendering & cam pos
     * @param twoDPaintingPanel if the painting mode is 2D use this panel's transform data 
     */
-    void updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos);
+    void updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode);
     
     /*!
     * @brief updates the @ref depthTexture right after painting is done.
@@ -570,6 +573,8 @@ public:
     void loadColor3();
 
     Color getSelectedColor();
+
+    void applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos);
 
 private:
     

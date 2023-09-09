@@ -31,6 +31,7 @@ uniform vec2 destPos;
 uniform vec2 direction; 
 
 uniform vec3 endPointColor; 
+uniform int lineCapturingMode;
 
 uniform float EDGE;
 
@@ -189,7 +190,8 @@ void main()
         {
             dist = max(dist, 0.0);
             dist = smoothstep(EDGE,EDGE + SMOOTH,dist);
-            color *= mix(vec3(1.0,0.0,0.0),vec3(1.0,1.0,1.0),dist);
+            if(lineCapturingMode == 0)
+                color *= mix(vec3(1.0,0.0,0.0),vec3(1.0,1.0,1.0),dist);
         }
         
         dist = SDFCircle(percent, B);
@@ -197,7 +199,8 @@ void main()
         {
             dist = max(dist, 0.0);
             dist = smoothstep(EDGE,EDGE + SMOOTH,dist);
-            //color *= mix(vec3(0.0,1.0,0.0),vec3(1.0,1.0,1.0),dist);
+            //if(lineCapturingMode == 0)
+            //  color *= mix(vec3(0.0,1.0,0.0),vec3(1.0,1.0,1.0),dist);
         }    
         
         dist = SDFCircle(percent, C);
@@ -205,20 +208,24 @@ void main()
         {
             dist = max(dist, 0.0);
             dist = smoothstep(EDGE,EDGE + SMOOTH,dist);
-            color *= mix(vec3(1.0) - endPointColor ,vec3(1.0,1.0,1.0),dist);
+            if(lineCapturingMode == 0)
+                color *= mix(vec3(1.0) - endPointColor ,vec3(1.0,1.0,1.0),dist);
         }    
 
         dist = calculateDistanceToQuadraticBezier(percent, A, B, C);
-        if (dist < EDGE + SMOOTH)
-        {
-            dist = smoothstep(EDGE - SMOOTH, EDGE + SMOOTH, dist);
-            color *= vec3(dist);
+        if(lineCapturingMode == 1){
+            if (dist < EDGE + SMOOTH)
+            {
+                dist = smoothstep(EDGE - SMOOTH, EDGE + SMOOTH, dist);
+                color *= vec3(dist);
+            }
         }
-       
-        if (dist < EDGE + SMOOTH * 10.)
-        {
-            dist = smoothstep(EDGE - SMOOTH * 10., EDGE + SMOOTH * 10., dist);
-            color *= vec3(dist * vec3(1.,1.,0.));
+        else{
+            if (dist < EDGE + SMOOTH)
+            {
+                dist = smoothstep(EDGE - SMOOTH, EDGE + SMOOTH, dist);
+                color *= vec3(dist);
+            }
         }
         
         fragColor = vec4(1) - vec4(color,color.r);

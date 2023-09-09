@@ -68,6 +68,7 @@ public:
     Panel selectedTextureDisplayer; 
     Panel twoDPaintingPanel; 
     Panel paintingModesPanel; 
+    Panel vectorPaintingModePropertyPanel; 
     Panel displayingModesPanel; 
 
     bool anyPanelHover = false;

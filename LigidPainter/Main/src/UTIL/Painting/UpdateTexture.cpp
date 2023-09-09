@@ -61,7 +61,7 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
 }
 
 
-void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos){
+void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode){
     
     glm::vec2 textureRes = this->selectedTexture.getResolution();
 
@@ -149,7 +149,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6);
         ShaderSystem::textureUpdatingShader().setInt("depthTexture", 7);
         ShaderSystem::textureUpdatingShader().setInt("paintingOverTexture", 10);
-        ShaderSystem::textureUpdatingShader().setInt("brushModeState", this->selectedPaintingModeIndex);
+        ShaderSystem::textureUpdatingShader().setInt("brushModeState", paintingMode);
         ShaderSystem::textureUpdatingShader().setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
         ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", this->usePaintingOver);
         ShaderSystem::textureUpdatingShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
@@ -192,7 +192,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingTexture", 6);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("depthTexture", 7);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverTexture", 10);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", this->selectedPaintingModeIndex);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", paintingMode);
         ShaderSystem::twoDPaintingModeAreaShader().setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", this->usePaintingOver);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
