@@ -179,6 +179,7 @@ namespace Settings{
         Texture distortionIcon;
         Texture normalMapIcon;
         Texture packageIcon;
+        Texture inkPenIcon;
         
         //--Textures
         Texture greetingDialogImage;  
