@@ -107,11 +107,20 @@ BakingDialog::BakingDialog(){
     
     pbrResultCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(5.f,2.f), "Pbr Result", 0.f);
     pbrUseLightingCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(5.f,2.f), "Pbr Use Lighting", 0.f);
-    pbrRayTracingCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(5.f,2.f), "Pbr Ray Tracing", 0.f);
+    pbrRayTracingCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f,2.f), "Ray Tracing (Not Available)", 0.f);
     vertexPositionCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(5.f,2.f), "Vertex Position", 0.f);
     vertexNormalsCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(5.f,2.f), "Vertex Normals", 0.f);
     reflectanceCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(5.f,2.f), "Skybox Reflectance", 0.f);
     bakeButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(7.f,2), "Bake", Texture(), 1.f, false);
+
+    exportMaterialChannelsText = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(7.f,2), "Export Material Channels", Texture(), 0.f, false);
+    bakingMaterialChannelsText = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(7.f,2), "Bake Material Channels", Texture(), 0.f, false);
+
+    exportMaterialChannelsText.color = glm::vec4(0.f);
+    bakingMaterialChannelsText.color = glm::vec4(0.f);
+    
+    exportMaterialChannelsText.textScale = 0.65f;
+    bakingMaterialChannelsText.textScale = 0.65f;
 }
 
 void BakingDialog::render(Timer timer, Skybox skybox){
@@ -142,6 +151,15 @@ void BakingDialog::render(Timer timer, Skybox skybox){
     this->pbrResultCheckbox.render(timer, true);
     this->pbrResultCheckbox.pos = this->reflectanceCheckbox.pos;
     this->pbrResultCheckbox.pos.y += this->reflectanceCheckbox.scale.y + this->pbrResultCheckbox.scale.y;
+
+    this->exportMaterialChannelsText.pos = exportChannelsIntoLibraryPanel.pos;
+    this->exportMaterialChannelsText.pos.y -= exportChannelsIntoLibraryPanel.scale.y - this->exportMaterialChannelsText.scale.y * 2.f;
+    this->exportMaterialChannelsText.render(timer, false);
+    
+    this->bakingMaterialChannelsText.pos = exportChannelsIntoLibraryPanel.pos;
+    this->bakingMaterialChannelsText.pos.y -= exportChannelsIntoLibraryPanel.scale.y - this->bakingMaterialChannelsText.scale.y * 2.f;
+    this->bakingMaterialChannelsText.pos.x = bakeButton.pos.x;
+    this->bakingMaterialChannelsText.render(timer, false);
     
     std::vector<CheckBox*> checkBoxes; 
     checkBoxes.push_back(&vertexPositionCheckbox);
@@ -165,13 +183,12 @@ void BakingDialog::render(Timer timer, Skybox skybox){
             checkBoxes[i]->clickState1 = true;
     }
     
-
     if(this->pbrResultCheckbox.clickState1){
         this->pbrUseLightingCheckbox.render(timer, true);
         this->pbrUseLightingCheckbox.pos = this->pbrResultCheckbox.pos;
         this->pbrUseLightingCheckbox.pos.x += this->pbrResultCheckbox.scale.x + this->pbrUseLightingCheckbox.scale.x;
         
-        this->pbrRayTracingCheckbox.render(timer, true);
+        this->pbrRayTracingCheckbox.render(timer, false);
         this->pbrRayTracingCheckbox.pos = this->pbrUseLightingCheckbox.pos;
         this->pbrRayTracingCheckbox.pos.y += this->pbrUseLightingCheckbox.scale.y + this->pbrRayTracingCheckbox.scale.y;
     }
@@ -195,27 +212,27 @@ void BakingDialog::render(Timer timer, Skybox skybox){
                 
                 if(channelI == 0){
                     channelTxtr = getModel()->meshes[i].albedo;
-                    channelTxtr.title = "albedo";
+                    channelTxtr.title = "albedo_" + getModel()->meshes[i].materialName;
                 }
                 if(channelI == 1){
                     channelTxtr = getModel()->meshes[i].roughness;
-                    channelTxtr.title = "roughness";
+                    channelTxtr.title = "roughness_" + getModel()->meshes[i].materialName;
                 }
                 if(channelI == 2){
                     channelTxtr = getModel()->meshes[i].metallic;
-                    channelTxtr.title = "metallic";
+                    channelTxtr.title = "metallic_" + getModel()->meshes[i].materialName;
                 }
                 if(channelI == 3){
                     channelTxtr = getModel()->meshes[i].normalMap;
-                    channelTxtr.title = "normalMap";
+                    channelTxtr.title = "normalMap_" + getModel()->meshes[i].materialName;
                 }
                 if(channelI == 4){
                     channelTxtr = getModel()->meshes[i].heightMap;
-                    channelTxtr.title = "heightMap";
+                    channelTxtr.title = "heightMap_" + getModel()->meshes[i].materialName;
                 }
                 if(channelI == 5){
                     channelTxtr = getModel()->meshes[i].ambientOcclusion;
-                    channelTxtr.title = "ambientOcclusion";
+                    channelTxtr.title = "ambientOcclusion_" + getModel()->meshes[i].materialName;
                 }
 
                 if(this->exportChannelsIntoLibraryPanel.sections[0].elements[channelI].checkBox.clickState1)
@@ -266,6 +283,7 @@ void BakingDialog::render(Timer timer, Skybox skybox){
 
         for (size_t i = 0; i < getModel()->meshes.size(); i++){
             Texture txtr = Texture(nullptr, Settings::properties()->textureRes, Settings::properties()->textureRes);
+            txtr.title = "baked_" + getModel()->meshes[i].materialName;
 
             /* Capturing FBO */
             unsigned int FBO; 

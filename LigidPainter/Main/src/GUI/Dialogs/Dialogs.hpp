@@ -200,6 +200,9 @@ public:
    CheckBox vertexNormalsCheckbox;
    CheckBox reflectanceCheckbox;
    Button bakeButton;
+   
+   Button exportMaterialChannelsText;
+   Button bakingMaterialChannelsText;
 
    short selectedBakeMode = 0;  
 
