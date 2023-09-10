@@ -52,8 +52,9 @@ void UI::libraryPanelLeftInteraction(Panel &libraryPanelLeft){
     //Keep the selected element as selected
     for (size_t i = 0; i < libraryPanelLeft.sections[0].elements.size(); i++) 
     {
-        if(Library::getSelectedElementIndex() == i){
-            libraryPanelLeft.sections[0].elements[Library::getSelectedElementIndex()].button.clickState1 = true;
-        }
+        if(Library::getSelectedElementIndex() == i)
+            libraryPanelLeft.sections[0].elements[i].button.clickState1 = true;
+        else
+            libraryPanelLeft.sections[0].elements[i].button.clickState1 = false;
     }
 }
