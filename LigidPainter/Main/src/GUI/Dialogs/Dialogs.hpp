@@ -96,19 +96,25 @@ class TextureSelectionDialog;
 class Skybox;
 
 class SettingsDialog
- {
- private:
+{
+private:
     
- public:
-    Panel panel;
-    DialogControl dialogControl;
+public:
+   Button systemSettingsBtn; 
+   Button TDRendererSettingsBtn; 
+   Section systemSettings;
+   Section TDRendererSettings;
+   Panel panel;
+   DialogControl dialogControl;
 
-    //Constructor
-    SettingsDialog();
+   int selectedSettingsMode = 0;
 
-    //Public member functions    
-    void render(Timer timer);
- };
+   //Constructor
+   SettingsDialog();
+
+   //Public member functions    
+   void render(Timer timer);
+};
 
 
 //!------------------------------NEW TEXTURE DIALOG------------------------------

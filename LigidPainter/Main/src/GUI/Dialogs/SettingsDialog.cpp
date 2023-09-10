@@ -32,6 +32,8 @@
 #include <vector>
 
 SettingsDialog::SettingsDialog(){
+    this->systemSettingsBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "System", Settings::appTextures().gearIcon, 0.f, true); 
+    this->TDRendererSettingsBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "3D Renderer", Settings::appTextures().TDModelIcon, 0.f, true); 
     
     //Create the panel
     this->panel = Panel({
@@ -42,71 +44,74 @@ SettingsDialog::SettingsDialog(){
                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Settings",Texture(),0.f,false)), 
                 }
             ),
-            Section(
-                Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"System",Texture(),4.f,true)),
-                {
-
-                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),
-                    {
-                        "256",
-                        "512",
-                        "1024",
-                        "2048",
-                        "4096"
-                    }, "Texture Resolution", 2.f)),
-                    
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"VSync"  , 2.f)),
-                    
-                    Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.f), 
-                    {
-                        "1024x768",
-                        "1152x864",
-                        "1280x720",
-                        "1280x768",
-                        "1280x800",
-                        "1280x960",
-                        "1280x1024",
-                        "1360x768",
-                        "1366x768",
-                        "1400x1050",
-                        "1440x900",
-                        "1600x900",
-                        "1680x1050",
-                        "1920x1080",
-                        "2560×1,440",
-                        "3840×2,160",
-                        "7680×4,320"
-
-                    }, "Framebuffer Resolution",2.f)),
-                }
-            ),
-            Section(
-                Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Model Rendering",Texture(), 4.f,true)),
-                {
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"X : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Y : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Z : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
-                    
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"X : Transform",Texture(),2.f, -50.f, 50.f, 0.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Y : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Z : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
-                
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Fov", Texture(),2.f, 1.f, 180.f, 40.f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Near", Texture(),0.f, 0.f, 1.f, 0.1f)), 
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Far", Texture(),0.f, 0.f, 1000.f, 1000.f)), 
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Orthographic projection"  , 0.f)),
-
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Backface Culling"  , 2.f)),
-                    
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Apply Height Map"  , 2.f)),
-                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Height Map Strength", Texture(),0.f, 0.f, 1.f, 0.1f)), 
-                    
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Render scene tiles/grid"  , 2.f)),
-                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Render scene axis displayer"  , 0.f))
-                }
-            )
+            Section()
         }
-    },glm::vec2(25.f, 40.f), glm::vec3(50.f,50.f,0.8f),ColorPalette::mainColor,ColorPalette::thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
+    },glm::vec2(20.f, 37.f), glm::vec3(50.f,50.f,0.8f),ColorPalette::mainColor,ColorPalette::thirdColor,true,true,true,true,true,1.f,1.f,{},0.25f,false);
+
+    TDRendererSettings = Section(
+                                Element(),
+                                {
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"X : Rotation",Texture(),15.f, 0.f, 360.f, 0.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Y : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Z : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                                    
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"X : Transform",Texture(),2.f, -50.f, 50.f, 0.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Y : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Z : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
+                                
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Fov", Texture(),2.f, 1.f, 180.f, 40.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Near", Texture(),0.f, 0.f, 1.f, 0.1f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Far", Texture(),0.f, 0.f, 1000.f, 1000.f)), 
+                                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Orthographic projection"  , 0.f)),
+
+                                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Backface Culling"  , 2.f)),
+                                    
+                                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Apply Height Map"  , 2.f)),
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Height Map Strength", Texture(),0.f, 0.f, 1.f, 0.1f)), 
+                                    
+                                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Render scene tiles/grid"  , 2.f)),
+                                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Render scene axis displayer"  , 0.f))
+                                }
+                            );
+
+    systemSettings = Section(
+                                    Element(),
+                                    {
+
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),
+                                        {
+                                            "256",
+                                            "512",
+                                            "1024",
+                                            "2048",
+                                            "4096"
+                                        }, "Texture Resolution", 15.f)),
+                                        
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"VSync"  , 2.f)),
+                                        
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2.f), 
+                                        {
+                                            "1024x768",
+                                            "1152x864",
+                                            "1280x720",
+                                            "1280x768",
+                                            "1280x800",
+                                            "1280x960",
+                                            "1280x1024",
+                                            "1360x768",
+                                            "1366x768",
+                                            "1400x1050",
+                                            "1440x900",
+                                            "1600x900",
+                                            "1680x1050",
+                                            "1920x1080",
+                                            "2560×1,440",
+                                            "3840×2,160",
+                                            "7680×4,320"
+
+                                        }, "Framebuffer Resolution",2.f)),
+                                    }
+                                );
 }
 
 void SettingsDialog::render(Timer timer){
@@ -115,72 +120,113 @@ void SettingsDialog::render(Timer timer){
 
     //Set the combo box selected index as the textureRes
     int txtrRes = 256;
-    for (size_t i = 0; i < panel.sections[1].elements[0].comboBox.texts.size(); i++)
+    for (size_t i = 0; i < systemSettings.elements[0].comboBox.texts.size(); i++)
     {
         if(Settings::properties()->textureRes == txtrRes)
-            panel.sections[1].elements[0].comboBox.selectedIndex = i;
+            systemSettings.elements[0].comboBox.selectedIndex = i;
         
         txtrRes*=2;
     }
 
-    panel.sections[2].elements[0].rangeBar.value = getScene()->transformRotation.x;
-    panel.sections[2].elements[1].rangeBar.value = getScene()->transformRotation.y;
-    panel.sections[2].elements[2].rangeBar.value = getScene()->transformRotation.z;
+    TDRendererSettings.elements[0].rangeBar.value = getScene()->transformRotation.x;
+    TDRendererSettings.elements[1].rangeBar.value = getScene()->transformRotation.y;
+    TDRendererSettings.elements[2].rangeBar.value = getScene()->transformRotation.z;
     
-    panel.sections[2].elements[3].rangeBar.value = getScene()->transformLocation.x;
-    panel.sections[2].elements[4].rangeBar.value = getScene()->transformLocation.y;
-    panel.sections[2].elements[5].rangeBar.value = getScene()->transformLocation.z;
+    TDRendererSettings.elements[3].rangeBar.value = getScene()->transformLocation.x;
+    TDRendererSettings.elements[4].rangeBar.value = getScene()->transformLocation.y;
+    TDRendererSettings.elements[5].rangeBar.value = getScene()->transformLocation.z;
     
-    panel.sections[2].elements[6].rangeBar.value = getScene()->fov;
-    panel.sections[2].elements[7].rangeBar.value = getScene()->aNear;
-    panel.sections[2].elements[8].rangeBar.value = getScene()->aFar;
-    panel.sections[2].elements[9].checkBox.clickState1 = getScene()->useOrtho;
+    TDRendererSettings.elements[6].rangeBar.value = getScene()->fov;
+    TDRendererSettings.elements[7].rangeBar.value = getScene()->aNear;
+    TDRendererSettings.elements[8].rangeBar.value = getScene()->aFar;
+    TDRendererSettings.elements[9].checkBox.clickState1 = getScene()->useOrtho;
     
-    panel.sections[2].elements[11].checkBox.clickState1 = Settings::properties()->useHeightMap;
-    panel.sections[2].elements[12].rangeBar.value = Settings::properties()->heightMapStrength;
+    TDRendererSettings.elements[11].checkBox.clickState1 = Settings::properties()->useHeightMap;
+    TDRendererSettings.elements[12].rangeBar.value = Settings::properties()->heightMapStrength;
 
-    panel.sections[2].elements[13].checkBox.clickState1 = getScene()->renderTiles;
-    panel.sections[2].elements[14].checkBox.clickState1 = getScene()->renderAxisDisplayer;
+    TDRendererSettings.elements[13].checkBox.clickState1 = getScene()->renderTiles;
+    TDRendererSettings.elements[14].checkBox.clickState1 = getScene()->renderAxisDisplayer;
 
-    if(panel.sections[2].elements[12].rangeBar.pointerPressed && !*Mouse::LPressed() && panel.sections[2].elements[11].checkBox.clickState1){
+    if(TDRendererSettings.elements[12].rangeBar.pointerPressed && !*Mouse::LPressed() && TDRendererSettings.elements[11].checkBox.clickState1){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {
             getModel()->meshes[i].processHeightMap();
         }
     }
 
+    if(this->selectedSettingsMode == 0)
+        panel.sections[1] = systemSettings; 
+    else if(this->selectedSettingsMode == 1)
+        panel.sections[1] = TDRendererSettings; 
+    
     //Render the panel    
     panel.render(timer,true);
-
-    getScene()->transformRotation.x = panel.sections[2].elements[0].rangeBar.value;
-    getScene()->transformRotation.y = panel.sections[2].elements[1].rangeBar.value;
-    getScene()->transformRotation.z = panel.sections[2].elements[2].rangeBar.value;
     
-    getScene()->transformLocation.x = panel.sections[2].elements[3].rangeBar.value;
-    getScene()->transformLocation.y = panel.sections[2].elements[4].rangeBar.value;
-    getScene()->transformLocation.z = panel.sections[2].elements[5].rangeBar.value;
-
-    getScene()->fov = panel.sections[2].elements[6].rangeBar.value;
-    getScene()->aNear = panel.sections[2].elements[7].rangeBar.value;
-    getScene()->aFar = panel.sections[2].elements[8].rangeBar.value;
-    getScene()->useOrtho = panel.sections[2].elements[9].checkBox.clickState1;
+    if(this->selectedSettingsMode == 0)
+        systemSettings = panel.sections[1]; 
+    else if(this->selectedSettingsMode == 1)
+        TDRendererSettings = panel.sections[1]; 
     
-    Settings::properties()->useHeightMap = panel.sections[2].elements[11].checkBox.clickState1;
-    Settings::properties()->heightMapStrength = panel.sections[2].elements[12].rangeBar.value;
+    systemSettingsBtn.pos = panel.pos;
+    systemSettingsBtn.pos.z += 0.001f;
+    systemSettingsBtn.pos.y -= panel.scale.y - systemSettingsBtn.scale.y - panel.sections[0].elements[0].scale.y * 4.f;
+    systemSettingsBtn.pos.x -= systemSettingsBtn.scale.y * 2.f;
+    this->systemSettingsBtn.render(timer, true);
+    TDRendererSettingsBtn.pos = panel.pos;
+    TDRendererSettingsBtn.pos.z += 0.001f;
+    TDRendererSettingsBtn.pos.y -= panel.scale.y - systemSettingsBtn.scale.y - panel.sections[0].elements[0].scale.y * 4.f;
+    TDRendererSettingsBtn.pos.x += TDRendererSettingsBtn.scale.y * 2.f;
+    this->TDRendererSettingsBtn.render(timer, true);
 
-    getScene()->renderTiles = panel.sections[2].elements[13].checkBox.clickState1;
-    getScene()->renderAxisDisplayer = panel.sections[2].elements[14].checkBox.clickState1;
+    std::vector<Button*> btns;
+    btns.push_back(&this->systemSettingsBtn);
+    btns.push_back(&this->TDRendererSettingsBtn);
+
+    for (size_t i = 0; i < btns.size(); i++){
+        if(btns[i]->clickState1 && i != this->selectedSettingsMode){
+            this->selectedSettingsMode = i;
+            for (size_t j = 0; j < btns.size(); j++)
+            {
+                btns[j]->clickState1 = false;
+            }
+        }
+    }
+
+    for (size_t i = 0; i < btns.size(); i++)
+    {
+        if(btns[i]->clickState1 == false && i == this->selectedSettingsMode)
+            btns[i]->clickState1 = true;
+    }
+
+    getScene()->transformRotation.x = TDRendererSettings.elements[0].rangeBar.value;
+    getScene()->transformRotation.y = TDRendererSettings.elements[1].rangeBar.value;
+    getScene()->transformRotation.z = TDRendererSettings.elements[2].rangeBar.value;
+    
+    getScene()->transformLocation.x = TDRendererSettings.elements[3].rangeBar.value;
+    getScene()->transformLocation.y = TDRendererSettings.elements[4].rangeBar.value;
+    getScene()->transformLocation.z = TDRendererSettings.elements[5].rangeBar.value;
+
+    getScene()->fov = TDRendererSettings.elements[6].rangeBar.value;
+    getScene()->aNear = TDRendererSettings.elements[7].rangeBar.value;
+    getScene()->aFar = TDRendererSettings.elements[8].rangeBar.value;
+    getScene()->useOrtho = TDRendererSettings.elements[9].checkBox.clickState1;
+    
+    Settings::properties()->useHeightMap = TDRendererSettings.elements[11].checkBox.clickState1;
+    Settings::properties()->heightMapStrength = TDRendererSettings.elements[12].rangeBar.value;
+
+    getScene()->renderTiles = TDRendererSettings.elements[13].checkBox.clickState1;
+    getScene()->renderAxisDisplayer = TDRendererSettings.elements[14].checkBox.clickState1;
     
     //Set the vsync option as the vsync checkbox element
-    Settings::properties()->VSync = panel.sections[1].elements[1].checkBox.clickState1;
+    Settings::properties()->VSync = systemSettings.elements[1].checkBox.clickState1;
     
     //Set the backface culling option as the backface culling checkbox element
-    Settings::properties()->backfaceCulling = panel.sections[2].elements[10].checkBox.clickState1;
+    Settings::properties()->backfaceCulling = TDRendererSettings.elements[10].checkBox.clickState1;
     
     //If pressed to any of the combo box element change the texture res
-    Settings::properties()->textureRes = stoi(panel.sections[1].elements[0].comboBox.texts[panel.sections[1].elements[0].comboBox.selectedIndex]);
+    Settings::properties()->textureRes = stoi(systemSettings.elements[0].comboBox.texts[systemSettings.elements[0].comboBox.selectedIndex]);
     
-    if(panel.sections[2].elements[11].checkBox.hover && *Mouse::LClick()){
+    if(TDRendererSettings.elements[11].checkBox.hover && *Mouse::LClick()){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {
             getModel()->meshes[i].processHeightMap();
