@@ -71,7 +71,7 @@ int Filter::load(std::string path){
 }
 
 void Filter::generateDisplayingTexture(){
-    glm::vec2 txtrRes = Settings::appTextures().greetingDialogImage.getResolution();
+    glm::vec2 txtrRes = Settings::appTextures().filterDisplayerImage.getResolution();
 
     glGenTextures(1, &this->displayingTxtr);
     glActiveTexture(GL_TEXTURE0);
@@ -117,7 +117,7 @@ void Filter::generateDisplayingTexture(){
     this->shader.setVec2("txtrResolution", txtrRes); //Cover the screen
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, Settings::appTextures().greetingDialogImage.ID);
+    glBindTexture(GL_TEXTURE_2D, Settings::appTextures().filterDisplayerImage.ID);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
     

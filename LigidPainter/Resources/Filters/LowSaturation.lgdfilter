@@ -27,6 +27,6 @@ void main(){
     fragColor.a = texture(txtr, TexCoords).a;
 
     vec3 hsv = rgb2hsv(fragColor.rgb);
-    hsv.g = 0.05;
+    hsv.g = 0.2;
     fragColor.rgb = hsv2rgb(hsv);
 }

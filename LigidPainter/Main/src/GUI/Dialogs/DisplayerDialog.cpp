@@ -54,7 +54,7 @@ DisplayerDialog::DisplayerDialog(){
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),"",  Settings::appTextures().greetingDialogImage, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),"",  Texture(), 1.f,true)),
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), 
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Blur"  , Texture(), 1.f,0.f,100.f,0.f)), 
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Opacity"  , Texture(), 1.f,0.f,100.f,0.f)), 

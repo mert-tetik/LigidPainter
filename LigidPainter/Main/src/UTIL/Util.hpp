@@ -753,37 +753,6 @@ struct Websites{
     Website youTube;
 };
 
-/// @brief Static textures will be used in the app
-struct AppTextures{ 
-    //--Icons
-    Texture TDModelIcon; 
-    Texture softenIcon;  
-    Texture smearIcon;
-    Texture modifierIcon;
-    Texture environmentIcon;
-    Texture dropperIcon;
-    Texture colorIcon;
-    Texture brushIcon;
-    Texture arrowR;
-    Texture arrowL;
-    Texture threeDIcon;
-    Texture twoDIcon;
-    Texture exportIcon;
-    Texture areaPaintingIcon;
-    Texture gearIcon;
-    Texture ligidPainterIcon;
-    Texture nodeDisplayingMode;
-    Texture paintingDisplayingMode;
-    Texture solidPaintingDisplayingMode;
-    Texture logButtonL;
-    Texture logButtonR;
-    Texture logButtonM;
-    
-    //--Textures
-    Texture greetingDialogImage;  
-    Texture noMaterialConnectedToTheMeshWarningImage;  
-};
-
 /// @brief Fonts will be used in the app
 struct Fonts{ 
     Font Arial;

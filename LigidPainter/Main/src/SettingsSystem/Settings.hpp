@@ -184,6 +184,7 @@ namespace Settings{
         
         //--Textures
         Texture greetingDialogImage;  
+        Texture filterDisplayerImage;  
         Texture noMaterialConnectedToTheMeshWarningImage;  
         Texture noMaterialModifierIsConnectedToMaterialWarningImage;
     };

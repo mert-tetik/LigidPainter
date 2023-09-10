@@ -171,7 +171,7 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
         ShaderSystem::splitTexturesShader().setInt("texture2", 1);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().greetingDialogImage.ID);
+        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().filterDisplayerImage.ID);
 
         glActiveTexture(GL_TEXTURE1);
         if(this->selectedTextureIndex < Library::getFilterArraySize())

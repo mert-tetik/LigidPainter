@@ -321,7 +321,7 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5.5f),""        , Settings::appTextures().greetingDialogImage, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,5.5f), "", Texture(), 0.f, false)),
                                     }
                                 )
                             },

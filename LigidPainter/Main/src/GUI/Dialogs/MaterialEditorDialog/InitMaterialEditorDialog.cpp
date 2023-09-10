@@ -80,7 +80,7 @@ MaterialEditorDialog::MaterialEditorDialog()
                       );
 
     //Material display is a button (is taking the material's display texture as a texture) (right in the middle)
-    materialDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(45,45), "Material"        , Settings::appTextures().greetingDialogImage, 0.f, false);
+    materialDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(45,45), "Material", Texture(), 0.f, false);
     
     //Init the texture modifier
     appMaterialModifiers.textureModifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);
