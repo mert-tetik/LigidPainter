@@ -72,6 +72,7 @@ void UI::elementInteraction(
                     nodeEditorDisplayer.hover           ||
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover            ||
+                    displayingModesPanel.hover          ||
                     vectorPaintingModePropertyPanel.hover;
 
     this->contextMenuInteraction(timer, project, painter);
