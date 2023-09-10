@@ -92,7 +92,10 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     //Stroke positions
     std::vector<glm::vec2> holdLocations = getCursorSubstitution(this->brushProperties.spacing);
     if(strokeLocations.size())
-        holdLocations = strokeLocations; 
+        holdLocations = strokeLocations;
+
+    if(holdLocations.size())
+        ShaderSystem::twoDPainting().setVec2("mouseOffset", holdLocations[0] - holdLocations[holdLocations.size()-1]);
 
     ShaderSystem::twoDPainting().setInt("posCount",holdLocations.size());
     for (int i = 0; i < holdLocations.size(); i++)
@@ -168,7 +171,6 @@ static void setShaderUniforms(glm::mat4 &projection, glm::vec2 resolution, int f
     ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
     ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
     ShaderSystem::twoDPainting().setVec2("videoScale", resolution); 
-    ShaderSystem::twoDPainting().setVec2("mouseOffset", *Mouse::mouseOffset());
     ShaderSystem::twoDPainting().setInt("frame", frameCounter);
 }
 
