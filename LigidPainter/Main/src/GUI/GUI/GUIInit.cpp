@@ -389,7 +389,7 @@ void UI::init
                                 )
                             },
                             
-                            glm::vec2(5 ,6), //Initial scale value
+                            glm::vec2(5, 8.f), //Initial scale value
                             glm::vec3(50 ,50 ,0.1f),  //Initial position value
                             ColorPalette::mainColor, //Color of the panel
                             ColorPalette::thirdColor, //Color of the panel
@@ -411,18 +411,18 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.5f), {"Drawing", "Softening", "Smearing", "Filtering"}, "Stroke Painting Mode", 0.f),
-                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Add Point Between The Selected Points", Settings::appTextures().brushIcon, 0.f, false),
-                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Clear All", Settings::appTextures().brushIcon, 0.f, false),
-                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Remove The Selected Point", Settings::appTextures().brushIcon, 0.f, false),
-                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Stroke", Settings::appTextures().brushIcon, 0.f, false)
+                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.5f), {"Drawing", "Softening", "Smearing", "Filtering"}, "Stroke Painting Mode", 1.f),
+                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Add Point Between The Selected Points", Texture(), 0.5f, false),
+                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Clear All", Texture(), 0.5f, false),
+                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Remove The Selected Point", Texture(), 0.5f, false),
+                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Stroke", Texture(), 0.5f, false)
                                     }
                                 )
                             },
                             
-                            glm::vec2(5, 7.5f), //Initial scale value
+                            glm::vec2(7.f, 9.f), //Initial scale value
                             glm::vec3(50 ,50 ,0.1f),  //Initial position value
-                            ColorPalette::mainColor, //Color of the panel
+                            glm::vec4(ColorPalette::secondColor.r, ColorPalette::secondColor.g, ColorPalette::secondColor.b, ColorPalette::secondColor.a/2.f), //Color of the panel
                             ColorPalette::thirdColor, //Color of the panel
                             true,
                             true,

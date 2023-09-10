@@ -66,8 +66,8 @@ void UI::panelPositioning(
     paintingModesPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + paintingModesPanel.scale.x + 1;
     paintingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingModesPanel.scale.y;
 
-    vectorPaintingModePropertyPanel.pos.x = paintingModesPanel.pos.x;
-    vectorPaintingModePropertyPanel.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + vectorPaintingModePropertyPanel.scale.y;
+    vectorPaintingModePropertyPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + vectorPaintingModePropertyPanel.scale.x + 1;
+    vectorPaintingModePropertyPanel.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + vectorPaintingModePropertyPanel.scale.y + 1;
 
     displayingModesPanel.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - displayingModesPanel.scale.x - 0.5f;
     displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;
