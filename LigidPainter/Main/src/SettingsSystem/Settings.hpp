@@ -180,6 +180,7 @@ namespace Settings{
         Texture normalMapIcon;
         Texture packageIcon;
         Texture inkPenIcon;
+        Texture bakingIcon;
         
         //--Textures
         Texture greetingDialogImage;  

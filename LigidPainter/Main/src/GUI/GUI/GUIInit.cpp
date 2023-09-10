@@ -90,8 +90,8 @@ void UI::init
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"2D Painting"         , Settings::appTextures().twoDIcon, 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Export"              , Settings::appTextures().exportIcon, 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Displayer"           , Settings::appTextures().environmentIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Settings"           , Settings::appTextures().gearIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Baking"           , Settings::appTextures().gearIcon, 0.f,false))
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Settings"            , Settings::appTextures().gearIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Baking"              , Settings::appTextures().bakingIcon, 0.f,false))
                                     }
                                 )
                             },
