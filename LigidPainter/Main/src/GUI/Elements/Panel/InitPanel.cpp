@@ -66,11 +66,16 @@ Panel::Panel(
     this->rowCount = rowCount; 
     this->maxScaleVal = maxScaleVal; 
     this->barButtons = barButtons; 
-    this->sliderButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(0.25f,20), "", Texture(), 0.f, false);
+    
     this->sliderButton.color = ColorPalette::mainColor;
     this->sliderButton.color2 = ColorPalette::themeColor;
     this->sliderButton.radius = 0.25f;
     this->hasSlider = hasSlider;
+
+    this->sliderButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(0.25f,20), "", Texture(), 0.f, false);
+    this->sliderButton.color.a = 0.4f;
+    this->sliderButton.color2.a = 0.4f;
+    this->sliderButton.radius = 0.25f;
 
     this->hasSlider = true;
 }
