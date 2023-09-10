@@ -203,7 +203,8 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
         Section(
             Element(Button()),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -256,7 +257,8 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
         Section(
             Element(Button()),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -315,7 +317,8 @@ std::vector<Section> MaterialModifier::createFabricModifier(){
         Section(
             Element(Button()),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -404,7 +407,8 @@ std::vector<Section> MaterialModifier::createMossModifier()
         Section(
             Element(Button()),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -499,7 +503,8 @@ std::vector<Section> MaterialModifier::createRustModifier()
         Section(
             Element(Button()),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -590,7 +595,8 @@ std::vector<Section> MaterialModifier::createSkinModifier()
         Section(
             Element(Button()),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -678,7 +684,8 @@ std::vector<Section> MaterialModifier::createWoodenModifier()
         Section(
             Element(Button()),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -763,7 +770,8 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
         Section(
             Element(Button()),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -847,7 +855,8 @@ std::vector<Section> MaterialModifier::createDustModifier(){
         Section(
             Element(Button()),
             {
-                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -1043,7 +1052,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
-        if(channelI == 0)
+        if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID)
             material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
         if(material.materialModifiers[curModI].sections[0].elements[channelI].button.texture.proceduralID != -1)
@@ -1160,7 +1169,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
-        if(channelI == 0)
+        if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID)
             material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
@@ -1249,7 +1258,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
-        if(channelI == 0)
+        if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID)
             material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
@@ -1365,7 +1374,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
-        if(channelI == 0)
+        if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID)
             material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
@@ -1469,7 +1478,7 @@ void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
-        if(channelI == 0)
+        if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID)
             material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
@@ -1595,7 +1604,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
-        if(channelI == 0)
+        if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID)
             material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
@@ -1717,7 +1726,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
-        if(channelI == 0)
+        if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID)
             material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
@@ -1840,7 +1849,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
-        if(channelI == 0)
+        if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID)
             material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }
@@ -1959,7 +1968,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
-        if(channelI == 0)
+        if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID)
             material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID);
         glDeleteTextures(1, &previousTexture.ID);
     }

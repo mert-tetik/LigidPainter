@@ -263,6 +263,13 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
             //If button is clicked update the material
             if(modifiersPanel.sections[secI].elements[elementI].state == 0)
                 if(modifiersPanel.sections[secI].elements[elementI].button.clicked){
+                    if(secI == modifiersPanel.sections.size()-1 && elementI == modifiersPanel.sections[secI].elements.size()-1){
+                        modifiersPanel.sections[secI].elements[0].button.filter.shader.ID = 0;
+                        modifiersPanel.sections[secI].elements[0].button.texture = Texture();
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[0].button.filter.shader.ID = 0; 
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[0].button.texture = Texture(); 
+                    }
+
                     this->updateTheMaterial = true;
                     material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button = modifiersPanel.sections[secI].elements[elementI].button; 
                 }
