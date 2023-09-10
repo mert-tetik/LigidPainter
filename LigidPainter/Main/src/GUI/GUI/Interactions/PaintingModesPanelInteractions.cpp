@@ -91,6 +91,6 @@ void paintingModesPanelInteraction(
         }
     }
     if(vectorPaintingModePropertyPanel.sections[0].elements[4].button.clicked){
-        painter.applyVectorStrokes(twoDPaintingPanel, windowOrtho, twoDSceneScroll, twoDScenePos);
+        painter.applyVectorStrokes(twoDPaintingPanel, windowOrtho, twoDSceneScroll, twoDScenePos, vectorPaintingModePropertyPanel.sections[0].elements[0].comboBox.selectedIndex);
     }
 }

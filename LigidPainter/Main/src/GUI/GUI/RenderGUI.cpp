@@ -525,6 +525,9 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
 
     if(painter.selectedPaintingModeIndex == 3){
+        if(!anyContextMenuActive && !anyDialogActive && !anyPanelHover && Mouse::activeCursor()->cursorType == Mouse::defaultCursor()->cursorType)
+            Mouse::setCursor(*Mouse::inkPenCursor());
+
         for (int i = painter.vectorStrokes.size() - 1; i >= 0; i--)
         {
             painter.vectorStrokes[i].draw(0.0005, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);

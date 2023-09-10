@@ -574,7 +574,7 @@ public:
 
     Color getSelectedColor();
 
-    void applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos);
+    void applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode);
 
 private:
     

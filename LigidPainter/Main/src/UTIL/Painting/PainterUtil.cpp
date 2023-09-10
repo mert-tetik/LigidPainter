@@ -98,7 +98,7 @@ Color Painter::getSelectedColor(){
         return this->color3;
 }
 
-void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos){
+void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode){
     
     int textureResolution = 256;
 
@@ -169,8 +169,6 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
         }
     }
 
-    const int paintingMode = 0;
-
     const int maxStrokeSize = 50;
 
     // Calculate how many subvectors you'll need
@@ -187,12 +185,6 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
 
         // Call the imaginary function for the subvector
         this->doPaint(windowOrtho, subVector, paintingMode);
-    
-        for (size_t i = 0; i < subVector.size(); i++)
-        {
-            std::cout << glm::to_string(subVector[i]) << ' ';
-        }
-        
     }
 
     this->updateTexture(twoDPaintingPanel, windowOrtho, twoDSceneScroll, twoDScenePos, paintingMode);
