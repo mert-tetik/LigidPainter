@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-#define MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE 63
+#define MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE 66
 #define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 40
 #define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 7
 

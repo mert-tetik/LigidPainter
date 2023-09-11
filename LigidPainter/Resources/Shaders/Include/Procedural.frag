@@ -1490,6 +1490,51 @@ float smoothCirclePattern2(vec2 uv)
     
     return Value;
 }
+
+vec3 getFabric(vec2 uv, int style, float stripeFrequency, float gapFrequency){
+    
+    if(style == 0){
+        // Generate a fabric-like pattern using a combination of noise and stripes
+        float noise = sin(uv.x * 5.0) * sin(uv.y * 5.0) * 0.2 + 0.8;  // Noise pattern
+        float stripesx = sin(uv.x * stripeFrequency) * 0.5 + 0.5;  // Vertical stripes pattern
+        float stripesy = sin(uv.y * gapFrequency) * 0.5 + 0.5;
+        //float stripesz = sin(uv.z * stripeFrequency) * 0.5 + 0.5;
+  
+        // Combine the patterns to create the fabric texture
+        vec3 color = vec3(noise * stripesx);
+        vec3 colory = vec3(noise * stripesy);
+        color = cos(color);
+        colory = cos(colory);
+  
+        return color * colory;
+    }
+    else{
+        float stripe = sin(uv.y * stripeFrequency) * 0.5 + 0.5;  // Vertical stripe pattern
+        float weave = sin((uv.x + uv.y) * gapFrequency) * 0.5 + 0.5;  // Diagonal weave pattern
+
+        // Combine the patterns to create the fabric texture
+        vec3 color = vec3(stripe * weave);
+
+        return vec3(1.) - color;
+    }
+
+    return vec3(0.);
+}
+
+//63
+float fabric1(vec2 uv){
+    return getFabric(uv, 1, 10., 30.).r;
+}
+
+//64
+float fabric2(vec2 uv){
+    return getFabric(uv, 0, 10., 30.).r;
+}
+
+//64
+float fabric3(vec2 uv){
+    return getFabric(uv, 0, 10., 10.).r;
+}
 	
 
 /* --------------------------------------------------------- NOISE FUNCTIONS ---------------------------------------------------------*/
@@ -2831,109 +2876,115 @@ float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, ve
         res = smoothCirclePattern1(uv);
     else if(proceduralID == 62)
         res = smoothCirclePattern2(uv);
-
-
-
-
-
-
     else if(proceduralID == 63)
-        res = basicNoiseA(pos);
+        res = fabric1(uv);
     else if(proceduralID == 64)
-        res = basicStretchedNoiseA(pos);
+        res = fabric2(uv);
     else if(proceduralID == 65)
-        res = fbmNoiseA(pos);
+        res = fabric3(uv);
+
+
+
+
+
+
     else if(proceduralID == 66)
-        res = fbmHightPersistanceNoiseA(pos);
+        res = basicNoiseA(pos);
     else if(proceduralID == 67)
-        res = fbmLowOctaveNoiseA(pos);
+        res = basicStretchedNoiseA(pos);
     else if(proceduralID == 68)
-        res = fbmWaveNoiseA(pos);
+        res = fbmNoiseA(pos);
     else if(proceduralID == 69)
-        res = fbmWaveLowPersistanceNoiseA(pos);
+        res = fbmHightPersistanceNoiseA(pos);
     else if(proceduralID == 70)
-        res = fbmWaveHighPersistanceNoiseA(pos);
+        res = fbmLowOctaveNoiseA(pos);
     else if(proceduralID == 71)
-        res = musgraveDefNoiseA(pos);
+        res = fbmWaveNoiseA(pos);
     else if(proceduralID == 72)
-        res = musgraveHighDimensionalNoiseA(pos);
+        res = fbmWaveLowPersistanceNoiseA(pos);
     else if(proceduralID == 73)
-        res = gradientDefNoiseA(pos);
+        res = fbmWaveHighPersistanceNoiseA(pos);
     else if(proceduralID == 74)
-        res = innerWorleyNoiseA(pos);
+        res = musgraveDefNoiseA(pos);
     else if(proceduralID == 75)
-        res = worleyPatternalNoiseA(pos);
+        res = musgraveHighDimensionalNoiseA(pos);
     else if(proceduralID == 76)
-        res = circularPerlinNoiseA(pos);
+        res = gradientDefNoiseA(pos);
     else if(proceduralID == 77)
-        res = voronoiNoiseA(pos);
+        res = innerWorleyNoiseA(pos);
     else if(proceduralID == 78)
-        res = voronoiDeeperNoiseA(pos);
+        res = worleyPatternalNoiseA(pos);
     else if(proceduralID == 79)
-        res = staticNoiseA(pos);
+        res = circularPerlinNoiseA(pos);
     else if(proceduralID == 80)
-        res = wallNoise1(pos);
+        res = voronoiNoiseA(pos);
     else if(proceduralID == 81)
-        res = wallNoise2(pos);
+        res = voronoiDeeperNoiseA(pos);
     else if(proceduralID == 82)
-        res = wallNoise3(pos);
+        res = staticNoiseA(pos);
     else if(proceduralID == 83)
-        res = wallNoise4(pos);
+        res = wallNoise1(pos);
     else if(proceduralID == 84)
-        res = wallNoise5(pos);
+        res = wallNoise2(pos);
     else if(proceduralID == 85)
-        res = wallNoise6(pos);
+        res = wallNoise3(pos);
     else if(proceduralID == 86)
-        res = pebbleNoise1(pos);
+        res = wallNoise4(pos);
     else if(proceduralID == 87)
-        res = pebbleNoise2(pos);
+        res = wallNoise5(pos);
     else if(proceduralID == 88)
-        res = pebbleNoise3(pos);
+        res = wallNoise6(pos);
     else if(proceduralID == 89)
-        res = pebbleNoise4(pos);
+        res = pebbleNoise1(pos);
     else if(proceduralID == 90)
-        res = pebbleNoise5(pos);
+        res = pebbleNoise2(pos);
     else if(proceduralID == 91)
-        res = pebbleNoise6(pos);
+        res = pebbleNoise3(pos);
     else if(proceduralID == 92)
-        res = pebbleNoise7(pos);
+        res = pebbleNoise4(pos);
     else if(proceduralID == 93)
-        res = scratchNoise1(pos);
+        res = pebbleNoise5(pos);
     else if(proceduralID == 94)
-        res = scratchNoise2(pos);
+        res = pebbleNoise6(pos);
     else if(proceduralID == 95)
-        res = dropletsNoise1(pos);
+        res = pebbleNoise7(pos);
     else if(proceduralID == 96)
-        res = dropletsNoise2(pos);
+        res = scratchNoise1(pos);
     else if(proceduralID == 97)
-        res = dropletsNoise3(pos);
+        res = scratchNoise2(pos);
     else if(proceduralID == 98)
-        res = dropletsNoise4(pos);
+        res = dropletsNoise1(pos);
     else if(proceduralID == 99)
-        res = dropletsNoise5(pos);
+        res = dropletsNoise2(pos);
     else if(proceduralID == 100)
-        res = crackNoise(pos);
+        res = dropletsNoise3(pos);
     else if(proceduralID == 101)
-        res = gyroidNoise1(pos);
+        res = dropletsNoise4(pos);
     else if(proceduralID == 102)
+        res = dropletsNoise5(pos);
+    else if(proceduralID == 103)
+        res = crackNoise(pos);
+    else if(proceduralID == 104)
+        res = gyroidNoise1(pos);
+    else if(proceduralID == 105)
         res = gyroidNoise2(pos);
     
     
 
 
-    else if(proceduralID == 101)
+    else if(proceduralID == 106)
         res = smartPos(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
-    else if(proceduralID == 102)
-        res = smartPos2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
-    else if(proceduralID == 103)
-        res = smartPos3(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
-    else if(proceduralID == 104)
-        res = smartStripes(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
-    else if(proceduralID == 105)
-        res = smartStripes2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
-    //else if(proceduralID == 106)
-    //   edge wear
     else if(proceduralID == 107)
+        res = smartPos2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 108)
+        res = smartPos3(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 109)
+        res = smartStripes(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
+    else if(proceduralID == 110)
+        res = smartStripes2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
+    //else if(proceduralID == 111)
+    //   edge wear
+    else if(proceduralID == 112)
         res = smartDistance(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
     else
         res = 1.;
