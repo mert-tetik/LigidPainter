@@ -2920,3 +2920,130 @@ vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, fl
             return 1. - texture(txtr, texCoord * scale);
     }
 }
+
+
+/*
+int octaves = 8;
+float roughness = 0.2;
+vec3 color1 = vec3(0.23, 0.25, 0.24);
+vec3 color2 = vec3(0.62, 0.71, 0.70);
+vec3 color3 = vec3(0.85, 0.94, 0.93);
+vec3 color4 = vec3(0.58, 0.82, 0.75);
+
+
+float innerHash(vec3 p)  // replace this by something better
+{
+    p  = fract( p*0.3183099+.1 );
+	p *= 17.0;
+    return fract( p.x*p.y*p.z*(p.x+p.y+p.z) );
+}
+
+float innerNoise2D( in vec3 x )
+{
+    vec3 i = floor(x);
+    vec3 f = fract(x);
+    f = f*f*(3.0-2.0*f);
+	
+    return mix(mix(mix( innerHash(i+vec3(0,0,0)), 
+                        innerHash(i+vec3(1,0,0)),f.x),
+                   mix( innerHash(i+vec3(0,1,0)), 
+                        innerHash(i+vec3(1,1,0)),f.x),f.y),
+               mix(mix( innerHash(i+vec3(0,0,1)), 
+                        innerHash(i+vec3(1,0,1)),f.x),
+                   mix( innerHash(i+vec3(0,1,1)), 
+                        innerHash(i+vec3(1,1,1)),f.x),f.y),f.z);
+}
+
+float innerFbm(vec2 p) {
+    
+    float freq = 1.;
+    
+    float amplitude = 1.0;
+    
+    float total = 0.0;
+    float maxTotal = 0.0;
+    
+    for (int i = 0; i < octaves; ++i) {
+        total += amplitude * innerNoise2D(vec3(p * freq, 0.));
+        maxTotal += amplitude;
+        
+        freq *= 2.0;
+        amplitude *= roughness;
+    }
+    
+    return total / maxTotal;
+}
+
+vec2 fbm22( vec2 p )
+{
+    return vec2(innerFbm(p), innerFbm(p+vec2(7.7)));
+}
+
+//====================================================================
+
+// Function to calculate a value and store intermediate results in 'result'
+float calculateSurfaceValue(vec2 position, out vec4 result)
+{
+    // Add some noise to the input vector
+    // position += 0.03 * sin(length(position) * vec2(4.1, 4.3));
+
+    // Generate two levels of fractal Brownian motion (fbm)
+    vec2 offset = fbm22(0.9 * position);
+    // offset += 0.04 * sin(length(offset));
+
+    vec2 noise = fbm22(3.0 * offset);
+
+    // Store the intermediate results in 'result'
+    result = vec4(offset, noise);
+
+    // Calculate a final value using 'innerFbm' and apply some mixing
+    float finalValue = 0.5 + 0.5 * innerFbm(1.8 * position + 6.0 * noise);
+
+    return mix(finalValue, finalValue * finalValue * finalValue * 3.5, finalValue * abs(noise.x));
+}
+
+void mainImage(out vec4 fragColor, in vec2 fragCoord)
+{
+    // Scale and offset the fragment coordinates
+    vec2 pixelPosition = fragCoord / iResolution.y * 20.0;
+    float epsilon = 0.001;
+
+    // Initialize 'surfaceResult' with zeros
+    vec4 surfaceResult = vec4(0.0);
+
+    // Calculate the surface value using the 'calculateSurfaceValue' function
+    float surfaceValue = calculateSurfaceValue(pixelPosition, surfaceResult);
+
+    // Initialize baseColor with a base value
+    vec3 baseColor = vec3(0.0);
+
+    // Apply color mixing based on the surface value 'surfaceValue'
+    baseColor = mix(vec3(0.2, 0.1, 0.4), vec3(0.3, 0.05, 0.05), surfaceValue);
+    baseColor = mix(baseColor, vec3(1.) - color2, dot(surfaceResult.zw, surfaceResult.zw));
+    baseColor = mix(baseColor, vec3(1.) - color3, 0.2 + 0.5 * surfaceResult.y * surfaceResult.y);
+    baseColor = mix(baseColor, vec3(1.) - color4, 0.5 * smoothstep(1.2, 1.3, abs(surfaceResult.z) + abs(surfaceResult.w)));
+
+    // Apply clamping and lighting calculations
+    baseColor = clamp(baseColor * surfaceValue * 2.0, 0.0, 1.0);
+
+    vec4 normalResult;
+    // Calculate the normal vector for shading
+    vec3 surfaceNormal = normalize(vec3(calculateSurfaceValue(pixelPosition + vec2(epsilon, 0.0), normalResult) - surfaceValue,
+                                        2.0 * epsilon,
+                                        calculateSurfaceValue(pixelPosition + vec2(0.0, epsilon), normalResult) - surfaceValue));
+
+    // Define a light direction and calculate the diffuse lighting
+    vec3 lightDirection = normalize(vec3(0.9, 0.2, -0.4));
+    float diffuseFactor = clamp(0.3 + 0.7 * dot(surfaceNormal, lightDirection), 0.0, 1.0);
+
+    // Calculate the final color by combining diffuse lighting and material color
+    vec3 lightingColor = color1 * (surfaceNormal.y * 0.5 + 0.5) ;
+    baseColor *= 1.2 * lightingColor;
+    baseColor = 1.0 - baseColor;
+    baseColor = 1.1 * baseColor * baseColor;
+
+    // Set the final fragment color
+    fragColor = vec4(baseColor, 1.0);
+}
+
+*/

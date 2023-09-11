@@ -529,7 +529,6 @@ void main()
     if(depthValue < dpth)
         alpha *= 0;
 
-
     vec3 clrResult = mix(texture(previousTxtr, TexCoords).rgb, fragColor.rgb, alpha);
 
     fragColor = vec4(clrResult, 1.);
