@@ -88,7 +88,7 @@ float innerNoise2D( in vec3 x )
                         innerHash(i+vec3(1,1,1)),f.x),f.y),f.z);
 }
 
-float innerFbm(vec2 p) {
+float innerFbm(vec3 p) {
     
     float freq = 1.;
     
@@ -98,7 +98,7 @@ float innerFbm(vec2 p) {
     float maxTotal = 0.0;
     
     for (int i = 0; i < octaves; ++i) {
-        total += amplitude * innerNoise2D(vec3(p * freq, 0.));
+        total += amplitude * innerNoise2D(p * freq);
         maxTotal += amplitude;
         
         freq *= frequencyAcceleration;
@@ -108,24 +108,21 @@ float innerFbm(vec2 p) {
     return total / maxTotal;
 }
 
-vec2 fbm22( vec2 p )
+vec3 fbm33( vec3 p )
 {
-    return vec2(innerFbm(p * fbmXScale + vec2(fbmXOffset)), innerFbm(p * fbmYScale + vec2(fbmYOffset)));
+    return vec3(innerFbm(p * fbmXScale + vec3(fbmXOffset)), innerFbm(p * fbmYScale + vec3(fbmYOffset)), innerFbm(p * fbmXScale + vec3(fbmXOffset + 4.6)));
 }
 
 //====================================================================
 
 // Function to calculate a value and store intermediate results in 'result'
-float calculateSurfaceValue(vec2 position, out vec4 result)
+float calculateSurfaceValue(vec3 position, out vec4 result)
 {
-    // Add some noise to the input vector
-    // position += 0.03 * sin(length(position) * vec2(4.1, 4.3));
-
     // Generate two levels of fractal Brownian motion (fbm)
-    vec2 offset = fbm22(0.9 * position);
+    vec3 offset = fbm33(0.9 * position);
     // offset += 0.04 * sin(length(offset));
 
-    vec2 noise = fbm22(3.0 * offset);
+    vec3 noise = fbm33(3.0 * offset);
 
     // Store the intermediate results in 'result'
     result = vec4(offset, noise);
@@ -139,7 +136,7 @@ float calculateSurfaceValue(vec2 position, out vec4 result)
 void main()
 {
     // Scale and offset the fragment coordinates
-    vec2 pixelPosition = TexCoords * scale;
+    vec3 pixelPosition = Pos * scale + 1.;
     pixelPosition.y *= yScale;
     
     float epsilon = 0.001;
@@ -173,9 +170,13 @@ void main()
 
     vec4 normalResult;
     // Calculate the normal vector for shading
-    vec3 surfaceNormal = normalize(vec3(calculateSurfaceValue(pixelPosition + vec2(epsilon, 0.0), normalResult) - surfaceValue,
-                                        2.0 * epsilon,
-                                        calculateSurfaceValue(pixelPosition + vec2(0.0, epsilon), normalResult) - surfaceValue));
+    vec3 surfaceNormal = normalize(
+                                        vec3(
+                                                calculateSurfaceValue(pixelPosition + vec3(epsilon, 0.0, epsilon), normalResult) - surfaceValue,
+                                                2.0 * epsilon,
+                                                calculateSurfaceValue(pixelPosition + vec3(0.0, epsilon, 0.0), normalResult) - surfaceValue
+                                            )
+                                    );
 
     // Calculate the final color by combining diffuse lighting and material color
     vec3 lClr = vec3(0.25);
