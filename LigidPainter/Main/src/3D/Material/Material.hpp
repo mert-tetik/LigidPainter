@@ -34,7 +34,7 @@ class Mesh;
 #define TEXTURE_MATERIAL_MODIFIER 0
 #define DUST_MATERIAL_MODIFIER 1
 #define ASPHALT_MATERIAL_MODIFIER 2
-#define FABRIC_MATERIAL_MODIFIER 3
+#define LIQUID_MATERIAL_MODIFIER 3
 #define MOSS_MATERIAL_MODIFIER 4
 #define RUST_MATERIAL_MODIFIER 5
 #define SKIN_MATERIAL_MODIFIER 6
@@ -68,7 +68,7 @@ public:
     std::vector<Section> createTextureModifier();
     std::vector<Section> createDustModifier();
     std::vector<Section> createAsphaltModifier();
-    std::vector<Section> createFabricModifier();
+    std::vector<Section> createLiquidModifier();
     std::vector<Section> createMossModifier();
     std::vector<Section> createRustModifier();
     std::vector<Section> createSkinModifier();
@@ -85,7 +85,7 @@ struct AppMaterialModifiers{
     MaterialModifier textureModifier;
     MaterialModifier dustModifier;
     MaterialModifier asphaltModifier;
-    MaterialModifier fabricModifier;
+    MaterialModifier liquidModifier;
     MaterialModifier mossModifier;
     MaterialModifier rustModifier;
     MaterialModifier skinModifier;

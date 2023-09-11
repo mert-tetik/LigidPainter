@@ -11,38 +11,6 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
-
-    Texture Modifier
-
-    Dust Modifier
-
-    Solid Modifier
-
-    Fabric Modifier
-
-    Ceramic Modifier
-
-    Leather Modifier
-
-    Rust Modifier
-
-    Wooden Modifier
-
-    Brick Modifier
-
-    Image Repeate Modifier
-
-    Shapes Modifier
-
-    Seams Modifier
-
-    Cracks Modifier
-    
-    Dirt Modifier
-    
-    Line Modifier
-
-    Skin Modifier
 */
 
 #include<glad/glad.h>
@@ -76,7 +44,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
 void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
 void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
 void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
-void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
+void liquidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
 void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
 void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
 void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI);
@@ -126,11 +94,11 @@ MaterialModifier::MaterialModifier(int modifierIndex){
         this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/AsphaltModifier.frag");
         this->updateMaterialChannels = asphaltModifierUpdateMat;
     }
-    else if(modifierIndex == FABRIC_MATERIAL_MODIFIER){
-        this->sections = createFabricModifier();
-        this->title = "Fabric Modifier";    
-        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/FabricModifier.frag");
-        this->updateMaterialChannels = fabricModifierUpdateMat;
+    else if(modifierIndex == LIQUID_MATERIAL_MODIFIER){
+        this->sections = createLiquidModifier();
+        this->title = "Liquid Modifier";    
+        this->shader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/LiquidModifier.frag");
+        this->updateMaterialChannels = liquidModifierUpdateMat;
     }
     else if(modifierIndex == MOSS_MATERIAL_MODIFIER){
         this->sections = createMossModifier();
@@ -276,14 +244,14 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
     return sections;
 }
 
-std::vector<Section> MaterialModifier::createFabricModifier(){
+std::vector<Section> MaterialModifier::createLiquidModifier(){
     
     std::vector<Section> sections =  
     {
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1,2.f),"Scaling",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Scale", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 50.f, 20.f), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Scale", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 50.f, 6.f), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Scale Y axis", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f)
             }
         ),
@@ -320,8 +288,8 @@ std::vector<Section> MaterialModifier::createFabricModifier(){
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f), "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Wetness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Metallic", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Wetness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.6f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Metallic", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Height", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Ambient Occlusion", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f)
             }
@@ -1415,7 +1383,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
     glDeleteTextures(1, &proceduralTexture);
 }
 
-void fabricModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
+void liquidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution, int curModI){
 
     Shader modifierShader = material.materialModifiers[curModI].shader;
 

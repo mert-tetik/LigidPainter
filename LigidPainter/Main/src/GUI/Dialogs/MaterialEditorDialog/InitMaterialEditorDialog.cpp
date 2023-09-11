@@ -92,8 +92,8 @@ MaterialEditorDialog::MaterialEditorDialog()
     //Init the asphalt modifier
     appMaterialModifiers.asphaltModifier = MaterialModifier(ASPHALT_MATERIAL_MODIFIER);
     
-    //Init the fabric modifier
-    appMaterialModifiers.fabricModifier = MaterialModifier(FABRIC_MATERIAL_MODIFIER);
+    //Init the liquid modifier
+    appMaterialModifiers.liquidModifier = MaterialModifier(LIQUID_MATERIAL_MODIFIER);
     
     //Init the moss modifier
     appMaterialModifiers.mossModifier= MaterialModifier(MOSS_MATERIAL_MODIFIER);

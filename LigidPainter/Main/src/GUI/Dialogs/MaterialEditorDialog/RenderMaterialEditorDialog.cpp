@@ -434,9 +434,9 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             selectedMaterialModifierIndex = 0;
         }
         
-        // Fabric Modifier
+        // Liquid Modifier
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){
-            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.fabricModifier);
+            material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.liquidModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralID = 24;
             updateLayerPanel(material);

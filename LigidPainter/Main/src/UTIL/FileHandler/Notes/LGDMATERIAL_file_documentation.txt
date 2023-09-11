@@ -48,7 +48,7 @@ Modifier Data
 --modifier type index : TEXTURE_MATERIAL_MODIFIER 0,  
                         DUST_MATERIAL_MODIFIER 1, 
                         ASPHALT_MATERIAL_MODIFIER 2, 
-                        FABRIC_MATERIAL_MODIFIER 3,  
+                        LIQUID_MATERIAL_MODIFIER 3,  
                         MOSS_MATERIAL_MODIFIER 4,  
                         RUST_MATERIAL_MODIFIER 5,  
                         SKIN_MATERIAL_MODIFIER 6, 

@@ -113,7 +113,7 @@ bool FileHandler::readLGDMATERIALFile(
             else if(modifierIndex == 2)
                 modifier = appMaterialModifiers.asphaltModifier;
             else if(modifierIndex == 3)
-                modifier = appMaterialModifiers.fabricModifier;
+                modifier = appMaterialModifiers.liquidModifier;
             else if(modifierIndex == 4)
                 modifier = appMaterialModifiers.mossModifier;
             else if(modifierIndex == 5)
