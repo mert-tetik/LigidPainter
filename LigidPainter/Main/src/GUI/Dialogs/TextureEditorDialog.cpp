@@ -169,13 +169,19 @@ TextureEditorDialog::TextureEditorDialog(){
         RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Scale",  Texture(), 0.f, 0.f, 10.f, 1.f),
     };
 
-    this->filterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), "Filter", Texture(), 1.f, false);
+    this->filterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), "Pick A Filter", Texture(), 1.f, false);
     this->filterBtn.filterSelection = true;
-    this->textureBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), "texture", Texture(), 1.f, false);
+    this->textureBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), "Pick A Texture", Texture(), 1.f, false);
     this->textureBtn.textureSelection = true;
     this->displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), "", this->displayingTexture, 1.f,true);
-    
-    this->maskTextureButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Mask Texture", Texture(), 1.f, false);
+
+    char whitePx[] = {127, 127, 127, 127};
+
+    this->maskTextureButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), "Mask Texture", Texture(whitePx, 1, 1, GL_NEAREST), 1.f, false);
+    this->maskTextureButton.texture.proceduralID = 24; //Solid white
+    this->maskTextureButton.texture.proceduralnverted = 0;
+    this->maskTextureButton.texture.proceduralScale = 1.f;
+
     this->saveButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save", Texture(), 1.f, false);
     this->saveAsButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save As", Texture(), 1.f, false);
 
@@ -458,7 +464,7 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
     this->displayerBtn.pos.y -= this->bgPanel.scale.y - this->displayerBtn.scale.y * 1.1f;
     this->displayerBtn.pos.z += 0.001f;
     
-    this->displayerBtn.render(timer, true);
+    this->displayerBtn.render(timer, false);
 
     bool anyInteraction = false;
 
