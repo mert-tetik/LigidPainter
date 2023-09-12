@@ -184,8 +184,12 @@ void RangeBar::render(
             else if(Mouse::mouseOffset()->x < 0 || (leftArrowHover && *Mouse::LClick()))
                 value--;
         }
-        else
-            value += Mouse::mouseOffset()->x / Settings::videoScale()->x * (this->maxValue - this->minValue) * (50.f / this->scale.x);
+        else{
+            float v = Mouse::mouseOffset()->x / Settings::videoScale()->x * (this->maxValue - this->minValue) * (50.f / this->scale.x); 
+            if(getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT))
+                v /= 50.f;
+            value += v;
+        }
         
         if(value < minValue)
             value = minValue;
@@ -245,7 +249,7 @@ void RangeBar::render(
         if(this->isNumeric)
             this->value--;
         else
-            this->value -= 1.f;
+            this->value -= (this->maxValue - this->minValue) / 100.f;
     
         if(this->value < minValue)
             this->value = minValue;
@@ -273,7 +277,7 @@ void RangeBar::render(
         if(this->isNumeric)
             this->value++;
         else
-            this->value += 1.f;
+            this->value += (this->maxValue - this->minValue) / 100.f;
 
         if(this->value > maxValue)
             this->value = maxValue;
