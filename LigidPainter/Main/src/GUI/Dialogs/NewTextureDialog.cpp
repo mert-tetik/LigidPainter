@@ -81,7 +81,9 @@ void NewTextureDialog::render(Timer timer){
     //Show the color picker dialog if clicked to the color button
     if(panel.sections[0].elements[0].button.hover && *Mouse::LClick()){
         unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
-        const char* hex0Val = "#000000";
+        Color clrObj;
+        clrObj.loadRGB_normalized(glm::vec3(panel.sections[0].elements[0].button.color.r, panel.sections[0].elements[0].button.color.g, panel.sections[0].elements[0].button.color.b));
+        const char* hex0Val = clrObj.getHEX().c_str();
         auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);
 
         if(check){

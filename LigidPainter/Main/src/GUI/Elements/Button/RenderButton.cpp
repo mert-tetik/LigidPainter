@@ -86,7 +86,9 @@ void Button::render(
         }
         if(this->colorSelection){
             unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
-            const char* hex0Val = "#000000";
+            Color clrObj;
+            clrObj.loadRGB_normalized(glm::vec3(this->color.r, this->color.g, this->color.b));
+            const char* hex0Val = clrObj.getHEX().c_str();
             auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);
             if(check){
                 Color clr(check);

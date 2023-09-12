@@ -35,10 +35,8 @@
 #include <iostream>
 #include <vector>
 
-#include "tinyfiledialogs.h"
-
 TextureEditorDialog::TextureEditorDialog(){
-    
+
     //Init displaying texture
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1,&this->displayingTexture);

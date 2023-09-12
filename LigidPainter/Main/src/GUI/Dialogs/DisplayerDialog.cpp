@@ -156,7 +156,9 @@ void DisplayerDialog::render(Timer timer,
     //If pressed to the bg color element show color picker dialog
     if(panel.sections[0].elements[4].button.clicked){
         unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
-        const char* hex0Val = "#000000";
+        Color clrObj;
+        clrObj.loadRGB_normalized(glm::vec3(skybox.bgColor.r, skybox.bgColor.g, skybox.bgColor.b));
+        const char* hex0Val = clrObj.getHEX().c_str();
         auto check = tinyfd_colorChooser("Select a color",hex0Val,defRGB,defRGB);
 
         //If a color is selected change the color of the skybox bgcolor (than the bg color element's color will be set to skybox bgcolor)
