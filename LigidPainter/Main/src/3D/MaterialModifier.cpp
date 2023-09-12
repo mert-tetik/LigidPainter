@@ -357,26 +357,26 @@ std::vector<Section> MaterialModifier::createMossModifier()
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Front Layer", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Front Layer Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Front Layer Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 0.5f), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Front Layer Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 0.015f), 
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Lighting", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Light Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Darkening Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Light Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.8f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Darkening Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.7f),
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.3f),
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Moss Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 40.f),
             }
         ),
         Section(
@@ -533,22 +533,22 @@ std::vector<Section> MaterialModifier::createSkinModifier()
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Droplets", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Droplets Count", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Droplets Opacity Jitter", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Droplets Size", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.5f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Droplets Count", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 21.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Droplets Opacity Jitter", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.5f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Droplets Size", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 10.f),
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Veins", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Veins Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Veins Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Veins Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.24f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Veins Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.68f),
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Blushing", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Blushing Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Blushing Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 3.f),
             }
         ),
         Section(
@@ -561,13 +561,14 @@ std::vector<Section> MaterialModifier::createSkinModifier()
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 4.f),
             }
         ),
         Section(
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Skin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
-                RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), "Skin Color Type", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 5, 0 ), 
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Skin Color", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Vein Color", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Skin Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Skin Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Skin Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.f),
@@ -602,6 +603,12 @@ std::vector<Section> MaterialModifier::createSkinModifier()
         )
     };
 
+    sections[5].elements[0].button.colorSelection = true;
+    sections[5].elements[1].button.colorSelection = true;
+
+    sections[5].elements[0].button.color = glm::vec4(glm::vec3(0.96, 0.76, 0.61), 1.);
+    sections[5].elements[1].button.color = glm::vec4(glm::vec3(0.9, 0.1, 0.01), 1.);
+    
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
     
     return sections;
@@ -659,7 +666,7 @@ std::vector<Section> MaterialModifier::createWoodenModifier()
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Wood Gamma", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.6f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Shininess", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Shininess", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 0.5f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Height", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.f),
             }
@@ -794,7 +801,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 0.1f), 
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 5.f, 1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Offset Intensity",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 5.f, 5.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Rotation",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 360.f, 360.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Brightness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 0.17f), 
@@ -825,6 +832,14 @@ std::vector<Section> MaterialModifier::createDustModifier(){
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Count",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 0.1f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"OpacityJitter",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 10.f, 5.f), 
+            }
+        ),
+        Section(
+            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Colors",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            {
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Color1",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Color2",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Color3",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
             }
         ),
         Section(
@@ -861,6 +876,14 @@ std::vector<Section> MaterialModifier::createDustModifier(){
             }
         )
     };
+
+    sections[4].elements[0].button.colorSelection = true;
+    sections[4].elements[1].button.colorSelection = true;
+    sections[4].elements[2].button.colorSelection = true;
+
+    sections[4].elements[0].button.color = glm::vec4(glm::vec3(1.f), 1.f);
+    sections[4].elements[1].button.color = glm::vec4(glm::vec3(0.f), 1.f);
+    sections[4].elements[2].button.color = glm::vec4(glm::vec3(0.f), 1.f);
 
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
     
@@ -1126,11 +1149,15 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[3].elements[0].rangeBar.value); 
         modifierShader.setFloat("dropletsOpacityJitter", material.materialModifiers[curModI].sections[3].elements[1].rangeBar.value);
         modifierShader.setFloat("dropletsSize", material.materialModifiers[curModI].sections[3].elements[2].rangeBar.value);
+        /* Colors */
+        modifierShader.setVec3("color1", material.materialModifiers[curModI].sections[4].elements[0].button.color); 
+        modifierShader.setVec3("color2", material.materialModifiers[curModI].sections[4].elements[1].button.color);
+        modifierShader.setVec3("color3", material.materialModifiers[curModI].sections[4].elements[2].button.color);
 
         /* Element property */
-        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value);
-        modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[4].elements[1].rangeBar.value);
-        modifierShader.setFloat("height", material.materialModifiers[curModI].sections[4].elements[2].rangeBar.value);
+        modifierShader.setFloat("wetness", material.materialModifiers[curModI].sections[5].elements[0].rangeBar.value);
+        modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[5].elements[1].rangeBar.value);
+        modifierShader.setFloat("height", material.materialModifiers[curModI].sections[5].elements[2].rangeBar.value);
         
 
         // Bind the mask texture
@@ -1924,7 +1951,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
 
         /* Droplets */
         modifierShader.setFloat("dropletsCount", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value);
-        modifierShader.setFloat("dropletsOpacityJitter", material.materialModifiers[curModI].sections[1].elements[0].rangeBar.value);
+        modifierShader.setFloat("dropletsOpacityJitter", material.materialModifiers[curModI].sections[0].elements[1].rangeBar.value);
         modifierShader.setFloat("dropletsSize", material.materialModifiers[curModI].sections[0].elements[2].rangeBar.value);
 
         /* Veins */
@@ -1942,12 +1969,13 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setFloat("noiseStrength", material.materialModifiers[curModI].sections[4].elements[0].rangeBar.value);
 
         /* Skin Properties*/
-        modifierShader.setInt("skinColorType", material.materialModifiers[curModI].sections[5].elements[0].rangeBar.value);
-        modifierShader.setFloat("skinScale", material.materialModifiers[curModI].sections[5].elements[1].rangeBar.value);
-        modifierShader.setFloat("skinWetness", material.materialModifiers[curModI].sections[5].elements[2].rangeBar.value);
-        modifierShader.setFloat("skinMetallic", material.materialModifiers[curModI].sections[5].elements[3].rangeBar.value);
-        modifierShader.setFloat("skinHeight", material.materialModifiers[curModI].sections[5].elements[4].rangeBar.value);
-        modifierShader.setFloat("skinAmbientOcclusion", material.materialModifiers[curModI].sections[5].elements[5].rangeBar.value);
+        modifierShader.setVec3("skinColor", material.materialModifiers[curModI].sections[5].elements[0].button.color);
+        modifierShader.setVec3("veinColor", material.materialModifiers[curModI].sections[5].elements[1].button.color);
+        modifierShader.setFloat("skinScale", material.materialModifiers[curModI].sections[5].elements[2].rangeBar.value);
+        modifierShader.setFloat("skinWetness", material.materialModifiers[curModI].sections[5].elements[3].rangeBar.value);
+        modifierShader.setFloat("skinMetallic", material.materialModifiers[curModI].sections[5].elements[4].rangeBar.value);
+        modifierShader.setFloat("skinHeight", material.materialModifiers[curModI].sections[5].elements[5].rangeBar.value);
+        modifierShader.setFloat("skinAmbientOcclusion", material.materialModifiers[curModI].sections[5].elements[6].rangeBar.value);
 
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);

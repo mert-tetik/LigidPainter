@@ -52,8 +52,9 @@ uniform float dropletsOpacityJitter = 1.;
 uniform float dropletsSize = 5.0;
 
 /* Colors */
-vec3 color1 = vec3(1.);
-vec3 color2 = vec3(0.0);
+uniform vec3 color1;
+uniform vec3 color2;
+uniform vec3 color3;
 
 /* Element property */
 uniform float wetness = 1.;
@@ -78,7 +79,6 @@ in vec4 ProjectedPos;
 
 /* Fragment Output */
 out vec4 fragColor;
-
 
 float hash(in vec3 p)
 { 
@@ -154,24 +154,20 @@ float scratches(vec3 uv)
 
 //  -------------- NOISE UTILITIES --------------
 
-float noise(in vec3 p)
+float noise( in vec3 x )
 {
-    vec3 i = floor(p);
-    vec3 xf = fract(p);
-
-    float a = hash(i);
-    float b = hash(i + vec3(1.0, 0.0, 0.0));
-    float c = hash(i + vec3(0.0, 1.0, 0.0));
-    float d = hash(i + vec3(1.0, 1.0, 0.0));
-    float e = hash(i + vec3(0.0, 0.0, 1.0));
-    float f = hash(i + vec3(1.0, 0.0, 1.0));
-    float g = hash(i + vec3(0.0, 1.0, 1.0));
-    float h = hash(i + vec3(1.0, 1.0, 1.0));
-
-    vec3 u = xf * xf * (3.0 - 2.0 * xf);
-    return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y +
-           (e - a) * u.z * (1.0 - u.x) + (f - b) * u.x * u.z + (g - a) * u.y * u.z +
-           (h - a) * u.x * u.y * u.z;
+    vec3 i = floor(x);
+    vec3 f = fract(x);
+    f = f*f*(3.0-2.0*f);
+	
+    return mix(mix(mix( hash(i+vec3(0,0,0)), 
+                        hash(i+vec3(1,0,0)),f.x),
+                   mix( hash(i+vec3(0,1,0)), 
+                        hash(i+vec3(1,1,0)),f.x),f.y),
+               mix(mix( hash(i+vec3(0,0,1)), 
+                        hash(i+vec3(1,0,1)),f.x),
+                   mix( hash(i+vec3(0,1,1)), 
+                        hash(i+vec3(1,1,1)),f.x),f.y),f.z);
 }
 
 float fbm(in vec3 p)
@@ -330,7 +326,6 @@ void main()
       // Normalize the position
     vec3 normalizedPosition = normalize(Pos);
 
-    // Scale the normalized position to the range [0, 1]
     vec3 uv = Pos * size;
     
 	vec4 f = vec4(0.0);
@@ -338,7 +333,11 @@ void main()
     float noiseParams[6] = float[](1.0, 4.0, 8.0, 16.0, 32.0, 64.0);
     float noiseWeights[6] = float[](0.25, 0.25, 0.025, 0.00125, 0.025, 0.015);
     float noiseAngleOffsets[6] = float[](0.8, 0.7, -0.6, 0.5, 0.4, -0.3);
-    vec3 colorValues[6] = vec3[](color1,color2,color1,color2,color1,color2);
+    vec3 colorValues[6] = vec3[](color1,color2,color3,color2,color1,color3);
+
+    if(state != 0){
+        colorValues = vec3[](vec3(1.),vec3(0.),vec3(1.),vec3(0.),vec3(1.),vec3(0.));
+    }
 
     for (int i = 0; i < concreteSamples; i++) {
           float maskValue = noiseWeights[i] * mainNoise(noiseParams[i] * uv).r; 
@@ -347,6 +346,7 @@ void main()
           uv = rotate(uv, vec3(0,1,0), radians(rotation * noiseAngleOffsets[i]));
     }
     
+
     uv = rotate(uv, vec3(0,1,0), radians(rotation * noiseAngleOffsets[0]));
     float maskValue = noiseWeights[0] * mainNoise(noiseParams[0] * uv).r; 
     
@@ -359,7 +359,10 @@ void main()
     
 	f = brightness * f; //adjust brightness
 
-	fragColor = vec4(vec3(f.rgb), 1.0);
+    if(state == 0)
+        f.rgb = mix(color3, f.rgb, f.a);
+	
+    fragColor = vec4(vec3(f.rgb), 1.0);
 
     /*Roughness*/
     if(state == 1){
