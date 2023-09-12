@@ -3008,13 +3008,21 @@ float GMC(vec3 val, int inverted){
         return 1. - max(max(val.r, val.g), val.b);
 }
 
-vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, float scale, int inverted, vec4 smartProperties, vec2 txtrRes){
+vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, float scale, int inverted, vec4 smartProperties, vec2 txtrRes, int proceduralGrayScale, float proceduralBrightness){
+    vec4 res = vec4(0.);
     if(proceduralID != -1)
-        return vec4(vec3(getProceduralVal(pos, proceduralID, scale, inverted, texCoord, smartProperties, txtrRes)), 1);
+        res = vec4(vec3(getProceduralVal(pos, proceduralID, scale, inverted, texCoord, smartProperties, txtrRes)), 1);
     else{
         if(inverted == 0)
-            return texture(txtr, texCoord * scale);
+            res = texture(txtr, texCoord * scale);
         else
-            return 1. - texture(txtr, texCoord * scale);
+            res = 1. - texture(txtr, texCoord * scale);
     }
+    
+    if(proceduralGrayScale == 1)
+        res.rgb = vec3(max(max(res.r, res.g), res.b)); 
+
+    res.rgb *= proceduralBrightness;
+    
+    return res;
 }

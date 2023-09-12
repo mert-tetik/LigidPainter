@@ -10,10 +10,12 @@ uniform int proceduralID;
 uniform float proceduralScale;
 uniform int proceduralInverted;
 uniform sampler2D proceduralTexture;
+uniform int proceduralGrayScale;
+uniform float proceduralBrightness;
 
 void main(){
     if(proceduralID > 28)
-        fragColor = vec4(getProcedural(vec3(TexCoords.x, TexCoords.y, TexCoords.y), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted, vec4(0.), vec2(1000)));
+        fragColor = vec4(getProcedural(vec3(TexCoords.x, TexCoords.y, TexCoords.y), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted, vec4(0.), vec2(1000), proceduralGrayScale, proceduralBrightness));
     else
-        fragColor = vec4(getProcedural(vec3(TexCoords.x, 0., TexCoords.y), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted, vec4(0.), vec2(1000)));
+        fragColor = vec4(getProcedural(vec3(TexCoords.x, 0., TexCoords.y), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted, vec4(0.), vec2(1000), proceduralGrayScale, proceduralBrightness));
 } 

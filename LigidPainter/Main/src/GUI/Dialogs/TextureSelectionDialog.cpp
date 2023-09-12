@@ -36,6 +36,53 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 40
 #define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 7
 
+#define subPanel_Library_Textures_INDEX 0
+#define subPanel_Procedural_Pattern_Textures_INDEX 1
+#define subPanel_Procedural_Noise_Textures_INDEX 2
+#define subPanel_Texture_Packs_INDEX 3 
+#define subPanel_Smart_Textures_INDEX 4
+#define subPanel_Gray_Scale_INDEX 5
+#define subPanel_Brightness_INDEX 6 
+#define subPanel_Invert_INDEX 7
+#define subPanel_Scale_INDEX 8
+#define subPanel_Normal_Map_INDEX 9
+#define subPanel_Normal_Gray_Scale_INDEX 10
+#define subPanel_Normal_Strength_INDEX 11
+#define subPanel_Use_Texture_Coordinates_INDEX 12
+#define subPanel_Select_INDEX 13
+
+#define subPanelSmartTextures_Library_Textures_INDEX 0
+#define subPanelSmartTextures_Procedural_Pattern_Textures_INDEX 1
+#define subPanelSmartTextures_Procedural_Noise_Textures_INDEX 2
+#define subPanelSmartTextures_Texture_Packs_INDEX 3
+#define subPanelSmartTextures_Smart_Textures_INDEX 4
+#define subPanelSmartTextures_Normal_Map_INDEX 5
+#define subPanelSmartTextures_Normal_Gray_Scale_INDEX 6
+#define subPanelSmartTextures_Normal_Strength_INDEX 7
+#define subPanelSmartTextures_Invert_INDEX 8
+#define subPanelSmartTextures_Select_INDEX 9
+
+#define subPanelTxtrPack_Library_Textures 0
+#define subPanelTxtrPack_Procedural_Pattern_Textures 1
+#define subPanelTxtrPack_Procedural_Noise_Textures 2
+#define subPanelTxtrPack_Texture_Packs 3
+#define subPanelTxtrPack_Smart_Textures 4
+#define subPanelTxtrPack_Gray_Scale 5
+#define subPanelTxtrPack_Brightness 6
+#define subPanelTxtrPack_Invert 7
+#define subPanelTxtrPack_Scale 8
+#define subPanelTxtrPack_Normal_Map 9
+#define subPanelTxtrPack_Normal_Gray_Scale 10
+#define subPanelTxtrPack_Normal_Strength 11
+#define subPanelTxtrPack_Count 12
+#define subPanelTxtrPack_Rotation_Jitter 13
+#define subPanelTxtrPack_Size_Jitter 14
+#define subPanelTxtrPack_Opacity_Jitter 15
+#define subPanelTxtrPack_Scatter 16
+#define subPanelTxtrPack_Use_Texture_Coordinates 17 
+#define subPanelTxtrPack_Select 18
+
+
 TextureSelectionDialog::TextureSelectionDialog(){
 
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
@@ -105,13 +152,15 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 6.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 1.f, 0.f, 100.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 2.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 1.f, 0.f, 200.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 1.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false)
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Gray Scale", 12.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 2.f, 1.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 0.f, 0.f, 200.f, 10.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 0.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 0.f, 0.f, 100.f, 10.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 0.f),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 1.f, false)
                                         }
                                     )
                                 },
@@ -143,7 +192,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 6.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 16.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 1.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 1.f, 0.f, 100.f, 10.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 2.f),
@@ -177,18 +226,20 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 4.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 1.f, 0.f, 100.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 2.f, 0.f, 200.f, 10.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Count", Texture(), 1.f, 0.f, 0.5f, 0.05f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rotation Jitter", Texture(), 1.f, 0.f, 1.f, 0.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Size Jitter", Texture(), 1.f, 0.f, 1.f, 0.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Opacity Jitter", Texture(), 1.f, 0.f, 1.f, 0.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scatter", Texture(), 1.f, 0.f, 1.f, 1.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 2.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false)
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Gray Scale", 6.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 100.f, 10.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Invert", 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 0.f, 0.f, 200.f, 10.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Normal Map", 0.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Normal Gray Scale", 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 0.f, 0.f, 100.f, 10.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Count", Texture(), 0.f, 0.f, 0.5f, 0.05f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rotation Jitter", Texture(), 0.f, 0.f, 1.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Size Jitter", Texture(), 0.f, 0.f, 1.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Opacity Jitter", Texture(), 0.f, 0.f, 1.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scatter", Texture(), 0.f, 0.f, 1.f, 1.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Use Texture Coordinates", 2.f),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 1.f, false)
                                         }
                                     )
                                 },
@@ -401,29 +452,33 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     glDepthFunc(GL_LEQUAL);
 
     if(this->selectedTextureMode != 3){
-        txtr.proceduralScale = this->subPanel.sections[0].elements[9].rangeBar.value / 10.f;
-        txtr.proceduralnverted = this->subPanel.sections[0].elements[8].checkBox.clickState1;
-        txtr.proceduralNormalMap = this->subPanel.sections[0].elements[5].checkBox.clickState1;
-        txtr.proceduralNormalGrayScale = this->subPanel.sections[0].elements[6].checkBox.clickState1;
-        txtr.proceduralNormalStrength = this->subPanel.sections[0].elements[7].rangeBar.value;
-        txtr.proceduralUseTexCoords = this->subPanel.sections[0].elements[10].checkBox.clickState1;
+        txtr.proceduralScale = this->subPanel.sections[0].elements[subPanel_Scale_INDEX].rangeBar.value / 10.f;
+        txtr.proceduralnverted = this->subPanel.sections[0].elements[subPanel_Invert_INDEX].checkBox.clickState1;
+        txtr.proceduralNormalMap = this->subPanel.sections[0].elements[subPanel_Normal_Map_INDEX].checkBox.clickState1;
+        txtr.proceduralNormalGrayScale = this->subPanel.sections[0].elements[subPanel_Normal_Gray_Scale_INDEX].checkBox.clickState1;
+        txtr.proceduralNormalStrength = this->subPanel.sections[0].elements[subPanel_Normal_Strength_INDEX].rangeBar.value;
+        txtr.proceduralUseTexCoords = this->subPanel.sections[0].elements[subPanel_Use_Texture_Coordinates_INDEX].checkBox.clickState1;
+        txtr.proceduralGrayScale = this->subPanel.sections[0].elements[subPanel_Gray_Scale_INDEX].checkBox.clickState1;
+        txtr.proceduralBrightness = this->subPanel.sections[0].elements[subPanel_Brightness_INDEX].rangeBar.value;
     }
     
     if(this->selectedTextureMode == 3){
         txtr.proceduralScale = 1.f;
-        txtr.proceduralnverted = this->subPanelTxtrPack.sections[0].elements[8].checkBox.clickState1;
-        txtr.proceduralNormalMap = this->subPanelTxtrPack.sections[0].elements[5].checkBox.clickState1;
-        txtr.proceduralNormalGrayScale = this->subPanelTxtrPack.sections[0].elements[6].checkBox.clickState1;
-        txtr.proceduralNormalStrength = this->subPanelTxtrPack.sections[0].elements[7].rangeBar.value;
-        txtr.proceduralUseTexCoords = this->subPanelTxtrPack.sections[0].elements[15].checkBox.clickState1;
+        txtr.proceduralnverted = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Invert].checkBox.clickState1;
+        txtr.proceduralNormalMap = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Map].checkBox.clickState1;
+        txtr.proceduralNormalGrayScale = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Gray_Scale].checkBox.clickState1;
+        txtr.proceduralNormalStrength = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Strength].rangeBar.value;
+        txtr.proceduralUseTexCoords = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Use_Texture_Coordinates].checkBox.clickState1;
+        txtr.proceduralGrayScale = this->subPanel.sections[0].elements[subPanelTxtrPack_Gray_Scale].checkBox.clickState1;
+        txtr.proceduralBrightness = this->subPanel.sections[0].elements[subPanelTxtrPack_Brightness].rangeBar.value;
     }
     
     if(this->selectedTextureMode == 4){
         txtr.proceduralScale = 1.f;
-        txtr.proceduralnverted = this->subPanelSmartTextures.sections[0].elements[8].checkBox.clickState1;
-        txtr.proceduralNormalMap = this->subPanelSmartTextures.sections[0].elements[5].checkBox.clickState1;
-        txtr.proceduralNormalGrayScale = this->subPanelSmartTextures.sections[0].elements[6].checkBox.clickState1;
-        txtr.proceduralNormalStrength = this->subPanelSmartTextures.sections[0].elements[7].rangeBar.value;
+        txtr.proceduralnverted = this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Invert_INDEX].checkBox.clickState1;
+        txtr.proceduralNormalMap = this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Normal_Map_INDEX].checkBox.clickState1;
+        txtr.proceduralNormalGrayScale = this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Normal_Gray_Scale_INDEX].checkBox.clickState1;
+        txtr.proceduralNormalStrength = this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Normal_Strength_INDEX].rangeBar.value;
         txtr.proceduralUseTexCoords = false;
     }
 
@@ -431,12 +486,12 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         if(this->selectedTextureIndex < Library::getTexturePackArraySize()){
             Library::getTexturePack(this->selectedTextureIndex)->apply(
                                                                             txtr,
-                                                                            this->subPanelTxtrPack.sections[0].elements[9].rangeBar.value,
-                                                                            this->subPanelTxtrPack.sections[0].elements[10].rangeBar.value,
-                                                                            this->subPanelTxtrPack.sections[0].elements[11].rangeBar.value,
-                                                                            this->subPanelTxtrPack.sections[0].elements[12].rangeBar.value,
-                                                                            this->subPanelTxtrPack.sections[0].elements[13].rangeBar.value,
-                                                                            this->subPanelTxtrPack.sections[0].elements[14].rangeBar.value
+                                                                            this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Scale].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Count].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Rotation_Jitter].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Size_Jitter].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Opacity_Jitter].rangeBar.value,
+                                                                            this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Scatter].rangeBar.value
                                                                         );
             ShaderSystem::buttonShader().use();
         }
@@ -550,8 +605,12 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         else if(this->selectedTextureMode == 4)
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE + MAX_PROCEDURAL_NOISE_TEXTURE_SIZE);                
         
-        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->subPanel.sections[0].elements[9].rangeBar.value / 10.f);
-        ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", this->subPanel.sections[0].elements[8].checkBox.clickState1);
+        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->subPanel.sections[0].elements[subPanel_Scale_INDEX].rangeBar.value / 10.f);
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", this->subPanel.sections[0].elements[subPanel_Invert_INDEX].checkBox.clickState1);
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", this->subPanel.sections[0].elements[subPanel_Gray_Scale_INDEX].checkBox.clickState1);
+        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralBrightness", this->subPanel.sections[0].elements[subPanel_Brightness_INDEX].rangeBar.value);
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", this->subPanel.sections[0].elements[subPanel_Gray_Scale_INDEX].checkBox.clickState1);
+        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralBrightness", this->subPanel.sections[0].elements[subPanel_Brightness_INDEX].rangeBar.value);
 
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
         glActiveTexture(GL_TEXTURE0);
@@ -561,7 +620,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     }
 
 
-    if((this->subPanel.sections[0].elements[5].checkBox.clickState1 || this->subPanelTxtrPack.sections[0].elements[5].checkBox.clickState1) && this->selectedTextureMode != 4){
+    if((this->subPanel.sections[0].elements[subPanel_Normal_Map_INDEX].checkBox.clickState1 || this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Map].checkBox.clickState1) && this->selectedTextureMode != 4){
         Texture txtrObject = Texture(txtr.ID);
 
         unsigned int normalMapRes;
@@ -579,7 +638,10 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes, displayRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
         glGenerateMipmap(GL_TEXTURE_2D);
 
-        txtrObject.generateNormalMap(normalMapRes, displayRes, this->subPanel.sections[0].elements[7].rangeBar.value, this->subPanel.sections[0].elements[6].checkBox.clickState1); 
+        if(this->selectedTextureMode == 3)
+            txtrObject.generateNormalMap(normalMapRes, displayRes, this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Strength].rangeBar.value, this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Gray_Scale].checkBox.clickState1); 
+        else
+            txtrObject.generateNormalMap(normalMapRes, displayRes, this->subPanel.sections[0].elements[subPanel_Normal_Strength_INDEX].rangeBar.value, this->subPanel.sections[0].elements[subPanel_Normal_Gray_Scale_INDEX].checkBox.clickState1); 
 
         glDeleteTextures(1,&txtr.ID);
         txtr.ID = normalMapRes;
@@ -694,6 +756,8 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                     ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", 2.5f);
                 
                 ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", 0);
+                ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", 0);
+                ShaderSystem::proceduralDisplayerShader().setFloat("proceduralBrightness", 1.f);
                 
                 ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
                 glActiveTexture(GL_TEXTURE0);
@@ -849,11 +913,13 @@ static void initTextureSelectionDialog(
             selectedTextureIndex -= MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
         }
         
-        subPanel.sections[0].elements[8].checkBox.clickState1 = receivedTexture.proceduralnverted;
-        subPanel.sections[0].elements[9].rangeBar.value = receivedTexture.proceduralScale * 10.f;  
-        subPanel.sections[0].elements[5].checkBox.clickState1 = receivedTexture.proceduralNormalMap;
-        subPanel.sections[0].elements[6].checkBox.clickState1 = receivedTexture.proceduralNormalGrayScale;
-        subPanel.sections[0].elements[7].rangeBar.value = receivedTexture.proceduralNormalStrength;
+        subPanel.sections[0].elements[subPanel_Invert_INDEX].checkBox.clickState1 = receivedTexture.proceduralnverted;
+        subPanel.sections[0].elements[subPanel_Scale_INDEX].rangeBar.value = receivedTexture.proceduralScale * 10.f;  
+        subPanel.sections[0].elements[subPanel_Normal_Map_INDEX].checkBox.clickState1 = receivedTexture.proceduralNormalMap;
+        subPanel.sections[0].elements[subPanel_Normal_Gray_Scale_INDEX].checkBox.clickState1 = receivedTexture.proceduralNormalGrayScale;
+        subPanel.sections[0].elements[subPanel_Normal_Strength_INDEX].rangeBar.value = receivedTexture.proceduralNormalStrength;
+        subPanel.sections[0].elements[subPanel_Gray_Scale_INDEX].rangeBar.value = receivedTexture.proceduralGrayScale;
+        subPanel.sections[0].elements[subPanel_Brightness_INDEX].rangeBar.value = receivedTexture.proceduralBrightness;
     }
 }
 
@@ -928,6 +994,7 @@ static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, Panel& subP
                     for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
                         subPanel.sections[0].elements[i].button.clickState1 = false;
                         subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
+                        subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
                     }
                 }
             }
@@ -937,6 +1004,7 @@ static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, Panel& subP
                     selectedTextureIndex = 0;
                     for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
                         subPanel.sections[0].elements[i].button.clickState1 = false;
+                        subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
                         subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
                     }
                 }
@@ -948,6 +1016,7 @@ static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, Panel& subP
                     for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
                         subPanel.sections[0].elements[i].button.clickState1 = false;
                         subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
+                        subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
                     }
                 }
             }
@@ -955,10 +1024,12 @@ static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, Panel& subP
             if(selectedTextureMode == i){
                 subPanel.sections[0].elements[i].button.clickState1 = true;
                 subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
+                subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
             }
             else{
                 subPanel.sections[0].elements[i].button.clickState1 = false;
                 subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
+                subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
             }
         }
 }

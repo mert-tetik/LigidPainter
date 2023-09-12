@@ -408,6 +408,8 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         
         ShaderSystem::to2DProcedural().setFloat("proceduralScale", this->proceduralScale);
         ShaderSystem::to2DProcedural().setInt("proceduralInverted", this->proceduralnverted);
+        ShaderSystem::to2DProcedural().setInt("proceduralGrayScale", this->proceduralGrayScale);
+        ShaderSystem::to2DProcedural().setFloat("proceduralBrightness", this->proceduralBrightness);
         ShaderSystem::to2DProcedural().setInt("proceduralUseTexCoords", this->proceduralUseTexCoords);
         ShaderSystem::to2DProcedural().setVec4("smartProperties", this->smartProperties);
         ShaderSystem::to2DProcedural().setVec2("txtrRes", this->getResolution());

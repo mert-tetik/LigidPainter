@@ -238,7 +238,10 @@ public:
     float proceduralNormalStrength = 10.f;
     unsigned int proceduralTextureID = 0;
     bool proceduralUseTexCoords = false;
+    bool proceduralGrayScale = false;
+    float proceduralBrightness = 1.f;
     glm::vec4 smartProperties;
+
 
     /// @brief Title of the texture (myTexture)
     std::string title = "";
