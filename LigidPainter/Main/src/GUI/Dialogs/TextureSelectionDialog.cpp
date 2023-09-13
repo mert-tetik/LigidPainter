@@ -41,46 +41,52 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define subPanel_Procedural_Noise_Textures_INDEX 2
 #define subPanel_Texture_Packs_INDEX 3 
 #define subPanel_Smart_Textures_INDEX 4
-#define subPanel_Gray_Scale_INDEX 5
-#define subPanel_Brightness_INDEX 6 
-#define subPanel_Invert_INDEX 7
-#define subPanel_Scale_INDEX 8
-#define subPanel_Normal_Map_INDEX 9
-#define subPanel_Normal_Gray_Scale_INDEX 10
-#define subPanel_Normal_Strength_INDEX 11
-#define subPanel_Use_Texture_Coordinates_INDEX 12
-#define subPanel_Select_INDEX 13
+#define subPanel_Source_Textures 5
+#define subPanel_Mesh_UV 6
+#define subPanel_Gray_Scale_INDEX 7
+#define subPanel_Brightness_INDEX 8 
+#define subPanel_Invert_INDEX 9
+#define subPanel_Scale_INDEX 10
+#define subPanel_Normal_Map_INDEX 11
+#define subPanel_Normal_Gray_Scale_INDEX 12
+#define subPanel_Normal_Strength_INDEX 13
+#define subPanel_Use_Texture_Coordinates_INDEX 14
+#define subPanel_Select_INDEX 15
 
 #define subPanelSmartTextures_Library_Textures_INDEX 0
 #define subPanelSmartTextures_Procedural_Pattern_Textures_INDEX 1
 #define subPanelSmartTextures_Procedural_Noise_Textures_INDEX 2
 #define subPanelSmartTextures_Texture_Packs_INDEX 3
 #define subPanelSmartTextures_Smart_Textures_INDEX 4
-#define subPanelSmartTextures_Normal_Map_INDEX 5
-#define subPanelSmartTextures_Normal_Gray_Scale_INDEX 6
-#define subPanelSmartTextures_Normal_Strength_INDEX 7
-#define subPanelSmartTextures_Invert_INDEX 8
-#define subPanelSmartTextures_Select_INDEX 9
+#define subPanelSmartTextures_Source_Textures 5
+#define subPanelSmartTextures_Mesh_UV 6
+#define subPanelSmartTextures_Normal_Map_INDEX 7
+#define subPanelSmartTextures_Normal_Gray_Scale_INDEX 8
+#define subPanelSmartTextures_Normal_Strength_INDEX 9
+#define subPanelSmartTextures_Invert_INDEX 10
+#define subPanelSmartTextures_Select_INDEX 11
 
 #define subPanelTxtrPack_Library_Textures 0
 #define subPanelTxtrPack_Procedural_Pattern_Textures 1
 #define subPanelTxtrPack_Procedural_Noise_Textures 2
 #define subPanelTxtrPack_Texture_Packs 3
 #define subPanelTxtrPack_Smart_Textures 4
-#define subPanelTxtrPack_Gray_Scale 5
-#define subPanelTxtrPack_Brightness 6
-#define subPanelTxtrPack_Invert 7
-#define subPanelTxtrPack_Scale 8
-#define subPanelTxtrPack_Normal_Map 9
-#define subPanelTxtrPack_Normal_Gray_Scale 10
-#define subPanelTxtrPack_Normal_Strength 11
-#define subPanelTxtrPack_Count 12
-#define subPanelTxtrPack_Rotation_Jitter 13
-#define subPanelTxtrPack_Size_Jitter 14
-#define subPanelTxtrPack_Opacity_Jitter 15
-#define subPanelTxtrPack_Scatter 16
-#define subPanelTxtrPack_Use_Texture_Coordinates 17 
-#define subPanelTxtrPack_Select 18
+#define subPanelTxtrPack_Source_Textures 5
+#define subPanelTxtrPack_Mesh_UV 6
+#define subPanelTxtrPack_Gray_Scale 7
+#define subPanelTxtrPack_Brightness 8
+#define subPanelTxtrPack_Invert 9
+#define subPanelTxtrPack_Scale 10
+#define subPanelTxtrPack_Normal_Map 11
+#define subPanelTxtrPack_Normal_Gray_Scale 12
+#define subPanelTxtrPack_Normal_Strength 13
+#define subPanelTxtrPack_Count 14
+#define subPanelTxtrPack_Rotation_Jitter 15
+#define subPanelTxtrPack_Size_Jitter 16
+#define subPanelTxtrPack_Opacity_Jitter 17
+#define subPanelTxtrPack_Scatter 18
+#define subPanelTxtrPack_Use_Texture_Coordinates 19 
+#define subPanelTxtrPack_Select 20
 
 
 TextureSelectionDialog::TextureSelectionDialog(){
@@ -152,6 +158,8 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Source Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Mesh UV Textures", Texture(), 2.f, true),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Gray Scale", 12.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 2.f, 1.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 0.f),
@@ -192,6 +200,8 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Source Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Mesh UV Textures", Texture(), 2.f, true),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 16.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 1.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 1.f, 0.f, 100.f, 10.f),
@@ -226,6 +236,8 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Source Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Mesh UV Textures", Texture(), 2.f, true),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Gray Scale", 6.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 100.f, 10.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Invert", 0.f),
@@ -371,7 +383,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                 true
                             );
 
-    for (size_t i = 0; i < 5; i++)
+    for (size_t i = 0; i < 7; i++)
     {
         this->subPanel.sections[0].elements[i].button.color = glm::vec4(0);
         this->subPanelTxtrPack.sections[0].elements[i].button.color = glm::vec4(0);
@@ -407,6 +419,11 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     else if(this->selectedTextureMode == 4){
         txtr.proceduralID = this->selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE + MAX_PROCEDURAL_NOISE_TEXTURE_SIZE;
         txtr.proceduralTextureID = 0;
+    }
+    else if(this->selectedTextureMode == 6){
+        txtr.proceduralID = -1;
+        if(selectedTextureIndex < Library::getTextureArraySize())
+            txtr.proceduralTextureID = getModel()->meshes[selectedTextureIndex].uvMask;
     }
     
     //TODO Set the scale & invert 
@@ -604,6 +621,8 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE);                
         else if(this->selectedTextureMode == 4)
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE + MAX_PROCEDURAL_NOISE_TEXTURE_SIZE);                
+        else if(this->selectedTextureMode == 6)
+            ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", -1);                
         
         ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->subPanel.sections[0].elements[subPanel_Scale_INDEX].rangeBar.value / 10.f);
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", this->subPanel.sections[0].elements[subPanel_Invert_INDEX].checkBox.clickState1);
@@ -761,9 +780,15 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                 
                 ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
                 glActiveTexture(GL_TEXTURE0);
-                if(this->selectedTextureMode == 0)
+                if(this->selectedTextureMode == 0){
                     if(i < Library::getTextureArraySize())
                         glBindTexture(GL_TEXTURE_2D, Library::getTexture(i)->ID);
+                }
+                else{
+                    if(i < getModel()->meshes.size())
+                        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectedTextureIndex].uvMask);
+                }
+                
 
                 glDrawArrays(GL_TRIANGLES, 0, 6);
             }
@@ -973,6 +998,12 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
             sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),""       , smartTextureDisplayingTextures[i], 0.f,false)));
         }
     }
+    else if(selectedTextureMode == 6){
+        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        {
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),getModel()->meshes[i].materialName       , getModel()->meshes[i].uvMask, 0.f,false)));
+        }
+    }
 
     textureSelectingPanel.sections.push_back
                                             (
@@ -985,7 +1016,7 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
 }
 
 static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, Panel& subPanelSmartTextures, int& selectedTextureMode, int& selectedTextureIndex){
-        for (size_t i = 0; i < 5; i++)
+        for (size_t i = 0; i < 7; i++)
         {
             if(selectedTextureMode == 3){
                 if(subPanelTxtrPack.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
