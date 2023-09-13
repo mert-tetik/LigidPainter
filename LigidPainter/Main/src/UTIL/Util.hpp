@@ -266,6 +266,10 @@ public:
 
     /// @brief Load a texture by importing the texture in the given path via STBI
     void load(const char* path);
+
+    /// @brief Load & resize a texture in the given texture resolution param by importing the texture in the given path via STBI
+    void load(const char* path, glm::ivec2 textureResolution);
+
     
     /// @brief Returns texture data in the given path & doesn't write anything to the member variables
     unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip);
@@ -767,13 +771,29 @@ namespace FileHandler{
     
     Model readFBXFile(std::string path);
     
-    bool readLGDMATERIALFile(std::string path, Material& material,  
-                             AppMaterialModifiers appMaterialModifiers);
+    bool readLGDMATERIALFile(std::string path, Material& material, AppMaterialModifiers appMaterialModifiers);
     bool writeLGDMATERIALFile(std::string path, Material &material);
     
     bool writeLGDBRUSHFile(std::string path, Brush brush);
     bool readLGDBRUSHFile(std::string path, Brush& brush);
 }
 
+class SourceLibTexture{
+public:
+    /// @brief Low resolution version of the texture to not occupy much space in the RAM 
+    Texture displayingTexture;
+
+    /// @brief Unique value smt like 52_A to access later
+    ///        52 : Texture ID
+    ///        A : Albedo version
+    ///        H : Height Map version
+    std::string ID;
+    
+    /// @brief Loads and returns the texture corresponding with the @ref ID
+    Texture getTexture();
+    
+    /// @brief Load the textures inside of the "Resources/Texture Library"
+    void load(const std::string path);
+};
 
 #endif

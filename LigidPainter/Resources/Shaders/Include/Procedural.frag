@@ -2994,18 +2994,6 @@ float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, ve
     
     if(res < 0.)
         res = 0.;
-
-    if(inverted == 0)
-        return abs(res);   
-    else
-        return abs(1. - res);   
-}
-
-float GMC(vec3 val, int inverted){
-    if(inverted == 0)
-        return max(max(val.r, val.g), val.b);
-    else
-        return 1. - max(max(val.r, val.g), val.b);
 }
 
 vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, float scale, int inverted, vec4 smartProperties, vec2 txtrRes, int proceduralGrayScale, float proceduralBrightness){
@@ -3023,6 +3011,11 @@ vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, fl
         res.rgb = vec3(max(max(res.r, res.g), res.b)); 
 
     res.rgb *= proceduralBrightness;
+
+    if(inverted == 0)
+        return abs(res);   
+    else
+        return abs(1. - res);   
     
     return res;
 }
