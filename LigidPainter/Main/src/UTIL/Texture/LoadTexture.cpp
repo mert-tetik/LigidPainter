@@ -100,7 +100,7 @@ void Texture::load(const char* path, glm::ivec2 textureResolution){
         GLubyte* resizedPixelsX = new GLubyte[textureResolution.x * textureResolution.y * 4];
         stbir_resize_uint8(data, width, height, 0, resizedPixelsX, textureResolution.x, textureResolution.y, 0, 4);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, resizedPixelsX);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution.x, textureResolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, resizedPixelsX);
 		glGenerateMipmap(GL_TEXTURE_2D);
 		
         LGDLOG::start<< "Loaded " << path << LGDLOG::end;

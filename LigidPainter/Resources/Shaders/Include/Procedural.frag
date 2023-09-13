@@ -2994,6 +2994,8 @@ float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, ve
     
     if(res < 0.)
         res = 0.;
+
+    return res;
 }
 
 vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, float scale, int inverted, vec4 smartProperties, vec2 txtrRes, int proceduralGrayScale, float proceduralBrightness){
