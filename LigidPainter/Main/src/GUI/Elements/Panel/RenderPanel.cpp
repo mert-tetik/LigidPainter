@@ -50,7 +50,7 @@ void Panel::render(Timer &timer,bool doMouseTracking){
 
 }
 
-static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, float outlineThickness){
+static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, float outlineThickness, float cornerRadius){
     
     ShaderSystem::buttonShader().setVec3  ("pos", pos);
     ShaderSystem::buttonShader().setVec2  ("scale", scale);
@@ -58,7 +58,7 @@ static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::v
     ShaderSystem::buttonShader().setVec4  ("properties.color2", color);
     ShaderSystem::buttonShader().setFloat ("properties.colorMixVal", 0.f);
     
-    ShaderSystem::buttonShader().setFloat ("properties.radius", 10.f);
+    ShaderSystem::buttonShader().setFloat ("properties.radius", cornerRadius);
     ShaderSystem::buttonShader().setInt   ("properties.outline.state", 2);
     ShaderSystem::buttonShader().setInt   ("outlineExtra", true); 
     ShaderSystem::buttonShader().setVec3  ("properties.outline.color" , color2); 
@@ -148,8 +148,13 @@ void Panel::drawPanel(
                     )
 {
 
+    float outlineRadius = 10.f;
+
+    if(this->solidStyle)
+        outlineRadius = 1.f;
+
     //Draw the panel's itself
-    drawThePanel(resultPos, resultScale, this->color, this->color2, this->outlineThickness);
+    drawThePanel(resultPos, resultScale, this->color, this->color2, this->outlineThickness, outlineRadius);
 
     /*Render the barriers if the depth texture of the framebuffer will be refreshed at the end of the panel rendering process*/
     if(clearDepthBuffer)

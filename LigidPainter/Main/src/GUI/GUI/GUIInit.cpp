@@ -515,4 +515,6 @@ void UI::init
     this->zoomingDisplayingButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f,8.f), "Nodes", Texture(), 0.f, true);
 
     paintingPanel.sections[5].elements[1].button.textureSelection = true;
+
+    navigationPanel.solidStyle = true;
 }   

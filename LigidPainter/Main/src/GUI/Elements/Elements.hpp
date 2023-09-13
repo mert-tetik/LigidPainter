@@ -504,6 +504,9 @@ public:
     
     /*! @brief Takes the value from the constructor. Indicates whether the panel is vertical or horizontal*/
     bool vertical = true;
+
+    /*! @brief Sharp corners if true */
+    bool solidStyle = false;
     
     /*! 
         @brief Indicates how many elements can be in a row 
