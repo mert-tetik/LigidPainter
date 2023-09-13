@@ -11,6 +11,10 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+    Textures of the Texture Modifier's texture channel buttons are deleted (indexed specially)
+    Remove the filter button is indexed specially
+
 */
 
 #include<glad/glad.h>

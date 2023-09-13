@@ -353,6 +353,17 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         //Delete button pressed
         if(ContextMenus::materialModifier.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
             glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture.ID); 
+
+            if(material.materialModifiers[ContextMenus::materialModifier.selectedElement].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
+                glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[0].button.texture.ID); 
+                glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[1].button.texture.ID); 
+                glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[2].button.texture.ID); 
+                glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[3].button.texture.ID); 
+                glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[4].button.texture.ID); 
+                glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[5].button.texture.ID); 
+            }
+            
+
             material.materialModifiers.erase(material.materialModifiers.begin() + ContextMenus::materialModifier.selectedElement);
             dialogControl.firstFrameActivated = true;
             selectedMaterialModifierIndex = 0;
