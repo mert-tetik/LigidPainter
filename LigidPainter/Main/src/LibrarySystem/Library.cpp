@@ -20,6 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <vector>
 #include <string>
+#include <filesystem>
 
 std::vector<Texture> __textures;
 std::vector<Material> __materials;
@@ -27,6 +28,8 @@ std::vector<Brush> __brushes;
 std::vector<Model> __TDModels;
 std::vector<Filter> __filters;
 std::vector<TexturePack> __texturePacks;
+
+std::vector<SourceLibTexture> __sourceLibTextures; 
 
 int __selectedElementIndex = 0;
 
@@ -458,4 +461,26 @@ void Library::materialGiveUniqueId(int index){
 
 std::vector<Texture>* Library::getTextureVectorPointer(){
     return &__textures;
+}
+
+void loadSourceLibTextures(){
+    try
+    {
+        for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Texture Library")) {
+            SourceLibTexture srcLibTxtr;
+            srcLibTxtr.load(entry.path().string());
+            __sourceLibTextures.push_back(srcLibTxtr);
+        }            
+    }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 788632" << ex.what() << LGDLOG::end;
+    }
+}
+
+SourceLibTexture getSrcLibTxtr(int index){
+    return __sourceLibTextures[index];
+}
+
+int getgetSrcLibTxtrsArraySize(){
+    return __sourceLibTextures.size();
 }

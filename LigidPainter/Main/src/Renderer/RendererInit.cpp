@@ -34,6 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "NodeSystem/Node/Node.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "LibrarySystem/Library.hpp"
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 
@@ -173,4 +174,7 @@ void Renderer::initRenderer(){
     catch (const std::filesystem::filesystem_error& ex) {
         LGDLOG::start << "ERROR : Filesystem : Location ID 963654 " << ex.what() << LGDLOG::end;
     }
+
+    // Load the source library textures
+    Library::loadSourceLibTextures();
 }

@@ -31,6 +31,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 /// @brief Forward declared Texture class 
 class Texture;
+/// @brief Forward declared Texture class 
+class SourceLibTexture;
 /// @brief Forward declared Material class 
 class Material;
 /// @brief Forward declared Brush class 
@@ -144,6 +146,17 @@ namespace Library{
     void textureGiveUniqueId(int index);
     /// @brief Generates a unique id for the corresponding element in the textures array (used in the @ref addMaterials function)
     void materialGiveUniqueId(int index);
+
+    //--------------- Source Lib Textures ---------------
+    /// @brief Called single time as the program starts
+    void loadSourceLibTextures();
+
+    /// @brief Returns the source lib texture at the corresponding index from the Source Lib Textures array 
+    SourceLibTexture getSrcLibTxtr(int index);
+
+    /// @brief Returns the size of the Source Lib Textures array
+    int getgetSrcLibTxtrsArraySize();
+
 };
 
 #endif
