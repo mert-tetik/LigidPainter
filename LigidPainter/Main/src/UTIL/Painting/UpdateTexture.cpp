@@ -234,7 +234,8 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
     captureTxtrToSourceTxtr(captureTexture,textureRes,selectedTexture.ID);
 
     if(this->threeDimensionalMode)
-        this->selectedTexture.removeSeams(getModel()->meshes[selectedMeshIndex], textureRes);
+        if(selectedMeshIndex < getModel()->meshes.size())
+            this->selectedTexture.removeSeams(getModel()->meshes[selectedMeshIndex], textureRes);
 }
 
 

@@ -131,39 +131,10 @@ void paintingPanelInteraction(
 
     //Update the meshes section of the painting panel if a new model is added
     if(getModel()->newModelAdded){
-        painter.selectedMeshIndex = 0;
-        
-        paintingPanel.sections[3].elements.clear();
-        
-        for (size_t i = 0; i < getModel()->meshes.size(); i++)
-        {
-
-            Element meshButton = Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),getModel()->meshes[i].materialName , Texture(), 0.f,true));
-
-            paintingPanel.sections[3].elements.push_back(meshButton);
-        
-        }
+        paintingPanel.sections[3].elements[0].button.selectedMeshI = 0;
     }
 
-    //Check all the mesh buttons if they are pressed
-    for (size_t i = 0; i < paintingPanel.sections[3].elements.size(); i++) 
-    {
-        if(paintingPanel.sections[3].elements[i].button.hover && *Mouse::LClick()){//If any button element is pressed
-            if(painter.selectedMeshIndex != i){
-                paintingPanel.sections[3].elements[painter.selectedMeshIndex].button.clickState1 = false;
-                painter.selectedMeshIndex = i;
-                break;
-            }
-        } 
-    }
-
-    //Set the selected mesh button as selected 
-    for (size_t i = 0; i < paintingPanel.sections[3].elements.size(); i++)
-    {
-        if(i == painter.selectedMeshIndex)
-            paintingPanel.sections[3].elements[i].button.clickState1 = true;
-    }
-
+    painter.selectedMeshIndex = paintingPanel.sections[3].elements[0].button.selectedMeshI;
 
     //Check all the mesh buttons if they are pressed
     for (size_t i = 0; i < paintingPanel.sections[4].elements.size(); i++) 

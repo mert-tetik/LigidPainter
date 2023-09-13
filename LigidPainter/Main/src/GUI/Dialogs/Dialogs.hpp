@@ -491,6 +491,34 @@ public:
 
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
+int showMeshSelectionDialog();
+
+class MeshSelectionDialog
+{
+private:
+    int selectedTextureMode = 0;
+public:
+   Panel bgPanel;
+   Panel subPanel;
+   Panel selectedTextureDisplayingPanel;
+   Panel textureSelectingPanel;
+
+   Texture displayingTexture;
+   int selectedMeshIndex = 0; 
+   bool clicked = false; 
+   glm::vec3 pos = glm::vec3(50,50,0.95f);
+   glm::vec2 scale = glm::vec2(40); 
+   DialogControl dialogControl;
+
+   //Constructors
+   MeshSelectionDialog();
+
+   //Public member functions
+   int show(Timer &timer, glm::mat4 guiProjection);
+};
+
+//!------------------------------TEXTURE SELECTION DIALOG------------------------------
+
 void showTexturePackEditorDialog(TexturePack& texturePack);
 
 class TexturePackEditorDialog

@@ -114,6 +114,8 @@ public:
     bool filterSelection = false;
     /// @brief Displays color selection dialog using @ref (*this).color on button click
     bool colorSelection = false;
+    /// @brief Displays mesh selection dialog using 
+    bool meshSelection = false;
     
     glm::vec3 outlineColor;
     glm::vec3 outlineColor2;
@@ -122,6 +124,7 @@ public:
     int animationStyle;
     Texture texture;
     Filter filter;
+    int selectedMeshI = 0;
     glm::vec2 scale;  
     glm::vec3 pos;
     glm::vec3 resultPos;

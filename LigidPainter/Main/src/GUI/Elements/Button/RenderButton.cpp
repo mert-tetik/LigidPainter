@@ -97,6 +97,9 @@ void Button::render(
                 this->color.b = clr.getRGB_normalized().b;
             }        
         }
+        if(this->meshSelection){
+            showMeshSelectionDialog();
+        }
     }
 
     //Render the text and the texture
