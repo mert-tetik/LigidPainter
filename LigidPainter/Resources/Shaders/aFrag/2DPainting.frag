@@ -261,7 +261,7 @@ void main()
     outClr = fRes;
 
     //Calculate the mouse offset value  
-    outClr.rg = mouseOffset/videoScale * 10.;
+    outClr.rg = mouseOffset/videoScale;
     outClr.b = 0;
     
     //Calculate the opacity value (painting result)
