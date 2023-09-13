@@ -135,6 +135,8 @@ public:
 
     unsigned int uvMask;
 
+    unsigned int displayingTxtr = 0;
+
     /*! @brief Vertices of the mesh */
     std::vector<Vertex>       vertices;
 
@@ -156,6 +158,15 @@ public:
     unsigned int VBO, EBO, VAO; //Vertex buffer object, element buffer object
 
     void processHeightMap();
+
+    void generateDisplayingTexture();
+
+    glm::vec3 getCenterPosition();
+
+    glm::vec3 getMostDistantPointFromAPoint(glm::vec3 point);
+
+    float getBiggestFloatValue(glm::vec3 origin);
+
 private:
     /*! @brief initializes all the buffer objects/arrays */
     void setupMesh();

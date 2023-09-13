@@ -73,9 +73,9 @@ void Model::loadModel(std::string const &path,bool triangulate)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
     //Resolution of the material displaying texture
-    const int displayRes = 2048;
+    const int displayRes = 512;
     
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 2048, 2048, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes, displayRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
     unsigned int FBO;
@@ -88,6 +88,8 @@ void Model::loadModel(std::string const &path,bool triangulate)
     unsigned int RBO;
 	glGenRenderbuffers(1,&RBO);
 	glBindRenderbuffer(GL_RENDERBUFFER,RBO);
+
+    glDisable(GL_CULL_FACE);
 	
     //Set the renderbuffer to store depth
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, displayRes, displayRes);

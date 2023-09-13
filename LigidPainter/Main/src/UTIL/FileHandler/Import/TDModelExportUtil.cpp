@@ -136,8 +136,8 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
             meshVertices[i][vi].Position.y = meshVertices[i][vi].Position.y / big;
             meshVertices[i][vi].Position.z = meshVertices[i][vi].Position.z / big;
         }
-        
-        model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle));
+        if(meshVertices[i].size())
+            model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle));
     }
 
     model.newModelAdded = true;

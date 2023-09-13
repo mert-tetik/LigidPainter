@@ -39,7 +39,6 @@ MeshSelectionDialog::MeshSelectionDialog(){
 //Forward declarations for the utility functions
 static void initMeshSelectionDialog(int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, int& selectedMeshIndex);
 static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
-static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode);
 
 int MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection){
     
@@ -60,12 +59,24 @@ int MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection){
 
         dialogControl.updateStart();
 
-        updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode);
-
         //Render the panel
         this->bgPanel.render(timer, true);
 
-        
+        for (size_t i = 0; i < this->bgPanel.sections[0].elements.size(); i++){
+            if(this->bgPanel.sections[0].elements[i].button.clickState1 && i != this->selectedMeshIndex){
+                this->selectedMeshIndex = i;
+                for (size_t j = 0; j < this->bgPanel.sections[0].elements.size(); j++)
+                {
+                    this->bgPanel.sections[0].elements[j].button.clickState1 = false;
+                }
+            }
+        }
+
+        for (size_t i = 0; i < this->bgPanel.sections[0].elements.size(); i++)
+        {
+            if(this->bgPanel.sections[0].elements[i].button.clickState1 == false && i == this->selectedMeshIndex)
+                this->bgPanel.sections[0].elements[i].button.clickState1 = true;
+        }
 
         dialogControl.updateEnd(timer,0.15f);
 
@@ -97,7 +108,7 @@ int MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection){
         textRenderer.mods = 0;
     }
 
-    return 0;
+    return this->selectedMeshIndex;
 }
 
 
@@ -141,7 +152,7 @@ static void initMeshSelectionDialog(
 
     for (size_t i = 0; i < getModel()->meshes.size(); i++)
     {
-        meshButtons.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f), getModel()->meshes[i].materialName, Texture(), 0.f, true));
+        meshButtons.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(10.f), getModel()->meshes[i].materialName, getModel()->meshes[i].displayingTxtr, 0.f, true));
     }
     
 
@@ -168,23 +179,4 @@ static void drawBG(
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindTexture(GL_TEXTURE_2D, 0);
     ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
-}
-
-static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode){
-    textureSelectingPanel.sections.clear();
-    std::vector<Element> sectionElements;
-    
-    for (size_t i = 0; i < Library::getFilterArraySize(); i++)
-    {
-        sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 3.f),"", Library::getFilter(i)->displayingTxtr, 0.f,false)));
-    }
-
-    textureSelectingPanel.sections.push_back
-                                            (
-                                                Section
-                                                        (
-                                                            Element(Button()),
-                                                            sectionElements
-                                                        )
-                                            );  
 }
