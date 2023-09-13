@@ -158,6 +158,22 @@ void libraryPanelDisplayerInteraction(
                     LGDLOG::start<< "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << LGDLOG::end;
             }
         }
+        if(Library::getSelectedElementIndex() == 4){ //Fonts
+            
+        }
+        if(Library::getSelectedElementIndex() == 5){ //Scripts
+            
+        }
+        if(Library::getSelectedElementIndex() == 6){ //Filters
+            
+            std::string test = showFileSystemObjectSelectionDialog("Select a filter file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_FILTER, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            
+            if(test.size()){
+                Filter filter;
+                filter.load(test);
+                Library::addFilter(filter);
+            }
+        }
         if(Library::getSelectedElementIndex() == 8){ //Texture Packs
             TexturePack texturePack;
             texturePack.title = "NewTexturePack";
