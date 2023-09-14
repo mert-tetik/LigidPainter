@@ -36,57 +36,36 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 40
 #define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 7
 
-#define subPanel_Library_Textures_INDEX 0
-#define subPanel_Procedural_Pattern_Textures_INDEX 1
-#define subPanel_Procedural_Noise_Textures_INDEX 2
-#define subPanel_Texture_Packs_INDEX 3 
-#define subPanel_Smart_Textures_INDEX 4
-#define subPanel_Source_Textures 5
-#define subPanel_Mesh_UV 6
-#define subPanel_Gray_Scale_INDEX 7
-#define subPanel_Brightness_INDEX 8 
-#define subPanel_Invert_INDEX 9
-#define subPanel_Scale_INDEX 10
-#define subPanel_Normal_Map_INDEX 11
-#define subPanel_Normal_Gray_Scale_INDEX 12
-#define subPanel_Normal_Strength_INDEX 13
-#define subPanel_Use_Texture_Coordinates_INDEX 14
-#define subPanel_Select_INDEX 15
+#define subPanel_Gray_Scale_INDEX 0
+#define subPanel_Brightness_INDEX 1 
+#define subPanel_Invert_INDEX 2
+#define subPanel_Scale_INDEX 3
+#define subPanel_Normal_Map_INDEX 4
+#define subPanel_Normal_Gray_Scale_INDEX 5
+#define subPanel_Normal_Strength_INDEX 6
+#define subPanel_Use_Texture_Coordinates_INDEX 7
+#define subPanel_Select_INDEX 8
 
-#define subPanelSmartTextures_Library_Textures_INDEX 0
-#define subPanelSmartTextures_Procedural_Pattern_Textures_INDEX 1
-#define subPanelSmartTextures_Procedural_Noise_Textures_INDEX 2
-#define subPanelSmartTextures_Texture_Packs_INDEX 3
-#define subPanelSmartTextures_Smart_Textures_INDEX 4
-#define subPanelSmartTextures_Source_Textures 5
-#define subPanelSmartTextures_Mesh_UV 6
-#define subPanelSmartTextures_Normal_Map_INDEX 7
-#define subPanelSmartTextures_Normal_Gray_Scale_INDEX 8
-#define subPanelSmartTextures_Normal_Strength_INDEX 9
-#define subPanelSmartTextures_Invert_INDEX 10
-#define subPanelSmartTextures_Select_INDEX 11
+#define subPanelSmartTextures_Invert_INDEX 0
+#define subPanelSmartTextures_Normal_Map_INDEX 1
+#define subPanelSmartTextures_Normal_Gray_Scale_INDEX 2
+#define subPanelSmartTextures_Normal_Strength_INDEX 3
+#define subPanelSmartTextures_Select_INDEX 4
 
-#define subPanelTxtrPack_Library_Textures 0
-#define subPanelTxtrPack_Procedural_Pattern_Textures 1
-#define subPanelTxtrPack_Procedural_Noise_Textures 2
-#define subPanelTxtrPack_Texture_Packs 3
-#define subPanelTxtrPack_Smart_Textures 4
-#define subPanelTxtrPack_Source_Textures 5
-#define subPanelTxtrPack_Mesh_UV 6
-#define subPanelTxtrPack_Gray_Scale 7
-#define subPanelTxtrPack_Brightness 8
-#define subPanelTxtrPack_Invert 9
-#define subPanelTxtrPack_Scale 10
-#define subPanelTxtrPack_Normal_Map 11
-#define subPanelTxtrPack_Normal_Gray_Scale 12
-#define subPanelTxtrPack_Normal_Strength 13
-#define subPanelTxtrPack_Count 14
-#define subPanelTxtrPack_Rotation_Jitter 15
-#define subPanelTxtrPack_Size_Jitter 16
-#define subPanelTxtrPack_Opacity_Jitter 17
-#define subPanelTxtrPack_Scatter 18
-#define subPanelTxtrPack_Use_Texture_Coordinates 19 
-#define subPanelTxtrPack_Select 20
+#define subPanelTxtrPack_Gray_Scale 0
+#define subPanelTxtrPack_Brightness 1
+#define subPanelTxtrPack_Invert 2
+#define subPanelTxtrPack_Scale 3
+#define subPanelTxtrPack_Normal_Map 4
+#define subPanelTxtrPack_Normal_Gray_Scale 5
+#define subPanelTxtrPack_Normal_Strength 6
+#define subPanelTxtrPack_Count 7
+#define subPanelTxtrPack_Rotation_Jitter 8
+#define subPanelTxtrPack_Size_Jitter 9
+#define subPanelTxtrPack_Opacity_Jitter 10
+#define subPanelTxtrPack_Scatter 11
+#define subPanelTxtrPack_Use_Texture_Coordinates 12 
+#define subPanelTxtrPack_Select 13
 
 
 TextureSelectionDialog::TextureSelectionDialog(){
@@ -146,7 +125,9 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                                     20.f,
                                                     true
                                                 );
-    this->subPanel = Panel(
+
+
+    this->textureModesPanel = Panel(
                                 
                                 
                                 {
@@ -159,21 +140,47 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Source Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Mesh UV Textures", Texture(), 2.f, true),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Gray Scale", 12.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 2.f, 1.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 0.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 0.f, 0.f, 200.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 0.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 0.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 0.f, 0.f, 100.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 0.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 1.f, false)
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Mesh UV Textures", Texture(), 2.f, true)
                                         }
                                     )
                                 },
                                 glm::vec2(scale.x / 6.f, scale.y),
                                 glm::vec3(pos.x - scale.x + (scale.x / 6.f) , pos.y, pos.z),
+                                ColorPalette::mainColor,
+                                ColorPalette::thirdColor,
+                                true,
+                                true,
+                                false,
+                                true,
+                                true,
+                                1.f,
+                                1.f,
+                                {},
+                                20.f,
+                                true
+                            );
+
+    this->subPanel = Panel(
+                                
+                                
+                                {
+                                    Section(
+                                        Button(),
+                                        {
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Gray Scale", 8.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 2.f, 1.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 0.f, 0.f, 200.f, 10.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 4.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 0.f, 0.f, 100.f, 10.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 4.f),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 6.f, false)
+                                        }
+                                    )
+                                },
+                                glm::vec2(scale.x / 6.f, scale.y),
+                                glm::vec3(pos.x + scale.x - (scale.x / 6.f) , pos.y, pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
                                 true,
@@ -195,23 +202,16 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                     Section(
                                         Button(),
                                         {
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Library Textures", Texture(), 5.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Pattern Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Source Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Mesh UV Textures", Texture(), 2.f, true),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 16.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 1.f, 0.f, 100.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 2.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false)
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 8.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 4.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 0.f, 0.f, 100.f, 10.f),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 6.f, false)
                                         }
                                     )
                                 },
                                 glm::vec2(scale.x / 6.f, scale.y),
-                                glm::vec3(pos.x - scale.x + (scale.x / 6.f) , pos.y, pos.z),
+                                glm::vec3(pos.x + scale.x - (scale.x / 6.f) , pos.y, pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
                                 true,
@@ -231,32 +231,25 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                     Section(
                                         Button(),
                                         {
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Library Textures", Texture(), 5.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Pattern Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Source Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Mesh UV Textures", Texture(), 2.f, true),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Gray Scale", 6.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Gray Scale", 8.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 100.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Invert", 0.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 0.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 0.f, 0.f, 200.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Normal Map", 0.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Normal Gray Scale", 0.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 4.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 0.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 0.f, 0.f, 100.f, 10.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Count", Texture(), 0.f, 0.f, 0.5f, 0.05f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rotation Jitter", Texture(), 0.f, 0.f, 1.f, 0.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Size Jitter", Texture(), 0.f, 0.f, 1.f, 0.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Opacity Jitter", Texture(), 0.f, 0.f, 1.f, 0.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scatter", Texture(), 0.f, 0.f, 1.f, 1.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,1.6f),"Use Texture Coordinates", 2.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 1.f, false)
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Count", Texture(), 4.f, 0.f, 0.5f, 0.05f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rotation Jitter", Texture(), 0.5f, 0.f, 1.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Size Jitter", Texture(), 0.5f, 0.f, 1.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Opacity Jitter", Texture(), 0.5f, 0.f, 1.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scatter", Texture(), 0.5f, 0.f, 1.f, 1.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 4.f),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 6.f, false)
                                         }
                                     )
                                 },
                                 glm::vec2(scale.x / 6.f, scale.y),
-                                glm::vec3(pos.x - scale.x + (scale.x / 6.f) , pos.y, pos.z),
+                                glm::vec3(pos.x + scale.x - (scale.x / 6.f) , pos.y, pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
                                 true,
@@ -385,9 +378,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
 
     for (size_t i = 0; i < 7; i++)
     {
-        this->subPanel.sections[0].elements[i].button.color = glm::vec4(0);
-        this->subPanelTxtrPack.sections[0].elements[i].button.color = glm::vec4(0);
-        this->subPanelSmartTextures.sections[0].elements[i].button.color = glm::vec4(0);
+        this->textureModesPanel.sections[0].elements[i].button.color = glm::vec4(0);
     }
 }
 
@@ -679,7 +670,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
 static void initTextureSelectionDialog(int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, int& selectedTextureIndex, Texture& receivedTexture);
 static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, std::vector<Texture> smartTextureDisplayingTextures);
-static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, Panel& subPanelSmartTextures, int& selectedTextureMode, int& selectedTextureIndex);
+static void updateSubPanel(Panel& textureModesPanel, int& selectedTextureMode, int& selectedTextureIndex);
 
 void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes){
     
@@ -721,7 +712,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, this->smartTextureDisplayingTextures);
 
-        updateSubPanel(this->subPanel, this->subPanelTxtrPack, this->subPanelSmartTextures, this->selectedTextureMode, this->selectedTextureIndex);
+        updateSubPanel(this->textureModesPanel, this->selectedTextureMode, this->selectedTextureIndex);
 
         //Render the panel
         this->bgPanel.render(timer, true);
@@ -734,8 +725,10 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         else
             this->subPanel.render(timer, true);
 
-        selectedTextureDisplayingPanel.scale.x = this->scale.x - subPanel.scale.x;
-        selectedTextureDisplayingPanel.pos.x = this->pos.x + subPanel.scale.x;
+        textureModesPanel.render(timer, true);
+
+        selectedTextureDisplayingPanel.scale.x = this->scale.x - subPanel.scale.x - textureModesPanel.scale.x;
+        selectedTextureDisplayingPanel.pos.x = this->pos.x + subPanel.scale.x - textureModesPanel.scale.x;
 
         textureSelectingPanel.pos.x = selectedTextureDisplayingPanel.pos.x;
         textureSelectingPanel.scale.x = selectedTextureDisplayingPanel.scale.x;
@@ -1015,52 +1008,21 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
                                             );  
 }
 
-static void updateSubPanel(Panel& subPanel, Panel& subPanelTxtrPack, Panel& subPanelSmartTextures, int& selectedTextureMode, int& selectedTextureIndex){
+static void updateSubPanel(Panel& textureModesPanel, int& selectedTextureMode, int& selectedTextureIndex){
         for (size_t i = 0; i < 7; i++)
         {
-            if(selectedTextureMode == 3){
-                if(subPanelTxtrPack.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
-                    selectedTextureMode = i;
-                    selectedTextureIndex = 0;
-                    for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
-                        subPanel.sections[0].elements[i].button.clickState1 = false;
-                        subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
-                        subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
-                    }
+            if(textureModesPanel.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
+                selectedTextureMode = i;
+                selectedTextureIndex = 0;
+                for (size_t i = 0; i < textureModesPanel.sections[0].elements.size(); i++){
+                    textureModesPanel.sections[0].elements[i].button.clickState1 = false;
                 }
             }
-            else if(selectedTextureMode == 4){
-                if(subPanelSmartTextures.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
-                    selectedTextureMode = i;
-                    selectedTextureIndex = 0;
-                    for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
-                        subPanel.sections[0].elements[i].button.clickState1 = false;
-                        subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
-                        subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
-                    }
-                }
-            }
-            else{
-                if(subPanel.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
-                    selectedTextureMode = i;
-                    selectedTextureIndex = 0;
-                    for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
-                        subPanel.sections[0].elements[i].button.clickState1 = false;
-                        subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
-                        subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
-                    }
-                }
-            }
-
             if(selectedTextureMode == i){
-                subPanel.sections[0].elements[i].button.clickState1 = true;
-                subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
-                subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
+                textureModesPanel.sections[0].elements[i].button.clickState1 = true;
             }
             else{
-                subPanel.sections[0].elements[i].button.clickState1 = false;
-                subPanelTxtrPack.sections[0].elements[i].button.clickState1 = false;
-                subPanelSmartTextures.sections[0].elements[i].button.clickState1 = false;
+                textureModesPanel.sections[0].elements[i].button.clickState1 = false;
             }
         }
 }

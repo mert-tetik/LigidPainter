@@ -424,6 +424,7 @@ private:
 public:
    Panel bgPanel;
    
+   Panel textureModesPanel;
    Panel subPanel;
    Panel subPanelTxtrPack;
    Panel subPanelSmartTextures;
