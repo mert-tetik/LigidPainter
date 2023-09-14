@@ -3003,10 +3003,7 @@ vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, fl
     if(proceduralID != -1)
         res = vec4(vec3(getProceduralVal(pos, proceduralID, scale, inverted, texCoord, smartProperties, txtrRes)), 1);
     else{
-        if(inverted == 0)
-            res = texture(txtr, texCoord * scale);
-        else
-            res = 1. - texture(txtr, texCoord * scale);
+        res = texture(txtr, texCoord * scale);
     }
     
     if(proceduralGrayScale == 1)
@@ -3015,9 +3012,7 @@ vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, fl
     res.rgb *= proceduralBrightness;
 
     if(inverted == 0)
-        return abs(res);   
+        return res;   
     else
-        return abs(1. - res);   
-    
-    return res;
+        return vec4(vec3(1.) - res.rgb, res.a);   
 }
