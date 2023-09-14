@@ -8,6 +8,7 @@ uniform sampler2D normalVectorTxtr;
 uniform sampler2D normalVectorTxtrBlurred;
 uniform sampler2D noiseTexture;
 uniform int invert;
+uniform float brightness;
 uniform float softness;
 uniform float noiseStrength;
 
@@ -39,7 +40,7 @@ void main(){
             fragColor.r *= noise;
     }
 
-    fragColor.r = mix(orgFragColor, fragColor.r, noiseStrength);
+    fragColor.r = mix(orgFragColor, fragColor.r, noiseStrength) * brightness;
     
     fragColor.g = fragColor.r; 
     fragColor.b = fragColor.r;

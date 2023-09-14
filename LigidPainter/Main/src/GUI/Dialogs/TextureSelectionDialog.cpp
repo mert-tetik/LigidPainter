@@ -47,10 +47,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define subPanel_Select_INDEX 8
 
 #define subPanelSmartTextures_Invert_INDEX 0
-#define subPanelSmartTextures_Normal_Map_INDEX 1
-#define subPanelSmartTextures_Normal_Gray_Scale_INDEX 2
-#define subPanelSmartTextures_Normal_Strength_INDEX 3
-#define subPanelSmartTextures_Select_INDEX 4
+#define subPanelSmartTextures_Brightness_INDEX 1
+#define subPanelSmartTextures_Normal_Map_INDEX 2
+#define subPanelSmartTextures_Normal_Gray_Scale_INDEX 3
+#define subPanelSmartTextures_Normal_Strength_INDEX 4
+#define subPanelSmartTextures_Select_INDEX 5
 
 #define subPanelTxtrPack_Gray_Scale 0
 #define subPanelTxtrPack_Brightness 1
@@ -203,6 +204,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         Button(),
                                         {
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 8.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 2.f, 1.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 4.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 0.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 0.f, 0.f, 100.f, 10.f),
@@ -484,6 +486,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
     if(this->selectedTextureMode == 4){
         txtr.proceduralScale = 1.f;
         txtr.proceduralnverted = this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Invert_INDEX].checkBox.clickState1;
+        txtr.proceduralBrightness = this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Brightness_INDEX].rangeBar.value;
         txtr.proceduralNormalMap = this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Normal_Map_INDEX].checkBox.clickState1;
         txtr.proceduralNormalGrayScale = this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Normal_Gray_Scale_INDEX].checkBox.clickState1;
         txtr.proceduralNormalStrength = this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Normal_Strength_INDEX].rangeBar.value;

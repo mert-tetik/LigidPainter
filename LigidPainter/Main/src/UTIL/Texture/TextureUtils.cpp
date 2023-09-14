@@ -352,6 +352,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         ShaderSystem::edgeWearShader().setInt("normalVectorTxtrBlurred", 1);
         ShaderSystem::edgeWearShader().setInt("noiseTexture", 2);
         ShaderSystem::edgeWearShader().setInt("invert", this->proceduralnverted);
+        ShaderSystem::edgeWearShader().setFloat("brightness", this->proceduralBrightness);
         ShaderSystem::edgeWearShader().setFloat("softness", this->smartProperties.y);
         ShaderSystem::edgeWearShader().setFloat("noiseStrength", this->smartProperties.w);
         ShaderSystem::edgeWearShader().setVec2("txtrRes", glm::vec2(textureRes));
