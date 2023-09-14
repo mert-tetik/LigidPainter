@@ -177,7 +177,7 @@ void UI::init
                                 //    }
                                 //),
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Meshes"  , Settings::appTextures().modifierIcon, 3.f,true)),
+                                    Element(Button()),
                                     {   
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "Select A Mesh"  , Texture(), 1.f, false)),//4
                                     }

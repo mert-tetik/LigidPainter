@@ -34,17 +34,28 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 MeshSelectionDialog::MeshSelectionDialog(){
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 5, {}, 20.f, true);
+    this->subPanel = Panel(
+                            {
+                                Section(
+                                            Button(),
+                                            {
+                                                Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2.f), "Select", Texture(), 0.f, false)
+                                            }
+                                        )
+                            }, glm::vec2(scale.x, 2.f), glm::vec3(pos.x,pos.y + this->bgPanel.scale.y + 2.f ,pos.z), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 5, {}, 20.f, true);
 }
 
 //Forward declarations for the utility functions
 static void initMeshSelectionDialog(int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, int& selectedMeshIndex);
 static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
 
-int MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection){
+void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selectedMeshI){
     
     this->dialogControl.activate();
+
+    this->selectedMeshIndex = selectedMeshI;
         
-    unsigned int bgTexture; 
+    unsigned int bgTexture;  
     glm::ivec2 windowSize;
     initMeshSelectionDialog(this->selectedTextureMode, bgTexture, windowSize, this->bgPanel, this->selectedMeshIndex);
 
@@ -61,6 +72,13 @@ int MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection){
 
         //Render the panel
         this->bgPanel.render(timer, true);
+        this->subPanel.render(timer, true);
+
+        if(this->subPanel.sections[0].elements[0].button.clicked){
+            selectedMeshI = this->selectedMeshIndex;
+            dialogControl.unActivate();
+            this->selectedMeshIndex = 0;
+        }
 
         for (size_t i = 0; i < this->bgPanel.sections[0].elements.size(); i++){
             if(this->bgPanel.sections[0].elements[i].button.clickState1 && i != this->selectedMeshIndex){
@@ -81,9 +99,9 @@ int MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection){
         dialogControl.updateEnd(timer,0.15f);
 
         //End the dialog
-        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && *Mouse::LClick())){
+        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && !this->subPanel.hover && *Mouse::LClick())){
             dialogControl.unActivate();
-            selectedMeshIndex = 0;
+            this->selectedMeshIndex = 0;
         }
 
         if(!this->dialogControl.isActive())
@@ -107,8 +125,6 @@ int MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection){
         textRenderer.keyInput = false;
         textRenderer.mods = 0;
     }
-
-    return this->selectedMeshIndex;
 }
 
 
@@ -144,7 +160,6 @@ static void initMeshSelectionDialog(
     glGenerateMipmap(GL_TEXTURE_2D);
     
     selectedTextureMode = 0;
-    selectedMeshIndex = 0;
 
     bgPanel.sections.clear();
 

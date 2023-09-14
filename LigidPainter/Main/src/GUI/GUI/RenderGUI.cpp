@@ -62,12 +62,10 @@ void showFilterSelectionDialog(Filter& filter, int displayingTextureRes){
     glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
 }
 
-int showMeshSelectionDialog(){
-    int res = __mesh_selection_dialog.show(__timer, __projection);
+void showMeshSelectionDialog(int& selectedMeshI){
+    __mesh_selection_dialog.show(__timer, __projection, selectedMeshI);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
-    
-    return res;
 }
 
 void showTexturePackEditorDialog(TexturePack& texturePack){

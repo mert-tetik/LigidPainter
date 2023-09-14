@@ -98,9 +98,15 @@ void Button::render(
             }        
         }
         if(this->meshSelection){
-            showMeshSelectionDialog();
+            showMeshSelectionDialog(this->selectedMeshI);
+            if(this->selectedMeshI < getModel()->meshes.size()){
+                this->texture = getModel()->meshes[this->selectedMeshI].displayingTxtr; 
+                this->text = getModel()->meshes[this->selectedMeshI].materialName; 
+            }
         }
     }
+
+
 
     //Render the text and the texture
     renderTextAndTexture(resultScaleText);
