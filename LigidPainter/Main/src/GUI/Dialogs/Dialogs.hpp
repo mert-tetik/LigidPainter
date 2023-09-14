@@ -193,6 +193,7 @@ class BakingDialog
 public:
    Panel bgPanel;
    Panel exportChannelsIntoLibraryPanel;
+   Panel selectMeshPanel;
    CheckBox pbrResultCheckbox;
    CheckBox pbrUseLightingCheckbox;
    CheckBox pbrRayTracingCheckbox;
@@ -201,6 +202,7 @@ public:
    CheckBox reflectanceCheckbox;
    Button bakeButton;
    
+   Button meshSelectionText;
    Button exportMaterialChannelsText;
    Button bakingMaterialChannelsText;
 

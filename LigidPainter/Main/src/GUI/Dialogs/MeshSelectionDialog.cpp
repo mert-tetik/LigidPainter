@@ -39,10 +39,10 @@ MeshSelectionDialog::MeshSelectionDialog(){
                                 Section(
                                             Button(),
                                             {
-                                                Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2.f), "Select", Texture(), 0.f, false)
+                                                Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Select", Texture(), 4.f, false)
                                             }
                                         )
-                            }, glm::vec2(scale.x, 2.f), glm::vec3(pos.x,pos.y + this->bgPanel.scale.y + 2.f ,pos.z), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 5, {}, 20.f, true);
+                            }, glm::vec2(scale.x, 2.f), glm::vec3(pos.x,pos.y + this->bgPanel.scale.y + 2.f ,pos.z), ColorPalette::secondColor, ColorPalette::thirdColor, false, true, false, true, true, 1.f, 1, {}, 20.f, true);
 }
 
 //Forward declarations for the utility functions

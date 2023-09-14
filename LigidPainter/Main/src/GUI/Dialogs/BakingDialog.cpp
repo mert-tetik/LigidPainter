@@ -51,7 +51,7 @@ BakingDialog::BakingDialog(){
                 )
             }
         },
-        glm::vec2(20.f, 22.f),
+        glm::vec2(28.f, 22.f),
         glm::vec3(50.f,50.f,0.8f),
         ColorPalette::mainColor,
         ColorPalette::thirdColor,
@@ -99,6 +99,31 @@ BakingDialog::BakingDialog(){
         0.25f,
         false
     );
+    this->selectMeshPanel = Panel(
+        {
+            Section(
+                Element(Button()),
+                {
+                    Button(ELEMENT_STYLE_SOLID, glm::vec2(15.f), "", Texture(), 6.f, false),
+                    Button(ELEMENT_STYLE_SOLID, glm::vec2(4.f), "Mataryal_3", Texture(), 0.f, false)
+                }
+            )
+        },
+        glm::vec2(8.f,22.f),
+        glm::vec3(50.f,50.f,0.8f),
+        ColorPalette::secondColor,
+        ColorPalette::thirdColor,
+        true,
+        true,
+        true,
+        true,
+        true,
+        1.f,
+        1.f,
+        {},
+        0.25f,
+        false
+    );
 
     for (size_t i = 0; i < 6; i++)
     {
@@ -113,26 +138,45 @@ BakingDialog::BakingDialog(){
     reflectanceCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(5.f,2.f), "Skybox Reflectance", 0.f);
     bakeButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(7.f,2), "Bake", Texture(), 1.f, false);
 
+    meshSelectionText = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(7.f,2), "Mesh Selection", Texture(), 0.f, false);
     exportMaterialChannelsText = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(7.f,2), "Export Material Channels", Texture(), 0.f, false);
     bakingMaterialChannelsText = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(7.f,2), "Bake Material Channels", Texture(), 0.f, false);
 
+    meshSelectionText.color = glm::vec4(0.f);
     exportMaterialChannelsText.color = glm::vec4(0.f);
     bakingMaterialChannelsText.color = glm::vec4(0.f);
     
+    meshSelectionText.textScale = 0.65f;
     exportMaterialChannelsText.textScale = 0.65f;
     bakingMaterialChannelsText.textScale = 0.65f;
+
+    selectMeshPanel.sections[0].elements[0].button.meshSelection = true;
 }
 
 void BakingDialog::render(Timer timer, Skybox skybox){
     
     dialogControl.updateStart();
 
+    if(dialogControl.firstFrameActivated){
+        selectMeshPanel.sections[0].elements[0].button.selectedMeshI = 0;
+        if(selectMeshPanel.sections[0].elements[0].button.selectedMeshI < getModel()->meshes.size()){
+            selectMeshPanel.sections[0].elements[0].button.texture = getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].displayingTxtr; 
+            selectMeshPanel.sections[0].elements[0].button.text = getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].materialName; 
+        }
+    }
+
+    selectMeshPanel.sections[0].elements[1].button.text = selectMeshPanel.sections[0].elements[0].button.text;
+
     //Render the panel
     this->bgPanel.render(timer, true);
 
-    this->exportChannelsIntoLibraryPanel.pos = this->bgPanel.pos;
-    this->exportChannelsIntoLibraryPanel.pos.x -= this->bgPanel.scale.x - this->exportChannelsIntoLibraryPanel.scale.x;
-    this->exportChannelsIntoLibraryPanel.pos.z += 0.001f;
+    this->selectMeshPanel.pos = this->bgPanel.pos;
+    this->selectMeshPanel.pos.x -= this->bgPanel.scale.x - this->exportChannelsIntoLibraryPanel.scale.x;
+    this->selectMeshPanel.pos.z += 0.001f;
+    this->selectMeshPanel.render(timer, true);
+    
+    this->exportChannelsIntoLibraryPanel.pos = this->selectMeshPanel.pos;
+    this->exportChannelsIntoLibraryPanel.pos.x += this->selectMeshPanel.scale.x + this->exportChannelsIntoLibraryPanel.scale.x;
     this->exportChannelsIntoLibraryPanel.render(timer, true);
 
     this->vertexPositionCheckbox.render(timer, true);
@@ -152,6 +196,11 @@ void BakingDialog::render(Timer timer, Skybox skybox){
     this->pbrResultCheckbox.pos = this->reflectanceCheckbox.pos;
     this->pbrResultCheckbox.pos.y += this->reflectanceCheckbox.scale.y + this->pbrResultCheckbox.scale.y;
 
+    this->meshSelectionText.pos = exportChannelsIntoLibraryPanel.pos;
+    this->meshSelectionText.pos.y -= exportChannelsIntoLibraryPanel.scale.y - this->meshSelectionText.scale.y * 2.f;
+    this->meshSelectionText.pos.x = this->selectMeshPanel.pos.x;
+    this->meshSelectionText.render(timer, false);
+    
     this->exportMaterialChannelsText.pos = exportChannelsIntoLibraryPanel.pos;
     this->exportMaterialChannelsText.pos.y -= exportChannelsIntoLibraryPanel.scale.y - this->exportMaterialChannelsText.scale.y * 2.f;
     this->exportMaterialChannelsText.render(timer, false);
@@ -194,54 +243,51 @@ void BakingDialog::render(Timer timer, Skybox skybox){
     }
     
     this->bakeButton.pos = this->exportChannelsIntoLibraryPanel.pos;
-    this->bakeButton.pos.x = this->bgPanel.pos.x + this->exportChannelsIntoLibraryPanel.scale.x;
+    this->bakeButton.pos.x = this->bgPanel.pos.x + this->exportChannelsIntoLibraryPanel.scale.x + this->selectMeshPanel.scale.x;
     this->bakeButton.pos.y += this->exportChannelsIntoLibraryPanel.scale.y - this->bakeButton.scale.y * 4.;
     this->bakeButton.render(timer, true);
     
 
-    if(exportChannelsIntoLibraryPanel.sections[0].elements[exportChannelsIntoLibraryPanel.sections[0].elements.size()-1].button.clicked){
+    if(exportChannelsIntoLibraryPanel.sections[0].elements[exportChannelsIntoLibraryPanel.sections[0].elements.size()-1].button.clicked && selectMeshPanel.sections[0].elements[0].button.selectedMeshI < getModel()->meshes.size()){
         NodeScene::updateNodeResults(Settings::properties()->textureRes, -1);
 
         //Update all the materials connected to the mesh output & export it's textures
-        for (size_t i = 0; i < getModel()->meshes.size(); i++)
-        {
             //For all the channels
-            for (size_t channelI = 0; channelI < 6; channelI++)
-            {
-                Texture channelTxtr;
-                
-                if(channelI == 0){
-                    channelTxtr = getModel()->meshes[i].albedo;
-                    channelTxtr.title = "albedo_" + getModel()->meshes[i].materialName;
-                }
-                if(channelI == 1){
-                    channelTxtr = getModel()->meshes[i].roughness;
-                    channelTxtr.title = "roughness_" + getModel()->meshes[i].materialName;
-                }
-                if(channelI == 2){
-                    channelTxtr = getModel()->meshes[i].metallic;
-                    channelTxtr.title = "metallic_" + getModel()->meshes[i].materialName;
-                }
-                if(channelI == 3){
-                    channelTxtr = getModel()->meshes[i].normalMap;
-                    channelTxtr.title = "normalMap_" + getModel()->meshes[i].materialName;
-                }
-                if(channelI == 4){
-                    channelTxtr = getModel()->meshes[i].heightMap;
-                    channelTxtr.title = "heightMap_" + getModel()->meshes[i].materialName;
-                }
-                if(channelI == 5){
-                    channelTxtr = getModel()->meshes[i].ambientOcclusion;
-                    channelTxtr.title = "ambientOcclusion_" + getModel()->meshes[i].materialName;
-                }
-
-                if(this->exportChannelsIntoLibraryPanel.sections[0].elements[channelI].checkBox.clickState1)
-                    Library::addTexture(channelTxtr.duplicateTexture());
+        for (size_t channelI = 0; channelI < 6; channelI++)
+        {
+            Texture channelTxtr;
+            
+            if(channelI == 0){
+                channelTxtr = getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].albedo;
+                channelTxtr.title = "albedo_" + getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].materialName;
             }
+            if(channelI == 1){
+                channelTxtr = getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].roughness;
+                channelTxtr.title = "roughness_" + getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].materialName;
+            }
+            if(channelI == 2){
+                channelTxtr = getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].metallic;
+                channelTxtr.title = "metallic_" + getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].materialName;
+            }
+            if(channelI == 3){
+                channelTxtr = getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].normalMap;
+                channelTxtr.title = "normalMap_" + getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].materialName;
+            }
+            if(channelI == 4){
+                channelTxtr = getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].heightMap;
+                channelTxtr.title = "heightMap_" + getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].materialName;
+            }
+            if(channelI == 5){
+                channelTxtr = getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].ambientOcclusion;
+                channelTxtr.title = "ambientOcclusion_" + getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].materialName;
+            }
+
+            if(this->exportChannelsIntoLibraryPanel.sections[0].elements[channelI].checkBox.clickState1)
+                Library::addTexture(channelTxtr.duplicateTexture());
         }
     }
 
-    if(this->bakeButton.clicked){
+    if(this->bakeButton.clicked && selectMeshPanel.sections[0].elements[0].button.selectedMeshI < getModel()->meshes.size()){
         
         Camera cam;
 
@@ -281,51 +327,49 @@ void BakingDialog::render(Timer timer, Skybox skybox){
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
 
-        for (size_t i = 0; i < getModel()->meshes.size(); i++){
-            Texture txtr = Texture(nullptr, Settings::properties()->textureRes, Settings::properties()->textureRes);
-            txtr.title = "baked_" + getModel()->meshes[i].materialName;
+        Texture txtr = Texture(nullptr, Settings::properties()->textureRes, Settings::properties()->textureRes);
+        txtr.title = "baked_" + getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].materialName;
 
-            /* Capturing FBO */
-            unsigned int FBO; 
-            glGenFramebuffers(1,&FBO);
-            glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.ID, 0);
-            glClearColor(0,0,0,0);
+        /* Capturing FBO */
+        unsigned int FBO; 
+        glGenFramebuffers(1,&FBO);
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.ID, 0);
+        glClearColor(0,0,0,0);
 
-            unsigned int RBO;
-            glGenRenderbuffers(1,&RBO);
-            glBindRenderbuffer(GL_RENDERBUFFER,RBO);
-            
-            //Set the renderbuffer to store depth
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, Settings::properties()->textureRes, Settings::properties()->textureRes);
-            
-            //Give the renderbuffer to the framebuffer
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+        unsigned int RBO;
+        glGenRenderbuffers(1,&RBO);
+        glBindRenderbuffer(GL_RENDERBUFFER,RBO);
+        
+        //Set the renderbuffer to store depth
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, Settings::properties()->textureRes, Settings::properties()->textureRes);
+        
+        //Give the renderbuffer to the framebuffer
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            
-            glDepthFunc(GL_LEQUAL);
-            
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].albedo.ID);
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].roughness.ID);
-            glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].metallic.ID);
-            glActiveTexture(GL_TEXTURE5);
-            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].normalMap.ID);
-            glActiveTexture(GL_TEXTURE6);
-            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].heightMap.ID);
-            glActiveTexture(GL_TEXTURE7);
-            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].ambientOcclusion.ID);
-            
-            getModel()->meshes[i].Draw();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        glDepthFunc(GL_LEQUAL);
+        
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].albedo.ID);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].roughness.ID);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].metallic.ID);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].normalMap.ID);
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].heightMap.ID);
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].ambientOcclusion.ID);
+        
+        getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].Draw();
 
-            glDeleteFramebuffers(1, &FBO);
-            glDeleteRenderbuffers(1, &RBO);
+        glDeleteFramebuffers(1, &FBO);
+        glDeleteRenderbuffers(1, &RBO);
 
-            Library::addTexture(txtr);
-        }
+        Library::addTexture(txtr);
     }
     
     //End the dialog
