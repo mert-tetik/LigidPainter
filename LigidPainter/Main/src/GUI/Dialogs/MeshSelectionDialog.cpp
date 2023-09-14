@@ -74,6 +74,17 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
         this->bgPanel.render(timer, true);
         this->subPanel.render(timer, true);
 
+        for (size_t i = 0; i < this->bgPanel.sections[0].elements.size(); i++)
+        {
+            Button txtBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(this->bgPanel.sections[0].elements[i].button.scale.x, 1.f), this->bgPanel.sections[0].elements[i].button.text, Texture(), 0.f, false);
+            txtBtn.pos = this->bgPanel.sections[0].elements[i].button.pos;
+            txtBtn.pos.z += 0.0001f;
+            txtBtn.pos.y += this->bgPanel.sections[0].elements[i].button.scale.y - txtBtn.scale.y;
+            txtBtn.color.a /= 2.f;
+            txtBtn.render(timer, false);
+        }
+        
+
         if(this->subPanel.sections[0].elements[0].button.clicked){
             selectedMeshI = this->selectedMeshIndex;
             dialogControl.unActivate();
