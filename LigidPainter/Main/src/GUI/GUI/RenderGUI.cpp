@@ -545,6 +545,8 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             offsetStrokeEnd.draw(0.0001, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
             offsetStrokeStart.draw(0.0001, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
         }
+
+        glClear(GL_DEPTH_BUFFER_BIT);
     }
 }
 

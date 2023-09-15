@@ -324,6 +324,9 @@ vec3 getBrushedTexture (
     if(brushModeState == 4)
         return getPaintedTextureFilterDisplayingMode(txtr, brushTxtr, TexCoords);
     
+    if(brushModeState == 5)
+        return texture(txtr, TexCoords).rgb;
+    
     //If the brushModeState value is not valid
     return vec3(0);
 }

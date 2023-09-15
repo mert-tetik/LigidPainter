@@ -242,8 +242,6 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
             this->selectedTexture.removeSeams(getModel()->meshes[selectedMeshIndex], textureRes);
 }
 
-
-
 //Clear the painting texture
 void Painter::refreshPainting(){
     glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
