@@ -162,7 +162,6 @@ void Mesh::generateDisplayingTexture(){
     ShaderSystem::solidShadingShader().setMat4("view", view);
     glm::mat4 modelMat = glm::mat4(1.f);
     modelMat = glm::scale(modelMat, glm::vec3(1.f / glm::distance(meshMostFar, meshCenter)));
-    std::cout << "DIN " << glm::to_string(meshCenter) << ' ' << glm::to_string(meshMostFar) << ' ' << glm::distance(meshMostFar, meshCenter) << std::endl;
 
     ShaderSystem::solidShadingShader().setMat4("modelMatrix", modelMat);
     

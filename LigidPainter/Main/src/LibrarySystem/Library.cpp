@@ -464,12 +464,9 @@ std::vector<Texture>* Library::getTextureVectorPointer(){
 }
 
 void Library::loadSourceLibTextures(){
-    std::cout << "0" << std::endl;
-    
     try
     {
-        for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Texture Library")) {
-            std::cout << "A" << std::endl;
+        for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Texture Library/Low_Res_Display_Textures")) {
             SourceLibTexture srcLibTxtr;
             srcLibTxtr.load(entry.path().string());
             __sourceLibTextures.push_back(srcLibTxtr);
@@ -478,8 +475,6 @@ void Library::loadSourceLibTextures(){
     catch (const std::filesystem::filesystem_error& ex) {
         LGDLOG::start << "ERROR : Filesystem : Location ID 788632" << ex.what() << LGDLOG::end;
     }
-    std::cout << "1" << std::endl;
-
 }
 
 SourceLibTexture Library::getSrcLibTxtr(int index){

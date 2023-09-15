@@ -162,8 +162,6 @@ TextureSelectionDialog::TextureSelectionDialog(){
                             );
 
     this->subPanel = Panel(
-                                
-                                
                                 {
                                     Section(
                                         Button(),
@@ -413,6 +411,16 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
         txtr.proceduralID = this->selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE + MAX_PROCEDURAL_NOISE_TEXTURE_SIZE;
         txtr.proceduralTextureID = 0;
     }
+    else if(this->selectedTextureMode == 5){
+        txtr.proceduralID = -1;
+        if(selectedTextureIndex < Library::getgetSrcLibTxtrsArraySize()){
+            if(txtr.ID == this->displayingTexture.ID)
+                txtr.proceduralTextureID = Library::getSrcLibTxtr(selectedTextureIndex).displayingTexture.ID;
+            else{
+                txtr.proceduralTextureID = Library::getSrcLibTxtr(selectedTextureIndex).getTexture().ID;
+            }
+        }
+    }
     else if(this->selectedTextureMode == 6){
         txtr.proceduralID = -1;
         if(selectedTextureIndex < Library::getTextureArraySize())
@@ -615,7 +623,7 @@ void TextureSelectionDialog::generateDisplayingTexture(Texture& txtr, int displa
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE);                
         else if(this->selectedTextureMode == 4)
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE + MAX_PROCEDURAL_NOISE_TEXTURE_SIZE);                
-        else if(this->selectedTextureMode == 6)
+        else if(this->selectedTextureMode == 6 || this->selectedTextureMode == 5)
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", -1);                
         
         ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->subPanel.sections[0].elements[subPanel_Scale_INDEX].rangeBar.value / 10.f);
@@ -711,7 +719,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         dialogControl.updateStart();
 
-        generateDisplayingTexture(displayingTexture, 512);
+        generateDisplayingTexture(this->displayingTexture, 512);
 
         updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, this->smartTextureDisplayingTextures);
 
@@ -851,7 +859,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
 
         // Pressed to the select button
-        if((this->subPanel.sections[0].elements[11].button.clicked && this->selectedTextureMode != 3) || (this->subPanelTxtrPack.sections[0].elements[16].button.clicked && this->selectedTextureMode == 3) || (this->subPanelSmartTextures.sections[0].elements[9].button.clicked && this->selectedTextureMode == 4)){
+        if((this->subPanel.sections[0].elements[subPanel_Select_INDEX].button.clicked && this->selectedTextureMode != 3) || (this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Select].button.clicked && this->selectedTextureMode == 3) || (this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Select_INDEX].button.clicked && this->selectedTextureMode == 4)){
             
             generateDisplayingTexture(receivedTexture, displayingTextureRes);
             
@@ -992,6 +1000,12 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
         for (size_t i = 0; i < MAX_PROCEDURAL_SMART_TEXTURE_SIZE; i++)
         {
             sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),""       , smartTextureDisplayingTextures[i], 0.f,false)));
+        }
+    }
+    else if(selectedTextureMode == 5){
+        for (size_t i = 0; i < Library::getgetSrcLibTxtrsArraySize(); i++)
+        {
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f), "", Library::getSrcLibTxtr(i).displayingTexture, 0.f,false)));
         }
     }
     else if(selectedTextureMode == 6){

@@ -24,25 +24,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 
 void SourceLibTexture::load(const std::string path){
-    const glm::ivec2 displayTextureResolution = glm::ivec2(128);
-    
-    std::cout << "B" << std::endl;
     //Init and load the displaying texture
-    this->displayingTexture.load(path.c_str(), displayTextureResolution);
-    std::cout << "C" << std::endl;
+    this->displayingTexture.load(path.c_str());
 
     //Get the title of the path
     this->ID = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
-    std::cout << "D" << std::endl;
 }
 
 Texture SourceLibTexture::getTexture(){
-    const std::string folderPath = "/LigidPainter/Resources/Texture Library";
+    const std::string folderPath = "./LigidPainter/Resources/Texture Library";
 
     std::string filePath = folderPath + "/" + this->ID + ".jpg"; //Assuming the texture is in JPEG format
 
-    Texture txtr;
-    txtr.load(filePath.c_str());
+    if(this->fullTexture.ID == 0 || !glIsTexture(this->fullTexture.ID))
+        this->fullTexture.load(filePath.c_str());
 
-    return txtr; 
+    return this->fullTexture; 
 } 

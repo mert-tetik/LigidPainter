@@ -783,6 +783,8 @@ public:
     /// @brief Low resolution version of the texture to not occupy much space in the RAM 
     Texture displayingTexture;
 
+    Texture fullTexture;
+
     /// @brief Unique value smt like 52_A to access later
     ///        52 : Texture ID
     ///        A : Albedo version
