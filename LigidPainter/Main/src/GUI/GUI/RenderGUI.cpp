@@ -138,7 +138,7 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     renderDropper(painter);
 
     //Render the brush cursor
-    if(!this->anyPanelHover && !this->anyDialogActive && !this->anyContextMenuActive && (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2))
+    if(!this->anyPanelHover && !this->anyDialogActive && !this->anyContextMenuActive && (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5)
         renderBrushCursor(painter, this->projection);
     else
         getContext()->window.setCursorVisibility(true);
