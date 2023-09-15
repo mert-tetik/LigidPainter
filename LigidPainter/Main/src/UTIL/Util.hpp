@@ -304,6 +304,9 @@ public:
     void removeSeams(Mesh& mesh, glm::ivec2 textureResolution);
     unsigned int generateProceduralTexture(Mesh &mesh, int textureRes);
     void generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale);
+    void generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale, bool alphaMode);
+    void applyNormalMap(glm::ivec2 textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale);
+
 };
 
 /// @brief Image filter library element. 

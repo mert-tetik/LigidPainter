@@ -359,7 +359,7 @@ void Renderer::render(){
                         );
 
     //Painting
-    if((*Mouse::LPressed() && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive && (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 3) ){ //If mouse hover 3D viewport and left mouse button pressed
+    if((*Mouse::LPressed() && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive && (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5) ){ //If mouse hover 3D viewport and left mouse button pressed
         //Paint
         painter.doPaint(    
                             userInterface.projection,
@@ -370,7 +370,7 @@ void Renderer::render(){
     }
 
     //Painting done (refresh)
-    if(((painter.refreshable && !*Mouse::LPressed()) || (painter.refreshable && (*Mouse::RClick() || *Mouse::MClick()))) && painter.selectedPaintingModeIndex != 3){ //Last frame painting done or once mouse right click or mouse wheel click
+    if(((painter.refreshable && !*Mouse::LPressed()) || (painter.refreshable && (*Mouse::RClick() || *Mouse::MClick()))) && painter.selectedPaintingModeIndex != 5){ //Last frame painting done or once mouse right click or mouse wheel click
         /*//TODO Prevent updating all the materials
         for (size_t i = 0; i < library.materials.size(); i++)
         {   

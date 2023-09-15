@@ -237,6 +237,44 @@ vec3 getPaintedTexture  (
                 );
 }
 
+vec3 getPaintedTextureTxtrClr( 
+                            sampler2D txtr, //The texture that will be painted  
+                            vec4 brushTxtr, //Brush value (painted texture value)
+                            vec2 TexCoords  //The texture coordinates
+                        )
+{
+
+    float intensity = brushTxtr.a;
+
+    //Mix the original color data with painting color using the intensity of the painted texture
+    vec3 destColor = brushTxtr.rgb;
+
+    return mix  (
+                    texture(txtr,TexCoords).rgb,
+                    destColor, //paintingColor
+                    intensity
+                );
+}
+
+vec3 getPaintedTextureFilterDisplayingMode( 
+                                            sampler2D txtr, //The texture that will be painted  
+                                            vec4 brushTxtr, //Brush value (painted texture value)
+                                            vec2 TexCoords  //The texture coordinates
+                                        )
+{
+
+    float intensity = brushTxtr.a;
+
+    //Mix the original color data with painting color using the intensity of the painted texture
+    vec3 destColor = vec3(1.) - texture(txtr,TexCoords).rgb;
+
+    return mix  (
+                    texture(txtr,TexCoords).rgb,
+                    destColor, //paintingColor
+                    intensity
+                );
+}
+
 
 //----------------------- COMBINATION -----------------------  
 
@@ -278,6 +316,14 @@ vec3 getBrushedTexture (
     if(brushModeState == 2)
         return getSmearedTexture(txtr,brushTxtr,TexCoords);
     
+    //Apply painting with painting texture color data
+    if(brushModeState == 3)
+        return getPaintedTextureTxtrClr(txtr, brushTxtr, TexCoords);
+    
+    //Apply painting with inverted texture color
+    if(brushModeState == 4)
+        return getPaintedTextureFilterDisplayingMode(txtr, brushTxtr, TexCoords);
+    
     //If the brushModeState value is not valid
     return vec3(0);
 }
@@ -293,7 +339,6 @@ vec4 getBrushValue(
                     int testDepth
                 )
 {
-    
     vec4 brushTxtr = texture(paintingTexture, modelCoords.xy);
     brushTxtr.a *= opacity; 
 

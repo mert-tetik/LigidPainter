@@ -487,7 +487,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     paintingModesPanel.render(timer,!anyDialogActive);
 
-    if(painter.selectedPaintingModeIndex == 3)
+    if(painter.selectedPaintingModeIndex == 5)
         vectorPaintingModePropertyPanel.render(timer, !anyDialogActive); 
 
     if(paintingModesPanel.resizingDone){
@@ -509,7 +509,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
 
 
-    if(*Mouse::LClick() && painter.selectedPaintingModeIndex == 3 && !anyVectorPointHover && !anyDialogActive && !anyContextMenuActive && !anyPanelHover){
+    if(*Mouse::LClick() && painter.selectedPaintingModeIndex == 5 && !anyVectorPointHover && !anyDialogActive && !anyContextMenuActive && !anyPanelHover){
         VectorStroke vecStroke;
         if(!painter.vectorStrokes.size()){
             vecStroke.startPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f; 
@@ -531,7 +531,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         }
     }
 
-    if(painter.selectedPaintingModeIndex == 3){
+    if(painter.selectedPaintingModeIndex == 5){
         if(!anyContextMenuActive && !anyDialogActive && !anyPanelHover && Mouse::activeCursor()->cursorType == Mouse::defaultCursor()->cursorType)
             Mouse::setCursor(*Mouse::inkPenCursor());
 

@@ -57,7 +57,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     }
 
     //Cover the whole monitor (since we are painting to the screen)
-    glViewport(0,0,Settings::videoScale()->x,Settings::videoScale()->y);
+    glViewport(0, 0, Settings::videoScale()->x, Settings::videoScale()->y);
 
     //Bind the painting texture to the painting framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
@@ -133,6 +133,12 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     refreshable = true;
     
     frameCounter++;
+    
+    if(paintingMode == 3){
+        Texture txtrObj = this->paintingTexture;
+        txtrObj.generateNormalMap(this->paintingTexture16f, *Settings::videoScale(), 8.f, false, true);
+        this->paintingTexture = this->paintingTexture16f;
+    }
 }
 
 

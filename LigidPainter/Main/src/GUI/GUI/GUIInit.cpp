@@ -374,36 +374,35 @@ void UI::init
 
     //Init the Painting modes panel
     paintingModesPanel = Panel(
-                            
-                            
-                            {
-                                Section(
-                                    Element(Button()),
-                                    {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Draw"          , Settings::appTextures().brushIcon,        0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Soften"        , Settings::appTextures().softenIcon,       0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smear"         , Settings::appTextures().smearIcon,        0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Vector"         , Settings::appTextures().inkPenIcon,        0.f,true)),
-                                        //Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Area"          , Settings::appTextures().areaPaintingIcon, 0.f,true)),
-                                    }
-                                )
-                            },
-                            
-                            glm::vec2(5, 8.f), //Initial scale value
-                            glm::vec3(50 ,50 ,0.1f),  //Initial position value
-                            ColorPalette::mainColor, //Color of the panel
-                            ColorPalette::thirdColor, //Color of the panel
-                            true,
-                            true,
-                            false,
-                            true,
-                            false,
-                            1.f,
-                            1,
-                            {},
-                            20.f,
-                            false
-                        );
+                                {
+                                    Section(
+                                        Element(Button()),
+                                        {   
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Draw"          , Settings::appTextures().brushIcon,        0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Soften"        , Settings::appTextures().softenIcon,       0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Smear"         , Settings::appTextures().smearIcon,        0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal"    , Settings::appTextures().normalMapIcon,    0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Filter"        , Settings::appTextures().filterIcon,       0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Vector"        , Settings::appTextures().inkPenIcon,       0.f,true))
+                                        }
+                                    )
+                                },
+                                
+                                glm::vec2(5, 6.f), //Initial scale value
+                                glm::vec3(50 ,50 ,0.1f),  //Initial position value
+                                ColorPalette::mainColor, //Color of the panel
+                                ColorPalette::thirdColor, //Color of the panel
+                                true,
+                                true,
+                                false,
+                                true,
+                                false,
+                                1.f,
+                                1,
+                                {},
+                                20.f,
+                                false
+                            );
 
     //Init the Painting modes panel
     vectorPaintingModePropertyPanel = Panel(

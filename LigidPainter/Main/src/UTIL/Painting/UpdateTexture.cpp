@@ -73,6 +73,10 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         actionTitle = "Softening a texture";
     if(this->selectedPaintingModeIndex == 2)
         actionTitle = "Smearing a texture";
+    if(this->selectedPaintingModeIndex == 3)
+        actionTitle = "Normal painting a texture";
+    if(this->selectedPaintingModeIndex == 4)
+        actionTitle = "Filter painting a texture";
         
     registerTextureAction(actionTitle, Texture(), selectedTexture);
 
@@ -243,6 +247,13 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
 //Clear the painting texture
 void Painter::refreshPainting(){
     glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->paintingTexture16f, 0);
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->paintingTexture8, 0);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
     glBindFramebuffer(GL_FRAMEBUFFER,0);
