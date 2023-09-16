@@ -101,7 +101,7 @@ void Brush::updateDisplayTexture(){
     {
         ShaderSystem::twoDPainting().setInt("frame", frameCounter);
         
-        ShaderSystem::twoDPainting().setFloat("brush.radius", frameCounter/7.5f);
+        ShaderSystem::twoDPainting().setFloat("brush.radius", frameCounter / 7.5f);
         //Stroke positions
         std::vector<glm::vec2> holdLocations;
         holdLocations.push_back(glm::vec2(frameCounter + 10,wave[i]));

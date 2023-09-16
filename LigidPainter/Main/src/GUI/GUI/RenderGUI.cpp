@@ -167,7 +167,7 @@ static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection){
     /* Set the transform data & the projection */
     ShaderSystem::circleShader().setMat4("projection", guiProjection);
     ShaderSystem::circleShader().setVec3("pos", Mouse::cursorPos()->x, Mouse::cursorPos()->y, 1);
-    ShaderSystem::circleShader().setVec2("scale", glm::vec2(painter.brushProperties.radius));
+    ShaderSystem::circleShader().setVec2("scale", glm::vec2(painter.brushProperties.radius * (Settings::videoScale()->x)));
 
     /* Hide the cursor */
     getContext()->window.setCursorVisibility(false);
@@ -377,7 +377,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverGrayScale", painter.paintingOverGrayScale);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverWraping", painter.paintingOverWraping);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", painter.selectedPaintingModeIndex);
-        ShaderSystem::twoDPaintingModeAreaShader().setFloat("paintingOpacity", painter.brushProperties.opacity / 100.f);
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("paintingOpacity", painter.brushProperties.opacity);
         ShaderSystem::twoDPaintingModeAreaShader().setVec3("paintingColor", painter.getSelectedColor().getRGB_normalized());
 
         //*Vertex

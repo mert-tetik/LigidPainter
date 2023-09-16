@@ -162,13 +162,13 @@ static void setBrushProperties (
                                )
 {
     ShaderSystem::twoDPainting().setFloat("brush.radius", brushProperties.radius);
-    ShaderSystem::twoDPainting().setFloat("brush.hardness", brushProperties.hardness / 10.f);
-    ShaderSystem::twoDPainting().setFloat("brush.sizeJitter", 1.f - brushProperties.sizeJitter / 100.f);
-    ShaderSystem::twoDPainting().setFloat("brush.scatter", 1.f - brushProperties.scatter / 100.f);
-    ShaderSystem::twoDPainting().setFloat("brush.fade", 1.f - brushProperties.fade / 100.f);
+    ShaderSystem::twoDPainting().setFloat("brush.hardness", brushProperties.hardness);
+    ShaderSystem::twoDPainting().setFloat("brush.sizeJitter", 1.f - brushProperties.sizeJitter);
+    ShaderSystem::twoDPainting().setFloat("brush.scatter", 1.f - brushProperties.scatter);
+    ShaderSystem::twoDPainting().setFloat("brush.fade", 1.f - brushProperties.fade);
     ShaderSystem::twoDPainting().setFloat("brush.rotation", brushProperties.rotation);
-    ShaderSystem::twoDPainting().setFloat("brush.rotationJitter", 1.f - brushProperties.rotationJitter / 100.f);
-    ShaderSystem::twoDPainting().setFloat("brush.alphaJitter", 1.f - brushProperties.alphaJitter / 100.f);
+    ShaderSystem::twoDPainting().setFloat("brush.rotationJitter", 1.f - brushProperties.rotationJitter);
+    ShaderSystem::twoDPainting().setFloat("brush.alphaJitter", 1.f - brushProperties.alphaJitter);
     ShaderSystem::twoDPainting().setInt("brush.individualTexture", brushProperties.individualTexture);
     ShaderSystem::twoDPainting().setInt("brush.sinWavePattern", brushProperties.sinWavePattern);
     
@@ -200,7 +200,7 @@ static void set3DShaderSideUniforms(int selectedColorIndex, Color color1, Color 
     if(selectedColorIndex == 2)
         ShaderSystem::tdModelShader().setVec3("paintingColor", color3.getRGB_normalized());
     
-    ShaderSystem::tdModelShader().setFloat("paintingOpacity", opacity / 100);
+    ShaderSystem::tdModelShader().setFloat("paintingOpacity", opacity);
     ShaderSystem::tdModelShader().setInt("usePaintingOver", usePaintingOver);
     ShaderSystem::tdModelShader().setInt("paintingOverGrayScale", paintingOverGrayScale);
     ShaderSystem::tdModelShader().setInt("paintingOverWraping", paintingOverWraping);

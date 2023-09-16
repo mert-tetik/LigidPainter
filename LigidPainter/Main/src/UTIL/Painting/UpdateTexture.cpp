@@ -154,7 +154,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         ShaderSystem::textureUpdatingShader().setInt("depthTexture", 7);
         ShaderSystem::textureUpdatingShader().setInt("paintingOverTexture", 10);
         ShaderSystem::textureUpdatingShader().setInt("brushModeState", paintingMode);
-        ShaderSystem::textureUpdatingShader().setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
+        ShaderSystem::textureUpdatingShader().setFloat("paintingOpacity", this->brushProperties.opacity);
         ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", this->usePaintingOver);
         ShaderSystem::textureUpdatingShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
         ShaderSystem::textureUpdatingShader().setInt("paintingOverWraping", this->paintingOverWraping);
@@ -197,7 +197,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         ShaderSystem::twoDPaintingModeAreaShader().setInt("depthTexture", 7);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverTexture", 10);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", paintingMode);
-        ShaderSystem::twoDPaintingModeAreaShader().setFloat("paintingOpacity", this->brushProperties.opacity / 100.f);
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("paintingOpacity", this->brushProperties.opacity);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", this->usePaintingOver);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverWraping", this->paintingOverWraping);

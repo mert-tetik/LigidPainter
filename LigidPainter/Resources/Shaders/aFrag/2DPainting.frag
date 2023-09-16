@@ -132,11 +132,11 @@ float calculateBrushTexture(vec2 pos, vec2 radius,vec2 uv){
 
 float calculateRadiusValue(float random){
 
-    float radius = brush.radius;
+    float radius = brush.radius * paintingRes.x;
     
     //Calculate the jitter value for the radius
     radius *= (random);
-    float radiusGap = radius - brush.radius;
+    float radiusGap = radius - brush.radius * paintingRes.x;
     radius -= radiusGap * brush.sizeJitter;
 
     //Calculate the fade value for the radius
@@ -145,7 +145,7 @@ float calculateRadiusValue(float random){
     else
         radius *= 1. - clamp(frame/100.,0.,1.);
     
-    radiusGap = radius - brush.radius;
+    radiusGap = radius - brush.radius * paintingRes.x;
     
     radius -= radiusGap * brush.fade;
 

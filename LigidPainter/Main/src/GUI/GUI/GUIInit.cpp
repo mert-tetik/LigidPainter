@@ -130,25 +130,25 @@ void UI::init
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Brush"  , Settings::appTextures().brushIcon, 3.f,true)),
                                     {   
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Radius    "  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Opacity   "  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Hardness  "  , Settings::appTextures().TDModelIcon, 1.f,-100.f,100.f,0.f)),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Spacing   "  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,0.f)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Radius    "  , Settings::appTextures().TDModelIcon, 1.f, 0.005f, 0.05f, 0.01f)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Opacity   "  , Settings::appTextures().TDModelIcon, 1.f, 0.f, 1.f, 1.f)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Hardness  "  , Settings::appTextures().TDModelIcon, 1.f, -10.f, 10.f, 0.f)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Spacing   "  , Settings::appTextures().TDModelIcon, 1.f, 0.f, 100.f, 0.f)),
                                     }
                                 ),
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),"More"  , Settings::appTextures().modifierIcon, 1.f,true)),
                                     {   
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Size Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //0
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Fade"  , Texture(), 1.f,0.f,100.f,0.f)),//1
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Size Jitter"  , Texture(), 1.f, 0.f, 1.f, 0.f)), //0
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Fade"  , Texture(), 1.f,0.f, 1.f, 0.f)),//1
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Sin Wave Pattern"  , 1.f)),//2
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Scatter"  , Texture(), 1.f,0.f,100.f,0.f)),//3
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Scatter"  , Texture(), 1.f, 0.f, 1.f, 0.f)),//3
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Texture"  , Texture(), 1.f, false)),//4
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Remove"  , Texture(), 0.f,false)),//5
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Individual Texture"  , 1.f)),//6
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), //7
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Rotation Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //8
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Alpha Jitter"  , Texture(), 1.f,0.f,100.f,0.f)), //9
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Rotation"  , Texture(), 1.f, 0.f, 360.f, 0.f)), //7
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Rotation Jitter"  , Texture(), 1.f, 0.f, 1.f, 0.f)), //8
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Alpha Jitter"  , Texture(), 1.f, 0.f, 1.f, 0.f)), //9
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),"Create New Brush"  , Texture(), 2.f,false)),//10
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),"Export"  , Texture(), 0.5f,false)),//11
                                     }
