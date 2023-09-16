@@ -16,6 +16,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
+#include <iostream>
+
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 
@@ -180,8 +182,8 @@ namespace Settings{
             //--------- init RBO --------- 
             glGenRenderbuffers(1,&RBO);
             glBindRenderbuffer(GL_RENDERBUFFER,RBO);
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, resolution.x, resolution.y);
-            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, resolution.x, resolution.y);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
         }
 
         void setResolution(glm::ivec2 resolution){
@@ -190,8 +192,8 @@ namespace Settings{
             //--------- update colorBuffer --------- 
             glBindTexture(GL_TEXTURE_2D, this->colorBuffer);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);

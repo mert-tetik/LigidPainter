@@ -56,6 +56,8 @@ void Renderer::render(){
     else
         LigidGL::setSwapInterval(0); //Disable VSync
 
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+
     //Default blending settings
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -389,9 +391,6 @@ void Renderer::render(){
     }
 
 
-    getBox()->unbindBuffers(); //Finish rendering the UI
-
-
     //Set mouse states to default
     *Mouse::LClick() = false;
     *Mouse::RClick() = false;
@@ -425,11 +424,15 @@ void Renderer::render(){
     //Than changes the active cursor as default cursor
     Mouse::updateCursor();  
 
+
+    // ------- Rendering the framebuffer result ------- 
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
 
     ShaderSystem::defaultFramebufferShader().use();
-    ShaderSystem::defaultFramebufferShader().setMat4("projection", glm::ortho(0.f, 1.f, 0.f, 1.f));
+    ShaderSystem::defaultFramebufferShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
     ShaderSystem::defaultFramebufferShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
     ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
     
@@ -439,8 +442,13 @@ void Renderer::render(){
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
+
+
+
     //Swap the front and back buffers of the window
     getContext()->window.swapBuffers();
+
+    getBox()->unbindBuffers(); //Finish rendering the UI
 
     _ligid_renderer_render_first_frame = false;
 }

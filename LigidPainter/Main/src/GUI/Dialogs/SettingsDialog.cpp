@@ -262,6 +262,7 @@ void SettingsDialog::render(Timer timer, Painter &painter){
     {
         painter.refreshBuffers();
         dialogControl.unActivate();
+        Settings::defaultFramebuffer()->setResolution(*Settings::videoScale() / Settings::properties()->framebufferResolutionDivier);
     }
 
     dialogControl.updateEnd(timer,0.15f);   

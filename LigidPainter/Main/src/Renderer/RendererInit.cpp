@@ -96,7 +96,7 @@ void Renderer::initRenderer(){
     getScene()->axisDisplayer.init();
 
     //Update necessary data before callbacks
-        Settings::defaultFramebuffer()->setViewport();    
+    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);    
     getScene()->updateViewMatrix();
     getScene()->updateTransformMatrix();
     getScene()->updateProjectionMatrix();
