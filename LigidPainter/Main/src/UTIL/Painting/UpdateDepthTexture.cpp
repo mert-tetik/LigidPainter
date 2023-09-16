@@ -39,6 +39,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void Painter::updateDepthTexture(){
     glDepthFunc(GL_LESS);
     
+    glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
+
     //Create the capture framebuffer
     unsigned int captureFBO;
     glGenFramebuffers(1,&captureFBO);
@@ -50,7 +52,7 @@ void Painter::updateDepthTexture(){
     //Bind the depth texture (Painter class public member variable)
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthTexture, 0);
 
-    glViewport(0,0,Settings::videoScale()->x,Settings::videoScale()->y);
+    glViewport(0, 0, depthRes.x, depthRes.y);
 
     //Clear the depth texture
     glClearColor(0,0,0,0);

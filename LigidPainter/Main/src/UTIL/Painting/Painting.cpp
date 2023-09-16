@@ -39,7 +39,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //forward declerations for the utility functions
 static void setBrushProperties (BrushProperties brushProperties);
-static void setShaderUniforms(glm::mat4 &projection, glm::vec2 resolution, int frameCounter);
+static void setShaderUniforms(glm::mat4 &projection, glm::vec2 resolution, glm::vec2 videoScale, int frameCounter);
 static void set3DShaderSideUniforms(int selectedColorIndex,Color color1,Color color2,Color color3,float opacity,
                                     int selectedPaintingModeIndex,bool usePaintingOver, bool paintingOverGrayScale, bool paintingOverWraping);
 
@@ -56,8 +56,16 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
         frameCounter = 0;
     }
 
+    glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
+
+    //TODO : Update once the paintingRes changes 
+    if(true){
+        
+    }
+
+
     //Cover the whole monitor (since we are painting to the screen)
-    glViewport(0, 0, Settings::videoScale()->x, Settings::videoScale()->y);
+    glViewport(0, 0, paintingRes.x, paintingRes.y);
 
     //Bind the painting texture to the painting framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
@@ -76,8 +84,10 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     //Prepeare the 2D painting shader
     ShaderSystem::twoDPainting().use();
 
+    glm::mat4 projection = glm::ortho(0.f, (float)paintingRes.x, (float)paintingRes.y, 0.f);
+
     //Set uniforms of the painting shader (scale, pos, projection, mouseOffset, frame)
-    setShaderUniforms(windowOrtho, getContext()->windowScale, frameCounter);
+    setShaderUniforms(projection, paintingRes, *Settings::videoScale(), frameCounter);
 
     //Set brush properties
     setBrushProperties(this->brushProperties);
@@ -136,7 +146,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     
     if(paintingMode == 3){
         Texture txtrObj = this->paintingTexture;
-        txtrObj.generateNormalMap(this->paintingTexture16f, *Settings::videoScale(), 8.f, false, true);
+        txtrObj.generateNormalMap(this->paintingTexture16f, paintingRes, 8.f, false, true);
         this->paintingTexture = this->paintingTexture16f;
     }
 }
@@ -168,7 +178,7 @@ static void setBrushProperties (
     ShaderSystem::twoDPainting().setFloat("brush.txtr", 0);
 }
 
-static void setShaderUniforms(glm::mat4 &projection, glm::vec2 resolution, int frameCounter){
+static void setShaderUniforms(glm::mat4 &projection, glm::vec2 resolution, glm::vec2 videoScale, int frameCounter){
     glm::vec2 scale = resolution / glm::vec2(2);
     glm::vec3 pos = glm::vec3(resolution / glm::vec2(2),1.f);
     projection = glm::ortho(0.f,resolution.x,0.f,resolution.y);
@@ -176,7 +186,8 @@ static void setShaderUniforms(glm::mat4 &projection, glm::vec2 resolution, int f
     ShaderSystem::twoDPainting().setVec2("scale", scale); //Cover the screen
     ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
     ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
-    ShaderSystem::twoDPainting().setVec2("videoScale", resolution); 
+    ShaderSystem::twoDPainting().setVec2("paintingRes", resolution); 
+    ShaderSystem::twoDPainting().setVec2("videoScale", videoScale); 
     ShaderSystem::twoDPainting().setInt("frame", frameCounter);
 }
 

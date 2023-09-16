@@ -91,30 +91,50 @@ SettingsDialog::SettingsDialog(){
                                         
                                         Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2.f), 
                                         {
-                                            "1024x768",
-                                            "1152x864",
-                                            "1280x720",
-                                            "1280x768",
-                                            "1280x800",
-                                            "1280x960",
-                                            "1280x1024",
-                                            "1360x768",
-                                            "1366x768",
-                                            "1400x1050",
-                                            "1440x900",
-                                            "1600x900",
-                                            "1680x1050",
-                                            "1920x1080",
-                                            "2560×1,440",
-                                            "3840×2,160",
-                                            "7680×4,320"
+                                            "1.000000",
+                                            "1.200000",
+                                            "1.500000",
+                                            "1.700000",
+                                            "2.000000",
+                                            "2.500000",
+                                            "3.000000",
+                                            "4.000000",
+                                            "8.000000"
 
-                                        }, "Framebuffer Resolution",2.f)),
+                                        }, "Framebuffer Resolution Divider",2.f)),
+                                        
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2.f), 
+                                        {
+                                            "1.000000",
+                                            "1.200000",
+                                            "1.500000",
+                                            "1.700000",
+                                            "2.000000",
+                                            "2.500000",
+                                            "3.000000",
+                                            "4.000000",
+                                            "8.000000"
+
+                                        }, "Painting Resolution Divider",2.f)),
+                                        
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2.f), 
+                                        {
+                                            "1.000000",
+                                            "1.200000",
+                                            "1.500000",
+                                            "1.700000",
+                                            "2.000000",
+                                            "2.500000",
+                                            "3.000000",
+                                            "4.000000",
+                                            "8.000000"
+
+                                        }, "Painting Depth Texture Resolution Divider", 2.f)),
                                     }
                                 );
 }
 
-void SettingsDialog::render(Timer timer){
+void SettingsDialog::render(Timer timer, Painter &painter){
     
     dialogControl.updateStart();   
 
@@ -131,21 +151,22 @@ void SettingsDialog::render(Timer timer){
     TDRendererSettings.elements[0].rangeBar.value = getScene()->transformRotation.x;
     TDRendererSettings.elements[1].rangeBar.value = getScene()->transformRotation.y;
     TDRendererSettings.elements[2].rangeBar.value = getScene()->transformRotation.z;
-    
     TDRendererSettings.elements[3].rangeBar.value = getScene()->transformLocation.x;
     TDRendererSettings.elements[4].rangeBar.value = getScene()->transformLocation.y;
     TDRendererSettings.elements[5].rangeBar.value = getScene()->transformLocation.z;
-    
     TDRendererSettings.elements[6].rangeBar.value = getScene()->fov;
     TDRendererSettings.elements[7].rangeBar.value = getScene()->aNear;
     TDRendererSettings.elements[8].rangeBar.value = getScene()->aFar;
     TDRendererSettings.elements[9].checkBox.clickState1 = getScene()->useOrtho;
-    
     TDRendererSettings.elements[11].checkBox.clickState1 = Settings::properties()->useHeightMap;
     TDRendererSettings.elements[12].rangeBar.value = Settings::properties()->heightMapStrength;
-
     TDRendererSettings.elements[13].checkBox.clickState1 = getScene()->renderTiles;
     TDRendererSettings.elements[14].checkBox.clickState1 = getScene()->renderAxisDisplayer;
+    systemSettings.elements[0].comboBox.selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->textureRes), systemSettings.elements[0].comboBox.texts);
+    systemSettings.elements[1].checkBox.clickState1 = Settings::properties()->VSync;
+    systemSettings.elements[2].comboBox.selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->framebufferResolutionDivier), systemSettings.elements[2].comboBox.texts);
+    systemSettings.elements[3].comboBox.selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->paintingResolutionDivier), systemSettings.elements[3].comboBox.texts);
+    systemSettings.elements[4].comboBox.selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->paintingDepthTextureResolutionDivier), systemSettings.elements[4].comboBox.texts);
 
     if(TDRendererSettings.elements[12].rangeBar.pointerPressed && !*Mouse::LPressed() && TDRendererSettings.elements[11].checkBox.clickState1){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
@@ -201,30 +222,25 @@ void SettingsDialog::render(Timer timer){
     getScene()->transformRotation.x = TDRendererSettings.elements[0].rangeBar.value;
     getScene()->transformRotation.y = TDRendererSettings.elements[1].rangeBar.value;
     getScene()->transformRotation.z = TDRendererSettings.elements[2].rangeBar.value;
-    
     getScene()->transformLocation.x = TDRendererSettings.elements[3].rangeBar.value;
     getScene()->transformLocation.y = TDRendererSettings.elements[4].rangeBar.value;
     getScene()->transformLocation.z = TDRendererSettings.elements[5].rangeBar.value;
-
     getScene()->fov = TDRendererSettings.elements[6].rangeBar.value;
     getScene()->aNear = TDRendererSettings.elements[7].rangeBar.value;
     getScene()->aFar = TDRendererSettings.elements[8].rangeBar.value;
     getScene()->useOrtho = TDRendererSettings.elements[9].checkBox.clickState1;
-    
+    Settings::properties()->backfaceCulling = TDRendererSettings.elements[10].checkBox.clickState1;
     Settings::properties()->useHeightMap = TDRendererSettings.elements[11].checkBox.clickState1;
     Settings::properties()->heightMapStrength = TDRendererSettings.elements[12].rangeBar.value;
 
     getScene()->renderTiles = TDRendererSettings.elements[13].checkBox.clickState1;
     getScene()->renderAxisDisplayer = TDRendererSettings.elements[14].checkBox.clickState1;
     
-    //Set the vsync option as the vsync checkbox element
     Settings::properties()->VSync = systemSettings.elements[1].checkBox.clickState1;
-    
-    //Set the backface culling option as the backface culling checkbox element
-    Settings::properties()->backfaceCulling = TDRendererSettings.elements[10].checkBox.clickState1;
-    
-    //If pressed to any of the combo box element change the texture res
-    Settings::properties()->textureRes = stoi(systemSettings.elements[0].comboBox.texts[systemSettings.elements[0].comboBox.selectedIndex]);
+    Settings::properties()->textureRes = std::stoi(systemSettings.elements[0].comboBox.texts[systemSettings.elements[0].comboBox.selectedIndex]);
+    Settings::properties()->framebufferResolutionDivier = std::stof(systemSettings.elements[2].comboBox.texts[systemSettings.elements[2].comboBox.selectedIndex]);
+    Settings::properties()->paintingResolutionDivier = std::stof(systemSettings.elements[3].comboBox.texts[systemSettings.elements[3].comboBox.selectedIndex]);
+    Settings::properties()->paintingDepthTextureResolutionDivier = std::stof(systemSettings.elements[4].comboBox.texts[systemSettings.elements[4].comboBox.selectedIndex]);
     
     if(TDRendererSettings.elements[11].checkBox.hover && *Mouse::LClick()){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
@@ -244,6 +260,7 @@ void SettingsDialog::render(Timer timer){
             (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()) //If the menu button double clicked
         )
     {
+        painter.refreshBuffers();
         dialogControl.unActivate();
     }
 

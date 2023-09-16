@@ -113,7 +113,7 @@ public:
    SettingsDialog();
 
    //Public member functions    
-   void render(Timer timer);
+   void render(Timer timer, Painter& painter);
 };
 
 

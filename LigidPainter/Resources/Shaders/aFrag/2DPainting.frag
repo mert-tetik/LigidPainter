@@ -38,6 +38,9 @@ uniform vec2 positions[maxPosSize];
 //How many position value does a single stroke has (can be greater than the maxPosSize (no restrictions in the cpu))
 uniform int posCount; 
 
+//Painting resolution value
+uniform vec2 paintingRes;
+
 //Monitor resolution value
 uniform vec2 videoScale;
 
@@ -91,19 +94,19 @@ void strokeBlendUniColor(
 float calculateBrushTexture(vec2 pos, vec2 radius,vec2 uv){
    
     //Positioning the brush position
-    uv -= (pos/videoScale);
+    uv -= (pos/paintingRes);
 
     //Expand the radius value to match with the actual radius value
     radius *= 2.;
     
     //Move the texture to the cursor
-    uv.x += radius.x/videoScale.x;
-    uv.y += radius.y/videoScale.y;
+    uv.x += radius.x/paintingRes.x;
+    uv.y += radius.y/paintingRes.y;
 
     //Scale the texture value
-    uv.x /= radius.x/videoScale.x;
-    uv.y /= radius.y/videoScale.y;
-    uv.x /= videoScale.x/videoScale.y;
+    uv.x /= radius.x/paintingRes.x;
+    uv.y /= radius.y/paintingRes.y;
+    uv.x /= paintingRes.x/paintingRes.y;
 
     //Calculate the rotation value jitter 
     float random = hash_normalized_float(frame);
@@ -194,7 +197,7 @@ float drawSquare(vec2 uv, vec2 position, vec2 scale)
 void main()
 {   
     //The monitor ratio
-    float ratio = videoScale.x/videoScale.y;
+    float ratio = paintingRes.x/paintingRes.y;
  
     //Expand the uv value to match with the monitor ratio
     vec2 uv = vec2(TexCoords.x,TexCoords.y);
@@ -218,7 +221,7 @@ void main()
         vec2 random2 = hash_normalized_vec2(vec2(frame + i));
         
         //Calculate the position jitter
-        vec2 pos = calculatePosValue(random2, positions[i]);
+        vec2 pos = calculatePosValue(random2, positions[i] / videoScale * paintingRes);
 
         //Get the brush texture value (the brush texture scaled and moved to the cursor (outside of the boundaries are black))
         float txtr = calculateBrushTexture(pos,vec2(radius / ratio,radius),uv);
@@ -230,7 +233,7 @@ void main()
         if(brush.individualTexture != 1){
             
             //Calculate the circle
-            float dist = length(uv * videoScale - pos) / radius; // Calculate the distance of the current pixel from the center of the circle
+            float dist = length(uv * paintingRes - pos) / radius; // Calculate the distance of the current pixel from the center of the circle
             src.a *= smoothstep(
                                     1.0, 
                                     hardnessV * max(0.1, 1.0 - (2.0 / (radius))),
@@ -244,7 +247,7 @@ void main()
         //If the texture is used individually then equate the alpha value to the texture value        
         else{
             //Calculate the square
-            src.a = drawSquare(uv * videoScale, pos, vec2(radius) * vec2(2., ratio));
+            src.a = drawSquare(uv * paintingRes, pos, vec2(radius) * vec2(2., ratio));
 
             src.a *= txtr;
         }

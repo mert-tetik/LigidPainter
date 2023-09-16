@@ -147,7 +147,7 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
         Section(
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Channels",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
-                Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Auto Fill",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
+                Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 2.f),"Auto Fill",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Albedo",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Roughness",           Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Metallic",            Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),

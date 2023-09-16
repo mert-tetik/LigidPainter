@@ -137,6 +137,10 @@ namespace UTIL{
     /// @brief generates unique value into the param s according to the sArray
     /// @return if change is made 
     bool uniqueName(std::string &s, std::vector<std::string> sArray);
+
+    /// @brief Returns the index of the param "s" in the param "array" 
+    int findCorrespondingIndex(const std::string& s, const std::vector<std::string> array);
+
 }
 
 
@@ -612,6 +616,9 @@ public:
     Color getSelectedColor();
 
     void applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode);
+
+    /// @brief Clears & refreshes all the buffers
+    void refreshBuffers();
 
 private:
     

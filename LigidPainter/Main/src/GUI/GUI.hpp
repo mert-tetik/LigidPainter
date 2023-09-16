@@ -131,7 +131,7 @@ private:
 
     void renderRenamingTextbox(Timer &timer, Painter &painter);
 
-    void renderDialogs(Timer &timer, Project &project, Skybox &skybox);
+    void renderDialogs(Timer &timer, Project &project, Skybox &skybox, Painter& painter);
 
     void renderDropper(Painter &painter);
 

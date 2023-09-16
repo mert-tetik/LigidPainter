@@ -227,3 +227,13 @@ bool UTIL::uniqueName(std::string &s, std::vector<std::string> sArray){
     
     return isTheSame;
 }
+
+int UTIL::findCorrespondingIndex(const std::string& s, const std::vector<std::string> array){
+    for (size_t i = 0; i < array.size(); i++)
+    {
+        if(s == array[i])
+            return i;
+    }
+    
+    return 0;
+}

@@ -132,7 +132,7 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     NodeScene::render(timer,nodeEditorDisplayer, nodePanel);
     
     //Render the dialogs
-    renderDialogs(timer, project, skybox);
+    renderDialogs(timer, project, skybox, painter);
     
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(painter);
@@ -583,7 +583,7 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
     }
 }
 
-void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox){
+void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter& painter){
     if(newProjectDialog.dialogControl.isActive())
         newProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
     
@@ -606,7 +606,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox){
         newTextureDialog.render(timer);
     
     if(settingsDialog.dialogControl.isActive())
-        settingsDialog.render(timer);
+        settingsDialog.render(timer, painter);
     
     if(materialDisplayerDialog.dialogControl.isActive())
         materialDisplayerDialog.render(timer);

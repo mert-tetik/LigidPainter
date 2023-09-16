@@ -195,6 +195,10 @@ namespace Settings{
 
         bool backfaceCulling = false;
 
+        float framebufferResolutionDivier = 1.f;
+        float paintingResolutionDivier = 1.f;
+        float paintingDepthTextureResolutionDivier = 1.f;
+
         /*! @brief Textures will be generated with that resolution value */
         int textureRes = 1024; 
 
