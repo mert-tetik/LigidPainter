@@ -780,3 +780,157 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes){
     glDeleteRenderbuffers(1, &RBO);
     glViewport(0, 0, viewportResolution.x, viewportResolution.y);
 }
+
+
+#define LGDTEXTURE_WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
+                                    LGDLOG::start<< "ERROR : Writing texture data. Failed to write at : " << loc << LGDLOG::end;\
+                                    return false; \
+                                }
+
+bool Texture::writeTextureData(std::ofstream& wf){
+    
+    // -------- Procedural Data -------- 
+    
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralID, int, "Property texture - procedural ID");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralScale, float, "Property texture - procedural Scale");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralnverted, int, "Property texture - procedural nverted");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralNormalMap, bool, "Property texture - procedural NormalMap");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralNormalGrayScale, bool, "Property texture - procedural NormalGrayScale");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralNormalStrength, float, "Property texture - procedural NormalStrength");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralTextureID, unsigned int, "Property texture - procedural TextureID");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralUseTexCoords, bool, "Property texture - procedural UseTexCoords");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralGrayScale, bool, "Property texture - procedural GrayScale");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralBrightness, float, "Property texture - procedural Brightness");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.smartProperties.x, float, "Property texture - Smart Properties");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.smartProperties.y, float, "Property texture - Smart Properties");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.smartProperties.z, float, "Property texture - Smart Properties");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.smartProperties.w, float, "Property texture - Smart Properties");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.txtrPackScale, float, "Property texture - txtrPackScale");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.txtrPackCount, float, "Property texture - txtrPackCount");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.txtrPackRotation_Jitter, float, "Property texture - txtrPackRotation_Jitter");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.txtrPackSize_Jitter, float, "Property texture - txtrPackSize_Jitter");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.txtrPackOpacity_Jitter, float, "Property texture - txtrPackOpacity_Jitter");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.txtrPackScatter, float, "Property texture - txtrPackScatter");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.textureSelectionDialog_selectedTextureIndex, int, "Property texture - textureSelectionDialog_selectedTextureIndex");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.textureSelectionDialog_selectedMode, int, "Property texture - textureSelectionDialog_selectedMode");
+
+
+    // -------- Texture Data --------
+
+    int32_t textureWidth = this->getResolution().x;
+    LGDTEXTURE_WRITEBITS(textureWidth, int32_t, "Property texture - texture width");
+
+    int32_t textureHeight = this->getResolution().y;
+    LGDTEXTURE_WRITEBITS(textureHeight, int32_t, "Property texture - texture height");
+
+    char* pixels = new char[textureWidth * textureHeight * 4];
+    this->getData(pixels);
+    
+    if(!wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
+        LGDLOG::start<< "ERROR : Writing texture data. Failed to write at : " << "Property texture - texture pixels" << LGDLOG::end;
+        return false; 
+    }
+
+    delete[] pixels;
+    
+    return true;
+}
+
+#define LGDMATERIAL_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
+                                LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << LGDLOG::end;\
+                                return false; \
+                            }
+
+bool Texture::readTextureData(std::ifstream& rf){
+
+    // --------- Read procedural data ---------
+
+    int proceduralID;
+    float proceduralScale;
+    int proceduralnverted;
+    bool proceduralNormalMap;
+    bool proceduralNormalGrayScale;
+    float proceduralNormalStrength;
+    unsigned int proceduralTextureID;
+    bool proceduralUseTexCoords;
+    bool proceduralGrayScale;
+    float proceduralBrightness;
+    float smartProperties_x;
+    float smartProperties_y;
+    float smartProperties_z;
+    float smartProperties_w;
+    float txtrPackScale;
+    float txtrPackCount;
+    float txtrPackRotation_Jitter;
+    float txtrPackSize_Jitter;
+    float txtrPackOpacity_Jitter;
+    float txtrPackScatter;
+    int textureSelectionDialog_selectedTextureIndex;
+    int textureSelectionDialog_selectedMode;
+    
+    LGDMATERIAL_READBITS(proceduralID, int, "Property texture - procedural ID");
+    LGDMATERIAL_READBITS(proceduralScale, float, "Property texture - procedural Scale");
+    LGDMATERIAL_READBITS(proceduralnverted, int, "Property texture - procedural nverted");
+    LGDMATERIAL_READBITS(proceduralNormalMap, bool, "Property texture - procedural NormalMap");
+    LGDMATERIAL_READBITS(proceduralNormalGrayScale, bool, "Property texture - procedural NormalGrayScale");
+    LGDMATERIAL_READBITS(proceduralNormalStrength, float, "Property texture - procedural NormalStrength");
+    LGDMATERIAL_READBITS(proceduralTextureID, unsigned int, "Property texture - procedural TextureID");
+    LGDMATERIAL_READBITS(proceduralUseTexCoords, bool, "Property texture - procedural UseTexCoords");
+    LGDMATERIAL_READBITS(proceduralGrayScale, bool, "Property texture - procedural GrayScale");
+    LGDMATERIAL_READBITS(proceduralBrightness, float, "Property texture - procedural Brightness");
+    LGDMATERIAL_READBITS(smartProperties_x, float, "Property texture - Smart Properties");
+    LGDMATERIAL_READBITS(smartProperties_y, float, "Property texture - Smart Properties");
+    LGDMATERIAL_READBITS(smartProperties_z, float, "Property texture - Smart Properties");
+    LGDMATERIAL_READBITS(smartProperties_w, float, "Property texture - Smart Properties");
+    LGDMATERIAL_READBITS(txtrPackScale, float, "Property texture - txtrPackScale");
+    LGDMATERIAL_READBITS(txtrPackCount, float, "Property texture - txtrPackCount");
+    LGDMATERIAL_READBITS(txtrPackRotation_Jitter, float, "Property texture - txtrPackRotation_Jitter");
+    LGDMATERIAL_READBITS(txtrPackSize_Jitter, float, "Property texture - txtrPackSize_Jitter");
+    LGDMATERIAL_READBITS(txtrPackOpacity_Jitter, float, "Property texture - txtrPackOpacity_Jitter");
+    LGDMATERIAL_READBITS(txtrPackScatter, float, "Property texture - txtrPackScatter");
+    LGDMATERIAL_READBITS(textureSelectionDialog_selectedTextureIndex, int, "Property texture - textureSelectionDialog_selectedTextureIndex");
+    LGDMATERIAL_READBITS(textureSelectionDialog_selectedMode, int, "Property texture - textureSelectionDialog_selectedMode");
+
+    // --------- Read texture data ---------
+     
+    int32_t textureWidth = (*this).getResolution().x;
+    LGDMATERIAL_READBITS(textureWidth, int32_t, "Modifier's property - texture data - texture width");
+
+    int32_t textureHeight = (*this).getResolution().y;
+    LGDMATERIAL_READBITS(textureHeight, int32_t, "Modifier's property - texture data - texture height");
+
+    char* pixels = new char[textureWidth * textureHeight * 4];
+    if(!rf.read(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
+        LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : Modifier's property - texture data - texture pixels" << LGDLOG::end;
+        return false;   
+    }
+
+    // --------- Create the texture ---------
+
+    (*this) = Texture(pixels, textureWidth, textureHeight, GL_NEAREST);
+
+    this->proceduralProps.proceduralID = proceduralID;
+    this->proceduralProps.proceduralScale = proceduralScale;
+    this->proceduralProps.proceduralnverted = proceduralnverted;
+    this->proceduralProps.proceduralNormalMap = proceduralNormalMap;
+    this->proceduralProps.proceduralNormalGrayScale = proceduralNormalGrayScale;
+    this->proceduralProps.proceduralNormalStrength = proceduralNormalStrength;
+    this->proceduralProps.proceduralTextureID = proceduralTextureID;
+    this->proceduralProps.proceduralUseTexCoords = proceduralUseTexCoords;
+    this->proceduralProps.proceduralGrayScale = proceduralGrayScale;
+    this->proceduralProps.proceduralBrightness = proceduralBrightness;
+    this->proceduralProps.smartProperties.x = smartProperties_x;
+    this->proceduralProps.smartProperties.y = smartProperties_y;
+    this->proceduralProps.smartProperties.z = smartProperties_z;
+    this->proceduralProps.smartProperties.w = smartProperties_w;
+    this->proceduralProps.txtrPackScale = txtrPackScale;
+    this->proceduralProps.txtrPackCount = txtrPackCount;
+    this->proceduralProps.txtrPackRotation_Jitter = txtrPackRotation_Jitter;
+    this->proceduralProps.txtrPackSize_Jitter = txtrPackSize_Jitter;
+    this->proceduralProps.txtrPackOpacity_Jitter = txtrPackOpacity_Jitter;
+    this->proceduralProps.txtrPackScatter = txtrPackScatter;
+    this->proceduralProps.textureSelectionDialog_selectedTextureIndex = textureSelectionDialog_selectedTextureIndex;
+    this->proceduralProps.textureSelectionDialog_selectedMode = textureSelectionDialog_selectedMode;
+
+    return true;
+}

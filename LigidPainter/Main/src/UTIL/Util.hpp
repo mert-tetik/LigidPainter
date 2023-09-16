@@ -317,6 +317,10 @@ public:
 
     std::vector<glm::vec3> getMaterialIDPalette();
 
+    bool writeTextureData(std::ofstream& wf);
+    
+    bool readTextureData(std::ifstream& rf);
+
     // -------- Texture Manipulation --------
 
     /// @brief Expands the texture's boundaries according to the mesh uv mask
