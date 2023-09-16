@@ -119,7 +119,10 @@ void Painter::initPainter(){
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, depthRes.x, depthRes.y);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
 
-
+    
+    
+    //--------- init paintingBGTexture --------- 
+    this->paintingBGTexture = Texture(nullptr, 1, 1);
     
     //--------- Finish --------- 
     glBindFramebuffer(GL_FRAMEBUFFER,0);

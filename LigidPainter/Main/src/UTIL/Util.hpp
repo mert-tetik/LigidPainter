@@ -307,6 +307,8 @@ public:
     ///         Use like that : Texture newTexture(duplicatedTexture.duplicateTexture());
     unsigned int duplicateTexture();
     
+    void duplicateTexture(Texture &txtr);
+    
     /// @brief Write the tmp file of the texture from the tmp folder
     void writeTMP(std::string tmpTitle);
     
@@ -637,6 +639,8 @@ private:
     /// @brief RGBA16F (Used for smear brush)
     unsigned int paintingTexture16f;
 
+    Texture paintingBGTexture; 
+    
     glm::vec2 startCursorPos = glm::vec2(0); 
     glm::vec2 lastCursorPos = glm::vec2(0); 
     int frameCounter = 0;

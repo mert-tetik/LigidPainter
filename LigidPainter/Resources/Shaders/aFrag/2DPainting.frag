@@ -50,6 +50,8 @@ uniform int frame;
 //For the smear brush 
 uniform vec2 mouseOffset;
 
+uniform sampler2D bgTxtr;
+
 struct Brush {
     float radius;
     float hardness;
@@ -212,7 +214,7 @@ void main()
     float radius = calculateRadiusValue(random);
 
     //Result of the painting process
-    vec4 fRes;
+    vec4 fRes = texture(bgTxtr, vec2(uv.x, 1. - uv.y));
 
     //Calculate all the strokes
     for(int i = 0; i < min(posCount, maxPosSize); i++) {

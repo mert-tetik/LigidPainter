@@ -58,15 +58,6 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 
     glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
 
-    //TODO : Update once the paintingRes changes 
-    if(true){
-        
-    }
-
-
-    //Cover the whole monitor (since we are painting to the screen)
-    glViewport(0, 0, paintingRes.x, paintingRes.y);
-
     //Bind the painting texture to the painting framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
 
@@ -80,6 +71,15 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
         paintingTexture = paintingTexture8;   //Bind the 8-bit RGBA color format to the framebuffer
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture8, 0);
     }
+
+    Texture paintingTxtrObj = paintingTexture;
+    paintingTxtrObj.duplicateTexture(this->paintingBGTexture);
+    
+    //Bind the painting texture to the painting framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
+    
+    //Cover the whole monitor (since we are painting to the screen)
+    glViewport(0, 0, paintingRes.x, paintingRes.y);
     
     //Prepeare the 2D painting shader
     ShaderSystem::twoDPainting().use();
@@ -88,6 +88,10 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 
     //Set uniforms of the painting shader (scale, pos, projection, mouseOffset, frame)
     setShaderUniforms(projection, paintingRes, *Settings::videoScale(), frameCounter);
+    ShaderSystem::twoDPainting().setInt("bgTxtr", 1);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, paintingTxtrObj.ID);
 
     //Set brush properties
     setBrushProperties(this->brushProperties);
@@ -106,6 +110,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 
     if(holdLocations.size())
         ShaderSystem::twoDPainting().setVec2("mouseOffset", holdLocations[0] - holdLocations[holdLocations.size()-1]);
+    
 
     ShaderSystem::twoDPainting().setInt("posCount",holdLocations.size());
     for (int i = 0; i < holdLocations.size(); i++)
@@ -116,6 +121,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     
     //Prepeare painting
     glDepthFunc(GL_ALWAYS);
+    glDisable(GL_BLEND);
     glBlendFunc(GL_ONE,GL_ONE);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
@@ -130,6 +136,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
         glDrawArrays(GL_TRIANGLES,0,6);
     
     //Finish
+    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
     glDepthFunc(GL_LESS);
