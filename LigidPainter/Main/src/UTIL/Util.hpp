@@ -365,6 +365,12 @@ public:
     /// @brief Applies the @ref (*this).shader to the given texture
     void applyFilter(unsigned int txtr);
 
+    bool writeFilterData(std::ofstream& wf);
+
+    bool readFilterData(std::ifstream& rf);
+
+private:
+    std::string srcCode = "";
 };
 
 /// @brief Responsible of holding and managing multiple relevant textures and a library element. 

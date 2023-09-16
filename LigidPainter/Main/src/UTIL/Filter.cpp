@@ -51,17 +51,16 @@ int Filter::load(std::string path){
         return 0;
     }
 
-    std::string code;
-
-    code += "#version 400 core\n";
+    this->srcCode = "";
+    this->srcCode += "#version 400 core\n";
     
     std::string line;
     while (std::getline(rf, line))
     {
-        code += line + "\n";
+        this->srcCode += line + "\n";
     }
     
-    this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", code);
+    this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
 
     this->generateDisplayingTexture();
 
@@ -175,4 +174,48 @@ void Filter::applyFilter(unsigned int txtr){
 
     glDeleteTextures(1, &duplicatedTxtr.ID);
     glDeleteFramebuffers(1,&captureFBO);
+}
+
+#define LGDFILTER_WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
+                                    LGDLOG::start<< "ERROR : Writing texture data. Failed to write at : " << loc << LGDLOG::end;\
+                                    return false; \
+                                }
+
+bool Filter::writeFilterData(std::ofstream& wf){
+    int32_t srcCodeCharSize = this->srcCode.size();
+    LGDFILTER_WRITEBITS(srcCodeCharSize, int32_t, "Filter source code character size");
+
+    for (size_t i = 0; i < srcCodeCharSize; i++)
+    {
+        char c = this->srcCode[i];
+        LGDFILTER_WRITEBITS(c, char, "Filter source code character");
+    }
+
+    return true;
+}
+
+#define LGDMATERIAL_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
+                                LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << LGDLOG::end;\
+                                return false; \
+                            }
+
+bool Filter::readFilterData(std::ifstream& rf){
+    int32_t srcCodeCharSize;
+    LGDMATERIAL_READBITS(srcCodeCharSize, int32_t, "Filter source code character size");
+
+    this->srcCode = "";
+    for (size_t i = 0; i < srcCodeCharSize; i++)
+    {
+        char c;
+        LGDMATERIAL_READBITS(c, char, "Filter source code character");
+        this->srcCode.push_back(c);
+    }
+
+    this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
+
+    this->generateDisplayingTexture();
+
+    this->title = "ReadenFilter";
+
+    return true;
 }

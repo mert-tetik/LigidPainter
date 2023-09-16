@@ -315,6 +315,8 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
             Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
+
             }
         ),
         Section(
@@ -1524,6 +1526,8 @@ void liquidModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         
         //Generating the normal map
         if(channelI == 4){
+            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].checkBox.clickState1)
+                blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
             mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
             mesh.normalMap.removeSeams(mesh, textureResolution);
         }
