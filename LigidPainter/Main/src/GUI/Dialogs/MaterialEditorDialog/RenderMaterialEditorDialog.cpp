@@ -269,6 +269,87 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                         material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[0].button.filter.shader.ID = 0; 
                         material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[0].button.texture = Texture(); 
                     }
+                    if(secI == 0 && elementI == 0 && material.materialModifiers[this->selectedMaterialModifierIndex].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
+                        Texture* txtr = &modifiersPanel.sections[secI].elements[elementI].button.texture;
+                        
+                        Texture albedo;
+                        Texture roughness;
+                        Texture metallic;
+                        Texture normalMap;
+                        Texture heightMap;
+                        Texture ambientOcc;
+
+                        albedo.proceduralProps = txtr->proceduralProps;
+                        albedo.generateProceduralDisplayingTexture(256);
+                        albedo.title = "AutoFilledTexture";
+
+                        roughness.proceduralProps = txtr->proceduralProps;
+                        roughness.proceduralProps.proceduralBrightness = 1.f;
+                        roughness.proceduralProps.proceduralGrayScale = true;
+                        roughness.proceduralProps.proceduralNormalMap = false;
+                        roughness.proceduralProps.proceduralNormalGrayScale = false;
+                        roughness.proceduralProps.proceduralNormalStrength = 0.f;
+                        roughness.proceduralProps.proceduralnverted = false;
+                        roughness.generateProceduralDisplayingTexture(256);
+                        roughness.title = "AutoFilledTexture";
+
+                        metallic.proceduralProps = txtr->proceduralProps;
+                        metallic.proceduralProps.proceduralBrightness = 1.f;
+                        metallic.proceduralProps.proceduralGrayScale = true;
+                        metallic.proceduralProps.proceduralNormalMap = false;
+                        metallic.proceduralProps.proceduralNormalGrayScale = false;
+                        metallic.proceduralProps.proceduralNormalStrength = 0.f;
+                        metallic.proceduralProps.proceduralnverted = true;
+                        metallic.generateProceduralDisplayingTexture(256);
+                        metallic.title = "AutoFilledTexture";
+                        
+                        normalMap.proceduralProps = txtr->proceduralProps;
+                        normalMap.proceduralProps.proceduralBrightness = 1.f;
+                        normalMap.proceduralProps.proceduralGrayScale = false;
+                        normalMap.proceduralProps.proceduralNormalMap = true;
+                        normalMap.proceduralProps.proceduralNormalGrayScale = false;
+                        normalMap.proceduralProps.proceduralNormalStrength = 1.f;
+                        normalMap.proceduralProps.proceduralnverted = false;
+                        normalMap.generateProceduralDisplayingTexture(256);
+                        normalMap.title = "AutoFilledTexture";
+                        
+                        heightMap.proceduralProps = txtr->proceduralProps;
+                        heightMap.proceduralProps.proceduralBrightness = 1.f;
+                        heightMap.proceduralProps.proceduralGrayScale = true;
+                        heightMap.proceduralProps.proceduralNormalMap = false;
+                        heightMap.proceduralProps.proceduralNormalGrayScale = false;
+                        heightMap.proceduralProps.proceduralNormalStrength = 0.f;
+                        heightMap.proceduralProps.proceduralnverted = true;
+                        heightMap.generateProceduralDisplayingTexture(256);
+                        heightMap.title = "AutoFilledTexture";
+                        
+                        ambientOcc.proceduralProps = txtr->proceduralProps;
+                        ambientOcc.proceduralProps.proceduralBrightness = 2.f;
+                        ambientOcc.proceduralProps.proceduralGrayScale = true;
+                        ambientOcc.proceduralProps.proceduralNormalMap = false;
+                        ambientOcc.proceduralProps.proceduralNormalGrayScale = false;
+                        ambientOcc.proceduralProps.proceduralNormalStrength = 0.f;
+                        ambientOcc.proceduralProps.proceduralnverted = false;
+                        ambientOcc.generateProceduralDisplayingTexture(256);
+                        ambientOcc.title = "AutoFilledTexture";
+                        
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[1].button.texture = albedo;
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[2].button.texture = roughness;
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[3].button.texture = metallic;
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[4].button.texture = normalMap;
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[5].button.texture = heightMap;
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[6].button.texture = ambientOcc;
+                        
+                        modifiersPanel.sections[secI].elements[1].button.texture = albedo;
+                        modifiersPanel.sections[secI].elements[2].button.texture = roughness;
+                        modifiersPanel.sections[secI].elements[3].button.texture = metallic;
+                        modifiersPanel.sections[secI].elements[4].button.texture = normalMap;
+                        modifiersPanel.sections[secI].elements[5].button.texture = heightMap;
+                        modifiersPanel.sections[secI].elements[6].button.texture = ambientOcc;
+
+                        txtr->title = "";
+                        txtr->ID = 0;
+                    }
 
                     this->updateTheMaterial = true;
                     material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button = modifiersPanel.sections[secI].elements[elementI].button; 
@@ -355,14 +436,13 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture.ID); 
 
             if(material.materialModifiers[ContextMenus::materialModifier.selectedElement].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
-                glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[0].button.texture.ID); 
                 glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[1].button.texture.ID); 
                 glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[2].button.texture.ID); 
                 glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[3].button.texture.ID); 
                 glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[4].button.texture.ID); 
                 glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[5].button.texture.ID); 
+                glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[6].button.texture.ID); 
             }
-            
 
             material.materialModifiers.erase(material.materialModifiers.begin() + ContextMenus::materialModifier.selectedElement);
             dialogControl.firstFrameActivated = true;
@@ -419,7 +499,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.textureModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-            material.materialModifiers[0].maskTexture.proceduralID = 24;
+            material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
@@ -429,7 +509,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.dustModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-            material.materialModifiers[0].maskTexture.proceduralID = 24;
+            material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
@@ -439,7 +519,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.asphaltModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-            material.materialModifiers[0].maskTexture.proceduralID = 24;
+            material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
@@ -449,7 +529,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.liquidModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-            material.materialModifiers[0].maskTexture.proceduralID = 24;
+            material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
@@ -459,7 +539,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.mossModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-            material.materialModifiers[0].maskTexture.proceduralID = 24;
+            material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
@@ -469,7 +549,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.rustModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-            material.materialModifiers[0].maskTexture.proceduralID = 24;
+            material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
@@ -479,7 +559,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[6].button.hover && *Mouse::LClick()){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.skinModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-            material.materialModifiers[0].maskTexture.proceduralID = 24;
+            material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
@@ -489,7 +569,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[7].button.hover && *Mouse::LClick()){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.solidModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-            material.materialModifiers[0].maskTexture.proceduralID = 24;
+            material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
@@ -499,7 +579,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[8].button.hover && *Mouse::LClick()){
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.woodenModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-            material.materialModifiers[0].maskTexture.proceduralID = 24;
+            material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
             modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;

@@ -269,9 +269,9 @@ static bool readFile(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties){
             prop.texture = Texture(pixels, textureWidth, textureHeight);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            prop.texture.proceduralID = proceduralID;
-            prop.texture.proceduralnverted = proceduralInvert;
-            prop.texture.proceduralScale = proceduralScale;
+            prop.texture.proceduralProps.proceduralID = proceduralID;
+            prop.texture.proceduralProps.proceduralnverted = proceduralInvert;
+            prop.texture.proceduralProps.proceduralScale = proceduralScale;
         }
         else{
             LGDLOG::start<< "ERROR! Reading lgdbrush file. Unknown property value type!" << LGDLOG::end;

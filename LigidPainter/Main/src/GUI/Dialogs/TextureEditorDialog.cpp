@@ -178,9 +178,9 @@ TextureEditorDialog::TextureEditorDialog(){
     char whitePx[] = {127, 127, 127, 127};
 
     this->maskTextureButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), "Mask Texture", Texture(whitePx, 1, 1, GL_NEAREST), 1.f, false);
-    this->maskTextureButton.texture.proceduralID = 24; //Solid white
-    this->maskTextureButton.texture.proceduralnverted = 0;
-    this->maskTextureButton.texture.proceduralScale = 1.f;
+    this->maskTextureButton.texture.proceduralProps.proceduralID = 24; //Solid white
+    this->maskTextureButton.texture.proceduralProps.proceduralnverted = 0;
+    this->maskTextureButton.texture.proceduralProps.proceduralScale = 1.f;
 
     this->saveButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save", Texture(), 1.f, false);
     this->saveAsButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save As", Texture(), 1.f, false);

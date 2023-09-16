@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "LibrarySystem/Library.hpp"
 #include "GUI/GUI.hpp"
 
 unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip){
@@ -282,13 +283,15 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
 }
 
 unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
+    // The result texture
     unsigned int proceduralTxtr;
     
-    if(this->proceduralID == 111){
+    // ------- Edge Wear ------- 
+    if(this->proceduralProps.proceduralID == 111){
         Texture normalMapTxtr = Texture(nullptr, textureRes, textureRes);
         Texture normalMapTxtrBlurred = Texture(nullptr, textureRes, textureRes);
         Texture noiseTxtr;
-        noiseTxtr.proceduralID = 74;
+        noiseTxtr.proceduralProps.proceduralID = 74;
         noiseTxtr = noiseTxtr.generateProceduralTexture(mesh, textureRes);
 
         glActiveTexture(GL_TEXTURE0);
@@ -335,7 +338,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
         ShaderSystem::bluringShader().setVec3("pos"         ,       glm::vec3((float)textureRes / 2.f, (float)textureRes / 2.f, 0.9f));
         ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureRes / 2.f));
-        ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->smartProperties.x);
+        ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->proceduralProps.smartProperties.x);
         
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, normalMapTxtr.ID);
@@ -351,10 +354,10 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         ShaderSystem::edgeWearShader().setInt("normalVectorTxtr", 0);
         ShaderSystem::edgeWearShader().setInt("normalVectorTxtrBlurred", 1);
         ShaderSystem::edgeWearShader().setInt("noiseTexture", 2);
-        ShaderSystem::edgeWearShader().setInt("invert", this->proceduralnverted);
-        ShaderSystem::edgeWearShader().setFloat("brightness", this->proceduralBrightness);
-        ShaderSystem::edgeWearShader().setFloat("softness", this->smartProperties.y);
-        ShaderSystem::edgeWearShader().setFloat("noiseStrength", this->smartProperties.w);
+        ShaderSystem::edgeWearShader().setInt("invert", this->proceduralProps.proceduralnverted);
+        ShaderSystem::edgeWearShader().setFloat("brightness", this->proceduralProps.proceduralBrightness);
+        ShaderSystem::edgeWearShader().setFloat("softness", this->proceduralProps.smartProperties.y);
+        ShaderSystem::edgeWearShader().setFloat("noiseStrength", this->proceduralProps.smartProperties.w);
         ShaderSystem::edgeWearShader().setVec2("txtrRes", glm::vec2(textureRes));
         ShaderSystem::edgeWearShader().setMat4("projection", projection);
         ShaderSystem::edgeWearShader().setMat4("projectedPosProjection", projection);
@@ -379,7 +382,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
         ShaderSystem::bluringShader().setVec3("pos"         ,       glm::vec3((float)textureRes / 2.f, (float)textureRes / 2.f, 0.9f));
         ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureRes / 2.f));
-        ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->smartProperties.z);
+        ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->proceduralProps.smartProperties.z);
         
         Texture procObject = proceduralTxtr;
         Texture procCopy = procObject.duplicateTexture();
@@ -399,20 +402,22 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         glDeleteTextures(1, &procCopy.ID);
         glDeleteTextures(1, &noiseTxtr.ID);
     }
+
+    // ------- Regular Procedural Texture -------
     else{
         ShaderSystem::to2DProcedural().use();
 
-        if(this->proceduralID == 1000)
+        if(this->proceduralProps.proceduralID == 1000)
             ShaderSystem::to2DProcedural().setInt("proceduralID", -1);
         else
-            ShaderSystem::to2DProcedural().setInt("proceduralID", this->proceduralID);
+            ShaderSystem::to2DProcedural().setInt("proceduralID", this->proceduralProps.proceduralID);
         
-        ShaderSystem::to2DProcedural().setFloat("proceduralScale", this->proceduralScale);
-        ShaderSystem::to2DProcedural().setInt("proceduralInverted", this->proceduralnverted);
-        ShaderSystem::to2DProcedural().setInt("proceduralGrayScale", this->proceduralGrayScale);
-        ShaderSystem::to2DProcedural().setFloat("proceduralBrightness", this->proceduralBrightness);
-        ShaderSystem::to2DProcedural().setInt("proceduralUseTexCoords", this->proceduralUseTexCoords);
-        ShaderSystem::to2DProcedural().setVec4("smartProperties", this->smartProperties);
+        ShaderSystem::to2DProcedural().setFloat("proceduralScale", this->proceduralProps.proceduralScale);
+        ShaderSystem::to2DProcedural().setInt("proceduralInverted", this->proceduralProps.proceduralnverted);
+        ShaderSystem::to2DProcedural().setInt("proceduralGrayScale", this->proceduralProps.proceduralGrayScale);
+        ShaderSystem::to2DProcedural().setFloat("proceduralBrightness", this->proceduralProps.proceduralBrightness);
+        ShaderSystem::to2DProcedural().setInt("proceduralUseTexCoords", this->proceduralProps.proceduralUseTexCoords);
+        ShaderSystem::to2DProcedural().setVec4("smartProperties", this->proceduralProps.smartProperties);
         ShaderSystem::to2DProcedural().setVec2("txtrRes", this->getResolution());
         
         ShaderSystem::to2DProcedural().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
@@ -421,10 +426,10 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
 
         ShaderSystem::to2DProcedural().setInt("proceduralTexture", 1);
         glActiveTexture(GL_TEXTURE1);
-        if(this->proceduralID == 1000)
+        if(this->proceduralProps.proceduralID == 1000)
             glBindTexture(GL_TEXTURE_2D, this->ID);
         else
-            glBindTexture(GL_TEXTURE_2D, this->proceduralTextureID);
+            glBindTexture(GL_TEXTURE_2D, this->proceduralProps.proceduralTextureID);
 
         glActiveTexture(GL_TEXTURE0);
         glGenTextures(1,&proceduralTxtr);
@@ -454,30 +459,16 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         glDeleteFramebuffers(1, &FBO);
     }
 
-
-    if(this->proceduralNormalMap){
+    // ------- Generating Normal Map -------
+    if(this->proceduralProps.proceduralNormalMap){
         Texture txtrObject = Texture(proceduralTxtr);
 
-        unsigned int normalMapRes;
+        Texture normalMapRes = Texture(nullptr, textureRes, textureRes, GL_LINEAR);
 
-        glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1,&normalMapRes);
-        glBindTexture(GL_TEXTURE_2D,normalMapRes);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-
-        txtrObject.generateNormalMap(normalMapRes, textureRes, this->proceduralNormalStrength, this->proceduralNormalGrayScale); 
+        txtrObject.generateNormalMap(normalMapRes.ID, textureRes, this->proceduralProps.proceduralNormalStrength, this->proceduralProps.proceduralNormalGrayScale); 
 
         glDeleteTextures(1,&proceduralTxtr);
-        proceduralTxtr = normalMapRes;
+        proceduralTxtr = normalMapRes.ID;
     }
 
     return proceduralTxtr;
@@ -586,4 +577,176 @@ void Texture::applyNormalMap(glm::ivec2 textureResolution, float proceduralNorma
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDeleteFramebuffers(1, &FBO);
     glDeleteTextures(1, &tx.ID);
+}
+
+void Texture::generateProceduralDisplayingTexture(int displayingTextureRes){
+    
+    // ------------- Set Up -------------
+
+    GLint viewport[4]; 
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    glm::ivec2 viewportResolution = glm::ivec2(viewport[2], viewport[3]);
+    
+    //TODO Set the scale & invert 
+    // The texture is not generated
+    if(this->ID == 0 || glIsTexture(this->ID) == GL_FALSE){
+        glGenTextures(1, &this->ID);
+    }
+
+    const int displayRes = displayingTextureRes;
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, this->ID);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes, displayRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    
+    /* Capturing FBO */
+    unsigned int FBO; 
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->ID, 0);
+    glClearColor(0,0,0,0);
+
+    unsigned int RBO;
+	glGenRenderbuffers(1,&RBO);
+	glBindRenderbuffer(GL_RENDERBUFFER,RBO);
+	
+    //Set the renderbuffer to store depth
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, displayRes, displayRes);
+	
+    //Give the renderbuffer to the framebuffer
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glDepthFunc(GL_LEQUAL);
+
+
+
+
+    // Generate the texture pack texture
+    if(this->proceduralProps.textureSelectionDialog_selectedMode == 3){
+        if(this->proceduralProps.textureSelectionDialog_selectedTextureIndex < Library::getTexturePackArraySize()){
+            Library::getTexturePack(this->proceduralProps.textureSelectionDialog_selectedTextureIndex)->apply(
+                                                                                                                *this,
+                                                                                                                this->proceduralProps.txtrPackScale,
+                                                                                                                this->proceduralProps.txtrPackCount,
+                                                                                                                this->proceduralProps.txtrPackRotation_Jitter,
+                                                                                                                this->proceduralProps.txtrPackSize_Jitter,
+                                                                                                                this->proceduralProps.txtrPackOpacity_Jitter,
+                                                                                                                this->proceduralProps.txtrPackScatter
+                                                                                                            );
+            ShaderSystem::buttonShader().use();
+        }
+        
+        glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    }
+
+    glViewport(0, 0, displayRes, displayRes);
+
+    // Generate the smart texture displaying texture
+    if(this->proceduralProps.textureSelectionDialog_selectedMode == 4){
+        Camera matCam;
+        matCam.cameraPos = glm::vec3(0,0,-8.f);
+        matCam.radius = 8.f;
+
+
+        //Move the camera to the side
+        glm::mat4 view = glm::lookAt(matCam.cameraPos, 
+                                     glm::vec3(0), 
+                                     glm::vec3(0.0, 1.0, 0.0));
+
+        //The perspective projection matrix    
+        glm::mat4 projectionMatrix = glm::perspective(
+                                                        glm::radians(35.f), //Fov  
+                                                        -1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
+                                                        100.f,  //Near (the material is pretty close to the camera actually  ) 
+                                                        0.1f    //Far
+                                                    );
+
+        //Use the 3D model rendering shader
+        ShaderSystem::tdModelShader().use();
+
+        //Throw the camera data to the shader
+        ShaderSystem::tdModelShader().setInt("displayingMode", 0);
+        ShaderSystem::tdModelShader().setVec3("viewPos",matCam.cameraPos);
+        ShaderSystem::tdModelShader().setMat4("view",view);
+        ShaderSystem::tdModelShader().setMat4("projection",projectionMatrix);
+
+        unsigned int proc = this->generateProceduralTexture(getMaterialDisplayerModel()->meshes[0], 512);
+        glViewport(0, 0, displayRes, displayRes);
+        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+        ShaderSystem::tdModelShader().use();
+
+        //Bind the channels of the material
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, proc);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, proc);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, proc);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, proc);
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, proc);
+        glActiveTexture(GL_TEXTURE7);        
+        glBindTexture(GL_TEXTURE_2D, proc);
+
+        getMaterialDisplayerModel()->Draw();
+
+        //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
+        ShaderSystem::buttonShader().use();
+
+        getBox()->bindBuffers();
+        //glDeleteTextures(1, &proc);
+    }
+
+    // Generate regular procedural textures
+    if(this->proceduralProps.textureSelectionDialog_selectedMode != 3 && this->proceduralProps.textureSelectionDialog_selectedMode != 4){
+
+        /* Displaying texture */
+        ShaderSystem::proceduralDisplayerShader().use();
+        glm::mat4 projection = glm::ortho(0.f, (float)displayRes, (float)displayRes, 0.f);
+        ShaderSystem::proceduralDisplayerShader().setMat4("projection"  ,       projection);
+        ShaderSystem::proceduralDisplayerShader().setVec3("pos"         ,       glm::vec3((float)displayRes / 2.f, (float)displayRes / 2.f,0.9f));
+        ShaderSystem::proceduralDisplayerShader().setVec2("scale"       ,       glm::vec2((float)displayRes / 2.f));
+        
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", this->proceduralProps.proceduralID);                
+        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->proceduralProps.proceduralScale);
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", this->proceduralProps.proceduralnverted);
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", this->proceduralProps.proceduralGrayScale);
+        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralBrightness", this->proceduralProps.proceduralBrightness);
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", this->proceduralProps.proceduralGrayScale);
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, this->proceduralProps.proceduralTextureID);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+
+    // Generate normal map
+    if(this->proceduralProps.proceduralNormalMap && this->proceduralProps.textureSelectionDialog_selectedMode != 4){
+        Texture txtrObject = Texture(this->ID);
+        Texture normalMapRes = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
+
+        txtrObject.generateNormalMap(normalMapRes.ID, displayRes, this->proceduralProps.proceduralNormalStrength, this->proceduralProps.proceduralGrayScale); 
+
+        glDeleteTextures(1,&this->ID);
+        this->ID = normalMapRes.ID;
+    }
+
+    // Finish
+    ShaderSystem::buttonShader().use();
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDeleteFramebuffers(1, &FBO);
+    glDeleteRenderbuffers(1, &RBO);
+    glViewport(0, 0, viewportResolution.x, viewportResolution.y);
 }

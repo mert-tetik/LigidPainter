@@ -46,7 +46,7 @@ void main()
     normal *= strength;
     normal += 0.5;
     
-    if(alphaMode == 1){
+    if(alphaMode == 0){
         if(grayScale == 0)
             fragColor = vec4(normal, 1., texture(heightMap, uv).a);
         else

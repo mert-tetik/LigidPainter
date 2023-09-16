@@ -89,9 +89,9 @@ bool FileHandler::writeLGDMATERIALFile(
             LGDMATERIAL_WRITEBITS(material.materialModifiers[i].modifierIndex, int, "Modifier index");
             
             //Mask texture
-            LGDMATERIAL_WRITEBITS(material.materialModifiers[i].maskTexture.proceduralID, int, "Mask texture - procedural ID");
-            LGDMATERIAL_WRITEBITS(material.materialModifiers[i].maskTexture.proceduralnverted, int, "Mask texture - procedural inverted");
-            LGDMATERIAL_WRITEBITS(material.materialModifiers[i].maskTexture.proceduralScale, float, "Mask texture - procedural scale");
+            LGDMATERIAL_WRITEBITS(material.materialModifiers[i].maskTexture.proceduralProps.proceduralID, int, "Mask texture - procedural ID");
+            LGDMATERIAL_WRITEBITS(material.materialModifiers[i].maskTexture.proceduralProps.proceduralnverted, int, "Mask texture - procedural inverted");
+            LGDMATERIAL_WRITEBITS(material.materialModifiers[i].maskTexture.proceduralProps.proceduralScale, float, "Mask texture - procedural scale");
 
             int32_t textureWidth = material.materialModifiers[i].maskTexture.getResolution().x;
             LGDMATERIAL_WRITEBITS(textureWidth, int32_t, "Mask texture - texture width");
@@ -167,9 +167,9 @@ bool FileHandler::writeLGDMATERIALFile(
                         char valueType = 't';
                         LGDMATERIAL_WRITEBITS(valueType, char, "Property type");
 
-                        LGDMATERIAL_WRITEBITS(propElements[pI].button.texture.proceduralID, int, "Property texture - procedural ID");
-                        LGDMATERIAL_WRITEBITS(propElements[pI].button.texture.proceduralnverted, int, "Property texture - procedural inverted");
-                        LGDMATERIAL_WRITEBITS(propElements[pI].button.texture.proceduralScale, float, "Property texture - procedural scale");
+                        LGDMATERIAL_WRITEBITS(propElements[pI].button.texture.proceduralProps.proceduralID, int, "Property texture - procedural ID");
+                        LGDMATERIAL_WRITEBITS(propElements[pI].button.texture.proceduralProps.proceduralnverted, int, "Property texture - procedural inverted");
+                        LGDMATERIAL_WRITEBITS(propElements[pI].button.texture.proceduralProps.proceduralScale, float, "Property texture - procedural scale");
 
                         int32_t textureWidth = propElements[pI].button.texture.getResolution().x;
                         LGDMATERIAL_WRITEBITS(textureWidth, int32_t, "Property texture - texture width");

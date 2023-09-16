@@ -422,7 +422,9 @@ bool wasTextureSelectionDialogActive();
 class TextureSelectionDialog
 {
 private:
-    int selectedTextureMode = 0;
+   int selectedTextureMode = 0;
+   void selectTheTexture(Texture& receivedTxtr, int displayingTextureRes);
+   void renderPanels(Timer& timer, glm::mat4 guiProjection);
 public:
    Panel bgPanel;
    
@@ -460,7 +462,6 @@ public:
    //Public member functions
    void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes);
 
-   void generateDisplayingTexture(Texture& txtr, int displayingTextureRes);
 
 };
 

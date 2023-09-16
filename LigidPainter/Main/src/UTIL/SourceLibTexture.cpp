@@ -36,7 +36,7 @@ Texture SourceLibTexture::getTexture(){
 
     std::string filePath = folderPath + "/" + this->ID + ".jpg"; //Assuming the texture is in JPEG format
 
-    if(this->fullTexture.ID == 0 || !glIsTexture(this->fullTexture.ID))
+    if(this->fullTexture.ID == 0 || glIsTexture(this->fullTexture.ID) == GL_FALSE)
         this->fullTexture.load(filePath.c_str());
 
     return this->fullTexture; 

@@ -160,9 +160,9 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         char textureValueType = 't';
         LGDBRUSH_WRITEBITS(textureValueType, char, "textureValueType");
         
-        LGDBRUSH_WRITEBITS(brush.texture.proceduralID, int, "Property texture - procedural ID");
-        LGDBRUSH_WRITEBITS(brush.texture.proceduralnverted, int, "Property texture - procedural inverted");
-        LGDBRUSH_WRITEBITS(brush.texture.proceduralScale, float, "Property texture - procedural scale");
+        LGDBRUSH_WRITEBITS(brush.texture.proceduralProps.proceduralID, int, "Property texture - procedural ID");
+        LGDBRUSH_WRITEBITS(brush.texture.proceduralProps.proceduralnverted, int, "Property texture - procedural inverted");
+        LGDBRUSH_WRITEBITS(brush.texture.proceduralProps.proceduralScale, float, "Property texture - procedural scale");
 
         int32_t textureWidth = brush.texture.getResolution().x;
         LGDBRUSH_WRITEBITS(textureWidth, int32_t, "Property texture - texture width");

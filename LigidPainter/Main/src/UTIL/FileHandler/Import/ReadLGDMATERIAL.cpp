@@ -156,9 +156,9 @@ bool FileHandler::readLGDMATERIALFile(
             modifier.maskTexture = Texture(pixels, textureWidth, textureHeight);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            modifier.maskTexture.proceduralID = proceduralID;
-            modifier.maskTexture.proceduralnverted = proceduralInvert;
-            modifier.maskTexture.proceduralScale = proceduralScale;
+            modifier.maskTexture.proceduralProps.proceduralID = proceduralID;
+            modifier.maskTexture.proceduralProps.proceduralnverted = proceduralInvert;
+            modifier.maskTexture.proceduralProps.proceduralScale = proceduralScale;
 
             delete[] pixels;
 
@@ -271,9 +271,9 @@ bool FileHandler::readLGDMATERIALFile(
                     valT = Texture(pixels, textureWidth, textureHeight);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-                    valT.proceduralID = proceduralID;
-                    valT.proceduralnverted = proceduralInvert;
-                    valT.proceduralScale = proceduralScale;
+                    valT.proceduralProps.proceduralID = proceduralID;
+                    valT.proceduralProps.proceduralnverted = proceduralInvert;
+                    valT.proceduralProps.proceduralScale = proceduralScale;
                 }
                 else {
                     LGDLOG::start<< "ERROR! : Reading material file : Unknown value type" << LGDLOG::end;

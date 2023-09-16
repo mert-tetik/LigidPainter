@@ -214,22 +214,10 @@ public:
     void transition(bool state ,float &value,float timeInSeconds);
 };
 
-
-class Texture
-{
-private:
-    // --- util functions --- 
-
-    std::string generateTMPTitle();
-    std::string getTMPTitleWithGreatestIndex();
-
-public:
-    /// @brief OpenGL texture buffer object id
-    unsigned int ID = 0; 
-
+struct ProceduralProperties{
     /// @brief Indicates which procedural texture shader function will be used (indexing the getProcedural function in the Shaders/Include/Procedural.frag)
     ///         -1 : Using the proceduralTextureID
-    ///         1000 : Using the ID
+    ///         1000 : Using the ID (Smart texture selected)
     int proceduralID = -1;
     float proceduralScale = 1.f;
     int proceduralnverted = 0;
@@ -242,6 +230,30 @@ public:
     float proceduralBrightness = 1.f;
     glm::vec4 smartProperties;
 
+    float txtrPackScale = 1.f;
+    float txtrPackCount = 1.f;
+    float txtrPackRotation_Jitter = 1.f;
+    float txtrPackSize_Jitter = 1.f;
+    float txtrPackOpacity_Jitter = 1.f;
+    float txtrPackScatter = 1.f;
+
+    int textureSelectionDialog_selectedTextureIndex = 0;
+    int textureSelectionDialog_selectedMode = 0;
+};
+
+class Texture
+{
+private:
+    // --- util functions --- 
+
+    std::string generateTMPTitle();
+    std::string getTMPTitleWithGreatestIndex();
+
+public:
+    /// @brief OpenGL texture buffer object id
+    unsigned int ID = 0;
+
+    ProceduralProperties proceduralProps;
 
     /// @brief Title of the texture (myTexture)
     std::string title = "";
@@ -270,7 +282,6 @@ public:
     /// @brief Load & resize a texture in the given texture resolution param by importing the texture in the given path via STBI
     void load(const char* path, glm::ivec2 textureResolution);
 
-    
     /// @brief Returns texture data in the given path & doesn't write anything to the member variables
     unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip);
     
@@ -300,17 +311,33 @@ public:
 
     std::vector<glm::vec3> getMaterialIDPalette();
 
+    // -------- Texture Manipulation --------
+
+    /// @brief Expands the texture's boundaries according to the mesh uv mask
     void removeSeams(Mesh& mesh, int textureResolution);
+
+    /// @brief Expands the texture's boundaries according to the mesh uv mask
     void removeSeams(Mesh& mesh, glm::ivec2 textureResolution);
-    unsigned int generateProceduralTexture(Mesh &mesh, int textureRes);
+    
+    /// @brief Writes the normal map version of the texture into the normalMap param (normalMap has to be initialized) 
     void generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale);
+    
+    /// @brief Writes the normal map version of the texture into the normalMap param (normalMap has to be initialized) 
     void generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale, bool alphaMode);
+    
+    /// @brief Writes the normal map version of the texture into itself
     void applyNormalMap(glm::ivec2 textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale);
+    
+    /// @brief Generates procedural texture result using the mesh param
+    unsigned int generateProceduralTexture(Mesh &mesh, int textureRes);
+
+    /// @brief Generates 2D displaying texture using the proceduralProps & writes the texture into the this->ID
+    void generateProceduralDisplayingTexture(int displayingTextureRes);
 
 };
 
 /// @brief Image filter library element. 
-class Filter{
+class Filter{ 
 public:
     /// @brief Filtering shader
     Shader shader;
