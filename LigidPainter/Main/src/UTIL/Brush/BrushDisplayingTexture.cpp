@@ -32,6 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 void Brush::updateDisplayTexture(){
     
@@ -128,7 +129,7 @@ void Brush::updateDisplayTexture(){
     }
     
     //Finish
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     ShaderSystem::buttonShader().use();
 
     glDeleteFramebuffers(1,&captureFBO);

@@ -52,26 +52,26 @@ bool __wasTextureSelectionDialogActive = false;
 void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes){
     __texture_selection_dialog.show(__timer, __projection, txtr, displayingTextureRes);
     __wasTextureSelectionDialogActive = true;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->setViewport();
 }
 
 void showFilterSelectionDialog(Filter& filter, int displayingTextureRes){
     __filter_selection_dialog.show(__timer, __projection, filter, displayingTextureRes);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->setViewport();
 }
 
 void showMeshSelectionDialog(int& selectedMeshI){
     __mesh_selection_dialog.show(__timer, __projection, selectedMeshI);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->setViewport();
 }
 
 void showTexturePackEditorDialog(TexturePack& texturePack){
     __texture_Pack_Editor_Dialog.show(__timer, __projection, texturePack);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0,0,getContext()->windowScale.x, getContext()->windowScale.y);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->setViewport();
 }
 
 bool wasTextureSelectionDialogActive(){
@@ -448,7 +448,9 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, painter.paintingOverTexture, 0);
         }
 
-        glViewport(0,0,Settings::videoScale()->x, Settings::videoScale()->y);
+        // TODO Painting over texture resolution
+
+        glViewport(0, 0, Settings::videoScale()->x, Settings::videoScale()->y);
 
         ShaderSystem::paintOverTextureGen().use();
         ShaderSystem::paintOverTextureGen().setMat4("projection", glm::ortho(0.f, Settings::videoScale()->x, Settings::videoScale()->y, 0.f));
@@ -474,8 +476,8 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             ShaderSystem::tdModelShader().setInt("paintingOverDisplayinMode", 1);
             ShaderSystem::paintOverTextureGen().use();
         }
-        glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        Settings::defaultFramebuffer()->setViewport();
+        glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
         
         ShaderSystem::buttonShader().use();
         if(valueChanged)

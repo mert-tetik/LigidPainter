@@ -986,7 +986,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
 
     glDrawArrays(GL_TRIANGLES, 0 , 6);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     
     glDeleteFramebuffers(1, &FBO);
     glDeleteTextures(1, &textureCopy);

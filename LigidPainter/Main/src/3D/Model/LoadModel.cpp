@@ -146,10 +146,10 @@ void Model::loadModel(std::string const &path,bool triangulate)
     ShaderSystem::buttonShader().use();
 
     //Bind the default framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     
     //Set the OpenGL viewport to default
-    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+    Settings::defaultFramebuffer()->setViewport();    
     glDeleteFramebuffers(1, &FBO);
     glDeleteRenderbuffers(1, &RBO);
 }

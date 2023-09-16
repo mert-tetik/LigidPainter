@@ -101,7 +101,7 @@ unsigned int Texture::duplicateTexture(){
     glBindFramebuffer(GL_FRAMEBUFFER,FBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID, 0);
     glCopyTexImage2D(GL_TEXTURE_2D, 0, internalFormat, 0, 0, width, height, 0);
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     glDeleteFramebuffers(1,&FBO);
     return newTexture;
 }
@@ -132,7 +132,7 @@ void Texture::duplicateTexture(Texture& txtr){
     glBindFramebuffer(GL_FRAMEBUFFER,FBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID, 0);
     glCopyTexImage2D(GL_TEXTURE_2D, 0, internalFormat, 0, 0, width, height, 0);
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     glDeleteFramebuffers(1,&FBO);
 }
 
@@ -267,7 +267,7 @@ void Texture::removeSeams(Mesh& mesh, int textureResolution){
 
     glDrawArrays(GL_TRIANGLES, 0 , 6);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     glDeleteFramebuffers(1, &FBO);
     glDeleteTextures(1, &textureCopy);
 }
@@ -307,7 +307,7 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
 
     glDrawArrays(GL_TRIANGLES, 0 , 6);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     glDeleteFramebuffers(1, &FBO);
     glDeleteTextures(1, &textureCopy);
 }
@@ -425,7 +425,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
         glDeleteFramebuffers(1, &FBO);
         glDeleteTextures(1, &normalMapTxtr.ID);
         glDeleteTextures(1, &normalMapTxtrBlurred.ID);
@@ -485,7 +485,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
 
         mesh.Draw();
 
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
         glDeleteFramebuffers(1, &FBO);
     }
 
@@ -533,7 +533,7 @@ void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution, 
 
     glDrawArrays(GL_TRIANGLES, 0 , 6);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     glDeleteFramebuffers(1, &FBO);
 }
 
@@ -566,7 +566,7 @@ void Texture::generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResol
 
     glDrawArrays(GL_TRIANGLES, 0 , 6);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     glDeleteFramebuffers(1, &FBO);
 }
 
@@ -604,7 +604,7 @@ void Texture::applyNormalMap(glm::ivec2 textureResolution, float proceduralNorma
 
     glDrawArrays(GL_TRIANGLES, 0 , 6);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     glDeleteFramebuffers(1, &FBO);
     glDeleteTextures(1, &tx.ID);
 }
@@ -775,7 +775,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes){
 
     // Finish
     ShaderSystem::buttonShader().use();
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     glDeleteFramebuffers(1, &FBO);
     glDeleteRenderbuffers(1, &RBO);
     glViewport(0, 0, viewportResolution.x, viewportResolution.y);

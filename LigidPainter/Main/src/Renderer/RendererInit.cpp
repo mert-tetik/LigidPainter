@@ -96,7 +96,7 @@ void Renderer::initRenderer(){
     getScene()->axisDisplayer.init();
 
     //Update necessary data before callbacks
-    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);    
+        Settings::defaultFramebuffer()->setViewport();    
     getScene()->updateViewMatrix();
     getScene()->updateTransformMatrix();
     getScene()->updateProjectionMatrix();
@@ -174,6 +174,8 @@ void Renderer::initRenderer(){
     catch (const std::filesystem::filesystem_error& ex) {
         LGDLOG::start << "ERROR : Filesystem : Location ID 963654 " << ex.what() << LGDLOG::end;
     }
+
+    Settings::defaultFramebuffer()->init(*Settings::videoScale());
 
     // Load the source library textures
     Library::loadSourceLibTextures();

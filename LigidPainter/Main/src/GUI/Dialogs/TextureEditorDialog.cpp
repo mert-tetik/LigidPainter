@@ -403,13 +403,11 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     //Finish
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     ShaderSystem::buttonShader().use();
     glDeleteFramebuffers(1, &captureFBO);
     glDeleteTextures(1, &copiedDestTxtr.ID);
-    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
-
-
+    Settings::defaultFramebuffer()->setViewport();
 }
 
 void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture){

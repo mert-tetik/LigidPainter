@@ -176,10 +176,10 @@ void Mesh::generateDisplayingTexture(){
     ShaderSystem::buttonShader().use();
 
     //Bind the default framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     
     //Set the OpenGL viewport to default
-    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+    Settings::defaultFramebuffer()->setViewport();    
     glDeleteFramebuffers(1, &FBO);
     glDeleteRenderbuffers(1, &RBO);
 }
@@ -204,7 +204,7 @@ void Mesh::generateUVMask(){
 
     this->Draw();
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
     glDeleteFramebuffers(1, &FBO);
 }
 
@@ -275,7 +275,7 @@ void Mesh::processHeightMap(){
     // again translates to 3/2 floats which translates to a byte array.
     glBufferData(GL_ARRAY_BUFFER, newVertArray.size() * sizeof(Vertex), &newVertArray[0], GL_STATIC_DRAW);  
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
 
     delete[] txtr;
 }

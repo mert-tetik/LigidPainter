@@ -97,8 +97,8 @@ void Skybox::createDisplayingTxtr(){
 
 	//Finish
 	//buttonShader.use();
-	glBindFramebuffer(GL_FRAMEBUFFER,0);
+	glBindFramebuffer(GL_FRAMEBUFFER,Settings::defaultFramebuffer()->FBO);
 	glDeleteFramebuffers(1,&FBO);
 
-	glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+	Settings::defaultFramebuffer()->setViewport();
 }

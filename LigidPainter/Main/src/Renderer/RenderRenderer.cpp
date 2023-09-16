@@ -49,7 +49,7 @@ void Renderer::render(){
         getContext()->window.setWindowSize(Settings::videoScale()->x, Settings::videoScale()->y);
 
     //Update OpenGL viewport every frame
-    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+        Settings::defaultFramebuffer()->setViewport();
     //VSync
     if(Settings::properties()->VSync)
         LigidGL::setSwapInterval(1); //Enable VSync
@@ -424,6 +424,20 @@ void Renderer::render(){
     //Sets the active cursor (mouse.activeCursor) as the cursor
     //Than changes the active cursor as default cursor
     Mouse::updateCursor();  
+
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    ShaderSystem::defaultFramebufferShader().use();
+    ShaderSystem::defaultFramebufferShader().setMat4("projection", glm::ortho(0.f, 1.f, 0.f, 1.f));
+    ShaderSystem::defaultFramebufferShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
+    ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
+    
+    ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, Settings::defaultFramebuffer()->colorBuffer);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 
     //Swap the front and back buffers of the window
     getContext()->window.swapBuffers();

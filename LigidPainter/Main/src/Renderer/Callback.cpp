@@ -103,7 +103,7 @@ void Renderer::framebufferSizeCallback(
     getScene()->updateProjectionMatrix(); 
 
     //And ofc update the OpenGL viewport
-    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+    Settings::defaultFramebuffer()->setViewport();
 }
 
 void Renderer::scrollCallback(

@@ -125,5 +125,5 @@ void Painter::initPainter(){
     this->paintingBGTexture = Texture(nullptr, 1, 1);
     
     //--------- Finish --------- 
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
 }

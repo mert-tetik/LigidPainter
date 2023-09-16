@@ -57,6 +57,7 @@ Shader __textureRenderingShader;
 Shader __normalVectorShader;
 Shader __edgeWearShader;
 Shader __bakingShader;
+Shader __defaultFramebufferShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -94,6 +95,7 @@ void ShaderSystem::initShaderSystem(){
     __solidShadingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/SolidShading.frag");
     __textureRenderingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/TextureRendering.frag");
     __edgeWearShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/EdgeWear.frag");
+    __defaultFramebufferShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/DefaultFramebuffer.frag");
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -200,4 +202,7 @@ Shader ShaderSystem::edgeWearShader(){
 }
 Shader ShaderSystem::bakingShader(){
     return __bakingShader;
+}
+Shader ShaderSystem::defaultFramebufferShader(){
+    return __defaultFramebufferShader;
 }

@@ -148,6 +148,72 @@ Model* getMaterialDisplayerModel();
 Box* getBox();
 
 namespace Settings{
+
+    struct DefaultFramebuffer{
+        unsigned int FBO = 0;
+        unsigned int RBO = 0;
+        unsigned int colorBuffer = 0;
+
+        glm::ivec2 resolution;
+
+        void init(glm::ivec2 resolution){
+            this->resolution = resolution;
+
+            //--------- init colorBuffer --------- 
+            glGenTextures(1, &this->colorBuffer);
+            glBindTexture(GL_TEXTURE_2D, this->colorBuffer);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, resolution.x, resolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            //--------- init FBO --------- 
+            glGenFramebuffers(1, &this->FBO);
+            glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->colorBuffer, 0);
+
+            //--------- init RBO --------- 
+            glGenRenderbuffers(1,&RBO);
+            glBindRenderbuffer(GL_RENDERBUFFER,RBO);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, resolution.x, resolution.y);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+        }
+
+        void setResolution(glm::ivec2 resolution){
+            this->resolution = resolution;
+
+            //--------- update colorBuffer --------- 
+            glBindTexture(GL_TEXTURE_2D, this->colorBuffer);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, resolution.x, resolution.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glGenerateMipmap(GL_TEXTURE_2D);
+
+            //--------- update FBO --------- 
+            glBindFramebuffer(GL_FRAMEBUFFER, this->FBO);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->colorBuffer, 0);
+
+            //--------- update RBO --------- 
+            glBindRenderbuffer(GL_RENDERBUFFER,RBO);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, resolution.x, resolution.y);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
+        }
+
+        void setViewport(){
+            glViewport(0, 0, this->resolution.x, this->resolution.y);
+        }
+    };
+
     struct AppTextures{ 
         //--Icons
         Texture TDModelIcon; 
@@ -214,5 +280,6 @@ namespace Settings{
 
     glm::vec2* videoScale();
 
+    DefaultFramebuffer* defaultFramebuffer();
 };
 #endif

@@ -31,6 +31,7 @@ Model __model;
 Model __sphereModel;
 Model __materialDisplayerModel;
 Box __box;
+Settings::DefaultFramebuffer __defaultFramebuffer;
 
 glm::vec2 __videoScale;
 
@@ -103,5 +104,9 @@ namespace Settings{
     
     glm::vec2* videoScale(){
         return &__videoScale;
+    }
+
+    DefaultFramebuffer* defaultFramebuffer(){
+        return &__defaultFramebuffer;
     }
 };

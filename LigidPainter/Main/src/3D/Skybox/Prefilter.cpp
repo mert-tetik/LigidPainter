@@ -27,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 unsigned int Skybox::createPrefilterMap(){
 	//Creates the prefildered cubemap for the skybox
@@ -122,7 +123,7 @@ unsigned int Skybox::createPrefilterMap(){
 	}
 	
 	//Set everything to default
-	glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+	glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO); 
 	
 	//!Set viewport the default was there
 
