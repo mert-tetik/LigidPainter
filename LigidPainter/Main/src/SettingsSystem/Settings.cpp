@@ -142,10 +142,10 @@ namespace Settings{
         glActiveTexture(GL_TEXTURE0);
 
         //--------- init bgTxtr --------- 
-        this->bgTxtr = Texture(nullptr, resolution.x, resolution.y, GL_NEAREST);
+        this->bgTxtr = Texture(nullptr, resolution.x / 2, resolution.y / 2, GL_NEAREST);
         
         //--------- init FBO --------- 
-        this->FBO = Framebuffer(Texture(nullptr, resolution.x, resolution.y, GL_NEAREST), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT,resolution));
+        this->FBO = Framebuffer(Texture(nullptr, resolution.x, resolution.y, GL_NEAREST), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT,resolution));
 
         orgID = this->FBO.ID;
         this->FBO.ID = 0;
@@ -166,7 +166,7 @@ namespace Settings{
         bgTxtr.update(nullptr, resolution.x, resolution.y, GL_NEAREST);
 
         //--------- update RBO --------- 
-        this->FBO.renderBuffer.update(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, resolution);
+        this->FBO.renderBuffer.update(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution);
     }
 
     void DefaultFramebuffer::setViewport(){

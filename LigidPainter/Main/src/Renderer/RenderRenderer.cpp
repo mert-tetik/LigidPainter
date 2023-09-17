@@ -425,6 +425,9 @@ void Renderer::render(){
     Mouse::updateCursor();  
 
 
+
+
+
     // ------- Rendering the framebuffer result ------- 
     if(Settings::defaultFramebuffer()->FBO.ID != 0)
         Settings::defaultFramebuffer()->render();
@@ -440,13 +443,18 @@ void Renderer::render(){
     // Set up the blit
     glBindFramebuffer(GL_READ_FRAMEBUFFER, 0); // Bind the default framebuffer as the source
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer); // Bind the FBO as the destination
-    glBlitFramebuffer(0, 0, getContext()->windowScale.x, getContext()->windowScale.y, 0, 0, Settings::defaultFramebuffer()->resolution.x, Settings::defaultFramebuffer()->resolution.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    glBlitFramebuffer(0, 0, getContext()->windowScale.x, getContext()->windowScale.y, 0, 0, Settings::defaultFramebuffer()->resolution.x / 2, Settings::defaultFramebuffer()->resolution.y /2, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
     // Unbind the FBO
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     // Clean up resources (delete framebuffer and unneeded textures if necessary)
     glDeleteFramebuffers(1, &framebuffer);
+
+
+
+
+
 
     //Swap the front and back buffers of the window
     getContext()->window.swapBuffers();

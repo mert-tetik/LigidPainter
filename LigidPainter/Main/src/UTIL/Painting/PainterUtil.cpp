@@ -358,9 +358,9 @@ void Painter::refreshBuffers(){
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture8, 0);
     
     //--------- init depthRBO --------- 
-    glBindRenderbuffer(GL_RENDERBUFFER,depthRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, depthRes.x, depthRes.y);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
+    glBindRenderbuffer(GL_RENDERBUFFER, depthRBO);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, depthRes.x, depthRes.y);
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
     
     //--------- Finish --------- 
     Settings::defaultFramebuffer()->FBO.bind();

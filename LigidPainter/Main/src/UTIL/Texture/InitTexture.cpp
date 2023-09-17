@@ -71,6 +71,7 @@ Texture::Texture(char* pixels, int w, int h, unsigned int filterParam){
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
+
 void Texture::update(char* pixels, int w, int h){
     glActiveTexture(GL_TEXTURE0);
     
