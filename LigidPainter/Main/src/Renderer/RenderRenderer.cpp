@@ -426,7 +426,8 @@ void Renderer::render(){
 
 
     // ------- Rendering the framebuffer result ------- 
-    Settings::defaultFramebuffer()->render();
+    if(Settings::defaultFramebuffer()->FBO.ID != 0)
+        Settings::defaultFramebuffer()->render();
     Texture bgTxtrObj = Settings::defaultFramebuffer()->bgTxtr;
     Settings::defaultFramebuffer()->FBO.colorBuffer.duplicateTexture(bgTxtrObj);     
 

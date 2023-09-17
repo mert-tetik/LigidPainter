@@ -152,6 +152,7 @@ Box* getBox();
 namespace Settings{
 
     struct DefaultFramebuffer{
+    public:
         Framebuffer FBO;
         unsigned int bgTxtr = 0;
 
@@ -164,6 +165,9 @@ namespace Settings{
         void setViewport();
 
         void render();
+    
+    private:
+        unsigned int orgID;
     };
 
     struct AppTextures{ 

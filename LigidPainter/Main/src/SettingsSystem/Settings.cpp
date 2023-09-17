@@ -154,9 +154,16 @@ namespace Settings{
         //--------- init FBO --------- 
         this->FBO = Framebuffer(colorBuffer, GL_TEXTURE_2D_MULTISAMPLE, Renderbuffer(GL_DEPTH24_STENCIL8, resolution, Settings::properties()->framebufferSamples));
 
+        orgID = this->FBO.ID;
+        this->FBO.ID = 0;
     }
 
     void DefaultFramebuffer::setResolution(glm::ivec2 resolution){
+        if(resolution.x == Settings::videoScale()->x)
+            this->FBO.ID = 0; 
+        else
+            this->FBO.ID = orgID; 
+        
         this->resolution = resolution;
 
         //--------- update colorBuffer --------- 
@@ -174,6 +181,9 @@ namespace Settings{
     }
 
     void DefaultFramebuffer::setViewport(){
-        glViewport(0, 0, this->resolution.x, this->resolution.y);
+        if(this->FBO.ID != 0)
+            glViewport(0, 0, this->resolution.x, this->resolution.y);
+        else
+            glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
     }
 };
