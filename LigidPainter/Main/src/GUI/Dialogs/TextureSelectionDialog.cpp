@@ -420,7 +420,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Drawing the background 
-        drawBG(Settings::defaultFramebuffer()->bgTxtr);
+        drawBG(Settings::defaultFramebuffer()->bgTxtr.ID);
 
         dialogControl.updateStart();
 
@@ -579,9 +579,12 @@ static void drawBG(
     
     ShaderSystem::defaultFramebufferShader().setVec2("resolution", Settings::defaultFramebuffer()->resolution);
     ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
+    ShaderSystem::defaultFramebufferShader().setInt("txtr2", 1);
+
+    ShaderSystem::defaultFramebufferShader().setInt("multisamples", 0);
     
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, bgTexture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, bgTexture);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
     

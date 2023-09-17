@@ -132,9 +132,11 @@ void Texture::duplicateTexture(Texture& txtr){
     glBindFramebuffer(GL_FRAMEBUFFER,FBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID, 0);
     glCopyTexImage2D(GL_TEXTURE_2D, 0, internalFormat, 0, 0, width, height, 0);
+    
     Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1,&FBO);
 }
+
 
 std::vector<glm::vec3> Texture::getMaterialIDPalette(){
     /*

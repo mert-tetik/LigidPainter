@@ -154,7 +154,7 @@ namespace Settings{
     struct DefaultFramebuffer{
     public:
         Framebuffer FBO;
-        unsigned int bgTxtr = 0;
+        Texture bgTxtr;
 
         glm::ivec2 resolution;
 

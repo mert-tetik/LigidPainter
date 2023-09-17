@@ -122,6 +122,8 @@ namespace Settings{
         
         ShaderSystem::defaultFramebufferShader().setVec2("resolution", this->resolution);
         ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
+        ShaderSystem::defaultFramebufferShader().setInt("txtr2", 1);
+        ShaderSystem::defaultFramebufferShader().setInt("multisamples", 1);
         
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->FBO.colorBuffer.ID);
@@ -146,10 +148,7 @@ namespace Settings{
         glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Settings::properties()->framebufferSamples, GL_RGBA8, resolution.x, resolution.y, GL_TRUE);
 
         //--------- init bgTxtr --------- 
-        glGenTextures(1, &this->bgTxtr);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->bgTxtr);
-
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Settings::properties()->framebufferSamples, GL_RGBA8, resolution.x, resolution.y, GL_TRUE);
+        this->bgTxtr = Texture(nullptr, resolution.x, resolution.y, GL_NEAREST);
         
         //--------- init FBO --------- 
         this->FBO = Framebuffer(colorBuffer, GL_TEXTURE_2D_MULTISAMPLE, Renderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT,resolution, Settings::properties()->framebufferSamples));
@@ -172,9 +171,7 @@ namespace Settings{
         glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Settings::properties()->framebufferSamples, GL_RGBA8, resolution.x, resolution.y, GL_TRUE);
 
         //--------- update bgTxtr --------- 
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, bgTxtr);
-
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Settings::properties()->framebufferSamples, GL_RGBA8, resolution.x, resolution.y, GL_TRUE);
+        bgTxtr.update(nullptr, resolution.x, resolution.y, GL_NEAREST);
 
         //--------- update RBO --------- 
         this->FBO.renderBuffer.update(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, resolution, Settings::properties()->framebufferSamples);
