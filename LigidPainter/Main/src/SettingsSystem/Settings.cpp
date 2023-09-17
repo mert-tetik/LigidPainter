@@ -111,6 +111,9 @@ namespace Settings{
     }
 
     void DefaultFramebuffer::render(){
+        getBox()->bindBuffers();
+        glDisable(GL_DEPTH_TEST);
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
@@ -131,6 +134,8 @@ namespace Settings{
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
         glBindFramebuffer(GL_FRAMEBUFFER, this->FBO.ID);
+        
+        glEnable(GL_DEPTH_TEST);
     }
 
     void DefaultFramebuffer::init(glm::ivec2 resolution){

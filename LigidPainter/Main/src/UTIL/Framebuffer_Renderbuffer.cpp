@@ -102,6 +102,8 @@ void Framebuffer::generate(){
 
 void Framebuffer::bind(){
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+    if(this->renderBuffer.ID)
+        glBindRenderbuffer(GL_RENDERBUFFER, this->renderBuffer.ID);
 }
 
 void Framebuffer::setColorBuffer(Texture colorBuffer, unsigned int textureTarget){
