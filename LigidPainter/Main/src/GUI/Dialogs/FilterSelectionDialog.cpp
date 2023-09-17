@@ -240,6 +240,7 @@ static void drawBG(
     ShaderSystem::defaultFramebufferShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
     ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
     
+    ShaderSystem::defaultFramebufferShader().setVec2("resolution", Settings::defaultFramebuffer()->resolution);
     ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
     
     glActiveTexture(GL_TEXTURE0);
