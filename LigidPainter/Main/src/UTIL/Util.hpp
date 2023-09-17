@@ -209,8 +209,9 @@ public:
     int nbFramesT = 0;
     
     size_t seconds = 0; //How many seconds has passed since the program started
-    double FPS = 1;
-    double renderingSpeed = 0;
+    double mostHighFPSValue = 1.;
+    double FPS = 1.;
+    double renderingSpeed = 0.;
     
     Timer(/* args */);
     

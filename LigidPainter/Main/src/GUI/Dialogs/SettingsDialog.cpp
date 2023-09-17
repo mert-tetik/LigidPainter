@@ -144,6 +144,7 @@ SettingsDialog::SettingsDialog(){
                                         Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 0.f, false), // Painting Depth Texture Resolution Divider
                                         Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 0.f, false), // Framebuffer resolution 
                                         Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 0.f, false), // Framebuffer state 
+                                        Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 0.f, false)  // Framerate data 
                                     }
                                 );
 }
@@ -190,11 +191,11 @@ void SettingsDialog::render(Timer timer, Painter &painter){
     systemSettings.elements[6].button.text = "Painting resolution : " + std::to_string(paintingRes.x) + "x" + std::to_string(paintingRes.y);
     systemSettings.elements[7].button.text = "Painting depth texture resolution : " + std::to_string(depthRes.x) + "x" + std::to_string(depthRes.y);
     systemSettings.elements[8].button.text = "Framebuffer resolution : " + std::to_string(framebufferRes.x) + "x" + std::to_string(framebufferRes.y);
-    
     if(Settings::properties()->framebufferResolutionDivier == 1.f)
         systemSettings.elements[9].button.text = "Using default framebuffer (Multisampling disabled)";
     else
         systemSettings.elements[9].button.text = "Using custom framebuffer";
+    systemSettings.elements[10].button.text = "Current frame rate : " + std::to_string(timer.FPS) + " & The greatest frame rate value : " + std::to_string(timer.mostHighFPSValue);
 
 
     if(TDRendererSettings.elements[12].rangeBar.pointerPressed && !*Mouse::LPressed() && TDRendererSettings.elements[11].checkBox.clickState1){

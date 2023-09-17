@@ -141,8 +141,6 @@ namespace Settings{
     void DefaultFramebuffer::init(glm::ivec2 resolution){
         this->resolution = resolution;
 
-        glEnable(GL_MULTISAMPLE);
-
         glActiveTexture(GL_TEXTURE0);
 
         //--------- init colorBuffer --------- 

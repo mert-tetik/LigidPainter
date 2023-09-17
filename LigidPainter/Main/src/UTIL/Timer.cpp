@@ -39,8 +39,11 @@ bool Timer::runTimer(float cycleTime){
     nbFramesT++;
     if (currentTime - lastTimeT >= cycleTime) {
         
-    	if(nbFramesT > 5 && nbFramesT < 800)
-            FPS = (double)nbFramesT;
+    	if(nbFramesT > 5 && nbFramesT < 800){
+            this->FPS = (double)nbFramesT;
+            if(this->FPS > this->mostHighFPSValue)
+                this->mostHighFPSValue = this->FPS; 
+        }
             
         renderingSpeed = 1000./FPS;
         nbFramesT = 0;
