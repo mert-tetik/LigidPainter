@@ -125,11 +125,9 @@ namespace Settings{
         
         ShaderSystem::defaultFramebufferShader().setVec2("resolution", this->resolution);
         ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
-        ShaderSystem::defaultFramebufferShader().setInt("txtr2", 1);
-        ShaderSystem::defaultFramebufferShader().setInt("multisamples", 1);
         
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->FBO.colorBuffer.ID);
+        glBindTexture(GL_TEXTURE_2D, this->FBO.colorBuffer.ID);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
@@ -143,18 +141,11 @@ namespace Settings{
 
         glActiveTexture(GL_TEXTURE0);
 
-        //--------- init colorBuffer --------- 
-        unsigned int colorBuffer;
-        glGenTextures(1, &colorBuffer);
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, colorBuffer);
-
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Settings::properties()->framebufferSamples, GL_RGBA8, resolution.x, resolution.y, GL_TRUE);
-
         //--------- init bgTxtr --------- 
         this->bgTxtr = Texture(nullptr, resolution.x, resolution.y, GL_NEAREST);
         
         //--------- init FBO --------- 
-        this->FBO = Framebuffer(colorBuffer, GL_TEXTURE_2D_MULTISAMPLE, Renderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT,resolution, Settings::properties()->framebufferSamples));
+        this->FBO = Framebuffer(Texture(nullptr, resolution.x, resolution.y, GL_NEAREST), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT,resolution));
 
         orgID = this->FBO.ID;
         this->FBO.ID = 0;
@@ -169,15 +160,13 @@ namespace Settings{
         this->resolution = resolution;
 
         //--------- update colorBuffer --------- 
-        glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->FBO.colorBuffer.ID);
-
-        glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Settings::properties()->framebufferSamples, GL_RGBA8, resolution.x, resolution.y, GL_TRUE);
+        this->FBO.colorBuffer.update(nullptr, resolution.x, resolution.y, GL_NEAREST);
 
         //--------- update bgTxtr --------- 
         bgTxtr.update(nullptr, resolution.x, resolution.y, GL_NEAREST);
 
         //--------- update RBO --------- 
-        this->FBO.renderBuffer.update(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, resolution, Settings::properties()->framebufferSamples);
+        this->FBO.renderBuffer.update(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, resolution);
     }
 
     void DefaultFramebuffer::setViewport(){

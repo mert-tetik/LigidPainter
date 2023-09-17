@@ -220,7 +220,6 @@ namespace Settings{
         float framebufferResolutionDivier = 1.f;
         float paintingResolutionDivier = 1.f;
         float paintingDepthTextureResolutionDivier = 1.f;
-        int framebufferSamples = 4;
 
         /*! @brief Textures will be generated with that resolution value */
         int textureRes = 1024; 

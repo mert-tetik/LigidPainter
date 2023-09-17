@@ -137,10 +137,8 @@ SettingsDialog::SettingsDialog(){
 
                                         }, "Framebuffer Resolution Divider",2.f)),
 
-                                        RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2.f), "Framebuffer Samples", Texture(), 2.f, 1, 16, 4),
-
                                         // --- Info ---
-                                        Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 0.f, false), // Painting resolution
+                                        Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 4.f, false), // Painting resolution
                                         Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 0.f, false), // Painting Depth Texture Resolution Divider
                                         Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 0.f, false), // Framebuffer resolution 
                                         Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 0.f, false), // Framebuffer state 
@@ -182,20 +180,19 @@ void SettingsDialog::render(Timer timer, Painter &painter){
     systemSettings.elements[2].comboBox.selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->paintingResolutionDivier), systemSettings.elements[2].comboBox.texts);
     systemSettings.elements[3].comboBox.selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->paintingDepthTextureResolutionDivier), systemSettings.elements[3].comboBox.texts);
     systemSettings.elements[4].comboBox.selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->framebufferResolutionDivier), systemSettings.elements[4].comboBox.texts);
-    systemSettings.elements[5].rangeBar.value = Settings::properties()->framebufferSamples;
 
     glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
     glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
     glm::ivec2 framebufferRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->framebufferResolutionDivier);
 
-    systemSettings.elements[6].button.text = "Painting resolution : " + std::to_string(paintingRes.x) + "x" + std::to_string(paintingRes.y);
-    systemSettings.elements[7].button.text = "Painting depth texture resolution : " + std::to_string(depthRes.x) + "x" + std::to_string(depthRes.y);
-    systemSettings.elements[8].button.text = "Framebuffer resolution : " + std::to_string(framebufferRes.x) + "x" + std::to_string(framebufferRes.y);
+    systemSettings.elements[5].button.text = "Painting resolution : " + std::to_string(paintingRes.x) + "x" + std::to_string(paintingRes.y);
+    systemSettings.elements[6].button.text = "Painting depth texture resolution : " + std::to_string(depthRes.x) + "x" + std::to_string(depthRes.y);
+    systemSettings.elements[7].button.text = "Framebuffer resolution : " + std::to_string(framebufferRes.x) + "x" + std::to_string(framebufferRes.y);
     if(Settings::properties()->framebufferResolutionDivier == 1.f)
-        systemSettings.elements[9].button.text = "Using default framebuffer (Multisampling disabled)";
+        systemSettings.elements[8].button.text = "Using default framebuffer (Multisampling disabled)";
     else
-        systemSettings.elements[9].button.text = "Using custom framebuffer";
-    systemSettings.elements[10].button.text = "Current frame rate : " + std::to_string(timer.FPS) + " & The greatest frame rate value : " + std::to_string(timer.mostHighFPSValue);
+        systemSettings.elements[8].button.text = "Using custom framebuffer";
+    systemSettings.elements[9].button.text = "Current frame rate : " + std::to_string(timer.FPS) + " & The greatest frame rate value : " + std::to_string(timer.mostHighFPSValue);
 
 
     if(TDRendererSettings.elements[12].rangeBar.pointerPressed && !*Mouse::LPressed() && TDRendererSettings.elements[11].checkBox.clickState1){
@@ -271,7 +268,6 @@ void SettingsDialog::render(Timer timer, Painter &painter){
     Settings::properties()->paintingResolutionDivier = std::stof(systemSettings.elements[2].comboBox.texts[systemSettings.elements[2].comboBox.selectedIndex]);
     Settings::properties()->paintingDepthTextureResolutionDivier = std::stof(systemSettings.elements[3].comboBox.texts[systemSettings.elements[3].comboBox.selectedIndex]);
     Settings::properties()->framebufferResolutionDivier = std::stof(systemSettings.elements[4].comboBox.texts[systemSettings.elements[4].comboBox.selectedIndex]);
-    Settings::properties()->framebufferSamples = systemSettings.elements[5].rangeBar.value;
     
     if(TDRendererSettings.elements[11].checkBox.hover && *Mouse::LClick()){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)

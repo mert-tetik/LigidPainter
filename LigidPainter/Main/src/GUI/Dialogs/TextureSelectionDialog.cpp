@@ -579,11 +579,8 @@ static void drawBG(
     
     ShaderSystem::defaultFramebufferShader().setVec2("resolution", Settings::defaultFramebuffer()->resolution);
     ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
-    ShaderSystem::defaultFramebufferShader().setInt("txtr2", 1);
-
-    ShaderSystem::defaultFramebufferShader().setInt("multisamples", 0);
     
-    glActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, bgTexture);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
