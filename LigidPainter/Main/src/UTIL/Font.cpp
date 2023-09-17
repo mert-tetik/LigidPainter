@@ -98,6 +98,13 @@ void Font::loadFont(const char* path){
 			unsigned int texture;
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
+			
+			// set texture options
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			
 			glTexImage2D(
 				GL_TEXTURE_2D,
 				0,
@@ -110,11 +117,6 @@ void Font::loadFont(const char* path){
 				face->glyph->bitmap.buffer
 			);
 
-			// set texture options
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 
 			//Create character stucture using font char data received

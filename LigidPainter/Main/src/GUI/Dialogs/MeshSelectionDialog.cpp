@@ -182,7 +182,7 @@ static void drawBG(
     ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
     
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, bgTexture);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, bgTexture);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
