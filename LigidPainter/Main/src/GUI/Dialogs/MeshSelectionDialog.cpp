@@ -46,8 +46,8 @@ MeshSelectionDialog::MeshSelectionDialog(){
 }
 
 //Forward declarations for the utility functions
-static void initMeshSelectionDialog(int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, int& selectedMeshIndex);
-static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
+static void initMeshSelectionDialog(int &selectedTextureMode, Panel& subPanel, int& selectedMeshIndex);
+static void drawBG(unsigned int bgTexture);
 
 void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selectedMeshI){
     
@@ -55,9 +55,7 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
 
     this->selectedMeshIndex = selectedMeshI;
         
-    unsigned int bgTexture;  
-    glm::ivec2 windowSize;
-    initMeshSelectionDialog(this->selectedTextureMode, bgTexture, windowSize, this->bgPanel, this->selectedMeshIndex);
+    initMeshSelectionDialog(this->selectedTextureMode, this->bgPanel, this->selectedMeshIndex);
 
     while (!getContext()->window.shouldClose())
     {
@@ -66,7 +64,7 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        drawBG(bgTexture, windowSize);
+        drawBG(Settings::defaultFramebuffer()->bgTxtr);
 
         dialogControl.updateStart();
 
@@ -135,6 +133,9 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
         //Set keyboard states to default
         textRenderer.keyInput = false;
         textRenderer.mods = 0;
+
+        Settings::defaultFramebuffer()->render();    
+        Settings::defaultFramebuffer()->setViewport();   
     }
 }
 
@@ -145,31 +146,10 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
 // ---------- UTILITY FUNCTIONS -----------
 static void initMeshSelectionDialog(
                                         int &selectedTextureMode, 
-                                        unsigned int& bgTexture, 
-                                        glm::ivec2& windowSize, 
                                         Panel& bgPanel, 
                                         int& selectedMeshIndex
                                     )
 {
-    // Get the viewport size
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    int viewportWidth = viewport[2];
-    int viewportHeight = viewport[3];
-
-    windowSize = glm::ivec2(viewportWidth, viewportHeight);
-
-    GLfloat* pixels = new GLfloat[windowSize.x * windowSize.y * 4];
-    glReadPixels(0, 0, windowSize.x, windowSize.y, GL_RGBA, GL_FLOAT, pixels);
-
-    glGenTextures(1, &bgTexture);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, bgTexture);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, pixels);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    
     selectedTextureMode = 0;
 
     bgPanel.sections.clear();
@@ -191,18 +171,20 @@ static void initMeshSelectionDialog(
 }
 
 static void drawBG(
-                    unsigned int bgTexture, 
-                    glm::ivec2 windowSize
+                    unsigned int bgTexture
                 )
 {
+    ShaderSystem::defaultFramebufferShader().use();
+    ShaderSystem::defaultFramebufferShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
+    ShaderSystem::defaultFramebufferShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
+    ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
+    
+    ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, bgTexture);
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(windowSize / glm::ivec2(2), 0.1));
-    ShaderSystem::buttonShader().setVec2("scale", windowSize / glm::ivec2(2));
-    ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
-    ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
-    ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
+
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
+    
+    ShaderSystem::buttonShader().use();
 }

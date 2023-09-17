@@ -426,23 +426,10 @@ void Renderer::render(){
 
 
     // ------- Rendering the framebuffer result ------- 
-    
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
-
-    ShaderSystem::defaultFramebufferShader().use();
-    ShaderSystem::defaultFramebufferShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
-    ShaderSystem::defaultFramebufferShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
-    ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
-    
-    ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, Settings::defaultFramebuffer()->colorBuffer);
-
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
-
+    Settings::defaultFramebuffer()->render();
+    Texture clrBufferObj = Settings::defaultFramebuffer()->colorBuffer;
+    Texture bgTxtrObj = Settings::defaultFramebuffer()->bgTxtr;
+    clrBufferObj.duplicateTexture(bgTxtrObj);     
 
 
     //Swap the front and back buffers of the window

@@ -383,8 +383,8 @@ TextureSelectionDialog::TextureSelectionDialog(){
 }
 
 //Forward declarations for the utility functions
-static void initTextureSelectionDialog(int &selectedTextureMode, unsigned int& bgTexture, glm::ivec2& windowSize, Panel& subPanel, Panel& subPanelTxtrPack, Panel& subPanelSmartTextures, int& selectedTextureIndex, Texture& receivedTexture);
-static void drawBG(unsigned int bgTexture, glm::ivec2 windowSize);
+static void initTextureSelectionDialog(int &selectedTextureMode, Panel& subPanel, Panel& subPanelTxtrPack, Panel& subPanelSmartTextures, int& selectedTextureIndex, Texture& receivedTexture);
+static void drawBG(unsigned int bgTexture);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, std::vector<Texture> smartTextureDisplayingTextures);
 static void updateTextureModesPanel(Panel& textureModesPanel, int& selectedTextureMode, int& selectedTextureIndex);
 
@@ -404,14 +404,12 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
             Texture dispTxtr;
             this->selectedTextureMode = 4;
             this->selectedTextureIndex = i;
-            dispTxtr.generateProceduralDisplayingTexture(256);
+            this->selectTheTexture(dispTxtr, 256);
             this->smartTextureDisplayingTextures.push_back(dispTxtr);
         }
     }
     
-    unsigned int bgTexture; 
-    glm::ivec2 windowSize;
-    initTextureSelectionDialog(this->selectedTextureMode, bgTexture, windowSize, this->subPanel, this->subPanelTxtrPack, this->subPanelSmartTextures, this->selectedTextureIndex, receivedTexture);
+    initTextureSelectionDialog(this->selectedTextureMode, this->subPanel, this->subPanelTxtrPack, this->subPanelSmartTextures, this->selectedTextureIndex, receivedTexture);
 
     while (!getContext()->window.shouldClose())
     {
@@ -422,12 +420,12 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Drawing the background 
-        drawBG(bgTexture, windowSize);
+        drawBG(Settings::defaultFramebuffer()->bgTxtr);
 
         dialogControl.updateStart();
 
         // Updating the displaying texture
-        this->displayingTexture.generateProceduralDisplayingTexture(512);
+        this->selectTheTexture(this->displayingTexture, 512);
 
         // Recreating the texture selection panel's elements every frame
         updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, this->smartTextureDisplayingTextures);
@@ -507,6 +505,9 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         //Set keyboard states to default
         textRenderer.keyInput = false;
         textRenderer.mods = 0;
+
+        Settings::defaultFramebuffer()->render();    
+        Settings::defaultFramebuffer()->setViewport();    
     }
 }
 
@@ -517,8 +518,6 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 // ---------- UTILITY FUNCTIONS -----------
 static void initTextureSelectionDialog(
                                         int &selectedTextureMode, 
-                                        unsigned int& bgTexture, 
-                                        glm::ivec2& windowSize, 
                                         Panel& subPanel, 
                                         Panel& subPanelTxtrPack, 
                                         Panel& subPanelSmartTextures, 
@@ -526,24 +525,7 @@ static void initTextureSelectionDialog(
                                         Texture& receivedTexture
                                     )
 {
-    // Get the viewport size
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    int viewportWidth = viewport[2];
-    int viewportHeight = viewport[3];
 
-    windowSize = glm::ivec2(viewportWidth, viewportHeight);
-
-    GLfloat* pixels = new GLfloat[windowSize.x * windowSize.y * 4];
-    glReadPixels(0, 0, windowSize.x, windowSize.y, GL_RGBA, GL_FLOAT, pixels);
-
-    glGenTextures(1, &bgTexture);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, bgTexture);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, windowSize.x, windowSize.y, 0, GL_RGBA, GL_FLOAT, pixels);
-    glGenerateMipmap(GL_TEXTURE_2D);
     
     selectedTextureMode = receivedTexture.proceduralProps.textureSelectionDialog_selectedMode;
     selectedTextureIndex = receivedTexture.proceduralProps.textureSelectionDialog_selectedTextureIndex;
@@ -587,20 +569,22 @@ static void initTextureSelectionDialog(
 }
 
 static void drawBG(
-                    unsigned int bgTexture, 
-                    glm::ivec2 windowSize
+                    unsigned int bgTexture 
                 )
 {
+    ShaderSystem::defaultFramebufferShader().use();
+    ShaderSystem::defaultFramebufferShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
+    ShaderSystem::defaultFramebufferShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
+    ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
+    
+    ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
+    
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, bgTexture);
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(windowSize / glm::ivec2(2), 0.1));
-    ShaderSystem::buttonShader().setVec2("scale", windowSize / glm::ivec2(2));
-    ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
-    ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
-    ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
+
     glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
+    
+    ShaderSystem::buttonShader().use();
 }
 
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, std::vector<Texture> smartTextureDisplayingTextures){

@@ -425,6 +425,7 @@ private:
    int selectedTextureMode = 0;
    void selectTheTexture(Texture& receivedTxtr, int displayingTextureRes);
    void renderPanels(Timer& timer, glm::mat4 guiProjection);
+
 public:
    Panel bgPanel;
    
