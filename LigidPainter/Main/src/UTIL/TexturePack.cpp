@@ -272,7 +272,7 @@ void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
     }
 
     //Finish
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1, &FBO);
     delete[] pixels;
 }
@@ -386,7 +386,7 @@ Texture TexturePack::generateSpriteTexture(){
         ShaderSystem::textureRenderingShader().setInt("states.renderTexture"  ,     0    );
     }
     
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1, &FBO);
 
     //Set the OpenGL viewport to default
@@ -449,7 +449,7 @@ void TexturePack::apply(Texture txtr, float scale, float count, float rotationJi
         }
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1, &FBO);
 
     //Set the OpenGL viewport to default

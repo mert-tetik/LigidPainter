@@ -121,7 +121,7 @@ void Filter::generateDisplayingTexture(){
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     //Finish
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     ShaderSystem::buttonShader().use();
 
     glDeleteFramebuffers(1,&captureFBO);
@@ -169,7 +169,7 @@ void Filter::applyFilter(unsigned int txtr){
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     //Finish
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     ShaderSystem::buttonShader().use();
 
     glDeleteTextures(1, &duplicatedTxtr.ID);

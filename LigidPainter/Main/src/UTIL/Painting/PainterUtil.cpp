@@ -147,7 +147,7 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
     glDepthFunc(GL_LESS);
     
     glDeleteFramebuffers(1, &FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
 
     char* pixels = new char[txtr.getResolution().x * txtr.getResolution().y * 4];
     txtr.getData(pixels);
@@ -363,5 +363,5 @@ void Painter::refreshBuffers(){
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRBO);
     
     //--------- Finish --------- 
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
 }

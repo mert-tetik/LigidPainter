@@ -52,25 +52,25 @@ bool __wasTextureSelectionDialogActive = false;
 void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes){
     __texture_selection_dialog.show(__timer, __projection, txtr, displayingTextureRes);
     __wasTextureSelectionDialogActive = true;
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }
 
 void showFilterSelectionDialog(Filter& filter, int displayingTextureRes){
     __filter_selection_dialog.show(__timer, __projection, filter, displayingTextureRes);
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }
 
 void showMeshSelectionDialog(int& selectedMeshI){
     __mesh_selection_dialog.show(__timer, __projection, selectedMeshI);
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }
 
 void showTexturePackEditorDialog(TexturePack& texturePack){
     __texture_Pack_Editor_Dialog.show(__timer, __projection, texturePack);
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }
 
@@ -477,7 +477,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             ShaderSystem::paintOverTextureGen().use();
         }
         Settings::defaultFramebuffer()->setViewport();
-        glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+        Settings::defaultFramebuffer()->FBO.bind();
         
         ShaderSystem::buttonShader().use();
         if(valueChanged)

@@ -146,7 +146,7 @@ void Model::loadModel(std::string const &path,bool triangulate)
     ShaderSystem::buttonShader().use();
 
     //Bind the default framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     
     //Set the OpenGL viewport to default
     Settings::defaultFramebuffer()->setViewport();    

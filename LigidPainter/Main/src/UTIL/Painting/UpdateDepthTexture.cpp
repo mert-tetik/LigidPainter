@@ -73,7 +73,7 @@ void Painter::updateDepthTexture(){
     //Delete the capture framebuffer
     glDeleteFramebuffers(1,&captureFBO);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 
     glDepthFunc(GL_LEQUAL);

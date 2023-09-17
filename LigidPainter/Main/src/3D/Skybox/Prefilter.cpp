@@ -123,7 +123,7 @@ unsigned int Skybox::createPrefilterMap(){
 	}
 	
 	//Set everything to default
-	glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO); 
+	Settings::defaultFramebuffer()->FBO.bind(); 
 	
 	//!Set viewport the default was there
 

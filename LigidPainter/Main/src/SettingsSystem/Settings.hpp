@@ -152,9 +152,7 @@ Box* getBox();
 namespace Settings{
 
     struct DefaultFramebuffer{
-        unsigned int FBO = 0;
-        unsigned int RBO = 0;
-        unsigned int colorBuffer = 0;
+        Framebuffer FBO;
         unsigned int bgTxtr = 0;
 
         glm::ivec2 resolution;

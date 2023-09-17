@@ -76,5 +76,5 @@ Material::Material(std::string title,int ID){
     //Bind the displaying texture of the material to the capture framebuffer
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->displayingTexture, 0);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
 }

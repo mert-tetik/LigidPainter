@@ -898,7 +898,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
     return sections;
 }
 
-void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, unsigned int& FBO, Texture& currentTexture, Texture& previousTexture, Texture& prevDepth){
+void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, Framebuffer& FBO, Texture& currentTexture, Texture& previousTexture, Texture& prevDepth){
     glDisable(GL_DEPTH_TEST);
 
     //Get the channel's texture from material
@@ -927,28 +927,11 @@ void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& cu
     /* ! Binds another framebuffer ! */
     previousTexture = currentTexture.duplicateTexture();
 
+    currentTexture.update(nullptr, textureResolution, textureResolution);    
+    
     //That framebuffer will be used to get the results of the shader 
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    FBO = Framebuffer(currentTexture, GL_TEXTURE_2D);
 
-    //Bind the channel texture
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
-    
-    //Params for the channel texture
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-    
-    //Refresh the channel texture
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureResolution, textureResolution, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    //Bind the channel texture to the capture framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, currentTexture.ID, 0);
-    
     glClearColor(0,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT);
 }
@@ -958,10 +941,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     Texture textureObject = Texture(txtr);
     unsigned int textureCopy = textureObject.duplicateTexture();
 
-    unsigned int FBO;
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr, 0);
+    Framebuffer FBO = Framebuffer(txtr, GL_TEXTURE_2D);
     glViewport(0, 0, textureResolution, textureResolution);
 
     glClearColor(0,0,0,0);
@@ -988,9 +968,9 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
 
     glDrawArrays(GL_TRIANGLES, 0 , 6);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     
-    glDeleteFramebuffers(1, &FBO);
+    glDeleteFramebuffers(1, &FBO.ID);
     glDeleteTextures(1, &textureCopy);
 }
 
@@ -1029,7 +1009,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
-        unsigned int FBO;
+        Framebuffer FBO;
         Texture currentTexture;
         Texture previousTexture;
         channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
@@ -1051,9 +1031,9 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glActiveTexture(GL_TEXTURE0);
         unsigned int proceduralChannelTexture = 0;
         proceduralChannelTexture = material.materialModifiers[curModI].sections[0].elements[channelI + 1].button.texture.generateProceduralTexture(mesh, textureResolution);
-
         material.materialModifiers[curModI].shader.use();
-        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+        FBO.bind();
+
         glBindTexture(GL_TEXTURE_2D, proceduralChannelTexture);
     
         // Bind the mask texture
@@ -1080,7 +1060,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1,&FBO);
+        glDeleteFramebuffers(1, &FBO.ID);
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
@@ -1119,7 +1099,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
-        unsigned int FBO;
+        Framebuffer FBO;
         Texture currentTexture;
         Texture previousTexture;
         channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
@@ -1192,7 +1172,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1,&FBO);
+        glDeleteFramebuffers(1, &FBO.ID);
 
         //Generating the normal map
         if(channelI == 4){
@@ -1238,7 +1218,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
-        unsigned int FBO;
+        Framebuffer FBO;
         Texture currentTexture;
         Texture previousTexture;
         channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
@@ -1290,7 +1270,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1,&FBO);
+        glDeleteFramebuffers(1, &FBO.ID);
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
@@ -1328,7 +1308,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
-        unsigned int FBO;
+        Framebuffer FBO;
         Texture currentTexture;
         Texture previousTexture;
         channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
@@ -1400,7 +1380,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1,&FBO);
+        glDeleteFramebuffers(1, &FBO.ID);
         
         //Generating the normal map
         if(channelI == 4){
@@ -1444,7 +1424,7 @@ void liquidModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
-        unsigned int FBO;
+        Framebuffer FBO;
         Texture currentTexture;
         Texture previousTexture;
         channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
@@ -1522,7 +1502,7 @@ void liquidModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1,&FBO);
+        glDeleteFramebuffers(1, &FBO.ID);
         
         //Generating the normal map
         if(channelI == 4){
@@ -1569,7 +1549,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
-        unsigned int FBO;
+        Framebuffer FBO;
         Texture currentTexture;
         Texture previousTexture;
         channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
@@ -1648,7 +1628,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1,&FBO);
+        glDeleteFramebuffers(1, &FBO.ID);
         
         //Generating the normal map
         if(channelI == 4){
@@ -1694,7 +1674,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
-        unsigned int FBO;
+        Framebuffer FBO;
         Texture currentTexture;
         Texture previousTexture;
         channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
@@ -1770,7 +1750,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1,&FBO);
+        glDeleteFramebuffers(1, &FBO.ID);
         
         //Generating the normal map
         if(channelI == 4){
@@ -1816,7 +1796,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
-        unsigned int FBO;
+        Framebuffer FBO;
         Texture currentTexture;
         Texture previousTexture;
         channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
@@ -1893,7 +1873,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1,&FBO);
+        glDeleteFramebuffers(1, &FBO.ID);
         
         //Generating the normal map
         if(channelI == 4){
@@ -1938,7 +1918,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
-        unsigned int FBO;
+        Framebuffer FBO;
         Texture currentTexture;
         Texture previousTexture;
         channelPrep(material, mesh, textureResolution, curModI, getScene()->projectionMatrix, getScene()->viewMatrix, channelI, FBO, currentTexture, previousTexture, prevDepthTexture);
@@ -2013,7 +1993,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1,&FBO);
+        glDeleteFramebuffers(1, &FBO.ID);
         
         //Generating the normal map
         if(channelI == 4){

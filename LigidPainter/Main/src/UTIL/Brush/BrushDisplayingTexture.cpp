@@ -129,7 +129,7 @@ void Brush::updateDisplayTexture(){
     }
     
     //Finish
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
     ShaderSystem::buttonShader().use();
 
     glDeleteFramebuffers(1,&captureFBO);

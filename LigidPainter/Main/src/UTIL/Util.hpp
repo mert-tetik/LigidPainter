@@ -280,6 +280,9 @@ public:
     
     Texture(char* pixels, int w, int h, unsigned int filterParam);
 
+    void update(char* pixels, int w, int h);
+    void update(char* pixels, int w, int h, unsigned int filterParam);
+
     /// @brief Load a texture by importing the texture in the given path via STBI
     void load(const char* path);
 
@@ -344,6 +347,34 @@ public:
     /// @brief Generates 2D displaying texture using the proceduralProps & writes the texture into the this->ID
     void generateProceduralDisplayingTexture(int displayingTextureRes);
 
+};
+
+class Renderbuffer{
+public:
+    unsigned int ID;
+    
+    Renderbuffer();
+    Renderbuffer(unsigned int internalformat, glm::ivec2 resolution);
+    Renderbuffer(unsigned int internalformat, glm::ivec2 resolution, int samples);
+
+    void update(unsigned int internalformat, glm::ivec2 resolution);
+    void update(unsigned int internalformat, glm::ivec2 resolution, int samples);
+};
+
+class Framebuffer{
+public:
+    unsigned int ID;
+
+    Texture colorBuffer;
+    Renderbuffer renderBuffer;
+
+    Framebuffer();
+    Framebuffer(Texture colorBuffer, unsigned int textureTarget);
+    Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer);
+
+    void generate();
+    void bind();
+    void setColorBuffer(Texture colorBuffer, unsigned int textureTarget);
 };
 
 /// @brief Image filter library element. 

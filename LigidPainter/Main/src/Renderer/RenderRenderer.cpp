@@ -56,7 +56,7 @@ void Renderer::render(){
     else
         LigidGL::setSwapInterval(0); //Disable VSync
 
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+    Settings::defaultFramebuffer()->FBO.bind();
 
     //Default blending settings
     glEnable(GL_BLEND);
@@ -427,9 +427,8 @@ void Renderer::render(){
 
     // ------- Rendering the framebuffer result ------- 
     Settings::defaultFramebuffer()->render();
-    Texture clrBufferObj = Settings::defaultFramebuffer()->colorBuffer;
     Texture bgTxtrObj = Settings::defaultFramebuffer()->bgTxtr;
-    clrBufferObj.duplicateTexture(bgTxtrObj);     
+    Settings::defaultFramebuffer()->FBO.colorBuffer.duplicateTexture(bgTxtrObj);     
 
 
     //Swap the front and back buffers of the window

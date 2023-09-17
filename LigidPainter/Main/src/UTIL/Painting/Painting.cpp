@@ -141,7 +141,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
     glDepthFunc(GL_LESS);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO); //Bind the default framebuffer
+    Settings::defaultFramebuffer()->FBO.bind(); //Bind the default framebuffer
     
     lastCursorPos = firstCursorPos;
     

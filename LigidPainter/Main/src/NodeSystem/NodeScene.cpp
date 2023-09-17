@@ -270,7 +270,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
 
             glDrawArrays(GL_TRIANGLES, 0 , 6);
             
-            glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+            Settings::defaultFramebuffer()->FBO.bind();
             glDeleteFramebuffers(1, &FBO);
         }
 
@@ -392,7 +392,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
 
             glDrawArrays(GL_TRIANGLES, 0 , 6);
             
-            glBindFramebuffer(GL_FRAMEBUFFER, Settings::defaultFramebuffer()->FBO);
+            Settings::defaultFramebuffer()->FBO.bind();
             glDeleteFramebuffers(1, &FBO);
         }
         
