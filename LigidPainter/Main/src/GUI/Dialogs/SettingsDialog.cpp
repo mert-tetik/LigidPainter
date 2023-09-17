@@ -91,8 +91,13 @@ SettingsDialog::SettingsDialog(){
                                         
                                         Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2.f), 
                                         {
+                                            "0.900000",
                                             "1.000000",
+                                            "1.050000",
+                                            "1.100000",
+                                            "1.150000",
                                             "1.200000",
+                                            "1.300000",
                                             "1.500000",
                                             "1.700000",
                                             "2.000000",

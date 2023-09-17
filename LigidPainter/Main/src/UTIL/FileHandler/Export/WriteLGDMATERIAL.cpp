@@ -606,8 +606,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- 2nd Color ----
                 float noiseScale = material.materialModifiers[i].sections[2].elements[0].rangeBar.value;
                 LGDMATERIAL_WRITEBITS(noiseScale, float, "noiseScale");
-                float noiseStrength = material.materialModifiers[i].sections[2].elements[1].rangeBar.value;
-                LGDMATERIAL_WRITEBITS(noiseStrength, float, "noiseStrength");
+                float sndClrnoiseStrength = material.materialModifiers[i].sections[2].elements[1].rangeBar.value;
+                LGDMATERIAL_WRITEBITS(sndClrnoiseStrength, float, "sndClrnoiseStrength");
                 
                 // ---- Noise ----
                 float noiseStrength = material.materialModifiers[i].sections[3].elements[0].rangeBar.value;
@@ -653,7 +653,7 @@ bool FileHandler::writeLGDMATERIALFile(
             
             }
 
-            else if (material.materialModifiers[i].modifierIndex == ASPHALT_MATERIAL_MODIFIER){
+            else if (material.materialModifiers[i].modifierIndex == DUST_MATERIAL_MODIFIER){
                
                 // ---- Noise ----
                 float size = material.materialModifiers[i].sections[0].elements[0].rangeBar.value;
@@ -686,8 +686,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 LGDMATERIAL_WRITEBITS(count, float, "count");
                 float opacityJitter = material.materialModifiers[i].sections[3].elements[1].rangeBar.value;
                 LGDMATERIAL_WRITEBITS(opacityJitter, float, "opacityJitter");
-                float size = material.materialModifiers[i].sections[3].elements[2].rangeBar.value;
-                LGDMATERIAL_WRITEBITS(size, float, "size");
+                float dropletsSize = material.materialModifiers[i].sections[3].elements[2].rangeBar.value;
+                LGDMATERIAL_WRITEBITS(dropletsSize, float, "dropletsSize");
                 
                 // ---- Colors ----
                 glm::vec4 color1 = material.materialModifiers[i].sections[4].elements[0].button.color;
