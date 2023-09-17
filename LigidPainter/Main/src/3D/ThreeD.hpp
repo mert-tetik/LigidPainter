@@ -133,9 +133,9 @@ public:
     Texture heightMap;
     Texture ambientOcclusion;
 
-    unsigned int uvMask;
+    Texture uvMask;
 
-    unsigned int displayingTxtr = 0;
+    Texture displayingTxtr;
 
     /*! @brief Vertices of the mesh */
     std::vector<Vertex>       vertices;
@@ -190,7 +190,7 @@ public:
     */
     bool newModelAdded = false;
 
-    unsigned int displayingTxtr = 0; 
+    Texture displayingTxtr; 
 
     //Public member functions
     

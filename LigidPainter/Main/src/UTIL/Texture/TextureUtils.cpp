@@ -260,7 +260,7 @@ void Texture::removeSeams(Mesh& mesh, int textureResolution){
     ShaderSystem::boundaryExpandingShader().setInt("originalTexture", 1);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
+    glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
     
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textureCopy);
@@ -300,7 +300,7 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
     ShaderSystem::boundaryExpandingShader().setInt("originalTexture", 1);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
+    glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
     
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textureCopy);
@@ -373,7 +373,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, normalMapTxtr.ID);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
+        glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -421,7 +421,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, procCopy.ID);
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
+        glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 

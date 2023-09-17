@@ -192,9 +192,8 @@ void Library::eraseMaterial  (int index){
     
     __changed = true;
 
-    glDeleteFramebuffers(1, &__materials[index].displayingFBO);
-    glDeleteRenderbuffers(1, &__materials[index].displayingRBO);
-    glDeleteTextures(1, &__materials[index].displayingTexture);
+    glDeleteFramebuffers(1, &__materials[index].displayingFBO.ID);
+    glDeleteTextures(1, &__materials[index].displayingTexture.ID);
     
     __materials.erase(__materials.begin() + index);
 }
@@ -219,7 +218,7 @@ void Library::eraseModel     (int index){
           
     __changed = true;
     
-    glDeleteTextures(1, &__TDModels[index].displayingTxtr);
+    glDeleteTextures(1, &__TDModels[index].displayingTxtr.ID);
     
     for (size_t mshI = 0; mshI < __TDModels[index].meshes.size(); mshI++)
     {
@@ -232,6 +231,9 @@ void Library::eraseModel     (int index){
         glDeleteTextures(1, &__TDModels[index].meshes[mshI].normalMap.ID);
         glDeleteTextures(1, &__TDModels[index].meshes[mshI].heightMap.ID);
         glDeleteTextures(1, &__TDModels[index].meshes[mshI].ambientOcclusion.ID);
+
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].uvMask.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].displayingTxtr.ID);
     }
 
     __TDModels.erase(__TDModels.begin() + index);
@@ -285,9 +287,8 @@ void Library::clearMaterials  (){
     
     for (size_t i = 0; i < __materials.size(); i++)
     {
-        glDeleteRenderbuffers(1, &__materials[i].displayingRBO);
-        glDeleteFramebuffers(1, &__materials[i].displayingFBO);
-        glDeleteTextures(1, &__materials[i].displayingTexture);
+        glDeleteFramebuffers(1, &__materials[i].displayingFBO.ID);
+        glDeleteTextures(1, &__materials[i].displayingTexture.ID);
     }
 
     __materials.clear();
@@ -304,7 +305,7 @@ void Library::clearModels     (){
     
     for (size_t i = 0; i < __TDModels.size(); i++)
     {
-        glDeleteTextures(1, &__TDModels[i].displayingTxtr);
+        glDeleteTextures(1, &__TDModels[i].displayingTxtr.ID);
 
         for (size_t mshI = 0; mshI < __TDModels[i].meshes.size(); mshI++)
         {
@@ -317,6 +318,9 @@ void Library::clearModels     (){
             glDeleteTextures(1, &__TDModels[i].meshes[mshI].normalMap.ID);
             glDeleteTextures(1, &__TDModels[i].meshes[mshI].heightMap.ID);
             glDeleteTextures(1, &__TDModels[i].meshes[mshI].ambientOcclusion.ID);
+            
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].uvMask.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].displayingTxtr.ID);
         }
     }
 

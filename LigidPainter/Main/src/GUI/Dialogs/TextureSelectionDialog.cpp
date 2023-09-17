@@ -701,7 +701,7 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     else if(this->selectedTextureMode == 6){
         receivedTexture.proceduralProps.proceduralID = -1;
         if(selectedTextureIndex < Library::getTextureArraySize())
-            receivedTexture.proceduralProps.proceduralTextureID = getModel()->meshes[selectedTextureIndex].uvMask;
+            receivedTexture.proceduralProps.proceduralTextureID = getModel()->meshes[selectedTextureIndex].uvMask.ID;
     }
     
 
@@ -856,7 +856,7 @@ void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection)
             }
             else{
                 if(i < getModel()->meshes.size())
-                    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectedTextureIndex].uvMask);
+                    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectedTextureIndex].uvMask.ID);
             }
             
 

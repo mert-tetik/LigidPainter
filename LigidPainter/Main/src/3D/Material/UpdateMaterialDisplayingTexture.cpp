@@ -63,10 +63,10 @@ void Material::updateMaterialDisplayingTexture(
     
     //!Update the material displaying texture
     
-    glBindFramebuffer(GL_FRAMEBUFFER, this->displayingFBO);
+    this->displayingFBO.bind();
     
     //Resolution of the material displaying texture
-    const int displayRes = 2048;
+    const int displayRes = 1024;
 
     //Set the OpenGL viewport to the resolution of the material displaying texture
     glViewport(0,0,displayRes,displayRes);

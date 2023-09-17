@@ -27,21 +27,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ShaderSystem/Shader.hpp"
 #include "SettingsSystem/Settings.hpp"
 
-static void initTexture(unsigned int &txtr,int textureRes){
-    glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1,&txtr);
-    glBindTexture(GL_TEXTURE_2D,txtr);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
-}
-
 glm::vec3 Mesh::getCenterPosition(){
     glm::vec3 center;
     for (const Vertex& vertex : this->vertices) {
@@ -81,45 +66,15 @@ float Mesh::getBiggestFloatValue(glm::vec3 origin){
 }
 
 void Mesh::generateDisplayingTexture(){
-    if(this->displayingTxtr == 0)
-        glGenTextures(1, &this->displayingTxtr);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,this->displayingTxtr);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-
-    //Resolution of the material displaying texture
     const int displayRes = 256;
     
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes, displayRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    //Generating the displaying texture
+    if(this->displayingTxtr.ID == 0)
+        this->displayingTxtr = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
+    else
+        this->displayingTxtr.update(nullptr, displayRes, displayRes, GL_LINEAR);
 
-    unsigned int FBO;
-
-    //Capturing framebuffer
-    glGenFramebuffers(1, &FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-    //Render buffer to render the sphere 3D model (for depth testing)
-    unsigned int RBO;
-	glGenRenderbuffers(1,&RBO);
-	glBindRenderbuffer(GL_RENDERBUFFER,RBO);
-
-    glDisable(GL_CULL_FACE);
-	
-    //Set the renderbuffer to store depth
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, displayRes, displayRes);
-	
-    //Give the renderbuffer to the framebuffer
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
-    
-    //Bind the displaying texture of the material to the capture framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->displayingTxtr, 0);
+    Framebuffer FBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)));
 
     glm::vec3 meshCenter = this->getCenterPosition();
     
@@ -144,9 +99,8 @@ void Mesh::generateDisplayingTexture(){
     
     //!Update the material displaying texture
     
-    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+    FBO.bind();
     
-
     //Set the OpenGL viewport to the resolution of the material displaying texture
     glViewport(0,0,displayRes,displayRes);
 
@@ -180,19 +134,16 @@ void Mesh::generateDisplayingTexture(){
     
     //Set the OpenGL viewport to default
     Settings::defaultFramebuffer()->setViewport();    
-    glDeleteFramebuffers(1, &FBO);
-    glDeleteRenderbuffers(1, &RBO);
+    
+    FBO.deleteBuffers(false, true);
 }
 
 void Mesh::generateUVMask(){
     const int resolution = 1024;
     
-    initTexture(this->uvMask, resolution);
+    this->uvMask = Texture(nullptr, resolution, resolution, GL_NEAREST);
 
-    unsigned int FBO;
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->uvMask, 0);
+    Framebuffer FBO = Framebuffer(this->uvMask, GL_TEXTURE_2D);
     glViewport(0, 0, resolution, resolution);
 
     glClearColor(0, 0, 0, 1);
@@ -205,17 +156,17 @@ void Mesh::generateUVMask(){
     this->Draw();
 
     Settings::defaultFramebuffer()->FBO.bind();
-    glDeleteFramebuffers(1, &FBO);
+    FBO.deleteBuffers(false, false);
 }
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName)
 {
-    initTexture(albedo.ID, 1024);
-    initTexture(roughness.ID, 1024);
-    initTexture(metallic.ID, 1024);
-    initTexture(normalMap.ID, 1024);
-    initTexture(heightMap.ID, 1024);
-    initTexture(ambientOcclusion.ID, 1024);
+    this->albedo = Texture(nullptr, 1024, 1024, GL_LINEAR);
+    this->roughness = Texture(nullptr, 1024, 1024, GL_LINEAR);
+    this->metallic = Texture(nullptr, 1024, 1024, GL_LINEAR);
+    this->normalMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
+    this->heightMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
+    this->ambientOcclusion = Texture(nullptr, 1024, 1024, GL_LINEAR);
 
     this->vertices = vertices;
     this->indices = indices;

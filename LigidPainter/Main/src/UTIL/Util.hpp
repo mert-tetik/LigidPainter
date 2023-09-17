@@ -351,14 +351,14 @@ public:
 
 class Renderbuffer{
 public:
-    unsigned int ID;
+    unsigned int ID, internalformat, attachment;
     
     Renderbuffer();
-    Renderbuffer(unsigned int internalformat, glm::ivec2 resolution);
-    Renderbuffer(unsigned int internalformat, glm::ivec2 resolution, int samples);
+    Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution);
+    Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution, int samples);
 
-    void update(unsigned int internalformat, glm::ivec2 resolution);
-    void update(unsigned int internalformat, glm::ivec2 resolution, int samples);
+    void update(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution);
+    void update(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution, int samples);
 };
 
 class Framebuffer{
@@ -375,6 +375,7 @@ public:
     void generate();
     void bind();
     void setColorBuffer(Texture colorBuffer, unsigned int textureTarget);
+    void deleteBuffers(bool delColorBuffer, bool delRenderBuffer);
 };
 
 /// @brief Image filter library element. 

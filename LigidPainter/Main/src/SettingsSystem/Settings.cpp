@@ -152,7 +152,7 @@ namespace Settings{
         glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Settings::properties()->framebufferSamples, GL_RGBA8, resolution.x, resolution.y, GL_TRUE);
         
         //--------- init FBO --------- 
-        this->FBO = Framebuffer(colorBuffer, GL_TEXTURE_2D_MULTISAMPLE, Renderbuffer(GL_DEPTH24_STENCIL8, resolution, Settings::properties()->framebufferSamples));
+        this->FBO = Framebuffer(colorBuffer, GL_TEXTURE_2D_MULTISAMPLE, Renderbuffer(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT,resolution, Settings::properties()->framebufferSamples));
 
         orgID = this->FBO.ID;
         this->FBO.ID = 0;
@@ -177,7 +177,7 @@ namespace Settings{
         glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, Settings::properties()->framebufferSamples, GL_RGBA8, resolution.x, resolution.y, GL_TRUE);
 
         //--------- update RBO --------- 
-        this->FBO.renderBuffer.update(GL_DEPTH24_STENCIL8, resolution, Settings::properties()->framebufferSamples);
+        this->FBO.renderBuffer.update(GL_DEPTH24_STENCIL8, GL_DEPTH_STENCIL_ATTACHMENT, resolution, Settings::properties()->framebufferSamples);
     }
 
     void DefaultFramebuffer::setViewport(){

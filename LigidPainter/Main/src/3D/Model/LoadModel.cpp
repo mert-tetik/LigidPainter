@@ -57,48 +57,19 @@ void Model::loadModel(std::string const &path,bool triangulate)
 
         return;
     }
+    
+    //Resolution of the model displaying texture
+    const int displayRes = 512;
 
     //Generating the displaying texture
+    if(this->displayingTxtr.ID == 0)
+        this->displayingTxtr = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
+    else
+        this->displayingTxtr.update(nullptr, displayRes, displayRes, GL_LINEAR);
 
-    if(this->displayingTxtr == 0)
-        glGenTextures(1, &this->displayingTxtr);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,this->displayingTxtr);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-
-    //Resolution of the material displaying texture
-    const int displayRes = 512;
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes, displayRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    unsigned int FBO;
-
-    //Capturing framebuffer
-    glGenFramebuffers(1, &FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    
-    //Render buffer to render the sphere 3D model (for depth testing)
-    unsigned int RBO;
-	glGenRenderbuffers(1,&RBO);
-	glBindRenderbuffer(GL_RENDERBUFFER,RBO);
+    Framebuffer FBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)));
 
     glDisable(GL_CULL_FACE);
-	
-    //Set the renderbuffer to store depth
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, displayRes, displayRes);
-	
-    //Give the renderbuffer to the framebuffer
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
-    
-    //Bind the displaying texture of the material to the capture framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->displayingTxtr, 0);
 
     glm::vec3 camPos = glm::vec3(7.f, 0.f, 0.f);
 
@@ -111,16 +82,15 @@ void Model::loadModel(std::string const &path,bool triangulate)
     glm::mat4 projectionMatrix = glm::perspective(
                                                     glm::radians(35.f), //Fov  
                                                     -1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
-                                                    100.f,  //Near (the material is pretty close to the camera actually  ) 
+                                                    100.f,  //Near (the model is pretty close to the camera actually  ) 
                                                     0.1f    //Far
                                                 );
     
-    //!Update the material displaying texture
+    //!Update the model displaying texture
     
-    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-    
+    FBO.bind();
 
-    //Set the OpenGL viewport to the resolution of the material displaying texture
+    //Set the OpenGL viewport to the resolution of the model displaying texture
     glViewport(0,0,displayRes,displayRes);
 
     //Clear the capture framebuffer (displaying texture) with alpha zero color
@@ -150,6 +120,7 @@ void Model::loadModel(std::string const &path,bool triangulate)
     
     //Set the OpenGL viewport to default
     Settings::defaultFramebuffer()->setViewport();    
-    glDeleteFramebuffers(1, &FBO);
-    glDeleteRenderbuffers(1, &RBO);
+    
+    /* Delete the framebuffer & the renderbuffer*/
+    FBO.deleteBuffers(false, true);
 }

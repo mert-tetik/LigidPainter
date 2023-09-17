@@ -964,13 +964,13 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     glBindTexture(GL_TEXTURE_2D, textureCopy);
     
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, mesh.uvMask);
+    glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
 
     glDrawArrays(GL_TRIANGLES, 0 , 6);
 
     Settings::defaultFramebuffer()->FBO.bind();
     
-    glDeleteFramebuffers(1, &FBO.ID);
+    FBO.deleteBuffers(false, false);
     glDeleteTextures(1, &textureCopy);
 }
 
@@ -1060,7 +1060,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1, &FBO.ID);
+        FBO.deleteBuffers(false, false);
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
@@ -1172,7 +1172,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1, &FBO.ID);
+        FBO.deleteBuffers(false, false);
 
         //Generating the normal map
         if(channelI == 4){
@@ -1270,7 +1270,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1, &FBO.ID);
+        FBO.deleteBuffers(false, false);
         glEnable(GL_DEPTH_TEST);
 
         currentTexture.removeSeams(mesh,textureResolution);
@@ -1380,7 +1380,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1, &FBO.ID);
+        FBO.deleteBuffers(false, false);
         
         //Generating the normal map
         if(channelI == 4){
@@ -1502,7 +1502,7 @@ void liquidModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1, &FBO.ID);
+        FBO.deleteBuffers(false, false);
         
         //Generating the normal map
         if(channelI == 4){
@@ -1628,7 +1628,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1, &FBO.ID);
+        FBO.deleteBuffers(false, false);
         
         //Generating the normal map
         if(channelI == 4){
@@ -1750,7 +1750,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1, &FBO.ID);
+        FBO.deleteBuffers(false, false);
         
         //Generating the normal map
         if(channelI == 4){
@@ -1873,7 +1873,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1, &FBO.ID);
+        FBO.deleteBuffers(false, false);
         
         //Generating the normal map
         if(channelI == 4){
@@ -1993,7 +1993,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
-        glDeleteFramebuffers(1, &FBO.ID);
+        FBO.deleteBuffers(false, false);
         
         //Generating the normal map
         if(channelI == 4){

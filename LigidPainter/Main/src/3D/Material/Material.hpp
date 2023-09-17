@@ -104,10 +104,10 @@ public:
     std::string title;
 
     /// @brief texture used to render the material to display
-    unsigned int displayingTexture;
+    Texture displayingTexture;
 
     /// @brief Framebuffer & Renderbuffer objects used to render the material to display
-    unsigned int displayingFBO, displayingRBO;
+    Framebuffer displayingFBO;
     
     /// @brief Unique id to distinguish the materials & connect them to the nodes 
     int uniqueID;

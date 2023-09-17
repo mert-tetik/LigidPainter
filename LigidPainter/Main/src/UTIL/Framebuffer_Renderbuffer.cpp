@@ -30,36 +30,54 @@ Box.hpp : Is used to render a single 2D square.
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
     
+// --------- Renderbuffer -----------
+
 Renderbuffer::Renderbuffer(){
     
 }
 
-Renderbuffer::Renderbuffer(unsigned int internalformat, glm::ivec2 resolution){
+Renderbuffer::Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution){
+    this->internalformat = internalformat;
+    this->attachment = attachment;
+
     glGenRenderbuffers(1, &this->ID);
     glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
     glRenderbufferStorage(GL_RENDERBUFFER, internalformat, resolution.x, resolution.y);
 }
 
-Renderbuffer::Renderbuffer(unsigned int internalformat, glm::ivec2 resolution, int samples){
+Renderbuffer::Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution, int samples){
+    this->internalformat = internalformat;
+    this->attachment = attachment;
+
     glGenRenderbuffers(1, &this->ID);
     glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
     glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalformat, resolution.x, resolution.y);
 }
 
-void Renderbuffer::update(unsigned int internalformat, glm::ivec2 resolution){
+void Renderbuffer::update(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution){
+    this->internalformat = internalformat;
+    this->attachment = attachment;
+
     glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
     glRenderbufferStorage(GL_RENDERBUFFER, internalformat, resolution.x, resolution.y);
 }
 
-void Renderbuffer::update(unsigned int internalformat, glm::ivec2 resolution, int samples){
+void Renderbuffer::update(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution, int samples){
+    this->internalformat = internalformat;
+    this->attachment = attachment;
+
     glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
     glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalformat, resolution.x, resolution.y);
 }
 
+
+
+// ------------ Framebuffer -------------
 
 Framebuffer::Framebuffer(){
 
 }
+
 Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget){
     this->colorBuffer = colorBuffer;
     
@@ -67,6 +85,7 @@ Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget){
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
 }
+
 Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer){
     this->colorBuffer = colorBuffer;
     this->renderBuffer = renderbuffer;
@@ -74,17 +93,30 @@ Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Render
     glGenFramebuffers(1, &this->ID);
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer.ID);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, renderbuffer.attachment, GL_RENDERBUFFER, renderbuffer.ID);
 }
+
 void Framebuffer::generate(){
     glGenFramebuffers(1, &this->ID);
 }
+
 void Framebuffer::bind(){
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
 }
+
 void Framebuffer::setColorBuffer(Texture colorBuffer, unsigned int textureTarget){
     this->colorBuffer = colorBuffer;
     
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
+}
+
+void Framebuffer::deleteBuffers(bool delColorBuffer, bool delRenderBuffer){
+    glDeleteRenderbuffers(1, &this->ID);
+    
+    if(delColorBuffer)
+        glDeleteTextures(1, &this->colorBuffer.ID);
+
+    if(delRenderBuffer)
+        glDeleteRenderbuffers(1, &this->renderBuffer.ID);
 }
