@@ -17,5 +17,5 @@ void main(){
     else 
         mask = mix(1., mask, 1. - (offset*2. - 1.));
 
-    fragColor = vec4(mix(texture(texture_black, TexCoords).rgb, texture(texture_white, TexCoords).rgb, mask * texture(texture_white, TexCoords).a), 1.);
+    fragColor = vec4(mix(texture(texture_black, TexCoords), texture(texture_white, TexCoords), mask * texture(texture_white, TexCoords).a));
 }

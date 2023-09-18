@@ -145,9 +145,11 @@ TextureEditorDialog::TextureEditorDialog(){
     this->coloringElements[5].button.color = glm::vec4(0.f, 0.23f, 1.f, 1.f);
 
     this->normalMapElements = {
+        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Height Map To Normal Map", "Normal Map To Height Map"}, "Mode", 0.f),
         ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Blue Scale", "Gray Scale"}, "Normal Map Function", 0.f),
-        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Strength",  Texture(), 0.f, 0.f, 1.0f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Strength",  Texture(), 0.f, 0.f, 2.0f, 1.f),
         RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Blur",  Texture(), 0.f, 0.f, 1.f, 0.f),
+        RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Rotation",  Texture(), 0.f, 0.f, 360.f, 0.f),
     };
 
     this->distortionElements = {
@@ -321,9 +323,11 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     
         ShaderSystem::txtrEditorNormalMapShader().setInt("txtr", 0);
         ShaderSystem::txtrEditorNormalMapShader().setVec2("txtrResolution", displayRes);
-        ShaderSystem::txtrEditorNormalMapShader().setInt("grayScale", normalMapElements[0].comboBox.selectedIndex);
-        ShaderSystem::txtrEditorNormalMapShader().setFloat("strength", normalMapElements[1].rangeBar.value);
-        ShaderSystem::txtrEditorNormalMapShader().setFloat("blurVal", normalMapElements[2].rangeBar.value);
+        ShaderSystem::txtrEditorNormalMapShader().setInt("mode", normalMapElements[0].comboBox.selectedIndex);
+        ShaderSystem::txtrEditorNormalMapShader().setInt("grayScale", normalMapElements[1].comboBox.selectedIndex);
+        ShaderSystem::txtrEditorNormalMapShader().setFloat("strength", normalMapElements[2].rangeBar.value);
+        ShaderSystem::txtrEditorNormalMapShader().setFloat("blurVal", normalMapElements[3].rangeBar.value);
+        ShaderSystem::txtrEditorNormalMapShader().setFloat("rot", normalMapElements[4].rangeBar.value);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
@@ -504,14 +508,15 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
             if(i == 1 && resizeElements[0].comboBox.selectedIndex != 2)
                 i++;
 
+            if(resizeElements[i].isInteracted())
+                anyInteraction = true;
+            
             resizeElements[i].pos = displayerBtn.pos;
             resizeElements[i].pos.x += displayerBtn.scale.x * 2.f;
             resizeElements[i].pos.y -= displayerBtn.scale.y * .5f;
             resizeElements[i].pos.y += 8.f * eCnt;
             resizeElements[i].render(timer,true);
 
-            if(resizeElements[i].isInteracted())
-                anyInteraction = true;
             
             eCnt++;
         }
@@ -577,9 +582,17 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
 
     if(this->selectedSection == 3){
         int eCnt = 0;
+
         
         for (size_t i = 0; i < normalMapElements.size(); i++)
         {
+            normalMapElementsLoopReturn:
+
+            if((i == 1 || i == 2 || i == 3) && coloringElements[0].comboBox.selectedIndex != 0){
+                i++;
+                goto normalMapElementsLoopReturn;
+            }
+            
             normalMapElements[i].pos = displayerBtn.pos;
             normalMapElements[i].pos.x += displayerBtn.scale.x * 2.f;
             normalMapElements[i].pos.y -= displayerBtn.scale.y * .5f;
@@ -589,7 +602,6 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
             if(normalMapElements[i].isInteracted())
                 anyInteraction = true;
         }
-        
     }
 
     if(this->selectedSection == 4){
@@ -662,11 +674,13 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
     }
 
     this->maskTextureButton.pos = displayerBtn.pos;
-    this->maskTextureButton.pos.y += displayerBtn.scale.y * 1.2;
+    this->maskTextureButton.pos.y += displayerBtn.scale.y * 1.15;
     this->maskTextureButton.render(timer, true);
+    
     this->saveButton.pos = displayerBtn.pos;
     this->saveButton.pos.y += displayerBtn.scale.y * 1.2 + maskTextureButton.scale.y * 3.f;
     this->saveButton.render(timer, true);
+    
     this->saveAsButton.pos = saveButton.pos;
     this->saveAsButton.pos.y += saveButton.scale.y * 3.f;
     this->saveAsButton.render(timer, true);
