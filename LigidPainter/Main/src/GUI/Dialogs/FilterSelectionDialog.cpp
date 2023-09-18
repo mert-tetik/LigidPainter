@@ -209,12 +209,10 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
 
         //End the dialog
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && *Mouse::LClick())){
-            dialogControl.unActivate();
             selectedTextureIndex = 0;
+            break;
         }
 
-        if(!this->dialogControl.isActive())
-            break;
             
         dialogControl.updateEnd(timer,0.15f);
 

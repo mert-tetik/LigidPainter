@@ -265,6 +265,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                 if(modifiersPanel.sections[secI].elements[elementI].button.clicked){
                     if(secI == modifiersPanel.sections.size()-1 && elementI == modifiersPanel.sections[secI].elements.size()-1){
                         modifiersPanel.sections[secI].elements[0].button.filter.shader.ID = 0;
+                        glDeleteTextures(1, &modifiersPanel.sections[secI].elements[0].button.texture.ID);
                         modifiersPanel.sections[secI].elements[0].button.texture = Texture();
                         material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[0].button.filter.shader.ID = 0; 
                         material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[0].button.texture = Texture(); 
@@ -431,10 +432,14 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
 void MaterialEditorDialog::manageContextMenuActions( Material &material)
 {
     if(ContextMenus::materialModifier.dialogControl.isActive()){ //If material modifier context menu is active
-        //Delete button pressed
+        // Delete button pressed
         if(ContextMenus::materialModifier.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
+            // Deleting the mask texture
             glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture.ID); 
 
+            // Deleting the albedo filter's displaying texture
+            glDeleteTextures(1, &modifiersPanel.sections[modifiersPanel.sections.size()-1].elements[0].button.texture.ID);
+            
             if(material.materialModifiers[ContextMenus::materialModifier.selectedElement].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
                 glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[1].button.texture.ID); 
                 glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[2].button.texture.ID); 
