@@ -138,9 +138,6 @@ public:
     * @brief Create the node class
     * @param nodeIndex is @ref MATERIAL_NODE or @ref MESH_NODE. Indicates what form does the node has.
     * @param materialID used if the nodeIndex is : @ref MATERIAL_NODE indicates the unique ID value of the material used by the material node 
-    * @param buttonShader button shader used to render the GUI elements
-    * @param connectionCurveShader curve shader used to render connection line curves 
-    * @param videoScale primary monitor resolution value
     */
     Node(int nodeIndex, int materialID);
 

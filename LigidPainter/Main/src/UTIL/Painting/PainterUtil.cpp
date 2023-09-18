@@ -123,20 +123,20 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
     for (size_t i = 0; i < this->vectorStrokes.size(); i++)
     {
         //ABS
-        ShaderSystem::connectionCurve().use();
+        ShaderSystem::vectoralCurve().use();
         
-        ShaderSystem::connectionCurve().setMat4("projection", glm::ortho(0.f, (float)textureResolution, 0.f, (float)textureResolution));
-        ShaderSystem::connectionCurve().setVec3("pos", glm::vec3(textureResolution/2.f, textureResolution/2.f, 0.9f));
-        ShaderSystem::connectionCurve().setVec2("scale", glm::vec2(textureResolution/2.f, textureResolution/2.f));
+        ShaderSystem::vectoralCurve().setMat4("projection", glm::ortho(0.f, (float)textureResolution, 0.f, (float)textureResolution));
+        ShaderSystem::vectoralCurve().setVec3("pos", glm::vec3(textureResolution/2.f, textureResolution/2.f, 0.9f));
+        ShaderSystem::vectoralCurve().setVec2("scale", glm::vec2(textureResolution/2.f, textureResolution/2.f));
         
-        ShaderSystem::connectionCurve().setVec2("direction", this->vectorStrokes[i].offsetPos);
+        ShaderSystem::vectoralCurve().setVec2("direction", this->vectorStrokes[i].offsetPos);
         
-        ShaderSystem::connectionCurve().setVec2("startPos", this->vectorStrokes[i].startPos);
-        ShaderSystem::connectionCurve().setVec2("destPos", this->vectorStrokes[i].endPos);
-        ShaderSystem::connectionCurve().setVec2("percScale", glm::vec2(textureResolution));
-        ShaderSystem::connectionCurve().setInt("lineCapturingMode", 1);
+        ShaderSystem::vectoralCurve().setVec2("startPos", this->vectorStrokes[i].startPos);
+        ShaderSystem::vectoralCurve().setVec2("destPos", this->vectorStrokes[i].endPos);
+        ShaderSystem::vectoralCurve().setVec2("percScale", glm::vec2(textureResolution));
+        ShaderSystem::vectoralCurve().setInt("lineCapturingMode", 1);
         
-        ShaderSystem::connectionCurve().setFloat("EDGE", 0.0005);
+        ShaderSystem::vectoralCurve().setFloat("EDGE", 0.0005);
 
         glDrawArrays(GL_TRIANGLES, 0 , 6);
     }
@@ -271,26 +271,26 @@ void VectorStroke::draw(float edge, bool sceneState, std::vector<VectorStroke>& 
         
 
     //ABS
-    ShaderSystem::connectionCurve().use();
+    ShaderSystem::vectoralCurve().use();
     
-    ShaderSystem::connectionCurve().setVec3("pos", glm::vec3(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f, 0.9f));
-    ShaderSystem::connectionCurve().setVec2("scale", glm::vec2(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f));
+    ShaderSystem::vectoralCurve().setVec3("pos", glm::vec3(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f, 0.9f));
+    ShaderSystem::vectoralCurve().setVec2("scale", glm::vec2(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f));
     
-    ShaderSystem::connectionCurve().setVec2("direction", this->offsetPos);
+    ShaderSystem::vectoralCurve().setVec2("direction", this->offsetPos);
     
-    ShaderSystem::connectionCurve().setVec2("startPos", this->startPos);
-    ShaderSystem::connectionCurve().setVec2("destPos", this->endPos);
-    ShaderSystem::connectionCurve().setVec2("percScale", *Settings::videoScale());
-    ShaderSystem::connectionCurve().setInt("lineCapturingMode", 0);
+    ShaderSystem::vectoralCurve().setVec2("startPos", this->startPos);
+    ShaderSystem::vectoralCurve().setVec2("destPos", this->endPos);
+    ShaderSystem::vectoralCurve().setVec2("percScale", *Settings::videoScale());
+    ShaderSystem::vectoralCurve().setInt("lineCapturingMode", 0);
     
-    ShaderSystem::connectionCurve().setFloat("EDGE", edge);
+    ShaderSystem::vectoralCurve().setFloat("EDGE", edge);
 
     if(endPointHover || endPointPressed)
-        ShaderSystem::connectionCurve().setVec3("endPointColor", glm::vec3(0.f,1.f,0.f));
+        ShaderSystem::vectoralCurve().setVec3("endPointColor", glm::vec3(0.f,1.f,0.f));
     else if(endPointClicked)
-        ShaderSystem::connectionCurve().setVec3("endPointColor", glm::vec3(0.f,0.f,1.f));
+        ShaderSystem::vectoralCurve().setVec3("endPointColor", glm::vec3(0.f,0.f,1.f));
     else
-        ShaderSystem::connectionCurve().setVec3("endPointColor", glm::vec3(1.f,0.f,0.f));
+        ShaderSystem::vectoralCurve().setVec3("endPointColor", glm::vec3(1.f,0.f,0.f));
 
     glDrawArrays(GL_TRIANGLES, 0 , 6);
     

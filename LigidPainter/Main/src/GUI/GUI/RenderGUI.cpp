@@ -95,9 +95,14 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
 
 
     //Give projection to the curve shader        
-    ShaderSystem::connectionCurve().use();
-    ShaderSystem::connectionCurve().setMat4("projection",this->projection); 
+    ShaderSystem::vectoralCurve().use();
+    ShaderSystem::vectoralCurve().setMat4("projection",this->projection); 
     
+    //Give projection to the curve shader        
+    ShaderSystem::nodeConnectionCurve().use();
+    ShaderSystem::nodeConnectionCurve().setMat4("projection",this->projection); 
+    
+
     //Give projection to the color picker shader !IS NOT USED RN 
     ShaderSystem::colorPicker().use();
     ShaderSystem::colorPicker().setMat4("projection",this->projection); 

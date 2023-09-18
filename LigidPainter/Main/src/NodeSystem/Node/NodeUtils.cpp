@@ -43,21 +43,20 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,Panel nodeEditorPanel, int dir
                                     ,0.9f); 
     // scale value % of the video scale
     glm::vec2 resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
-    ShaderSystem::connectionCurve().use();
+    ShaderSystem::nodeConnectionCurve().use();
     nodeEditorPanel.resultPos.x = Settings::videoScale()->x/2.f;
     nodeEditorPanel.resultPos.y = Settings::videoScale()->y/2.f;
     nodeEditorPanel.resultScale.x = Settings::videoScale()->x/2.f;
     nodeEditorPanel.resultScale.y = Settings::videoScale()->y/2.f;
     
-    ShaderSystem::connectionCurve().setVec3("pos",       nodeEditorPanel.resultPos);
-    ShaderSystem::connectionCurve().setVec2("scale",     nodeEditorPanel.resultScale);
+    ShaderSystem::nodeConnectionCurve().setVec3("pos",       nodeEditorPanel.resultPos);
+    ShaderSystem::nodeConnectionCurve().setVec2("scale",     nodeEditorPanel.resultScale);
     
-    ShaderSystem::connectionCurve().setInt("direction",       direction);
+    ShaderSystem::nodeConnectionCurve().setInt("direction",       direction);
     
-    ShaderSystem::connectionCurve().setVec2("startPos",       src);
-    ShaderSystem::connectionCurve().setVec2("destPos",       dest);
-    ShaderSystem::connectionCurve().setVec2("percScale", nodeEditorPanel.resultScale);
-    ShaderSystem::connectionCurve().setInt("lineCapturingMode", 0);
+    ShaderSystem::nodeConnectionCurve().setVec2("startPos",       src);
+    ShaderSystem::nodeConnectionCurve().setVec2("destPos",       dest);
+    ShaderSystem::nodeConnectionCurve().setVec2("percScale", nodeEditorPanel.resultScale);
     
     glDrawArrays(GL_TRIANGLES, 0, 6);
     ShaderSystem::buttonShader().use();

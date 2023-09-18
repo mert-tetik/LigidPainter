@@ -89,7 +89,7 @@ namespace ShaderSystem{
     Shader skyboxBall();
     Shader buttonShader();
     Shader prefilteringShader();
-    Shader connectionCurve();
+    Shader vectoralCurve();
     Shader colorPicker();
     Shader twoDPainting();
     Shader depth3D();
@@ -120,6 +120,7 @@ namespace ShaderSystem{
     Shader edgeWearShader();
     Shader bakingShader();
     Shader defaultFramebufferShader();
+    Shader nodeConnectionCurve();
 
     void initShaderSystem();
 };

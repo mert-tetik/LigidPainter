@@ -27,7 +27,7 @@ Shader __skyboxShader;
 Shader __skyboxBall;
 Shader __buttonShader;
 Shader __prefilteringShader;
-Shader __connectionCurve;
+Shader __vectoralCurve;
 Shader __colorPicker;
 Shader __twoDPainting;
 Shader __depth3D;
@@ -58,6 +58,7 @@ Shader __normalVectorShader;
 Shader __edgeWearShader;
 Shader __bakingShader;
 Shader __defaultFramebufferShader;
+Shader __nodeConnectionCurve;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -68,7 +69,7 @@ void ShaderSystem::initShaderSystem(){
     __skyboxShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert", "LigidPainter/Resources/Shaders/aFrag/Skybox.frag");
     __prefilteringShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert", "LigidPainter/Resources/Shaders/aFrag/PrefilterSkybox.frag");
     __buttonShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Button.frag");
-    __connectionCurve.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/ConnectionCurve.frag");
+    __vectoralCurve.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/VectoralCurve.frag");
     __colorPicker.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag");
     __twoDPainting.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/2DPainting.frag");
     __twoDPaintingModeAreaShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag");
@@ -96,6 +97,7 @@ void ShaderSystem::initShaderSystem(){
     __textureRenderingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/TextureRendering.frag");
     __edgeWearShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/EdgeWear.frag");
     __defaultFramebufferShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/DefaultFramebuffer.frag");
+    __nodeConnectionCurve.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/NodeConnectionCurve.frag");
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -113,8 +115,8 @@ Shader ShaderSystem::buttonShader(){
 Shader ShaderSystem::prefilteringShader(){
     return __prefilteringShader;
 }
-Shader ShaderSystem::connectionCurve(){
-    return __connectionCurve;
+Shader ShaderSystem::vectoralCurve(){
+    return __vectoralCurve;
 }
 Shader ShaderSystem::colorPicker(){
     return __colorPicker;
@@ -205,4 +207,7 @@ Shader ShaderSystem::bakingShader(){
 }
 Shader ShaderSystem::defaultFramebufferShader(){
     return __defaultFramebufferShader;
+}
+Shader ShaderSystem::nodeConnectionCurve(){
+    return __nodeConnectionCurve;
 }
