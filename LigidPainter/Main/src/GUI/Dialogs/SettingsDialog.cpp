@@ -90,7 +90,7 @@ SettingsDialog::SettingsDialog(){
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"VSync"  , 2.f)),
                                         
                                         
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2.f), 
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.5f), 
                                         {
                                             "1.000000",
                                             "1.200000",
@@ -104,7 +104,7 @@ SettingsDialog::SettingsDialog(){
 
                                         }, "Painting Resolution Divider",2.f)),
                                         
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2.f), 
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.5f), 
                                         {
                                             "1.000000",
                                             "1.200000",
@@ -118,7 +118,7 @@ SettingsDialog::SettingsDialog(){
 
                                         }, "Painting Depth Texture Resolution Divider", 2.f)),
                                         
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2.f), 
+                                        Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.5f), 
                                         {
                                             "0.900000",
                                             "1.000000",

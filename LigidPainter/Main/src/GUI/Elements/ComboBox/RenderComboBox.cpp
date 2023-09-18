@@ -40,24 +40,25 @@ void ComboBox::render(
     
     selectionDone = false;
 
-    if(this->pressed)
-        glDepthFunc(GL_ALWAYS);
     
+    float zOffset = 0.f;
+    if(this->pressed){
+        glDepthFunc(GL_ALWAYS);
+        zOffset = 0.03f;
+    }
+
     //Take the doMouseTracking param to the public class member variable
     this->doMouseTracking = doMouseTracking;
-    
-    //ComboBox's depth value is always 0.95f (idk why might remove that line later)
-    pos.z = 0.95f;
     
     //Original position in the screen coordinates
     glm::vec3 orgResultPos = glm::vec3( 
                           UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
-                          ,pos.z); //Use the original depth value
+                          ,pos.z + zOffset); //Use the original depth value
     
     //Modified position in the screen coordinates
     glm::vec3 resultTextPos = glm::vec3( 
                           UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x+2.5,pos.y)) //Don't include the depth
-                          ,pos.z); //Use the original depth value
+                          ,pos.z + zOffset); //Use the original depth value
     
 
     //Original scale in the screen coordinates
@@ -78,7 +79,7 @@ void ComboBox::render(
     //Background position in the screen coordinates (background that covers the back when the combobox is pressed) (beneath the elements)
     glm::vec3 bgResultPos = glm::vec3( 
               UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y + (texts.size() * scale.y*2.f * clickedMixVal[0])/2.f - scale.y)) //Don't include the depth
-              ,pos.z); //Use the original depth value
+              ,pos.z + zOffset - 0.01); //Use the original depth value
     
     //Background scale in the screen coordinates (background that covers the back when the combobox is pressed) (beneath the elements)
     glm::vec2 bgResultScale = UTIL::getPercent(*Settings::videoScale(), glm::vec2(scale.x,(texts.size() * scale.y * clickedMixVal[0])));
@@ -88,13 +89,13 @@ void ComboBox::render(
     
     glm::vec3 resultPos = glm::vec3( 
       UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
-      ,pos.z); //Use the original depth value
+      ,pos.z + zOffset); //Use the original depth value
     
     
     //Render the combobox title
     textRenderer.loadTextData(
                                 text,
-                                glm::vec3(resultPos.x ,resultPos.y - resultScale.y,resultPos.z+0.002f),
+                                glm::vec3(resultPos.x ,resultPos.y - resultScale.y * (((clickedMixVal[0] + 0.00001f) / 2.f + 0.5)  *1.5f), resultPos.z+0.002f),
                                 false,
                                 resultScaleText,
                                 resultPos.x - resultScale.x,
@@ -114,7 +115,7 @@ void ComboBox::render(
     //Render the title barrier
     glm::vec2 textBoxScale = resultScale;
     textBoxScale.x = textRenderer.getTextLastCharOffset();
-    render(glm::vec3(resultPos.x ,resultPos.y - resultScale.y,1.),textBoxScale,0.f,0.f,0.f,0.f,true,glm::vec4(0));
+    render(glm::vec3(resultPos.x ,resultPos.y - resultScale.y, resultPos.z + 0.003f),textBoxScale,0.f,0.f,0.f,0.f,true,glm::vec4(0));
 
     //Render the buttons (elements)
     for (size_t i = 0; i < texts.size(); i++)
@@ -122,7 +123,7 @@ void ComboBox::render(
         //Position value in the screen coordinates
         glm::vec3 resultPos = glm::vec3( 
                   UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y + i * scale.y*2.f * clickedMixVal[0])) //Don't include the depth
-                  ,pos.z); //Use the original depth value
+                  ,pos.z + zOffset); //Use the original depth value
         
         //Check if mouse on top of the element
         if(doMouseTracking)
@@ -168,24 +169,22 @@ void ComboBox::render(
         //Render the text
         textRenderer.loadTextData(
                                     boxText,
-                                    glm::vec3(resultPos.x,resultPos.y,resultPos.z + 0.02f),
+                                    glm::vec3(resultPos.x,resultPos.y,resultPos.z + 0.004f),
                                     false,
                                     resultScaleText,
                                     resultPos.x - resultScale.x,
                                     resultPos.x + resultScale.x,
                                     TEXTRENDERER_ALIGNMENT_MID
                                 );
-        glDisable(GL_DEPTH_TEST);
+
         textRenderer.renderText();
-        glEnable(GL_DEPTH_TEST);
 
         //Just render the first element if not pressed
         if(i == 0 && !pressed && clickedMixVal[0] < 0.2f)
             break;
     }
     
-    if(this->pressed)
-        glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LEQUAL);
     
     //Unpress
     if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || *Mouse::LClick() && !hover[0]){

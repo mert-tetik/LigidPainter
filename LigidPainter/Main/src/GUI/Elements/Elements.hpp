@@ -228,6 +228,7 @@ public:
     int selectedIndex = 0;
     std::vector<float> hoverMixVal;
     std::vector<float> clickedMixVal;
+    float textOffsetMixVal = 0.f;
     
     //Constructors
     ComboBox();
