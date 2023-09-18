@@ -3,6 +3,7 @@
 in vec2 TexCoords;
 uniform sampler2D txtr;
 uniform vec2 txtrResolution;
+uniform float strength;
 out vec4 fragColor;
 
 // Basic sobel filter implementation
@@ -49,4 +50,5 @@ void main()
 	vec2 uv = TexCoords.xy;
 	fragColor.rgb = sobel(step/txtrResolution.x, step/txtrResolution.y, uv);
     fragColor.a = texture(txtr, TexCoords).a;
+    fragColor = mix(texture(txtr, TexCoords), fragColor, strength);
 }

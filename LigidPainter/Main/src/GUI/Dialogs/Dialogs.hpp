@@ -480,6 +480,9 @@ public:
    Panel selectedTextureDisplayingPanel;
    Panel textureSelectingPanel;
 
+   /// @brief Used to display the selected filter without modifying the original filter
+   Filter selectedFilter;
+
    Texture displayingTexture;
    int selectedTextureIndex = 0; 
    bool clicked = false; 

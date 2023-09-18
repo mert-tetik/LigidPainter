@@ -70,32 +70,22 @@ int Filter::load(std::string path){
 }
 
 void Filter::generateDisplayingTexture(){
-    glm::vec2 txtrRes = Settings::appTextures().filterDisplayerImage.getResolution();
-
-    glGenTextures(1, &this->displayingTxtr);
-    glActiveTexture(GL_TEXTURE0);
-
-    glBindTexture(GL_TEXTURE_2D, this->displayingTxtr);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+    
+    // This texture will be displayed
+    Texture sampleTxtr = Settings::appTextures().filterDisplayerImage;
+    // Resolution of the sample texture
+    glm::vec2 txtrRes = sampleTxtr.getResolution();
 
     //Displaying resolution
     glm::vec2 displayRes = glm::vec2(256);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes.x, displayRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    if(this->displayingTxtr.ID == 0)
+        this->displayingTxtr = Texture(nullptr, displayRes.x, displayRes.y, GL_LINEAR);
+    else
+        this->displayingTxtr.update(nullptr, displayRes.x, displayRes.y, GL_LINEAR);
 
     //Create the framebuffer
-    unsigned int captureFBO;
-    glGenFramebuffers(1,&captureFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
-    
-    //Bind the displaying texture to the capture framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->displayingTxtr, 0);
+    Framebuffer captureFBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D);
 
     //Clear the capture frame buffer(displaying texture) with color alpha zero
     glClearColor(0,0,0,0);
@@ -108,15 +98,16 @@ void Filter::generateDisplayingTexture(){
     glm::vec2 scale = displayRes / glm::vec2(2);
     glm::vec3 pos = glm::vec3(displayRes / glm::vec2(2),1.f);
     glm::mat4 projection = glm::ortho(0.f, displayRes.x, displayRes.y, 0.f);
-    this->shader.setVec2("scale", scale); //Cover the screen
-    this->shader.setVec3("pos", pos); //Cover the screen
-    this->shader.setMat4("projection", projection); //Cover the screen
+    this->shader.setVec2("scale", scale); 
+    this->shader.setVec3("pos", pos); 
+    this->shader.setMat4("projection", projection); 
     
-    this->shader.setInt("txtr", 0); //Cover the screen
-    this->shader.setVec2("txtrResolution", txtrRes); //Cover the screen
+    this->shader.setInt("txtr", 0); 
+    this->shader.setVec2("txtrResolution", txtrRes); 
+    this->shader.setFloat("strength", this->strength); 
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, Settings::appTextures().filterDisplayerImage.ID);
+    glBindTexture(GL_TEXTURE_2D, sampleTxtr.ID);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
@@ -124,7 +115,7 @@ void Filter::generateDisplayingTexture(){
     Settings::defaultFramebuffer()->FBO.bind();
     ShaderSystem::buttonShader().use();
 
-    glDeleteFramebuffers(1,&captureFBO);
+    captureFBO.deleteBuffers(false, false);
 }
 
 void Filter::applyFilter(unsigned int txtr){
@@ -136,14 +127,10 @@ void Filter::applyFilter(unsigned int txtr){
 
     //Displaying resolution
     glm::vec2 displayRes = txtrRes;
-
+     
     //Create the framebuffer
-    unsigned int captureFBO;
-    glGenFramebuffers(1,&captureFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
-    
-    //Bind the displaying texture to the capture framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr, 0);
+    Framebuffer captureFBO = Framebuffer(txtr, GL_TEXTURE_2D);
+    captureFBO.bind();
 
     //Clear the capture frame buffer(displaying texture) with color alpha zero
     glClearColor(0,0,0,0);
@@ -162,6 +149,7 @@ void Filter::applyFilter(unsigned int txtr){
     
     this->shader.setInt("txtr", 0); //Cover the screen
     this->shader.setVec2("txtrResolution", txtrRes); //Cover the screen
+    this->shader.setFloat("strength", this->strength); 
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, duplicatedTxtr.ID);
@@ -173,11 +161,12 @@ void Filter::applyFilter(unsigned int txtr){
     ShaderSystem::buttonShader().use();
 
     glDeleteTextures(1, &duplicatedTxtr.ID);
-    glDeleteFramebuffers(1,&captureFBO);
+    
+    captureFBO.deleteBuffers(false, false);
 }
 
 #define LGDFILTER_WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
-                                    LGDLOG::start<< "ERROR : Writing texture data. Failed to write at : " << loc << LGDLOG::end;\
+                                    LGDLOG::start << "ERROR : Writing texture data. Failed to write at : " << loc << LGDLOG::end;\
                                     return false; \
                                 }
 
@@ -191,25 +180,29 @@ bool Filter::writeFilterData(std::ofstream& wf){
         LGDFILTER_WRITEBITS(c, char, "Filter source code character");
     }
 
+    LGDFILTER_WRITEBITS(this->strength, float, "Filter strength")
+
     return true;
 }
 
-#define LGDMATERIAL_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
-                                LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << LGDLOG::end;\
+#define LGDFILTER_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
+                                LGDLOG::start << "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << LGDLOG::end;\
                                 return false; \
                             }
 
 bool Filter::readFilterData(std::ifstream& rf){
     int32_t srcCodeCharSize;
-    LGDMATERIAL_READBITS(srcCodeCharSize, int32_t, "Filter source code character size");
+    LGDFILTER_READBITS(srcCodeCharSize, int32_t, "Filter source code character size");
 
     this->srcCode = "";
     for (size_t i = 0; i < srcCodeCharSize; i++)
     {
         char c;
-        LGDMATERIAL_READBITS(c, char, "Filter source code character");
+        LGDFILTER_READBITS(c, char, "Filter source code character");
         this->srcCode.push_back(c);
     }
+    
+    LGDFILTER_READBITS(this->strength, float, "Filter strength")
 
     this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
 

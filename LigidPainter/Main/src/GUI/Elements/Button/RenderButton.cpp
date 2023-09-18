@@ -82,7 +82,7 @@ void Button::render(
         }
         if(this->filterSelection){
             showFilterSelectionDialog(this->filter, 512);
-            this->texture.ID = this->filter.displayingTxtr;
+            this->texture.ID = this->filter.displayingTxtr.ID;
         }
         if(this->colorSelection){
             unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0

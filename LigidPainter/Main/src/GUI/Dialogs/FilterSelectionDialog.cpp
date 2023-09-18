@@ -172,8 +172,7 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
         glBindTexture(GL_TEXTURE_2D, Settings::appTextures().filterDisplayerImage.ID);
 
         glActiveTexture(GL_TEXTURE1);
-        if(this->selectedTextureIndex < Library::getFilterArraySize())
-            glBindTexture(GL_TEXTURE_2D, Library::getFilter(this->selectedTextureIndex)->displayingTxtr);
+        glBindTexture(GL_TEXTURE_2D, this->selectedFilter.displayingTxtr.ID);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -190,11 +189,20 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
             }
         }
 
+        if(this->selectedTextureIndex < Library::getFilterArraySize())
+            this->selectedFilter.shader = Library::getFilter(this->selectedTextureIndex)->shader;
+        this->selectedFilter.strength = this->subPanel.sections[0].elements[0].rangeBar.value; 
+        this->selectedFilter.generateDisplayingTexture();
+
+
         // Pressed to the select button
         if(this->subPanel.sections[0].elements[1].button.clicked){
 
-            if(this->selectedTextureIndex < Library::getFilterArraySize())
-                receivedFilter = *Library::getFilter(this->selectedTextureIndex);
+            if(this->selectedTextureIndex < Library::getFilterArraySize()){
+                receivedFilter.shader = this->selectedFilter.shader;
+                receivedFilter.strength = this->selectedFilter.strength;
+                receivedFilter.generateDisplayingTexture();
+            }
 
             dialogControl.unActivate();
         }

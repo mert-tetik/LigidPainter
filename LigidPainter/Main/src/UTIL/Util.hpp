@@ -385,7 +385,10 @@ public:
     /// @brief Filtering shader
     Shader shader;
     std::string title;
-    unsigned int displayingTxtr;
+    Texture displayingTxtr;
+    /// @brief Strength value of the filter
+    ///        (Sending to the shader as uniform float strength)
+    float strength = 1.f;
 
     /// @brief Default constructor
     Filter();
@@ -393,6 +396,8 @@ public:
     /// @brief Loads lgdfilter files and generates the displaying texture
     int load(std::string path);
 
+    /// @brief Generates the displaying texture using the this->shader. 
+    ///        Updates if already generated
     void generateDisplayingTexture();
 
     /// @brief Applies the @ref (*this).shader to the given texture

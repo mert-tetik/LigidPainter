@@ -129,4 +129,6 @@ void Material::updateMaterialDisplayingTexture(
     
     //Set the OpenGL viewport to default
     Settings::defaultFramebuffer()->setViewport();
+
+    getBox()->bindBuffers();
 }

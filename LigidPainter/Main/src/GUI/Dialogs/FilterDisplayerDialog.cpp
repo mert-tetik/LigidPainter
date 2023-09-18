@@ -89,7 +89,7 @@ void FilterDisplayerDialog::render(Timer timer, glm::mat4 projection){
     glBindTexture(GL_TEXTURE_2D, Settings::appTextures().filterDisplayerImage.ID);
 
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, filter.displayingTxtr);
+    glBindTexture(GL_TEXTURE_2D, filter.displayingTxtr.ID);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
 

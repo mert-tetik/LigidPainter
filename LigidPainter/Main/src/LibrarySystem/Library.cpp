@@ -248,7 +248,7 @@ void Library::eraseFilter     (int index){
 
     __changed = true;
     
-    glDeleteTextures(1, &__filters[index].displayingTxtr);
+    glDeleteTextures(1, &__filters[index].displayingTxtr.ID);
     glDeleteProgram(__filters[index].shader.ID);
 
     __filters.erase(__filters.begin() + index);
@@ -332,7 +332,7 @@ void Library::clearFilters     (){
     
     for (size_t i = 0; i < __filters.size(); i++)
     {
-        glDeleteTextures(1, &__filters[i].displayingTxtr);
+        glDeleteTextures(1, &__filters[i].displayingTxtr.ID);
         glDeleteProgram(__filters[i].shader.ID);
     }
 

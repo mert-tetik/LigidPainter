@@ -2,6 +2,7 @@
 
 in vec2 TexCoords;
 uniform sampler2D txtr;
+uniform float strength;
 out vec4 fragColor;
 
 void main(){
@@ -9,4 +10,6 @@ void main(){
     fragColor.a = texture(txtr, TexCoords).a;
 
     fragColor.rgb = vec3(max(max(fragColor.r, fragColor.g), fragColor.b));
+
+    fragColor = mix(texture(txtr, TexCoords), fragColor, strength);
 }
