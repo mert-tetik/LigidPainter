@@ -472,8 +472,6 @@ void showFilterSelectionDialog(Filter& filter, int displayingTextureRes);
 
 class FilterSelectionDialog
 {
-private:
-    int selectedTextureMode = 0;
 public:
    Panel bgPanel;
    Panel subPanel;
@@ -484,7 +482,7 @@ public:
    Filter selectedFilter;
 
    Texture displayingTexture;
-   int selectedTextureIndex = 0; 
+   int selectedFilterIndex = 0; 
    bool clicked = false; 
    glm::vec3 pos = glm::vec3(50,50,0.95f);
    glm::vec2 scale = glm::vec2(40); 

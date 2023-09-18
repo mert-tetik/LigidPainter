@@ -120,14 +120,21 @@ FilterSelectionDialog::FilterSelectionDialog(){
 
 //Forward declarations for the utility functions
 static void drawBG(unsigned int bgTexture);
-static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode);
+static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel);
 
 void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& receivedFilter, int displayingTextureRes){
     
     this->dialogControl.activate();
         
-    this->selectedTextureMode = 0;
-    this->selectedTextureIndex = 0;
+    this->selectedFilterIndex = 0;
+
+    for (size_t i = 0; i < Library::getFilterArraySize(); i++)
+    {
+        if(receivedFilter.shader.ID == Library::getFilter(i)->shader.ID)
+            this->selectedFilterIndex = i;
+    }
+    
+    this->subPanel.sections[0].elements[0].rangeBar.value = receivedFilter.strength;
 
     while (!getContext()->window.shouldClose())
     {
@@ -140,7 +147,7 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
 
         dialogControl.updateStart();
 
-        updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode);
+        updateTextureSelectingPanelElements(this->textureSelectingPanel);
 
         //Render the panel
         this->bgPanel.render(timer, true);
@@ -185,12 +192,12 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
         {
             if(this->textureSelectingPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
-                selectedTextureIndex = i;
+                selectedFilterIndex = i;
             }
         }
 
-        if(this->selectedTextureIndex < Library::getFilterArraySize())
-            this->selectedFilter.shader = Library::getFilter(this->selectedTextureIndex)->shader;
+        if(this->selectedFilterIndex < Library::getFilterArraySize())
+            this->selectedFilter.shader = Library::getFilter(this->selectedFilterIndex)->shader;
         this->selectedFilter.strength = this->subPanel.sections[0].elements[0].rangeBar.value; 
         this->selectedFilter.generateDisplayingTexture();
 
@@ -198,18 +205,18 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
         // Pressed to the select button
         if(this->subPanel.sections[0].elements[1].button.clicked){
 
-            if(this->selectedTextureIndex < Library::getFilterArraySize()){
+            if(this->selectedFilterIndex < Library::getFilterArraySize()){
                 receivedFilter.shader = this->selectedFilter.shader;
                 receivedFilter.strength = this->selectedFilter.strength;
                 receivedFilter.generateDisplayingTexture();
             }
 
-            dialogControl.unActivate();
+            break;
         }
 
         //End the dialog
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && *Mouse::LClick())){
-            selectedTextureIndex = 0;
+            selectedFilterIndex = 0;
             break;
         }
 
@@ -257,7 +264,7 @@ static void drawBG(
     ShaderSystem::buttonShader().use();
 }
 
-static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode){
+static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel){
     textureSelectingPanel.sections.clear();
     std::vector<Element> sectionElements;
     
