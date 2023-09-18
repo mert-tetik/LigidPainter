@@ -398,7 +398,7 @@ public:
 
     /// @brief Generates the displaying texture using the this->shader. 
     ///        Updates if already generated
-    void generateDisplayingTexture();
+    void generateDisplayingTexture(glm::vec2 displayResolution);
 
     /// @brief Applies the @ref (*this).shader to the given texture
     void applyFilter(unsigned int txtr);

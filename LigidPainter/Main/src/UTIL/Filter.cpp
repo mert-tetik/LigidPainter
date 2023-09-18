@@ -62,14 +62,14 @@ int Filter::load(std::string path){
     
     this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
 
-    this->generateDisplayingTexture();
+    this->generateDisplayingTexture(glm::vec2(256));
 
     this->title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
 
     return 1;
 }
 
-void Filter::generateDisplayingTexture(){
+void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
     
     // This texture will be displayed
     Texture sampleTxtr = Settings::appTextures().filterDisplayerImage;
@@ -77,7 +77,7 @@ void Filter::generateDisplayingTexture(){
     glm::vec2 txtrRes = sampleTxtr.getResolution();
 
     //Displaying resolution
-    glm::vec2 displayRes = glm::vec2(256);
+    glm::vec2 displayRes = displayResolution;
 
     if(this->displayingTxtr.ID == 0)
         this->displayingTxtr = Texture(nullptr, displayRes.x, displayRes.y, GL_LINEAR);
@@ -206,7 +206,7 @@ bool Filter::readFilterData(std::ifstream& rf){
 
     this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
 
-    this->generateDisplayingTexture();
+    this->generateDisplayingTexture(glm::vec2(256));
 
     this->title = "ReadenFilter";
 

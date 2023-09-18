@@ -34,60 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 FilterSelectionDialog::FilterSelectionDialog(){
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
-    this->textureSelectingPanel = Panel(
-                                                    
-                                                    {
-                                                        /*
-                                                        Section(
-                                                            Button(),
-                                                            {
-                                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2, scale.y / 2.f),"", Texture(), 0.f, true),
-                                                            }
-                                                        )
-                                                        */
-                                                    },
-                                                    glm::vec2(scale.x / 6.f, scale.y / 2.f),
-                                                    glm::vec3(pos.x, pos.y + scale.y - scale.y / 2.f, pos.z),
-                                                    ColorPalette::mainColor,
-                                                    ColorPalette::thirdColor,
-                                                    true,
-                                                    true,
-                                                    false,
-                                                    true,
-                                                    true,
-                                                    1.f,
-                                                    12.f,
-                                                    {},
-                                                    20.f,
-                                                    true
-                                                );
     
-    this->selectedTextureDisplayingPanel = Panel(
-                                                    
-                                                    
-                                                    {
-                                                        Section(
-                                                            Button(),
-                                                            {
-                                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2, scale.y / 2.f),"", Texture(), 0.f, true),
-                                                            }
-                                                        )
-                                                    },
-                                                    glm::vec2(scale.x / 6.f, scale.y / 2.f),
-                                                    glm::vec3(pos.x, pos.y - scale.y + scale.y / 2.f, pos.z),
-                                                    ColorPalette::mainColor,
-                                                    ColorPalette::thirdColor,
-                                                    true,
-                                                    true,
-                                                    false,
-                                                    true,
-                                                    true,
-                                                    1.f,
-                                                    1.f,
-                                                    {},
-                                                    20.f,
-                                                    true
-                                                );
     this->subPanel = Panel(
                                 
                                 
@@ -95,16 +42,16 @@ FilterSelectionDialog::FilterSelectionDialog(){
                                     Section(
                                         Button(),
                                         {
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Strength", Texture(), 65.f, 0.f, 1.f, 1.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false)
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(6.f,2.f),"Strength", Texture(), 40.f, 0.f, 1.f, 1.f),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(6.f,2.f),"Select", Texture(), 1.f, false)
                                         }
                                     )
                                 },
-                                glm::vec2(scale.x / 6.f, scale.y),
-                                glm::vec3(pos.x - scale.x + (scale.x / 6.f) , pos.y, pos.z),
+                                glm::vec2(scale.x, 2.f),
+                                glm::vec3(pos.x , pos.y + bgPanel.scale.y - 2.f, pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
-                                true,
+                                false,
                                 true,
                                 false,
                                 true,
@@ -116,6 +63,66 @@ FilterSelectionDialog::FilterSelectionDialog(){
                                 true
                             );
 
+
+    this->textureSelectingPanel = Panel(
+                        
+                        {
+                            /*
+                            Section(
+                                Button(),
+                                {
+                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2, scale.y / 2.f),"", Texture(), 0.f, true),
+                                }
+                            )
+                            */
+                        },
+                        glm::vec2(8.f, bgPanel.scale.y),
+                        glm::vec3(pos.x - bgPanel.scale.x + 8.f, pos.y, pos.z),
+                        ColorPalette::mainColor,
+                        ColorPalette::thirdColor,
+                        true,
+                        true,
+                        false,
+                        true,
+                        true,
+                        1.f,
+                        2.f,
+                        {},
+                        20.f,
+                        true
+                    );
+
+    this->selectedTextureDisplayingPanel = Panel(
+                                            
+                                            
+                                            {
+                                                Section(
+                                                    Button(),
+                                                    {
+                                                        Button(ELEMENT_STYLE_SOLID,glm::vec2(bgPanel.scale.y - subPanel.scale.y),"", Texture(), 0.f, true),
+                                                    }
+                                                )
+                                            },
+                                            glm::vec2(scale.x - textureSelectingPanel.scale.x, bgPanel.scale.y - subPanel.scale.y),
+                                            glm::vec3(pos.x + bgPanel.scale.x - (scale.x - textureSelectingPanel.scale.x), pos.y - subPanel.scale.y, pos.z),
+                                            ColorPalette::secondColor,
+                                            ColorPalette::thirdColor,
+                                            true,
+                                            true,
+                                            false,
+                                            true,
+                                            true,
+                                            1.f,
+                                            1.f,
+                                            {},
+                                            20.f,
+                                            true
+                                        );
+
+    this->selectedTextureDisplayingPanel.sections[0].elements[0].button.color = ColorPalette::secondColor;
+    this->textureSelectingPanel.color.a = 1.f;
+
+    this->subPanel.solidStyle = true;
 }
 
 //Forward declarations for the utility functions
@@ -155,17 +162,11 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
         //Render the texture mode selection panel
         this->subPanel.render(timer, true);
 
-        selectedTextureDisplayingPanel.scale.x = this->scale.x - subPanel.scale.x;
-        selectedTextureDisplayingPanel.pos.x = this->pos.x + subPanel.scale.x;
-
-        textureSelectingPanel.pos.x = selectedTextureDisplayingPanel.pos.x;
-        textureSelectingPanel.scale.x = selectedTextureDisplayingPanel.scale.x;
-
         selectedTextureDisplayingPanel.sections[0].elements[0].button.texture = displayingTexture;
 
         this->textureSelectingPanel.render(timer, true);
 
-        this->selectedTextureDisplayingPanel.render(timer, true);
+        this->selectedTextureDisplayingPanel.render(timer, false);
 
         ShaderSystem::splitTexturesShader().use();
         ShaderSystem::splitTexturesShader().setMat4("projection"  ,   guiProjection);
@@ -199,7 +200,7 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
         if(this->selectedFilterIndex < Library::getFilterArraySize())
             this->selectedFilter.shader = Library::getFilter(this->selectedFilterIndex)->shader;
         this->selectedFilter.strength = this->subPanel.sections[0].elements[0].rangeBar.value; 
-        this->selectedFilter.generateDisplayingTexture();
+        this->selectedFilter.generateDisplayingTexture(glm::vec2(1024));
 
 
         // Pressed to the select button
@@ -208,7 +209,7 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
             if(this->selectedFilterIndex < Library::getFilterArraySize()){
                 receivedFilter.shader = this->selectedFilter.shader;
                 receivedFilter.strength = this->selectedFilter.strength;
-                receivedFilter.generateDisplayingTexture();
+                receivedFilter.generateDisplayingTexture(glm::vec2(256));
             }
 
             break;
@@ -270,7 +271,11 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel){
     
     for (size_t i = 0; i < Library::getFilterArraySize(); i++)
     {
-        sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 3.f),"", Library::getFilter(i)->displayingTxtr, 0.f,false)));
+        Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2, 3.f),"", Library::getFilter(i)->displayingTxtr, 0.f,false));
+        btn.button.radius = 0.5f;
+        btn.button.color = ColorPalette::mainColor;
+
+        sectionElements.push_back(btn);
     }
 
     textureSelectingPanel.sections.push_back

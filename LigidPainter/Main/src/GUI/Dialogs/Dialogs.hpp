@@ -247,7 +247,7 @@ class TextureEditorDialog
 
    Button displayerBtn;
 
-   unsigned int displayingTexture;
+   Texture displayingTexture;
 
    int selectedSection = 0;
 
@@ -485,7 +485,7 @@ public:
    int selectedFilterIndex = 0; 
    bool clicked = false; 
    glm::vec3 pos = glm::vec3(50,50,0.95f);
-   glm::vec2 scale = glm::vec2(40); 
+   glm::vec2 scale = glm::vec2(34.f); 
    DialogControl dialogControl;
 
    //Constructors

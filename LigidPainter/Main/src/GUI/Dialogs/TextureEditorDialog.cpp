@@ -37,19 +37,7 @@
 
 TextureEditorDialog::TextureEditorDialog(){
 
-    //Init displaying texture
-    glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1,&this->displayingTexture);
-    glBindTexture(GL_TEXTURE_2D,this->displayingTexture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 512, 512, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    this->displayingTexture = Texture(nullptr, 512, 512, GL_LINEAR);
 
     //Create the panel
     this->bgPanel = Panel(
@@ -434,14 +422,14 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
         resizeElements[6].textBox.text = std::to_string(receivedTexture.getResolution().y);
         resizeElements[6].textBox.activeChar = resizeElements[6].textBox.text.size()-1; 
         resizeElements[6].textBox.activeChar2 = resizeElements[6].textBox.text.size()-1;
-        this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
+        this->updateDisplayingTexture(receivedTexture, this->displayingTexture.ID);
     }
 
     for (size_t i = 0; i < this->sectionPanel.sections[0].elements.size(); i++)
     {
         if(this->sectionPanel.sections[0].elements[i].button.clickState1 && this->selectedSection != i){
             this->selectedSection = i;
-            this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
+            this->updateDisplayingTexture(receivedTexture, this->displayingTexture.ID);
             break;
         }
     }
@@ -582,17 +570,9 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
 
     if(this->selectedSection == 3){
         int eCnt = 0;
-
         
         for (size_t i = 0; i < normalMapElements.size(); i++)
         {
-            normalMapElementsLoopReturn:
-
-            if((i == 1 || i == 2 || i == 3) && coloringElements[0].comboBox.selectedIndex != 0){
-                i++;
-                goto normalMapElementsLoopReturn;
-            }
-            
             normalMapElements[i].pos = displayerBtn.pos;
             normalMapElements[i].pos.x += displayerBtn.scale.x * 2.f;
             normalMapElements[i].pos.y -= displayerBtn.scale.y * .5f;
@@ -689,7 +669,7 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
        anyInteraction = true; 
 
     if(anyInteraction)
-        this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
+        this->updateDisplayingTexture(receivedTexture, this->displayingTexture.ID);
 
     if(this->saveButton.clicked){
         Texture txtr = receivedTexture.duplicateTexture();
