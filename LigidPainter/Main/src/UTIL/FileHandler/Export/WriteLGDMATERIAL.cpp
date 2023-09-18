@@ -131,6 +131,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[3].elements[0].button.filter;
                 albedoFilter.writeFilterData(wf);
+                Texture albedoFilterMask = material.materialModifiers[i].sections[3].elements[1].button.texture;
+                albedoFilterMask.writeTextureData(wf);
             }
 
             else if (material.materialModifiers[i].modifierIndex == SOLID_MATERIAL_MODIFIER){
@@ -180,6 +182,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[2].elements[0].button.filter;
                 albedoFilter.writeFilterData(wf);
+                Texture albedoFilterMask = material.materialModifiers[i].sections[2].elements[1].button.texture;
+                albedoFilterMask.writeTextureData(wf);
             }
 
             else if (material.materialModifiers[i].modifierIndex == LIQUID_MATERIAL_MODIFIER){
@@ -267,6 +271,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[7].elements[0].button.filter;
                 albedoFilter.writeFilterData(wf);
+                Texture albedoFilterMask = material.materialModifiers[i].sections[7].elements[1].button.texture;
+                albedoFilterMask.writeTextureData(wf);
             }
 
             else if (material.materialModifiers[i].modifierIndex == MOSS_MATERIAL_MODIFIER){
@@ -344,6 +350,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[9].elements[0].button.filter;
                 albedoFilter.writeFilterData(wf);
+                Texture albedoFilterMask = material.materialModifiers[i].sections[9].elements[1].button.texture;
+                albedoFilterMask.writeTextureData(wf);
             }
 
             else if (material.materialModifiers[i].modifierIndex == RUST_MATERIAL_MODIFIER){
@@ -425,6 +433,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[9].elements[0].button.filter;
                 albedoFilter.writeFilterData(wf);
+                Texture albedoFilterMask = material.materialModifiers[i].sections[9].elements[1].button.texture;
+                albedoFilterMask.writeTextureData(wf);
             }
 
             else if (material.materialModifiers[i].modifierIndex == SKIN_MATERIAL_MODIFIER){
@@ -500,6 +510,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[8].elements[0].button.filter;
                 albedoFilter.writeFilterData(wf);
+                Texture albedoFilterMask = material.materialModifiers[i].sections[8].elements[1].button.texture;
+                albedoFilterMask.writeTextureData(wf);
             }
 
             else if (material.materialModifiers[i].modifierIndex == WOODEN_MATERIAL_MODIFIER){
@@ -583,6 +595,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[9].elements[0].button.filter;
                 albedoFilter.writeFilterData(wf);
+                Texture albedoFilterMask = material.materialModifiers[i].sections[9].elements[1].button.texture;
+                albedoFilterMask.writeTextureData(wf);
             }
 
             else if (material.materialModifiers[i].modifierIndex == ASPHALT_MATERIAL_MODIFIER){
@@ -650,6 +664,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[8].elements[0].button.filter;
                 albedoFilter.writeFilterData(wf);
+                Texture albedoFilterMask = material.materialModifiers[i].sections[8].elements[1].button.texture;
+                albedoFilterMask.writeTextureData(wf);
             
             }
 
@@ -734,6 +750,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[8].elements[0].button.filter;
                 albedoFilter.writeFilterData(wf);
+                Texture albedoFilterMask = material.materialModifiers[i].sections[8].elements[1].button.texture;
+                albedoFilterMask.writeTextureData(wf);
             }
         }        
     }

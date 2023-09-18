@@ -280,6 +280,8 @@ public:
     Texture(char* pixels, int w, int h);
     
     Texture(char* pixels, int w, int h, unsigned int filterParam);
+    
+    Texture(char* pixels, int w, int h, unsigned int filterParam, int proceduralID);
 
     void update(char* pixels, int w, int h);
     void update(char* pixels, int w, int h, unsigned int filterParam);
@@ -401,7 +403,7 @@ public:
     void generateDisplayingTexture(glm::vec2 displayResolution);
 
     /// @brief Applies the @ref (*this).shader to the given texture
-    void applyFilter(unsigned int txtr);
+    void applyFilter(unsigned int txtr, Texture maskTexture);
 
     bool writeFilterData(std::ofstream& wf);
 

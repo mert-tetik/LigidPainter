@@ -71,6 +71,27 @@ Texture::Texture(char* pixels, int w, int h, unsigned int filterParam){
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
+Texture::Texture(char* pixels, int w, int h, unsigned int filterParam, int proceduralID){
+
+    this->proceduralProps.proceduralID = proceduralID;
+    
+    glActiveTexture(GL_TEXTURE0);
+    
+    glGenTextures(1,&ID);
+
+    glBindTexture(GL_TEXTURE_2D, ID);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_BYTE, pixels);
+	
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
+
 
 void Texture::update(char* pixels, int w, int h){
     glActiveTexture(GL_TEXTURE0);

@@ -118,7 +118,7 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
     captureFBO.deleteBuffers(false, false);
 }
 
-void Filter::applyFilter(unsigned int txtr){
+void Filter::applyFilter(unsigned int txtr, Texture maskTexture){
 
     Texture txtrObject = txtr;
     glm::vec2 txtrRes = txtrObject.getResolution();
@@ -155,7 +155,33 @@ void Filter::applyFilter(unsigned int txtr){
     glBindTexture(GL_TEXTURE_2D, duplicatedTxtr.ID);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    if(maskTexture.ID != 0 && glIsTexture(maskTexture.ID) == GL_TRUE){
+        ShaderSystem::grayScaleIDMaskingShader().use();
+        ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", projection);
+        ShaderSystem::grayScaleIDMaskingShader().setVec3("pos", pos);
+        ShaderSystem::grayScaleIDMaskingShader().setVec2("scale", scale);
+        ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0);
+        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1);
+        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
+        ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f);
+        
+        Texture destTxtrObj = txtr;
+        Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
+        
+        captureFBO.bind();
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, maskTexture.ID);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, duplicatedTxtr.ID);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, copiedDestTxtr.ID);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
     
+
     //Finish
     Settings::defaultFramebuffer()->FBO.bind();
     ShaderSystem::buttonShader().use();
