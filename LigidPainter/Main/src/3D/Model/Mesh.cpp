@@ -28,10 +28,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "SettingsSystem/Settings.hpp"
 
 glm::vec3 Mesh::getCenterPosition(){
-    glm::vec3 center;
+    glm::vec3 center = glm::vec3(0.f);
     for (const Vertex& vertex : this->vertices) {
         center += vertex.Position;
     }
+
+    if(center.x == 0.f)
+        center.x += 0.00001f;
+    if(center.y == 0.f)
+        center.y += 0.00001f;
+    if(center.z == 0.f)
+        center.z += 0.00001f;
 
     center /= static_cast<float>(vertices.size());
 
@@ -68,11 +75,12 @@ float Mesh::getBiggestFloatValue(glm::vec3 origin){
 void Mesh::generateDisplayingTexture(){
     const int displayRes = 256;
     
-    //Generating the displaying texture
     if(this->displayingTxtr.ID == 0)
         this->displayingTxtr = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
     else
         this->displayingTxtr.update(nullptr, displayRes, displayRes, GL_LINEAR);
+
+    this->displayingTxtr.title = "MeshDisplayingTxtr";
 
     Framebuffer FBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)));
 
@@ -80,12 +88,12 @@ void Mesh::generateDisplayingTexture(){
     
     glm::vec3 meshMostFar = this->getMostDistantPointFromAPoint(meshCenter);
 
-    glm::vec3 camPos = glm::vec3(0.f + 15.f, 0.f, 0.f);
+    glm::vec3 camPos = glm::vec3(meshCenter.x + 8.f, meshCenter.y, meshCenter.z);
 
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(   
                                     camPos, 
-                                    glm::vec3(0.f), 
+                                    meshCenter, 
                                     glm::vec3(0.0, 1.0, 0.0)
                                 );
     
@@ -100,7 +108,7 @@ void Mesh::generateDisplayingTexture(){
     //!Update the material displaying texture
     
     FBO.bind();
-    
+
     //Set the OpenGL viewport to the resolution of the material displaying texture
     glViewport(0,0,displayRes,displayRes);
 
@@ -108,6 +116,8 @@ void Mesh::generateDisplayingTexture(){
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    glDisable(GL_CULL_FACE);
+
     //Use the 3D model rendering shader
     ShaderSystem::solidShadingShader().use();
 
@@ -115,7 +125,8 @@ void Mesh::generateDisplayingTexture(){
     ShaderSystem::solidShadingShader().setMat4("projection", projectionMatrix);
     ShaderSystem::solidShadingShader().setMat4("view", view);
     glm::mat4 modelMat = glm::mat4(1.f);
-    modelMat = glm::scale(modelMat, glm::vec3(1.f / glm::distance(meshMostFar, meshCenter)));
+    
+    modelMat = glm::scale(modelMat, glm::vec3(1.f / glm::distance(meshMostFar, this->getCenterPosition())));
 
     ShaderSystem::solidShadingShader().setMat4("modelMatrix", modelMat);
     
