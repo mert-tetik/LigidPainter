@@ -52,6 +52,8 @@ static void getDataFromWavefrontFile( std::ifstream& rf, std::vector<glm::vec3>&
 
 #define LIGID_OBJ_IMPORTER_TRIANGULATE true
 
+int __obj_Read_Face_I = 0;
+
 Model FileHandler::readOBJFile(std::string path){
 
     std::ifstream rf(path, std::ios::in);
@@ -166,8 +168,7 @@ static void getDataFromWavefrontFile(
         }
 
         // ---- Material data detected
-        else if(line.substr(0,6) == "usemtl "){
-            faces.push_back({});
+        else if(line.substr(0,6) == "usemtl"){
 
             std::stringstream ss(line); // Create a stringstream object with the input string
             
@@ -177,7 +178,21 @@ static void getDataFromWavefrontFile(
             std::string matStr;
             ss >> matStr; // Read the material title
 
-            matTitles.push_back(matStr);
+            bool matched = false;
+            for (size_t i = 0; i < matTitles.size(); i++)
+            {
+                if(matTitles[i] == matStr){
+                    matched = true;
+                    __obj_Read_Face_I = i;
+                    break;
+                }
+            }
+            
+            if(!matched){
+                faces.push_back({});
+                __obj_Read_Face_I = faces.size() - 1;
+                matTitles.push_back(matStr);
+            }
         }
 
         // ---- Face index data detected
@@ -203,10 +218,14 @@ static void getDataFromWavefrontFile(
                     break; // Exit the loop when extraction fails
                 }
             }
-            if(faces.size() == 0)
+            
+            if(faces.size() == 0){
+                __obj_Read_Face_I = 0;
                 faces.push_back({});
-
-            faces[faces.size()-1].push_back(vec3List);
+            }
+            
+            if(__obj_Read_Face_I < faces.size())
+                faces[__obj_Read_Face_I].push_back(vec3List);
         }
     }
 }

@@ -130,12 +130,7 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
         
         UTIL::uniqueName(matTitle, meshTitles);
         
-        for (size_t vi = 0; vi < meshVertices[i].size(); vi++)
-        {
-            meshVertices[i][vi].Position.x = meshVertices[i][vi].Position.x / big;
-            meshVertices[i][vi].Position.y = meshVertices[i][vi].Position.y / big;
-            meshVertices[i][vi].Position.z = meshVertices[i][vi].Position.z / big;
-        }
+
         if(meshVertices[i].size())
             model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle));
     }
