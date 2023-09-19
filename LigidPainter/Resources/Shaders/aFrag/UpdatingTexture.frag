@@ -61,6 +61,10 @@ void main(){
 
     vec4 brushTxtr = texture(paintingTexture, TexCoords);
 
+    if(!(brushModeState == 2 || brushModeState == 3)){
+        brushTxtr.a = brushTxtr.r;
+    }
+
     float txtrAlpha = texture(txtr, TexCoords).a; 
 
     fragColor = vec4(getBrushedTexture(txtr, brushTxtr, TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping), txtrAlpha);

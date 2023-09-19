@@ -85,6 +85,10 @@ void main() {
     // Brush value (mask) (painting texture) 
     vec4 brushTxtr = texture(paintingTexture, TexCoords);
     
+    if(!(brushModeState == 2 || brushModeState == 3)){
+        brushTxtr.a = brushTxtr.r;
+    }
+
     //Get Albedo
     if(paintedTxtrStateIndex == 0)
         albedo = getBrushedTexture(albedoTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).rgb;

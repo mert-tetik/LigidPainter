@@ -52,6 +52,8 @@ uniform vec2 mouseOffset;
 
 uniform sampler2D bgTxtr;
 
+uniform int redChannelOnly;
+
 struct Brush {
     float radius;
     float hardness;
@@ -272,4 +274,7 @@ void main()
     //Calculate the opacity value (painting result)
     outClr.a *= opacity;
     outClr.rgb *= outClr.a;
+
+    if(redChannelOnly == 1)
+        outClr.r = outClr.a;
 }

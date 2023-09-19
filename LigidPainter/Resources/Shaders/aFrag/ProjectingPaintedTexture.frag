@@ -36,6 +36,8 @@ uniform float paintingOpacity;
 //Do depth testing (painting) if set to 1
 uniform int doDepthTest;
 
+uniform int redChannelOnly;
+
 //Fragment shader output
 out vec4 fragColor;
 
@@ -79,6 +81,9 @@ void main(){
     vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w);
 
     vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, screenPos, paintingOpacity, doDepthTest);
-
+    
     fragColor = brushTxtr;
+
+    if(redChannelOnly == 1)
+        fragColor.r = brushTxtr.a;    
 }

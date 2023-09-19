@@ -129,6 +129,8 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
     glActiveTexture(GL_TEXTURE0);
     
     glBindTexture(GL_TEXTURE_2D, ID);
+
+    unsigned int internalFormat = 0;
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);

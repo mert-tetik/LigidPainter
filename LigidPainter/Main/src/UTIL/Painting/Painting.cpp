@@ -111,6 +111,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     if(holdLocations.size())
         ShaderSystem::twoDPainting().setVec2("mouseOffset", holdLocations[0] - holdLocations[holdLocations.size()-1]);
     
+    ShaderSystem::twoDPainting().setInt("redChannelOnly", !(this->selectedPaintingModeIndex == 2 || this->selectedPaintingModeIndex == 3));
 
     ShaderSystem::twoDPainting().setInt("posCount",holdLocations.size());
     for (int i = 0; i < holdLocations.size(); i++)
@@ -162,10 +163,12 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 
     if(this->threeDimensionalMode){
         glm::vec2 textureRes = this->selectedTexture.getResolution();
-        if(this->selectedPaintingModeIndex == 2 || this->selectedPaintingModeIndex == 3)
-            this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, GL_RGBA);
-        else
-            this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, GL_ALPHA);
+        if(*Mouse::LClick()){
+            if(this->selectedPaintingModeIndex == 2 || this->selectedPaintingModeIndex == 3)
+                this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, GL_RGBA);
+            else
+                this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, GL_RED);
+        }
 
         Framebuffer captureFBO = Framebuffer(this->projectedPaintingTexture, GL_TEXTURE_2D);
         captureFBO.bind();
@@ -183,6 +186,8 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
         ShaderSystem::projectingPaintedTextureShader().setInt("paintingTexture", 6);
         ShaderSystem::projectingPaintedTextureShader().setInt("depthTexture", 7);
         ShaderSystem::projectingPaintedTextureShader().setFloat("paintingOpacity", this->brushProperties.opacity);
+        ShaderSystem::projectingPaintedTextureShader().setInt("redChannelOnly", !(this->selectedPaintingModeIndex == 2 || this->selectedPaintingModeIndex == 3));
+
 
         //*Vertex
         ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
