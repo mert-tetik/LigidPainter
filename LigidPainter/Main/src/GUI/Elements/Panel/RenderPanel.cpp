@@ -68,11 +68,11 @@ static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::v
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale){
+static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale, bool isLibraryDisplayer){
     
     //Bottom
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x,   resultPos.y + resultScale.y + 5000,   1.f)); 
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x,   resultPos.y + resultScale.y + 2000,   1.f)); 
+    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
     ShaderSystem::buttonShader().setFloat("properties.radius", 0.f); 
     ShaderSystem::buttonShader().setInt("outlineExtra" , false); 
     ShaderSystem::buttonShader().setVec4("properties.color", glm::vec4(0)); //Invisible
@@ -80,10 +80,21 @@ static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale){
     glDrawArrays(GL_TRIANGLES, 0, 6);
     
     //Top
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x,   resultPos.y - resultScale.y - 5000,   1.f));
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x, resultPos.y - resultScale.y - 2000,   1.f));
+    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
+    if(isLibraryDisplayer){
+        //Left
+        ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x - resultScale.x - 2000, resultPos.y,   1.f));
+        ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        //Right
+        ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x + resultScale.x + 2000, resultPos.y,   1.f));
+        ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
 }
 
 static float calculateElementStartingPosition(bool vertical, std::vector<Section> sections, glm::vec3 pos, glm::vec2 scale){
@@ -124,7 +135,7 @@ static void renderBarButtons(std::vector<Button> &barButtons, glm::vec3 pos, glm
         barButtons[i].pos.x += barButtons[i].scale.x*2.f * (i % barButtons.size());
         barButtons[i].pos.y -= scale.y - barButtons[i].scale.y;
         
-        barButtons[i].pos.z += 0.01f;
+        barButtons[i].pos.z += 0.035f;
         barButtons[i].render(timer,doMouseTracking);
     }
 
@@ -159,7 +170,7 @@ void Panel::drawPanel(
     /*Render the barriers if the depth texture of the framebuffer will be refreshed at the end of the panel rendering process*/
     if(clearDepthBuffer)
     {
-        drawTheBarriers(resultPos, resultScale);
+        drawTheBarriers(resultPos, resultScale, this->isLibraryDisplayer);
     }
 
     //Starting pos
