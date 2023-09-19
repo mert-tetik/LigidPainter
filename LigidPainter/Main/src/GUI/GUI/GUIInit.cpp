@@ -517,7 +517,10 @@ void UI::init
     renamingTextBox.animationStyle = 1;
     renamingTextBox.radius = 10000.f;
 
-    this->zoomingDisplayingButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f,8.f), "Nodes", Texture(), 0.f, true);
+    this->zoomingDisplayingButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f,8.f), "", Texture(), 0.f, true);
+    
+    this->filterPaintingModeFilterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4.f,5.f), "Select Filter", Texture(), 0.f, false);
+    this->filterPaintingModeFilterBtn.filterSelection = true;
 
     paintingPanel.sections[5].elements[1].button.textureSelection = true;
 

@@ -38,7 +38,8 @@ void paintingModesPanelInteraction(
                                     Panel& twoDPaintingPanel, 
                                     glm::mat4 windowOrtho, 
                                     float twoDSceneScroll, 
-                                    glm::vec2 twoDScenePos
+                                    glm::vec2 twoDScenePos,
+                                    Button filterPaintingModeFilterBtn
                                 )
 {
     //!PAINTING MODES PANEL
@@ -91,6 +92,6 @@ void paintingModesPanelInteraction(
         }
     }
     if(vectorPaintingModePropertyPanel.sections[0].elements[4].button.clicked){
-        painter.applyVectorStrokes(twoDPaintingPanel, windowOrtho, twoDSceneScroll, twoDScenePos, vectorPaintingModePropertyPanel.sections[0].elements[0].comboBox.selectedIndex);
+        painter.applyVectorStrokes(twoDPaintingPanel, windowOrtho, twoDSceneScroll, twoDScenePos, vectorPaintingModePropertyPanel.sections[0].elements[0].comboBox.selectedIndex, filterPaintingModeFilterBtn.filter);
     }
 }

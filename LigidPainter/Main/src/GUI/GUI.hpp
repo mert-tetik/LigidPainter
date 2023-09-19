@@ -70,6 +70,7 @@ public:
     Panel paintingModesPanel; 
     Panel vectorPaintingModePropertyPanel; 
     Panel displayingModesPanel; 
+    Button filterPaintingModeFilterBtn;
 
     bool anyPanelHover = false;
 

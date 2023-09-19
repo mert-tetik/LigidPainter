@@ -490,9 +490,10 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
 
 
-
-
     paintingModesPanel.render(timer,!anyDialogActive);
+
+    if(painter.selectedPaintingModeIndex == 4)
+        this->filterPaintingModeFilterBtn.render(timer, !anyDialogActive);
 
     if(painter.selectedPaintingModeIndex == 5)
         vectorPaintingModePropertyPanel.render(timer, !anyDialogActive); 

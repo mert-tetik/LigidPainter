@@ -383,7 +383,7 @@ void Renderer::render(){
         */
 
         //Update the selected texture after painting
-        painter.updateTexture(userInterface.twoDPaintingPanel, userInterface.projection, userInterface.twoDPaintingSceneScroll, userInterface.twoDPaintingScenePos, painter.selectedPaintingModeIndex);
+        painter.updateTexture(userInterface.twoDPaintingPanel, userInterface.projection, userInterface.twoDPaintingSceneScroll, userInterface.twoDPaintingScenePos, painter.selectedPaintingModeIndex, userInterface.filterPaintingModeFilterBtn.filter);
         //Refresh the 2D painting texture
         painter.refreshPainting();
 

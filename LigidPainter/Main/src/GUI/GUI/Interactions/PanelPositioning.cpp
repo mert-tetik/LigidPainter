@@ -35,7 +35,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void UI::panelPositioning(
                             float &screenGapPerc, 
-                             
                             Painter &painter
                         )
 {
@@ -68,6 +67,9 @@ void UI::panelPositioning(
 
     vectorPaintingModePropertyPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + vectorPaintingModePropertyPanel.scale.x + 1;
     vectorPaintingModePropertyPanel.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + vectorPaintingModePropertyPanel.scale.y + 1;
+    
+    filterPaintingModeFilterBtn.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + filterPaintingModeFilterBtn.scale.x + 1;
+    filterPaintingModeFilterBtn.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + filterPaintingModeFilterBtn.scale.y + 1;
 
     displayingModesPanel.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - displayingModesPanel.scale.x - 0.5f;
     displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;
