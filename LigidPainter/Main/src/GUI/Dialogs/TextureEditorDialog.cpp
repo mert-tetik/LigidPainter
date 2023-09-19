@@ -279,6 +279,10 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
     }
@@ -300,6 +304,10 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
     }
@@ -319,6 +327,10 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -348,6 +360,10 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, distortionElements[8].button.texture.ID);
 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
     }
@@ -363,6 +379,10 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
+
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }

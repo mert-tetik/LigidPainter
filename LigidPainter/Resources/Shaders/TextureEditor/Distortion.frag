@@ -81,10 +81,6 @@ vec4 ripple( vec2 uv )
 
 vec4 sinWave(vec2 uv)
 {
-	
-	// Flip that shit, cause shadertool be all "yolo opengl"
-	uv.y = -1.0 - uv.y;
-	
 	// Modify that X coordinate by the sin of y to oscillate back and forth up in this.
 	uv.x += sin(uv.y * yStrength) * xStrength;
 	
@@ -98,8 +94,9 @@ vec4 sinWave(vec2 uv)
 vec4 swirl( vec2 uv )
 {   
     vec2 center = vec2(0.5);
-    center = center == vec2(0., 0.) ? vec2(.5, .5) : center;
     
+    uv -= center;
+
     float len = length(uv * vec2(txtrResolution.x / txtrResolution.y, 1.));
     float angle = atan(uv.y, uv.x) + effectAngle * smoothstep(effectRadius, 0., len);
     float radius = length(uv);
