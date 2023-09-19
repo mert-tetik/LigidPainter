@@ -77,20 +77,18 @@ out vec4 outClr;
 
 // Function for blending stroke values
 void strokeBlendUniColor(
-                            vec4 src,          // Source color
+                            float src,          // Source color
                             float srcA,        // Source alpha
-                            vec4 dst,          // Destination color
-                            out vec4 color     // Output blended color
+                            float dst,          // Destination color
+                            out float color     // Output blended color
                         )
 {
-    color.rgb = src.rgb;  // Set the output color's RGB values to source RGB values
-    
     // Blend the alpha values of source and destination
-    color.a = dst.a + (1.0 - dst.a) * src.a; // Blending based on alpha values
+    color = dst + (1.0 - dst) * src; // Blending based on alpha values
     
     // Check if the resulting alpha exceeds the source alpha
-    if (color.a > srcA) {
-        color.a = max(dst.a, srcA);  // Keep the maximum alpha between source and destination
+    if (color > srcA) {
+        color = max(dst, srcA);  // Keep the maximum alpha between source and destination
     }
 }
 
@@ -216,10 +214,12 @@ void main()
     float radius = calculateRadiusValue(random);
 
     //Result of the painting process
-    vec4 fRes = texture(bgTxtr, vec2(uv.x, 1. - uv.y));
+    float fRes;
     
     if(redChannelOnly == 1)
-        fRes.a = fRes.r;
+        fRes = texture(bgTxtr, vec2(uv.x, 1. - uv.y)).r;
+    else
+        fRes = texture(bgTxtr, vec2(uv.x, 1. - uv.y)).a;
 
     //Calculate all the strokes
     for(int i = 0; i < min(posCount, maxPosSize); i++) {
@@ -234,29 +234,29 @@ void main()
         float txtr = calculateBrushTexture(pos,vec2(radius / ratio,radius),uv);
         
         //Calculate the alpha value on the white color
-        vec4 src = vec4(1);
+        float src = float(1);
 
         //If the texture is not used individually then calculate the circle and calculate the texture value        
         if(brush.individualTexture != 1){
             
             //Calculate the circle
             float dist = length(uv * paintingRes - pos) / radius; // Calculate the distance of the current pixel from the center of the circle
-            src.a *= smoothstep(
+            src *= smoothstep(
                                     1.0, 
                                     hardnessV * max(0.1, 1.0 - (2.0 / (radius))),
                                     dist
                                 );
             
             //Add the texture data
-            src.a *= txtr;
+            src *= txtr;
         }
 
         //If the texture is used individually then equate the alpha value to the texture value        
         else{
             //Calculate the square
-            src.a = drawSquare(uv * paintingRes, pos, vec2(radius) * vec2(2., ratio));
+            src = drawSquare(uv * paintingRes, pos, vec2(radius) * vec2(2., ratio));
 
-            src.a *= txtr;
+            src *= txtr;
         }
 
         //Blend the stroke value
@@ -264,22 +264,18 @@ void main()
 
     }
     
-    vec4 res;
-
     //Calculate the opacity jitter
     float opacity = calculateOpacityValue(random);
     
-    //Equate the fragment output to the painting result value
-    res = fRes;
+    vec4 res = vec4(0.,0.,0.,fRes * opacity);
 
-    //Calculate the mouse offset value  
-    res.rg = mouseOffset/videoScale;
-    res.b = 0;
+    if(redChannelOnly == 0){
+        //Calculate the mouse offset value  
+        res.rg = mouseOffset/videoScale;
+        res.b = 0;
+        res.rgb *= res.a;
+    }
     
-    //Calculate the opacity value (painting result)
-    res.a *= opacity;
-    res.rgb *= res.a;
-
     if(redChannelOnly == 1)
         res.r = res.a;
 
