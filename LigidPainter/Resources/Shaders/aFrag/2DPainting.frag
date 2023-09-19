@@ -217,6 +217,9 @@ void main()
 
     //Result of the painting process
     vec4 fRes = texture(bgTxtr, vec2(uv.x, 1. - uv.y));
+    
+    if(redChannelOnly == 1)
+        fRes.a = fRes.r;
 
     //Calculate all the strokes
     for(int i = 0; i < min(posCount, maxPosSize); i++) {
@@ -261,20 +264,24 @@ void main()
 
     }
     
+    vec4 res;
+
     //Calculate the opacity jitter
     float opacity = calculateOpacityValue(random);
     
     //Equate the fragment output to the painting result value
-    outClr = fRes;
+    res = fRes;
 
     //Calculate the mouse offset value  
-    outClr.rg = mouseOffset/videoScale;
-    outClr.b = 0;
+    res.rg = mouseOffset/videoScale;
+    res.b = 0;
     
     //Calculate the opacity value (painting result)
-    outClr.a *= opacity;
-    outClr.rgb *= outClr.a;
+    res.a *= opacity;
+    res.rgb *= res.a;
 
     if(redChannelOnly == 1)
-        outClr.r = outClr.a;
+        res.r = res.a;
+
+    outClr = res;
 }

@@ -83,7 +83,4 @@ void main(){
     vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, screenPos, paintingOpacity, doDepthTest);
     
     fragColor = brushTxtr;
-
-    if(redChannelOnly == 1)
-        fragColor.r = brushTxtr.a;    
 }
