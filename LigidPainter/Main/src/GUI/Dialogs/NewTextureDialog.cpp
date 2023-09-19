@@ -68,6 +68,7 @@ NewTextureDialog::NewTextureDialog(){
     
     //Change the color button's color to black
     panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
+    panel.sections[0].elements[0].button.solidColor = true;
 }
 
 bool __newTxtrDialog_last_texture_selection_dialog_state = false;

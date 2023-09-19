@@ -137,6 +137,7 @@ public:
     bool textureStickToTop = false;
     bool textAlignLeft = false;
     bool clicked = false;
+    bool solidColor = false;
     
 
     //Constructors 

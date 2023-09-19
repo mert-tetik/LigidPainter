@@ -504,6 +504,10 @@ void UI::init
         paintingPanel.sections[0] //Color section
                                  .elements[i] //Color button
                                             .button.animationStyle = 2;
+        
+        paintingPanel.sections[0] //Color section
+                                 .elements[i] //Color button
+                                            .button.solidColor = true;
     }
     
     //Init renaming textbox
