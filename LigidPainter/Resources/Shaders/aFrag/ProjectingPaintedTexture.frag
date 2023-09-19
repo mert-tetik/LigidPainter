@@ -52,7 +52,7 @@ bool isPainted  (
 
     //TODO : Don't divide with far for the better result
     //Return true if the 3D Model's depth value & the screen position values are similiar
-    return abs(modelZ - linearizeDepth(uv.z)/far) < 0.01;
+    return abs(modelZ - uv.z) < 0.0001;
 }
 
 /**

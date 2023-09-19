@@ -24,7 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //----------------------- DEPTH TESTING -----------------------
 
 // Constants
-const float far = 100.0;
+const float far = 1.0;
 const float near = 0.1;
 
 /**

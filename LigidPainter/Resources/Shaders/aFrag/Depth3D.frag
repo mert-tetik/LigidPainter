@@ -31,7 +31,7 @@ void main() {
 
     //Output the linearized depth value from the fragment shader
     color = vec4(
-                    vec3(linearizeDepth(gl_FragCoord.z)/far), //Linearized depth value
+                    vec3(gl_FragCoord.z), //Linearized depth value
                     1.0 //Full opacity
                 );
 }

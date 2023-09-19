@@ -85,29 +85,12 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
     }
     else{
 
-        unsigned int captureFBO;
-        unsigned int captureTexture;
-        
-        //Create the capture texture
         glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1,&captureTexture);
-        glBindTexture(GL_TEXTURE_2D,captureTexture);
 
-        //Params of the capture texture
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-
-        //Allocate memory for capture texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes.x, textureRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
-        //Create the framebuffer
-        glGenFramebuffers(1,&captureFBO);
-        glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, captureTexture, 0);
+        Texture captureTexture = Texture(nullptr, textureRes.x, textureRes.y, GL_LINEAR);
+        Framebuffer captureFBO = Framebuffer(captureTexture, GL_TEXTURE_2D);
+        
+        captureFBO.bind();
 
         glClearColor(1,0,1,1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -237,13 +220,11 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         }
 
         //Delete the capture framebuffer
-        glDeleteFramebuffers(1,&captureFBO);
+        captureFBO.deleteBuffers(false, false);
 
         //Copy capture texture into the source texture (painted texture)
-        captureTxtrToSourceTxtr(captureTexture,textureRes,selectedTexture.ID);
+        captureTxtrToSourceTxtr(captureTexture.ID, textureRes, selectedTexture.ID);
     }
-
-    
 
     if(this->threeDimensionalMode)
         if(selectedMeshIndex < getModel()->meshes.size())
