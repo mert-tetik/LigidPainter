@@ -162,7 +162,10 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 
     if(this->threeDimensionalMode){
         glm::vec2 textureRes = this->selectedTexture.getResolution();
-        this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR);
+        if(this->selectedPaintingModeIndex == 2 || this->selectedPaintingModeIndex == 3)
+            this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, GL_RGBA);
+        else
+            this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, GL_ALPHA);
 
         Framebuffer captureFBO = Framebuffer(this->projectedPaintingTexture, GL_TEXTURE_2D);
         captureFBO.bind();

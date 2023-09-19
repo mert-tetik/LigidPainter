@@ -285,6 +285,7 @@ public:
 
     void update(char* pixels, int w, int h);
     void update(char* pixels, int w, int h, unsigned int filterParam);
+    void update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format);
 
     /// @brief Load a texture by importing the texture in the given path via STBI
     void load(const char* path);
