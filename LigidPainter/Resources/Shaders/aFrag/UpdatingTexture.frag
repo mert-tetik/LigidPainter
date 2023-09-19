@@ -59,7 +59,7 @@ out vec4 fragColor;
 void main(){
     vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w);
 
-    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, screenPos, paintingOpacity, doDepthTest);
+    vec4 brushTxtr = texture(paintingTexture, TexCoords);
 
     float txtrAlpha = texture(txtr, TexCoords).a; 
 

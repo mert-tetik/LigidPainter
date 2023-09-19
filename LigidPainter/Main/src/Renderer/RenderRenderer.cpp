@@ -129,7 +129,7 @@ void Renderer::render(){
     
     //Bind the painting texture
     glActiveTexture(GL_TEXTURE8);
-    glBindTexture(GL_TEXTURE_2D,painter.paintingTexture);
+    glBindTexture(GL_TEXTURE_2D,painter.projectedPaintingTexture.ID);
     
     //Bind the depth texture
     glActiveTexture(GL_TEXTURE9);

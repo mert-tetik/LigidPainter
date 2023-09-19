@@ -172,7 +172,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         
         ///@ref paintingTexture 
         glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, this->paintingTexture);
+        glBindTexture(GL_TEXTURE_2D, this->projectedPaintingTexture.ID);
         
         ///@ref depthTexture 
         glActiveTexture(GL_TEXTURE7);
@@ -216,7 +216,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         
         //paintingTexture 
         glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, this->paintingTexture);
+        glBindTexture(GL_TEXTURE_2D, this->projectedPaintingTexture.ID);
         
         //depthTexture 
         glActiveTexture(GL_TEXTURE7);
@@ -248,11 +248,14 @@ void Painter::refreshPainting(){
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->paintingTexture16f, 0);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
-    Settings::defaultFramebuffer()->FBO.bind();
     
-    glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->paintingTexture8, 0);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
+    
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->projectedPaintingTexture.ID, 0);
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     Settings::defaultFramebuffer()->FBO.bind();
 }

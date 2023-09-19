@@ -156,6 +156,53 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
         txtrObj.generateNormalMap(this->paintingTexture16f, paintingRes, 8.f, false, true);
         this->paintingTexture = this->paintingTexture16f;
     }
+
+    ShaderSystem::projectingPaintedTextureShader().use();
+    
+
+    if(this->threeDimensionalMode){
+        glm::vec2 textureRes = this->selectedTexture.getResolution();
+        this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR);
+
+        Framebuffer captureFBO = Framebuffer(this->projectedPaintingTexture, GL_TEXTURE_2D);
+        captureFBO.bind();
+
+        glClearColor(0, 0, 0, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+        //Set the viewport to the resolution of the texture
+        glViewport(0,0,textureRes.x,textureRes.y);
+
+        ShaderSystem::projectingPaintedTextureShader().use();
+
+        //*Fragment
+        ShaderSystem::projectingPaintedTextureShader().setInt("doDepthTest", 1);
+        ShaderSystem::projectingPaintedTextureShader().setInt("paintingTexture", 6);
+        ShaderSystem::projectingPaintedTextureShader().setInt("depthTexture", 7);
+        ShaderSystem::projectingPaintedTextureShader().setFloat("paintingOpacity", this->brushProperties.opacity);
+
+        //*Vertex
+        ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
+        ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
+        ShaderSystem::projectingPaintedTextureShader().setMat4("view", getScene()->viewMatrix);
+
+        //* Bind the textures
+        ///@ref paintingTexture 
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, this->paintingTexture);
+        
+        ///@ref depthTexture 
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, this->depthTexture);
+        
+        //Draw the UV of the selected model
+        if(selectedMeshIndex < getModel()->meshes.size())
+            getModel()->meshes[selectedMeshIndex].Draw();
+
+        captureFBO.deleteBuffers(false ,false);
+    }
+    
+    Settings::defaultFramebuffer()->FBO.bind(); //Bind the default framebuffer
 }
 
 

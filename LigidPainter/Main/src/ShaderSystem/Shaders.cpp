@@ -59,6 +59,7 @@ Shader __edgeWearShader;
 Shader __bakingShader;
 Shader __defaultFramebufferShader;
 Shader __nodeConnectionCurve;
+Shader __projectingPaintedTextureShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -98,6 +99,7 @@ void ShaderSystem::initShaderSystem(){
     __edgeWearShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/EdgeWear.frag");
     __defaultFramebufferShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/DefaultFramebuffer.frag");
     __nodeConnectionCurve.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/NodeConnectionCurve.frag");
+    __projectingPaintedTextureShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/ProjectingPaintedTexture.frag");
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -210,4 +212,7 @@ Shader ShaderSystem::defaultFramebufferShader(){
 }
 Shader ShaderSystem::nodeConnectionCurve(){
     return __nodeConnectionCurve;
+}
+Shader ShaderSystem::projectingPaintedTextureShader(){
+    return __projectingPaintedTextureShader;
 }

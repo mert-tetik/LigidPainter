@@ -45,21 +45,6 @@ float linearizeDepth(
 }
 
 
-bool isPainted  (
-                    vec3 uv, //Screen position (projected position) of the vertex
-                    sampler2D depthTexture //Model's depth texture (linearized) 
-                ) 
-{ 
-
-    //3D Model's depth value in the given coordinate (where the painting will be done)
-    float modelZ = texture(depthTexture, uv.xy).b;
-
-    //TODO : Don't divide with far for the better result
-    //Return true if the 3D Model's depth value & the screen position values are similiar
-    return abs(modelZ - linearizeDepth(uv.z)/far) < 0.01;
-}
-
-
 //----------------------- SOFTEN BRUSH ----------------------- 
 
 const int LOD = 1,         // gaussian done on MIPmap at scale LOD
@@ -329,26 +314,4 @@ vec3 getBrushedTexture (
     
     //If the brushModeState value is not valid
     return vec3(0);
-}
-
-/**
-*   Returns the brush value interpreting the paintingTexture (calculate screen pos & depth test)
-**/
-vec4 getBrushValue(
-                    sampler2D paintingTexture, //Painting texture 
-                    sampler2D depthTexture, //Model depth texture
-                    vec3 modelCoords, //Screen pos of the model 
-                    float opacity, //Brush opacity
-                    int testDepth
-                )
-{
-    vec4 brushTxtr = texture(paintingTexture, modelCoords.xy);
-    brushTxtr.a *= opacity; 
-
-    if(testDepth == 1){
-        if(!isPainted(modelCoords,depthTexture))
-            brushTxtr = vec4(0);
-    }
-
-    return brushTxtr;
 }

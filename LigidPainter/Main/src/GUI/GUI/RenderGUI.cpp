@@ -410,7 +410,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         if(painter.selectedDisplayingModeIndex == 0)
             glBindTexture(GL_TEXTURE_2D, 0);
         else
-            glBindTexture(GL_TEXTURE_2D, painter.paintingTexture);
+            glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
 
         //depthTexture 
         glActiveTexture(GL_TEXTURE7);

@@ -121,6 +121,9 @@ void Painter::initPainter(){
     
     //--------- init paintingBGTexture --------- 
     this->paintingBGTexture = Texture(nullptr, 1, 1);
+
+    //--------- init projectedPaintingTexture --------- 
+    this->projectedPaintingTexture = Texture(nullptr, 1, 1 , GL_LINEAR);
     
     //--------- Finish --------- 
     Settings::defaultFramebuffer()->FBO.bind();

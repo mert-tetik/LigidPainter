@@ -6,14 +6,12 @@
 //Functions related to PBR 
 #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Physics_Math.frag)
 
-
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 Pos;
 in vec3 Tangent;
 in vec3 Bitangent;
 in vec4 ProjectedPos;
-
 
 //Position of the camera
 uniform vec3 viewPos;
@@ -85,7 +83,7 @@ void main() {
     vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w);
 
     // Brush value (mask) (painting texture) 
-    vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, screenPos, paintingOpacity, 1);
+    vec4 brushTxtr = texture(paintingTexture, TexCoords);
     
     //Get Albedo
     if(paintedTxtrStateIndex == 0)

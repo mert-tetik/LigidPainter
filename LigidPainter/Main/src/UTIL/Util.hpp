@@ -576,6 +576,8 @@ public:
     /// @brief 3D model linearized depth texture (3d model rendered with a depth shader) 
     unsigned int depthTexture;
 
+    Texture projectedPaintingTexture;
+
     unsigned int paintingOverTexture;
     bool usePaintingOver = false;
     bool paintingOverGrayScale = false;

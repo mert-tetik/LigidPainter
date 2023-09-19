@@ -121,6 +121,7 @@ namespace ShaderSystem{
     Shader bakingShader();
     Shader defaultFramebufferShader();
     Shader nodeConnectionCurve();
+    Shader projectingPaintedTextureShader();
 
     void initShaderSystem();
 };
