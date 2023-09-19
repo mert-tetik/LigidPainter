@@ -23,6 +23,7 @@ out vec4 fragColor;
 void main(){
 
     vec2 uv = Pos.xy;
+    vec3 vPos = Pos;
 
     uv = abs(uv);
     if(Pos.z < 0.3 && Pos.z > -0.3){
@@ -32,9 +33,12 @@ void main(){
             uv.xy += (0.3 + Pos.z) / 4.;
     }
 
-    if(proceduralUseTexCoords == 1)
+    if(proceduralUseTexCoords == 1){
         uv = TexCoords;
+        vPos.xy = TexCoords;
+        vPos.z = 0.;
+    }
 
-    vec4 procedural = getProcedural(Pos, proceduralID, proceduralTexture, uv, proceduralScale, proceduralInverted, smartProperties, txtrRes, proceduralGrayScale, proceduralBrightness);
+    vec4 procedural = getProcedural(vPos, proceduralID, proceduralTexture, uv, proceduralScale, proceduralInverted, smartProperties, txtrRes, proceduralGrayScale, proceduralBrightness);
     fragColor = vec4(procedural);
 }
