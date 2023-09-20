@@ -114,109 +114,90 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
                                                 twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + twoDScenePos.y - destScale.y  * twoDSceneScroll
                                             );
 
+
+
+
+
+        ShaderSystem::buttonShader().use();
+        
+        ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, textureRes.x, textureRes.y, 0.f));
+        ShaderSystem::buttonShader().setVec3("pos", glm::vec3(textureRes.x  / 2.f, textureRes.y / 2.f, 0.1));
+        ShaderSystem::buttonShader().setVec2("scale", glm::vec2(textureRes / 2.f));
+        ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
+        ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
+        ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
+        ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, this->selectedTexture.ID);
+        
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
+
+        ShaderSystem::textureUpdatingShader().use();
+
+        //*Fragment
+        ShaderSystem::textureUpdatingShader().setInt("txtr", 5);
+        ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6);
+        ShaderSystem::textureUpdatingShader().setInt("depthTexture", 7);
+        ShaderSystem::textureUpdatingShader().setInt("paintingOverTexture", 10);
+        ShaderSystem::textureUpdatingShader().setInt("brushModeState", paintingMode);
+        ShaderSystem::textureUpdatingShader().setFloat("paintingOpacity", this->brushProperties.opacity);
+        ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", this->usePaintingOver);
+        ShaderSystem::textureUpdatingShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
+        ShaderSystem::textureUpdatingShader().setInt("paintingOverWraping", this->paintingOverWraping);
+        ShaderSystem::textureUpdatingShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
+
+        //* Bind the textures
+        //painted texture
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, this->selectedTexture.ID);
+        
+        ///@ref paintingTexture 
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, this->projectedPaintingTexture.ID);
+        
+        ///@ref depthTexture 
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, this->depthTexture);
+        
+        ///@ref paintingOverTexture 
+        glActiveTexture(GL_TEXTURE10);
+        glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
+
+        
         if(this->threeDimensionalMode){
-
-            ShaderSystem::buttonShader().use();
-            
-            ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, textureRes.x, textureRes.y, 0.f));
-            ShaderSystem::buttonShader().setVec3("pos", glm::vec3(textureRes.x  / 2.f, textureRes.y / 2.f, 0.1));
-            ShaderSystem::buttonShader().setVec2("scale", glm::vec2(textureRes / 2.f));
-            ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
-            ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
-            ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
-            ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, this->selectedTexture.ID);
-            
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-
-            ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
-
-            ShaderSystem::textureUpdatingShader().use();
-
-            //*Fragment
-            ShaderSystem::textureUpdatingShader().setInt("doDepthTest", 1);
-            ShaderSystem::textureUpdatingShader().setInt("txtr", 5);
-            ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6);
-            ShaderSystem::textureUpdatingShader().setInt("depthTexture", 7);
-            ShaderSystem::textureUpdatingShader().setInt("paintingOverTexture", 10);
-            ShaderSystem::textureUpdatingShader().setInt("brushModeState", paintingMode);
-            ShaderSystem::textureUpdatingShader().setFloat("paintingOpacity", this->brushProperties.opacity);
-            ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", this->usePaintingOver);
-            ShaderSystem::textureUpdatingShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
-            ShaderSystem::textureUpdatingShader().setInt("paintingOverWraping", this->paintingOverWraping);
-            ShaderSystem::textureUpdatingShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
-
-            //*Vertex
-            ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
-            ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
-            ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->viewMatrix);
-
-            //* Bind the textures
-            //painted texture
-            glActiveTexture(GL_TEXTURE5);
-            glBindTexture(GL_TEXTURE_2D, this->selectedTexture.ID);
-            
-            ///@ref paintingTexture 
-            glActiveTexture(GL_TEXTURE6);
-            glBindTexture(GL_TEXTURE_2D, this->projectedPaintingTexture.ID);
-            
-            ///@ref depthTexture 
-            glActiveTexture(GL_TEXTURE7);
-            glBindTexture(GL_TEXTURE_2D, this->depthTexture);
-            
-            ///@ref paintingOverTexture 
-            glActiveTexture(GL_TEXTURE10);
-            glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
-
             //Draw the UV of the selected model
-            if(selectedMeshIndex < getModel()->meshes.size())
+            if(selectedMeshIndex < getModel()->meshes.size()){
+                //*Fragment
+                ShaderSystem::textureUpdatingShader().setInt("doDepthTest", 1);
+
+                //*Vertex
+                ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
+                ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
+                ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->viewMatrix);
+
                 getModel()->meshes[selectedMeshIndex].Draw();         
+            }
         }
         else{
-
-            ShaderSystem::twoDPaintingModeAreaShader().use();
-
             //*Fragment
-            ShaderSystem::twoDPaintingModeAreaShader().setInt("doDepthTest", 0);
-            ShaderSystem::twoDPaintingModeAreaShader().setInt("txtr", 5);
-            ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingTexture", 6);
-            ShaderSystem::twoDPaintingModeAreaShader().setInt("depthTexture", 7);
-            ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverTexture", 10);
-            ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", paintingMode);
-            ShaderSystem::twoDPaintingModeAreaShader().setFloat("paintingOpacity", this->brushProperties.opacity);
-            ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", this->usePaintingOver);
-            ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
-            ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverWraping", this->paintingOverWraping);
-            ShaderSystem::twoDPaintingModeAreaShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
+            ShaderSystem::projectingPaintedTextureShader().setInt("doDepthTest", 0);
 
             //*Vertex
-            ShaderSystem::twoDPaintingModeAreaShader().setMat4("projectedPosProjection", windowOrtho);
-            ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", twoDProjection);
-            ShaderSystem::twoDPaintingModeAreaShader().setVec3("pos", twoDPaintingPanel.sections[0].elements[0].button.resultPos + glm::vec3(twoDScenePos, 0.f));
-            ShaderSystem::twoDPaintingModeAreaShader().setVec2("scale", destScale * twoDSceneScroll);
-
-            //* Bind the textures
-            //painted texture
-            glActiveTexture(GL_TEXTURE5);
-            glBindTexture(GL_TEXTURE_2D, this->selectedTexture.ID);
+            ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
+            ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", windowOrtho);
+            ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
             
-            //paintingTexture 
-            glActiveTexture(GL_TEXTURE6);
-            glBindTexture(GL_TEXTURE_2D, this->projectedPaintingTexture.ID);
-            
-            //depthTexture 
-            glActiveTexture(GL_TEXTURE7);
-            glBindTexture(GL_TEXTURE_2D, this->depthTexture);
+            Box box;
+            glm::vec3 destPos = glm::vec3(twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + twoDScenePos.x, twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + twoDScenePos.y, 0.9f);
+            box.customInit(destPos, (textureRes * twoDSceneScroll));
+            box.bindBuffers();
+            glDrawArrays(GL_TRIANGLES, 0 ,6);
 
-            ///paintingOverTexture 
-            glActiveTexture(GL_TEXTURE10);
-            glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
-
-            //Render
-            glDrawArrays(GL_TRIANGLES,0,6);
-        
+            glDeleteVertexArrays(1, &box.VAO);
+            glDeleteBuffers(1, &box.VBO);
         }
 
         //Delete the capture framebuffer
@@ -225,6 +206,9 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         //Copy capture texture into the source texture (painted texture)
         captureTxtrToSourceTxtr(captureTexture.ID, textureRes, selectedTexture.ID);
     }
+
+
+    
 
     if(this->threeDimensionalMode)
         if(selectedMeshIndex < getModel()->meshes.size())

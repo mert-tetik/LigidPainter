@@ -224,6 +224,7 @@ void Library::eraseModel     (int index){
     {
         glDeleteVertexArrays(1, &__TDModels[index].meshes[mshI].VAO);
         glDeleteBuffers(1, &__TDModels[index].meshes[mshI].VBO);
+        glDeleteBuffers(1, &__TDModels[index].meshes[mshI].EBO);
         
         glDeleteTextures(1, &__TDModels[index].meshes[mshI].albedo.ID);
         glDeleteTextures(1, &__TDModels[index].meshes[mshI].roughness.ID);
@@ -311,6 +312,7 @@ void Library::clearModels     (){
         {
             glDeleteVertexArrays(1, &__TDModels[i].meshes[mshI].VAO);
             glDeleteBuffers(1, &__TDModels[i].meshes[mshI].VBO);
+            glDeleteBuffers(1, &__TDModels[i].meshes[mshI].EBO);
 
             glDeleteTextures(1, &__TDModels[i].meshes[mshI].albedo.ID);
             glDeleteTextures(1, &__TDModels[i].meshes[mshI].roughness.ID);

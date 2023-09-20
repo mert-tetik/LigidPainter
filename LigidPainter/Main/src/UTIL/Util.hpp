@@ -640,7 +640,7 @@ public:
     *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
     * @param windowOrtho orthographic projection matrix created with window size value.
     */
-    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode);
+    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, glm::vec2 twoDPaintingScenePos, float twoDPaintingSceneScroll);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -670,7 +670,7 @@ public:
 
     Color getSelectedColor();
 
-    void applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode, Filter filterBtnFilter);
+    void applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode, Filter filterBtnFilter, glm::vec2 twoDPaintingScenePos, float twoDPaintingSceneScroll);
 
     /// @brief Clears & refreshes all the buffers
     void refreshBuffers();
@@ -814,6 +814,8 @@ public:
 
     /// @brief Initializes / Creates OpenGL vertex objects regarding 2D square rendering
     void init();
+
+    void customInit(glm::vec3 pos, glm::vec2 scale);
 
     /// @brief Binds the 2D square vertex objects
     void bindBuffers();

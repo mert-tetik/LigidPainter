@@ -105,7 +105,7 @@ void main() {
     setOutputs();
 
     //Calculate the screen coordinates
-    ProjectedPos = projection * view * modelMatrix * vec4(aPos.xyz, 0.5); 
+    ProjectedPos = projection * view * modelMatrix * vec4(aPos.xyz, 1.); 
     
     //Set the vertex position
     gl_Position = ProjectedPos;

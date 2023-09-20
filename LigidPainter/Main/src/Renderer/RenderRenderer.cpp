@@ -366,7 +366,10 @@ void Renderer::render(){
         painter.doPaint(    
                             userInterface.projection,
                             {},
-                            painter.selectedPaintingModeIndex
+                            painter.selectedPaintingModeIndex,
+                            userInterface.twoDPaintingPanel,
+                            userInterface.twoDPaintingScenePos, 
+                            userInterface.twoDPaintingSceneScroll
                         );
 
     }

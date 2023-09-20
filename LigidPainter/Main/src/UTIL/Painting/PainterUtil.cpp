@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "UTIL/Util.hpp"
+#include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
@@ -98,7 +99,7 @@ Color Painter::getSelectedColor(){
         return this->color3;
 }
 
-void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode, Filter filterBtnFilter){
+void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode, Filter filterBtnFilter, glm::vec2 twoDPaintingScenePos, float twoDPaintingSceneScroll){
     
     int textureResolution = 256;
 
@@ -184,7 +185,7 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
         std::vector<glm::vec2> subVector(strokePositions.begin() + startIdx, strokePositions.begin() + endIdx);
 
         // Call the imaginary function for the subvector
-        this->doPaint(windowOrtho, subVector, paintingMode);
+        this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingScenePos, twoDPaintingSceneScroll);
     }
 
     this->updateTexture(twoDPaintingPanel, windowOrtho, twoDSceneScroll, twoDScenePos, paintingMode, filterBtnFilter);

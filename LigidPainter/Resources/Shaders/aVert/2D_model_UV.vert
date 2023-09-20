@@ -104,7 +104,7 @@ void main() {
     setOutputs();
 
     //Calculate the screen coordinates
-    ProjectedPos = perspectiveProjection * view * vec4(Pos, 0.5); 
+    ProjectedPos = perspectiveProjection * view * vec4(Pos, 1.); 
 
     //Set the vertex position
     gl_Position = orthoProjection * vec4(TexCoords, 1.0, 1.0); 

@@ -399,7 +399,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
         
         // Painting over texture
         glActiveTexture(GL_TEXTURE10);
