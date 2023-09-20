@@ -70,7 +70,7 @@ void Box::init(){
     glBindVertexArray(0);
 }
 
-void Box::customInit(glm::vec3 pos, glm::vec2 scale){
+void Box::customMeshInit(glm::vec3 pos, glm::vec2 scale){
     std::vector<float> boxVertices = { 
         // first triangle      
         pos.x + scale.x,   pos.y + scale.y, pos.z      ,      1,0,    0,0,0,   0,0,0,  0,0,0,         // top right
@@ -85,6 +85,47 @@ void Box::customInit(glm::vec3 pos, glm::vec2 scale){
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    glBindVertexArray(VAO);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, boxVertices.size() * sizeof(float), &boxVertices[0], GL_DYNAMIC_DRAW);
+
+    // vertex Positions
+    glEnableVertexAttribArray(0);	
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+    // vertex TextureMs coords
+    glEnableVertexAttribArray(1);	
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
+    // vertex normals
+    glEnableVertexAttribArray(2);	
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(5 * sizeof(float)));
+    // vertex tangent
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(8 * sizeof(float)));
+    // vertex bitangent
+    glEnableVertexAttribArray(4);
+    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(11 * sizeof(float)));
+
+    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+    glBindBuffer(GL_ARRAY_BUFFER, 0); 
+
+    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+    glBindVertexArray(0);
+}
+
+void Box::customMeshUpdate(glm::vec3 pos, glm::vec2 scale){
+    std::vector<float> boxVertices = { 
+        // first triangle      
+        pos.x + scale.x,   pos.y + scale.y, pos.z      ,      1,0,    0,0,0,   0,0,0,  0,0,0,         // top right
+        pos.x + scale.x,   pos.y - scale.y, pos.z      ,      1,1,    0,0,0,   0,0,0,  0,0,0,         // bottom right
+        pos.x - scale.x,   pos.y + scale.y, pos.z      ,      0,0,    0,0,0,   0,0,0,  0,0,0,         // top left 
+        pos.x + scale.x,   pos.y - scale.y, pos.z      ,      1,1,    0,0,0,   0,0,0,  0,0,0,         // bottom right
+        pos.x - scale.x,   pos.y - scale.y, pos.z      ,      0,1,    0,0,0,   0,0,0,  0,0,0,         // bottom left
+        pos.x - scale.x,   pos.y + scale.y, pos.z      ,      0,0,    0,0,0,   0,0,0,  0,0,0          // top left
+    };
+
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glBindVertexArray(VAO);
     

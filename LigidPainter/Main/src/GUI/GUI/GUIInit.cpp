@@ -525,4 +525,6 @@ void UI::init
     paintingPanel.sections[5].elements[1].button.textureSelection = true;
 
     navigationPanel.solidStyle = true;
+
+    this->twoDPaintingBox.customMeshInit(glm::vec3(0.),glm::vec2(0.)); 
 }   

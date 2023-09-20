@@ -145,7 +145,7 @@ vec3 getSmearedTexture(
     float intensity = brushTxtr.a/2.;
     
     //Get the direction value from the painted texture (which direction the painting made in the current texture coordinates)
-    vec2 Direction = brushTxtr.rg;
+    vec2 Direction = brushTxtr.rg * 2.;
 
     //Samples (multiple of 2)
     int Samples = 64;

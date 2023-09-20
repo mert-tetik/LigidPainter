@@ -27,9 +27,9 @@ vec2 texNormalMapAlpha(in vec2 uv)
 {
     vec2 s = vec2(1.0 / txtrRes);
     
-    float p = texture(heightMap, uv).a;
-    float h1 = texture(heightMap, uv + s * vec2(textureOffset,0)).a;
-    float v1 = texture(heightMap, uv + s * vec2(0,textureOffset)).a;
+    float p = texture(heightMap, uv).x;
+    float h1 = texture(heightMap, uv + s * vec2(textureOffset,0)).x;
+    float v1 = texture(heightMap, uv + s * vec2(0,textureOffset)).x;
        
    	return (p - vec2(h1, v1));
 }

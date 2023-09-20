@@ -368,8 +368,7 @@ void Renderer::render(){
                             {},
                             painter.selectedPaintingModeIndex,
                             userInterface.twoDPaintingPanel,
-                            userInterface.twoDPaintingScenePos, 
-                            userInterface.twoDPaintingSceneScroll
+                            userInterface.twoDPaintingBox
                         );
 
     }
@@ -386,7 +385,7 @@ void Renderer::render(){
         */
 
         //Update the selected texture after painting
-        painter.updateTexture(userInterface.twoDPaintingPanel, userInterface.projection, userInterface.twoDPaintingSceneScroll, userInterface.twoDPaintingScenePos, painter.selectedPaintingModeIndex, userInterface.filterPaintingModeFilterBtn.filter);
+        painter.updateTexture(userInterface.twoDPaintingPanel, userInterface.projection, painter.selectedPaintingModeIndex, userInterface.filterPaintingModeFilterBtn.filter, userInterface.twoDPaintingBox);
         //Refresh the 2D painting texture
         painter.refreshPainting();
 

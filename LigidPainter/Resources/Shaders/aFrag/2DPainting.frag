@@ -214,12 +214,15 @@ void main()
     float radius = calculateRadiusValue(random);
 
     //Result of the painting process
+    vec4 orgTxtr;
     float fRes;
+
+    orgTxtr = texture(bgTxtr, vec2(uv.x, 1. - uv.y));
     
     if(redChannelOnly == 1)
-        fRes = texture(bgTxtr, vec2(uv.x, 1. - uv.y)).r;
+        fRes = orgTxtr.r;
     else
-        fRes = texture(bgTxtr, vec2(uv.x, 1. - uv.y)).a;
+        fRes = orgTxtr.a;
 
     //Calculate all the strokes
     for(int i = 0; i < min(posCount, maxPosSize); i++) {
@@ -269,11 +272,12 @@ void main()
     
     vec4 res = vec4(0.,0.,0.,fRes * opacity);
 
+    
     if(redChannelOnly == 0){
         //Calculate the mouse offset value  
-        res.rg = mouseOffset/videoScale;
+        res.rg = orgTxtr.rg + (mouseOffset/videoScale) * max(fRes - orgTxtr.a, 0) ;
         res.b = 0;
-        res.rgb *= res.a;
+        //res.rgb *= ;
     }
     
     if(redChannelOnly == 1)

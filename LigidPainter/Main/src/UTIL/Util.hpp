@@ -55,6 +55,8 @@ class Mesh;
 struct AppMaterialModifiers;
 /// @brief forward declared Context struct
 struct Context;
+/// @brief forward declared Box class
+class Box;
 
 
 /// @brief Global utility functions to help to do stuff
@@ -286,6 +288,7 @@ public:
     void update(char* pixels, int w, int h);
     void update(char* pixels, int w, int h, unsigned int filterParam);
     void update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format);
+    void update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat);
 
     /// @brief Load a texture by importing the texture in the given path via STBI
     void load(const char* path);
@@ -640,7 +643,7 @@ public:
     *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
     * @param windowOrtho orthographic projection matrix created with window size value.
     */
-    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, glm::vec2 twoDPaintingScenePos, float twoDPaintingSceneScroll);
+    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -656,7 +659,7 @@ public:
     * @param scene structure contains matrices related to 3D model rendering & cam pos
     * @param twoDPaintingPanel if the painting mode is 2D use this panel's transform data 
     */
-    void updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode, Filter filterBtnFilter);
+    void updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox);
     
     /*!
     * @brief updates the @ref depthTexture right after painting is done.
@@ -670,12 +673,12 @@ public:
 
     Color getSelectedColor();
 
-    void applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode, Filter filterBtnFilter, glm::vec2 twoDPaintingScenePos, float twoDPaintingSceneScroll);
+    void applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox);
 
     /// @brief Clears & refreshes all the buffers
     void refreshBuffers();
 
-private:
+public:
     
     /// @brief renderbuffer object used to depth test (used to create the depth texture)
     unsigned int depthRBO; 
@@ -806,8 +809,8 @@ public:
 class Box
 {
 public:
-    unsigned int VBO;
-    unsigned int VAO;
+    unsigned int VBO = 0;
+    unsigned int VAO = 0;
 
     /// @brief Default constructor (does nothing) (use @ref init instead to init the OpenGL objects)
     Box();
@@ -815,7 +818,9 @@ public:
     /// @brief Initializes / Creates OpenGL vertex objects regarding 2D square rendering
     void init();
 
-    void customInit(glm::vec3 pos, glm::vec2 scale);
+    void customMeshInit(glm::vec3 pos, glm::vec2 scale);
+    
+    void customMeshUpdate(glm::vec3 pos, glm::vec2 scale);
 
     /// @brief Binds the 2D square vertex objects
     void bindBuffers();

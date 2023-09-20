@@ -47,7 +47,7 @@ static void set3DShaderSideUniforms(int selectedColorIndex,Color color1,Color co
 
 
 
-void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, glm::vec2 twoDPaintingScenePos, float twoDPaintingSceneScroll){
+void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox){
 
     glm::vec2 firstCursorPos = *Mouse::cursorPos();
     
@@ -113,7 +113,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     if(holdLocations.size())
         ShaderSystem::twoDPainting().setVec2("mouseOffset", holdLocations[0] - holdLocations[holdLocations.size()-1]);
     
-    ShaderSystem::twoDPainting().setInt("redChannelOnly", !(this->selectedPaintingModeIndex == 2 || this->selectedPaintingModeIndex == 3));
+    ShaderSystem::twoDPainting().setInt("redChannelOnly", !(this->selectedPaintingModeIndex == 2));
 
     ShaderSystem::twoDPainting().setInt("posCount",holdLocations.size());
     for (int i = 0; i < holdLocations.size(); i++)
@@ -165,10 +165,22 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 
     glm::vec2 textureRes = this->selectedTexture.getResolution();
     if(*Mouse::LClick()){
-        if(this->selectedPaintingModeIndex == 2 || this->selectedPaintingModeIndex == 3)
-            this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, GL_RGBA);
-        else
-            this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, GL_RED);
+        unsigned int format = 0;
+        unsigned int internalFormat = 0;
+        if(this->selectedPaintingModeIndex == 2){
+            format = GL_RGBA;
+            internalFormat = GL_RGBA16F;
+        }
+        else if(this->selectedPaintingModeIndex == 3){
+            format = GL_RGBA;
+            internalFormat = GL_RGBA8;
+        }
+        else{
+            format = GL_RED;
+            internalFormat = GL_RED;
+        }
+
+        this->projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, format, internalFormat);
     }
 
 
@@ -222,14 +234,8 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
         ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", windowOrtho);
         ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
-        Box box;
-        glm::vec3 destPos = glm::vec3(twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + twoDPaintingScenePos.x, twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + twoDPaintingScenePos.y, 0.9f);
-        box.customInit(destPos, (textureRes * twoDPaintingSceneScroll));
-        box.bindBuffers();
+        twoDPaintingBox.bindBuffers();
         glDrawArrays(GL_TRIANGLES, 0 ,6);
-
-        glDeleteVertexArrays(1, &box.VAO);
-        glDeleteBuffers(1, &box.VBO);
     }    
 
     captureFBO.deleteBuffers(false ,false);

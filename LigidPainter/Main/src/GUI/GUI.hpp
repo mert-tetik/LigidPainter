@@ -98,6 +98,7 @@ public:
 
     float twoDPaintingSceneScroll = 2.f;
     glm::vec2 twoDPaintingScenePos = glm::vec2(0.f);
+    Box twoDPaintingBox;
 
     int frameCounter = 0; 
 

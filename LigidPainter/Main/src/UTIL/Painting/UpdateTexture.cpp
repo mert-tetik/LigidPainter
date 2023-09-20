@@ -61,7 +61,7 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
 }
 
 
-void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, int paintingMode, Filter filterBtnFilter){
+void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox){
     
     glm::vec2 textureRes = this->selectedTexture.getResolution();
 
@@ -107,12 +107,6 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
         
         glm::vec2 destScale = glm::vec2(glm::vec2(this->selectedTexture.getResolution()));
 
-        glm::mat4 twoDProjection = glm::ortho(
-                                                twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + twoDScenePos.x - destScale.x  * twoDSceneScroll,
-                                                twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + twoDScenePos.x + destScale.x  * twoDSceneScroll,
-                                                twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + twoDScenePos.y + destScale.y  * twoDSceneScroll,
-                                                twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + twoDScenePos.y - destScale.y  * twoDSceneScroll
-                                            );
 
 
 
@@ -190,14 +184,8 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, flo
             ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", windowOrtho);
             ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
             
-            Box box;
-            glm::vec3 destPos = glm::vec3(twoDPaintingPanel.sections[0].elements[0].button.resultPos.x + twoDScenePos.x, twoDPaintingPanel.sections[0].elements[0].button.resultPos.y + twoDScenePos.y, 0.9f);
-            box.customInit(destPos, (textureRes * twoDSceneScroll));
-            box.bindBuffers();
+            twoDPaintingBox.bindBuffers();
             glDrawArrays(GL_TRIANGLES, 0 ,6);
-
-            glDeleteVertexArrays(1, &box.VAO);
-            glDeleteBuffers(1, &box.VBO);
         }
 
         //Delete the capture framebuffer

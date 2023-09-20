@@ -142,3 +142,19 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
 	
     glGenerateMipmap(GL_TEXTURE_2D);
 }
+
+void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat){
+    glActiveTexture(GL_TEXTURE0);
+    
+    glBindTexture(GL_TEXTURE_2D, ID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);
+	
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
