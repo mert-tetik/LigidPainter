@@ -347,7 +347,7 @@ public:
     void generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale, bool alphaMode);
     
     /// @brief Writes the normal map version of the texture into itself
-    void applyNormalMap(glm::ivec2 textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale);
+    void applyNormalMap(float proceduralNormalStrength, bool proceduralNormalGrayScale, bool alphaMode);
     
     /// @brief Generates procedural texture result using the mesh param
     unsigned int generateProceduralTexture(Mesh &mesh, int textureRes);

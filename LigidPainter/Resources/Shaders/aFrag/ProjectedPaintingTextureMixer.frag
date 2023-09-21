@@ -37,6 +37,19 @@ uniform sampler2D txtr7;
 uniform int txtr8Active;
 uniform sampler2D txtr8;
 
+uniform int redChannel;
+
+float getTextureMask(sampler2D txtr){
+    if(redChannel == 1){
+        return texture(txtr, TexCoords).r;
+    }
+    if(redChannel == 0){
+        return texture(txtr, TexCoords).a;
+    }
+
+    return 0.;
+} 
+
 out vec4 fragColor;
 
 void main(){
@@ -44,24 +57,24 @@ void main(){
     fragColor = texture(txtr1, TexCoords);
 
     if(txtr2Active == 1)
-        fragColor = mix(fragColor, texture(txtr2, TexCoords), texture(txtr2, TexCoords).r);
+        fragColor = mix(fragColor, texture(txtr2, TexCoords), getTextureMask(txtr2));
 
     if(txtr3Active == 1)
-        fragColor = mix(fragColor, texture(txtr3, TexCoords), texture(txtr3, TexCoords).r);
+        fragColor = mix(fragColor, texture(txtr3, TexCoords), getTextureMask(txtr3));
 
     if(txtr4Active == 1)
-        fragColor = mix(fragColor, texture(txtr4, TexCoords), texture(txtr4, TexCoords).r);
+        fragColor = mix(fragColor, texture(txtr4, TexCoords), getTextureMask(txtr4));
 
     if(txtr5Active == 1)
-        fragColor = mix(fragColor, texture(txtr5, TexCoords), texture(txtr5, TexCoords).r);
+        fragColor = mix(fragColor, texture(txtr5, TexCoords), getTextureMask(txtr5));
 
     if(txtr6Active == 1)
-        fragColor = mix(fragColor, texture(txtr6, TexCoords), texture(txtr6, TexCoords).r);
+        fragColor = mix(fragColor, texture(txtr6, TexCoords), getTextureMask(txtr6));
 
     if(txtr7Active == 1)
-        fragColor = mix(fragColor, texture(txtr7, TexCoords), texture(txtr7, TexCoords).r);
+        fragColor = mix(fragColor, texture(txtr7, TexCoords), getTextureMask(txtr7));
 
     if(txtr8Active == 1)
-        fragColor = mix(fragColor, texture(txtr8, TexCoords), texture(txtr8, TexCoords).r);
+        fragColor = mix(fragColor, texture(txtr8, TexCoords), getTextureMask(txtr8));
 
 }

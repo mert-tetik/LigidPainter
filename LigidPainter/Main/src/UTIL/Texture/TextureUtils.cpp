@@ -574,41 +574,38 @@ void Texture::generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResol
 }
 
 
-void Texture::applyNormalMap(glm::ivec2 textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale){
+void Texture::applyNormalMap(float proceduralNormalStrength, bool proceduralNormalGrayScale, bool alphaMode){
     
     Texture tx = this->duplicateTexture();
-    
-    unsigned int FBO;
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->ID, 0);
-    glViewport(0, 0, textureResolution.x, textureResolution.y);
 
+    glm::ivec2 resolution = this->getResolution();
+    
+    Framebuffer FBO = Framebuffer(this->ID, GL_TEXTURE_2D);
+    FBO.bind();
+
+    glViewport(0, 0, resolution.x, resolution.y);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     getBox()->bindBuffers();
     
-    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution.x, (float)textureResolution.y, 0.f); 
     ShaderSystem::heightToNormalMap().use();
-    ShaderSystem::heightToNormalMap().setInt("heightMap", 0);
-    ShaderSystem::heightToNormalMap().setInt("alphaMode", 0);
-    ShaderSystem::heightToNormalMap().setInt("txtrRes", textureResolution.x);
+    ShaderSystem::heightToNormalMap().setInt("heightMap", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, tx.ID);
+    ShaderSystem::heightToNormalMap().setInt("alphaMode", alphaMode);
+    ShaderSystem::heightToNormalMap().setInt("txtrRes", resolution.x);
     ShaderSystem::heightToNormalMap().setFloat("strength", proceduralNormalStrength);
     ShaderSystem::heightToNormalMap().setInt("grayScale", proceduralNormalGrayScale);
-    ShaderSystem::heightToNormalMap().setMat4("projection"  ,       projection);
-    ShaderSystem::heightToNormalMap().setMat4("projectedPosProjection"  ,       projection);
-    ShaderSystem::heightToNormalMap().setVec3("pos"         ,       glm::vec3((float)textureResolution.x / 2.f, (float)textureResolution.y / 2.f, 0.9f));
-    ShaderSystem::heightToNormalMap().setVec2("scale"       ,       glm::vec2(glm::vec2(textureResolution) / 2.f));
+    ShaderSystem::heightToNormalMap().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
+    ShaderSystem::heightToNormalMap().setMat4("projectedPosProjection", glm::ortho(0.f, 1.f, 1.f, 0.f));
+    ShaderSystem::heightToNormalMap().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
+    ShaderSystem::heightToNormalMap().setVec2("scale", glm::vec2(0.5f));
 
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, tx.ID);
-
+    // Draw
     glDrawArrays(GL_TRIANGLES, 0 , 6);
 
+    // Finish
     Settings::defaultFramebuffer()->FBO.bind();
-    glDeleteFramebuffers(1, &FBO);
+    FBO.deleteBuffers(false, false);
     glDeleteTextures(1, &tx.ID);
 }
 
