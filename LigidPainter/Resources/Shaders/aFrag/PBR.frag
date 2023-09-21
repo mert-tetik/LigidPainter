@@ -66,6 +66,9 @@ uniform float opacity;
 //Fragment shader output
 out vec4 fragColor;
 
+// Used to display the mirror displayer
+uniform vec3 mirrorState = vec3(0.);
+
 
 void main() {
 
@@ -129,7 +132,6 @@ void main() {
 
     vec3 pbrResult;
 
-
     if(displayingMode == 0)
         pbrResult = getPBR(
                                 albedo, roughness, metallic, normal, ao, 
@@ -157,4 +159,19 @@ void main() {
                         pbrResult, 
                         opacity
                     );
+
+    float mirrorDisplayerLineThickness = 0.005;
+    if(mirrorState.x == 1.){
+        if(Pos.x > -mirrorDisplayerLineThickness && Pos.x < mirrorDisplayerLineThickness)
+            fragColor = vec4(0., 0.5, 1., 1.);
+    }
+    if(mirrorState.y == 1.){
+        if(Pos.y > -mirrorDisplayerLineThickness && Pos.y < mirrorDisplayerLineThickness)
+            fragColor = vec4(0., 0.5, 1., 1.);
+    }
+    if(mirrorState.z == 1.){
+        if(Pos.z > -mirrorDisplayerLineThickness && Pos.z < mirrorDisplayerLineThickness)
+            fragColor = vec4(0., 0.5, 1., 1.);
+    }
+
 }

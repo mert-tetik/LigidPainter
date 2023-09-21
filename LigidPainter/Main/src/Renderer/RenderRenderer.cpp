@@ -481,6 +481,7 @@ void Renderer::set3DUniforms(){
     ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::tdModelShader().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::tdModelShader().setMat4("modelMatrix", getScene()->transformMatrix);
+    ShaderSystem::tdModelShader().setVec3("mirrorState", glm::vec3(this->painter.oXSide.active, this->painter.oYSide.active, this->painter.oZSide.active));
     
     ShaderSystem::sceneTilesShader().use();
     ShaderSystem::sceneTilesShader().setMat4("view", getScene()->viewMatrix);
