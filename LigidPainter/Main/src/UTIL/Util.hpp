@@ -280,10 +280,9 @@ public:
     /// @param w width
     /// @param h height
     Texture(char* pixels, int w, int h);
-    
     Texture(char* pixels, int w, int h, unsigned int filterParam);
-    
     Texture(char* pixels, int w, int h, unsigned int filterParam, int proceduralID);
+    Texture(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat);
 
     void update(char* pixels, int w, int h);
     void update(char* pixels, int w, int h, unsigned int filterParam);
@@ -330,6 +329,8 @@ public:
     bool writeTextureData(std::ofstream& wf);
     
     bool readTextureData(std::ifstream& rf);
+
+    void flipTexture(bool horizontal, bool vertical);
 
     // -------- Texture Manipulation --------
 
@@ -557,6 +558,21 @@ struct VectorStroke{
     void draw(float edge, bool sceneState, std::vector<VectorStroke>& strokes, int curI);
 };
 
+struct MirrorSide{
+    bool active = false;
+
+    /// @brief 3D model linearized depth texture (3d model rendered with a depth shader) 
+    Texture depthTexture;
+
+    Texture mirroredPaintingTexture;
+
+    Texture projectedPaintingTexture;
+
+    glm::vec3 effectAxis = glm::vec3(0.);
+
+    glm::mat4 getViewMat();
+};
+
 class Painter
 {
 public:
@@ -574,11 +590,17 @@ public:
     /// @brief indicates which material channel will be painted. 0 : albedo, 1 : roughness, 2 : metallic, 3 : normal map, 4 : height map, 5 : ambient occlusion map
     int selectedPaintingChannelIndex = 0;
     
+    MirrorSide oSide;
+    MirrorSide oXSide;
+    MirrorSide oYSide;
+    MirrorSide oXYSide;
+    MirrorSide oZSide;
+    MirrorSide oXZSide;
+    MirrorSide oYZSide;
+    MirrorSide oXYZSide;
+
     /// @brief Is paintingTexture16f if smearBrush used, paintingTexture8 if not
     unsigned int paintingTexture;  
-
-    /// @brief 3D model linearized depth texture (3d model rendered with a depth shader) 
-    unsigned int depthTexture;
 
     Texture projectedPaintingTexture;
 

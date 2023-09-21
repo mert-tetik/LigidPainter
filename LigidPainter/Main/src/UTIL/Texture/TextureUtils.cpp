@@ -107,6 +107,7 @@ unsigned int Texture::duplicateTexture(){
 }
 
 void Texture::duplicateTexture(Texture& txtr){
+    
     //Get the resolution data of the texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ID);
@@ -935,4 +936,48 @@ bool Texture::readTextureData(std::ifstream& rf){
     this->proceduralProps.textureSelectionDialog_selectedMode = textureSelectionDialog_selectedMode;
 
     return true;
+}
+
+void Texture::flipTexture(bool horizontal, bool vertical){
+    
+    Texture copiedTxtr = this->duplicateTexture();
+    
+    glm::ivec2 txtrRes = this->getResolution();
+
+    Framebuffer captureFBO = Framebuffer(*this, GL_TEXTURE_2D);
+    
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, txtrRes.x, txtrRes.y);
+
+    glm::mat4 projection = glm::ortho(0.f, 1.f, 1.f, 0.f);
+    if(horizontal && vertical)
+        projection = glm::ortho(1.f, 0.f, 0.f, 1.f);
+    else if(horizontal)
+        projection = glm::ortho(1.f, 0.f, 1.f, 0.f);
+    else if(vertical)
+        projection = glm::ortho(0.f, 1.f, 0.f, 1.f);
+
+    glm::vec3 pos = glm::vec3(0.5f, 0.5f, 0.9f);
+    glm::vec2 scale = glm::vec2(0.5f, 0.5f);
+
+    ShaderSystem::textureRenderingShader().use();
+    ShaderSystem::textureRenderingShader().setMat4("projection", projection);
+    ShaderSystem::textureRenderingShader().setVec3("pos", pos);
+    ShaderSystem::textureRenderingShader().setVec2("scale", scale);
+    ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
+    ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
+    ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, copiedTxtr.ID);
+
+    getBox()->bindBuffers();
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    // Finish
+    glDeleteTextures(1, &copiedTxtr.ID);
+    captureFBO.deleteBuffers(false, false);
+    Settings::defaultFramebuffer()->setViewport();
 }

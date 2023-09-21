@@ -122,6 +122,7 @@ namespace ShaderSystem{
     Shader defaultFramebufferShader();
     Shader nodeConnectionCurve();
     Shader projectingPaintedTextureShader();
+    Shader projectedPaintingTextureMixerShader();
 
     void initShaderSystem();
 };

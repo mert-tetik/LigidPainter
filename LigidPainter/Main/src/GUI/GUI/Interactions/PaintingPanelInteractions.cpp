@@ -155,5 +155,15 @@ void paintingPanelInteraction(
         if(i == painter.selectedPaintingChannelIndex)
             paintingPanel.sections[4].elements[i].button.clickState1 = true;
     }
+
+    painter.oSide.active = true;
     
+    painter.oXSide.active = paintingPanel.sections[6].elements[0].checkBox.clickState1; 
+    painter.oYSide.active = paintingPanel.sections[6].elements[1].checkBox.clickState1; 
+    painter.oZSide.active = paintingPanel.sections[6].elements[2].checkBox.clickState1; 
+
+    painter.oXYSide.active = painter.oXSide.active && painter.oYSide.active;     
+    painter.oXZSide.active = painter.oXSide.active && painter.oZSide.active; 
+    painter.oYZSide.active = painter.oYSide.active && painter.oZSide.active; 
+    painter.oXYZSide.active = painter.oXSide.active && painter.oYSide.active && painter.oZSide.active; 
 }

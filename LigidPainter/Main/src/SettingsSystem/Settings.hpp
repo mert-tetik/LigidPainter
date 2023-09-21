@@ -109,21 +109,32 @@ struct Scene{
         }
     }
 
-    void updateViewMatrix(){
+    glm::mat4 calculateViewMatrix(glm::vec3 camPos, glm::vec3 originPos){
+        glm::mat4 viewMat;
         if(this->camera.isCamInverted()){
-            this->viewMatrix = glm::lookAt( 
-                                            this->camera.cameraPos, 
-                                            this->camera.originPos, 
+            viewMat = glm::lookAt( 
+                                            camPos, 
+                                            originPos, 
                                             glm::vec3(0.0, -1.0, 0.0)
                                         );
         }
         else{
-            this->viewMatrix = glm::lookAt( 
-                                            this->camera.cameraPos, 
-                                            this->camera.originPos, 
+            viewMat = glm::lookAt( 
+                                            camPos, 
+                                            originPos, 
                                             glm::vec3(0.0, 1.0, 0.0)
                                         );
         }
+
+        return viewMat;
+    }
+
+    void updateViewMatrix(glm::vec3 camPos, glm::vec3 originPos){
+        this->viewMatrix = calculateViewMatrix(camPos, originPos);
+    }
+
+    void updateViewMatrix(){
+        updateViewMatrix(this->camera.cameraPos, this->camera.originPos);
     }
 
     void updateTransformMatrix(){

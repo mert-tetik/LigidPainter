@@ -379,10 +379,8 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         //*Fragment
         ShaderSystem::twoDPaintingModeAreaShader().setInt("txtr", 5);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingTexture", 6);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("depthTexture", 7);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverTexture", 10);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", painter.selectedPaintingModeIndex);
-        ShaderSystem::twoDPaintingModeAreaShader().setFloat("paintingOpacity", painter.brushProperties.opacity);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", painter.usePaintingOver);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverGrayScale", painter.paintingOverGrayScale);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverWraping", painter.paintingOverWraping);
@@ -392,7 +390,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, painter.oXYSide.projectedPaintingTexture.ID);
 
         // Render the texture as it's pixels can be seen
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -408,13 +406,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             glBindTexture(GL_TEXTURE_2D, 0);
         else
             glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
-
-        //depthTexture 
-        glActiveTexture(GL_TEXTURE7);
-        if(painter.selectedDisplayingModeIndex == 0)
-            glBindTexture(GL_TEXTURE_2D, 0);
-        else
-            glBindTexture(GL_TEXTURE_2D, painter.depthTexture);
 
         //*Fragment
         ShaderSystem::twoDPaintingModeAreaShader().setInt("doDepthTest", 0);

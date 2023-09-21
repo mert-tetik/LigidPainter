@@ -75,18 +75,47 @@ void Painter::initPainter(){
 
 
 
-    //--------- init depthTexture --------- 
-    glGenTextures(1,&this->depthTexture);
-    glBindTexture(GL_TEXTURE_2D,this->depthTexture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, depthRes.x, depthRes.y, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    //--------- init depthTextures --------- 
+    this->oSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
+    this->oSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oSide.effectAxis = glm::vec3(-1.f, -1.f, -1.f);
+    
+    this->oXSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oXSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXSide.effectAxis = glm::vec3(1.f, -1.f, -1.f);
+    
+    this->oYSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oYSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
+    this->oYSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oYSide.effectAxis = glm::vec3(-1.f, 1.f, -1.f);
+    
+    this->oXYSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oXYSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXYSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXYSide.effectAxis = glm::vec3(1.f, 1.f, -1.f);
+    
+    this->oZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oZSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
+    this->oZSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oZSide.effectAxis = glm::vec3(-1.f, -1.f, 1.f);
+    
+    this->oXZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oXZSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXZSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXZSide.effectAxis = glm::vec3(1.f, -1.f, 1.f);
+    
+    this->oYZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oYZSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
+    this->oYZSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oYZSide.effectAxis = glm::vec3(-1.f, 1.f, 1.f);
+    
+    this->oXYZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oXYZSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXYZSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXYZSide.effectAxis = glm::vec3(1.f, 1.f, 1.f);
+    
 
 
 

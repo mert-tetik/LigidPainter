@@ -36,8 +36,6 @@ uniform float paintingOpacity;
 //Do depth testing (painting) if set to 1
 uniform int doDepthTest;
 
-uniform int redChannelOnly;
-
 //Fragment shader output
 out vec4 fragColor;
 

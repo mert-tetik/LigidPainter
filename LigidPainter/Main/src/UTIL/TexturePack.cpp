@@ -379,11 +379,12 @@ Texture TexturePack::generateSpriteTexture(){
         ShaderSystem::textureRenderingShader().setMat4("projection", glm::ortho(0.f, (float)txtrRes.x, (float)txtrRes.y, 0.f));
         ShaderSystem::textureRenderingShader().setVec3("pos", glm::vec3(pos, 0.1));
         ShaderSystem::textureRenderingShader().setVec2("scale", scale);
-        ShaderSystem::textureRenderingShader().setFloat("properties.colorMixVal", 0.f);
-        ShaderSystem::textureRenderingShader().setInt("states.renderTexture",     1    );
-        ShaderSystem::textureRenderingShader().setInt("properties.txtr",     0    );
+        ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
+        ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
+        ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+
+
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        ShaderSystem::textureRenderingShader().setInt("states.renderTexture"  ,     0    );
     }
     
     Settings::defaultFramebuffer()->FBO.bind();
@@ -438,13 +439,8 @@ void TexturePack::apply(Texture txtr, float scale, float count, float rotationJi
                 ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(glm::mix((float)intHash / 20.f, range / 20.f, sizeJitter) * (scale / 10.f)));
                 ShaderSystem::textureRenderingShader().setFloat("rotation", glm::mix((float)randX * 360.f, 0.f, rotationJitter));
                 ShaderSystem::textureRenderingShader().setFloat("opacity", glm::mix((float)randX, 1.f, opacityJitter));
-                ShaderSystem::textureRenderingShader().setFloat("properties.colorMixVal", 0.f);
-                ShaderSystem::textureRenderingShader().setInt("states.renderTexture",     1    );
-                ShaderSystem::textureRenderingShader().setInt("properties.txtr",     0    );
+                ShaderSystem::textureRenderingShader().setInt("txtr",     0    );
                 glDrawArrays(GL_TRIANGLES, 0, 6);
-                ShaderSystem::textureRenderingShader().setInt("states.renderTexture"  ,     0    );
-                ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
-                ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
             }
         }
     }

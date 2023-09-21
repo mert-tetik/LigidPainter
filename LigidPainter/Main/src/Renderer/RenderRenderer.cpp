@@ -121,20 +121,16 @@ void Renderer::render(){
 
     //Bind the skybox
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP,skybox.ID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.ID);
     
     //Bind the prefiltered skybox
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_CUBE_MAP,skybox.IDPrefiltered);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
     
     //Bind the painting texture
     glActiveTexture(GL_TEXTURE8);
-    glBindTexture(GL_TEXTURE_2D,painter.projectedPaintingTexture.ID);
+    glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
     
-    //Bind the depth texture
-    glActiveTexture(GL_TEXTURE9);
-    glBindTexture(GL_TEXTURE_2D,painter.depthTexture);
-
     if(!userInterface.anyContextMenuActive && !userInterface.anyDialogActive){
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_0) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_0)){
             getScene()->camera.originLocked = true;
@@ -480,18 +476,11 @@ void Renderer::set3DUniforms(){
     ShaderSystem::tdModelShader().setInt("heightMapTxtr",6);
     ShaderSystem::tdModelShader().setInt("ambientOcclusionTxtr",7);
     ShaderSystem::tdModelShader().setInt("paintingTexture",8);
-    ShaderSystem::tdModelShader().setInt("depthTexture",9);
     ShaderSystem::tdModelShader().setInt("paintingOverTexture",10);
     ShaderSystem::tdModelShader().setVec3("viewPos", getScene()->camera.cameraPos);
     ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::tdModelShader().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::tdModelShader().setMat4("modelMatrix", getScene()->transformMatrix);
-
-    //Shader (used to render the model with depth)
-    ShaderSystem::depth3D().use();
-    ShaderSystem::depth3D().setMat4("view", getScene()->viewMatrix);
-    ShaderSystem::depth3D().setMat4("projection", getScene()->projectionMatrix);
-    ShaderSystem::depth3D().setMat4("modelMatrix",getScene()->transformMatrix);
     
     ShaderSystem::sceneTilesShader().use();
     ShaderSystem::sceneTilesShader().setMat4("view", getScene()->viewMatrix);

@@ -330,17 +330,22 @@ void Painter::refreshBuffers(){
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, paintingRes.x, paintingRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
-    //--------- init depthTexture --------- 
-    glBindTexture(GL_TEXTURE_2D,this->depthTexture);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, depthRes.x, depthRes.y, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    //--------- init depthTextures --------- 
+    this->oSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    
+    this->oXSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    
+    this->oYSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    
+    this->oXYSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    
+    this->oZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    
+    this->oXZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    
+    this->oYZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    
+    this->oXYZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
 
     //--------- init paintingOverTexture --------- 
     glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
@@ -365,4 +370,15 @@ void Painter::refreshBuffers(){
     
     //--------- Finish --------- 
     Settings::defaultFramebuffer()->FBO.bind();
+}
+
+glm::mat4 MirrorSide::getViewMat(){
+    glm::vec3 orgCamPos = getScene()->camera.cameraPos;
+    glm::vec3 orgOriginPos = getScene()->camera.originPos;
+
+    glm::vec3 camPosOriginDistance = orgCamPos - orgOriginPos;
+
+    glm::vec3 camPos = orgOriginPos * -this->effectAxis - camPosOriginDistance * this->effectAxis;
+
+    return getScene()->calculateViewMatrix(camPos, orgOriginPos * -this->effectAxis);
 }

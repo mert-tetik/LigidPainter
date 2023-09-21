@@ -40,9 +40,6 @@ uniform int paintingOverGrayScale;
 uniform int paintingOverWraping;
 uniform int paintingOverDisplayinMode;
 
-//3D Model rendered with depth shader (to compare depth)
-uniform sampler2D depthTexture;
-
 //0 = paint the albedo
 //1 = paint the roughness
 //2 = paint the metallic 

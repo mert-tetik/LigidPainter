@@ -114,8 +114,6 @@ void UI::init
     
     //Init the painting panel 
     paintingPanel=Panel(
-                            
-                            
                             {
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color"  , Settings::appTextures().colorIcon, 0.f,true)),
@@ -153,29 +151,6 @@ void UI::init
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),"Export"  , Texture(), 0.5f,false)),//11
                                     }
                                 ),
-                                //Section(
-                                //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Soften"  , Settings::appTextures().softenIcon, 3.f,true)),
-                                //    {   
-                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),"Quality (samples)"  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                //    }
-                                //),
-                                //Section(
-                                //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Smear"  , Settings::appTextures().smearIcon, 3.f,true)),
-                                //    {   
-                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),"Quality (samples)"  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                //    }
-                                //),
-                                //Section(
-                                //    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Area"  , Settings::appTextures().areaPaintingIcon, 3.f,true)),
-                                //    {   
-                                //        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2),"Box"  , Settings::appTextures().TDModelIcon, 1.f,false)),
-                                //        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Gradient"  , 1.f)),
-                                //        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Depth Test"  , 1.f)),
-                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),"Lasso"  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),"Polygonal Lasso"  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                //        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2),"Circle"  , Settings::appTextures().TDModelIcon, 1.f,0.f,100.f,50.f)),
-                                //    }
-                                //),
                                 Section(
                                     Element(Button()),
                                     {   
@@ -205,6 +180,14 @@ void UI::init
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y : Scale"  , Texture(), 1.f,0.f,2.f,1.f)), //6
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"X : Move"  , Texture(), 1.f, -1.f,1.f,0.f)), //7
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y : Move"  , Texture(), 1.f, -1.f,1.f,0.f)), //8
+                                    }
+                                ),
+                                Section(
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mirror"  , Settings::appTextures().modifierIcon, 3.f,true)), // 6
+                                    {   
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "X Axis", 1.f), //0
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Y Axis", 1.f), //0
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Z Axis", 1.f), //0
                                     }
                                 )
                             },

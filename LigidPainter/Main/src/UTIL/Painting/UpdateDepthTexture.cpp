@@ -37,6 +37,25 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <cstdlib>
 
 void Painter::updateDepthTexture(){
+    std::vector<MirrorSide> depthTextures;
+    
+    if(this->oSide.active)
+        depthTextures.push_back(oSide);
+    if(this->oXSide.active)
+        depthTextures.push_back(oXSide);
+    if(this->oYSide.active)
+        depthTextures.push_back(oYSide);
+    if(this->oXYSide.active)
+        depthTextures.push_back(oXYSide);
+    if(this->oZSide.active)
+        depthTextures.push_back(oZSide);
+    if(this->oXZSide.active)
+        depthTextures.push_back(oXZSide);
+    if(this->oYZSide.active)
+        depthTextures.push_back(oYZSide);
+    if(this->oXYZSide.active)
+        depthTextures.push_back(oXYZSide);        
+    
     glDepthFunc(GL_LESS);
     
     glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
@@ -49,21 +68,30 @@ void Painter::updateDepthTexture(){
     //Render buffer for depth testing (refresh the RBO if the videoscale value is changed)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, this->depthRBO);
 
-    //Bind the depth texture (Painter class public member variable)
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthTexture, 0);
+    for (size_t i = 0; i < depthTextures.size(); i++)
+    {
+        //Bind the depth texture (Painter class public member variable)
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthTextures[i].depthTexture.ID, 0);
 
-    glViewport(0, 0, depthRes.x, depthRes.y);
+        //Clear the depth texture
+        glViewport(0, 0, depthRes.x, depthRes.y);
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        glm::mat4 view = depthTextures[i].getViewMat();
 
-    //Clear the depth texture
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        //Use the depth 3D shader
+        ShaderSystem::depth3D().use();
+        ShaderSystem::depth3D().setMat4("view", view);
+        ShaderSystem::depth3D().setMat4("projection", getScene()->projectionMatrix);
+        ShaderSystem::depth3D().setMat4("modelMatrix",getScene()->transformMatrix);
+
+        //Draw the selected mesh in 3D
+        if(selectedMeshIndex < getModel()->meshes.size())
+            getModel()->meshes[selectedMeshIndex].Draw();
+    }
     
-    //Use the depth 3D shader
-    ShaderSystem::depth3D().use();
 
-    //Draw the selected mesh in 3D
-    if(selectedMeshIndex < getModel()->meshes.size())
-        getModel()->meshes[selectedMeshIndex].Draw();
 
     //!Finished
 
