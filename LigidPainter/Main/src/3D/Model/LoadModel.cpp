@@ -71,7 +71,7 @@ void Model::loadModel(std::string const &path,bool triangulate)
 
     glDisable(GL_CULL_FACE);
 
-    glm::vec3 camPos = glm::vec3(7.f, 0.f, 0.f);
+    glm::vec3 camPos = glm::vec3(3.5f, 0.f, 0.f);
 
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(camPos, 

@@ -35,8 +35,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 MaterialEditorDialog::MaterialEditorDialog()
 {
 
-    this->displayerCamera.cameraPos = glm::vec3(0,0,-7.f);
-    this->displayerCamera.radius = 7.f;
+    this->displayerCamera.cameraPos = glm::vec3(0,0,-3.5f);
+    this->displayerCamera.radius = 3.5f;
 
     this->displayModeComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(7.f,2.f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Height", "Ambient Occlusion"}, "Displaying Mode", 0.f);
     

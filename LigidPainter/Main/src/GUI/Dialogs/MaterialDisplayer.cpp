@@ -63,8 +63,8 @@ MaterialDisplayerDialog::MaterialDisplayerDialog(){
                             false
                         );
 
-    this->displayingCam.cameraPos = glm::vec3(0,0,-7.f);
-    this->displayingCam.radius = 7.f;
+    this->displayingCam.cameraPos = glm::vec3(0,0,-3.5f);
+    this->displayingCam.radius = 3.5f;
 }
 
 void MaterialDisplayerDialog::render(Timer timer){
