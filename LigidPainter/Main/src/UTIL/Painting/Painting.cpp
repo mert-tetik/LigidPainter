@@ -112,7 +112,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
     ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
     ShaderSystem::twoDPainting().setVec2("paintingRes", paintingRes); 
-    ShaderSystem::twoDPainting().setVec2("videoScale", paintingRes); 
+    ShaderSystem::twoDPainting().setVec2("videoScale", getContext()->windowScale); 
     ShaderSystem::twoDPainting().setInt("frame", frameCounter);
     ShaderSystem::twoDPainting().setInt("bgTxtr", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, paintingBGTexture.ID);
     ShaderSystem::twoDPainting().setInt("redChannelOnly", !(this->selectedPaintingModeIndex == 2));
@@ -460,6 +460,9 @@ static void generateMirroredProjectedPaintingTexture(
 
         if(horizontal || vertical)
             mirrorSides[i].mirroredPaintingTexture.flipTexture(horizontal, vertical);
+
+
+        
 
         projectThePaintingTexture(selectedTexture, mirrorSides[i].projectedPaintingTexture, mirrorSides[i].mirroredPaintingTexture.ID, mirrorSides[i].depthTexture.ID, 
                                         selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, windowOrtho, 
