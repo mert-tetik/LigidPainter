@@ -59,10 +59,10 @@ static void projectThePaintingTexture(
 
 static void generateMirroredProjectedPaintingTexture(   
                                                         MirrorSide& oSide, MirrorSide& oXSide, MirrorSide& oYSide, MirrorSide& oXYSide, MirrorSide& oZSide, 
-                                                        MirrorSide& oXZSide, MirrorSide& oYZSide, MirrorSide& oXYZSide, Texture paintingTxtrObj, 
-                                                        Texture& selectedTexture,  Texture& projectedPaintingTexture,  int selectedPaintingModeIndex,  
-                                                        float brushPropertiesOpacity,  bool threeDimensionalMode,  glm::mat4 windowOrtho,  int selectedMeshIndex,  
-                                                        Box twoDPaintingBox
+                                                        MirrorSide& oXZSide, MirrorSide& oYZSide, MirrorSide& oXYZSide, float mirrorXOffset, float mirrorYOffset, 
+                                                        float mirrorZOffset,Texture paintingTxtrObj, Texture& selectedTexture,  Texture& projectedPaintingTexture,  
+                                                        int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode,  glm::mat4 windowOrtho,  
+                                                        int selectedMeshIndex, Box twoDPaintingBox
                                                     );
 
 void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox){
@@ -167,7 +167,8 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 
     generateMirroredProjectedPaintingTexture(
                                                 this->oSide, this->oXSide, this->oYSide, this->oXYSide, this->oZSide, this->oXZSide, this->oYZSide, 
-                                                this->oXYZSide, paintingTxtrObj, this->selectedTexture, this->projectedPaintingTexture, this->selectedPaintingModeIndex, this->brushProperties.opacity, 
+                                                this->oXYZSide, this->mirrorXOffset, this->mirrorYOffset, this->mirrorZOffset, paintingTxtrObj, this->selectedTexture, 
+                                                this->projectedPaintingTexture, this->selectedPaintingModeIndex, this->brushProperties.opacity, 
                                                 this->threeDimensionalMode, windowOrtho, this->selectedMeshIndex, twoDPaintingBox
                                             );
 
@@ -368,6 +369,9 @@ static void generateMirroredProjectedPaintingTexture(
                                                         MirrorSide& oXZSide,
                                                         MirrorSide& oYZSide,
                                                         MirrorSide& oXYZSide,
+                                                        float mirrorXOffset,
+                                                        float mirrorYOffset,
+                                                        float mirrorZOffset,
                                                         
                                                         Texture paintingTxtrObj,
                                                         Texture& selectedTexture, 
@@ -459,7 +463,7 @@ static void generateMirroredProjectedPaintingTexture(
 
         projectThePaintingTexture(selectedTexture, mirrorSides[i].projectedPaintingTexture, mirrorSides[i].mirroredPaintingTexture.ID, mirrorSides[i].depthTexture.ID, 
                                         selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, windowOrtho, 
-                                        selectedMeshIndex, twoDPaintingBox, mirrorSides[i].getViewMat());
+                                        selectedMeshIndex, twoDPaintingBox, mirrorSides[i].getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)));
 
     }
 

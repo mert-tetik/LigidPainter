@@ -185,9 +185,13 @@ void UI::init
                                 Section(
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mirror"  , Settings::appTextures().modifierIcon, 3.f,true)), // 6
                                     {   
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "X Axis", 1.f), //0
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Y Axis", 1.f), //0
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Z Axis", 1.f), //0
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "X Axis", 1.f),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "X Axis Mirror Offset", Texture(), 0.f, -1.f, 1.f, 0.f)),
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Y Axis", 1.f),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Z Axis", 1.f),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Z Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),
+
                                     }
                                 )
                             },

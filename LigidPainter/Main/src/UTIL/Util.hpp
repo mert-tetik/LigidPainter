@@ -570,7 +570,7 @@ struct MirrorSide{
 
     glm::vec3 effectAxis = glm::vec3(0.);
 
-    glm::mat4 getViewMat();
+    glm::mat4 getViewMat(glm::vec3 offset);
 };
 
 class Painter
@@ -598,6 +598,10 @@ public:
     MirrorSide oXZSide;
     MirrorSide oYZSide;
     MirrorSide oXYZSide;
+
+    float mirrorXOffset = 0.f;
+    float mirrorYOffset = 0.f;
+    float mirrorZOffset = 0.f;
 
     /// @brief Is paintingTexture16f if smearBrush used, paintingTexture8 if not
     unsigned int paintingTexture;  

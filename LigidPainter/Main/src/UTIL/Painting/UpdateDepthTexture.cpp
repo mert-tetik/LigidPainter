@@ -78,7 +78,7 @@ void Painter::updateDepthTexture(){
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        glm::mat4 view = depthTextures[i].getViewMat();
+        glm::mat4 view = depthTextures[i].getViewMat(glm::vec3(this->mirrorXOffset,this->mirrorYOffset,this->mirrorZOffset));
 
         //Use the depth 3D shader
         ShaderSystem::depth3D().use();

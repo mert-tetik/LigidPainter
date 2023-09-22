@@ -159,8 +159,12 @@ void paintingPanelInteraction(
     painter.oSide.active = true;
     
     painter.oXSide.active = paintingPanel.sections[6].elements[0].checkBox.clickState1; 
-    painter.oYSide.active = paintingPanel.sections[6].elements[1].checkBox.clickState1; 
-    painter.oZSide.active = paintingPanel.sections[6].elements[2].checkBox.clickState1; 
+    painter.mirrorXOffset = paintingPanel.sections[6].elements[1].rangeBar.value;
+    painter.oYSide.active = paintingPanel.sections[6].elements[2].checkBox.clickState1; 
+    painter.mirrorYOffset = paintingPanel.sections[6].elements[3].rangeBar.value;
+    painter.oZSide.active = paintingPanel.sections[6].elements[4].checkBox.clickState1; 
+    painter.mirrorZOffset = paintingPanel.sections[6].elements[5].rangeBar.value;
+
 
     painter.oXYSide.active = painter.oXSide.active && painter.oYSide.active;     
     painter.oXZSide.active = painter.oXSide.active && painter.oZSide.active; 
