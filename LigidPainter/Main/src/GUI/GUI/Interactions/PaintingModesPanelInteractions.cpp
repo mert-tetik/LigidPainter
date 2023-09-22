@@ -34,6 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void paintingModesPanelInteraction(
                                     Panel &paintingModesPanel, 
                                     Panel &vectorPaintingModePropertyPanel, 
+                                    Panel &smearPaintingModePropertyPanel, 
                                     Painter &painter,
                                     Panel& twoDPaintingPanel, 
                                     glm::mat4 windowOrtho, 
@@ -95,4 +96,7 @@ void paintingModesPanelInteraction(
     if(vectorPaintingModePropertyPanel.sections[0].elements[4].button.clicked){
         painter.applyVectorStrokes(twoDPaintingPanel, windowOrtho, vectorPaintingModePropertyPanel.sections[0].elements[0].comboBox.selectedIndex, filterPaintingModeFilterBtn.filter, twoDPaintingBox);
     }
+
+    painter.smearTransformStrength = smearPaintingModePropertyPanel.sections[0].elements[0].rangeBar.value;
+    painter.smearBlurStrength = smearPaintingModePropertyPanel.sections[0].elements[1].rangeBar.value;
 }

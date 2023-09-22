@@ -483,6 +483,8 @@ void Renderer::set3DUniforms(){
     ShaderSystem::tdModelShader().setMat4("modelMatrix", getScene()->transformMatrix);
     ShaderSystem::tdModelShader().setVec3("mirrorState", glm::vec3(this->painter.oXSide.active, this->painter.oYSide.active, this->painter.oZSide.active));
     ShaderSystem::tdModelShader().setVec3("mirrorOffsets", glm::vec3(this->painter.mirrorXOffset, this->painter.mirrorYOffset, this->painter.mirrorZOffset));
+    ShaderSystem::tdModelShader().setFloat("smearTransformStrength", this->painter.smearTransformStrength);
+    ShaderSystem::tdModelShader().setFloat("smearBlurStrength", this->painter.smearBlurStrength);
     
     ShaderSystem::sceneTilesShader().use();
     ShaderSystem::sceneTilesShader().setMat4("view", getScene()->viewMatrix);

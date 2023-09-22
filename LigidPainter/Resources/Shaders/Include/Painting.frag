@@ -137,7 +137,9 @@ vec3 getSoftenedTexture(
 vec3 getSmearedTexture(
                         sampler2D txtr, //The texture that will be painted  
                         vec4 brushTxtr, //Brush value (painted texture value)
-                        vec2 TexCoords  //The texture coordinates
+                        vec2 TexCoords,  //The texture coordinates
+                        float smearTransformStrength, 
+                        float smearBlurStrength
                     )
 {
     
@@ -145,7 +147,7 @@ vec3 getSmearedTexture(
     float intensity = brushTxtr.a/2.;
     
     //Get the direction value from the painted texture (which direction the painting made in the current texture coordinates)
-    vec2 Direction = brushTxtr.rg * 4.;
+    vec2 Direction = brushTxtr.rg;
 
     //Samples (multiple of 2)
     int Samples = 64;
@@ -155,8 +157,8 @@ vec3 getSmearedTexture(
     
     for(int i = -Samples/2; i <= Samples/2; i++)
     {
-        vec2 uv = TexCoords - vec2(Direction.x * (float(i) / float(Samples)), Direction.y * (float(i) / float(Samples))) * intensity;
-        blurredColor += texture(txtr, vec2(uv.x - Direction.x / 4., uv.y + Direction.y / 4.)) / float(Samples + 1);
+        vec2 uv = TexCoords - vec2(Direction.x * (float(i) / float(Samples)), Direction.y * (float(i) / float(Samples))) * smearBlurStrength * intensity;
+        blurredColor += texture(txtr, vec2(uv.x - Direction.x * smearTransformStrength, uv.y + Direction.y * smearTransformStrength)) / float(Samples + 1);
     }
     
     //TODO : Write smt better to that returning value
@@ -287,7 +289,9 @@ vec3 getBrushedTexture (
                             int brushModeState, //Decide which painting mode will be used
                             int usePaintingOver,
                             int paintingOverGrayScale,
-                            int paintingOverWraping
+                            int paintingOverWraping,
+                            float smearTransformStrength,
+                            float smearBlurStrength
                         )
 {
     //Apply painting with color
@@ -300,7 +304,7 @@ vec3 getBrushedTexture (
 
     //Apply painting with smearing
     if(brushModeState == 2)
-        return getSmearedTexture(txtr,brushTxtr,TexCoords);
+        return getSmearedTexture(txtr,brushTxtr,TexCoords, smearTransformStrength, smearBlurStrength);
     
     //Apply painting with painting texture color data
     if(brushModeState == 3)

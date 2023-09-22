@@ -603,6 +603,9 @@ public:
     float mirrorYOffset = 0.f;
     float mirrorZOffset = 0.f;
 
+    float smearTransformStrength = 1.f;
+    float smearBlurStrength = 1.f;
+
     /// @brief Is paintingTexture16f if smearBrush used, paintingTexture8 if not
     unsigned int paintingTexture;  
 

@@ -385,6 +385,8 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverGrayScale", painter.paintingOverGrayScale);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverWraping", painter.paintingOverWraping);
         ShaderSystem::twoDPaintingModeAreaShader().setVec3("paintingColor", painter.getSelectedColor().getRGB_normalized());
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearTransformStrength", painter.smearTransformStrength);
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearBlurStrength", painter.smearBlurStrength);
 
 
         //* Bind the textures
@@ -503,6 +505,9 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     paintingModesPanel.render(timer,!anyDialogActive);
 
+    if(painter.selectedPaintingModeIndex == 2)
+        smearPaintingModePropertyPanel.render(timer, !anyDialogActive); 
+    
     if(painter.selectedPaintingModeIndex == 4)
         this->filterPaintingModeFilterBtn.render(timer, !anyDialogActive);
 

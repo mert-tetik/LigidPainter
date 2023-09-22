@@ -69,6 +69,7 @@ public:
     Panel twoDPaintingPanel; 
     Panel paintingModesPanel; 
     Panel vectorPaintingModePropertyPanel; 
+    Panel smearPaintingModePropertyPanel;
     Panel displayingModesPanel; 
     Button filterPaintingModeFilterBtn;
 

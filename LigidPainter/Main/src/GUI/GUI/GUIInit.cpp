@@ -421,6 +421,34 @@ void UI::init
                             20.f,
                             false
                         );
+
+    //Init the smear painting mode property panel
+    smearPaintingModePropertyPanel = Panel(
+                            {
+                                Section(
+                                    Element(Button()),
+                                    {   
+                                        RangeBar(ELEMENT_STYLE_BASIC, glm::vec2(1.f), "Transform Strength", Texture(), 0.f, 0.f, 2.f, 1.f),
+                                        RangeBar(ELEMENT_STYLE_BASIC, glm::vec2(1.f), "Bluring Strength", Texture(), 1.f, 0.f, 4.f, 2.f)
+                                    }
+                                )
+                            },
+                            
+                            glm::vec2(6.5f, 2.6f), //Initial scale value
+                            glm::vec3(50 ,50 ,0.1f),  //Initial position value
+                            glm::vec4(ColorPalette::secondColor.r, ColorPalette::secondColor.g, ColorPalette::secondColor.b, ColorPalette::secondColor.a/2.f), //Color of the panel
+                            ColorPalette::thirdColor, //Color of the panel
+                            true,
+                            true,
+                            false,
+                            true,
+                            false,
+                            1.f,
+                            1,
+                            {},
+                            20.f,
+                            false
+                        );
     
     //Init the displaying modes panel
     displayingModesPanel = Panel(

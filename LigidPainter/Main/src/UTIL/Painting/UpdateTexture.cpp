@@ -140,6 +140,8 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
         ShaderSystem::textureUpdatingShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
         ShaderSystem::textureUpdatingShader().setInt("paintingOverWraping", this->paintingOverWraping);
         ShaderSystem::textureUpdatingShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
+        ShaderSystem::textureUpdatingShader().setFloat("smearTransformStrength", this->smearTransformStrength);
+        ShaderSystem::textureUpdatingShader().setFloat("smearBlurStrength", this->smearBlurStrength);
 
         //* Bind the textures
         //painted texture

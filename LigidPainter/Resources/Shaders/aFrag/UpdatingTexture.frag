@@ -50,6 +50,9 @@ uniform int usePaintingOver;
 uniform int paintingOverGrayScale;
 uniform int paintingOverWraping;
 
+uniform float smearTransformStrength;
+uniform float smearBlurStrength;
+
 //Do depth testing (painting) if set to 1
 uniform int doDepthTest;
 
@@ -67,5 +70,5 @@ void main(){
 
     float txtrAlpha = texture(txtr, TexCoords).a; 
 
-    fragColor = vec4(getBrushedTexture(txtr, brushTxtr, TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping), txtrAlpha);
+    fragColor = vec4(getBrushedTexture(txtr, brushTxtr, TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength), txtrAlpha);
 }

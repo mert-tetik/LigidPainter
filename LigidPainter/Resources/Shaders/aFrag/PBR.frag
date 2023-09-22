@@ -40,6 +40,9 @@ uniform int paintingOverGrayScale;
 uniform int paintingOverWraping;
 uniform int paintingOverDisplayinMode;
 
+uniform float smearTransformStrength;
+uniform float smearBlurStrength;
+
 //0 = paint the albedo
 //1 = paint the roughness
 //2 = paint the metallic 
@@ -92,41 +95,41 @@ void main() {
 
     //Get Albedo
     if(paintedTxtrStateIndex == 0)
-        albedo = getBrushedTexture(albedoTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).rgb;
+        albedo = getBrushedTexture(albedoTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).rgb;
     else
         albedo = texture(albedoTxtr,TexCoords).rgb;
     
 
     //Get Roughness
     if(paintedTxtrStateIndex == 1)
-        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).r;
+        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).r;
     else
         roughness = texture(roughnessTxtr,TexCoords).r;
     
 
     //Get Metallic
     if(paintedTxtrStateIndex == 2)
-        metallic = getBrushedTexture(metallicTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).r;
+        metallic = getBrushedTexture(metallicTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).r;
     else
         metallic = texture(metallicTxtr,TexCoords).r;
 
 
     //Get Normal Map
     if(paintedTxtrStateIndex == 3)
-        normal = getBrushedTexture(normalMapTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).rgb;
+        normal = getBrushedTexture(normalMapTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).rgb;
     else
         normal = texture(normalMapTxtr,TexCoords).rgb;
     
     //Get Height
     if(paintedTxtrStateIndex == 4)
-        height = getBrushedTexture(heightMapTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).r;
+        height = getBrushedTexture(heightMapTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).r;
     else
         height = texture(heightMapTxtr,TexCoords).r;
     
 
     //Get Ambient Occlusion
     if(paintedTxtrStateIndex == 5)
-        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping).r;
+        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).r;
     else
         ao = texture(ambientOcclusionTxtr,TexCoords).r;
 
