@@ -170,4 +170,16 @@ void paintingPanelInteraction(
     painter.oXZSide.active = painter.oXSide.active && painter.oZSide.active; 
     painter.oYZSide.active = painter.oYSide.active && painter.oZSide.active; 
     painter.oXYZSide.active = painter.oXSide.active && painter.oYSide.active && painter.oZSide.active; 
+
+    // Updating the depth texture if interacted with the gui elements related to mirroring
+    if( 
+        paintingPanel.sections[6].elements[0].isInteracted() || 
+        paintingPanel.sections[6].elements[1].isInteracted() || 
+        paintingPanel.sections[6].elements[2].isInteracted() || 
+        paintingPanel.sections[6].elements[3].isInteracted() || 
+        paintingPanel.sections[6].elements[4].isInteracted() || 
+        paintingPanel.sections[6].elements[5].isInteracted()
+    ) {
+        painter.updateDepthTexture();
+    }
 }
