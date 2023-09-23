@@ -48,21 +48,22 @@ void Project::updateProject(){
     std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
 
     //Clear the textures folder
-    UTIL::deleteFilesInFolder(textureFolderPath);
+    //if(UTIL::deleteFilesInFolder(textureFolderPath))
+    //    return;
 
     //Write the textures
     for (size_t i = 0; i < Library::getTextureArraySize(); i++)
     {
         //Export texture
-        Library::getTexture(i)->exportTexture(textureFolderPath, "PNG");
+        Library::getTexture(i)->exportTexture(textureFolderPath, Library::getTextureData(i).pixels, Library::getTextureData(i).scale, "PNG");
     }
-    
     
     //!Materials
     std::string materialFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials";
 
     //Clear the materials folder
-    UTIL::deleteFilesInFolder(materialFolderPath);
+    //if(UTIL::deleteFilesInFolder(materialFolderPath))
+    //    return;
 
     //Write the materials
     for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
@@ -76,7 +77,8 @@ void Project::updateProject(){
     std::string brushFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
 
     //Clear the brushes folder
-    UTIL::deleteFilesInFolder(brushFolderPath);
+    //if(UTIL::deleteFilesInFolder(brushFolderPath))
+    //    return;
 
     //Write the brushes
     for (size_t i = 0; i < Library::getBrushArraySize(); i++)
@@ -89,7 +91,8 @@ void Project::updateProject(){
     std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
 
     //Clear the 3D models folder
-    UTIL::deleteFilesInFolder(tdModelFolderPath);
+    //if(UTIL::deleteFilesInFolder(tdModelFolderPath))
+    //    return;
 
     //Write the 3D models
     for (size_t i = 0; i < Library::getModelArraySize(); i++)

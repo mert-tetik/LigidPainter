@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 std::vector<Texture> __textures;
+std::vector<TextureData> __texturesData;
 std::vector<Material> __materials;
 std::vector<Brush> __brushes;
 std::vector<Model> __TDModels;
@@ -129,6 +130,14 @@ void Library::addTexture(Texture texture){
     texture.uniqueId = 0; 
 
     __textures.push_back(texture);
+    
+    glm::ivec2 txtrRes = texture.getResolution();
+    unsigned char* pixels = new unsigned char[txtrRes.x * txtrRes.y * 4];
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture.ID);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    __texturesData.push_back(TextureData(txtrRes, pixels));
+    
     Library::textureGiveUniqueId(__textures.size() - 1);
 }
 
@@ -180,7 +189,10 @@ void Library::eraseTexture   (int index){
     
     glDeleteTextures(1, &__textures[index].ID);
 
+    delete[] __texturesData[index].pixels;
+
     __textures.erase(__textures.begin() + index);
+    __texturesData.erase(__texturesData.begin() + index);
 }
 
 void Library::eraseMaterial  (int index){
@@ -278,9 +290,11 @@ void Library::clearTextures   (){
     for (size_t i = 0; i < __textures.size(); i++)
     {
         glDeleteTextures(1, &__textures[i].ID);
+        delete[] __texturesData[i].pixels;
     }
     
     __textures.clear();
+    __texturesData.clear();
 }
 
 void Library::clearMaterials  (){
@@ -381,6 +395,24 @@ Texture* Library::getTexture(int index){
     }
     return &__textures[index];
 }
+TextureData Library::getTextureData(int index){
+    if(index >= __texturesData.size()){
+        LGDLOG::start<< "ERROR! : Couldn't get the texture data : Requested texture index is out of boundaries." << LGDLOG::end;
+        return TextureData();
+    }
+    return __texturesData[index];
+}
+void Library::updateTextureData(int index){
+    glm::ivec2 txtrRes = __textures[index].getResolution();
+    unsigned char* pixels = new unsigned char[txtrRes.x * txtrRes.y * 4];
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, __textures[index].ID);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    delete[] __texturesData[index].pixels;
+    __texturesData[index].pixels = pixels;
+    __texturesData[index].scale = txtrRes;
+}
+
 Material* Library::getMaterial(int index){
     if(index >= __materials.size()){
         LGDLOG::start<< "ERROR! : Couldn't get the material : Requested material index is out of boundaries." << LGDLOG::end;
@@ -490,3 +522,4 @@ SourceLibTexture Library::getSrcLibTxtr(int index){
 int Library::getgetSrcLibTxtrsArraySize(){
     return __sourceLibTextures.size();
 }
+

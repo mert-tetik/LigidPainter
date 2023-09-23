@@ -31,6 +31,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 /// @brief Forward declared Texture class 
 class Texture;
+/// @brief Forward declared TextureData class 
+class TextureData;
 /// @brief Forward declared Texture class 
 class SourceLibTexture;
 /// @brief Forward declared Material class 
@@ -63,6 +65,8 @@ namespace Library{
     //----------- Get elements -----------
     /// @brief Returns the pointer of the element at the corresponding index from the Textures array 
     Texture* getTexture   (int index);
+    TextureData getTextureData(int index);
+    void updateTextureData(int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Materials array
     Material* getMaterial (int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Brushes array

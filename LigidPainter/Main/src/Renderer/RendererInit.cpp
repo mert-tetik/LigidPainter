@@ -18,6 +18,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <iostream>
 #include <filesystem>
+#include <thread>
+#include <atomic>
+#include <mutex>
 
 #include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
@@ -41,6 +44,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "LigidGL/LigidGL.hpp"
 
 #include "tinyfiledialogs.h"
+
 
 void Renderer::initRenderer(){
     if(!getContext()->window.setWindowIcon(L"./LigidPainter/Resources/Icons/logo-1080x.ico"))
@@ -179,4 +183,5 @@ void Renderer::initRenderer(){
 
     // Load the source library textures
     Library::loadSourceLibTextures();
+
 }

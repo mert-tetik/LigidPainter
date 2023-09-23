@@ -45,30 +45,58 @@ void Texture::exportTexture(std::string path,const std::string format){
     glBindTexture(GL_TEXTURE_2D,ID);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     
+
     const int channels = 4;
 
     stbi_flip_vertically_on_write(1);  // Enable flipping
 
     if(format == "PNG"){
         if(!stbi_write_png((path + UTIL::folderDistinguisher() + title + ".png").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
-            LGDLOG::start<< "ERROR Failed to write texture file : " << path << LGDLOG::end;
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path + UTIL::folderDistinguisher() + title + ".png" << LGDLOG::end;
         }
     }
     else if(format == "JPEG"){
         if(!stbi_write_jpg((path + UTIL::folderDistinguisher() + title + ".jpeg").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
-            LGDLOG::start<< "ERROR Failed to write texture file : " << path << LGDLOG::end;
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path + UTIL::folderDistinguisher() + title + ".jpeg" << LGDLOG::end;
         }
     }
     else if(format == "BMP"){
         if(!stbi_write_bmp((path + UTIL::folderDistinguisher() + title + ".bmp").c_str(), scale.x, scale.y, channels, pixels)){
-            LGDLOG::start<< "ERROR Failed to write texture file : " << path << LGDLOG::end;
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path + UTIL::folderDistinguisher() + title + ".bmp" << LGDLOG::end;
         }
     }
     else if(format == "TGA"){
         if(!stbi_write_tga((path + UTIL::folderDistinguisher() + title + ".tga").c_str(), scale.x, scale.y, channels, pixels)){
-            LGDLOG::start<< "ERROR Failed to write texture file : " << path << LGDLOG::end;
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path + UTIL::folderDistinguisher() + title + ".tga" << LGDLOG::end;
         }
     }
 
     delete[] pixels;
+}
+
+void Texture::exportTexture(std::string path, unsigned char* pixels, glm::ivec2 scale, const std::string format){
+    const int channels = 4;
+
+    stbi_flip_vertically_on_write(1);  // Enable flipping
+
+    if(format == "PNG"){
+        if(!stbi_write_png((path + UTIL::folderDistinguisher() + title + ".png").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path + UTIL::folderDistinguisher() + title + ".png" << LGDLOG::end;
+        }
+    }
+    else if(format == "JPEG"){
+        if(!stbi_write_jpg((path + UTIL::folderDistinguisher() + title + ".jpeg").c_str(), scale.x, scale.y, channels, pixels, scale.x * channels)){
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path + UTIL::folderDistinguisher() + title + ".jpeg" << LGDLOG::end;
+        }
+    }
+    else if(format == "BMP"){
+        if(!stbi_write_bmp((path + UTIL::folderDistinguisher() + title + ".bmp").c_str(), scale.x, scale.y, channels, pixels)){
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path + UTIL::folderDistinguisher() + title + ".bmp" << LGDLOG::end;
+        }
+    }
+    else if(format == "TGA"){
+        if(!stbi_write_tga((path + UTIL::folderDistinguisher() + title + ".tga").c_str(), scale.x, scale.y, channels, pixels)){
+            LGDLOG::start<< "ERROR Failed to write texture file : " << path + UTIL::folderDistinguisher() + title + ".tga" << LGDLOG::end;
+        }
+    }
 }

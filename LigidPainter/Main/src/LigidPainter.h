@@ -14,18 +14,26 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include <iostream>
+#include <thread>
+#include <atomic>
+#include <mutex>
 
 #include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
-#include "SettingsSystem/Settings.hpp"
 
 #include "../../thirdparty/include/glm/glm.hpp"
 
+#include "SettingsSystem/Settings.hpp"
 #include "Renderer.h"
+#include "UTIL/Util.hpp"
 
 Renderer::Renderer(){
 
 }
+
+ThreadElements projectUpdatingThreadElements;
+
+
 
 class LigidPainter{
 public:
@@ -49,11 +57,29 @@ public:
 
         Renderer renderer;
         renderer.initRenderer();
-        
+        std::string msg = "benimmesagim";
+        // Start the export thread
+        std::thread testThreadX(projectUpdatingThread, std::ref(renderer.project));
+
         while(!getContext()->window.shouldClose())
         {   
             renderer.render();
+            
+            // Notify the testThread to print "working"
+            {
+                //std::unique_lock<std::mutex> lock(testMutex);
+                //exportCV.notify_one();
+            }
         }
+
+        // Signal the testThread to exit
+        // isRunning = false;
+        //exportCV.notify_one();
+
+        projectUpdatingThreadElements.isRunning = false;
+
+        // Wait for the testThread to finish
+        testThreadX.join();
 
         return 1;
     }

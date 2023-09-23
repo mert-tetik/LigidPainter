@@ -156,7 +156,7 @@ char UTIL::folderDistinguisher(){
 	#endif
 }
 
-void UTIL::deleteFilesInFolder(const std::string folderPath) {
+bool UTIL::deleteFilesInFolder(const std::string folderPath) {
     try
     {
         for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
@@ -167,7 +167,10 @@ void UTIL::deleteFilesInFolder(const std::string folderPath) {
     }
     catch (const std::filesystem::filesystem_error& ex) {
         LGDLOG::start << "ERROR : Filesystem : Location ID 994456 " << ex.what() << LGDLOG::end;
+        return false;
     }
+
+    return true;
 }
 
 void UTIL::duplicateFolder(const std::string src, const std::string dest){

@@ -35,12 +35,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMaterialModifiers){
+    
+    this->projectLoading = true;
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
         LGDLOG::start<< "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << LGDLOG::end;
         return false;
     }
+
 
     //TODO Do smt with these variables
     time_t creationDate; 
@@ -167,6 +170,8 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
         *getModel() = *Library::getModel(0);
     else
         getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
+
+    this->projectLoading = false;
 
     return true;
 }

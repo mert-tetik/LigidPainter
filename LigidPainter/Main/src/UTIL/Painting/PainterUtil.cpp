@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -371,6 +372,17 @@ void Painter::refreshBuffers(){
     //--------- Finish --------- 
     Settings::defaultFramebuffer()->FBO.bind();
 }
+
+int Painter::getSelectedTextureIndexInLibrary(){
+    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+    {
+        if(this->selectedTexture.ID == Library::getTexture(i)->ID)
+            return i;
+    }
+    
+    return -1;
+}
+
 
 glm::mat4 MirrorSide::getViewMat(glm::vec3 offset){
 

@@ -131,7 +131,7 @@ namespace UTIL{
 
     /// @brief deletes all the file system objects in the given folder path
     /// @param folderPath 
-    void deleteFilesInFolder(const std::string folderPath);
+    bool deleteFilesInFolder(const std::string folderPath);
 
     /// @brief duplicates the folder in the @param src to the @param dest path
     void duplicateFolder(const std::string src, const std::string dest);
@@ -248,6 +248,16 @@ struct ProceduralProperties{
     int textureSelectionDialog_selectedMode = 0;
 };
 
+struct TextureData{
+    glm::ivec2 scale;
+    unsigned char* pixels;
+    TextureData(){}
+    TextureData(glm::ivec2 scale, unsigned char* pixels){
+        this->scale = scale;
+        this->pixels = pixels;
+    }
+};
+
 class Texture
 {
 private:
@@ -303,6 +313,9 @@ public:
     /// @param format is PNG JPEG BMP TGA
     void exportTexture(std::string path,const std::string format);
     
+    void exportTexture(std::string path, unsigned char* pixels, glm::ivec2 scale, const std::string format);
+
+
     /// @brief writes the texture data to the given @param pixels parameter
     /// glm::ivec2 textureRes = txtr.getResolution();
     /// char* pixels = new pixels[textureRes.x * textureRes.y * 4];
@@ -355,6 +368,9 @@ public:
     /// @brief Generates 2D displaying texture using the proceduralProps & writes the texture into the this->ID
     void generateProceduralDisplayingTexture(int displayingTextureRes);
 
+    /// @brief Set to true if the texture is modified.
+    ///        And set to false if the texture exported.
+    bool needsExporting = false;
 };
 
 class Renderbuffer{
@@ -507,6 +523,8 @@ public:
     /// @brief Returns the title of the project
     ///        (MyProject)
     std::string projectName();
+
+    bool projectLoading = false;
 };
 
 /*!
@@ -623,6 +641,9 @@ public:
     /// @brief The selected texture selected by user from the library.textures
     /// (This texture's id will be painted) 
     Texture selectedTexture;
+
+    /// @brief Returns the index of the selected texture inside of the Library
+    int getSelectedTextureIndexInLibrary();
 
     std::vector<VectorStroke> vectorStrokes;
 
@@ -927,5 +948,18 @@ public:
     /// @brief Load the textures inside of the "Resources/Texture Library"
     void load(const std::string path);
 };
+
+#include <thread>
+#include <atomic>
+#include <mutex>
+
+struct ThreadElements{
+    std::atomic<bool> isRunning = true;
+    std::mutex mutex;
+    std::condition_variable exportCV;
+};
+
+extern ThreadElements projectUpdatingThreadElements; 
+void projectUpdatingThread(Project &project);
 
 #endif
