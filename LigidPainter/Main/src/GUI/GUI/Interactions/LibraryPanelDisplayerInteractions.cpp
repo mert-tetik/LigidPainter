@@ -78,7 +78,7 @@ void libraryPanelDisplayerInteraction(
         if(Library::getSelectedElementIndex() == 0){ //Textures selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.clicked){
                 painter.selectedTexture = *Library::getTexture(i); //Select the texture 
-                paintingPanel.sections[4].elements[painter.selectedPaintingChannelIndex].button.texture = painter.selectedTexture;
+                paintingPanel.sections[3].elements[painter.selectedPaintingChannelIndex].button.texture = painter.selectedTexture;
             } //If any texture button element is pressed
         
             if(Library::getTexture(i)->ID == painter.selectedTexture.ID) //Highlight the selected texture
