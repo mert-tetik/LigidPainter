@@ -58,14 +58,14 @@ void updateLibraryPanelDisplayerElements(
             for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getMaterial(i)->title       , Texture(Library::getMaterial(i)->displayingTexture), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getMaterial(i)->title       , Library::getMaterial(i)->displayingTexture, 0.f,false))) ;
             }
         }
         else if(Library::getSelectedElementIndex() == 2){ //Update materials
             for (size_t i = 0; i < Library::getBrushArraySize(); i++)
             {
                 //Push texture elements into the section
-                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getBrush(i)->title       , Texture(Library::getBrush(i)->displayingTexture), 0.f,false))) ;
+                libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getBrush(i)->title       , Library::getBrush(i)->displayingTexture, 0.f,false))) ;
             }
         }
         else if(Library::getSelectedElementIndex() == 3){ //Update tdmodels

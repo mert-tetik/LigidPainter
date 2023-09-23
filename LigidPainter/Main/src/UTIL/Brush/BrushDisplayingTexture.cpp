@@ -34,18 +34,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ShaderSystem/Shader.hpp"
 #include "SettingsSystem/Settings.hpp"
 
-void Brush::updateDisplayTexture(){
-    
-    int frameCounter = 0;
-    
-    //Stroke properties
-    double amplitude = 20.f;
-    double lower = 45.f;
-
-    //Wave array
+static std::vector<double> getWaveVector(double amplitude, double lower){
     std::vector<double> wave;
-
-    //Create the wave array
+    
     for (int i = 10; i < 85; i++)
     {
         wave.push_back
@@ -53,29 +44,35 @@ void Brush::updateDisplayTexture(){
                 (std::sin(glm::radians(float(i*9))) * amplitude * (i/50.f)) + lower
             );
     }
-    
-    //Create the framebuffer
-    unsigned int captureFBO;
-    glGenFramebuffers(1,&captureFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
-    
-    //Bind the displaying texture to the capture framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, displayingTexture, 0);
 
-    //Clear the capture frame buffer(displaying texture) with color alpha zero
+    return wave;
+}
+
+void Brush::updateDisplayTexture(){
+    
+    int frameCounter = 0;
+    
+    // Create the wave array
+    double amplitude = 20.f;
+    double lower = 45.f;
+    std::vector<double> wave = getWaveVector(amplitude, lower);
+
+    glm::vec2 displayRes = displayingTexture.getResolution();
+
+    // Create and bind the capturing framebuffer
+    Framebuffer captureFBO = Framebuffer(displayingTexture, GL_TEXTURE_2D);
+    captureFBO.bind();
+
+    // Clear the capture frame buffer(displaying texture) with color alpha zero
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    //Stroke resolution is 100
-    glm::vec2 displayRes = glm::vec2(100);
-
     glViewport(0,0,displayRes.x,displayRes.y);
     
     ShaderSystem::twoDPainting().use();
 
-    glm::vec2 scale = displayRes / glm::vec2(2);
-    glm::vec3 pos = glm::vec3(displayRes / glm::vec2(2),1.f);
-    glm::mat4 projection = glm::ortho(0.f,displayRes.x,0.f,displayRes.y);
+    glm::vec2 scale = glm::vec2(0.5f);
+    glm::vec3 pos = glm::vec3(0.5f, 0.5f, 1.0f);
+    glm::mat4 projection = glm::ortho(0.f, displayRes.x, 0.f, displayRes.y);
     ShaderSystem::twoDPainting().setVec2("scale", scale); //Cover the screen
     ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
     ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
@@ -91,18 +88,21 @@ void Brush::updateDisplayTexture(){
     ShaderSystem::twoDPainting().setInt("brush.individualTexture", individualTexture);
     ShaderSystem::twoDPainting().setInt("brush.sinWavePattern", sinWavePattern);
     ShaderSystem::twoDPainting().setFloat("brush.txtr", 0);
+    ShaderSystem::twoDPainting().setInt("redChannelOnly", 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,texture.ID);
 
     ShaderSystem::twoDPainting().setVec2("videoScale", displayRes); 
+    ShaderSystem::twoDPainting().setVec2("paintingRes", displayRes); 
 
     //Create the stroke
     for (size_t i = 0; i < wave.size(); i++)
     {
         ShaderSystem::twoDPainting().setInt("frame", frameCounter);
         
-        ShaderSystem::twoDPainting().setFloat("brush.radius", frameCounter / 7.5f);
+        // ShaderSystem::twoDPainting().setFloat("brush.radius", frameCounter / 7000.5f);
+        ShaderSystem::twoDPainting().setFloat("brush.radius", 0.02f);
         //Stroke positions
         std::vector<glm::vec2> holdLocations;
         holdLocations.push_back(glm::vec2(frameCounter + 10,wave[i]));
@@ -132,5 +132,5 @@ void Brush::updateDisplayTexture(){
     Settings::defaultFramebuffer()->FBO.bind();
     ShaderSystem::buttonShader().use();
 
-    glDeleteFramebuffers(1,&captureFBO);
+    captureFBO.deleteBuffers(false, false);
 }

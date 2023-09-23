@@ -288,6 +288,7 @@ void LogDialog::render(Timer timer){
                                     std::getline(iss, part, '_'); // Read the second integer value
                                     int IDVal = std::stoi(part);
                                     
+                                    // TODO Library::updateTextureData
                                     if(indexVal == __actions.size() - 1){
                                         if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION){
                                             for (size_t i = 0; i < Library::getTextureArraySize(); i++)

@@ -811,7 +811,7 @@ public:
     /// @brief The OpenGL texture buffer used to display the brush 
     ///        (a curvy stroke created with the brush)
     ///         Is initialized once and have a certain resolution value (W : 100, H : 100, C : RGBA)
-    unsigned int displayingTexture;
+    Texture displayingTexture;
     
 
     /// @brief Default constructor (just initializes the @ref displayingTexture)
