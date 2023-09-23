@@ -59,7 +59,7 @@ public:
         renderer.initRenderer();
         std::string msg = "benimmesagim";
         // Start the export thread
-        std::thread testThreadX(projectUpdatingThread, std::ref(renderer.project));
+        std::thread projectUpdatingThreadX(projectUpdatingThread, std::ref(renderer.project));
 
         while(!getContext()->window.shouldClose())
         {   
@@ -72,14 +72,12 @@ public:
             }
         }
 
-        // Signal the testThread to exit
-        // isRunning = false;
-        //exportCV.notify_one();
-
+        // Signal the projectUpdatingThread to exit
+        //projectUpdatingThreadElements.exportCV.notify_one();
         projectUpdatingThreadElements.isRunning = false;
 
-        // Wait for the testThread to finish
-        testThreadX.join();
+        // Wait for the projectUpdatingThread to finish
+        projectUpdatingThreadX.join();
 
         return 1;
     }

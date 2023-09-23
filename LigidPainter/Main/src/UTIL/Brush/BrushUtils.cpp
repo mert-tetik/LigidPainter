@@ -32,25 +32,25 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
     
 void Brush::useBrush(Panel &paintingPanel){
-    paintingPanel.sections[1].elements[0].rangeBar.value        =   this->sizeJitter;
-    paintingPanel.sections[1].elements[3].rangeBar.value        =   this->scatter;
-    paintingPanel.sections[1].elements[1].rangeBar.value        =   this->fade;
-    paintingPanel.sections[1].elements[7].rangeBar.value        =   this->rotation;
-    paintingPanel.sections[1].elements[8].rangeBar.value        =   this->rotationJitter;
-    paintingPanel.sections[1].elements[9].rangeBar.value        =   this->alphaJitter;
-    paintingPanel.sections[1].elements[6].checkBox.clickState1  =   this->individualTexture;
-    paintingPanel.sections[1].elements[2].checkBox.clickState1  =   this->sinWavePattern;
+    paintingPanel.sections[1].elements[4].rangeBar.value        =   this->sizeJitter;
+    paintingPanel.sections[1].elements[7].rangeBar.value        =   this->scatter;
+    paintingPanel.sections[1].elements[5].rangeBar.value        =   this->fade;
+    paintingPanel.sections[1].elements[11].rangeBar.value        =   this->rotation;
+    paintingPanel.sections[1].elements[12].rangeBar.value        =   this->rotationJitter;
+    paintingPanel.sections[1].elements[13].rangeBar.value        =   this->alphaJitter;
+    paintingPanel.sections[1].elements[10].checkBox.clickState1  =   this->individualTexture;
+    paintingPanel.sections[1].elements[6].checkBox.clickState1  =   this->sinWavePattern;
 }
 
 void Brush::applyToBrush(Panel &paintingPanel){
-    this->sizeJitter         =   paintingPanel.sections[1].elements[0].rangeBar.value;          
-    this->scatter            =   paintingPanel.sections[1].elements[3].rangeBar.value;          
-    this->fade               =   paintingPanel.sections[1].elements[1].rangeBar.value;          
-    this->rotation           =   paintingPanel.sections[1].elements[7].rangeBar.value;          
-    this->rotationJitter     =   paintingPanel.sections[1].elements[8].rangeBar.value;          
-    this->alphaJitter        =   paintingPanel.sections[1].elements[9].rangeBar.value;          
-    this->individualTexture  =   paintingPanel.sections[1].elements[6].checkBox.clickState1;    
-    this->sinWavePattern     =   paintingPanel.sections[1].elements[2].checkBox.clickState1;    
+    this->sizeJitter         =   paintingPanel.sections[1].elements[4].rangeBar.value;          
+    this->scatter            =   paintingPanel.sections[1].elements[7].rangeBar.value;          
+    this->fade               =   paintingPanel.sections[1].elements[5].rangeBar.value;          
+    this->rotation           =   paintingPanel.sections[1].elements[11].rangeBar.value;          
+    this->rotationJitter     =   paintingPanel.sections[1].elements[12].rangeBar.value;          
+    this->alphaJitter        =   paintingPanel.sections[1].elements[13].rangeBar.value;          
+    this->individualTexture  =   paintingPanel.sections[1].elements[10].checkBox.clickState1;    
+    this->sinWavePattern     =   paintingPanel.sections[1].elements[6].checkBox.clickState1;    
 
     updateDisplayTexture();
 }

@@ -35,7 +35,7 @@ void projectUpdatingThread(Project &project) {
         {
             std::lock_guard<std::mutex> lock(projectUpdatingThreadElements.mutex);
 
-            if(!project.projectLoading)
+            if(!project.projectLoading && project.folderPath != "")
                 project.updateProject();
 
             // for (size_t i = 0; i < Library::getTextureArraySize(); i++)

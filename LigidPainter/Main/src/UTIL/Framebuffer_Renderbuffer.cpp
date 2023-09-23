@@ -29,6 +29,7 @@ Box.hpp : Is used to render a single 2D square.
 
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "GUI/GUI.hpp"
     
 // --------- Renderbuffer -----------
 
@@ -78,12 +79,21 @@ Framebuffer::Framebuffer(){
 
 }
 
+#define TEST_FRAMEBUFFER \
+GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER); \
+if(status != GL_FRAMEBUFFER_COMPLETE){\
+    LGDLOG::start << "ERROR : Framebuffer is not valid. Error code: " << status << LGDLOG::end; \
+}
+
+
 Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget){
     this->colorBuffer = colorBuffer;
     
     glGenFramebuffers(1, &this->ID);
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
+
+    TEST_FRAMEBUFFER
 }
 
 Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer){
@@ -94,6 +104,8 @@ Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Render
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, renderbuffer.attachment, GL_RENDERBUFFER, renderbuffer.ID);
+
+    TEST_FRAMEBUFFER
 }
 
 void Framebuffer::generate(){

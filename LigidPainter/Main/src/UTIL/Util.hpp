@@ -791,14 +791,14 @@ private:
 public:
     
     /*  --------- Brush Properties --------- */
-        float sizeJitter;
-        float scatter;
-        float fade;
-        float rotation;
-        float rotationJitter;
-        float alphaJitter;
-        bool individualTexture;
-        bool sinWavePattern;
+        float sizeJitter = 0.f;
+        float scatter = 0.f;
+        float fade = 0.f;
+        float rotation = 0.f;
+        float rotationJitter = 0.f;
+        float alphaJitter = 0.f;
+        bool individualTexture = false;
+        bool sinWavePattern = false;
         Texture texture; 
     /*  A brush class holds these values
       Then applies these values to the GUI  

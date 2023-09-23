@@ -116,6 +116,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     ShaderSystem::twoDPainting().setInt("frame", frameCounter);
     ShaderSystem::twoDPainting().setInt("bgTxtr", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, paintingBGTexture.ID);
     ShaderSystem::twoDPainting().setInt("redChannelOnly", !(this->selectedPaintingModeIndex == 2));
+    ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(0.));
 
     //Set brush properties
     setBrushProperties(this->brushProperties);

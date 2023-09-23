@@ -54,6 +54,8 @@ uniform sampler2D bgTxtr;
 
 uniform int redChannelOnly;
 
+uniform vec3 rgbClr;
+
 struct Brush {
     float radius;
     float hardness;
@@ -281,7 +283,8 @@ void main()
     }
     
     if(redChannelOnly == 1)
-        res.r = res.a;
+        res.g = res.a;
 
-    outClr = res;
+    outClr.rgb = mix(res.rgb, rgbClr, rgbClr.r);
+    outClr.a = res.a;
 }
