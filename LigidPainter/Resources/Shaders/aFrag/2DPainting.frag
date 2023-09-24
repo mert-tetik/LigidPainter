@@ -237,6 +237,9 @@ void main()
         //Calculate the alpha value on the white color
         float src = float(1);
 
+        //Calculate the opacity jitter
+        float opacity = calculateOpacityValue(random2.r);
+
         //If the texture is not used individually then calculate the circle and calculate the texture value        
         if(brush.individualTexture != 1){
             
@@ -260,10 +263,8 @@ void main()
             src *= txtr;
         }
 
-        //Calculate the opacity jitter
-        float opacity = calculateOpacityValue(random2.r);
-        
-        fRes *= opacity;
+        src *= opacity;
+
 
         //Blend the stroke value
         strokeBlendUniColor(src, 1., fRes, fRes);
@@ -271,7 +272,7 @@ void main()
     }
     
     
-    vec4 res = vec4(0.,0.,0.,fRes * opacity);
+    vec4 res = vec4(0.,0.,0.,fRes);
 
     
     if(redChannelOnly == 0){
