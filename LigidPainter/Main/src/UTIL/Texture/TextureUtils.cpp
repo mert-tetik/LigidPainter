@@ -797,7 +797,6 @@ bool Texture::writeTextureData(std::ofstream& wf){
     LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralNormalMap, bool, "Property texture - procedural NormalMap");
     LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralNormalGrayScale, bool, "Property texture - procedural NormalGrayScale");
     LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralNormalStrength, float, "Property texture - procedural NormalStrength");
-    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralTextureID, unsigned int, "Property texture - procedural TextureID");
     LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralUseTexCoords, bool, "Property texture - procedural UseTexCoords");
     LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralGrayScale, bool, "Property texture - procedural GrayScale");
     LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralBrightness, float, "Property texture - procedural Brightness");
@@ -815,23 +814,25 @@ bool Texture::writeTextureData(std::ofstream& wf){
     LGDTEXTURE_WRITEBITS(this->proceduralProps.textureSelectionDialog_selectedMode, int, "Property texture - textureSelectionDialog_selectedMode");
 
 
-    // -------- Texture Data --------
-
-    int32_t textureWidth = this->getResolution().x;
-    LGDTEXTURE_WRITEBITS(textureWidth, int32_t, "Property texture - texture width");
-
-    int32_t textureHeight = this->getResolution().y;
-    LGDTEXTURE_WRITEBITS(textureHeight, int32_t, "Property texture - texture height");
-
-    char* pixels = new char[textureWidth * textureHeight * 4];
-    this->getData(pixels);
-    
-    if(!wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
-        LGDLOG::start<< "ERROR : Writing texture data. Failed to write at : " << "Property texture - texture pixels" << LGDLOG::end;
-        return false; 
+    // -------- Procedural Texture Data --------
+    std::string txtrTitle = "";
+    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+    {
+        if(i < Library::getTextureArraySize()){
+            if(Library::getTexture(i)->ID == this->proceduralProps.proceduralTextureID){
+                if(i < Library::getTextureArraySize())
+                    txtrTitle = Library::getTexture(i)->title;
+            }
+        }
     }
-
-    delete[] pixels;
+    
+    int txtrTitleSize = txtrTitle.size();
+    LGDTEXTURE_WRITEBITS(txtrTitleSize, int, "Property texture - Texture title size");
+    for (size_t i = 0; i < txtrTitleSize; i++)
+    {
+        char c = txtrTitle[i];
+        LGDTEXTURE_WRITEBITS(c, char, "Property texture - Texture title character");
+    }
     
     return true;
 }
@@ -851,7 +852,6 @@ bool Texture::readTextureData(std::ifstream& rf){
     bool proceduralNormalMap;
     bool proceduralNormalGrayScale;
     float proceduralNormalStrength;
-    unsigned int proceduralTextureID;
     bool proceduralUseTexCoords;
     bool proceduralGrayScale;
     float proceduralBrightness;
@@ -874,7 +874,6 @@ bool Texture::readTextureData(std::ifstream& rf){
     LGDMATERIAL_READBITS(proceduralNormalMap, bool, "Property texture - procedural NormalMap");
     LGDMATERIAL_READBITS(proceduralNormalGrayScale, bool, "Property texture - procedural NormalGrayScale");
     LGDMATERIAL_READBITS(proceduralNormalStrength, float, "Property texture - procedural NormalStrength");
-    LGDMATERIAL_READBITS(proceduralTextureID, unsigned int, "Property texture - procedural TextureID");
     LGDMATERIAL_READBITS(proceduralUseTexCoords, bool, "Property texture - procedural UseTexCoords");
     LGDMATERIAL_READBITS(proceduralGrayScale, bool, "Property texture - procedural GrayScale");
     LGDMATERIAL_READBITS(proceduralBrightness, float, "Property texture - procedural Brightness");
@@ -893,21 +892,29 @@ bool Texture::readTextureData(std::ifstream& rf){
 
     // --------- Read texture data ---------
      
-    int32_t textureWidth = (*this).getResolution().x;
-    LGDMATERIAL_READBITS(textureWidth, int32_t, "Modifier's property - texture data - texture width");
+    
+    std::string txtrTitle = "";
+    int txtrTitleSize;
+    LGDMATERIAL_READBITS(txtrTitleSize, int, "Property texture - Texture title size");
+    for (size_t i = 0; i < txtrTitleSize; i++)
+    {
+        char c = txtrTitle[i];
+        LGDMATERIAL_READBITS(c, char, "Property texture - Texture title character");
+        txtrTitle.push_back(c);
+    }
 
-    int32_t textureHeight = (*this).getResolution().y;
-    LGDMATERIAL_READBITS(textureHeight, int32_t, "Modifier's property - texture data - texture height");
-
-    char* pixels = new char[textureWidth * textureHeight * 4];
-    if(!rf.read(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
-        LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : Modifier's property - texture data - texture pixels" << LGDLOG::end;
-        return false;   
+    unsigned int proceduralTextureID = 0;
+    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+    {
+        if(i < Library::getTextureArraySize()){
+            if(Library::getTexture(i)->title == txtrTitle){
+                if(i < Library::getTextureArraySize())
+                    proceduralTextureID = Library::getTexture(i)->ID;
+            }
+        }
     }
 
     // --------- Create the texture ---------
-
-    (*this) = Texture(pixels, textureWidth, textureHeight, GL_NEAREST);
 
     this->proceduralProps.proceduralID = proceduralID;
     this->proceduralProps.proceduralScale = proceduralScale;
@@ -931,6 +938,8 @@ bool Texture::readTextureData(std::ifstream& rf){
     this->proceduralProps.txtrPackScatter = txtrPackScatter;
     this->proceduralProps.textureSelectionDialog_selectedTextureIndex = textureSelectionDialog_selectedTextureIndex;
     this->proceduralProps.textureSelectionDialog_selectedMode = textureSelectionDialog_selectedMode;
+
+    this->generateProceduralDisplayingTexture(512);
 
     return true;
 }

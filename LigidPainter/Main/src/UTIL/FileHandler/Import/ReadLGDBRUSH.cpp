@@ -252,31 +252,7 @@ static bool readFile(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties){
             LGDBRUSH_READBITS(prop.boolVal, bool, "scatter");
         }
         else if(prop.valueType == 't'){
-            int proceduralID;
-            int proceduralInvert;
-            float proceduralScale;
-            LGDBRUSH_READBITS(proceduralID, int, "property - texture data - procedural ID");
-            LGDBRUSH_READBITS(proceduralInvert, int, "property - texture data - procedural invert");
-            LGDBRUSH_READBITS(proceduralScale, float, "property - texture data - procedural scale");
-
-            int32_t textureWidth = prop.texture.getResolution().x;
-            LGDBRUSH_READBITS(textureWidth, int32_t, "property - texture data - texture width");
-
-            int32_t textureHeight = prop.texture.getResolution().y;
-            LGDBRUSH_READBITS(textureHeight, int32_t, "property - texture data - texture height");
-
-            char* pixels = new char[textureWidth * textureHeight * 4];
-            if(!rf.read(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
-                LGDLOG::start<< "ERROR : Reading lgdbrush file. Failed to read at : property - texture data - texture pixels" << LGDLOG::end;
-                return false;   
-            }
-        
-            prop.texture = Texture(pixels, textureWidth, textureHeight);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            prop.texture.proceduralProps.proceduralID = proceduralID;
-            prop.texture.proceduralProps.proceduralnverted = proceduralInvert;
-            prop.texture.proceduralProps.proceduralScale = proceduralScale;
+            prop.texture.readTextureData(rf);
         }
         else{
             LGDLOG::start<< "ERROR! Reading lgdbrush file. Unknown property value type!" << LGDLOG::end;

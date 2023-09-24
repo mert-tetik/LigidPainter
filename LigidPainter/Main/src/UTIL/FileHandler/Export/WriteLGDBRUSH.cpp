@@ -158,37 +158,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITEBITS(textureStrSize, uint32_t, "textureStrSize");
         LGDBRUSH_WRITESTR(textureStr);
         char textureValueType = 't';
-        LGDBRUSH_WRITEBITS(textureValueType, char, "textureValueType");
-        
-        LGDBRUSH_WRITEBITS(brush.texture.proceduralProps.proceduralID, int, "Property texture - procedural ID");
-        LGDBRUSH_WRITEBITS(brush.texture.proceduralProps.proceduralnverted, int, "Property texture - procedural inverted");
-        LGDBRUSH_WRITEBITS(brush.texture.proceduralProps.proceduralScale, float, "Property texture - procedural scale");
-
-        int32_t textureWidth = brush.texture.getResolution().x;
-        LGDBRUSH_WRITEBITS(textureWidth, int32_t, "Property texture - texture width");
-
-        int32_t textureHeight = brush.texture.getResolution().y;
-        LGDBRUSH_WRITEBITS(textureHeight, int32_t, "Property texture - texture height");
-
-        char* pixels = new char[textureWidth * textureHeight * 4];
-        brush.texture.getData(pixels);
-        
-        if(!wf.write(pixels, textureWidth * textureHeight * 4 * sizeof(char))){
-            LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << "Property texture - texture pixels" << LGDLOG::end;
-            try
-            {
-                if(std::filesystem::exists(path)){
-                    std::filesystem::remove(path);
-                }
-            }
-            catch (const std::filesystem::filesystem_error& ex) {
-                LGDLOG::start << "ERROR : Filesystem : Location ID 969718 " << ex.what() << LGDLOG::end;
-            }
-            
-            return false; 
-        }
-    
-        delete[] pixels;
+        brush.texture.writeTextureData(wf);
     }
 
     return true;
