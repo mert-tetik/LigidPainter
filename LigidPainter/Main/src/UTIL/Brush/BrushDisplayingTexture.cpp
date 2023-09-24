@@ -75,7 +75,7 @@ static std::vector<glm::vec2> getWaveVector(double amplitude, double lower, int 
     return wave;
 }
 
-void Brush::updateDisplayTexture(float radius, float hardness){
+void Brush::updateDisplayTexture(float radius){
     
     int frameCounter = 0;
     
@@ -137,7 +137,7 @@ void Brush::updateDisplayTexture(float radius, float hardness){
     
     for (size_t i = 0; i < wave.size() / strokeSize; i++)
     {
-        ShaderSystem::twoDPainting().setInt("frame", i * strokeSize);
+        ShaderSystem::twoDPainting().setInt("frame", (i + 1 / (wave.size() / 75)) * 1.5f * strokeSize);
 
         Texture bgTxtr = displayingTexture.duplicateTexture();
         captureFBO.bind();

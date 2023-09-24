@@ -378,11 +378,10 @@ public:
 class Brush
 {
 public:
-    /// @brief Initializes the displaying texture
-    void initDisplayingTexture();
     
     /*  --------- Brush Properties --------- */
         float spacing = 0.f;
+        float hardness = 0.f;
         float sizeJitter = 0.f;
         float scatter = 0.f;
         float fade = 0.f;
@@ -410,12 +409,16 @@ public:
     Brush();
     
     /// @brief Initializes the @ref displayingTexture and assings the given params
-    Brush(float spacing, float sizeJitter, float scatter, float fade, float rotation, float rotationJitter, 
-          float alphaJitter, bool individualTexture, bool sinWavePattern, 
+    Brush(float displayRadius, float spacing, float hardness, float sizeJitter, float scatter, float fade, float rotation, 
+          float rotationJitter, float alphaJitter, bool individualTexture, bool sinWavePattern, 
           std::string title, Texture texture);
+    
+    void update(float displayRadius, float spacing, float hardness, float sizeJitter, float scatter, float fade, float rotation, 
+          float rotationJitter, float alphaJitter, bool individualTexture, bool sinWavePattern, 
+          Texture texture);
 
     /// @brief Updates the displaying texture using brush properties.
-    void updateDisplayTexture(float radius, float hardness);
+    void updateDisplayTexture(float radius);
 
     /// @brief move brush properties to the painting panel
     void useBrush(Panel &paintingPanel);

@@ -33,7 +33,9 @@ Brush::Brush(){
 }
 
 Brush::Brush(
+        float displayRadius,
         float spacing,
+        float hardness,
         float sizeJitter,
         float scatter,
         float fade,
@@ -47,6 +49,7 @@ Brush::Brush(
     )
 {
     this->spacing = spacing;
+    this->hardness = hardness;
     this->sizeJitter = sizeJitter;
     this->scatter = scatter;
     this->fade = fade;
@@ -56,18 +59,44 @@ Brush::Brush(
     this->individualTexture = individualTexture;
     this->sinWavePattern = sinWavePattern;
     this->title = title;
-    this->texture = texture;
+    
+    this->texture.proceduralProps = texture.proceduralProps;
+    this->texture.generateProceduralDisplayingTexture(512);
 
-    this->initDisplayingTexture();
-    this->updateDisplayTexture(0.1, 1.f);
+    this->displayingTexture = Texture(nullptr, 100, 100, GL_LINEAR);
+    this->displayingTexture.title = "BrushDisplayingTexture";    
+    
+    this->updateDisplayTexture(displayRadius);
 }
 
+void Brush::update(
+        float displayRadius,
+        float spacing,
+        float hardness,
+        float sizeJitter,
+        float scatter,
+        float fade,
+        float rotation,
+        float rotationJitter,
+        float alphaJitter,
+        bool individualTexture,
+        bool sinWavePattern,
+        Texture texture
+    )
+{
+    this->spacing = spacing;
+    this->hardness = hardness;
+    this->sizeJitter = sizeJitter;
+    this->scatter = scatter;
+    this->fade = fade;
+    this->rotation = rotation;
+    this->rotationJitter = rotationJitter;
+    this->alphaJitter = alphaJitter;
+    this->individualTexture = individualTexture;
+    this->sinWavePattern = sinWavePattern;
+    
+    this->texture.proceduralProps = texture.proceduralProps;
+    this->texture.generateProceduralDisplayingTexture(512);
 
-
-
-//-------- INIT UTIL ---------
-
-void Brush::initDisplayingTexture(){
-    this->displayingTexture = Texture(nullptr, 100, 100, GL_LINEAR);
-    this->displayingTexture.title = "BrushDisplayingTexture";
+    this->updateDisplayTexture(displayRadius);
 }

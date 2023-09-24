@@ -217,6 +217,9 @@ void Library::eraseBrush     (int index){
         return;
     }
     __changed = true;
+
+    glDeleteTextures(1, &__brushes[index].displayingTexture.ID);
+    glDeleteTextures(1, &__brushes[index].texture.ID);
     
     __brushes.erase(__brushes.begin() + index);
 }
@@ -311,6 +314,12 @@ void Library::clearMaterials  (){
 
 void Library::clearBrushes     (){
     __changed = true;
+    
+    for (size_t i = 0; i < __materials.size(); i++)
+    {
+        glDeleteTextures(1, &__brushes[i].displayingTexture.ID);
+        glDeleteTextures(1, &__brushes[i].texture.ID);
+    }
     
     __brushes.clear();
 }

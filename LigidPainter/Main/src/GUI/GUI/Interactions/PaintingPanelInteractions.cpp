@@ -115,7 +115,9 @@ void paintingPanelInteraction(
     if(paintingPanel.sections[1].elements[16].button.hover && *Mouse::LClick()){ //If pressed to export brush file button from brush/more
         Brush exportBrush
                         (    
+                            0.1f,
                             painter.brushProperties.spacing,
+                            painter.brushProperties.hardness,
                             painter.brushProperties.sizeJitter,
                             painter.brushProperties.scatter,
                             painter.brushProperties.fade,
@@ -185,28 +187,45 @@ void paintingPanelInteraction(
     }
 
 
-
-    painter.displayingBrush.spacing = painter.brushProperties.spacing;
-    painter.displayingBrush.sizeJitter = painter.brushProperties.sizeJitter;
-    painter.displayingBrush.scatter = painter.brushProperties.scatter;
-    painter.displayingBrush.fade = painter.brushProperties.fade;
-    painter.displayingBrush.rotation = painter.brushProperties.rotation;
-    painter.displayingBrush.rotationJitter = painter.brushProperties.rotationJitter;
-    painter.displayingBrush.alphaJitter = painter.brushProperties.alphaJitter;
-    painter.displayingBrush.individualTexture = painter.brushProperties.individualTexture;
-    painter.displayingBrush.sinWavePattern = painter.brushProperties.sinWavePattern;
-    painter.displayingBrush.texture = painter.brushProperties.brushTexture;
     paintingPanel.sections[1].elements[0].button.texture = painter.displayingBrush.displayingTexture; 
 
     if(!painter.displayingBrush.displayingTexture.ID){
-        painter.displayingBrush.initDisplayingTexture();
-        painter.displayingBrush.updateDisplayTexture(painter.brushProperties.radius * 2.f, painter.brushProperties.hardness);
+        // Init brush settings displaying brush
+        painter.displayingBrush = Brush(
+                                            painter.brushProperties.radius * 2.f,
+                                            painter.brushProperties.spacing,
+                                            painter.brushProperties.hardness,
+                                            painter.brushProperties.sizeJitter,
+                                            painter.brushProperties.scatter,
+                                            painter.brushProperties.fade,
+                                            painter.brushProperties.rotation,
+                                            painter.brushProperties.rotationJitter,
+                                            painter.brushProperties.alphaJitter,
+                                            painter.brushProperties.individualTexture,
+                                            painter.brushProperties.sinWavePattern,
+                                            "BrushSettingsDisplayingBrush",
+                                            painter.brushProperties.brushTexture
+                                        );
     }
     
     for (size_t i = 0; i < paintingPanel.sections[1].elements.size(); i++)
     {
         if(paintingPanel.sections[1].elements[i].isInteracted()){
-            painter.displayingBrush.updateDisplayTexture(painter.brushProperties.radius * 2.f, painter.brushProperties.hardness);
+            // Update brush settings displaying brush
+            painter.displayingBrush.update(
+                                                painter.brushProperties.radius * 2.f,
+                                                painter.brushProperties.spacing,
+                                                painter.brushProperties.hardness,
+                                                painter.brushProperties.sizeJitter,
+                                                painter.brushProperties.scatter,
+                                                painter.brushProperties.fade,
+                                                painter.brushProperties.rotation,
+                                                painter.brushProperties.rotationJitter,
+                                                painter.brushProperties.alphaJitter,
+                                                painter.brushProperties.individualTexture,
+                                                painter.brushProperties.sinWavePattern,
+                                                painter.brushProperties.brushTexture
+                                            );
         }
     }
     

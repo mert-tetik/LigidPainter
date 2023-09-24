@@ -32,6 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
     
 void Brush::useBrush(Panel &paintingPanel){
+    paintingPanel.sections[1].elements[3].rangeBar.value        =   this->hardness;
     paintingPanel.sections[1].elements[4].rangeBar.value        =   this->spacing;
     paintingPanel.sections[1].elements[5].rangeBar.value        =   this->sizeJitter;
     paintingPanel.sections[1].elements[8].rangeBar.value        =   this->scatter;
@@ -41,9 +42,12 @@ void Brush::useBrush(Panel &paintingPanel){
     paintingPanel.sections[1].elements[14].rangeBar.value        =   this->alphaJitter;
     paintingPanel.sections[1].elements[11].checkBox.clickState1  =   this->individualTexture;
     paintingPanel.sections[1].elements[7].checkBox.clickState1  =   this->sinWavePattern;
+    paintingPanel.sections[1].elements[9].button.texture.proceduralProps = this->texture.proceduralProps;
+    paintingPanel.sections[1].elements[9].button.texture.generateProceduralDisplayingTexture(512);
 }
 
 void Brush::applyToBrush(Panel &paintingPanel){
+    this->hardness         =   paintingPanel.sections[1].elements[3].rangeBar.value;          
     this->spacing         =   paintingPanel.sections[1].elements[4].rangeBar.value;          
     this->sizeJitter         =   paintingPanel.sections[1].elements[5].rangeBar.value;          
     this->scatter            =   paintingPanel.sections[1].elements[8].rangeBar.value;          
@@ -53,6 +57,8 @@ void Brush::applyToBrush(Panel &paintingPanel){
     this->alphaJitter        =   paintingPanel.sections[1].elements[14].rangeBar.value;          
     this->individualTexture  =   paintingPanel.sections[1].elements[11].checkBox.clickState1;    
     this->sinWavePattern     =   paintingPanel.sections[1].elements[7].checkBox.clickState1;    
+    this->texture.proceduralProps = paintingPanel.sections[1].elements[9].button.texture.proceduralProps;
+    this->texture.generateProceduralDisplayingTexture(512);
 
-    updateDisplayTexture(0.1, 1.f);
+    updateDisplayTexture(0.1);
 }
