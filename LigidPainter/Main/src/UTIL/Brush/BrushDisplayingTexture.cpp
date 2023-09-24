@@ -35,15 +35,32 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ShaderSystem/Shader.hpp"
 #include "SettingsSystem/Settings.hpp"
 
-static std::vector<glm::vec2> getWaveVector(double amplitude, double lower){
+
+// Function to interpolate between two glm::vec2 points
+std::vector<glm::vec2> interpolate(const glm::vec2& p1, const glm::vec2& p2, int numPoints) {
+    std::vector<glm::vec2> interpolatedPoints;
+    
+    for (int i = 0; i <= numPoints; ++i) {
+        float t = static_cast<float>(i) / static_cast<float>(numPoints);
+        glm::vec2 interpolatedPoint = p1 + t * (p2 - p1);
+        interpolatedPoints.push_back(interpolatedPoint);
+    }
+    
+    return interpolatedPoints;
+}
+
+static std::vector<glm::vec2> getWaveVector(double amplitude, double lower, int numInterpolationPoints){
     std::vector<glm::vec2> wave;
     
-    for (int i = 10; i < 85; i++)
-    {
-        wave.push_back
-            (
-                glm::vec2(i, (std::sin(glm::radians(float(i*9))) * amplitude * (i/50.f)) + lower)
-            );
+    for (int i = 10; i < 85; i++) {
+        glm::vec2 p1(i, (std::sin(glm::radians(static_cast<float>(i) * 9)) * amplitude * (static_cast<float>(i) / 50.f)) + lower);
+        wave.push_back(p1);
+        
+        if (i < 84) {
+            glm::vec2 p2(i + 1, (std::sin(glm::radians(static_cast<float>(i + 1) * 9)) * amplitude * (static_cast<float>(i + 1) / 50.f)) + lower);
+            std::vector<glm::vec2> interpolatedPoints = interpolate(p1, p2, numInterpolationPoints);
+            wave.insert(wave.end(), interpolatedPoints.begin(), interpolatedPoints.end());
+        }
     }
 
     return wave;
@@ -56,7 +73,9 @@ void Brush::updateDisplayTexture(float radius, float hardness){
     // Create the wave array
     double amplitude = 20.f;
     double lower = 45.f;
-    std::vector<glm::vec2> wave = getWaveVector(amplitude, lower);
+    int numInterpolationPoints = ((0.1f - radius) * 50.f);
+
+    std::vector<glm::vec2> wave = getWaveVector(amplitude, lower, numInterpolationPoints);
 
     glm::vec2 displayRes = displayingTexture.getResolution();
 
@@ -89,7 +108,7 @@ void Brush::updateDisplayTexture(float radius, float hardness){
     ShaderSystem::twoDPainting().setFloat("brush.hardness", hardness);
     ShaderSystem::twoDPainting().setFloat("brush.sizeJitter", 1.f - sizeJitter);
     ShaderSystem::twoDPainting().setFloat("brush.scatter", 1.f - scatter);
-    ShaderSystem::twoDPainting().setFloat("brush.fade", 1.f - fade);
+    ShaderSystem::twoDPainting().setFloat("brush.fade", fade);
     ShaderSystem::twoDPainting().setFloat("brush.rotation", rotation);
     ShaderSystem::twoDPainting().setFloat("brush.rotationJitter", 1.f - rotationJitter);
     ShaderSystem::twoDPainting().setFloat("brush.alphaJitter", 1.f - alphaJitter);
@@ -137,6 +156,8 @@ void Brush::updateDisplayTexture(float radius, float hardness){
         
         //Painting
         glDrawArrays(GL_TRIANGLES,0,6);
+
+        glDeleteTextures(1, &bgTxtr.ID);
         
     }
 

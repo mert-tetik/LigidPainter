@@ -219,7 +219,7 @@ static void setBrushProperties (
     ShaderSystem::twoDPainting().setFloat("brush.hardness", brushProperties.hardness);
     ShaderSystem::twoDPainting().setFloat("brush.sizeJitter", 1.f - brushProperties.sizeJitter);
     ShaderSystem::twoDPainting().setFloat("brush.scatter", 1.f - brushProperties.scatter);
-    ShaderSystem::twoDPainting().setFloat("brush.fade", 1.f - brushProperties.fade);
+    ShaderSystem::twoDPainting().setFloat("brush.fade", brushProperties.fade);
     ShaderSystem::twoDPainting().setFloat("brush.rotation", brushProperties.rotation);
     ShaderSystem::twoDPainting().setFloat("brush.rotationJitter", 1.f - brushProperties.rotationJitter);
     ShaderSystem::twoDPainting().setFloat("brush.alphaJitter", 1.f - brushProperties.alphaJitter);

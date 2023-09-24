@@ -183,10 +183,6 @@ void paintingPanelInteraction(
         painter.updateDepthTexture();
     }
 
-    if(!painter.displayingBrush.displayingTexture.ID){
-        painter.displayingBrush.initDisplayingTexture();
-        painter.displayingBrush.updateDisplayTexture(painter.brushProperties.radius * 2.f, painter.brushProperties.hardness);
-    }
 
 
     painter.displayingBrush.sizeJitter = painter.brushProperties.sizeJitter;
@@ -200,6 +196,11 @@ void paintingPanelInteraction(
     painter.displayingBrush.texture = painter.brushProperties.brushTexture;
     paintingPanel.sections[1].elements[0].button.texture = painter.displayingBrush.displayingTexture; 
 
+    if(!painter.displayingBrush.displayingTexture.ID){
+        painter.displayingBrush.initDisplayingTexture();
+        painter.displayingBrush.updateDisplayTexture(painter.brushProperties.radius * 2.f, painter.brushProperties.hardness);
+    }
+    
     for (size_t i = 0; i < paintingPanel.sections[1].elements.size(); i++)
     {
         if(paintingPanel.sections[1].elements[i].isInteracted()){

@@ -145,14 +145,10 @@ float calculateRadiusValue(float random){
 
     //Calculate the fade value for the radius
     if(brush.sinWavePattern == 1)
-        radius *= 1. - clamp(sin(radians(float(frame)*3.)),0.,1.);
+        radius *= 1. - clamp(sin(radians(float(frame)*3.)),0.,1.) * brush.fade;
     else
-        radius *= 1. - clamp(frame/100.,0.,1.);
+        radius *= 1. - clamp(frame/100.,0.,1.) * brush.fade;
     
-    radiusGap = radius - brush.radius * paintingRes.x;
-    
-    radius -= radiusGap * brush.fade;
-
     //Return the result
     return radius;
 
@@ -230,7 +226,7 @@ void main()
     for(int i = 0; i < min(posCount, maxPosSize); i++) {
         
         //Random vec2 value generated with the frame + stroke index value
-        vec2 random2 = hash_normalized_vec2(vec2(frame + i));
+        vec2 random2 = hash_normalized_vec2(vec2(frame + i, frame + i * 3.486453));
         
         //Calculate the position jitter
         vec2 pos = calculatePosValue(random2, positions[i] / videoScale * paintingRes);
@@ -264,13 +260,16 @@ void main()
             src *= txtr;
         }
 
+        //Calculate the opacity jitter
+        float opacity = calculateOpacityValue(random2.r);
+        
+        fRes *= opacity;
+
         //Blend the stroke value
         strokeBlendUniColor(src, 1., fRes, fRes);
 
     }
     
-    //Calculate the opacity jitter
-    float opacity = calculateOpacityValue(random);
     
     vec4 res = vec4(0.,0.,0.,fRes * opacity);
 
@@ -283,7 +282,7 @@ void main()
     }
     
     if(redChannelOnly == 1)
-        res.g = res.a;
+        res.r = res.a;
 
     outClr.rgb = mix(res.rgb, rgbClr, rgbClr.r);
     outClr.a = res.a;
