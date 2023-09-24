@@ -382,6 +382,7 @@ public:
     void initDisplayingTexture();
     
     /*  --------- Brush Properties --------- */
+        float spacing = 0.f;
         float sizeJitter = 0.f;
         float scatter = 0.f;
         float fade = 0.f;
@@ -409,7 +410,7 @@ public:
     Brush();
     
     /// @brief Initializes the @ref displayingTexture and assings the given params
-    Brush(float sizeJitter, float scatter, float fade, float rotation, float rotationJitter, 
+    Brush(float spacing, float sizeJitter, float scatter, float fade, float rotation, float rotationJitter, 
           float alphaJitter, bool individualTexture, bool sinWavePattern, 
           std::string title, Texture texture);
 

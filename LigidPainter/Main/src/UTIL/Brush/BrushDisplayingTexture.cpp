@@ -54,12 +54,21 @@ static std::vector<glm::vec2> getWaveVector(double amplitude, double lower, int 
     
     for (int i = 10; i < 85; i++) {
         glm::vec2 p1(i, (std::sin(glm::radians(static_cast<float>(i) * 9)) * amplitude * (static_cast<float>(i) / 50.f)) + lower);
-        wave.push_back(p1);
+        
+        if(numInterpolationPoints < 0){
+            if(i % std::abs(numInterpolationPoints) == 0){
+                wave.push_back(p1);
+            }
+        }
+        else
+            wave.push_back(p1);
         
         if (i < 84) {
             glm::vec2 p2(i + 1, (std::sin(glm::radians(static_cast<float>(i + 1) * 9)) * amplitude * (static_cast<float>(i + 1) / 50.f)) + lower);
-            std::vector<glm::vec2> interpolatedPoints = interpolate(p1, p2, numInterpolationPoints);
-            wave.insert(wave.end(), interpolatedPoints.begin(), interpolatedPoints.end());
+            if(numInterpolationPoints >= 0){
+                std::vector<glm::vec2> interpolatedPoints = interpolate(p1, p2, numInterpolationPoints);
+                wave.insert(wave.end(), interpolatedPoints.begin(), interpolatedPoints.end());
+            }
         }
     }
 
@@ -74,6 +83,9 @@ void Brush::updateDisplayTexture(float radius, float hardness){
     double amplitude = 20.f;
     double lower = 45.f;
     int numInterpolationPoints = ((0.1f - radius) * 50.f);
+    if(this->spacing > 2.f){
+        numInterpolationPoints = -(this->spacing/10.f);
+    }
 
     std::vector<glm::vec2> wave = getWaveVector(amplitude, lower, numInterpolationPoints);
 

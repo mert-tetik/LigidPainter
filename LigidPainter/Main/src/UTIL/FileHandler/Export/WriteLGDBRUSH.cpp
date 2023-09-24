@@ -97,6 +97,14 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITEBITS(scatterValueType, char, "scatterValueType");
         LGDBRUSH_WRITEBITS(brush.scatter, float, "scatter");
         
+        std::string spacingStr = "spacing"; 
+        uint32_t spacingStrSize = spacingStr.size(); 
+        LGDBRUSH_WRITEBITS(spacingStrSize, uint32_t, "spacingStrSize");
+        LGDBRUSH_WRITESTR(spacingStr);
+        char spacingValueType = 'f';
+        LGDBRUSH_WRITEBITS(spacingValueType, char, "spacingValueType");
+        LGDBRUSH_WRITEBITS(brush.spacing, float, "spacing");
+
         std::string sizeJitterStr = "sizeJitter"; 
         uint32_t sizeJitterStrSize = sizeJitterStr.size(); 
         LGDBRUSH_WRITEBITS(sizeJitterStrSize, uint32_t, "sizeJitterStrSize");

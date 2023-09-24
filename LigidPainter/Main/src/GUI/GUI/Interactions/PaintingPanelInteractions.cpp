@@ -115,6 +115,7 @@ void paintingPanelInteraction(
     if(paintingPanel.sections[1].elements[16].button.hover && *Mouse::LClick()){ //If pressed to export brush file button from brush/more
         Brush exportBrush
                         (    
+                            painter.brushProperties.spacing,
                             painter.brushProperties.sizeJitter,
                             painter.brushProperties.scatter,
                             painter.brushProperties.fade,
@@ -185,6 +186,7 @@ void paintingPanelInteraction(
 
 
 
+    painter.displayingBrush.spacing = painter.brushProperties.spacing;
     painter.displayingBrush.sizeJitter = painter.brushProperties.sizeJitter;
     painter.displayingBrush.scatter = painter.brushProperties.scatter;
     painter.displayingBrush.fade = painter.brushProperties.fade;

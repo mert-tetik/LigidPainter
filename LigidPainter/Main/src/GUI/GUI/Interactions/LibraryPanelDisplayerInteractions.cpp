@@ -130,6 +130,7 @@ void libraryPanelDisplayerInteraction(
             Library::addBrush(
                                         Brush
                                             (    
+                                                painter.brushProperties.spacing,
                                                 painter.brushProperties.sizeJitter,
                                                 painter.brushProperties.scatter,
                                                 painter.brushProperties.fade,

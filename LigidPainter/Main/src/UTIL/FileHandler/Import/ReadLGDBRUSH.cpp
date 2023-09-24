@@ -20,6 +20,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
     0xABAB9ACC
     0x334A9FFF
         |
+    spacing(sizeof(float))
+        |   
     sizeJitter(sizeof(float))
         |   
     scatter(sizeof(float))
@@ -153,6 +155,14 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
                 brush.sizeJitter = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the sizeJitter property : " << properties[i].valueType << "." << LGDLOG::end;
+        }
+        else if(properties[i].title == "spacing"){
+            if(properties[i].valueType == 'f')
+                brush.spacing = properties[i].floatVal;
+            else if(properties[i].valueType == 'b')
+                brush.spacing = properties[i].boolVal;
+            else
+                LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the spacing property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "scatter"){
             if(properties[i].valueType == 'f')

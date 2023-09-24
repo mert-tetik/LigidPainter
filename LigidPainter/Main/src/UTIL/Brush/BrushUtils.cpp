@@ -32,6 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
     
 void Brush::useBrush(Panel &paintingPanel){
+    paintingPanel.sections[1].elements[4].rangeBar.value        =   this->spacing;
     paintingPanel.sections[1].elements[5].rangeBar.value        =   this->sizeJitter;
     paintingPanel.sections[1].elements[8].rangeBar.value        =   this->scatter;
     paintingPanel.sections[1].elements[6].rangeBar.value        =   this->fade;
@@ -43,6 +44,7 @@ void Brush::useBrush(Panel &paintingPanel){
 }
 
 void Brush::applyToBrush(Panel &paintingPanel){
+    this->spacing         =   paintingPanel.sections[1].elements[4].rangeBar.value;          
     this->sizeJitter         =   paintingPanel.sections[1].elements[5].rangeBar.value;          
     this->scatter            =   paintingPanel.sections[1].elements[8].rangeBar.value;          
     this->fade               =   paintingPanel.sections[1].elements[6].rangeBar.value;          

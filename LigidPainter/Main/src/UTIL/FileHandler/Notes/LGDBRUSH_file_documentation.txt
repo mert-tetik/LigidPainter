@@ -28,6 +28,7 @@ Brush Data
                                                                                         )
 
 --Property titles : sizeJitter
+                    spacing
                     scatter
                     fade
                     rotation

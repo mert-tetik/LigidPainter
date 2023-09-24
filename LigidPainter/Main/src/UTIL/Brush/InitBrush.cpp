@@ -33,6 +33,7 @@ Brush::Brush(){
 }
 
 Brush::Brush(
+        float spacing,
         float sizeJitter,
         float scatter,
         float fade,
@@ -45,6 +46,7 @@ Brush::Brush(
         Texture texture
     )
 {
+    this->spacing = spacing;
     this->sizeJitter = sizeJitter;
     this->scatter = scatter;
     this->fade = fade;
