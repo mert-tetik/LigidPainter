@@ -108,7 +108,6 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
 
             Brush brush;
             if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
-                brush.updateDisplayTexture();
                 Library::addBrush(brush);
             }
         }

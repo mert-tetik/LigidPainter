@@ -248,6 +248,8 @@ struct ProceduralProperties{
     int textureSelectionDialog_selectedMode = 0;
 };
 
+
+
 struct TextureData{
     glm::ivec2 scale;
     unsigned char* pixels;
@@ -371,6 +373,54 @@ public:
     /// @brief Set to true if the texture is modified.
     ///        And set to false if the texture exported.
     bool needsExporting = false;
+};
+
+class Brush
+{
+public:
+    /// @brief Initializes the displaying texture
+    void initDisplayingTexture();
+    
+    /*  --------- Brush Properties --------- */
+        float sizeJitter = 0.f;
+        float scatter = 0.f;
+        float fade = 0.f;
+        float rotation = 0.f;
+        float rotationJitter = 0.f;
+        float alphaJitter = 0.f;
+        bool individualTexture = false;
+        bool sinWavePattern = false;
+        Texture texture; 
+    /*  A brush class holds these values
+      Then applies these values to the GUI  
+        If clicked to a use brush button
+    */
+
+    /// @brief Title of the brush (smt like myBrush_1)    
+    std::string title;
+    
+    /// @brief The OpenGL texture buffer used to display the brush 
+    ///        (a curvy stroke created with the brush)
+    ///         Is initialized once and have a certain resolution value (W : 100, H : 100, C : RGBA)
+    Texture displayingTexture;
+    
+
+    /// @brief Default constructor (just initializes the @ref displayingTexture)
+    Brush();
+    
+    /// @brief Initializes the @ref displayingTexture and assings the given params
+    Brush(float sizeJitter, float scatter, float fade, float rotation, float rotationJitter, 
+          float alphaJitter, bool individualTexture, bool sinWavePattern, 
+          std::string title, Texture texture);
+
+    /// @brief Updates the displaying texture using brush properties.
+    void updateDisplayTexture(float radius, float hardness);
+
+    /// @brief move brush properties to the painting panel
+    void useBrush(Panel &paintingPanel);
+
+    /// @brief move painting panel brush properties to the class's brush properties
+    void applyToBrush(Panel &paintingPanel);
 };
 
 class Renderbuffer{
@@ -624,6 +674,9 @@ public:
     float smearTransformStrength = 1.f;
     float smearBlurStrength = 1.f;
 
+    // Used to create the displaying texture for the brush section in the paintingPanel
+    Brush displayingBrush;
+
     /// @brief Is paintingTexture16f if smearBrush used, paintingTexture8 if not
     unsigned int paintingTexture;  
 
@@ -782,55 +835,7 @@ public:
 
 
 
-class Brush
-{
-private:
-    /// @brief Initializes the displaying texture
-    void initDisplayingTexture();
 
-public:
-    
-    /*  --------- Brush Properties --------- */
-        float sizeJitter = 0.f;
-        float scatter = 0.f;
-        float fade = 0.f;
-        float rotation = 0.f;
-        float rotationJitter = 0.f;
-        float alphaJitter = 0.f;
-        bool individualTexture = false;
-        bool sinWavePattern = false;
-        Texture texture; 
-    /*  A brush class holds these values
-      Then applies these values to the GUI  
-        If clicked to a use brush button
-    */
-
-    /// @brief Title of the brush (smt like myBrush_1)    
-    std::string title;
-    
-    /// @brief The OpenGL texture buffer used to display the brush 
-    ///        (a curvy stroke created with the brush)
-    ///         Is initialized once and have a certain resolution value (W : 100, H : 100, C : RGBA)
-    Texture displayingTexture;
-    
-
-    /// @brief Default constructor (just initializes the @ref displayingTexture)
-    Brush();
-    
-    /// @brief Initializes the @ref displayingTexture and assings the given params
-    Brush(float sizeJitter, float scatter, float fade, float rotation, float rotationJitter, 
-          float alphaJitter, bool individualTexture, bool sinWavePattern, 
-          std::string title, Texture texture);
-
-    /// @brief Updates the displaying texture using brush properties.
-    void updateDisplayTexture();
-
-    /// @brief move brush properties to the painting panel
-    void useBrush(Panel &paintingPanel);
-
-    /// @brief move painting panel brush properties to the class's brush properties
-    void applyToBrush(Panel &paintingPanel);
-};
 
 /// @brief handles 2D square vertex objects.
 /*

@@ -30,7 +30,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
     
 Brush::Brush(){
-    initDisplayingTexture();
 }
 
 Brush::Brush(
@@ -57,7 +56,8 @@ Brush::Brush(
     this->title = title;
     this->texture = texture;
 
-    initDisplayingTexture();
+    this->initDisplayingTexture();
+    this->updateDisplayTexture(0.1, 1.f);
 }
 
 
@@ -67,4 +67,5 @@ Brush::Brush(
 
 void Brush::initDisplayingTexture(){
     this->displayingTexture = Texture(nullptr, 100, 100, GL_LINEAR);
+    this->displayingTexture.title = "BrushDisplayingTexture";
 }

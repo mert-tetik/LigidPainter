@@ -84,6 +84,11 @@ bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     
     std::ifstream rf(path, std::ios::in | std::ios::binary);
 
+    if(!brush.displayingTexture.ID){
+        brush.initDisplayingTexture();
+        brush.updateDisplayTexture(0.1f, 1.f);
+    }
+
     brush.title = UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher());
     brush.title = UTIL::removeExtension(brush.title);
 

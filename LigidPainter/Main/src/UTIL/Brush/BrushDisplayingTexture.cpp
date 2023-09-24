@@ -49,7 +49,7 @@ static std::vector<glm::vec2> getWaveVector(double amplitude, double lower){
     return wave;
 }
 
-void Brush::updateDisplayTexture(){
+void Brush::updateDisplayTexture(float radius, float hardness){
     
     int frameCounter = 0;
     
@@ -85,8 +85,8 @@ void Brush::updateDisplayTexture(){
     ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(1.f)); //Cover the screen
 
     //Set brush properties
-    ShaderSystem::twoDPainting().setFloat("brush.radius", 0.1f);
-    ShaderSystem::twoDPainting().setFloat("brush.hardness", 1.f);
+    ShaderSystem::twoDPainting().setFloat("brush.radius", radius);
+    ShaderSystem::twoDPainting().setFloat("brush.hardness", hardness);
     ShaderSystem::twoDPainting().setFloat("brush.sizeJitter", 1.f - sizeJitter);
     ShaderSystem::twoDPainting().setFloat("brush.scatter", 1.f - scatter);
     ShaderSystem::twoDPainting().setFloat("brush.fade", 1.f - fade);

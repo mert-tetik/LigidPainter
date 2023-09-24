@@ -143,8 +143,6 @@ void libraryPanelDisplayerInteraction(
                                             )
                                     );
             
-            Library::getBrush(Library::getBrushArraySize() - 1)->updateDisplayTexture();
-            
         }
         if(Library::getSelectedElementIndex() == 3){ //3D Models
             
@@ -206,7 +204,6 @@ void libraryPanelDisplayerInteraction(
             if(test.size()){
                 Brush importedBrush;
                 if(FileHandler::readLGDBRUSHFile(test,importedBrush)){
-                    importedBrush.updateDisplayTexture();
                     Library::addBrush(importedBrush);
                 }
             }
