@@ -26,17 +26,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 
 
 void projectUpdatingThread(Project &project) {
+    
     while (projectUpdatingThreadElements.isRunning) {
-        
         {
             std::lock_guard<std::mutex> lock(projectUpdatingThreadElements.mutex);
 
-            if(!project.projectLoading && project.folderPath != "")
+            if(!project.projectLoading && project.folderPath != ""){
+                //getCopyContext()->window.makeContextCurrent();
                 project.updateProject();
+            }
 
             // for (size_t i = 0; i < Library::getTextureArraySize(); i++)
             // {

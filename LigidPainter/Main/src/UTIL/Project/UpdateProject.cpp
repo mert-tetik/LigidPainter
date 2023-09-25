@@ -43,7 +43,6 @@ void Project::updateProject(){
         LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << LGDLOG::end;
         return;
     }
-    
     //!Textures
     std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
 
@@ -54,8 +53,12 @@ void Project::updateProject(){
     //Write the textures
     for (size_t i = 0; i < Library::getTextureArraySize(); i++)
     {
-        //Export texture
-        Library::getTexture(i)->exportTexture(textureFolderPath, Library::getTextureData(i).pixels, Library::getTextureData(i).scale, "PNG");
+        if(i < Library::getTextureArraySize()){
+            Texture threadSafeTxtr = *Library::getTexture(i);
+            threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
+
+            threadSafeTxtr.exportTexture(textureFolderPath, "PNG");
+        }
     }
     
     //!Materials
@@ -101,5 +104,5 @@ void Project::updateProject(){
         FileHandler::writeOBJFile(tdModelFolderPath + UTIL::folderDistinguisher() + Library::getModel(i)->title + ".obj", *Library::getModel(i));
     }
 
-    writeLigidFile();
+    this->writeLigidFile();
 }

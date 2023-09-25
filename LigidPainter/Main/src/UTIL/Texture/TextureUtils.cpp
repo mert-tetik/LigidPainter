@@ -987,3 +987,30 @@ void Texture::flipTexture(bool horizontal, bool vertical){
     captureFBO.deleteBuffers(false, false);
     Settings::defaultFramebuffer()->setViewport();
 }
+
+void Texture::copyDataToTheCopyContext(){
+    glm::ivec2 res = this->getResolution();
+    char* pxs = new char[res.x * res.y * 4]; 
+    this->getData(pxs);
+
+    getCopyContext()->window.makeContextCurrent();
+
+    glActiveTexture(GL_TEXTURE0);
+    if(this->copyContextID == 0)
+        glGenTextures(1,&this->copyContextID);
+
+    glBindTexture(GL_TEXTURE_2D, this->copyContextID);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, res.x, res.y, 0, GL_RGBA, GL_BYTE, pxs);
+	
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    getContext()->window.makeContextCurrent();
+    delete[] pxs;
+}

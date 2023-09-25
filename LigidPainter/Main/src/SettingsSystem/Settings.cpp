@@ -26,6 +26,7 @@ Settings::AppTextures __appTextures;
 Settings::Properties __settingsProperties;
 
 Context __context; 
+Context __copyContext; 
 Scene __scene; //3D Scene structure
 Model __model;
 Model __sphereModel;
@@ -75,6 +76,9 @@ void Settings::loadAppTextures(){
 
 Context* getContext(){
     return &__context;
+}
+Context* getCopyContext(){
+    return &__copyContext;
 }
 Scene* getScene(){
     return &__scene;

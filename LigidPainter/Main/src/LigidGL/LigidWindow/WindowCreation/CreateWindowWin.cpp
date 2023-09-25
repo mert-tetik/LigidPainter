@@ -81,11 +81,15 @@ static void fatal_error(char *uMsg)
     //exit(EXIT_FAILURE);
 }
 
+int __global_LGDGL_dummyWindowCounter = 0;
+
 /* 
     Loads the WGL functions 
 */
 static void init_opengl_extensions(void)
 {
+    __global_LGDGL_dummyWindowCounter++;
+
     // Before we can load extensions, we need a dummy OpenGL context, created using a dummy window.
     // We use a dummy window because you can only set the pixel format for a window once. For the
     // real window, we want to use wglChoosePixelFormatARB (so we can potentially specify options
@@ -99,7 +103,8 @@ static void init_opengl_extensions(void)
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wc.lpfnWndProc = DefWindowProc;
     wc.hInstance = hInstance;
-    wc.lpszClassName = "DummyWindow";
+    std::string dummyWindowClassName = "DummyWindow" + std::to_string(__global_LGDGL_dummyWindowCounter); 
+    wc.lpszClassName = dummyWindowClassName.c_str();
 
     if (!RegisterClassA(&wc)) {
         fatal_error("Failed to register dummy OpenGL window.");
@@ -242,6 +247,7 @@ HGLRC init_opengl(HDC real_dc)
     return gl33_context;
 }
 
+int __global_LGDGL_windowCounter = 0;
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 /*
@@ -249,6 +255,8 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 */
 HWND create_window(int width, int height, const wchar_t* title)
 {
+    __global_LGDGL_windowCounter++;
+
     // Get the instance handle of the current module
     HINSTANCE hInstance = GetModuleHandle(NULL);
 
@@ -257,7 +265,8 @@ HWND create_window(int width, int height, const wchar_t* title)
     wc.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wc.lpfnWndProc = WindowProc;
     wc.hInstance = hInstance;
-    wc.lpszClassName = L"OpenGLWindowClass";
+    std::wstring className = L"OpenGLWindowClass" + std::to_wstring(__global_LGDGL_windowCounter); 
+    wc.lpszClassName = className.c_str();
 
     // Class registration failed
     if (!RegisterClass(&wc)) {
@@ -271,7 +280,7 @@ HWND create_window(int width, int height, const wchar_t* title)
 
     // Create the window
     HWND hWnd = CreateWindow(
-                                L"OpenGLWindowClass", 
+                                className.c_str(), 
                                 title, 
                                 WS_OVERLAPPEDWINDOW,
                                 CW_USEDEFAULT, 

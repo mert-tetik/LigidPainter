@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
@@ -36,6 +37,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 void Texture::load(const char* path){
+
+    if(!std::filesystem::is_regular_file(path)){
+        return;
+    }
+
     this->title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
     this->title = UTIL::removeExtension(this->title);
 
@@ -75,6 +81,10 @@ void Texture::load(const char* path){
 }
 
 void Texture::load(const char* path, glm::ivec2 textureResolution){
+    if(!std::filesystem::is_regular_file(path)){
+        return;
+    }
+   
     this->title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
     this->title = UTIL::removeExtension(this->title);
 

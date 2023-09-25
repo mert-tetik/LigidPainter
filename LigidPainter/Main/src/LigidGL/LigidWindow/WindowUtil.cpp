@@ -158,6 +158,9 @@ void LigidWindow::makeContextCurrent(){
 
     HDC hdc = GetDC(this->window);    // Obtain the device context handle for the window
 
+    // Release the previous context
+    wglMakeCurrent(NULL, NULL);
+
     // activate the OpenGL rendering context
 
     // Make the created context current for the given device context

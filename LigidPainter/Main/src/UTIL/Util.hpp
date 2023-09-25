@@ -250,16 +250,6 @@ struct ProceduralProperties{
 
 
 
-struct TextureData{
-    glm::ivec2 scale;
-    unsigned char* pixels;
-    TextureData(){}
-    TextureData(glm::ivec2 scale, unsigned char* pixels){
-        this->scale = scale;
-        this->pixels = pixels;
-    }
-};
-
 class Texture
 {
 private:
@@ -271,6 +261,10 @@ private:
 public:
     /// @brief OpenGL texture buffer object id
     unsigned int ID = 0;
+
+    /// @brief OpenGL texture buffer object id for the copy context in order to use for multithreading
+    ///        Generally used for the library elements
+    unsigned int copyContextID = 0;
 
     ProceduralProperties proceduralProps;
 
@@ -345,7 +339,8 @@ public:
     
     bool readTextureData(std::ifstream& rf);
 
-    void flipTexture(bool horizontal, bool vertical);
+    void copyDataToTheCopyContext();
+
 
     // -------- Texture Manipulation --------
 
@@ -370,9 +365,7 @@ public:
     /// @brief Generates 2D displaying texture using the proceduralProps & writes the texture into the this->ID
     void generateProceduralDisplayingTexture(int displayingTextureRes);
 
-    /// @brief Set to true if the texture is modified.
-    ///        And set to false if the texture exported.
-    bool needsExporting = false;
+    void flipTexture(bool horizontal, bool vertical);
 };
 
 class Brush

@@ -82,7 +82,6 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
     int txtrI = this->getSelectedTextureIndexInLibrary();
     if(txtrI != -1){
         // TODO : Same for the texture editor dialog
-        Library::getTexture(txtrI)->needsExporting = true;
         registerTextureAction(actionTitle, Texture(), selectedTexture);
     }
 
@@ -201,9 +200,6 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
     if(this->threeDimensionalMode)
         if(selectedMeshIndex < getModel()->meshes.size())
             this->selectedTexture.removeSeams(getModel()->meshes[selectedMeshIndex], textureRes);
-    
-    if(txtrI != -1)
-        Library::updateTextureData(txtrI);
 }
 
 //Clear the painting texture

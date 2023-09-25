@@ -65,8 +65,6 @@ namespace Library{
     //----------- Get elements -----------
     /// @brief Returns the pointer of the element at the corresponding index from the Textures array 
     Texture* getTexture   (int index);
-    TextureData getTextureData(int index);
-    void updateTextureData(int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Materials array
     Material* getMaterial (int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Brushes array

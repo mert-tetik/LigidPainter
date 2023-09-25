@@ -33,16 +33,24 @@ Renderer::Renderer(){
 
 ThreadElements projectUpdatingThreadElements;
 
-
-
 class LigidPainter{
 public:
     int run(){
+
+        // //Create the copy context for another threads    
+        getCopyContext()->window.createWindow(1, 1, L"Copy Thread");
+        //Init GLAD
+        if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
+        {
+            LGDLOG::start<< "Failed to initialize GLAD" << LGDLOG::end;
+        }    
+        
         // .x : width | .y : height | .z : refresh rate  
         glm::ivec3 primaryMonitorData;
         LigidGL::getPrimaryMonitorData(primaryMonitorData.x, primaryMonitorData.y, primaryMonitorData.z);
 
         *Settings::videoScale() = glm::vec2(primaryMonitorData.x, primaryMonitorData.y);
+
         //Create the window and make it's OpenGL context current    
         getContext()->window.createWindow(Settings::videoScale()->x, Settings::videoScale()->y, L"LigidPainter");
 
@@ -57,7 +65,6 @@ public:
 
         Renderer renderer;
         renderer.initRenderer();
-        std::string msg = "benimmesagim";
         // Start the export thread
         std::thread projectUpdatingThreadX(projectUpdatingThread, std::ref(renderer.project));
 

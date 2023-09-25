@@ -27,6 +27,7 @@ struct Context{
 };
 
 Context* getContext();
+Context* getCopyContext();
 
 struct Camera{
     float yaw = -90.f;
