@@ -148,8 +148,16 @@ void Brush::updateDisplayTexture(float radius){
         glActiveTexture(GL_TEXTURE1); 
         glBindTexture(GL_TEXTURE_2D, bgTxtr.ID);
 
-        ShaderSystem::twoDPainting().setInt("brush.txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->texture.ID);
-        
+        ShaderSystem::twoDPainting().setInt("brush.txtr", 0); 
+        glActiveTexture(GL_TEXTURE0); 
+        glBindTexture(GL_TEXTURE_2D, this->texture.ID);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+        GLfloat borderColor[] = { 0.f, 0.f, 0.f, 1.f };  // Replace r, g, b, a with the desired color values
+        glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
         //Stroke positions
         std::vector<glm::vec2> strokes;
         strokes.assign(wave.begin() + i * strokeSize, wave.begin() + i * strokeSize + strokeSize);

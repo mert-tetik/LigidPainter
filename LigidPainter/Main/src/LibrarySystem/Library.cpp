@@ -35,7 +35,7 @@ int __selectedElementIndex = 0;
 
 bool __changed = true;
 
-void Library::uniqueNameControl(){
+void Library::nameControl(){
     for (int i = __textures.size()-1; i >= 0; i--)
     {
         std::vector<std::string> texturesStr;
@@ -43,6 +43,10 @@ void Library::uniqueNameControl(){
         {
             if(i != istr)
                 texturesStr.push_back(__textures[istr].title);
+        }
+        if(__textures[i].title == ""){
+            __textures[i].title = "texture";
+            __changed = true;
         }
 
         if(UTIL::uniqueName(__textures[i].title,texturesStr)){
@@ -58,6 +62,10 @@ void Library::uniqueNameControl(){
             if(i != istr)
                 materialsStr.push_back(__materials[istr].title);
         }
+        if(__materials[i].title == ""){
+            __materials[i].title = "material";
+            __changed = true;
+        }
 
         if(UTIL::uniqueName(__materials[i].title,materialsStr)){
             __changed = true;
@@ -71,6 +79,10 @@ void Library::uniqueNameControl(){
         {
             if(i != istr)
                 brushesStr.push_back(__brushes[istr].title);
+        }
+        if(__brushes[i].title == ""){
+            __brushes[i].title = "brush";
+            __changed = true;
         }
 
         if(UTIL::uniqueName(__brushes[i].title,brushesStr)){
@@ -86,6 +98,10 @@ void Library::uniqueNameControl(){
             if(i != istr)
                 TDModelsStr.push_back(__TDModels[istr].title);
         }
+        if(__TDModels[i].title == ""){
+            __TDModels[i].title = "TDModel";
+            __changed = true;
+        }
 
         if(UTIL::uniqueName(__TDModels[i].title,TDModelsStr)){
             __changed = true;
@@ -100,6 +116,10 @@ void Library::uniqueNameControl(){
             if(i != istr)
                 filtersStr.push_back(__filters[istr].title);
         }
+        if(__filters[i].title == ""){
+            __filters[i].title = "filter";
+            __changed = true;
+        }
 
         if(UTIL::uniqueName(__filters[i].title, filtersStr)){
             __changed = true;
@@ -113,6 +133,10 @@ void Library::uniqueNameControl(){
         {
             if(i != istr)
                 texturePacksStr.push_back(__texturePacks[istr].title);
+        }
+        if(__texturePacks[i].title == ""){
+            __texturePacks[i].title = "texturePack";
+            __changed = true;
         }
 
         if(UTIL::uniqueName(__texturePacks[i].title, texturePacksStr)){

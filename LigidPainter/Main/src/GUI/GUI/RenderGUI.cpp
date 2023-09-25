@@ -125,7 +125,8 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     
     //TODO Don't call that everyframe (maybe)
     //Rename every library element if their name is doubled 
-    Library::uniqueNameControl();
+    if(!this->renamingTextBox.active)
+        Library::nameControl();
 
     //Render the panels
     renderPanels(timer, painter, screenGapPerc);

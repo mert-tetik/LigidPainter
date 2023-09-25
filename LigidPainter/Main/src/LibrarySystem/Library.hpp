@@ -45,8 +45,8 @@ class Model;
 /// @brief Responsible of holding textures, materials, 3D models, brushes etc. created/imported by the user
 namespace Library{
     
-    /// @brief Checks all the elements in the library and generates unique names for the doubled elements
-    void uniqueNameControl();
+    /// @brief Checks all the elements in the library and generates unique names for the doubled elements and assigns a title if they are empty
+    void nameControl();
 
     //----------- Add elements -----------
     /// @brief Pushes the element parameter back to the Textures array & generates unique ID for the texture

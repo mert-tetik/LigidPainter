@@ -229,6 +229,12 @@ static void setBrushProperties (
     //Bind the texture of the brush
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,brushProperties.brushTexture.ID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+    GLfloat borderColor[] = { 0.f, 0.f, 0.f, 1.f };  // Replace r, g, b, a with the desired color values
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+    glGenerateMipmap(GL_TEXTURE_2D);
     ShaderSystem::twoDPainting().setFloat("brush.txtr", 0);
 }
 
