@@ -164,6 +164,7 @@ private:
 public:
     bool active = false;
     bool clicked = false;
+    bool numeric = false;
     bool rangeBar = false;
     float panelOffset = 0.f; 
     std::string text; 

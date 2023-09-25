@@ -524,7 +524,7 @@ void UI::init
     
     //Init renaming textbox
     libraryPanelDisplayer.isLibraryDisplayer = true;
-    renamingTextBox = TextBox(0,glm::vec2(4,2),"",4.f,false);
+    renamingTextBox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "", 4.f, false);
     renamingTextBox.thickness = 0.f;
     renamingTextBox.animationStyle = 1;
     renamingTextBox.radius = 10000.f;

@@ -88,7 +88,7 @@ TextBox::TextBox(int style,glm::vec2 scale,std::string text,float panelOffset,in
     
     activeChar = text.size()-1;
     activeChar2 = text.size()-1;
-    if(style == 0){
+    if(style == ELEMENT_STYLE_BASIC){
         this->color = ColorPalette::oppositeColor;
         this->color2 = ColorPalette::themeColor;
         this->animationStyle = 0;
@@ -97,6 +97,18 @@ TextBox::TextBox(int style,glm::vec2 scale,std::string text,float panelOffset,in
         this->textScale = 0.7f;
         this->outlineColor = {};
         this->outlineColor2 = {};
+    }
+
+    if(style == ELEMENT_STYLE_STYLIZED){
+        this->color = ColorPalette::oppositeColor;
+        this->color2 = ColorPalette::themeColor;
+        this->animationStyle = 0;
+        this->textColor = ColorPalette::oppositeColor;
+        this->textColor2 = ColorPalette::themeColor;
+        this->textScale = 0.7f;
+        this->outlineColor = {};
+        this->outlineColor2 = {};
+        this->numeric = true;
     }
 }
 
@@ -148,7 +160,7 @@ void TextBox::render(
     timer.transition(hover,hoverMixVal,0.2f); 
     timer.transition(active,clickedMixVal,0.15f); 
     
-    if(*Mouse::LPressed() && this->hover && Mouse::mouseOffset()->x)
+    if(*Mouse::LPressed() && this->hover && Mouse::mouseOffset()->x && this->numeric)
         this->rangeBar = true;
 
     if(!*Mouse::LPressed()){

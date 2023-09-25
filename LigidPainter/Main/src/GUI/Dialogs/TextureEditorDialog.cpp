@@ -107,8 +107,8 @@ TextureEditorDialog::TextureEditorDialog(){
         ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Top Left", "Top Right", "Bottom Left", "Bottom Right", "Center", "Custom"}, "Origin Point", 0.f),
         RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Origin Point X", Texture(), 0.f, 0.f, 1.f, 0.f),
         RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(8.f, 2.f), "Origin Point Y", Texture(), 0.f, 0.f, 1.f, 0.f),
-        TextBox(0, glm::vec2(8.f, 2.f), "1024", 0.f, false),
-        TextBox(0, glm::vec2(8.f, 2.f), "1024", 0.f, false)
+        TextBox(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "1024", 0.f, false),
+        TextBox(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "1024", 0.f, false)
     };
     this->resizeElements[1].button.colorSelection = true;
     

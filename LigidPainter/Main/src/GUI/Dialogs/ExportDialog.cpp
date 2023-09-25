@@ -45,7 +45,7 @@ ExportDialog::ExportDialog(){
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Export",Texture(),0.f,false)), 
                                         
                                         //Project settings
-                                        Element(TextBox(0,glm::vec2(4,2),"Select A Path",2.f,true)),
+                                        Element(TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Select A Path", 2.f, true)),
                                         
                                         Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
                                         {

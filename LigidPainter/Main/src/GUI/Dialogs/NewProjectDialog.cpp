@@ -52,8 +52,8 @@ NewProjectDialog::NewProjectDialog(AppMaterialModifiers& appMaterialModifiers){
                                         //Project settings
 
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"New Project",Texture(),0.f,false)), 
-                                        Element(TextBox(0,glm::vec2(4,2),"MyProject",2.f,false)),
-                                        Element(TextBox(0,glm::vec2(4,2),"./Projects",2.f,true)),
+                                        Element(TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2),"MyProject",2.f,false)),
+                                        Element(TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2),"./Projects",2.f,true)),
                                         
                                         Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
                                         {
@@ -67,7 +67,7 @@ NewProjectDialog::NewProjectDialog(AppMaterialModifiers& appMaterialModifiers){
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Large",2.f)),
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Medium",0.f)),
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Small",0.f)),
-                                        Element(TextBox(0,glm::vec2(4,2),"3D Model",2.f,2)),
+                                        Element(TextBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"3D Model",2.f,2)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(4,2),"Create",Texture(),2.f,false))
                                     }
                                 )

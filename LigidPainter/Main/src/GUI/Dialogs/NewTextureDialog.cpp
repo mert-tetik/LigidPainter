@@ -42,7 +42,7 @@ NewTextureDialog::NewTextureDialog(){
                     Element(Button()),
                     {
                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color"  , Texture(), 1.f, false)),
-                        Element(TextBox(0,glm::vec2(4,2),"NewTexture",1.f,false)),
+                        Element(TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2),"NewTexture",1.f,false)),
                         Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2),  {"256", "512", "1024", "2048", "4096"} , "Resolution", 1.f)),
                         Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2), "Create"  , Texture(), 4.f, true)),
                         Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(3,2), "Create With The Texture Selection Dialog"  , Texture(), 1.f, true))
