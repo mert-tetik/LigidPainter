@@ -28,7 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "LibrarySystem/Library.hpp"
 #include "SettingsSystem/Settings.hpp"
 
-
+ThreadElements projectUpdatingThreadElements;
 
 void projectUpdatingThread(Project &project) {
     
@@ -37,8 +37,8 @@ void projectUpdatingThread(Project &project) {
             std::lock_guard<std::mutex> lock(projectUpdatingThreadElements.mutex);
 
             if(!project.projectLoading && project.folderPath != ""){
-                //getCopyContext()->window.makeContextCurrent();
-                project.updateProject();
+                project.updateProject(projectUpdatingThreadElements.updateTextures);
+                projectUpdatingThreadElements.updateTextures = false;
             }
 
             // for (size_t i = 0; i < Library::getTextureArraySize(); i++)

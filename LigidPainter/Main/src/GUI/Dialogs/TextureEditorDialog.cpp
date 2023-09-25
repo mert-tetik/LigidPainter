@@ -695,6 +695,14 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
         Texture txtr = receivedTexture.duplicateTexture();
         this->updateDisplayingTexture(txtr, receivedTexture.ID);
         
+        for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+        {
+            if(receivedTexture.ID == Library::getTexture(i)->ID){
+                Library::getTexture(i)->copyDataToTheCopyContext();
+                projectUpdatingThreadElements.updateTextures = true;
+            }
+        }
+
         glDeleteTextures(1, &txtr.ID);
     }
 

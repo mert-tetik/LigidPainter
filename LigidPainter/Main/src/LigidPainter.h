@@ -31,8 +31,6 @@ Renderer::Renderer(){
 
 }
 
-ThreadElements projectUpdatingThreadElements;
-
 class LigidPainter{
 public:
     int run(){

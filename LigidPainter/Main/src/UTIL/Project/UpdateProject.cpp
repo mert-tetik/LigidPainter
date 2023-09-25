@@ -27,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -37,28 +38,36 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 
-void Project::updateProject(){
+void Project::updateProject(bool updateTextures){
     
+
     if(!std::filesystem::exists(folderPath)){
         LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << LGDLOG::end;
         return;
     }
-    //!Textures
-    std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
 
-    //Clear the textures folder
-    //if(UTIL::deleteFilesInFolder(textureFolderPath))
-    //    return;
+    if(updateTextures){
+        //!Textures
+        std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
 
-    //Write the textures
-    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-    {
-        if(i < Library::getTextureArraySize()){
-            Texture threadSafeTxtr = *Library::getTexture(i);
-            threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
+        //Clear the textures folder
+        //if(UTIL::deleteFilesInFolder(textureFolderPath))
+        //    return;
 
-            threadSafeTxtr.exportTexture(textureFolderPath, "PNG");
+        getCopyContext()->window.makeContextCurrent();
+        
+        //Write the textures
+        for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+        {
+            if(i < Library::getTextureArraySize()){
+                Texture threadSafeTxtr = *Library::getTexture(i);
+                threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
+
+                threadSafeTxtr.exportTexture(textureFolderPath, "PNG");
+            }
         }
+    
+        getCopyContext()->window.releaseContext();
     }
     
     //!Materials
@@ -105,4 +114,6 @@ void Project::updateProject(){
     }
 
     this->writeLigidFile();
+
+
 }

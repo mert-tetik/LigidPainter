@@ -128,6 +128,8 @@ void Library::addTexture(Texture texture){
 
     texture.uniqueId = 0; 
 
+    projectUpdatingThreadElements.updateTextures = true;
+
     texture.copyDataToTheCopyContext();
 
     __textures.push_back(texture);

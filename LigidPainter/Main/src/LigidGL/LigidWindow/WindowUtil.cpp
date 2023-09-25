@@ -203,6 +203,18 @@ void LigidWindow::makeContextCurrent(){
 #endif
 
 }
+void LigidWindow::releaseContext(){
+#if defined(_WIN32) || defined(_WIN64)
+    // Release the previous context
+    wglMakeCurrent(NULL, NULL);
+
+#elif(__APPLE__)
+
+#elif(__linux__)
+
+#endif
+
+}
 
 bool LigidWindow::isKeyPressed(int key){
 #if defined(_WIN32) || defined(_WIN64)

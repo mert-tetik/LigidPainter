@@ -258,7 +258,7 @@ void main()
         //If the texture is used individually then equate the alpha value to the texture value        
         else{
             //Calculate the square
-            src = drawSquare(uv * paintingRes, pos, vec2(radius) * vec2(2., ratio));
+            src = drawSquare(uv * paintingRes, pos, vec2(radius) * vec2(2., 2.));
 
             src *= txtr;
         }

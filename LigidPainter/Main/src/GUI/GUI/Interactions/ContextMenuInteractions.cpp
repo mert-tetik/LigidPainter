@@ -164,12 +164,12 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     if(ContextMenus::menuBarProject.dialogControl.isActive()){ //If project context menu is active
         //Save
         if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
-            project.updateProject();
+            project.updateProject(true);
         }
         
         //Save as
         if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){
-            project.updateProject();
+            project.updateProject(true);
             project.duplicateFolder("");
         }
         

@@ -527,9 +527,7 @@ public:
     bool createProject(std::string destinationPath,std::string name,std::string TDModelPath,int textureRes);
     
     /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
-    /// @param  structure (holds the textures / materials / brushes & TDModels)
-    /// @param meshNodeScene The main meshNodeScene which has the mesh node
-    void updateProject();
+    void updateProject(bool updateTextures);
     
     /// @brief load an existing project using ligid file path
     /// @param ligidFilePath path to the ligid file
@@ -956,6 +954,8 @@ public:
 #include <mutex>
 
 struct ThreadElements{
+    std::atomic<bool> updateTextures = true;
+    
     std::atomic<bool> isRunning = true;
     std::mutex mutex;
     std::condition_variable exportCV;

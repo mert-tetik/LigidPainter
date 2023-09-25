@@ -200,6 +200,11 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
     if(this->threeDimensionalMode)
         if(selectedMeshIndex < getModel()->meshes.size())
             this->selectedTexture.removeSeams(getModel()->meshes[selectedMeshIndex], textureRes);
+
+    if(txtrI != -1){
+        Library::getTexture(txtrI)->copyDataToTheCopyContext();
+        projectUpdatingThreadElements.updateTextures = true;
+    }
 }
 
 //Clear the painting texture
