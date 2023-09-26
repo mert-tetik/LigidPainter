@@ -914,6 +914,13 @@ bool Texture::readTextureData(std::ifstream& rf){
         }
     }
 
+    if(textureSelectionDialog_selectedMode == 5){
+        proceduralID = -1;
+        if(textureSelectionDialog_selectedTextureIndex < Library::getgetSrcLibTxtrsArraySize()){
+            proceduralTextureID = Library::getSrcLibTxtr(textureSelectionDialog_selectedTextureIndex).getTexture().ID;
+        }
+    }
+
     // --------- Create the texture ---------
 
     this->proceduralProps.proceduralID = proceduralID;
