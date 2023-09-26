@@ -146,7 +146,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 
     //Painting
     if(!strokeLocations.size()){
-        if(glm::distance(startCursorPos,*Mouse::cursorPos()) > this->brushProperties.spacing){ //Provide spacing
+        if(glm::distance(startCursorPos,*Mouse::cursorPos()) > this->brushProperties.spacing || *Mouse::LClick()){ //Provide spacing
             startCursorPos = *Mouse::cursorPos();            
             glDrawArrays(GL_TRIANGLES,0,6);
         }
