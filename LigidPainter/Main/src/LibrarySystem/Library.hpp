@@ -65,16 +65,22 @@ namespace Library{
     //----------- Get elements -----------
     /// @brief Returns the pointer of the element at the corresponding index from the Textures array 
     Texture* getTexture   (int index);
+    Texture getTextureObj   (int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Materials array
     Material* getMaterial (int index);
+    Material getMaterialObj (int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Brushes array
     Brush* getBrush       (int index);
+    Brush getBrushObj       (int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Models array
     Model* getModel       (int index);
+    Model getModelObj       (int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Filters array
     Filter* getFilter      (int index);
+    Filter getFilterObj      (int index);
     /// @brief Returns the pointer of the element at the corresponding index from the Texture Packs array
     TexturePack* getTexturePack(int index);
+    TexturePack getTexturePackObj(int index);
 
     //----------- Get element array sizes -----------
     /// @brief Returns the size of the Textures array

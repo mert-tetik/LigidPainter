@@ -71,7 +71,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
         for (size_t i = 0; i < Library::getTextureArraySize(); i++)
         {
             if(i < Library::getTextureArraySize()){
-                Texture threadSafeTxtr = *Library::getTexture(i);
+                Texture threadSafeTxtr = Library::getTextureObj(i);
                 if(multithreadingMode)
                     threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
 
@@ -106,7 +106,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
     {
         //Export material
-        FileHandler::writeLGDMATERIALFile(updateMaterialFolderPath + UTIL::folderDistinguisher() + Library::getMaterial(i)->title + ".lgdmaterial", *Library::getMaterial(i));
+        FileHandler::writeLGDMATERIALFile(updateMaterialFolderPath + UTIL::folderDistinguisher() + Library::getMaterialObj(i).title + ".lgdmaterial", Library::getMaterialObj(i));
     }
 
     if(!UTIL::deleteFilesInFolder(materialFolderPath)){
@@ -132,7 +132,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     for (size_t i = 0; i < Library::getBrushArraySize(); i++)
     {
         //Export brush
-        FileHandler::writeLGDBRUSHFile(updateBrushFolderPath, *Library::getBrush(i));
+        FileHandler::writeLGDBRUSHFile(updateBrushFolderPath, Library::getBrushObj(i));
     }
 
     if(!UTIL::deleteFilesInFolder(brushFolderPath)){
@@ -160,7 +160,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     for (size_t i = 0; i < Library::getModelArraySize(); i++)
     {
         //Export 3D model
-        FileHandler::writeOBJFile(updateTdModelFolderPath + UTIL::folderDistinguisher() + Library::getModel(i)->title + ".obj", *Library::getModel(i));
+        FileHandler::writeOBJFile(updateTdModelFolderPath + UTIL::folderDistinguisher() + Library::getModelObj(i).title + ".obj", Library::getModelObj(i));
     }
 
     if(!UTIL::deleteFilesInFolder(tdModelFolderPath)){

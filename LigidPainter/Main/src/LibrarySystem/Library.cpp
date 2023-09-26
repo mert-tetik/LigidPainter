@@ -435,6 +435,15 @@ Texture* Library::getTexture(int index){
     return &__textures[index];
 }
 
+Texture Library::getTextureObj(int index){
+    if(index >= __textures.size()){
+        LGDLOG::start<< "ERROR! : Couldn't get the texture : Requested texture index is out of boundaries." << LGDLOG::end;
+        Texture a = Texture();
+        return a;
+    }
+    return __textures[index];
+}
+
 Material* Library::getMaterial(int index){
     if(index >= __materials.size()){
         LGDLOG::start<< "ERROR! : Couldn't get the material : Requested material index is out of boundaries." << LGDLOG::end;
@@ -443,6 +452,16 @@ Material* Library::getMaterial(int index){
     }
     return &__materials[index];
 }
+
+Material Library::getMaterialObj(int index){
+    if(index >= __materials.size()){
+        LGDLOG::start<< "ERROR! : Couldn't get the material : Requested material index is out of boundaries." << LGDLOG::end;
+        Material a = Material();
+        return a;
+    }
+    return __materials[index];
+}
+
 Brush* Library::getBrush(int index){
     if(index >= __brushes.size()){
         LGDLOG::start<< "ERROR! : Couldn't get the brush : Requested brush index is out of boundaries." << LGDLOG::end;
@@ -451,6 +470,15 @@ Brush* Library::getBrush(int index){
     }
     return &__brushes[index];
 }
+Brush Library::getBrushObj(int index){
+    if(index >= __brushes.size()){
+        LGDLOG::start<< "ERROR! : Couldn't get the brush : Requested brush index is out of boundaries." << LGDLOG::end;
+        Brush a = Brush();
+        return a;
+    }
+    return __brushes[index];
+}
+
 Model* Library::getModel(int index){
     if(index >= __TDModels.size()){
         LGDLOG::start<< "ERROR! : Couldn't get the model : Requested model index is out of boundaries." << LGDLOG::end;
@@ -458,6 +486,14 @@ Model* Library::getModel(int index){
         return &a;
     }
     return &__TDModels[index];
+}
+Model Library::getModelObj(int index){
+    if(index >= __TDModels.size()){
+        LGDLOG::start<< "ERROR! : Couldn't get the model : Requested model index is out of boundaries." << LGDLOG::end;
+        Model a = Model();
+        return a;
+    }
+    return __TDModels[index];
 }
 
 Filter* Library::getFilter(int index){
@@ -468,6 +504,14 @@ Filter* Library::getFilter(int index){
     }
     return &__filters[index];
 }
+Filter Library::getFilterObj(int index){
+    if(index >= __filters.size()){
+        LGDLOG::start<< "ERROR! : Couldn't get the filter : Requested filter index is out of boundaries." << LGDLOG::end;
+        Filter a = Filter();
+        return a;
+    }
+    return __filters[index];
+}
 
 TexturePack* Library::getTexturePack(int index){
     if(index >= __texturePacks.size()){
@@ -476,6 +520,14 @@ TexturePack* Library::getTexturePack(int index){
         return &a;
     }
     return &__texturePacks[index];
+}
+TexturePack Library::getTexturePackObj(int index){
+    if(index >= __texturePacks.size()){
+        LGDLOG::start << "ERROR! : Couldn't get the texture pack : Requested texture pack index is out of boundaries." << LGDLOG::end;
+        TexturePack a = TexturePack();
+        return a;
+    }
+    return __texturePacks[index];
 }
 
 int Library::getTextureArraySize(){
