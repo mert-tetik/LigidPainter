@@ -7,23 +7,23 @@ in vec2 TexCoords;
 uniform vec2 fragScale;
 uniform vec2 fragMove;
 uniform float opacity;
-uniform float rotation;
+uniform float rot;
 
 out vec4 color;
 
 vec2 rotate2D(vec2 v, float angleDegrees) {
-    float angleRadians = radians(angleDegrees);
-    float cosA = cos(angleRadians);
-    float sinA = sin(angleRadians);
+    vec2 centeredUV = v - 0.5; // Shift UV to center
+    float cosRot = cos(radians(angleDegrees));
+    float sinRot = sin(radians(angleDegrees));
+    v.x = dot(centeredUV, vec2(cosRot, sinRot)) + 0.5;
+    v.y = dot(centeredUV, vec2(-sinRot, cosRot)) + 0.5;
 
-    mat2 rotationMatrix = mat2(cosA, -sinA, sinA, cosA);
-
-    return rotationMatrix * v;
+    return v;
 }
 
 void main(){
     vec2 uv = TexCoords;
-    uv = rotate2D(uv, rotation);
+    uv = rotate2D(uv, rot);
     color = texture(txtr, uv * fragScale + fragMove);
     color.a *= opacity;
 }

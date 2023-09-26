@@ -173,8 +173,8 @@ void UI::init
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Grayscale Masking", 1.f)),// 2
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Wrap", 1.f)), //3
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), //4 
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"X : Scale"  , Texture(), 1.f,0.f,2.f,1.f)), //5
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y : Scale"  , Texture(), 1.f,0.f,2.f,1.f)), //6
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"X : Scale"  , Texture(), 1.f,0.f,4.f,1.f)), //5
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y : Scale"  , Texture(), 1.f,0.f,4.f,1.f)), //6
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"X : Move"  , Texture(), 1.f, -1.f,1.f,0.f)), //7
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y : Move"  , Texture(), 1.f, -1.f,1.f,0.f)), //8
                                     }
