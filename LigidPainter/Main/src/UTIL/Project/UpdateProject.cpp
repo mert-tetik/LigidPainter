@@ -39,7 +39,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static const std::string copyFolderTitle = "Updating_Folder-Remove_if_you_see";
 
-void Project::updateProject(bool updateTextures){
+void Project::updateProject(bool updateTextures, bool multithreadingMode){
     
     if(!std::filesystem::exists(folderPath)){
         LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << LGDLOG::end;
@@ -59,20 +59,23 @@ void Project::updateProject(bool updateTextures){
 
         std::filesystem::create_directory(updateTextureFolderPath);
 
-        getCopyContext()->window.makeContextCurrent();
+        if(multithreadingMode)
+            getCopyContext()->window.makeContextCurrent();
         
         //Write the textures
         for (size_t i = 0; i < Library::getTextureArraySize(); i++)
         {
             if(i < Library::getTextureArraySize()){
                 Texture threadSafeTxtr = *Library::getTexture(i);
-                threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
+                if(multithreadingMode)
+                    threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
 
                 threadSafeTxtr.exportTexture(updateTextureFolderPath, "PNG");
             }
         }
     
-        getCopyContext()->window.releaseContext();
+        if(multithreadingMode)
+            getCopyContext()->window.releaseContext();
 
         if(!UTIL::deleteFilesInFolder(textureFolderPath)){
             return;

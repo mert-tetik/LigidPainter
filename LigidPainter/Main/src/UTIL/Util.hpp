@@ -530,7 +530,7 @@ public:
     bool createProject(std::string destinationPath,std::string name,std::string TDModelPath,int textureRes);
     
     /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
-    void updateProject(bool updateTextures);
+    void updateProject(bool updateTextures, bool multithreadingMode);
     
     /// @brief load an existing project using ligid file path
     /// @param ligidFilePath path to the ligid file
