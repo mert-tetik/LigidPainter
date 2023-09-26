@@ -256,8 +256,6 @@ void TextRenderer::renderInsertionPointCursor(int &textPosCharIndex){
 		ipcPos = glm::vec3(activeCharPos + 5 * textDataScale,textDataPos.y,textDataPos.z);
 		ShaderSystem::buttonShader().setVec3("pos",ipcPos);
 
-		std::cout << glm::to_string(ipcPos) << " " << glm::to_string(glm::vec2(textDataMinX, textDataMaxX)) << std::endl;
-
 		//Move the text if the insertion point cursor is forcing from the boundaries
 		if(ipcPos.x < textDataMinX && key == LIGIDGL_KEY_LEFT && textDataActiveChar > -1)
 			textPosCharIndex++;

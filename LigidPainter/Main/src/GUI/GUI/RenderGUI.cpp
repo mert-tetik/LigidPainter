@@ -584,7 +584,7 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
     else{
         //The first frame renamingTextBox is closed 
         if(!renamingTextBoxClosed){
-            if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_RELEASE){
+            if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_RELEASE || *Mouse::mouseScroll()){
                 if(renamingIndices.x == 0 && renamingIndices.y < Library::getTextureArraySize())
                     Library::getTexture(renamingIndices.y)->title = renamingTextBox.text;
                 else if(renamingIndices.x == 1 && renamingIndices.y < Library::getMaterialArraySize())
