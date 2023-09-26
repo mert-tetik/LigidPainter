@@ -19,6 +19,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "freetype/freetype.h"
 
@@ -255,11 +256,15 @@ void TextRenderer::renderInsertionPointCursor(int &textPosCharIndex){
 		ipcPos = glm::vec3(activeCharPos + 5 * textDataScale,textDataPos.y,textDataPos.z);
 		ShaderSystem::buttonShader().setVec3("pos",ipcPos);
 
+		std::cout << glm::to_string(ipcPos) << " " << glm::to_string(glm::vec2(textDataMinX, textDataMaxX)) << std::endl;
+
 		//Move the text if the insertion point cursor is forcing from the boundaries
-		if(ipcPos.x < textDataMinX && key == LIGIDGL_KEY_LEFT-256 && textDataActiveChar > -1)
+		if(ipcPos.x < textDataMinX && key == LIGIDGL_KEY_LEFT && textDataActiveChar > -1)
 			textPosCharIndex++;
-		if(ipcPos.x > textDataMaxX && key == LIGIDGL_KEY_RIGHT-256 && textDataActiveChar < textDataText.size()-1)
+		if(ipcPos.x > textDataMaxX && key == LIGIDGL_KEY_RIGHT && textDataActiveChar < textDataText.size()-1){
 			textPosCharIndex--;
+		}
+		
 		this->textDataTextPosCharIndex = textPosCharIndex; 
 
 		//Multiselection 

@@ -40,7 +40,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 bool FileHandler::writeLGDMATERIALFile(
                                         std::string path, 
-                                        Material &material)
+                                        Material material)
                                     {
     if(path == ""){
         path = showFileSystemObjectSelectionDialog(

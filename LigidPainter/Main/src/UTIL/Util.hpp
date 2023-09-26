@@ -925,8 +925,8 @@ namespace FileHandler{
     
     Model readFBXFile(std::string path);
     
+    bool writeLGDMATERIALFile(std::string path, Material material);
     bool readLGDMATERIALFile(std::string path, Material& material, AppMaterialModifiers appMaterialModifiers);
-    bool writeLGDMATERIALFile(std::string path, Material &material);
     
     bool writeLGDBRUSHFile(std::string path, Brush brush);
     bool readLGDBRUSHFile(std::string path, Brush& brush);
