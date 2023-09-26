@@ -203,6 +203,7 @@ void Library::eraseTexture   (int index){
         return;
     }
 
+
     registerTextureDeletionAction("Texture Deletion", Texture(), __textures[index], index);
 
     __changed = true;
@@ -213,8 +214,9 @@ void Library::eraseTexture   (int index){
     getContext()->window.makeContextCurrent();
     glDeleteTextures(1, &__textures[index].ID);
 
-
     __textures.erase(__textures.begin() + index);
+
+    projectUpdatingThreadElements.updateTextures = true;
 }
 
 void Library::eraseMaterial  (int index){
@@ -324,6 +326,8 @@ void Library::clearTextures   (){
     }
     
     __textures.clear();
+
+    projectUpdatingThreadElements.updateTextures = true;
 }
 
 void Library::clearMaterials  (){

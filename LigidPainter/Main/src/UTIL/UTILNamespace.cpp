@@ -240,3 +240,31 @@ int UTIL::findCorrespondingIndex(const std::string& s, const std::vector<std::st
     
     return 0;
 }
+
+void UTIL::moveFilesToDestination(const std::string& src, const std::string& dst) {
+    try {
+        // Check if the source directory exists
+        if (!std::filesystem::is_directory(src)) {
+            LGDLOG::start << "ERROR : Moving files to the destination : Source directory does not exist or is not a directory " << LGDLOG::end;
+        }
+
+        // Check if the destination directory exists, and create it if not
+        if (!std::filesystem::exists(dst)) {
+            std::filesystem::create_directories(dst);
+        }
+
+        // Iterate through files in the source directory
+        for (const auto& entry : std::filesystem::directory_iterator(src)) {
+            if (std::filesystem::is_regular_file(entry)) {
+                // Construct the destination file path
+                std::filesystem::path destination = std::filesystem::path(dst) / entry.path().filename();
+
+                // Move the file to the destination
+                std::filesystem::rename(entry.path(), destination);
+            }
+        }
+    } 
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 772611 " << ex.what() << LGDLOG::end;
+    }
+}

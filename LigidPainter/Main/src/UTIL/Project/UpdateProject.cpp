@@ -37,22 +37,27 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
+static const std::string copyFolderTitle = "Updating_Folder-Remove_if_you_see";
 
 void Project::updateProject(bool updateTextures){
     
-
     if(!std::filesystem::exists(folderPath)){
         LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << LGDLOG::end;
         return;
     }
 
+
+
+
     if(updateTextures){
         //!Textures
         std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
+        std::string updateTextureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + copyFolderTitle;
 
-        //Clear the textures folder
-        //if(UTIL::deleteFilesInFolder(textureFolderPath))
-        //    return;
+        if(std::filesystem::exists(updateTextureFolderPath))
+            std::filesystem::remove_all(updateTextureFolderPath);
+
+        std::filesystem::create_directory(updateTextureFolderPath);
 
         getCopyContext()->window.makeContextCurrent();
         
@@ -63,57 +68,99 @@ void Project::updateProject(bool updateTextures){
                 Texture threadSafeTxtr = *Library::getTexture(i);
                 threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
 
-                threadSafeTxtr.exportTexture(textureFolderPath, "PNG");
+                threadSafeTxtr.exportTexture(updateTextureFolderPath, "PNG");
             }
         }
     
         getCopyContext()->window.releaseContext();
+
+        if(!UTIL::deleteFilesInFolder(textureFolderPath)){
+            return;
+        }
+
+        UTIL::moveFilesToDestination(updateTextureFolderPath, textureFolderPath);
+        std::filesystem::remove_all(updateTextureFolderPath);
     }
+
+
+
     
     //!Materials
     std::string materialFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials";
+    std::string updateMaterialFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + copyFolderTitle;
 
-    //Clear the materials folder
-    //if(UTIL::deleteFilesInFolder(materialFolderPath))
-    //    return;
+    if(std::filesystem::exists(updateMaterialFolderPath))
+        std::filesystem::remove_all(updateMaterialFolderPath);
+
+    std::filesystem::create_directory(updateMaterialFolderPath);
 
     //Write the materials
     for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
     {
         //Export material
-        FileHandler::writeLGDMATERIALFile(materialFolderPath + UTIL::folderDistinguisher() + Library::getMaterial(i)->title + ".lgdmaterial", *Library::getMaterial(i));
+        FileHandler::writeLGDMATERIALFile(updateMaterialFolderPath + UTIL::folderDistinguisher() + Library::getMaterial(i)->title + ".lgdmaterial", *Library::getMaterial(i));
     }
+
+    if(!UTIL::deleteFilesInFolder(materialFolderPath)){
+        return;
+    }
+
+    UTIL::moveFilesToDestination(updateMaterialFolderPath, materialFolderPath);
+    std::filesystem::remove_all(updateMaterialFolderPath);
+
+
 
 
     //!Brushes
     std::string brushFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
+    std::string updateBrushFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + copyFolderTitle;
 
-    //Clear the brushes folder
-    //if(UTIL::deleteFilesInFolder(brushFolderPath))
-    //    return;
+    if(std::filesystem::exists(updateBrushFolderPath))
+        std::filesystem::remove_all(updateBrushFolderPath);
+
+    std::filesystem::create_directory(updateBrushFolderPath);
 
     //Write the brushes
     for (size_t i = 0; i < Library::getBrushArraySize(); i++)
     {
         //Export brush
-        FileHandler::writeLGDBRUSHFile(brushFolderPath, *Library::getBrush(i));
+        FileHandler::writeLGDBRUSHFile(updateBrushFolderPath, *Library::getBrush(i));
     }
+
+    if(!UTIL::deleteFilesInFolder(brushFolderPath)){
+        return;
+    }
+
+    UTIL::moveFilesToDestination(updateBrushFolderPath, brushFolderPath);
+    std::filesystem::remove_all(updateBrushFolderPath);
+
+
+
+
+
     
     //!3D Models
     std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
+    std::string updateTdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels" + UTIL::folderDistinguisher() + copyFolderTitle;
 
-    //Clear the 3D models folder
-    //if(UTIL::deleteFilesInFolder(tdModelFolderPath))
-    //    return;
+    if(std::filesystem::exists(updateTdModelFolderPath))
+        std::filesystem::remove_all(updateTdModelFolderPath);
+
+    std::filesystem::create_directory(updateTdModelFolderPath);
 
     //Write the 3D models
     for (size_t i = 0; i < Library::getModelArraySize(); i++)
     {
         //Export 3D model
-        FileHandler::writeOBJFile(tdModelFolderPath + UTIL::folderDistinguisher() + Library::getModel(i)->title + ".obj", *Library::getModel(i));
+        FileHandler::writeOBJFile(updateTdModelFolderPath + UTIL::folderDistinguisher() + Library::getModel(i)->title + ".obj", *Library::getModel(i));
     }
 
+    if(!UTIL::deleteFilesInFolder(tdModelFolderPath)){
+        return;
+    }
+
+    UTIL::moveFilesToDestination(updateTdModelFolderPath, tdModelFolderPath);
+    std::filesystem::remove_all(updateTdModelFolderPath);
+
     this->writeLigidFile();
-
-
 }

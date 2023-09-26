@@ -136,6 +136,9 @@ namespace UTIL{
     /// @brief duplicates the folder in the @param src to the @param dest path
     void duplicateFolder(const std::string src, const std::string dest);
 
+    /// @brief moves the files inside of the src folder to the dst folder
+    void moveFilesToDestination(const std::string& src, const std::string& dst);
+
     /// @brief generates unique value into the param s according to the sArray
     /// @return if change is made 
     bool uniqueName(std::string &s, std::vector<std::string> sArray);
