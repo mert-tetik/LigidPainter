@@ -94,15 +94,6 @@ void strokeBlendUniColor(
     }
 }
 
-vec2 rotate2D(vec2 v, float angleDegrees) {
-    float angleRadians = radians(angleDegrees);
-    float cosA = cos(angleRadians);
-    float sinA = sin(angleRadians);
-
-    mat2 rotationMatrix = mat2(cosA, -sinA, sinA, cosA);
-
-    return rotationMatrix * v;
-}
 
 float calculateBrushTexture(vec2 pos, vec2 radius,vec2 uv){
    
@@ -127,8 +118,8 @@ float calculateBrushTexture(vec2 pos, vec2 radius,vec2 uv){
     
     // Rotate the uv value
     vec2 centeredUV = uv - 0.5; // Shift UV to center
-    float cosRot = cos(rotation);
-    float sinRot = sin(rotation);
+    float cosRot = cos(radians(rotation));
+    float sinRot = sin(radians(rotation));
     uv.x = dot(centeredUV, vec2(cosRot, sinRot)) + 0.5;
     uv.y = dot(centeredUV, vec2(-sinRot, cosRot)) + 0.5;
     
