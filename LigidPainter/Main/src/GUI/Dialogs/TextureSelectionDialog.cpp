@@ -819,7 +819,7 @@ void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection)
     this->textureSelectingPanel.render(timer, true);
 
     // Selected texture displaying panel
-    this->selectedTextureDisplayingPanel.render(timer, true);
+    this->selectedTextureDisplayingPanel.render(timer, false);
 
     // Rendering the procedural textures on top of the texture selection panel's buttons
     if(this->selectedTextureMode == 1 || this->selectedTextureMode == 2){
