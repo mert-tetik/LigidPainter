@@ -480,7 +480,6 @@ public:
 
     bool readFilterData(std::ifstream& rf);
 
-private:
     std::string srcCode = "";
 };
 

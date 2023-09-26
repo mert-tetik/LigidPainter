@@ -200,6 +200,8 @@ bool Filter::writeFilterData(std::ofstream& wf){
     int32_t srcCodeCharSize = this->srcCode.size();
     LGDFILTER_WRITEBITS(srcCodeCharSize, int32_t, "Filter source code character size");
 
+    std::cout << "srcCodeCharSizeAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " << srcCodeCharSize << std::endl;
+
     for (size_t i = 0; i < srcCodeCharSize; i++)
     {
         char c = this->srcCode[i];
@@ -217,6 +219,8 @@ bool Filter::writeFilterData(std::ofstream& wf){
                             }
 
 bool Filter::readFilterData(std::ifstream& rf){
+    std::cout << " BASLADDDDDDDDDDDDDDDDDDDDDDDDDD " << this->srcCode << std::endl;
+
     int32_t srcCodeCharSize;
     LGDFILTER_READBITS(srcCodeCharSize, int32_t, "Filter source code character size");
 
@@ -227,7 +231,7 @@ bool Filter::readFilterData(std::ifstream& rf){
         LGDFILTER_READBITS(c, char, "Filter source code character");
         this->srcCode.push_back(c);
     }
-    
+    std::cout << " this->srcCode " << this->srcCode << std::endl;
     LGDFILTER_READBITS(this->strength, float, "Filter strength")
 
     this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);

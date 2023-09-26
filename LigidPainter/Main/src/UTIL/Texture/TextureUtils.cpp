@@ -939,6 +939,8 @@ bool Texture::readTextureData(std::ifstream& rf){
     this->proceduralProps.textureSelectionDialog_selectedTextureIndex = textureSelectionDialog_selectedTextureIndex;
     this->proceduralProps.textureSelectionDialog_selectedMode = textureSelectionDialog_selectedMode;
 
+    glGenTextures(1, &this->ID);
+
     this->generateProceduralDisplayingTexture(512);
 
     return true;

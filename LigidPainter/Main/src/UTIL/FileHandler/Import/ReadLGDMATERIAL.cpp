@@ -142,58 +142,57 @@ bool FileHandler::readLGDMATERIALFile(
 
             modifier.maskTexture.readTextureData(rf);
 
-
             // Writing the texture modifier
             if(modifier.modifierIndex == TEXTURE_MATERIAL_MODIFIER){
-                if(!readTextureModifier_ver_2000){
+                if(!readTextureModifier_ver_2000(rf, modifier)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == SOLID_MATERIAL_MODIFIER){
-                if(!readSolidModifier_ver_2000){
+                if(!readSolidModifier_ver_2000(rf, modifier)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == LIQUID_MATERIAL_MODIFIER){
-               if(!readLiquidModifier_ver_2000){
+               if(!readLiquidModifier_ver_2000(rf, modifier)){
                     return false;
                }
             }
 
             else if (modifier.modifierIndex == MOSS_MATERIAL_MODIFIER){
-               if(!readMossModifier_ver_2000){
+               if(!readMossModifier_ver_2000(rf, modifier)){
                     return false;
                }
             }
 
             else if (modifier.modifierIndex == RUST_MATERIAL_MODIFIER){
-                if(!readRustModifier_ver_2000){
+                if(!readRustModifier_ver_2000(rf, modifier)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == SKIN_MATERIAL_MODIFIER){
-                if(!readSkinModifier_ver_2000){
+                if(!readSkinModifier_ver_2000(rf, modifier)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == WOODEN_MATERIAL_MODIFIER){
-                if(!readWoodenModifier_ver_2000){
+                if(!readWoodenModifier_ver_2000(rf, modifier)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == ASPHALT_MATERIAL_MODIFIER){
-                if(!readAsphaltModifier_ver_2000){
+                if(!readAsphaltModifier_ver_2000(rf, modifier)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == DUST_MATERIAL_MODIFIER){
-               if(!readDustModifier_ver_2000){
+               if(!readDustModifier_ver_2000(rf, modifier)){
                     return false;
                }
             }

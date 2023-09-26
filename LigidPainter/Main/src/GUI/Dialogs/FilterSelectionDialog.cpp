@@ -200,6 +200,7 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
         if(this->selectedFilterIndex < Library::getFilterArraySize())
             this->selectedFilter.shader = Library::getFilter(this->selectedFilterIndex)->shader;
         this->selectedFilter.strength = this->subPanel.sections[0].elements[0].rangeBar.value; 
+        this->selectedFilter.srcCode = Library::getFilter(this->selectedFilterIndex)->srcCode;
         this->selectedFilter.generateDisplayingTexture(glm::vec2(1024));
 
 
@@ -209,6 +210,7 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
             if(this->selectedFilterIndex < Library::getFilterArraySize()){
                 receivedFilter.shader = this->selectedFilter.shader;
                 receivedFilter.strength = this->selectedFilter.strength;
+                receivedFilter.srcCode = this->selectedFilter.srcCode;
                 receivedFilter.generateDisplayingTexture(glm::vec2(256));
             }
 
