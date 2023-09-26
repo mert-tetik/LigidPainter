@@ -49,7 +49,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
                            ContextMenus::nodeScenePanel.dialogControl.isActive(); 
 
                               
-    if(Library::getSelectedElementIndex() == 0 && ContextMenus::texture.dialogControl.isActive() && Library::getTextureArraySize()){ //If texture context menu is active
+    if(Library::getSelectedElementIndex() == 0 && ContextMenus::texture.dialogControl.isActive() && ContextMenus::texture.selectedElement < Library::getTextureArraySize()){ //If texture context menu is active
         if(ContextMenus::texture.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){//Clicked to rename button
             renamingTextBox.active = true;
             Library::setChanged(true);
@@ -69,6 +69,9 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             duplicatedTexture.title += "_duplicated";
             Library::addTexture(duplicatedTexture);
         }
+        if(ContextMenus::texture.contextPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){//Clicked to copy path button
+            LigidGL::setClipboardText(std::filesystem::absolute(project.folderPath).string() + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + Library::getTexture(ContextMenus::texture.selectedElement)->title + ".png");
+        }
         if(ContextMenus::texture.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to edit button
             textureEditorSelectedTxtr = *Library::getTexture(ContextMenus::texture.selectedElement);
             this->textureEditorDialog.dialogControl.activate();
@@ -78,7 +81,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         }
     }
     
-    if(Library::getSelectedElementIndex() == 1 && ContextMenus::material.dialogControl.isActive()){ //If material context menu is active
+    if(Library::getSelectedElementIndex() == 1 && ContextMenus::material.dialogControl.isActive() && ContextMenus::material.selectedElement < Library::getMaterialArraySize()){ //If material context menu is active
         if(ContextMenus::material.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){//Clicked to edit button
             //Select the material that material editor will edit & show the material editor dialog
             selectedMaterialIndex = ContextMenus::material.selectedElement;
@@ -110,6 +113,9 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             Material duplicatedMaterial = Library::getMaterial(ContextMenus::material.selectedElement)->duplicateMaterial();
             Library::addMaterial(duplicatedMaterial);
         }
+        if(ContextMenus::material.contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){//Clicked to coppy path button
+            LigidGL::setClipboardText(std::filesystem::absolute(project.folderPath).string() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(ContextMenus::material.selectedElement)->title + ".lgdmaterial");
+        }
         if(ContextMenus::material.contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Clicked to delete button
             
             //Delete the nodes using same material
@@ -130,7 +136,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
                 FileHandler::writeLGDMATERIALFile(exportingPath, *Library::getMaterial(ContextMenus::material.selectedElement));
         }
     }
-    if(Library::getSelectedElementIndex() == 2 && ContextMenus::brush.dialogControl.isActive()){ //If brush context menu is active
+    if(Library::getSelectedElementIndex() == 2 && ContextMenus::brush.dialogControl.isActive() && ContextMenus::brush.selectedElement < Library::getBrushArraySize()){ //If brush context menu is active
         if(ContextMenus::brush.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){//Clicked to use brush button
             
             Library::getBrush(ContextMenus::brush.selectedElement)->useBrush(paintingPanel);
@@ -173,6 +179,9 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
                                         selectedBrush.texture
                                     )
                             );
+        }
+        if(ContextMenus::brush.contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){//Clicked to copy path button
+            LigidGL::setClipboardText(std::filesystem::absolute(project.folderPath).string() + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + Library::getBrush(ContextMenus::brush.selectedElement)->title + ".lgdfilter");
         }
         if(ContextMenus::brush.contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Clicked to delete button
             Library::eraseBrush(ContextMenus::brush.selectedElement);
