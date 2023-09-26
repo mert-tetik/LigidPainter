@@ -452,7 +452,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
                         this->paintingPanel.sections[4].elements[7].rangeBar.valueDoneChanging ||
                         this->paintingPanel.sections[4].elements[8].rangeBar.valueDoneChanging;
 
-    bool displayingMode = getContext()->window.isKeyPressed(LIGIDGL_KEY_O) ||
+    bool displayingMode = (getContext()->window.isKeyPressed(LIGIDGL_KEY_X) && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)) ||
                         this->paintingPanel.sections[4].elements[4].rangeBar.pointerPressed ||
                         this->paintingPanel.sections[4].elements[5].rangeBar.pointerPressed ||
                         this->paintingPanel.sections[4].elements[6].rangeBar.pointerPressed ||
