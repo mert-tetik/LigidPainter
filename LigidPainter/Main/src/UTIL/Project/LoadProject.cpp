@@ -36,7 +36,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMaterialModifiers){
     
-    this->projectLoading = true;
+    while(true){
+        if(!this->projectProcessing)
+            break;
+    }
+
+    this->projectProcessing = true;
+
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
@@ -170,7 +176,8 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
     else
         getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
 
-    this->projectLoading = false;
+    
+    this->projectProcessing = false;
 
     return true;
 }

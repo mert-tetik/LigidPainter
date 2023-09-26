@@ -572,7 +572,7 @@ public:
     ///        (MyProject)
     std::string projectName();
 
-    bool projectLoading = false;
+    bool projectProcessing = false;
 };
 
 /*!

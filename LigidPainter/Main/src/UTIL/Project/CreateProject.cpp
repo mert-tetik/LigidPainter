@@ -42,6 +42,13 @@ void completeFolder(std::string path, int action);
 
 
 bool Project::createProject(std::string destinationPath, std::string name, std::string TDModelPath, int textureRes){
+
+    while(true){
+        if(!this->projectProcessing)
+            break;
+    }
+
+    this->projectProcessing = true;
     
     //Make sure destination path doesn't have / at the end
     if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') 
@@ -159,6 +166,8 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
 
     //Create the .ligid file
     writeLigidFile();
+
+    this->projectProcessing = false;
 
     return true;
 }

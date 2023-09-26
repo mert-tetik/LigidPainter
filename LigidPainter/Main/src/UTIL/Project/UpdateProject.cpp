@@ -41,12 +41,17 @@ static const std::string copyFolderTitle = "Updating_Folder-Remove_if_you_see";
 
 void Project::updateProject(bool updateTextures, bool multithreadingMode){
     
+    while(true){
+        if(!this->projectProcessing)
+            break;
+    }
+
+    this->projectProcessing = true;
+
     if(!std::filesystem::exists(folderPath)){
         LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << LGDLOG::end;
         return;
     }
-
-
 
 
     if(updateTextures){
@@ -166,4 +171,6 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     std::filesystem::remove_all(updateTdModelFolderPath);
 
     this->writeLigidFile();
+
+    this->projectProcessing = false;
 }

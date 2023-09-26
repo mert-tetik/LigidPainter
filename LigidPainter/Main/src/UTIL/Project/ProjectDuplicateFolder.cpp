@@ -36,6 +36,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void Project::duplicateFolder(std::string dstPath)
 {
 
+    while(true){
+        if(!this->projectProcessing)
+            break;
+    }
+
+    this->projectProcessing = true;
+
+
     if(dstPath == ""){
         dstPath = showFileSystemObjectSelectionDialog("Select a folder to duplicate the project folder file.", "", {}, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
     }
@@ -71,4 +79,6 @@ void Project::duplicateFolder(std::string dstPath)
 
     //Update the project path
     this->folderPath = dstProjectPath;
+
+    this->projectProcessing = false;
 }
