@@ -210,7 +210,7 @@ void paintingPanelInteraction(
     
     for (size_t i = 0; i < paintingPanel.sections[1].elements.size(); i++)
     {
-        if(paintingPanel.sections[1].elements[i].isInteracted()){
+        if(paintingPanel.sections[1].elements[i].isInteracted() || (ContextMenus::brush.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick())){
             // Update brush settings displaying brush
             painter.displayingBrush.update(
                                                 painter.brushProperties.radius * 2.f,
