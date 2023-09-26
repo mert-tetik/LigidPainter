@@ -96,6 +96,8 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
             Library::addTexture(texture);
         }
 
+
+
         //Load the materials
         Library::clearMaterials();
         for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
@@ -127,6 +129,8 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
             filter.load(filterPath);
             Library::addFilter(filter);
         }
+
+
    
         //Load the texture packs
         Library::clearTexturePacks();
@@ -137,6 +141,7 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
             texturePack.load(filterPath);
             Library::addTexturePack(texturePack);
         }
+
         
         //Load the tdmodels
         Library::clearModels();
@@ -177,6 +182,7 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
         getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
 
     
+
     this->projectProcessing = false;
 
     return true;

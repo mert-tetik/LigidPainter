@@ -234,6 +234,7 @@ bool Filter::readFilterData(std::ifstream& rf){
 
     this->generateDisplayingTexture(glm::vec2(256));
 
+    this->displayingTxtr.title = "ReadenFilterDisplayerTXTR";
     this->title = "ReadenFilter";
 
     return true;
