@@ -34,15 +34,29 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Material Material::duplicateMaterial(){
     
-    Material duplicatedMat(this->title + "_copied", 0);
+    Material duplicatedMat(this->title + "_duplicated", 0);
 
     duplicatedMat.materialModifiers = this->materialModifiers;
-    
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
 
+    for (size_t modI = 0; modI < duplicatedMat.materialModifiers.size(); modI++)
+    {
+        for (size_t secI = 0; secI < duplicatedMat.materialModifiers[modI].sections.size(); secI++)
+        {
+            for (size_t elI = 0; elI < duplicatedMat.materialModifiers[modI].sections[secI].elements.size(); elI++)
+            {
+                if(duplicatedMat.materialModifiers[modI].sections[secI].elements[elI].state == 0){
+                    if(duplicatedMat.materialModifiers[modI].sections[secI].elements[elI].button.texture.ID){
+                        duplicatedMat.materialModifiers[modI].sections[secI].elements[elI].button.texture = this->materialModifiers[modI].sections[secI].elements[elI].button.texture.duplicateTexture();
+                    }
+                }
+            }
+        }
+    }
+    
     for (size_t i = 0; i < duplicatedMat.materialModifiers.size(); i++)
     {
-        duplicatedMat.materialModifiers[i].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+        duplicatedMat.materialModifiers[i].maskTexture = this->materialModifiers[i].maskTexture;
+        duplicatedMat.materialModifiers[i].maskTexture = this->materialModifiers[i].maskTexture.duplicateTexture();
     }
 
     return duplicatedMat;

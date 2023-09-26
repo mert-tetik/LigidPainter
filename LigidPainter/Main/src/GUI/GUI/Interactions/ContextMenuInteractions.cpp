@@ -64,9 +64,9 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             renamingIndices.y = ContextMenus::texture.selectedElement;
         }
         if(ContextMenus::texture.contextPanel.sections[0].elements[1].button.hover && *Mouse::LClick()){//Clicked to duplicate button
-            Texture duplicatedTexture;
-            duplicatedTexture = *Library::getTexture(ContextMenus::texture.selectedElement);
+            Texture duplicatedTexture = *Library::getTexture(ContextMenus::texture.selectedElement);
             duplicatedTexture.ID = Library::getTexture(ContextMenus::texture.selectedElement)->duplicateTexture();
+            duplicatedTexture.title += "_duplicated";
             Library::addTexture(duplicatedTexture);
         }
         if(ContextMenus::texture.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to edit button
@@ -154,8 +154,25 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             renamingIndices.x = 2;
             renamingIndices.y = ContextMenus::brush.selectedElement;
         }
-        if(ContextMenus::brush.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to duplicate button
-            Library::addBrush(*Library::getBrush(ContextMenus::brush.selectedElement));
+        if(ContextMenus::brush.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick() && ContextMenus::brush.selectedElement < Library::getBrushArraySize()){//Clicked to duplicate button
+            Brush selectedBrush = *Library::getBrush(ContextMenus::brush.selectedElement);
+            Library::addBrush(
+                                Brush(
+                                        0.1f,
+                                        selectedBrush.spacing,
+                                        selectedBrush.hardness,
+                                        selectedBrush.sizeJitter,
+                                        selectedBrush.scatter,
+                                        selectedBrush.fade,
+                                        selectedBrush.rotation,
+                                        selectedBrush.rotationJitter,
+                                        selectedBrush.alphaJitter,
+                                        selectedBrush.individualTexture,
+                                        selectedBrush.sinWavePattern,
+                                        selectedBrush.title + "_duplicated",
+                                        selectedBrush.texture
+                                    )
+                            );
         }
         if(ContextMenus::brush.contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Clicked to delete button
             Library::eraseBrush(ContextMenus::brush.selectedElement);
