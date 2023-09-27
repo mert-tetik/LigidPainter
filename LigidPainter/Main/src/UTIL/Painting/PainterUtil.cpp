@@ -185,7 +185,7 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
         // Create a subvector from the original vector
         std::vector<glm::vec2> subVector(strokePositions.begin() + startIdx, strokePositions.begin() + endIdx);
 
-        // Call the imaginary function for the subvector
+        // Call the function for the subvector
         this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingBox);
     }
 

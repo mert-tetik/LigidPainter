@@ -68,15 +68,15 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
 
     std::string actionTitle = "Unknown painting mode";
     
-    if(this->selectedPaintingModeIndex == 0)
+    if(paintingMode == 0)
         actionTitle = "Painting a texture";
-    if(this->selectedPaintingModeIndex == 1)
+    if(paintingMode == 1)
         actionTitle = "Softening a texture";
-    if(this->selectedPaintingModeIndex == 2)
+    if(paintingMode == 2)
         actionTitle = "Smearing a texture";
-    if(this->selectedPaintingModeIndex == 3)
+    if(paintingMode == 3)
         actionTitle = "Normal painting a texture";
-    if(this->selectedPaintingModeIndex == 4)
+    if(paintingMode == 4)
         actionTitle = "Filter painting a texture";
         
     int txtrI = this->getSelectedTextureIndexInLibrary();
@@ -85,7 +85,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
         registerTextureAction(actionTitle, Texture(), selectedTexture);
     }
 
-    if(this->selectedPaintingModeIndex == 4){
+    if(paintingMode == 4){
         filterBtnFilter.applyFilter(this->selectedTexture.ID, this->projectedPaintingTexture);
     }
     else{

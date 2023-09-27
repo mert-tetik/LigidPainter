@@ -101,7 +101,6 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     //Cover the whole monitor (since we are painting to the screen)
     glViewport(0, 0, paintingRes.x, paintingRes.y);
     
-
     glm::vec2 scale = glm::vec2(0.5f);
     glm::vec3 pos = glm::vec3(0.5f, 0.5f, 1.f);
     glm::mat4 projection = glm::ortho(0.f, 1.f, 0.f, 1.f);
@@ -115,7 +114,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     ShaderSystem::twoDPainting().setVec2("videoScale", getContext()->windowScale); 
     ShaderSystem::twoDPainting().setInt("frame", frameCounter);
     ShaderSystem::twoDPainting().setInt("bgTxtr", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, paintingBGTexture.ID);
-    ShaderSystem::twoDPainting().setInt("redChannelOnly", !(this->selectedPaintingModeIndex == 2));
+    ShaderSystem::twoDPainting().setInt("redChannelOnly", !(paintingMode == 2));
     ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(0.));
 
     //Set brush properties
@@ -169,7 +168,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     generateMirroredProjectedPaintingTexture(
                                                 this->oSide, this->oXSide, this->oYSide, this->oXYSide, this->oZSide, this->oXZSide, this->oYZSide, 
                                                 this->oXYZSide, this->mirrorXOffset, this->mirrorYOffset, this->mirrorZOffset, paintingTxtrObj, this->selectedTexture, 
-                                                this->projectedPaintingTexture, this->selectedPaintingModeIndex, this->brushProperties.opacity, 
+                                                this->projectedPaintingTexture, paintingMode, this->brushProperties.opacity, 
                                                 this->threeDimensionalMode, windowOrtho, this->selectedMeshIndex, twoDPaintingBox
                                             );
 
@@ -182,7 +181,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     Settings::defaultFramebuffer()->FBO.bind(); 
 
     // Send the painter data to the the PBR shader for the painting displaying 
-    sendPainterDataToThe3DModelShaderProgram(this->selectedColorIndex, this->color1, this->color2, this->color3, this->brushProperties.opacity, this->selectedPaintingModeIndex, this->usePaintingOver, this->paintingOverGrayScale, this->paintingOverWraping);
+    sendPainterDataToThe3DModelShaderProgram(this->selectedColorIndex, this->color1, this->color2, this->color3, this->brushProperties.opacity, paintingMode, this->usePaintingOver, this->paintingOverGrayScale, this->paintingOverWraping);
 
 
 }

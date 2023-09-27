@@ -367,7 +367,7 @@ void UI::init
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Smear"         , Settings::appTextures().smearIcon,        0.f,true)),
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal"    , Settings::appTextures().normalMapIcon,    0.f,true)),
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Filter"        , Settings::appTextures().filterIcon,       0.f,true)),
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Vector"        , Settings::appTextures().inkPenIcon,       0.f,true))
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Vector (experimental)"        , Settings::appTextures().inkPenIcon,       0.f,true))
                                         }
                                     )
                                 },
@@ -394,7 +394,7 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.5f), {"Drawing", "Softening", "Smearing", "Filtering"}, "Stroke Painting Mode", 1.f),
+                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.5f), {"Drawing", "Softening", "Smearing", "Normal", "Filtering"}, "Stroke Painting Mode", 1.f),
                                         Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Add Point Between The Selected Points", Texture(), 0.5f, false),
                                         Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Clear All", Texture(), 0.5f, false),
                                         Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Remove The Selected Point", Texture(), 0.5f, false),
