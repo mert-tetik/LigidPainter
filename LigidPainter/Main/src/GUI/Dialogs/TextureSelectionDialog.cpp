@@ -540,7 +540,7 @@ static void initTextureSelectionDialog(
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Map_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralNormalMap;
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Gray_Scale_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralNormalGrayScale;
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Strength_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralNormalStrength;
-        subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Gray_Scale_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralGrayScale;
+        subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Gray_Scale_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralGrayScale;
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Brightness_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralBrightness;   
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Scale_INDEX].rangeBar.value = receivedTexture.proceduralProps.txtrPackScale;   
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Count_INDEX].rangeBar.value = receivedTexture.proceduralProps.txtrPackCount;   
@@ -566,7 +566,7 @@ static void initTextureSelectionDialog(
         subPanel.sections[0].elements[subPanel_Normal_Map_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralNormalMap;
         subPanel.sections[0].elements[subPanel_Normal_Gray_Scale_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralNormalGrayScale;
         subPanel.sections[0].elements[subPanel_Normal_Strength_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralNormalStrength;
-        subPanel.sections[0].elements[subPanel_Gray_Scale_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralGrayScale;
+        subPanel.sections[0].elements[subPanel_Gray_Scale_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralGrayScale;
         subPanel.sections[0].elements[subPanel_Brightness_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralBrightness;
     }
 
