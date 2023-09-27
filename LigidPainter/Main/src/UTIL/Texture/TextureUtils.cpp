@@ -75,6 +75,12 @@ glm::ivec2 Texture::getResolution(){
 }
 
 unsigned int Texture::duplicateTexture(){
+
+    // Return a 1x1 rgba 0 texture if the requested texture is not valid
+    if(this->ID == 0 || glIsTexture(this->ID) == GL_FALSE){
+        return Texture(nullptr, 1, 1).ID;
+    }
+
     unsigned int newTexture;
     //Get the resolution data of the texture
     glActiveTexture(GL_TEXTURE0);
