@@ -102,7 +102,7 @@ void NewTextureDialog::render(Timer timer){
         //Set the text of the texture as the title textbox's text
         txtr.title = panel.sections[0].elements[1].textBox.text;
         
-        showTextureSelectionDialog(txtr, textureRes);
+        showTextureSelectionDialog(txtr, textureRes, true);
 
         //Send the created texture to the library
         if(txtr.ID){

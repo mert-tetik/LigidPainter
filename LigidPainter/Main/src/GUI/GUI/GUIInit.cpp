@@ -497,7 +497,7 @@ void UI::init
     filterDisplayerDialog       = FilterDisplayerDialog();
 
     char whitePixel[] = { 127, 127, 127, 127 };
-    paintingPanel.sections[1].elements[9].button.textureSelection = true;
+    paintingPanel.sections[1].elements[9].button.textureSelection2D = true;
     paintingPanel.sections[1].elements[9].button.texture = Texture(whitePixel, 1, 1, GL_NEAREST);
     paintingPanel.sections[1].elements[9].button.texture.proceduralProps.proceduralID = 24; //Solid white
     paintingPanel.sections[1].elements[9].button.texture.proceduralProps.proceduralnverted = 0;
@@ -534,7 +534,7 @@ void UI::init
     this->filterPaintingModeFilterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4.f,5.f), "Select Filter", Texture(), 0.f, false);
     this->filterPaintingModeFilterBtn.filterSelection = true;
 
-    paintingPanel.sections[4].elements[1].button.textureSelection = true;
+    paintingPanel.sections[4].elements[1].button.textureSelection2D = true;
 
     navigationPanel.solidStyle = true;
 

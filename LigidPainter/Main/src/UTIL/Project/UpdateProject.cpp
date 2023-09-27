@@ -53,7 +53,6 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
         return;
     }
 
-    std::cout << "TEXTURE" << std::endl;
 
     if(updateTextures){
         //!Textures
@@ -92,7 +91,6 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     }
 
 
-    std::cout << "MATERIAL" << std::endl;
 
     
     //!Materials
@@ -118,7 +116,6 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     UTIL::moveFilesToDestination(updateMaterialFolderPath, materialFolderPath);
     std::filesystem::remove_all(updateMaterialFolderPath);
 
-    std::cout << "BRUSH" << std::endl;
 
 
 
@@ -147,7 +144,6 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
 
 
 
-    std::cout << "3D MODEL" << std::endl;
 
 
     

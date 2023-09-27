@@ -49,8 +49,8 @@ glm::mat4 __projection;
 Timer __timer; 
 bool __wasTextureSelectionDialogActive = false;
 
-void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes){
-    __texture_selection_dialog.show(__timer, __projection, txtr, displayingTextureRes);
+void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes, bool twoDMode){
+    __texture_selection_dialog.show(__timer, __projection, txtr, displayingTextureRes, twoDMode);
     __wasTextureSelectionDialogActive = true;
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();

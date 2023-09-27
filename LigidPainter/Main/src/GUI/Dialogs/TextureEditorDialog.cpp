@@ -162,7 +162,7 @@ TextureEditorDialog::TextureEditorDialog(){
     this->filterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), "Pick A Filter", Texture(), 1.f, false);
     this->filterBtn.filterSelection = true;
     this->textureBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f), "Pick A Texture", Texture(), 1.f, false);
-    this->textureBtn.textureSelection = true;
+    this->textureBtn.textureSelection2D = true;
     this->displayerBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(13.f), "", this->displayingTexture, 1.f,true);
 
     char whitePx[] = {127, 127, 127, 127};
@@ -175,8 +175,8 @@ TextureEditorDialog::TextureEditorDialog(){
     this->saveButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save", Texture(), 1.f, false);
     this->saveAsButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Save As", Texture(), 1.f, false);
 
-    this->maskTextureButton.textureSelection = true;
-    distortionElements[8].button.textureSelection = true;
+    this->maskTextureButton.textureSelection2D = true;
+    distortionElements[8].button.textureSelection2D = true;
 }
 
 void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsigned int destTxtr){

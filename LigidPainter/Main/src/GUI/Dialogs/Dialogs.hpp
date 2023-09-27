@@ -416,7 +416,7 @@ public:
 
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
-void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes);
+void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes, bool twoDMode);
 bool wasTextureSelectionDialogActive();
 
 class TextureSelectionDialog
@@ -461,7 +461,7 @@ public:
    TextureSelectionDialog();
 
    //Public member functions
-   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes);
+   void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes, bool twoDMode);
 
 
 };

@@ -70,7 +70,7 @@ Node::Node(int nodeIndex, int materialID){
             NodeIO("White Side",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"White Side",Texture(),2.f,false)),ColorPalette::mainColor,0),
         };
         outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Output", Texture(), 2.f,false)),ColorPalette::mainColor,2));
-        inputs[0].element.button.textureSelection = true;
+        inputs[0].element.button.textureSelection3D = true;
         
         inputs[2].element.button.color = glm::vec4(glm::vec3(0.f), 1.f);
         inputs[3].element.button.color = glm::vec4(1.f);
@@ -79,7 +79,7 @@ Node::Node(int nodeIndex, int materialID){
             inputs =    {
                 NodeIO("Put a Texture",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,8),"Put a Texture",Texture(),2.f,false)),ColorPalette::mainColor,1),
             };
-            inputs[0].element.button.textureSelection = true;
+            inputs[0].element.button.textureSelection3D = true;
     }
     else
         LGDLOG::start<< "WARNING : Unknown node type is requested : " << nodeIndex << LGDLOG::end;

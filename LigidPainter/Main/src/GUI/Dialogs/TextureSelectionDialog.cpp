@@ -147,7 +147,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                 },
                                 glm::vec2(scale.x / 6.f, scale.y),
                                 glm::vec3(pos.x - scale.x + (scale.x / 6.f) , pos.y, pos.z),
-                                ColorPalette::mainColor,
+                                ColorPalette::secondColor,
                                 ColorPalette::thirdColor,
                                 true,
                                 true,
@@ -180,7 +180,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                 },
                                 glm::vec2(scale.x / 6.f, scale.y),
                                 glm::vec3(pos.x + scale.x - (scale.x / 6.f) , pos.y, pos.z),
-                                ColorPalette::mainColor,
+                                ColorPalette::secondColor,
                                 ColorPalette::thirdColor,
                                 true,
                                 true,
@@ -212,7 +212,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                 },
                                 glm::vec2(scale.x / 6.f, scale.y),
                                 glm::vec3(pos.x + scale.x - (scale.x / 6.f) , pos.y, pos.z),
-                                ColorPalette::mainColor,
+                                ColorPalette::secondColor,
                                 ColorPalette::thirdColor,
                                 true,
                                 true,
@@ -250,7 +250,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                 },
                                 glm::vec2(scale.x / 6.f, scale.y),
                                 glm::vec3(pos.x + scale.x - (scale.x / 6.f) , pos.y, pos.z),
-                                ColorPalette::mainColor,
+                                ColorPalette::secondColor,
                                 ColorPalette::thirdColor,
                                 true,
                                 true,
@@ -388,7 +388,7 @@ static void drawBG(unsigned int bgTexture);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, std::vector<Texture> smartTextureDisplayingTextures);
 static void updateTextureModesPanel(Panel& textureModesPanel, int& selectedTextureMode, int& selectedTextureIndex);
 
-void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes){
+void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes, bool twoDMode){
     
     this->dialogControl.activate();
     
@@ -474,7 +474,11 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
                 (this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Select_INDEX].button.clicked && this->selectedTextureMode == 4)
             )
         {
-            this->selectTheTexture(receivedTexture, displayingTextureRes);
+            if(twoDMode && this->selectedTextureMode == 4){
+                LGDLOG::start << "ERROR : Can't select 3D smart textures in 2D texture selection mode" << LGDLOG::end;
+            }
+            else
+                this->selectTheTexture(receivedTexture, displayingTextureRes);
 
             dialogControl.unActivate();
         }

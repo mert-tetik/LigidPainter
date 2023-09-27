@@ -77,8 +77,11 @@ void Button::render(
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);
     
     if(this->clicked){
-        if(this->textureSelection){
-            showTextureSelectionDialog(this->texture, 512);
+        if(this->textureSelection3D){
+            showTextureSelectionDialog(this->texture, 512, false);
+        }
+        if(this->textureSelection2D){
+            showTextureSelectionDialog(this->texture, 512, true);
         }
         if(this->filterSelection){
             showFilterSelectionDialog(this->filter, 512);

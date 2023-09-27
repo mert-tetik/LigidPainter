@@ -109,7 +109,8 @@ public:
     float outlineThickness;
 
     /// @brief Displays texture selection dialog using @ref (*this).texture on button click
-    bool textureSelection = false;
+    bool textureSelection2D = false;
+    bool textureSelection3D = false;
     /// @brief Displays filter selection dialog using @ref (*this).filter on button click
     bool filterSelection = false;
     /// @brief Displays color selection dialog using @ref (*this).color on button click

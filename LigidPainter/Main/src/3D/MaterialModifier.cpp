@@ -184,16 +184,16 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
         )
     };
 
-    sections[0].elements[0].button.textureSelection = true;
-    sections[0].elements[1].button.textureSelection = true;
-    sections[0].elements[2].button.textureSelection = true;
-    sections[0].elements[3].button.textureSelection = true;
-    sections[0].elements[4].button.textureSelection = true;
-    sections[0].elements[5].button.textureSelection = true;
-    sections[0].elements[6].button.textureSelection = true;
+    sections[0].elements[0].button.textureSelection3D = true;
+    sections[0].elements[1].button.textureSelection3D = true;
+    sections[0].elements[2].button.textureSelection3D = true;
+    sections[0].elements[3].button.textureSelection3D = true;
+    sections[0].elements[4].button.textureSelection3D = true;
+    sections[0].elements[5].button.textureSelection3D = true;
+    sections[0].elements[6].button.textureSelection3D = true;
 
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[1].button.textureSelection = true;
+    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
     
     return sections;
 }
@@ -251,7 +251,7 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
     sections[0].elements[10].button.colorSelection = true;
 
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[1].button.textureSelection = true;
+    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
     
     return sections;
 }
@@ -345,7 +345,7 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
     sections[3].elements[3].button.color = glm::vec4(glm::vec3(0.58f, 0.82f, 0.75f), 1.f);
 
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[1].button.textureSelection = true;
+    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
     
     return sections;
 } 
@@ -443,7 +443,7 @@ std::vector<Section> MaterialModifier::createMossModifier(){
     
 
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[1].button.textureSelection = true;
+    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
     
     return sections;
 }
@@ -544,7 +544,7 @@ std::vector<Section> MaterialModifier::createRustModifier(){
     
 
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[1].button.textureSelection = true;
+    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
     
     return sections;
 }
@@ -635,7 +635,7 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
     sections[5].elements[1].button.color = glm::vec4(glm::vec3(0.9, 0.1, 0.01), 1.);
     
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[1].button.textureSelection = true;
+    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
     
     return sections;
 }
@@ -736,7 +736,7 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
 
 
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[1].button.textureSelection = true;
+    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
     
     return sections;
 }
@@ -822,7 +822,7 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
     sections[0].elements[1].button.color = glm::vec4(glm::vec3(0.23f, 0.25f, 0.27f), 1.f);
     
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[1].button.textureSelection = true;
+    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
     
     return sections;
 }
@@ -921,7 +921,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
     sections[4].elements[2].button.color = glm::vec4(glm::vec3(0.f), 1.f);
 
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[1].button.textureSelection = true;
+    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
     
     return sections;
 }

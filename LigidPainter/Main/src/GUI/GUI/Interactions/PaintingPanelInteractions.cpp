@@ -104,7 +104,7 @@ void paintingPanelInteraction(
 
     if(paintingPanel.sections[1].elements[10].button.hover && *Mouse::LClick()){ //If pressed to remove the brush texture button from brush/more
         char whitePixel[] = { 127, 127, 127, 127 };
-        paintingPanel.sections[1].elements[9].button.textureSelection = true;
+        paintingPanel.sections[1].elements[9].button.textureSelection2D = true;
         paintingPanel.sections[1].elements[9].button.texture = Texture(whitePixel, 1, 1, GL_NEAREST);
         paintingPanel.sections[1].elements[9].button.texture.proceduralProps.proceduralID = 24; //Solid white
         paintingPanel.sections[1].elements[9].button.texture.proceduralProps.proceduralnverted = 0;

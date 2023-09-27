@@ -270,7 +270,7 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
             Texture txtr;
             txtr.title = "TextureSelectionDialogRes";
 
-            showTextureSelectionDialog(txtr, 512);
+            showTextureSelectionDialog(txtr, 512, true);
 
             //Send the created texture to the library
             if(txtr.ID){
