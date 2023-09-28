@@ -79,21 +79,23 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
             std::string texturePath = entry.path().string();
 
             Texture texture;
-            texture.load(texturePath.c_str());
+            bool error = !texture.load(texturePath.c_str());
 
-            //Check if the texture is a png file
-            if(UTIL::getLastWordBySeparatingWithChar(texturePath, '.') != "png"){
-                //The texture in the project folder is not an png file
+            if(!error){
+                //Check if the texture is a png file
+                if(UTIL::getLastWordBySeparatingWithChar(texturePath, '.') != "png"){
+                    //The texture in the project folder is not an png file
 
-                //Delete the non-png file
-                std::filesystem::remove(texturePath);
-            
-                //Recreate the png file
-                texture.exportTexture(UTIL::removeLastWordBySeparatingWithChar(texturePath, UTIL::folderDistinguisher()), "PNG");
+                    //Delete the non-png file
+                    std::filesystem::remove(texturePath);
+                
+                    //Recreate the png file
+                    texture.exportTexture(UTIL::removeLastWordBySeparatingWithChar(texturePath, UTIL::folderDistinguisher()), "PNG");
+                }
+
+                
+                Library::addTexture(texture);
             }
-
-
-            Library::addTexture(texture);
         }
 
 
@@ -126,10 +128,9 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
             std::string filterPath = entry.path().string();
 
             Filter filter;
-            filter.load(filterPath);
-            Library::addFilter(filter);
+            if(filter.load(filterPath))
+                Library::addFilter(filter);
         }
-
 
    
         //Load the texture packs
@@ -149,7 +150,7 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
             std::string modelPath = entry.path().string();
 
             Model TDModel;
-            bool error = TDModel.loadModel(modelPath, true);
+            bool error = !TDModel.loadModel(modelPath, true);
 
             //Check if the model is an obj file
             if(UTIL::getLastWordBySeparatingWithChar(modelPath, '.') != "obj"){

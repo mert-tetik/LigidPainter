@@ -299,10 +299,10 @@ public:
     void update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat);
 
     /// @brief Load a texture by importing the texture in the given path via STBI
-    void load(const char* path);
+    bool load(const char* path);
 
     /// @brief Load & resize a texture in the given texture resolution param by importing the texture in the given path via STBI
-    void load(const char* path, glm::ivec2 textureResolution);
+    bool load(const char* path, glm::ivec2 textureResolution);
 
     /// @brief Returns texture data in the given path & doesn't write anything to the member variables
     unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip);

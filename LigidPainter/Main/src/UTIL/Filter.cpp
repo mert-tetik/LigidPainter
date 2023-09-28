@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <fstream>
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
@@ -33,6 +34,12 @@ Filter::Filter(){
 }
 
 int Filter::load(std::string path){
+    if(!std::filesystem::is_regular_file(path)){
+
+        return 0;
+    }
+
+
     std::ifstream rf(path);
 
     if (!rf.is_open()) {

@@ -59,6 +59,10 @@ bool FileHandler::readLGDMATERIALFile(
                                         AppMaterialModifiers appMaterialModifiers
                                     )
 {
+    if(!std::filesystem::is_regular_file(path)){
+        LGDLOG::start << "ERROR : Loading material file : " << path << " is not a regular file!" << LGDLOG::end;
+        return false;
+    }
 
     if(path.size()){
         std::ifstream rf(path, std::ios::out | std::ios::binary);

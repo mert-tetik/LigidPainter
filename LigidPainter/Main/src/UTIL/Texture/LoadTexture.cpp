@@ -36,10 +36,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 
-void Texture::load(const char* path){
+bool Texture::load(const char* path){
 
     if(!std::filesystem::is_regular_file(path)){
-        return;
+        LGDLOG::start << "ERROR : Loading texture : " << path << " is not a regular file!" << LGDLOG::end;
+        return false;
     }
 
     this->title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
@@ -78,11 +79,14 @@ void Texture::load(const char* path){
 		LGDLOG::start<< "Failed to load texture! " << path << " Reason : " << reason<< LGDLOG::end;
 	}
     stbi_image_free(data);
+
+    return true;
 }
 
-void Texture::load(const char* path, glm::ivec2 textureResolution){
+bool Texture::load(const char* path, glm::ivec2 textureResolution){
     if(!std::filesystem::is_regular_file(path)){
-        return;
+        LGDLOG::start << "ERROR : Loading texture : " << path << " is not a regular file!" << LGDLOG::end;
+        return false;
     }
    
     this->title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
@@ -127,4 +131,6 @@ void Texture::load(const char* path, glm::ivec2 textureResolution){
 		LGDLOG::start<< "Failed to load texture! " << path << " Reason : " << reason<< LGDLOG::end;
 	}
     stbi_image_free(data);
+
+    return true;
 }

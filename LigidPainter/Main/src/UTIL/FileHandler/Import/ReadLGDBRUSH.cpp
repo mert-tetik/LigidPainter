@@ -84,6 +84,11 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
 
 bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     
+    if(!std::filesystem::is_regular_file(path)){
+        LGDLOG::start << "ERROR : Loading brush : " << path << " is not a regular file!" << LGDLOG::end;
+        return false;
+    }
+
     std::ifstream rf(path, std::ios::in | std::ios::binary);
 
     if(!rf) {
