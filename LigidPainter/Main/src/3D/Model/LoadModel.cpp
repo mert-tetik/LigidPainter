@@ -23,14 +23,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-void Model::loadModel(std::string const &path,bool triangulate)
+bool Model::loadModel(std::string const &path,bool triangulate)
 {
+    if(!std::filesystem::is_regular_file(path)){
+        LGDLOG::start << "ERROR : Loading 3D model : " << path << " is not a regular file!" << LGDLOG::end;
+        return false;
+    }
+
     title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
     title = UTIL::removeExtension(title);
 
@@ -55,7 +61,7 @@ void Model::loadModel(std::string const &path,bool triangulate)
             UTIL::toLowercase(UTIL::getFileExtension(path)) << 
         LGDLOG::end;
 
-        return;
+        return false;
     }
     
     //Resolution of the model displaying texture
@@ -123,4 +129,6 @@ void Model::loadModel(std::string const &path,bool triangulate)
     
     /* Delete the framebuffer & the renderbuffer*/
     FBO.deleteBuffers(false, true);
+
+    return true;
 }

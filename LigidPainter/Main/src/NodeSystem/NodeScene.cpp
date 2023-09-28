@@ -180,8 +180,8 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
         }
 
         ShaderSystem::colorIDMaskingShader().use();
-        ShaderSystem::colorIDMaskingShader().setMat4("projection", glm::ortho(0.f,1.f,0.f,1.f));
-        ShaderSystem::colorIDMaskingShader().setMat4("projectedPosProjection", glm::ortho(0.f,1.f,0.f,1.f));
+        ShaderSystem::colorIDMaskingShader().setMat4("projection", glm::ortho(0.f,1.f,1.f,0.f));
+        ShaderSystem::colorIDMaskingShader().setMat4("projectedPosProjection", glm::ortho(0.f,1.f,1.f,0.f));
         ShaderSystem::colorIDMaskingShader().setVec3("pos", glm::vec3(0.5f));
         ShaderSystem::colorIDMaskingShader().setVec2("scale", glm::vec2(0.5f));
 
@@ -336,8 +336,8 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
         }
 
         ShaderSystem::grayScaleIDMaskingShader().use();
-        ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", glm::ortho(0.f,1.f,0.f,1.f));
-        ShaderSystem::grayScaleIDMaskingShader().setMat4("projectedPosProjection", glm::ortho(0.f,1.f,0.f,1.f));
+        ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", glm::ortho(0.f,1.f,1.f,0.f));
+        ShaderSystem::grayScaleIDMaskingShader().setMat4("projectedPosProjection", glm::ortho(0.f,1.f,1.f,0.f));
         ShaderSystem::grayScaleIDMaskingShader().setVec3("pos", glm::vec3(0.5f));
         ShaderSystem::grayScaleIDMaskingShader().setVec2("scale", glm::vec2(0.5f));
 

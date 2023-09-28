@@ -196,7 +196,7 @@ public:
     
     void Draw();
     void exportModel(std::string path);
-    void loadModel(std::string const &path, bool triangulate);
+    bool loadModel(std::string const &path, bool triangulate);
 };
 
 class SceneTiles
