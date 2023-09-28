@@ -122,6 +122,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         std::string brushesFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
         if(!std::filesystem::create_directory(brushesFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << brushesFolderPath << LGDLOG::end; 
+        completeFolder(brushesFolderPath, BRUSH_FOLDER_CREATION);
         
         //Fonts
         std::string fontsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Fonts";
@@ -181,6 +182,20 @@ void completeFolder(std::string path, int action){
     }
     else if(action == FILTER_FOLDER_CREATION){
         for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Filters/")) {
+            if (std::filesystem::is_regular_file(entry)) {
+                // Get the filename from the full path
+                std::string filename = entry.path().filename().string();
+                
+                // Create the destination path by combining the destination folder path and filename
+                std::filesystem::path destinationPath = std::filesystem::path(path) / filename;
+                
+                // Copy the file
+                std::filesystem::copy_file(entry.path(), destinationPath, std::filesystem::copy_options::overwrite_existing);
+            }
+        }
+    }
+    else if(action == BRUSH_FOLDER_CREATION){
+        for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Brushes/")) {
             if (std::filesystem::is_regular_file(entry)) {
                 // Get the filename from the full path
                 std::string filename = entry.path().filename().string();
