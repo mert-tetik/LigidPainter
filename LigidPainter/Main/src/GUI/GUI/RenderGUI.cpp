@@ -228,7 +228,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     
     if(nodeEditorDisplayer.hover){
         if(*Mouse::MPressed()){
-            this->nodePanel.position += *Mouse::mouseOffset();
+            this->nodePanel.position += *Mouse::mouseOffset()/4.f;
             
             /*Restrict movement*/
             if(this->nodePanel.position.x > 40){

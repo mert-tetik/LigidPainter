@@ -539,6 +539,23 @@ void NodeScene::updateAllTheNodeConnections(){
 					__nodeScene[ii].IOs[IOI].connections.erase(__nodeScene[ii].IOs[IOI].connections.begin() + conI);
 					conI--;
 				}
+                else{
+                    bool matched = false;
+                    for (size_t i = 0; i < __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections.size(); i++)
+                    {
+                        if( __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections[i].nodeIndex == ii &&
+                            __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections[i].nodeIndex == IOI
+                            )
+                        {
+                            matched = true;
+                        }
+                    }
+
+                    if(!matched){
+                        __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections.push_back(NodeConnection(ii,IOI));
+                    }
+                }
+
 			}
 		}
 	}

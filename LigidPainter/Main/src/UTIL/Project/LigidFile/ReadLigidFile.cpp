@@ -96,6 +96,8 @@ void readmeshNodeSceneData(std::ifstream &rf){
 
     if(nodeSize)
         NodeScene::clearArray();
+
+    std::vector<std::vector<std::vector<NodeConnection>>> connections;
     
     //For each node
     for (size_t i = 0; i < nodeSize; i++)
@@ -110,6 +112,9 @@ void readmeshNodeSceneData(std::ifstream &rf){
                             0
                         );
 
+        if(nodeIndex == MESH_NODE)
+            node.uploadNewIOs();
+
         //Read the material ID 
         rf.read(reinterpret_cast<char*>(   &node.materialID    ), sizeof(int));
 
@@ -120,6 +125,8 @@ void readmeshNodeSceneData(std::ifstream &rf){
         uint64_t IOSize;
         rf.read(reinterpret_cast<char*>(   &IOSize    )    , sizeof(uint64_t));
         
+        std::vector<std::vector<NodeConnection>> nodeConnectionsVec;
+        
         //For each IO
         for (size_t IOI = 0; IOI < IOSize; IOI++)
         {   
@@ -127,6 +134,8 @@ void readmeshNodeSceneData(std::ifstream &rf){
             uint64_t connectionSize;
             rf.read(reinterpret_cast<char*>(   &connectionSize    )    , sizeof(uint64_t));
             
+            std::vector<NodeConnection> inputConnectionsVec;
+
             //For each connection of the IO
             for (size_t conI = 0; conI < connectionSize; conI++)
             {
@@ -135,12 +144,24 @@ void readmeshNodeSceneData(std::ifstream &rf){
                 rf.read(reinterpret_cast<char*>(   &inputIndex    )    , sizeof(int));
                 rf.read(reinterpret_cast<char*>(   &nodeIndex     )    , sizeof(int));
             
-                //NodeConnection connection(nodeIndex,inputIndex);
-
-                //node.IOs[IOI].connections.push_back(connection);
+                inputConnectionsVec.push_back(NodeConnection(nodeIndex, inputIndex));
             }
+            nodeConnectionsVec.push_back(inputConnectionsVec);
         }
-
+        
+        connections.push_back(nodeConnectionsVec);
         NodeScene::addNode(node);
     }
+
+    /*
+    for (size_t nodeI = 0; nodeI < connections.size(); nodeI++)
+    {
+        for (size_t inputI = 0; inputI < connections[nodeI].size(); inputI++)
+        {
+            for (size_t conI = 0; conI < connections[nodeI][inputI].size(); conI++){
+                NodeScene::getNode(nodeI)->createConnection(connections[nodeI][inputI][conI].nodeIndex, connections[nodeI][inputI][conI].inputIndex, nodeI, inputI);            
+            }
+        }
+    }
+    */
 }

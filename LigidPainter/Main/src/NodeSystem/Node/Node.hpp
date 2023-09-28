@@ -90,7 +90,6 @@ private:
 
     bool renderBarriers(Panel &nodeEditorPanel);
     void drawLine(glm::vec2 src, glm::vec2 dest,Panel nodeEditorPanel, int direction);
-    void createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI);
     void clearConnections(int nodeIParam,int IOIParam);
     bool doHaveConnection(int nodeIParam,int IOIParam);
     void addVectors(std::vector<NodeIO>& orgVec, std::vector<NodeIO>& addedVec);
@@ -100,6 +99,8 @@ private:
     void getTheIOConnectedToTheInput(int &nodeIParam, int &IOIParam,int currentNodeI, int currentIOI);
 
 public:
+    void createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI);
+    
     /// @brief Inputs & outputs of the node
     std::vector<NodeIO> IOs;
 

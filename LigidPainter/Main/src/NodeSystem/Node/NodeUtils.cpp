@@ -279,7 +279,7 @@ void Node::uploadNewIOs(){
     {
         meshOutputNodeInputElements.push_back(NodeIO(getModel()->meshes[i].materialName,Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),getModel()->meshes[i].materialName,Texture(),2.f,false)),ColorPalette::mainColor,0));
     }
-
+    
     //Clear the IOs vector
     this->IOs.clear();
 
@@ -287,4 +287,6 @@ void Node::uploadNewIOs(){
     this->addVectors(this->IOs, meshOutputNodeInputElements);
 
     createPanelUsingIOs();
+
+    NodeScene::updateAllTheNodeConnections();
 }
