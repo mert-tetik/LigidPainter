@@ -69,6 +69,10 @@ public:
     Button IOCircle;
     glm::vec4 color; 
     unsigned int result; 
+    /// @brief  IO state 0 = input
+    ///         IO state 1 = input without connection
+    ///         IO state 2 = output
+    ///         IO state 3 = output without connection
     int state;
 
     //Constructor

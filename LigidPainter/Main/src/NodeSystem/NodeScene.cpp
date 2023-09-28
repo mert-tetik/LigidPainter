@@ -40,6 +40,8 @@ void NodeScene::render(Timer &timer,  Panel nodeEditorPanel, NodePanel& nodePane
 
         __nodeScene[i].render(timer, nodeEditorPanel, i, nodePanel, Settings::properties()->textureRes, doMouseTracking);
     }
+
+    NodeScene::updateAllTheNodeConnections();
 }
 
 void NodeScene::addNode(const Node node){
@@ -525,7 +527,6 @@ void NodeScene::updateNodeResults( int textureRes, int updateNodeI){
 }
 
 void NodeScene::updateAllTheNodeConnections(){
-    std::cout << "UPDATING NODE CONNECTIONS" << std::endl;
 	//Check all the nodes
 	for (size_t ii = 0; ii < __nodeScene.size(); ii++)
 	{
@@ -542,11 +543,12 @@ void NodeScene::updateAllTheNodeConnections(){
 					conI--;
 				}
                 else{
+                    // If input & output doesn't match
                     bool matched = false;
                     for (size_t i = 0; i < __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections.size(); i++)
                     {
                         if( __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections[i].nodeIndex == ii &&
-                            __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections[i].nodeIndex == IOI
+                            __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections[i].inputIndex == IOI
                             )
                         {
                             matched = true;
@@ -556,12 +558,29 @@ void NodeScene::updateAllTheNodeConnections(){
                     if(!matched){
                         __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections.push_back(NodeConnection(ii,IOI));
                     }
-                }
 
+                    // If input has multiple connections
+                    else{
+                        if(__nodeScene[ii].IOs[IOI].state == 0 && __nodeScene[ii].IOs[IOI].connections.size() > 1){
+                            __nodeScene[ii].IOs[IOI].connections.erase(__nodeScene[ii].IOs[IOI].connections.begin() + conI);
+                            conI--;
+
+                            for (size_t i = 0; i < __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections.size(); i++)
+                            {
+                                if( 
+                                        __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections[i].nodeIndex == ii &&
+                                        __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections[i].inputIndex == IOI
+                                    )
+                                {
+                                    __nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections.erase(__nodeScene[connection.nodeIndex].IOs[connection.inputIndex].connections.begin() + i);
+                                }
+                            }
+                        }
+                    }
+                }
 			}
 		}
 	}
-    std::cout << "UPDATING NODE CONNECTIONS DONE" << std::endl;
 }
 
 void NodeScene::deleteNode(int index){
