@@ -20,6 +20,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "3D/ThreeD.hpp" 
 #include "GUI/GUI.hpp" 
@@ -96,7 +97,6 @@ static void rendering(
 
     panel.pos.y = pos.y + panel.scale.y - panelXAxisMixVal * 2.f;
 
-        
     panel.render(timer, true);
     logBtn.render(timer, true);
     logBtnL.render(timer, true);

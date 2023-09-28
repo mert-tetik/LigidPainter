@@ -645,7 +645,7 @@ class LogDialog
    Button logBtnR;
    Button logBtnL;
 
-   glm::vec2 pos = glm::vec2(50.f);
+   glm::vec2 pos = glm::vec2(54.531246, 4.722224);
 
    float panelXAxisMixVal = 0.f;
    float panelYAxisMixVal = 0.f;
