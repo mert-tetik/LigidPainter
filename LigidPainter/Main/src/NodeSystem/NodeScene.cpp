@@ -142,6 +142,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
 
     if(node.nodeIndex == MATERIAL_ID_NODE){        
         // Load the id masking shader
+
         
         bool detectedWhite = false; 
         bool detectedRed = false; 
@@ -323,7 +324,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
             initTexture(blackMesh.ambientOcclusion.ID, 100);
         }
         Mesh whiteMesh;
-        if(node.IOs[2].connections.size()) 
+        if(node.IOs[3].connections.size()) 
             whiteMesh = NodeScene::processNode(__nodeScene[node.IOs[3].connections[0].nodeIndex], mesh, textureRes);
         else{
             initTexture(whiteMesh.albedo.ID, 100);
@@ -524,6 +525,7 @@ void NodeScene::updateNodeResults( int textureRes, int updateNodeI){
 }
 
 void NodeScene::updateAllTheNodeConnections(){
+    std::cout << "UPDATING NODE CONNECTIONS" << std::endl;
 	//Check all the nodes
 	for (size_t ii = 0; ii < __nodeScene.size(); ii++)
 	{
@@ -559,6 +561,7 @@ void NodeScene::updateAllTheNodeConnections(){
 			}
 		}
 	}
+    std::cout << "UPDATING NODE CONNECTIONS DONE" << std::endl;
 }
 
 void NodeScene::deleteNode(int index){
