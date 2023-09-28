@@ -67,6 +67,8 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
         if(multithreadingMode)
             getCopyContext()->window.makeContextCurrent();
         
+        bool error = false;
+
         //Write the textures
         for (size_t i = 0; i < Library::getTextureArraySize(); i++)
         {
@@ -75,19 +77,22 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
                 if(multithreadingMode)
                     threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
 
-                threadSafeTxtr.exportTexture(updateTextureFolderPath, "PNG");
+                if(!threadSafeTxtr.exportTexture(updateTextureFolderPath, "PNG"))
+                    error = true;
             }
         }
     
         if(multithreadingMode)
             getCopyContext()->window.releaseContext();
+        if(!error){
+            if(!UTIL::deleteFilesInFolder(textureFolderPath)){
+                return;
+            }
 
-        if(!UTIL::deleteFilesInFolder(textureFolderPath)){
-            return;
+            UTIL::moveFilesToDestination(updateTextureFolderPath, textureFolderPath);
+            std::filesystem::remove_all(updateTextureFolderPath);
         }
 
-        UTIL::moveFilesToDestination(updateTextureFolderPath, textureFolderPath);
-        std::filesystem::remove_all(updateTextureFolderPath);
     }
 
 

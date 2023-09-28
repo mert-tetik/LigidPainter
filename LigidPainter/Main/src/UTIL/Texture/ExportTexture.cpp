@@ -34,9 +34,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 
-void Texture::exportTexture(std::string path,const std::string format){
+bool Texture::exportTexture(std::string path,const std::string format){
     glm::ivec2 scale;
     scale = this->getResolution();
+
+    if(!scale.x || !scale.y){
+        LGDLOG::start << "ERROR : Can't write texture data : Resolution 0" << LGDLOG::end;
+        return false;
+    }
     
     unsigned char* pixels = new unsigned char[scale.x * scale.y * 4];
     
@@ -72,10 +77,17 @@ void Texture::exportTexture(std::string path,const std::string format){
     }
 
     delete[] pixels;
+
+    return true;
 }
 
-void Texture::exportTexture(std::string path, unsigned char* pixels, glm::ivec2 scale, const std::string format){
+bool Texture::exportTexture(std::string path, unsigned char* pixels, glm::ivec2 scale, const std::string format){
     const int channels = 4;
+
+    if(!scale.x || !scale.y){
+        LGDLOG::start << "ERROR : Can't write texture data : Resolution 0" << LGDLOG::end;
+        return false;
+    }
 
     stbi_flip_vertically_on_write(1);  // Enable flipping
 
@@ -99,4 +111,6 @@ void Texture::exportTexture(std::string path, unsigned char* pixels, glm::ivec2 
             LGDLOG::start<< "ERROR Failed to write texture file : " << path + UTIL::folderDistinguisher() + title + ".tga" << LGDLOG::end;
         }
     }
+
+    return true;
 }

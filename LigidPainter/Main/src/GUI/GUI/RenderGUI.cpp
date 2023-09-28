@@ -110,7 +110,6 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     //Use the related shader 
     ShaderSystem::buttonShader().use();
 
-    ShaderSystem::buttonShader().setInt("properties.invertTheTexture", false);
     ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 

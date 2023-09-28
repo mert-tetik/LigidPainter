@@ -71,12 +71,6 @@ struct Properties{
 
     //This texture will be rendered if render texture state is set to true
     sampler2D txtr;
-
-    //txtr color will be inverted if set to 1 
-    int invertTheTexture;
-
-    //Scales the texture with that value
-    vec2 txtrScale;
 };
 
 //Rendering states
@@ -109,9 +103,9 @@ float applyRoundCorners(vec2 uv) //! https://www.shadertoy.com/view/ldfSDj
 }
 
 //Outline
-float applyOutline(vec2 uv) 
+float applyOutline(vec2 uv, float b) 
 {
-    float b = applyRoundCorners(uv);
+    b = applyRoundCorners(uv);
     
     b = 1. - b;
 
@@ -134,17 +128,8 @@ void main(){
     //TEXTURE RENDERING MODE
     if(states.renderTexture == 1){
         vec2 uv = TexCoords;
-        uv *= properties.txtrScale;
         
         fragColor = texture(properties.txtr, uv);
-        
-        if(properties.invertTheTexture == 1)
-            fragColor.rgb = vec3(1.) - fragColor.rgb;
-        
-        //Round corners for the texture
-        float roundVal = applyRoundCorners(TexCoords);
-        if(roundVal < 0.2)
-            fragColor.a = roundVal;
     }
     
     //CHARACTER RENDERING MODE
@@ -156,30 +141,31 @@ void main(){
     }
 
     //ROUND CORNERS
-    else if(properties.radius != 0){
+    if(states.renderText == 0 && !(states.renderTexture == 1 && properties.radius <= 0.1)){
 
         float roundVal = applyRoundCorners(TexCoords); 
         
         if(roundVal < 0.2)
             fragColor.a = roundVal; //Give the outline or curves to the corners
+
+        //OUTLINE
+        if(properties.outline.state != 0 && states.renderTexture == 0){
+            
+            float outlineVal = applyOutline(TexCoords, roundVal); 
+            
+            //Only the outline
+            if(properties.outline.state == 1){
+                fragColor.a *= outlineVal;
+            }
+            
+            //Additional outline
+            else{
+                vec3 outlineClr = mix(properties.outline.color, properties.outline.color2, properties.colorMixVal);
+                fragColor.rgb = mix(fragColor.rgb,outlineClr,outlineVal);
+            }
+        }
     }
     
-    //OUTLINE
-    if(properties.outline.state != 0 && states.renderText == 0 && states.renderTexture == 0){
-        
-        float outlineVal = applyOutline(TexCoords); 
-        
-        //Only the outline
-        if(properties.outline.state == 1){
-            fragColor.a *= outlineVal;
-        }
-        
-        //Additional outline
-        else{
-            vec3 outlineClr = mix(properties.outline.color, properties.outline.color2, properties.colorMixVal);
-            fragColor.rgb = mix(fragColor.rgb,outlineClr,outlineVal);
-        }
-    }
 
     //GROUP OPACITY CALCULATION
     fragColor.a *= properties.groupOpacity;

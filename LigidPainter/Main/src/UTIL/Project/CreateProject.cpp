@@ -190,8 +190,6 @@ void completeFolder(std::string path, int action){
                 
                 // Copy the file
                 std::filesystem::copy_file(entry.path(), destinationPath, std::filesystem::copy_options::overwrite_existing);
-                
-                std::cout << "Copied: " << filename << std::endl;
             }
         }
     }

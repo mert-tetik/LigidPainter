@@ -310,9 +310,9 @@ public:
     /// @brief Exports the texture to the given directory path
     /// @param path folder path (will be completed as : @param path + / + @ref title + . + format (in lowercase))
     /// @param format is PNG JPEG BMP TGA
-    void exportTexture(std::string path,const std::string format);
+    bool exportTexture(std::string path,const std::string format);
     
-    void exportTexture(std::string path, unsigned char* pixels, glm::ivec2 scale, const std::string format);
+    bool exportTexture(std::string path, unsigned char* pixels, glm::ivec2 scale, const std::string format);
 
 
     /// @brief writes the texture data to the given @param pixels parameter
