@@ -144,7 +144,7 @@ public:
 
     /// @brief Render the node & manage inputs & outputs 
     /// @param currentNodeIndex which node is rendered (index of the nodeScene)
-    void render(Timer &timer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel,  int textureRes);
+    void render(Timer &timer,Panel nodeEditorPanel,int currentNodeIndex, NodePanel& nodePanel, int textureRes, bool doMouseTracking);
 
     /// @brief Replaces the IOs vector with the new inputs & outputs (+ generates the node panel)  
     void uploadNewIOs(std::vector<NodeIO> inputs, std::vector<NodeIO> outputs);
@@ -156,7 +156,7 @@ public:
 namespace NodeScene{
 
     /// @brief Renders the node list 
-    void render(Timer &timer,  Panel nodeEditorPanel, NodePanel& nodePanel);
+    void render(Timer &timer,  Panel nodeEditorPanel, NodePanel& nodePanel, bool doMouseTracking);
     
     /// @brief Adds the given node to the scene 
     void addNode(const Node node);

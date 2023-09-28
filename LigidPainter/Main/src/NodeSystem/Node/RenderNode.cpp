@@ -38,7 +38,8 @@ void Node::render(
                     Panel nodeEditorPanel,
                     int currentNodeIndex,
                     NodePanel& nodePanelData,
-                    int textureRes
+                    int textureRes,
+                    bool doMouseTracking
                 )
 {
     
@@ -50,7 +51,7 @@ void Node::render(
     this->nodePanel.additionalPos.y = nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2;
 
     //Render the node panel which contains the input buttons and stuff
-    nodePanel.render(timer,this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE);
+    nodePanel.render(timer, (this->nodeIndex == MATERIAL_ID_NODE || this->nodeIndex == MATERIAL_MASK_NODE) && doMouseTracking && !cursorOnBarriers);
 
     if(nodePanel.sections[0].elements[0].button.clicked){        
         if(this->nodeIndex == MATERIAL_ID_NODE){
@@ -228,7 +229,7 @@ void Node::render(
 
 
             //Render the IO circle
-            IOs[i].IOCircle.render(timer,true);
+            IOs[i].IOCircle.render(timer, !cursorOnBarriers && doMouseTracking);
         }
     }
 
@@ -243,7 +244,7 @@ void Node::render(
     barButton.pos.y = nodePanel.pos.y + nodePanelData.position.y + nodePanelData.mixVal.y - nodeEditorPanel.scale.y * 2 - nodePanel.scale.y; 
     barButton.pos.z += 0.02f;
     //Render the bar button
-    barButton.render(timer,!cursorOnBarriers);
+    barButton.render(timer,!cursorOnBarriers && doMouseTracking);
     
     //Move the node panel if bar button is pressed
     if(barButton.clickState1 && !nodePanel.topSide.pressed){ //Pressed
