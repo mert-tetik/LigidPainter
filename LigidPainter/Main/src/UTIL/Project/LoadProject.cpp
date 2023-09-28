@@ -44,21 +44,10 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
     this->projectProcessing = true;
 
 
+
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
         LGDLOG::start<< "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << LGDLOG::end;
-        return false;
-    }
-
-
-    //TODO Do smt with these variables
-    time_t creationDate; 
-    time_t lastOpenedDate;
-    
-
-    if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
-        LGDLOG::start<< "ERROR CAN'T READ THE LIGID FILE : " << ligidFilePath << ". The file is might not be a ligid file." << LGDLOG::end;
-
         return false;
     }
 
@@ -100,6 +89,7 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
 
 
 
+
         //Load the materials
         Library::clearMaterials();
         for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
@@ -109,6 +99,14 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
             if(FileHandler::readLGDMATERIALFile(materialPath, material, appMaterialModifiers))
                 Library::addMaterial(material);
         
+        }
+
+        //TODO Do smt with these variables
+        time_t creationDate; 
+        time_t lastOpenedDate;
+
+        if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
+            return false;
         }
         
         //Load the brushes
@@ -182,7 +180,6 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
     else
         getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
 
-    
 
     this->projectProcessing = false;
 

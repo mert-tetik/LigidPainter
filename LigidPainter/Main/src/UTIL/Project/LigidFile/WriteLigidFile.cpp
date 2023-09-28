@@ -110,6 +110,12 @@ void writemeshNodeSceneData(std::ofstream &wf){
     {
         //Write the node index, (MATERIAL_NODE , MESH_NODE ..)
         wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->nodeIndex    ), sizeof(int));
+
+        if(NodeScene::getNode(i)->nodeIndex == MATERIAL_MASK_NODE || NodeScene::getNode(i)->nodeIndex == MATERIAL_ID_NODE)
+            NodeScene::getNode(i)->nodePanel.sections[0].elements[0].button.texture.writeTextureData(wf);
+
+        if(NodeScene::getNode(i)->nodeIndex == MATERIAL_MASK_NODE)
+            wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->nodePanel.sections[0].elements[1].rangeBar.value    ), sizeof(int));
         
         //Write the material ID
         wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->materialID    ), sizeof(int));

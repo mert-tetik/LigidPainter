@@ -130,7 +130,10 @@ Node::Node(int nodeIndex, int materialID){
     
     //Create the barbutton
     this->barButton = Button(ELEMENT_STYLE_BASIC,nodePanel.scale,"Node",Texture(),0.f,false);
-    if(nodeIndex == MATERIAL_ID_NODE){
+    if(nodeIndex == MESH_NODE){
+        this->barButton.text = "Mesh Node";
+    }
+    else if(nodeIndex == MATERIAL_ID_NODE){
         this->barButton.text = "Material ID Node";
     }
     else if(nodeIndex == MATERIAL_MASK_NODE){

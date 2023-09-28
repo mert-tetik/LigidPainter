@@ -25,6 +25,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "NodeSystem/Node/Node.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -69,6 +71,7 @@ bool Project::readLigidFile(
         rf.read(reinterpret_cast<char*>(   &ch3    ),sizeof(uint64_t));
 
         if(ch1 != h1 || ch2 != h2 || ch3 != h3){
+            LGDLOG::start<< "ERROR WHILE READING LIGID FILE! Description header is not correct : " << path << LGDLOG::end;
             return false;
         }
 
@@ -114,9 +117,51 @@ void readmeshNodeSceneData(std::ifstream &rf){
 
         if(nodeIndex == MESH_NODE)
             node.uploadNewIOs();
+        else if(nodeIndex == MATERIAL_MASK_NODE || nodeIndex == MATERIAL_ID_NODE)
+            node.nodePanel.sections[0].elements[0].button.texture.readTextureData(rf);
+
+        if(nodeIndex == MATERIAL_MASK_NODE)
+            rf.read(reinterpret_cast<char*>(   &node.nodePanel.sections[0].elements[1].rangeBar.value    ), sizeof(int));
+
+        else if(nodeIndex == MATERIAL_ID_NODE){
+            std::vector<NodeIO> inputs;
+            std::vector<NodeIO> outputs;
+            std::vector<glm::vec3> palette;
+            palette = node.nodePanel.sections[0].elements[0].button.texture.getMaterialIDPalette();
+
+            inputs.push_back(NodeIO("Texture", node.nodePanel.sections[0].elements[0].button, ColorPalette::mainColor,1));
+
+            for (size_t i = 0; i < palette.size(); i++)
+            {
+                inputs.push_back(NodeIO("Input1",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Input1", Texture(), 2.f,false)), ColorPalette::mainColor,0));
+                inputs[inputs.size() - 1].element.button.color = glm::vec4(palette[i], 1.f);
+            }
+
+            outputs.push_back(NodeIO("Output",Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Output", Texture(), 2.f,false)), ColorPalette::mainColor,2));
+
+            node.uploadNewIOs(inputs, outputs);
+        }
 
         //Read the material ID 
         rf.read(reinterpret_cast<char*>(   &node.materialID    ), sizeof(int));
+
+        if(nodeIndex == MATERIAL_NODE){
+            bool matMatch = false;
+            for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
+            {
+                if(Library::getMaterialObj(i).uniqueID == node.materialID){
+                    node.barButton.text = Library::getMaterialObj(i).title;
+                    matMatch = true;
+                }
+            }
+
+            if(!matMatch){
+                node.barButton.text = "Disappeared Material";
+            }
+        }
+
+
+        
 
         //Read the node pos
         rf.read(reinterpret_cast<char*>(   &node.nodePanel.pos    ), sizeof(glm::vec3));
@@ -153,7 +198,6 @@ void readmeshNodeSceneData(std::ifstream &rf){
         NodeScene::addNode(node);
     }
 
-    /*
     for (size_t nodeI = 0; nodeI < connections.size(); nodeI++)
     {
         for (size_t inputI = 0; inputI < connections[nodeI].size(); inputI++)
@@ -163,5 +207,5 @@ void readmeshNodeSceneData(std::ifstream &rf){
             }
         }
     }
-    */
+
 }

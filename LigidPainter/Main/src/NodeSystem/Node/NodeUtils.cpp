@@ -63,7 +63,13 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,Panel nodeEditorPanel, int dir
 }
 
 void Node::createConnection(int nodeIParam,int IOIParam,int currentNodeI,int currentIOI){
-    IOs[currentIOI].connections.push_back(NodeConnection(nodeIParam,IOIParam));
+
+    if(currentIOI >= this->IOs.size() || nodeIParam >= NodeScene::getArraySize() || IOIParam >= NodeScene::getNode(nodeIParam)->IOs.size()){
+        LGDLOG::start << "ERROR : Can't create node connection : Wrong index " << LGDLOG::end;
+        return;
+    }
+
+    this->IOs[currentIOI].connections.push_back(NodeConnection(nodeIParam,IOIParam));
     NodeScene::getNode(nodeIParam)->IOs[IOIParam].connections.push_back(NodeConnection(currentNodeI,currentIOI));
 }
 
