@@ -88,7 +88,7 @@ void Mesh::generateDisplayingTexture(){
     
     glm::vec3 meshMostFar = this->getMostDistantPointFromAPoint(meshCenter);
 
-    glm::vec3 camPos = glm::vec3(meshCenter.x + 4.f, meshCenter.y, meshCenter.z);
+    glm::vec3 camPos = glm::vec3(meshCenter.x - 4.f, meshCenter.y, meshCenter.z);
 
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(   
