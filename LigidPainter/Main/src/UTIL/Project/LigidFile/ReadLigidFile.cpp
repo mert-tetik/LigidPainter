@@ -75,6 +75,14 @@ bool Project::readLigidFile(
             return false;
         }
 
+        //! Version number
+        uint32_t versionNumber; 
+        rf.read(reinterpret_cast<char*>(   &versionNumber    ),sizeof(uint32_t));
+
+        if(versionNumber != 0x000007D0){
+            LGDLOG::start<< "WARNING! : Ligid file version number was : " << versionNumber << ". Results might be unexpected." << LGDLOG::end; 
+        }
+
         //! Read the creation date
         rf.read(reinterpret_cast<char*>(   &creationDate    ),sizeof(time_t));
 

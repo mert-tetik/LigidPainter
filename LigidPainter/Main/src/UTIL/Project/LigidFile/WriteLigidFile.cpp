@@ -61,6 +61,10 @@ void Project::writeLigidFile(){
     //!Description
     writeDescriptionHeader(wf);
 
+    //! Version number
+    uint32_t versionNumber = 0x000007D0; //2000 
+    wf.write(reinterpret_cast<char*>(   &versionNumber    ),sizeof(uint32_t));
+
     //!Date
     writeDateData(wf);
 
