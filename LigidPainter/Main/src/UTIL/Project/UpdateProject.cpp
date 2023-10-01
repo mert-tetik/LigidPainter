@@ -53,8 +53,6 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
         return;
     }
 
-    std::cout << "TEXTURES" << std::endl;
-
     if(updateTextures){
         //!Textures
         std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
@@ -96,7 +94,6 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
 
     }
 
-    std::cout << "MATERIALS" << std::endl;
 
     
     //!Materials
@@ -122,8 +119,6 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     UTIL::moveFilesToDestination(updateMaterialFolderPath, materialFolderPath);
     std::filesystem::remove_all(updateMaterialFolderPath);
 
-
-    std::cout << "BRUSHES" << std::endl;
 
 
     //!Brushes
@@ -151,8 +146,6 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
 
 
 
-    std::cout << "3D MODELS" << std::endl;
-
 
     
     //!3D Models
@@ -178,12 +171,10 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     UTIL::moveFilesToDestination(updateTdModelFolderPath, tdModelFolderPath);
     std::filesystem::remove_all(updateTdModelFolderPath);
 
-    std::cout << "LGDFILE" << std::endl;
 
     this->writeLigidFile();
 
     this->projectProcessing = false;
 
-    std::cout << "DONE" << std::endl;
 
 }
