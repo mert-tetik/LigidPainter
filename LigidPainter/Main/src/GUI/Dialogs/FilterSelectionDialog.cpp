@@ -199,8 +199,12 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
 
         if(this->selectedFilterIndex < Library::getFilterArraySize())
             this->selectedFilter.shader = Library::getFilter(this->selectedFilterIndex)->shader;
+       
         this->selectedFilter.strength = this->subPanel.sections[0].elements[0].rangeBar.value; 
-        this->selectedFilter.srcCode = Library::getFilter(this->selectedFilterIndex)->srcCode;
+       
+        if(this->selectedFilterIndex < Library::getFilterArraySize())
+            this->selectedFilter.srcCode = Library::getFilter(this->selectedFilterIndex)->srcCode;
+        
         this->selectedFilter.generateDisplayingTexture(glm::vec2(1024));
 
 
@@ -225,7 +229,6 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
 
             
         dialogControl.updateEnd(timer,0.15f);
-
         getContext()->window.swapBuffers();
 
         //Set mouse states to default
