@@ -91,7 +91,7 @@ void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, st
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles){
     Model model;
     
-    float big = 1.f;
+    float big = 0.f;
     for (size_t i = 0; i < meshVertices.size(); i++)
     {
         for (size_t vi = 0; vi < meshVertices[i].size(); vi++)

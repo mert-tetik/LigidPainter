@@ -145,17 +145,17 @@ void writeIndices(std::ofstream& wf, std::vector<glm::vec3>& uniquePos, std::vec
                     Vertex currentVertex = getModel()->meshes[meshI].vertices[getModel()->meshes[meshI].indices[indI]]; 
                     
                     //Find the index of the vertex pos
-                    wf << findIndexVec3(currentVertex.Position, uniquePos) + 1;
+                    wf << getModel()->meshes[meshI].indices[indI] + 1;
 
                     wf << '/';
 
                     //Find the index of the vertex texture coordinate
-                    wf << findIndexVec2(currentVertex.TexCoords, uniqueUV) + 1;
+                    wf << getModel()->meshes[meshI].indices[indI] + 1;
                     
                     wf << '/';
 
                     //Find the index of the vertex normal vector
-                    wf << findIndexVec3(currentVertex.Normal, uniqueNormal) + 1;
+                    wf << getModel()->meshes[meshI].indices[indI] + 1;
 
                     if(i == 2)
                         wf << '\n';
@@ -288,11 +288,11 @@ bool isVec2InVector(const glm::vec2& value, const std::vector<glm::vec2>& vector
 void writeVec3(std::ofstream &wf, glm::vec3 val, int precision){
 
     //Write the vector
-    wf << std::fixed << std::setprecision(precision) << val.x;
+    wf << std::setprecision(precision) << val.x;
     wf << " ";
-    wf << std::fixed << std::setprecision(precision) << val.y;
+    wf << std::setprecision(precision) << val.y;
     wf << " ";
-    wf << std::fixed << std::setprecision(precision) << val.z;
+    wf << std::setprecision(precision) << val.z;
 }
 
 void writeVec2(std::ofstream &wf, glm::vec2 val, int precision){
