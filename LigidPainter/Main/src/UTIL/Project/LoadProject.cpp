@@ -48,6 +48,7 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
         LGDLOG::start<< "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << LGDLOG::end;
+        this->projectProcessing = false;
         return false;
     }
 
@@ -106,6 +107,7 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
         time_t lastOpenedDate;
 
         if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
+            this->projectProcessing = false;
             return false;
         }
         
@@ -182,6 +184,5 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
 
 
     this->projectProcessing = false;
-
     return true;
 }

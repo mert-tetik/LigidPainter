@@ -219,29 +219,22 @@ void writeUniqueValues(std::ofstream& wf, std::vector<glm::vec3>& uniquePos, std
 void calculateUniqueValues(std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal){
     for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
     {
-        
         //Calculate unique vertex positions
         for (size_t vertI = 0; vertI < getModel()->meshes[meshI].vertices.size(); vertI++)
         {
-            if(!isVec3InVector(getModel()->meshes[meshI].vertices[vertI].Position, uniquePos)){
-                uniquePos.push_back(getModel()->meshes[meshI].vertices[vertI].Position);
-            }
+            uniquePos.push_back(getModel()->meshes[meshI].vertices[vertI].Position);
         }
         
         //Calculate unique vertex texture coordinates
         for (size_t vertI = 0; vertI < getModel()->meshes[meshI].vertices.size(); vertI++)
         {
-            if(!isVec2InVector(getModel()->meshes[meshI].vertices[vertI].TexCoords, uniqueUV)){
-                uniqueUV.push_back(getModel()->meshes[meshI].vertices[vertI].TexCoords);
-            }
+            uniqueUV.push_back(getModel()->meshes[meshI].vertices[vertI].TexCoords);
         }
 
         //Calculate unique vertex normal vectors
         for (size_t vertI = 0; vertI < getModel()->meshes[meshI].vertices.size(); vertI++)
         {
-            if(!isVec3InVector(getModel()->meshes[meshI].vertices[vertI].Normal, uniqueNormal)){
-                uniqueNormal.push_back(getModel()->meshes[meshI].vertices[vertI].Normal);
-            }
+            uniqueNormal.push_back(getModel()->meshes[meshI].vertices[vertI].Normal);
         }
     }
 }

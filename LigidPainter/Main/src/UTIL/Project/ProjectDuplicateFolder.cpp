@@ -48,8 +48,10 @@ void Project::duplicateFolder(std::string dstPath)
         dstPath = showFileSystemObjectSelectionDialog("Select a folder to duplicate the project folder file.", "", {}, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
     }
 
-    if(!dstPath.size())
+    if(!dstPath.size()){
+        this->projectProcessing = false;
         return;
+    }
 
     //Remove the / or \ at the end of the destination path if there are any
     if(dstPath.size()){
@@ -62,6 +64,7 @@ void Project::duplicateFolder(std::string dstPath)
     //If the destination path doesn't exists
     if(!std::filesystem::exists(dstPath)){
         LGDLOG::start<< "ERROR : Can't duplicate the project folder! Destination path doesn't exists : " << dstPath << LGDLOG::end;
+        this->projectProcessing = false;
         return;
     }
 
@@ -71,6 +74,7 @@ void Project::duplicateFolder(std::string dstPath)
     //If there is already a folder with that name
     if(std::filesystem::exists(dstProjectPath)){
         LGDLOG::start<< "ERROR : Can't duplicate the project folder! There is already a folder with the same name : " << dstPath << LGDLOG::end;
+        this->projectProcessing = false;
         return;
     }
 
@@ -81,4 +85,5 @@ void Project::duplicateFolder(std::string dstPath)
     this->folderPath = dstProjectPath;
 
     this->projectProcessing = false;
+    return;
 }

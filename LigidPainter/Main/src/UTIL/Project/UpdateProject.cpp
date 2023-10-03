@@ -45,13 +45,15 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
         if(!this->projectProcessing)
             break;
     }
-
     this->projectProcessing = true;
 
     if(!std::filesystem::exists(folderPath)){
-        LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : " << this->folderPath << LGDLOG::end;
+        LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : Project path doesn't exists : " << this->folderPath << LGDLOG::end;
+        this->projectProcessing = false;
         return;
     }
+
+    std::cout << "UPDATE MODE : TEXTURES" << std::endl;
 
     if(updateTextures){
         //!Textures
@@ -85,6 +87,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
             getCopyContext()->window.releaseContext();
         if(!error){
             if(!UTIL::deleteFilesInFolder(textureFolderPath)){
+                this->projectProcessing = false;
                 return;
             }
 
@@ -94,6 +97,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
 
     }
 
+    std::cout << "UPDATE MODE : MATERIALS" << std::endl;
 
     
     //!Materials
@@ -113,12 +117,14 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     }
 
     if(!UTIL::deleteFilesInFolder(materialFolderPath)){
+        this->projectProcessing = false;
         return;
     }
 
     UTIL::moveFilesToDestination(updateMaterialFolderPath, materialFolderPath);
     std::filesystem::remove_all(updateMaterialFolderPath);
 
+    std::cout << "UPDATE MODE : BRUSHES" << std::endl;
 
 
     //!Brushes
@@ -138,6 +144,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     }
 
     if(!UTIL::deleteFilesInFolder(brushFolderPath)){
+        this->projectProcessing = false;
         return;
     }
 
@@ -145,6 +152,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     std::filesystem::remove_all(updateBrushFolderPath);
 
 
+    std::cout << "UPDATE MODE : 3D MODEL" << std::endl;
 
 
     
@@ -165,16 +173,19 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     }
 
     if(!UTIL::deleteFilesInFolder(tdModelFolderPath)){
+        this->projectProcessing = false;
         return;
     }
 
     UTIL::moveFilesToDestination(updateTdModelFolderPath, tdModelFolderPath);
     std::filesystem::remove_all(updateTdModelFolderPath);
 
+    std::cout << "UPDATE MODE : LIGID" << std::endl;
 
     this->writeLigidFile();
 
     this->projectProcessing = false;
 
+    std::cout << "UPDATE MODE : FINISH" << std::endl;
 
 }

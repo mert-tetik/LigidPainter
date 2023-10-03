@@ -47,8 +47,9 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         if(!this->projectProcessing)
             break;
     }
-
     this->projectProcessing = true;
+    
+    std::cout << "CREATE MODE : 0" << std::endl;
     
     //Make sure destination path doesn't have / at the end
     if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') 
@@ -62,7 +63,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
                             MESSAGEBOX_TYPE_WARNING, 
                             MESSAGEBOX_BUTTON_OK
                         );
-
+        this->projectProcessing = false;
         return false;
     }
     
@@ -78,8 +79,10 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
                 );
 
         //If pressed the 'no' abort the process
-        if(res == 0)
+        if(res == 0){
+            this->projectProcessing = false;
             return false;
+        }
 
         //If pressed to 'yes' remove the folder named same
         else if(res == 1){
@@ -97,6 +100,8 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
     //Update the folder path of the project
     this->folderPath = destinationPath + UTIL::folderDistinguisher() + name;
     
+    std::cout << "CREATE MODE : 1" << std::endl;
+
     try
     {
         //Create the project folder
@@ -164,11 +169,14 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         LGDLOG::start << "ERROR : Filesystem : Location ID 111121 " << ex.what() << LGDLOG::end;
     }
 
+    std::cout << "CREATE MODE : 2" << std::endl;
+
     //Create the .ligid file
     writeLigidFile();
+    
+    std::cout << "CREATE MODE : FINISH" << std::endl;
 
     this->projectProcessing = false;
-
     return true;
 }
 
