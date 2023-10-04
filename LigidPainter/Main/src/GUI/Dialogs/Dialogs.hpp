@@ -336,22 +336,41 @@ public:
 
 
 class NewProjectDialog
- {
- private:
-    
-    AppMaterialModifiers appMaterialModifiers;
- public:
-    Panel panel;
-    
-    DialogControl dialogControl;
+{
+private:
+   AppMaterialModifiers appMaterialModifiers;
+public:
+   Panel panel;
 
-    //Constructors
-    NewProjectDialog();
-    NewProjectDialog(AppMaterialModifiers& appMaterialModifiers);
+   Button propertiesBtn;
+   Button tdModelsBtn;
+   Button sectionsBg;
+   
+   int activeSection = 0;
+   Button activeSectionIndicator;
+   float activeSectionIndicatorMixVal = 0.f;
 
-    //Public member functions
-    void render(Timer timer,
-                Project &project,bool &greetingDialogActive,bool &startScreen);
+   Button createBtn;
+
+   Button titleTextboxText;
+   Button pathTextboxText;
+   TextBox titleTextbox;
+   TextBox pathTextbox;
+   ComboBox resolutionCombobox;
+
+   Panel tdModelsPanel;
+   Button addTDModelBtn;
+   Button deleteTDModelBtn;
+    
+   DialogControl dialogControl;
+
+   //Constructors
+   NewProjectDialog();
+   NewProjectDialog(AppMaterialModifiers& appMaterialModifiers);
+
+   //Public member functions
+   void render(Timer timer,
+               Project &project,bool &greetingDialogActive,bool &startScreen);
  };
 
 

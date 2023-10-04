@@ -41,7 +41,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void completeFolder(std::string path, int action);
 
 
-bool Project::createProject(std::string destinationPath, std::string name, std::string TDModelPath, int textureRes){
+bool Project::createProject(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths, int textureRes){
 
     while(true){
         if(!this->projectProcessing)
@@ -161,9 +161,14 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << tdModelFolderPath << LGDLOG::end; 
         completeFolder(tdModelFolderPath, TD_MODEL_FOLDER_CREATION);
         
-        if(std::filesystem::exists(TDModelPath)){
-            std::filesystem::copy(TDModelPath,tdModelFolderPath);
+        for (size_t i = 0; i < TDModelPaths.size(); i++)
+        {
+            if(std::filesystem::exists(TDModelPaths[i])){
+                if(std::filesystem::is_regular_file(TDModelPaths[i]))
+                    std::filesystem::copy(TDModelPaths[i], tdModelFolderPath + UTIL::folderDistinguisher() + UTIL::getLastWordBySeparatingWithChar(TDModelPaths[i], UTIL::folderDistinguisher()));
+            }
         }
+        
     }
     catch (const std::filesystem::filesystem_error& ex) {
         LGDLOG::start << "ERROR : Filesystem : Location ID 111121 " << ex.what() << LGDLOG::end;

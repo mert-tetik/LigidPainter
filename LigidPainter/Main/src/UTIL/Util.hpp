@@ -526,7 +526,7 @@ public:
     /// @param TDModelPath 3D Model file path. Copies that file to the Project/3DModels
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
     /// @return true if success
-    bool createProject(std::string destinationPath,std::string name,std::string TDModelPath,int textureRes);
+    bool createProject(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths, int textureRes);
     
     /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
     void updateProject(bool updateTextures, bool multithreadingMode);

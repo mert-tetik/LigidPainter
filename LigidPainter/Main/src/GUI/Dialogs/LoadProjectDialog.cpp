@@ -111,21 +111,21 @@ LoadProjectDialog::LoadProjectDialog(AppMaterialModifiers& appMaterialModifiers)
     
     //Texts
 
-    this->textBtn2 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),"The *.ligid file is a binary file located",Texture(),0.f,false);
+    this->textBtn2 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(10,2),"The *.ligid file is a binary file located",Texture(),0.f,false);
     this->textBtn2.color = glm::vec4(0);
     this->textBtn2.pos.x = 30;
     this->textBtn2.pos.y = 45;
     this->textBtn2.pos.z = 0.9f;
     this->textBtn2.textScale = 0.7f;
     
-    this->textBtn3 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),"in a project folder capable of contain project data.",Texture(),0.f,false);
+    this->textBtn3 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(10,2),"in a project folder capable of contain project data.",Texture(),0.f,false);
     this->textBtn3.color = glm::vec4(0);
     this->textBtn3.pos.x = 30;
     this->textBtn3.pos.y = 48;
     this->textBtn3.pos.z = 0.9f;
     this->textBtn3.textScale = 0.7f;
     
-    this->textBtn4 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2),"Please create a project folder if you don't have access to one",Texture(),0.f,false);
+    this->textBtn4 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(10,2),"Please create a project folder if you don't have access to one",Texture(),0.f,false);
     this->textBtn4.color = glm::vec4(0);
     this->textBtn4.pos.x = 30;
     this->textBtn4.pos.y = 54;
