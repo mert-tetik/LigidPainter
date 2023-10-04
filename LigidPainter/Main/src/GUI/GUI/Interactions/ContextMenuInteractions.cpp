@@ -41,7 +41,6 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
                            ContextMenus::material.dialogControl.isActive() ||
                            ContextMenus::brush.dialogControl.isActive() ||
                            ContextMenus::menuBarProject.dialogControl.isActive() ||
-                           ContextMenus::menuBarPainting.dialogControl.isActive() ||
                            ContextMenus::menuBarHelp.dialogControl.isActive() ||
                            ContextMenus::materialModifier.dialogControl.isActive() ||
                            ContextMenus::node.dialogControl.isActive() ||
@@ -219,9 +218,6 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             UTIL::openInFileExplorer(std::filesystem::absolute(project.folderPath).string().c_str());
         }
     }
-    if(ContextMenus::menuBarPainting.dialogControl.isActive()){ //If painting context menu is active
-        //TODO REMOVE THE PAINTING CONTEXT MENU            
-    }
     if(ContextMenus::menuBarHelp.dialogControl.isActive()){ //If help context menu is active
         if(ContextMenus::menuBarHelp.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick()){
             websites.ligidTools.open();
@@ -271,11 +267,6 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         ContextMenus::menuBarProject.render(timer);
     else
         ContextMenus::menuBarProject.selectedElement = 0;
-
-    if(ContextMenus::menuBarPainting.dialogControl.isActive())
-        ContextMenus::menuBarPainting.render(timer);
-    else
-        ContextMenus::menuBarPainting.selectedElement = 0;
 
     if(ContextMenus::menuBarHelp.dialogControl.isActive())
         ContextMenus::menuBarHelp.render(timer);
@@ -344,16 +335,8 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         ContextMenus::menuBarProject.pos.z = 0.95f;
         ContextMenus::menuBarProject.selectedElement = 0;
     }
-    if(navigationPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){ //If pressed to "Painting" button in the menu bar (navigation panel)
-        //Show the context menu
-        ContextMenus::menuBarPainting.dialogControl.activate();
-        ContextMenus::menuBarPainting.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-        ContextMenus::menuBarPainting.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::menuBarPainting.contextPanel.scale.y;
-        ContextMenus::menuBarPainting.pos.z = 0.95f;
-        ContextMenus::menuBarPainting.selectedElement = 0;
-    }
     
-    if(navigationPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){ //If pressed to "Help" button in the menu bar (navigation panel)
+    if(navigationPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){ //If pressed to "Help" button in the menu bar (navigation panel)
         //Show the context menu
         ContextMenus::menuBarHelp.dialogControl.activate();
         ContextMenus::menuBarHelp.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;

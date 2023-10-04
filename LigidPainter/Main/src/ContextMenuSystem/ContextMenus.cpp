@@ -20,7 +20,6 @@ namespace ContextMenus{
     ContextMenu material = ContextMenu({"Edit", "Add To Scene", "Rename", "Duplicate", "Copy Path", "Delete", "Export"});    
     ContextMenu brush = ContextMenu({"Use", "Apply Current", "Rename", "Duplicate", "Copy Path","Delete"});    
     ContextMenu menuBarProject = ContextMenu({"Save", "Save as", "Create new", "Load new", "Copy Path", "File Explorer"}); 
-    ContextMenu menuBarPainting = ContextMenu({"Undo", "Redo"}); 
     ContextMenu menuBarHelp = ContextMenu({"Website", "YouTube"}); 
     ContextMenu materialModifier = ContextMenu({"Delete", "Move To Top", "Move To Bottom", "Change Mask"});
     ContextMenu node = ContextMenu({"Delete"}); 

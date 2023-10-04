@@ -57,7 +57,6 @@ void UI::init
                                     {   
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),""    ,Settings::appTextures().ligidPainterIcon, 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Project"    ,Texture(), 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Painting"    ,Texture(), 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Help"    ,Texture(), 0.f,false)),
                                     }
                                 )
@@ -455,9 +454,9 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Nodes"          , Settings::appTextures().nodeDisplayingMode,        0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Nodes"           , Settings::appTextures().nodeDisplayingMode,        0.f,true)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Painting"        , Settings::appTextures().paintingDisplayingMode,       0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Solid Painting"        , Settings::appTextures().solidPaintingDisplayingMode,       0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Solid Painting"  , Settings::appTextures().solidPaintingDisplayingMode,       0.f,true)),
                                     }
                                 )
                             },

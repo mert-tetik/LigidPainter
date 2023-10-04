@@ -21,7 +21,6 @@ namespace ContextMenus{
     extern ContextMenu brush;
     
     extern ContextMenu menuBarProject;
-    extern ContextMenu menuBarPainting;
     extern ContextMenu menuBarHelp;
     
     extern ContextMenu materialModifier;
