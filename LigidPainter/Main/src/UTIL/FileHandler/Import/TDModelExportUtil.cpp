@@ -112,7 +112,6 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
     {
         std::string matTitle;
         
-
         if(matTitles.size()){
             if(matTitles[i].size())
                 matTitle = matTitles[i];
