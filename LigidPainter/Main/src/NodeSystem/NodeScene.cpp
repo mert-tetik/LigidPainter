@@ -201,8 +201,8 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
         unsigned int proceduralTxtr = 0;
         
         // Bind the id mask
-        glActiveTexture(GL_TEXTURE0);
         proceduralTxtr = node.IOs[0].element.button.texture.generateProceduralTexture(mesh, textureRes);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
         ShaderSystem::colorIDMaskingShader().use();
                 
@@ -352,8 +352,8 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
         unsigned int proceduralTxtr = 0;
         
         // Bind the mask
-        glActiveTexture(GL_TEXTURE0);
         proceduralTxtr = node.nodePanel.sections[0].elements[0].button.texture.generateProceduralTexture(mesh, textureRes);
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, proceduralTxtr);
         ShaderSystem::grayScaleIDMaskingShader().use();
                 

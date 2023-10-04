@@ -510,6 +510,9 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         proceduralTxtr = normalMapRes.ID;
     }
 
+    Texture txtrObject = Texture(proceduralTxtr);
+    txtrObject.removeSeams(mesh, textureRes);
+
     return proceduralTxtr;
 }
 
