@@ -584,10 +584,15 @@ void NodeScene::updateAllTheNodeConnections(){
 }
 
 void NodeScene::deleteNode(int index){
+
+    if(index >= __nodeScene.size() || index < 0){
+        LGDLOG::start << "ERROR : Deleting node from the node scene : Invalid node index : " << index << LGDLOG::end;
+        return;
+    }
+
 	//If the deleted node is a material node
     if(__nodeScene[index].nodeIndex != MESH_NODE){
-        
-        if(__nodeScene[index].nodeIndex == MATERIAL_ID_NODE | MATERIAL_MASK_NODE){
+        if(__nodeScene[index].nodeIndex == MATERIAL_ID_NODE || __nodeScene[index].nodeIndex == MATERIAL_MASK_NODE){
             if(__nodeScene[index].nodePanel.sections[0].elements[0].button.texture.ID != 0)
                 glDeleteTextures(1, &__nodeScene[index].nodePanel.sections[0].elements[0].button.texture.ID);
         }
