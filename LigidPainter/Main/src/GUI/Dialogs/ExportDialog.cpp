@@ -446,12 +446,21 @@ void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogAct
     
     //If pressed to the last button of the panel (Export button)
     if(propertiesPanel.sections[0].elements[propertiesPanel.sections[0].elements.size() - 1].button.clicked){
+
+        while(true){
+            if(!project.projectProcessing)
+                break;
+        }
+        project.projectProcessing = true;
+
         if(this->activeSection == 0)
             exportMeshNode(this->propertiesPanel);
         if(this->activeSection == 1)
             exportLibraryTextures(this->propertiesPanel);
         if(this->activeSection == 2)
             exportLibraryMaterials(this->propertiesPanel);
+        
+        project.projectProcessing = false;
     }
     
     //Close the dialog (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())
