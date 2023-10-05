@@ -50,18 +50,22 @@ void UI::elementInteraction(
 {
     //!Dialog & panel state
     this->anyDialogActive = 
-                    textureSelectionDialog.dialogControl.isActive() || 
-                    materialEditorDialog.dialogControl.isActive()   || 
-                    anyContextMenuActive                            || 
-                    displayerDialog.dialogControl.isActive()        || 
-                    greetingDialog.dialogControl.isActive()         || 
-                    settingsDialog.dialogControl.isActive()         || 
-                    newProjectDialog.dialogControl.isActive()       || 
-                    newTextureDialog.dialogControl.isActive()       || 
-                    textureEditorDialog.dialogControl.isActive()    || 
-                    materialDisplayerDialog.dialogControl.isActive()|| 
-                    filterDisplayerDialog.dialogControl.isActive()  || 
-                    loadProjectDialog.dialogControl.isActive();   
+                    anyContextMenuActive || 
+                    greetingDialog.dialogControl.isActive() ||
+                    newProjectDialog.dialogControl.isActive() ||
+                    exportDialog.dialogControl.isActive() ||
+                    materialDisplayerDialog.dialogControl.isActive() ||
+                    filterDisplayerDialog.dialogControl.isActive() ||
+                    loadProjectDialog.dialogControl.isActive() ||
+                    materialEditorDialog.dialogControl.isActive() ||
+                    textureSelectionDialog.dialogControl.isActive() ||
+                    bakingDialog.dialogControl.isActive() ||
+                    filterSelectionDialog.dialogControl.isActive() ||
+                    newTextureDialog.dialogControl.isActive() ||
+                    settingsDialog.dialogControl.isActive() ||
+                    displayerDialog.dialogControl.isActive() ||
+                    textureEditorDialog.dialogControl.isActive() ||
+                    texturePackEditorDialog.dialogControl.isActive();
 
     this->anyPanelHover = 
                     navigationPanel.hover               ||
