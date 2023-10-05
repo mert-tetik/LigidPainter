@@ -8,6 +8,9 @@ out vec4 fragColor;
 #define SIZE 1.0 // size of "pixels" in pixels
 #define SPACING 0.005 // size between "pixels" in pixels
 
+#define SUBSIZE 0.1
+#define SUBSPACING 0.0005 // size between "pixels" in pixels
+
 uniform vec3 camPos;
 
 void main(){
@@ -22,11 +25,21 @@ void main(){
     // dot-by-dot effect
     if (mod(uv.x * gridSize, SIZE + SPACING) < SPACING)
     {
-        m = 1.;
+        m = 0.5;
     }
     if (mod(uv.y * gridSize, SIZE + SPACING) < SPACING)
     {
-        m = 1.;
+        m = 0.5;
+    }
+    
+    // dot-by-dot effect
+    if (mod(uv.x * gridSize, SUBSIZE + SUBSPACING) < SUBSPACING)
+    {
+        m = 0.2;
+    }
+    if (mod(uv.y * gridSize, SUBSIZE + SUBSPACING) < SUBSPACING)
+    {
+        m = 0.2;
     }
 
     float dist = distance(camPos, Pos);
