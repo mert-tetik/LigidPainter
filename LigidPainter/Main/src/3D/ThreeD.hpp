@@ -36,6 +36,15 @@ struct Vertex {
     // bitangent
     glm::vec3 Bitangent = glm::vec3(0);
 
+    Vertex(){}
+    Vertex(glm::vec3 Position, glm::vec2 TexCoords, glm::vec3 Normal, glm::vec3 Tangent, glm::vec3 Bitangent){
+        this->Position = Position;
+        this->TexCoords = TexCoords;
+        this->Normal = Normal;
+        this->Tangent = Tangent;
+        this->Bitangent = Bitangent;
+    }
+
     bool operator==(const Vertex& other) const
     {
         return Position == other.Position && TexCoords == other.TexCoords && Normal == other.Normal;

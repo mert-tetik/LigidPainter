@@ -377,20 +377,28 @@ public:
 //!------------------------------EXPORT DIALOG------------------------------
 
 class ExportDialog
- {
- private:
-    
-    
- public:
-    Panel panel;
-    
-    DialogControl dialogControl;
+{
+private:
+   
+   
+public:
+   Panel panel;
+   Panel subPanel;
+   Panel propertiesPanel;
 
-    //Constructors
-    ExportDialog();
+   Section meshNodeSection;
+   Section libraryTexturesSection;
+   Section libraryMaterialsSection;
 
-    //Public member functions
-    void render(Timer timer,Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog);
+   int activeSection = 0; 
+    
+   DialogControl dialogControl;
+
+   //Constructors
+   ExportDialog();
+
+   //Public member functions
+   void render(Timer timer,Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog);
  };
 
 //!------------------------------MATERIAL DISPLAYER------------------------------

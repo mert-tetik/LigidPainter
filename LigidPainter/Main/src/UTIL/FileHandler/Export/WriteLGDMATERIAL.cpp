@@ -50,6 +50,8 @@ bool FileHandler::writeLGDMATERIALFile(
                                                     false, 
                                                     FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER
                                                 );
+                                                
+        path += UTIL::folderDistinguisher() + material.title + ".lgdmaterial";
     }
     
     if(path.size()){
