@@ -688,6 +688,8 @@ class LogDialog
 
    //Public member functions
    void render(Timer timer);
+
+   bool isHovered();
 };
 
 #endif

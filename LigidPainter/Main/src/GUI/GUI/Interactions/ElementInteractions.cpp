@@ -79,6 +79,7 @@ void UI::elementInteraction(
                     displayingModesPanel.hover          ||
                     filterPaintingModeFilterBtn.hover   ||
                     smearPaintingModePropertyPanel.hover||
+                    logDialog.isHovered() ||
                     vectorPaintingModePropertyPanel.hover;
 
     this->contextMenuInteraction(timer, project, painter);

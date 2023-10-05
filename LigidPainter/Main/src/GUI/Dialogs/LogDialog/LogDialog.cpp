@@ -187,3 +187,7 @@ void LogDialog::render(Timer timer){
         }
     }
 }
+
+bool LogDialog::isHovered(){
+    return this->panel.hover || this->logBtn.hover || this->logBtnL.hover || this->logBtnR.hover;
+}
