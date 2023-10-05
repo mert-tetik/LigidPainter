@@ -28,6 +28,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector> //std::vector
 #include <string> //std::string
 #include <map> //std::map
+#include <atomic>
+
 
 #include "ShaderSystem/Shader.hpp"
 
@@ -571,7 +573,7 @@ public:
     ///        (MyProject)
     std::string projectName();
 
-    bool projectProcessing = false;
+    std::atomic<bool> projectProcessing = false;
 };
 
 /*!
@@ -952,7 +954,6 @@ public:
 };
 
 #include <thread>
-#include <atomic>
 #include <mutex>
 
 struct ThreadElements{
