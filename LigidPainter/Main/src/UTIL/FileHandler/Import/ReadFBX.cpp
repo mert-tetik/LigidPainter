@@ -58,6 +58,8 @@ std::vector<int> DecompressZlibInt(const std::vector<char>& compressedData, size
 struct FbxProperty {
     char typeCode;
     std::vector<char> data;
+
+    double singleDoubleVal = 0.;
 };
 
 struct FbxNode {
@@ -66,14 +68,23 @@ struct FbxNode {
     std::vector<FbxNode> nestedNodes;
 };
 
+struct FBXTransform{
+    glm::vec3 translation = glm::vec3(FLT_MAX); //Lcl Translation  
+    glm::vec3 rotation = glm::vec3(FLT_MAX); //Lcl Rotation
+    glm::vec3 scale = glm::vec3(FLT_MAX); //Lcl Scaling
+
+    std::string currentReadMode = ""; 
+};
+
 // Forward declarations for the fbx file processing functions
 bool ReadNestedNodes(std::ifstream& file, const std::string fileName, std::vector<FbxNode>& nestedNodes);
-void ProcessNodeHierarchy(std::vector<FbxNode>& nodes, std::vector<std::vector<glm::vec3>>& vertPositions, std::vector<std::vector<glm::vec2>>& vertUVs, std::vector<std::vector<glm::vec3>>& vertNormals, std::vector<std::vector<int>>& polygonVertexIndices, std::vector<std::vector<int>>& edges, std::vector<std::vector<int>>& uvIndices,std::vector<std::string>& matTitles,std::vector<std::vector<int>>& materials); 
-static void parseFBXMeshData(const std::vector<glm::vec3>& positions, const std::vector<glm::vec2>& UVs, const std::vector<glm::vec3>& normals, const std::vector<int>& polygonVertexIndices, const std::vector<int>& uvIndices, const std::vector<int>& edges, const std::vector<std::string>& matTitles, const std::vector<int>& materials, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
+void ProcessNodeHierarchy(std::vector<FbxNode>& nodes, std::vector<std::vector<glm::vec3>>& vertPositions, std::vector<std::vector<glm::vec2>>& vertUVs, std::vector<std::vector<glm::vec3>>& vertNormals, std::vector<std::vector<int>>& polygonVertexIndices, std::vector<std::vector<int>>& edges, std::vector<std::vector<int>>& uvIndices,std::vector<std::string>& matTitles,std::vector<std::vector<int>>& materials, std::vector<FBXTransform> &transforms); 
+static void parseFBXMeshData(std::vector<glm::vec3>& positions, const std::vector<glm::vec2>& UVs, const std::vector<glm::vec3>& normals, const std::vector<int>& polygonVertexIndices, const std::vector<int>& uvIndices, const std::vector<int>& edges, const std::vector<std::string>& matTitles, const std::vector<int>& materials, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices, FBXTransform transform);
 
 int __node_counter = 0;
 int _FBX_totalBitsRead = 0;
 int objectI = -1;
+int modelI = -1;
 bool processingMesh = false;
 bool processingShape = false;
 
@@ -88,6 +99,7 @@ Model FileHandler::readFBXFile(std::string path) {
     _FBX_totalBitsRead = 0;
     __node_counter = 0;
     objectI = -1;
+    modelI = -1;
     processingMesh = false;
 
 
@@ -140,9 +152,11 @@ Model FileHandler::readFBXFile(std::string path) {
     std::vector<std::vector<int>> edges;
     std::vector<std::vector<int>> uvIndices;
     std::vector<std::vector<int>> materials;
+    std::vector<FBXTransform> transforms;
 
     // Process the FBX data
-    ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials);
+    ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials, transforms);
+
 
     if(!positions.size() || !edges.size() || !polygonVertexIndices.size() || !uvIndices.size()){
         LGDLOG::start<< "ERROR : Processing the fbx node hierarchy : Can't detect enough vertex data to create a mesh" << LGDLOG::end;
@@ -176,7 +190,8 @@ Model FileHandler::readFBXFile(std::string path) {
                             matTitles,
                             materials[i],
                             in_meshVertices,
-                            in_meshIndices
+                            in_meshIndices,
+                            transforms[i]
                         );
 
         for (size_t i = 0; i < in_meshIndices.size(); i++)
@@ -326,7 +341,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                 double doubleValue;
                 file.read(reinterpret_cast<char*>(&doubleValue), sizeof(doubleValue));
                 _FBX_totalBitsRead += sizeof(doubleValue);
-                prop.data.emplace_back(doubleValue);
+                prop.singleDoubleVal = doubleValue;
                 // Handle the double value
                 break;
             }
@@ -752,7 +767,8 @@ void ProcessNodeHierarchy(
                             std::vector<std::vector<int>>& edges, 
                             std::vector<std::vector<int>>& uvIndices,
                             std::vector<std::string>& matTitles,
-                            std::vector<std::vector<int>>& materials
+                            std::vector<std::vector<int>>& materials,
+                            std::vector<FBXTransform>& transforms
                         ) 
 {
     for ( auto& node : nodes) {
@@ -971,6 +987,66 @@ void ProcessNodeHierarchy(
                     }
                 }
 
+                if(node.nodeType == "P" && processingMesh){
+                    if (prop.typeCode == 'S') {
+                        std::string infoStr(prop.data.begin(), prop.data.end());
+
+                        if(infoStr.size() > 3){
+                            if(modelI < transforms.size())
+                                if(infoStr[0] == 'L' && infoStr[1] == 'c' && infoStr[2] == 'l')
+                                    transforms[modelI].currentReadMode = UTIL::getLastWordBySeparatingWithChar(infoStr, ' ');
+                        }
+                    }
+                    else if (prop.typeCode == 'D') {
+                        double doubleValue = prop.singleDoubleVal;
+                        
+                        //doubleValue /= 100.;
+
+                        std::cout << "GELMISTIR " << modelI << ' ' << transforms.size() << std::endl;
+
+                        if(modelI < transforms.size()){
+                            if(transforms[modelI].currentReadMode == "Translation"){
+                                if(transforms[modelI].translation.x == FLT_MAX){
+                                    transforms[modelI].translation.x = doubleValue/100.;
+                                }
+                                else if(transforms[modelI].translation.y == FLT_MAX){
+                                    transforms[modelI].translation.y = doubleValue/100.;
+                                }
+                                else if(transforms[modelI].translation.z == FLT_MAX){
+                                    transforms[modelI].translation.z = doubleValue/100.;
+                                }
+                            }
+                            else if(transforms[modelI].currentReadMode == "Rotation"){
+                                if(transforms[modelI].rotation.x == FLT_MAX){
+                                    transforms[modelI].rotation.x = doubleValue;
+                                }
+                                else if(transforms[modelI].rotation.y == FLT_MAX){
+                                    transforms[modelI].rotation.y = doubleValue;
+                                }
+                                else if(transforms[modelI].rotation.z == FLT_MAX){
+                                    transforms[modelI].rotation.z = doubleValue;
+                                }
+                            }
+                            else if(transforms[modelI].currentReadMode == "Scaling"){
+                                if(transforms[modelI].scale.x == FLT_MAX){
+                                    transforms[modelI].scale.x = doubleValue / 100.;
+                                }
+                                else if(transforms[modelI].scale.y == FLT_MAX){
+                                    transforms[modelI].scale.y = doubleValue / 100.;
+                                }
+                                else if(transforms[modelI].scale.z == FLT_MAX){
+                                    transforms[modelI].scale.z = doubleValue / 100.;
+                                }
+                            }
+                        }
+                        else{
+                            LGDLOG::start << "WARNING : Reading FBX file : Transform properties : Invalid model index" << LGDLOG::end;
+                        }
+                        std::cout << "CIKMISTIR" << std::endl;
+
+                    }
+                }
+
                 if(node.nodeType == "MappingInformationType" && processingMesh){
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
@@ -989,6 +1065,16 @@ void ProcessNodeHierarchy(
                     }
                 }
 
+                if(node.nodeType == "Model"){
+                    if (prop.typeCode == 'S') {
+                        std::string infoStr(prop.data.begin(), prop.data.end());
+                        if(infoStr == "Mesh"){
+                            transforms.push_back({});
+                            modelI++;
+                        }
+                    }
+                }
+                
                 if(node.nodeType == "Geometry"){
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
@@ -1002,21 +1088,24 @@ void ProcessNodeHierarchy(
                             uvIndices.push_back({});
                             materials.push_back({});
                             processingMesh = true;
+                            processingShape = false;
                         }
-                        else if(infoStr == "Shape")
+                        else if(infoStr == "Shape"){
+                            processingMesh = false;
                             processingShape = true;
+                        }
                     }
                 }
             }
         }
 
         // Recursively process nested nodes
-        ProcessNodeHierarchy(node.nestedNodes, vertPositions, vertUVs, vertNormals, polygonVertexIndices, edges, uvIndices, matTitles, materials);
+        ProcessNodeHierarchy(node.nestedNodes, vertPositions, vertUVs, vertNormals, polygonVertexIndices, edges, uvIndices, matTitles, materials, transforms);
     }
 }
 
 static void parseFBXMeshData(
-                        const std::vector<glm::vec3>& positions,
+                        std::vector<glm::vec3>& positions,
                         const std::vector<glm::vec2>& UVs,
                         const std::vector<glm::vec3>& normals,
                         const std::vector<int>& polygonVertexIndices,
@@ -1025,7 +1114,8 @@ static void parseFBXMeshData(
                         const std::vector<std::string>& matTitles,
                         const std::vector<int>& materials,
                         std::vector<std::vector<Vertex>>& meshVertices,
-                        std::vector<std::vector<unsigned int>>& meshIndices
+                        std::vector<std::vector<unsigned int>>& meshIndices,
+                        FBXTransform transform
                     )
 {
 
@@ -1045,6 +1135,36 @@ static void parseFBXMeshData(
     {
         LGDLOG::start<< "ERROR: Reading FBX file. Can't parse mesh data. Sizes of the polygonVertexIndices & the edges are not the same." << LGDLOG::end;
         return;
+    }
+
+    std::cout << "TRANSFORM : " << glm::to_string(transform.rotation) << " " << glm::to_string(transform.scale) << " " << glm::to_string(transform.translation) << std::endl;
+
+    if(transform.translation == glm::vec3(FLT_MAX))
+        transform.translation = glm::vec3(0.f);
+    if(transform.rotation == glm::vec3(FLT_MAX))
+        transform.rotation = glm::vec3(0.f);
+    if(transform.scale == glm::vec3(FLT_MAX))
+        transform.scale = glm::vec3(1.f);
+
+    glm::vec3 copyTrans = transform.translation; 
+    transform.translation.z = copyTrans.y;
+    transform.translation.y = copyTrans.z;
+
+    for (size_t i = 0; i < positions.size(); i++)
+    {
+        // Create a transformation matrix for translation and rotation
+        glm::mat4 modelMatrix = glm::mat4(1.0f); // Identity matrix
+        modelMatrix = glm::translate(modelMatrix, transform.translation);
+        modelMatrix = glm::rotate(modelMatrix, glm::radians(transform.rotation.z), glm::vec3(0.0f, 1.0f, 0.0f));
+        modelMatrix = glm::rotate(modelMatrix, glm::radians(0.f), glm::vec3(1.0f, 0.0f, 0.0f));
+        modelMatrix = glm::rotate(modelMatrix, glm::radians(transform.rotation.y), glm::vec3(0.0f, 0.0f, 1.0f));
+        modelMatrix = glm::scale(modelMatrix, transform.scale);
+
+        // Apply the transformation matrix to the vertex
+        glm::vec4 transformedVertex = modelMatrix * glm::vec4(positions[i], 1.0f);
+
+        // Store the transformed vertex
+        positions[i] = glm::vec3(transformedVertex);
     }
 
     for (size_t i = 0; i < matTitles.size(); i++)

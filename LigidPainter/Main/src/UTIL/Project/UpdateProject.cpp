@@ -48,7 +48,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     this->projectProcessing = true;
 
     if(!std::filesystem::exists(folderPath)){
-        LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : Project path doesn't exists : " << this->folderPath << LGDLOG::end;
+        LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : Can't access the project path : " << this->folderPath << LGDLOG::end;
         this->projectProcessing = false;
         return;
     }
