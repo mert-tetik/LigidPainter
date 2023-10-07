@@ -489,9 +489,9 @@ bool readRustModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     LGDMATERIAL_READBITS(modifier.sections[0].elements[2].button.color.g, float, "color3");
     LGDMATERIAL_READBITS(modifier.sections[0].elements[2].button.color.b, float, "color3");
     //color4
-    LGDMATERIAL_READBITS( modifier.sections[0].elements[2].button.color.r, float, "color4");
-    LGDMATERIAL_READBITS(modifier.sections[0].elements[2].button.color.g, float, "color4");
-    LGDMATERIAL_READBITS(modifier.sections[0].elements[2].button.color.b, float, "color4");
+    LGDMATERIAL_READBITS( modifier.sections[0].elements[3].button.color.r, float, "color4");
+    LGDMATERIAL_READBITS(modifier.sections[0].elements[3].button.color.g, float, "color4");
+    LGDMATERIAL_READBITS(modifier.sections[0].elements[3].button.color.b, float, "color4");
 
     // ---- Properties ----
     //scale
