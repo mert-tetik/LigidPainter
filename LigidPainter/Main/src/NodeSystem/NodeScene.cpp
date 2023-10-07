@@ -348,6 +348,8 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
         ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0);
         ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1);
         ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
+        ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 1);
+
         
         unsigned int proceduralTxtr = 0;
         

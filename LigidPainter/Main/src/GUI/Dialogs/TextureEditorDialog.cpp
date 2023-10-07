@@ -374,15 +374,16 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
             this->filterBtn.filter.shader.setVec3("pos", pos);
             this->filterBtn.filter.shader.setVec2("scale", scale);
         
+            this->filterBtn.filter.shader.setFloat("strength", this->filterBtn.filter.strength);
             this->filterBtn.filter.shader.setInt("txtr", 0);
             this->filterBtn.filter.shader.setVec2("txtrResolution", displayRes);
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, receivedTexture.ID);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 
             glDrawArrays(GL_TRIANGLES, 0, 6);
         }
@@ -395,6 +396,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0);
     ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1);
     ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 0);
     ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f);
     
     Texture destTxtrObj = destTxtr;

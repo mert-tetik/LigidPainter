@@ -1056,12 +1056,12 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         material.materialModifiers[curModI].shader.setInt( "depthTxtr" , 3);
 
         //Bind the texture (bind the channel textures if rendering a texture modifier & bind the result of the previous modifier)
-        glActiveTexture(GL_TEXTURE0);
         unsigned int proceduralChannelTexture = 0;
         proceduralChannelTexture = material.materialModifiers[curModI].sections[0].elements[channelI + 1].button.texture.generateProceduralTexture(mesh, textureResolution);
         material.materialModifiers[curModI].shader.use();
         FBO.bind();
 
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, proceduralChannelTexture);
     
         // Bind the mask texture
