@@ -1098,7 +1098,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 proceduralAlbedoFilterMaskTexture = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.generateProceduralTexture(mesh, textureResolution);
             getBox()->bindBuffers();
-            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture);
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture, proceduralTexture);
             
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 glDeleteTextures(1, &proceduralAlbedoFilterMaskTexture);
@@ -1228,7 +1228,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 proceduralAlbedoFilterMaskTexture = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.generateProceduralTexture(mesh, textureResolution);
             getBox()->bindBuffers();
-            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture);
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture, proceduralTexture);
             
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 glDeleteTextures(1, &proceduralAlbedoFilterMaskTexture);
@@ -1327,7 +1327,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 proceduralAlbedoFilterMaskTexture = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.generateProceduralTexture(mesh, textureResolution);
             getBox()->bindBuffers();
-            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture);
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture, proceduralTexture);
             
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 glDeleteTextures(1, &proceduralAlbedoFilterMaskTexture);
@@ -1453,7 +1453,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 proceduralAlbedoFilterMaskTexture = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.generateProceduralTexture(mesh, textureResolution);
             getBox()->bindBuffers();
-            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture);
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture, proceduralTexture);
             
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 glDeleteTextures(1, &proceduralAlbedoFilterMaskTexture);
@@ -1587,7 +1587,7 @@ void liquidModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 proceduralAlbedoFilterMaskTexture = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.generateProceduralTexture(mesh, textureResolution);
             getBox()->bindBuffers();
-            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture);
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture, proceduralTexture);
             
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 glDeleteTextures(1, &proceduralAlbedoFilterMaskTexture);
@@ -1723,7 +1723,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 proceduralAlbedoFilterMaskTexture = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.generateProceduralTexture(mesh, textureResolution);
             getBox()->bindBuffers();
-            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture);
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture, proceduralTexture);
             
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 glDeleteTextures(1, &proceduralAlbedoFilterMaskTexture);
@@ -1855,7 +1855,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 proceduralAlbedoFilterMaskTexture = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.generateProceduralTexture(mesh, textureResolution);
             getBox()->bindBuffers();
-            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture);
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture, proceduralTexture);
             
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 glDeleteTextures(1, &proceduralAlbedoFilterMaskTexture);
@@ -1988,7 +1988,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 proceduralAlbedoFilterMaskTexture = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.generateProceduralTexture(mesh, textureResolution);
             getBox()->bindBuffers();
-            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture);
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture, proceduralTexture);
             
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 glDeleteTextures(1, &proceduralAlbedoFilterMaskTexture);
@@ -2118,7 +2118,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 proceduralAlbedoFilterMaskTexture = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.generateProceduralTexture(mesh, textureResolution);
             getBox()->bindBuffers();
-            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture);
+            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture, proceduralTexture);
             
             if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
                 glDeleteTextures(1, &proceduralAlbedoFilterMaskTexture);

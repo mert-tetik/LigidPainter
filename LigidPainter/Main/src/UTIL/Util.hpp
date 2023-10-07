@@ -476,7 +476,7 @@ public:
     void generateDisplayingTexture(glm::vec2 displayResolution);
 
     /// @brief Applies the @ref (*this).shader to the given texture
-    void applyFilter(unsigned int txtr, Texture maskTexture);
+    void applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTexture2);
 
     bool writeFilterData(std::ofstream& wf);
 

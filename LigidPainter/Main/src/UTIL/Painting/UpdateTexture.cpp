@@ -86,7 +86,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
     }
 
     if(paintingMode == 4){
-        filterBtnFilter.applyFilter(this->selectedTexture.ID, this->projectedPaintingTexture);
+        filterBtnFilter.applyFilter(this->selectedTexture.ID, this->projectedPaintingTexture, 0);
     }
     else{
 
