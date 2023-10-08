@@ -1146,7 +1146,7 @@ static void parseFBXMeshData(
     if(transform.scale == glm::vec3(FLT_MAX))
         transform.scale = glm::vec3(1.f);
 
-    glm::vec3 copyTrans = transform.translation; 
+    glm::vec3 copyTrans = transform.translation; //TODO X
     transform.translation.z = copyTrans.y;
     transform.translation.y = copyTrans.z;
 
@@ -1156,7 +1156,7 @@ static void parseFBXMeshData(
         glm::mat4 modelMatrix = glm::mat4(1.0f); // Identity matrix
         modelMatrix = glm::translate(modelMatrix, transform.translation);
         modelMatrix = glm::rotate(modelMatrix, glm::radians(transform.rotation.z), glm::vec3(0.0f, 1.0f, 0.0f));
-        modelMatrix = glm::rotate(modelMatrix, glm::radians(0.f), glm::vec3(1.0f, 0.0f, 0.0f));
+        modelMatrix = glm::rotate(modelMatrix, glm::radians(0.f), glm::vec3(1.0f, 0.0f, 0.0f)); //TODO X
         modelMatrix = glm::rotate(modelMatrix, glm::radians(transform.rotation.y), glm::vec3(0.0f, 0.0f, 1.0f));
         modelMatrix = glm::scale(modelMatrix, transform.scale);
 
