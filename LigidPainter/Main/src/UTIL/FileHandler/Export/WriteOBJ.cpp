@@ -144,18 +144,25 @@ void writeIndices(std::ofstream& wf, std::vector<glm::vec3>& uniquePos, std::vec
                 {
                     Vertex currentVertex = model.meshes[meshI].vertices[model.meshes[meshI].indices[indI]]; 
                     
+                    long additionalIndex = 0;
+                    for (size_t i = 0; i < meshI; i++)
+                    {
+                        additionalIndex += model.meshes[i].vertices.size();
+                    }
+                     
+
                     //Find the index of the vertex pos
-                    wf << model.meshes[meshI].indices[indI] + 1;
+                    wf << model.meshes[meshI].indices[indI] + 1 + additionalIndex;
 
                     wf << '/';
 
                     //Find the index of the vertex texture coordinate
-                    wf << model.meshes[meshI].indices[indI] + 1;
+                    wf << model.meshes[meshI].indices[indI] + 1 + additionalIndex;
                     
                     wf << '/';
 
                     //Find the index of the vertex normal vector
-                    wf << model.meshes[meshI].indices[indI] + 1;
+                    wf << model.meshes[meshI].indices[indI] + 1 + additionalIndex;
 
                     if(i == 2)
                         wf << '\n';
