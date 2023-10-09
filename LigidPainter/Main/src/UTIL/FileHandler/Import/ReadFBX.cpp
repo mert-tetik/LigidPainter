@@ -1002,8 +1002,6 @@ void ProcessNodeHierarchy(
                         
                         //doubleValue /= 100.;
 
-                        std::cout << "GELMISTIR " << modelI << ' ' << transforms.size() << std::endl;
-
                         if(modelI < transforms.size()){
                             if(transforms[modelI].currentReadMode == "Translation"){
                                 if(transforms[modelI].translation.x == FLT_MAX){
@@ -1042,8 +1040,6 @@ void ProcessNodeHierarchy(
                         else{
                             LGDLOG::start << "WARNING : Reading FBX file : Transform properties : Invalid model index" << LGDLOG::end;
                         }
-                        std::cout << "CIKMISTIR" << std::endl;
-
                     }
                 }
 

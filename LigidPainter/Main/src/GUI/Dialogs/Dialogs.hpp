@@ -473,8 +473,6 @@ public:
    Panel smartDistanceTexturePanel;
    bool smartDistanceTexturePanelActive = false;
 
-   Texture whiteTxtr;
-
    std::vector<Texture> smartTextureDisplayingTextures;
 
    Texture displayingTexture;
