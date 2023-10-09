@@ -764,6 +764,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes){
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", this->proceduralProps.proceduralGrayScale);
         ShaderSystem::proceduralDisplayerShader().setFloat("proceduralBrightness", this->proceduralProps.proceduralBrightness);
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", this->proceduralProps.proceduralGrayScale);
+        ShaderSystem::proceduralDisplayerShader().setInt("displayOpacity", 1.f);
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->proceduralProps.proceduralTextureID);

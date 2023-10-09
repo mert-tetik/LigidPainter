@@ -361,17 +361,14 @@ void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection)
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", 0);
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", 0);
             ShaderSystem::proceduralDisplayerShader().setFloat("proceduralBrightness", 1.f);
+            ShaderSystem::proceduralDisplayerShader().setFloat("displayOpacity", this->dialogControl.mixVal);
             
             ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
+            
             glActiveTexture(GL_TEXTURE0);
-            if(this->selectedTextureMode == 0){
-                if(i < Library::getTextureArraySize())
-                    glBindTexture(GL_TEXTURE_2D, Library::getTexture(i)->ID);
-            }
-            else{
-                if(i < getModel()->meshes.size())
-                    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].uvMask.ID);
-            }
+            
+            //if(i < getModel()->meshes.size() && this->selectedTextureMode == 6)
+            //    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].uvMask.ID);
             
 
             glDrawArrays(GL_TRIANGLES, 0, 6);
