@@ -121,7 +121,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
             }
         }
         else{
-            std::cout << "WARNING! : Invalid texture selecting panel section size!" << std::endl;
+            LGDLOG::start << "WARNING! : Invalid texture selecting panel section size!" << LGDLOG::end;
         }
 
         // Pressed to the select button

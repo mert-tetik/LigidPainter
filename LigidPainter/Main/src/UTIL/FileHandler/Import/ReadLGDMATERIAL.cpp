@@ -146,7 +146,6 @@ bool FileHandler::readLGDMATERIALFile(
 
             modifier.maskTexture.readTextureData(rf);
 
-            // Writing the texture modifier
             if(modifier.modifierIndex == TEXTURE_MATERIAL_MODIFIER){
                 if(!readTextureModifier_ver_2000(rf, modifier)){
                     return false;

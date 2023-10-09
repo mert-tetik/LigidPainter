@@ -20,13 +20,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
 
-/// @brief Front decleration for the @ref Section structure
+/// @brief Forward decleration for the @ref Section structure
 struct Section;
 
-/// @brief Front decleration for the @ref Camera structure
+/// @brief Forward decleration for the @ref Camera structure
 struct Camera;
 
-/// @brief Front decleration for the @ref Mesh class
+/// @brief Forward decleration for the @ref Mesh class
 class Mesh;
 
 //-------------- MATERIAL MODIFIER ------------

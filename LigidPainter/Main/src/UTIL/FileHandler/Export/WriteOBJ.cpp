@@ -40,17 +40,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 // ---- Forward declerations for the utility functions ----
 
-int findIndexVec3(const glm::vec3& target, const std::vector<glm::vec3>& vec);
-int findIndexVec2(const glm::vec2& target, const std::vector<glm::vec2>& vec);
-bool isVec3InVector(const glm::vec3& value, const std::vector<glm::vec3>& vector);
-bool isVec2InVector(const glm::vec2& value, const std::vector<glm::vec2>& vector);
 void writeVec3(std::ofstream &wf, glm::vec3 val, int precision);
 void writeVec2(std::ofstream &wf, glm::vec2 val, int precision);
 void calculateUniqueValues(std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal, Model& model);
 void writeUniqueValues(std::ofstream& wf, std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal);
 void writeIndices(std::ofstream& wf, std::vector<glm::vec3>& uniquePos, std::vector<glm::vec2>& uniqueUV, std::vector<glm::vec3>& uniqueNormal, Model& model);
-
-
 
 
 bool FileHandler::writeOBJFile(std::string path, Model model){
@@ -244,52 +238,6 @@ void calculateUniqueValues(std::vector<glm::vec3>& uniquePos, std::vector<glm::v
             uniqueNormal.push_back(model.meshes[meshI].vertices[vertI].Normal);
         }
     }
-}
-
-int findIndexVec3(const glm::vec3& target, const std::vector<glm::vec3>& vec)
-{
-    for (size_t i = 0; i < vec.size(); ++i)
-    {
-        if (glm::all(glm::equal(target, vec[i])))
-        {
-            return static_cast<int>(i);
-        }
-    }
-    
-    // Return -1 if the target value was not found in the vector
-    return -1;
-}
-
-int findIndexVec2(const glm::vec2& target, const std::vector<glm::vec2>& vec)
-{
-    for (size_t i = 0; i < vec.size(); ++i)
-    {
-        if (glm::all(glm::equal(target, vec[i])))
-        {
-            return static_cast<int>(i);
-        }
-    }
-    
-    // Return -1 if the target value was not found in the vector
-    return -1;
-}
-
-bool isVec3InVector(const glm::vec3& value, const std::vector<glm::vec3>& vector) {
-    for (const auto& vec : vector) {
-        if (glm::all(glm::equal(vec, value))) {
-            return true;
-        }
-    }
-    return false;
-}
-
-bool isVec2InVector(const glm::vec2& value, const std::vector<glm::vec2>& vector) {
-    for (const auto& vec : vector) {
-        if (glm::all(glm::equal(vec, value))) {
-            return true;
-        }
-    }
-    return false;
 }
 
 void writeVec3(std::ofstream &wf, glm::vec3 val, int precision){

@@ -29,7 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 
-std::vector<char> decompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize) {
+std::vector<char> ZIPPER::decompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize) {
     
     std::vector<char> uncompressedData(uncompressedSize, 0);
     
@@ -60,7 +60,7 @@ std::vector<char> decompressZlibChar(const std::vector<char>& compressedData, si
     return uncompressedData;
 }
 
-std::vector<float> decompressZlibFloat(const std::vector<char>& compressedData, size_t numFloats) {
+std::vector<float> ZIPPER::decompressZlibFloat(const std::vector<char>& compressedData, size_t numFloats) {
     std::vector<float> uncompressedFloats(numFloats);
 
     z_stream stream;
@@ -94,7 +94,7 @@ std::vector<float> decompressZlibFloat(const std::vector<char>& compressedData, 
     return uncompressedFloats;
 }
 
-std::vector<double> decompressZlibDouble(const std::vector<char>& compressedData, size_t numDoubles) {
+std::vector<double> ZIPPER::decompressZlibDouble(const std::vector<char>& compressedData, size_t numDoubles) {
     std::vector<double> uncompressedDoubles(numDoubles);
 
     z_stream stream;
@@ -128,7 +128,7 @@ std::vector<double> decompressZlibDouble(const std::vector<char>& compressedData
     return uncompressedDoubles;
 }
 
-std::vector<long long> decompressZlibLongLong(const std::vector<char>& compressedData, size_t numLongLongs) {
+std::vector<long long> ZIPPER::decompressZlibLongLong(const std::vector<char>& compressedData, size_t numLongLongs) {
     std::vector<long long> uncompressedLongLongs(numLongLongs);
 
     z_stream stream;
@@ -162,7 +162,7 @@ std::vector<long long> decompressZlibLongLong(const std::vector<char>& compresse
     return uncompressedLongLongs;
 }
 
-std::vector<int> decompressZlibInt(const std::vector<char>& compressedData, size_t numInts) {
+std::vector<int> ZIPPER::decompressZlibInt(const std::vector<char>& compressedData, size_t numInts) {
     std::vector<int> uncompressedInts(numInts);
 
     z_stream stream;

@@ -79,7 +79,7 @@ struct LGDBRUSHProp{
     Texture texture;
 };
 
-static bool readFile(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties);
+static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties);
 static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, Brush& brush);
 
 bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
@@ -123,7 +123,7 @@ bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     }
 
     std::vector<LGDBRUSHProp> properties;
-    if(!readFile(rf, properties))
+    if(!readProperties(rf, properties))
         return false;
 
     if(!parseLGDBRUSHProperties(properties, brush))
@@ -261,7 +261,7 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
     return true;
 }
 
-static bool readFile(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties){
+static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties){
     //!Brush Data
     uint32_t propSize;
     LGDBRUSH_READBITS(propSize, uint32_t, "propSize");

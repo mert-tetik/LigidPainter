@@ -295,8 +295,6 @@ static void exportLibraryMaterials(Panel& propertiesPanel){
         return;
     }
     
-    std::cout << "MAT SIZE" << Library::getMaterialArraySize() << std::endl;
-
     //Update all the materials connected to the mesh output & export it's textures
     for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
     {
