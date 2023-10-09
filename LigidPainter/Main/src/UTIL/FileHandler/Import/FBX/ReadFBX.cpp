@@ -72,11 +72,6 @@ struct FBXTransform{
 Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
-std::vector<char> DecompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize);
-std::vector<float> DecompressZlibFloat(const std::vector<char>& compressedData, size_t numFloats);
-std::vector<double> DecompressZlibDouble(const std::vector<char>& compressedData, size_t numDoubles);
-std::vector<long long> DecompressZlibLongLong(const std::vector<char>& compressedData, size_t numLongLongs);
-std::vector<int> DecompressZlibInt(const std::vector<char>& compressedData, size_t numInts);
 
 int __node_counter = 0;
 int _FBX_totalBitsRead = 0;

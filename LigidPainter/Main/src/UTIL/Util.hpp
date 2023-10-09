@@ -909,6 +909,13 @@ public:
     std::string getURL();
 };
 
+namespace ZIPPER{
+    std::vector<char> decompressZlibChar(const std::vector<char>& compressedData, size_t uncompressedSize);
+    std::vector<float> decompressZlibFloat(const std::vector<char>& compressedData, size_t numFloats);
+    std::vector<double> decompressZlibDouble(const std::vector<char>& compressedData, size_t numDoubles);
+    std::vector<long long> decompressZlibLongLong(const std::vector<char>& compressedData, size_t numLongLongs);
+    std::vector<int> decompressZlibInt(const std::vector<char>& compressedData, size_t numInts);
+};
 
 struct Websites{
     Website ligidTools;

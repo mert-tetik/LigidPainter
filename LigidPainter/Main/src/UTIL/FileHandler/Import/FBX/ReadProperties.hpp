@@ -185,7 +185,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                     _FBX_totalBitsRead += compressedLength;
 
                     // Handle the compressed data using zlib
-                    std::vector<float> decompressedData = DecompressZlibFloat(compressedData, sizeof(float) * arrayLength);
+                    std::vector<float> decompressedData = ZIPPER::decompressZlibFloat(compressedData, sizeof(float) * arrayLength);
               
                     // Convert the float array to a byte vector
                     std::vector<char> byteArray(sizeof(float) * arrayLength);
@@ -238,7 +238,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                     file.read(compressedData.data(), compressedLength);
                     _FBX_totalBitsRead += compressedLength;
 
-                    std::vector<double> decompressedData = DecompressZlibDouble(compressedData, sizeof(double) * arrayLength);
+                    std::vector<double> decompressedData = ZIPPER::decompressZlibDouble(compressedData, sizeof(double) * arrayLength);
 
                     // Convert the double array to a byte vector
                     std::vector<char> byteArray(sizeof(double) * arrayLength);
@@ -291,7 +291,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                     file.read(compressedData.data(), compressedLength);
                     _FBX_totalBitsRead += compressedLength;
 
-                    std::vector<long long> decompressedData = DecompressZlibLongLong(compressedData, sizeof(long long) * arrayLength); 
+                    std::vector<long long> decompressedData = ZIPPER::decompressZlibLongLong(compressedData, sizeof(long long) * arrayLength); 
 
                     // Convert the long long array to a byte vector
                     std::vector<char> byteArray(sizeof(long long) * arrayLength);
@@ -343,7 +343,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                     file.read(compressedData.data(), compressedLength);
                     _FBX_totalBitsRead += compressedLength;
 
-                    std::vector<int> decompressedData = DecompressZlibInt(compressedData, sizeof(int) * arrayLength);       
+                    std::vector<int> decompressedData = ZIPPER::decompressZlibInt(compressedData, sizeof(int) * arrayLength);       
 
                     // Convert the int array to a byte vector
                     std::vector<char> byteArray(sizeof(int) * arrayLength);
@@ -397,7 +397,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                     file.read(compressedData.data(), compressedLength);
                     _FBX_totalBitsRead += compressedLength;
 
-                    prop.data = DecompressZlibChar(compressedData, sizeof(bool) * arrayLength);                
+                    prop.data = ZIPPER::decompressZlibChar(compressedData, sizeof(bool) * arrayLength);                
                 }
                 else {
                     LGDLOG::start<< "ERROR : Reading FBX unknown encoding value : " << encoding << LGDLOG::end;
