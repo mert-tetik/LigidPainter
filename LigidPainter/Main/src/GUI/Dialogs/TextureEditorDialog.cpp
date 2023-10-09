@@ -694,6 +694,8 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
         this->updateDisplayingTexture(receivedTexture, this->displayingTexture.ID);
 
     if(this->saveButton.clicked){
+        registerTextureAction("Texture manipulated via texture editor dialog", Texture(), receivedTexture);
+
         Texture txtr = receivedTexture.duplicateTexture();
         this->updateDisplayingTexture(txtr, receivedTexture.ID);
         
