@@ -244,7 +244,7 @@ void ProcessNodeHierarchy(
                         
                         if (infoStr.length() >= materialStr.length()) {
                             if(infoStr.substr(infoStr.length() - materialStr.length()) == materialStr);                        
-                                matTitles.push_back(infoStr);
+                                matTitles.push_back(infoStr.substr(0, infoStr.length() - materialStr.length() - 2));
                         }
                         
                     }
