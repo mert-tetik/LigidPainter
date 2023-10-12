@@ -27,7 +27,10 @@ static void parseFBXMeshData(
                         const std::vector<int>& materials,
                         std::vector<std::vector<Vertex>>& meshVertices,
                         std::vector<std::vector<unsigned int>>& meshIndices,
-                        FBXTransform transform
+                        FBXTransform transform,
+                        long meshID,
+                        std::vector<long>& materialIDS,
+                        std::vector<FbxConnection> connections
                     )
 {
 
@@ -130,13 +133,32 @@ static void parseFBXMeshData(
         uniqueVert.Normal = normals[i];
 
         int materialI;
-        if(materials.size() && materials.size() != 1 && faceCounter < materials.size())
+        if(materials.size() && materials.size() != 1 && faceCounter < materials.size()) //ByPolygon
             materialI = materials[faceCounter];
-        else if (materials.size() == 1)
+        else{ //AllSame
             materialI = 0;
-        else
-            materialI = 0;
-        
+            //std::cout << "A" << std::endl; 
+            for (size_t conI = 0; conI < connections.size(); conI++)
+            {
+                if(connections[conI].startID == meshID){
+                    long materialFBXID = 0;
+                    for (size_t conII = 0; conII < connections.size(); conII++){
+                        if(connections[conI].destionationID == connections[conII].destionationID){
+                            materialFBXID = connections[conII].startID;
+                        }                        
+                    }
+
+                    for (size_t i = 0; i < materialIDS.size(); i++)
+                    {
+                        if(materialFBXID == materialIDS[i])
+                            materialI = i;  
+                    }
+                    
+                }
+            }
+            //std::cout << "materialI " << materialI << std::endl; 
+        }
+
         posData[materialI][std::make_pair(polygonVertexIndices[i], edges[i])] = meshVertices[materialI].size();
         meshVertices[materialI].push_back(uniqueVert);
 
@@ -183,10 +205,26 @@ static void parseFBXMeshData(
                 int materialI;
                 if(materials.size() && materials.size() != 1)
                     materialI = materials[faceCounter];
-                else if (materials.size() == 1)
+                else{
                     materialI = 0;
-                else
-                    materialI = 0;
+                    for (size_t conI = 0; conI < connections.size(); conI++)
+                    {
+                        if(connections[conI].startID == meshID){
+                            long materialFBXID = 0;
+                            for (size_t conII = 0; conII < connections.size(); conII++){
+                                if(connections[conI].destionationID == connections[conII].destionationID){
+                                    materialFBXID = connections[conII].startID;
+                                }                        
+                            }
+
+                            for (size_t i = 0; i < materialIDS.size(); i++)
+                            {
+                                if(materialFBXID == materialIDS[i])
+                                    materialI = i;  
+                            }
+                        }
+                    }
+                }
 
                 meshIndices[materialI].push_back(posData[materialI][std::make_pair(facePos.x, faceEdge.x)]);
                 meshIndices[materialI].push_back(posData[materialI][std::make_pair(facePos.y, faceEdge.y)]);

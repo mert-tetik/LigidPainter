@@ -44,12 +44,19 @@ struct FbxProperty {
     std::vector<char> data;
 
     double singleDoubleVal = 0.;
+    int singleIntVal = 0;
+    long singleLongVal = 0;
 };
 
 struct FbxNode {
     std::string nodeType;
     std::vector<FbxProperty> properties;
     std::vector<FbxNode> nestedNodes;
+};
+
+struct FbxConnection {
+    long startID = LONG_MAX; // Mesh
+    long destionationID = LONG_MAX; // Material
 };
 
 struct FBXTransform{
@@ -151,10 +158,29 @@ Model FileHandler::readFBXFile(std::string path) {
     std::vector<std::vector<int>> uvIndices;
     std::vector<std::vector<int>> materials;
     std::vector<FBXTransform> transforms;
+    std::vector<long> meshIDS;
+    std::vector<long> materialIDS;
+    std::vector<FbxConnection> connections;
 
     // Process the FBX data
-    ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials, transforms);
+    ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials, transforms, meshIDS, materialIDS, connections);
 
+    for (size_t i = 0; i < connections.size(); i++)
+    {
+        std::cout << "CONNECTION START " << connections[i].startID << " CONNECTION DESTINATION " << connections[i].destionationID << std::endl;
+    }
+
+    for (size_t i = 0; i < meshIDS.size(); i++)
+    {
+        std::cout << "MESH ID " << meshIDS[i] << std::endl;
+    }
+    
+    for (size_t i = 0; i < materialIDS.size(); i++)
+    {
+        std::cout << "MATERIAL ID " << materialIDS[i] << std::endl;
+    }
+    
+    
 
     if(!positions.size() || !edges.size() || !polygonVertexIndices.size() || !uvIndices.size()){
         LGDLOG::start<< "ERROR : Processing the fbx node hierarchy : Can't detect enough vertex data to create a mesh" << LGDLOG::end;
@@ -173,7 +199,6 @@ Model FileHandler::readFBXFile(std::string path) {
         meshIndices.push_back({});
     }
     
-
     for (size_t i = 0; i < objectI + 1; i++)
     {
         std::vector<std::vector<Vertex>> in_meshVertices;
@@ -189,9 +214,13 @@ Model FileHandler::readFBXFile(std::string path) {
                             materials[i],
                             in_meshVertices,
                             in_meshIndices,
-                            transforms[i]
+                            transforms[i],
+                            meshIDS[i],
+                            materialIDS,
+                            connections
                         );
 
+        
         for (size_t i = 0; i < in_meshIndices.size(); i++)
         {
             for (size_t ii = 0; ii < in_meshIndices[i].size(); ii++)

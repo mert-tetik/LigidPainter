@@ -65,7 +65,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
         4	            Uint32	        Length
         Length	        byte/char	    Data
 */
-void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, uint32_t numProperties, uint32_t propertyListLen) {
+void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, uint32_t numProperties, uint32_t propertyListLen, std::string nodeType) {
     
 // Loop through the properties
     for (int i = 0; i < numProperties; i++) {
@@ -110,6 +110,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                 file.read(reinterpret_cast<char*>(&intValue), sizeof(intValue));
                 _FBX_totalBitsRead += sizeof(intValue);
                 prop.data.emplace_back(intValue);
+                prop.singleIntVal = intValue;
                 // Handle the integer value
                 break;
             }
@@ -141,6 +142,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                 file.read(reinterpret_cast<char*>(&longValue), sizeof(longValue));
                 _FBX_totalBitsRead += sizeof(longValue);
                 prop.data.emplace_back(longValue);
+                prop.singleLongVal = longValue;
                 // Handle the long value
                 break;
             }
@@ -313,7 +315,7 @@ void ReadProperties(std::ifstream& file, std::vector<FbxProperty>& properties, u
                 uint32_t arrayLength;
                 file.read(reinterpret_cast<char*>(&arrayLength), sizeof(uint32_t));
                 _FBX_totalBitsRead += sizeof(uint32_t);
-    	        
+    	            
                 uint32_t encoding;
                 file.read(reinterpret_cast<char*>(&encoding), sizeof(uint32_t));
                 _FBX_totalBitsRead += sizeof(uint32_t);

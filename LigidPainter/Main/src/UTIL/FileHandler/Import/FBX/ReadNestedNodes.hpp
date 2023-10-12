@@ -67,7 +67,7 @@ bool ReadNestedNodes(std::ifstream& file, const std::string fileName, std::vecto
         if(LIGID_FBX_IMPORTER_PRINT_TEXT_STATE)
             LGDLOG::start<< nestedNode.nodeType << LGDLOG::end;
         // Read nested node properties
-        ReadProperties(file, nestedNode.properties, numProperties, propertyListLen);
+        ReadProperties(file, nestedNode.properties, numProperties, propertyListLen, nestedNode.nodeType);
 
         // Recursively read nested nodes
         while(endOffset != _FBX_totalBitsRead && endOffset != 0){

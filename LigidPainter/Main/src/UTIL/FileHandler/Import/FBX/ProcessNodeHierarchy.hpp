@@ -16,6 +16,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 */
 
+static long lastMeshIDVal = 0; 
+
 void ProcessNodeHierarchy( 
                             std::vector<FbxNode>& nodes, 
                             std::vector<std::vector<glm::vec3>>& vertPositions, 
@@ -26,7 +28,10 @@ void ProcessNodeHierarchy(
                             std::vector<std::vector<int>>& uvIndices,
                             std::vector<std::string>& matTitles,
                             std::vector<std::vector<int>>& materials,
-                            std::vector<FBXTransform>& transforms
+                            std::vector<FBXTransform>& transforms,
+                            std::vector<long>& meshIDS,
+                            std::vector<long>& materialIDS,
+                            std::vector<FbxConnection>& connections
                         ) 
 {
     for ( auto& node : nodes) {
@@ -228,10 +233,20 @@ void ProcessNodeHierarchy(
                 }
 
                 if(node.nodeType == "Material"){
+                    std::string materialStr = "Material";
+
+                    if (prop.typeCode == 'L'){
+                        materialIDS.push_back(prop.singleLongVal);
+                    }
+                    
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
-
-                        matTitles.push_back(infoStr);
+                        
+                        if (infoStr.length() >= materialStr.length()) {
+                            if(infoStr.substr(infoStr.length() - materialStr.length()) == materialStr);                        
+                                matTitles.push_back(infoStr);
+                        }
+                        
                     }
                 }
                 
@@ -241,7 +256,11 @@ void ProcessNodeHierarchy(
                         std::vector<int> intArray(arrayLength);
 
                         std::memcpy(intArray.data(), prop.data.data(), prop.data.size());
-                        materials[objectI] = intArray;                            
+                        
+                        for (size_t i = 0; i < intArray.size(); i++)
+                        {
+                            materials[objectI].push_back(intArray[i]);                            
+                        }                      
                     }
                 }
 
@@ -301,6 +320,24 @@ void ProcessNodeHierarchy(
                     }
                 }
 
+                if(node.nodeType == "C"){
+                    if (prop.typeCode == 'L'){
+                        if(!connections.size()){
+                            FbxConnection connection;
+                            connection.startID = prop.singleLongVal;
+                            connections.push_back(connection);
+                        }
+                        else if(connections[connections.size()-1].destionationID == LONG_MAX){
+                            connections[connections.size()-1].destionationID = prop.singleLongVal;
+                        }
+                        else{
+                            FbxConnection connection;
+                            connection.startID = prop.singleLongVal;
+                            connections.push_back(connection);
+                        }
+                    }
+                }
+
                 if(node.nodeType == "MappingInformationType" && processingMesh){
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
@@ -330,6 +367,9 @@ void ProcessNodeHierarchy(
                 }
                 
                 if(node.nodeType == "Geometry"){
+                    if (prop.typeCode == 'L'){
+                        lastMeshIDVal = prop.singleLongVal;
+                    }
                     if (prop.typeCode == 'S') {
                         std::string infoStr(prop.data.begin(), prop.data.end());
                         if(infoStr == "Mesh"){
@@ -341,6 +381,7 @@ void ProcessNodeHierarchy(
                             edges.push_back({}); 
                             uvIndices.push_back({});
                             materials.push_back({});
+                            meshIDS.push_back(lastMeshIDVal);
                             processingMesh = true;
                             processingShape = false;
                         }
@@ -354,6 +395,6 @@ void ProcessNodeHierarchy(
         }
 
         // Recursively process nested nodes
-        ProcessNodeHierarchy(node.nestedNodes, vertPositions, vertUVs, vertNormals, polygonVertexIndices, edges, uvIndices, matTitles, materials, transforms);
+        ProcessNodeHierarchy(node.nestedNodes, vertPositions, vertUVs, vertNormals, polygonVertexIndices, edges, uvIndices, matTitles, materials, transforms, meshIDS, materialIDS, connections);
     }
 }
