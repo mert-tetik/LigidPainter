@@ -161,6 +161,12 @@ bool Button::renderTheTexture(
         ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     1    );
         ShaderSystem::buttonShader().setInt("properties.txtr"  ,     0    );
 
+        if(this->stretchTexture){
+            resultPosTexture.x = this->resultPos.x;
+            resultPosTexture.y = this->resultPos.y;
+            resultScaleTexture = this->resultScale;
+        }
+
         //Set transform data of the texture
         ShaderSystem::buttonShader().setVec3("pos"    ,     resultPosTexture);
         ShaderSystem::buttonShader().setVec2("scale"  ,     resultScaleTexture);

@@ -140,6 +140,7 @@ public:
     bool clicked = false;
     bool solidColor = false;
     
+    bool stretchTexture = false;
 
     //Constructors 
     Button();

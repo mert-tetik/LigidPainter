@@ -45,6 +45,50 @@ struct NodePanel{
 
 };
 
+/// Used to render and handle the movable, resizable or rotatable dynamic textures (Used for painting over and layer system) 
+class TextureField{
+public:
+    Texture texture;
+    Button textureDisplayingButton;
+
+    glm::vec2 scale;
+    glm::vec3 pos;
+
+    Button topLeft_ResizeButton;
+    Button bottomLeft_ResizeButton;
+    Button topRight_ResizeButton;
+    Button bottomRight_ResizeButton;
+
+    Button deleteButton;
+    Button changeTextureButton;
+    Button scaleToTextureResolutionButton;
+
+    TextureField(){}
+    
+    TextureField(Texture texture){
+        this->texture = texture;
+        scale = (glm::vec2)texture.getResolution() / *Settings::videoScale() * 100.f;
+        pos = glm::vec3(50.f, 50.f, 0.9f);
+
+        topLeft_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
+        bottomLeft_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
+        topRight_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
+        bottomRight_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
+
+        deleteButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"", Texture(), 1.f,false);
+        changeTextureButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
+        scaleToTextureResolutionButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
+
+        textureDisplayingButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
+        textureDisplayingButton.stretchTexture = true;
+        textureDisplayingButton.color = glm::vec4(0.f);
+    }
+
+    void render(Timer& timer, bool doMouseTracking);
+    
+    bool isHover();
+};
+
 class UI{
 private:
     Websites websites;
@@ -76,6 +120,8 @@ public:
     bool anyPanelHover = false;
 
     Dropper dropper;
+
+    std::vector<TextureField> paintingOverTextureFields;
 
     /* -- DIALOGS -- */
 

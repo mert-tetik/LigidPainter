@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMaterialModifiers){
+bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMaterialModifiers){
     
     while(true){
         if(!this->projectProcessing)
@@ -42,8 +42,6 @@ bool Project::loadProject(std::string ligidFilePath,AppMaterialModifiers& appMat
     }
 
     this->projectProcessing = true;
-
-
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){

@@ -168,14 +168,10 @@ void UI::init
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Painting Over"  , Settings::appTextures().modifierIcon, 3.f,true)),
                                     {   
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Painting Over", 1.f)), //0
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Painting Over Texture"  , Texture(), 1.f,false)), //1
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Library", Texture(), 1.f,false)), //1
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Computer", Texture(), 1.f,false)), //1
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Grayscale Masking", 1.f)),// 2
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Wrap", 1.f)), //3
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), //4 
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"X : Scale"  , Texture(), 1.f,0.f,4.f,1.f)), //5
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y : Scale"  , Texture(), 1.f,0.f,4.f,1.f)), //6
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"X : Move"  , Texture(), 1.f, -1.f,1.f,0.f)), //7
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y : Move"  , Texture(), 1.f, -1.f,1.f,0.f)), //8
                                     }
                                 ),
                                 Section(
@@ -532,8 +528,6 @@ void UI::init
     
     this->filterPaintingModeFilterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4.f,5.f), "Select Filter", Texture(), 0.f, false);
     this->filterPaintingModeFilterBtn.filterSelection = true;
-
-    paintingPanel.sections[4].elements[1].button.textureSelection2D = true;
 
     navigationPanel.solidStyle = true;
 

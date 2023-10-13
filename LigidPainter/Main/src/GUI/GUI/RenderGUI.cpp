@@ -508,29 +508,37 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
 
 
-        //---------------- Updating the painting over texture ----------------- 
+    //---------------- Updating the painting over texture ----------------- 
     
     painter.usePaintingOver = this->paintingPanel.sections[4].elements[0].checkBox.clickState1;
-    painter.paintingOverGrayScale = this->paintingPanel.sections[4].elements[2].checkBox.clickState1;
-    painter.paintingOverWraping = this->paintingPanel.sections[4].elements[3].checkBox.clickState1;
+    painter.paintingOverGrayScale = this->paintingPanel.sections[4].elements[3].checkBox.clickState1;
+    painter.paintingOverWraping = this->paintingPanel.sections[4].elements[4].checkBox.clickState1;
     
-    bool valueChanged = this->paintingPanel.sections[4].elements[1].button.clicked ||
-                        this->paintingPanel.sections[4].elements[4].rangeBar.valueDoneChanging ||
-                        this->paintingPanel.sections[4].elements[5].rangeBar.valueDoneChanging ||
-                        this->paintingPanel.sections[4].elements[6].rangeBar.valueDoneChanging ||
-                        this->paintingPanel.sections[4].elements[7].rangeBar.valueDoneChanging ||
-                        this->paintingPanel.sections[4].elements[8].rangeBar.valueDoneChanging;
+    if(this->paintingPanel.sections[4].elements[1].button.clicked){
+        Texture texture;
+        showTextureSelectionDialog(texture, 512, true);
+        this->paintingOverTextureFields.push_back(TextureField(texture));
+    }
+    else if(this->paintingPanel.sections[4].elements[2].button.clicked){
+        std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
-    bool displayingMode = (getContext()->window.isKeyPressed(LIGIDGL_KEY_X) && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)) ||
-                        this->paintingPanel.sections[4].elements[4].rangeBar.pointerPressed ||
-                        this->paintingPanel.sections[4].elements[5].rangeBar.pointerPressed ||
-                        this->paintingPanel.sections[4].elements[6].rangeBar.pointerPressed ||
-                        this->paintingPanel.sections[4].elements[7].rangeBar.pointerPressed ||
-                        this->paintingPanel.sections[4].elements[8].rangeBar.pointerPressed;
+        if(test.size()){
+            Texture texture;
+            texture.load(test.c_str());
+            this->paintingOverTextureFields.push_back(TextureField(texture));
+        }
 
-    if(valueChanged || displayingMode){
+    }
+    
+    // Rendering all the painting over texture fields
+    for (size_t i = 0; i < this->paintingOverTextureFields.size(); i++)
+    {
+        this->paintingOverTextureFields[i].render(timer, true);
+    }    
+
+    if(false){
         unsigned int paintOverFBO = 0;
-        if(valueChanged){
+        if(false){
             glGenFramebuffers(1, &paintOverFBO);
             glBindFramebuffer(GL_FRAMEBUFFER, paintOverFBO);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, painter.paintingOverTexture, 0);
@@ -544,20 +552,21 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         ShaderSystem::paintOverTextureGen().setMat4("projection", glm::ortho(0.f, Settings::videoScale()->x, Settings::videoScale()->y, 0.f));
         ShaderSystem::paintOverTextureGen().setVec2("scale", glm::vec2(Settings::videoScale()->x / 2.f, Settings::videoScale()->y / 2.f));
         ShaderSystem::paintOverTextureGen().setVec3("pos", glm::vec3(Settings::videoScale()->x / 2.f, Settings::videoScale()->y / 2.f, 0.9f));
-        ShaderSystem::paintOverTextureGen().setVec2("fragScale", glm::vec2(this->paintingPanel.sections[4].elements[5].rangeBar.value, this->paintingPanel.sections[4].elements[6].rangeBar.value));
-        ShaderSystem::paintOverTextureGen().setVec2("fragMove", glm::vec2(this->paintingPanel.sections[4].elements[7].rangeBar.value, this->paintingPanel.sections[4].elements[8].rangeBar.value));
-        ShaderSystem::paintOverTextureGen().setFloat("rot", this->paintingPanel.sections[4].elements[4].rangeBar.value);
+        //ShaderSystem::paintOverTextureGen().setVec2("fragScale", glm::vec2(this->paintingPanel.sections[4].elements[5].rangeBar.value, this->paintingPanel.sections[4].elements[6].rangeBar.value));
+        //ShaderSystem::paintOverTextureGen().setVec2("fragMove", glm::vec2(this->paintingPanel.sections[4].elements[7].rangeBar.value, this->paintingPanel.sections[4].elements[8].rangeBar.value));
+        //ShaderSystem::paintOverTextureGen().setFloat("rot", this->paintingPanel.sections[4].elements[4].rangeBar.value);
         ShaderSystem::paintOverTextureGen().setInt("txtr", 1);
 
-        if(valueChanged)
-            ShaderSystem::paintOverTextureGen().setFloat("opacity", 1.);
-        else
-            ShaderSystem::paintOverTextureGen().setFloat("opacity", 0.5);
+
+        //if(valueChanged)
+        //    ShaderSystem::paintOverTextureGen().setFloat("opacity", 1.);
+        //else
+        //    ShaderSystem::paintOverTextureGen().setFloat("opacity", 0.5);
 
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, this->paintingPanel.sections[4].elements[1].button.texture.ID);
+        //glBindTexture(GL_TEXTURE_2D, this->paintingPanel.sections[4].elements[1].button.texture.ID);
 
-        if(!painter.paintingOverWraping || valueChanged)
+        if(!painter.paintingOverWraping || false)
             glDrawArrays(GL_TRIANGLES, 0, 6);
         else{
             ShaderSystem::tdModelShader().use(); 
@@ -568,7 +577,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         Settings::defaultFramebuffer()->FBO.bind();
         
         ShaderSystem::buttonShader().use();
-        if(valueChanged)
+        if(false)
             glDeleteFramebuffers(1, &paintOverFBO);
     }
 }
