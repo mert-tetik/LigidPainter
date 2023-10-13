@@ -357,7 +357,15 @@ void Renderer::render(){
                         );
 
     //Painting
-    if((*Mouse::LPressed() && !userInterface.anyContextMenuActive && !userInterface.anyPanelHover && !userInterface.anyDialogActive && (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5) ){ //If mouse hover 3D viewport and left mouse button pressed
+    if(
+        *Mouse::LPressed() && 
+        !userInterface.anyContextMenuActive && 
+        !userInterface.anyPanelHover && 
+        !userInterface.anyDialogActive && 
+        (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 &&
+        !painter.paintingoverTextureEditorMode
+        )
+    {
         //Paint
         painter.doPaint(    
                             userInterface.projection,

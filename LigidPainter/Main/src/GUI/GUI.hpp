@@ -61,17 +61,24 @@ public:
     Button bottomRight_ResizeButton;
 
     Button deleteButton;
-    Button changeTextureButton;
     Button scaleToTextureResolutionButton;
 
     bool active = false;
 
+    // Set to true in the last frame transformation done
+    bool transformedFlag = false;
+
     TextureField(){}
     TextureField(Texture texture);
 
-    void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode);
+    void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i);
     
     bool isHover();
+
+private:
+    glm::vec2 prevScale;
+    glm::vec3 prevPos;
+    bool prevTransformedFlag = false;
 };
 
 class UI{

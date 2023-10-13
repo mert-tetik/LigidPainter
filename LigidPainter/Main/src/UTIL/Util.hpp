@@ -683,6 +683,7 @@ public:
 
     unsigned int paintingOverTexture;
     bool usePaintingOver = false;
+    bool paintingoverTextureEditorMode = false;
     bool paintingOverGrayScale = false;
     bool paintingOverWraping = false;
 

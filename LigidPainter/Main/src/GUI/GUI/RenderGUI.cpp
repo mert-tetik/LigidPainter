@@ -143,8 +143,16 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     renderDropper(painter);
 
     //Render the brush cursor
-    if(!this->anyPanelHover && !this->anyDialogActive && !this->anyContextMenuActive && (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5)
+    if(
+            !this->anyPanelHover && 
+            !this->anyDialogActive && 
+            !this->anyContextMenuActive && 
+            (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 &&
+            !painter.paintingoverTextureEditorMode
+        )
+    {
         renderBrushCursor(painter, this->projection);
+    }
     else
         getContext()->window.setCursorVisibility(true);
 
@@ -511,6 +519,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     //---------------- Updating the painting over texture ----------------- 
     
     painter.usePaintingOver = this->paintingPanel.sections[4].elements[0].checkBox.clickState1;
+    painter.paintingoverTextureEditorMode = this->paintingPanel.sections[4].elements[1].checkBox.clickState1;
     painter.paintingOverGrayScale = this->paintingPanel.sections[4].elements[4].checkBox.clickState1;
     painter.paintingOverWraping = this->paintingPanel.sections[4].elements[5].checkBox.clickState1;
     
@@ -534,12 +543,12 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     
     // Rendering all the painting over texture fields
     if(painter.usePaintingOver){
-        for (size_t i = 0; i < this->paintingOverTextureFields.size(); i++)
+        for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
         {
             if(this->paintingOverTextureFields[i].active)
                 updatePaintingOverTexture = true;
             
-            this->paintingOverTextureFields[i].render(timer, this->paintingPanel.sections[4].elements[1].checkBox.clickState1, false);
+            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode, false, this->paintingOverTextureFields, i);
         }    
     }
 
@@ -555,9 +564,9 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Rendering all the painting over texture fields
-        for (size_t i = 0; i < this->paintingOverTextureFields.size(); i++)
+        for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
         {
-            this->paintingOverTextureFields[i].render(timer, false, true);
+            this->paintingOverTextureFields[i].render(timer, false, true, this->paintingOverTextureFields, i);
         }    
 
         // Finisg
