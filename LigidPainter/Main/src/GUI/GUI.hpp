@@ -50,6 +50,7 @@ class TextureField{
 public:
     Texture texture;
     Button textureDisplayingButton;
+    Button textureDisplayingButtonIOutline;
 
     glm::vec2 scale;
     glm::vec3 pos;
@@ -63,28 +64,12 @@ public:
     Button changeTextureButton;
     Button scaleToTextureResolutionButton;
 
+    bool active = false;
+
     TextureField(){}
-    
-    TextureField(Texture texture){
-        this->texture = texture;
-        scale = (glm::vec2)texture.getResolution() / *Settings::videoScale() * 100.f;
-        pos = glm::vec3(50.f, 50.f, 0.9f);
+    TextureField(Texture texture);
 
-        topLeft_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
-        bottomLeft_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
-        topRight_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
-        bottomRight_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
-
-        deleteButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"", Texture(), 1.f,false);
-        changeTextureButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
-        scaleToTextureResolutionButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
-
-        textureDisplayingButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
-        textureDisplayingButton.stretchTexture = true;
-        textureDisplayingButton.color = glm::vec4(0.f);
-    }
-
-    void render(Timer& timer, bool doMouseTracking);
+    void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode);
     
     bool isHover();
 };

@@ -31,6 +31,36 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+TextureField::TextureField(Texture texture){
+    this->texture = texture;
+    scale = (glm::vec2)texture.getResolution() / *Settings::videoScale() * 100.f;
+    pos = glm::vec3(50.f, 50.f, 0.9f);
+
+    topLeft_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.5f, 0.5f * (Settings::videoScale()->x / Settings::videoScale()->y)), "", Texture(), 1.f,false);
+    bottomLeft_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.5f, 0.5f * (Settings::videoScale()->x / Settings::videoScale()->y)), "", Texture(), 1.f,false);
+    topRight_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.5f, 0.5f * (Settings::videoScale()->x / Settings::videoScale()->y)), "", Texture(), 1.f,false);
+    bottomRight_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.5f, 0.5f * (Settings::videoScale()->x / Settings::videoScale()->y)), "", Texture(), 1.f,false);
+
+    topLeft_ResizeButton.color = ColorPalette::themeColor;
+    topLeft_ResizeButton.radius = 0.36f;
+    bottomLeft_ResizeButton.color = ColorPalette::themeColor;
+    bottomLeft_ResizeButton.radius = 0.36f;
+    topRight_ResizeButton.color = ColorPalette::themeColor;
+    topRight_ResizeButton.radius = 0.36f;
+    bottomRight_ResizeButton.color = ColorPalette::themeColor;
+    bottomRight_ResizeButton.radius = 0.36f;
+
+    deleteButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"", Texture(), 1.f,false);
+    changeTextureButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
+    scaleToTextureResolutionButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Texture(), 1.f,false);
+
+    textureDisplayingButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
+    textureDisplayingButton.stretchTexture = true;
+    textureDisplayingButton.color = glm::vec4(0.f);
+
+    textureDisplayingButtonIOutline = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
+}
+
 static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 &elementPos, const char* position){
     if(position == "LEFT_TOP"){
         elementPos = glm::vec3(orgPos.x - orgScale.x, orgPos.y - orgScale.y, orgPos.z);
@@ -91,7 +121,7 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
 
 // TODOV Refresh texturefields after loading a new project
 
-void TextureField::render(Timer& timer, bool doMouseTracking){
+void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode){
     
     // Positioning the GUI elements
     poisitionTheElement(this->pos, this->scale, this->topLeft_ResizeButton.pos, "LEFT_TOP");
@@ -99,6 +129,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking){
     poisitionTheElement(this->pos, this->scale, this->topRight_ResizeButton.pos, "RIGHT_TOP");
     poisitionTheElement(this->pos, this->scale, this->bottomRight_ResizeButton.pos, "RIGHT_BOTTOM");
     poisitionTheElement(this->pos, this->scale, this->textureDisplayingButton.pos, "CENTER");
+    poisitionTheElement(this->pos, this->scale, this->textureDisplayingButtonIOutline.pos, "CENTER");
     poisitionTheElement(this->pos, this->scale, this->deleteButton.pos, "LEFT_BOTTOM");
     poisitionTheElement(this->pos, this->scale, this->changeTextureButton.pos, "LEFT_BOTTOM");
     poisitionTheElement(this->pos, this->scale, this->scaleToTextureResolutionButton.pos, "LEFT_BOTTOM");
@@ -113,24 +144,35 @@ void TextureField::render(Timer& timer, bool doMouseTracking){
 
     // Assigning the selected texture to the texture displaying button
     textureDisplayingButton.texture = this->texture;
-    
+    textureDisplayingButtonIOutline.color = ColorPalette::themeColor;
+
     // Scaling the texture displaying button according to the selected texture
     textureDisplayingButton.scale = this->scale;
-
+    textureDisplayingButtonIOutline.scale = this->scale + glm::vec2(0.2f,0.2f * (Settings::videoScale()->x / Settings::videoScale()->y));
     
     // Rendering the GUI elements
-    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 0.4f);
+    if(!generatingTextureMode)
+        ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 0.4f);
     this->textureDisplayingButton.render(timer, doMouseTracking); 
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
-    
-    this->topLeft_ResizeButton.render(timer, doMouseTracking);
-    this->bottomLeft_ResizeButton.render(timer, doMouseTracking);
-    this->topRight_ResizeButton.render(timer, doMouseTracking);
-    this->bottomRight_ResizeButton.render(timer, doMouseTracking); 
-    this->deleteButton.render(timer, doMouseTracking);
-    this->changeTextureButton.render(timer, doMouseTracking);
-    this->scaleToTextureResolutionButton.render(timer, doMouseTracking);
-    
+
+    if(*Mouse::LClick()){
+        this->active = this->isHover();
+    }
+
+    if(this->active && !generatingTextureMode){
+        glDepthFunc(GL_LESS);
+        this->textureDisplayingButtonIOutline.render(timer, false);
+        glDepthFunc(GL_LEQUAL);
+
+        this->topLeft_ResizeButton.render(timer, doMouseTracking);
+        this->bottomLeft_ResizeButton.render(timer, doMouseTracking);
+        this->topRight_ResizeButton.render(timer, doMouseTracking);
+        this->bottomRight_ResizeButton.render(timer, doMouseTracking); 
+        this->deleteButton.render(timer, doMouseTracking);
+        this->changeTextureButton.render(timer, doMouseTracking);
+        this->scaleToTextureResolutionButton.render(timer, doMouseTracking);
+    }
 
     resizing(
                 this->pos, 
@@ -141,4 +183,15 @@ void TextureField::render(Timer& timer, bool doMouseTracking){
                 this->bottomRight_ResizeButton.clickState1,
                 this->textureDisplayingButton.clickState1
             );
+}
+
+bool TextureField::isHover(){
+    return  this->textureDisplayingButton.hover || 
+            this->topLeft_ResizeButton.hover ||
+            this->bottomLeft_ResizeButton.hover ||
+            this->topRight_ResizeButton.hover ||
+            this->bottomRight_ResizeButton.hover ||
+            this->deleteButton.hover ||
+            this->changeTextureButton.hover ||
+            this->scaleToTextureResolutionButton.hover;
 }

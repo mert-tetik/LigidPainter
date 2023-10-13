@@ -168,6 +168,7 @@ void UI::init
                                     Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Painting Over"  , Settings::appTextures().modifierIcon, 3.f,true)),
                                     {   
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Painting Over", 1.f)), //0
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Editor Mode", 1.f)), //0
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Library", Texture(), 1.f,false)), //1
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Computer", Texture(), 1.f,false)), //1
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Grayscale Masking", 1.f)),// 2
