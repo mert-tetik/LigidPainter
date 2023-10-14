@@ -64,9 +64,12 @@ TextureField::TextureField(Texture texture){
     bottomRight_ResizeButton.color = ColorPalette::themeColor;
     bottomRight_ResizeButton.radius = 0.36f;
 
-    deleteButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"", Settings::appTextures().trashIcon, 1.f,false);
-    scaleToTextureResolutionButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Settings::appTextures().resizingIcon, 1.f,false);
-
+    
+    deleteButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"Delete", Settings::appTextures().trashIcon, 1.f,false);
+    deleteButton.textColor2 = glm::vec4(1.f);
+    scaleToTextureResolutionButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Scale to texture resolution", Settings::appTextures().resizingIcon, 1.f,false);
+    scaleToTextureResolutionButton.textColor2 = glm::vec4(1.f);
+    
     textureDisplayingButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
     textureDisplayingButton.stretchTexture = true;
     textureDisplayingButton.color = glm::vec4(0.f);
@@ -165,9 +168,13 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
     poisitionTheElement(this->pos, this->scale, this->deleteButton.pos, "LEFT_BOTTOM");
     poisitionTheElement(this->pos, this->scale, this->scaleToTextureResolutionButton.pos, "LEFT_BOTTOM");
 
+    deleteButton.scale.x = 1.f + deleteButton.hoverMixVal * 2.f;
+    scaleToTextureResolutionButton.scale.x = 1.f + scaleToTextureResolutionButton.hoverMixVal * 5.f;
+
+    deleteButton.pos.x += deleteButton.scale.x;
     deleteButton.pos.y += bottomLeft_ResizeButton.scale.y + deleteButton.scale.y;
     scaleToTextureResolutionButton.pos.y = deleteButton.pos.y;
-    scaleToTextureResolutionButton.pos.x += deleteButton.scale.x + scaleToTextureResolutionButton.scale.x;
+    scaleToTextureResolutionButton.pos.x = deleteButton.pos.x + deleteButton.scale.x + scaleToTextureResolutionButton.scale.x;
 
     // Assigning the selected texture to the texture displaying button
     textureDisplayingButton.texture = this->texture;
