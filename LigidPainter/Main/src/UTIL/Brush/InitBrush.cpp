@@ -61,7 +61,7 @@ Brush::Brush(
     this->title = title;
     
     this->texture.proceduralProps = texture.proceduralProps;
-    this->texture.generateProceduralDisplayingTexture(512);
+    this->texture.ID = texture.duplicateTexture();
 
     this->displayingTexture = Texture(nullptr, 100, 100, GL_LINEAR);
     this->displayingTexture.title = "BrushDisplayingTexture";    
@@ -96,7 +96,7 @@ void Brush::update(
     this->sinWavePattern = sinWavePattern;
     
     this->texture.proceduralProps = texture.proceduralProps;
-    this->texture.generateProceduralDisplayingTexture(512);
+    this->texture.ID = texture.duplicateTexture();
 
     this->updateDisplayTexture(displayRadius);
 }

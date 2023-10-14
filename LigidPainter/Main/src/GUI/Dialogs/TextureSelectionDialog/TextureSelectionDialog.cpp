@@ -126,7 +126,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
         // Pressed to the select button
         if  (
-                (this->subPanel.sections[0].elements[subPanel_Select_INDEX].button.clicked && this->selectedTextureMode != 3) || 
+                (this->subPanel.sections[0].elements[subPanel_Select_INDEX].button.clicked && this->selectedTextureMode != 3 && this->selectedTextureMode != 4) || 
                 (this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Select_INDEX].button.clicked && this->selectedTextureMode == 3) || 
                 (this->subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Select_INDEX].button.clicked && this->selectedTextureMode == 4)
             )

@@ -165,23 +165,6 @@ Model FileHandler::readFBXFile(std::string path) {
     // Process the FBX data
     ProcessNodeHierarchy(topLevelObject.nestedNodes, positions, UVS, normals, polygonVertexIndices , uvIndices, edges, matTitles, materials, transforms, meshIDS, materialIDS, connections);
 
-    for (size_t i = 0; i < connections.size(); i++)
-    {
-        std::cout << "CONNECTION START " << connections[i].startID << " CONNECTION DESTINATION " << connections[i].destionationID << std::endl;
-    }
-
-    for (size_t i = 0; i < meshIDS.size(); i++)
-    {
-        std::cout << "MESH ID " << meshIDS[i] << std::endl;
-    }
-    
-    for (size_t i = 0; i < materialIDS.size(); i++)
-    {
-        std::cout << "MATERIAL ID " << materialIDS[i] << std::endl;
-    }
-    
-    
-
     if(!positions.size() || !edges.size() || !polygonVertexIndices.size() || !uvIndices.size()){
         LGDLOG::start<< "ERROR : Processing the fbx node hierarchy : Can't detect enough vertex data to create a mesh" << LGDLOG::end;
         return Model();

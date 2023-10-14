@@ -134,7 +134,13 @@ void Brush::updateDisplayTexture(float radius){
     glDepthFunc(GL_ALWAYS);
     glBlendFunc(GL_ONE,GL_ONE);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
-    
+
+    glm::ivec2 txtrRes = this->texture.getResolution();
+    char* txtrPxs = new char[txtrRes.x * txtrRes.y * 4];
+    this->texture.getData(txtrPxs);
+
+    captureFBO.bind();
+
     for (size_t i = 0; i < wave.size() / strokeSize; i++)
     {
         ShaderSystem::twoDPainting().setInt("frame", (i + 1 / (wave.size() / 75)) * 1.5f * strokeSize);
@@ -156,6 +162,9 @@ void Brush::updateDisplayTexture(float radius){
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
         GLfloat borderColor[] = { 0.f, 0.f, 0.f, 1.f };  // Replace r, g, b, a with the desired color values
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, txtrRes.x, txtrRes.y, 0, GL_RGBA, GL_BYTE, txtrPxs);
+
         glGenerateMipmap(GL_TEXTURE_2D);
 
         //Stroke positions
@@ -177,9 +186,13 @@ void Brush::updateDisplayTexture(float radius){
         //Painting
         glDrawArrays(GL_TRIANGLES,0,6);
 
+        getBox()->bindBuffers();
+
         glDeleteTextures(1, &bgTxtr.ID);
         
     }
+
+    delete[] txtrPxs;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
