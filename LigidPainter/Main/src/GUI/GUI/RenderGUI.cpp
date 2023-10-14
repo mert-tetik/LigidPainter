@@ -571,9 +571,12 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             this->paintingOverTextureFields[i].render(timer, false, true, this->paintingOverTextureFields, i);
         }    
 
-        // Finisg
+        // Finish
         Settings::defaultFramebuffer()->FBO.bind();
         Settings::defaultFramebuffer()->setViewport();
+
+        // Deleting the OpenGL framebuffer object & the renderbuffer object
+        FBO.deleteBuffers(false, true);
     }
 }
 
