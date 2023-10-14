@@ -31,9 +31,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+static void scaleAccordingToTextureRes(glm::vec2& scale, Texture txtr){
+    float txtrRatio = (float)txtr.getResolution().x / (float)txtr.getResolution().y;
+    float videoRatio = (float)Settings::videoScale()->x / (float)Settings::videoScale()->y;
+    scale = glm::vec2(10.f * txtrRatio, 10.f * videoRatio);
+}
+
 TextureField::TextureField(Texture texture){
     this->texture = texture;
-    scale = (glm::vec2)texture.getResolution() / *Settings::videoScale() * 100.f;
+    scaleAccordingToTextureRes(this->scale, texture);
     pos = glm::vec3(50.f, 50.f, 0.9f);
 
     topLeft_ResizeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.5f, 0.5f * (Settings::videoScale()->x / Settings::videoScale()->y)), "", Texture(), 1.f,false);
@@ -82,7 +88,7 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
     glm::vec2 crsrOffset = *Mouse::mouseOffset() / (glm::vec2)getContext()->windowScale * 100.f;
     
     if(RB){
-        crsrOffset /= 1.75;
+        crsrOffset /= 1.75 * 2.f;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
         scale.x += crsrOffset.x;
@@ -90,14 +96,14 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
     }
     
     else if(LB){
-        crsrOffset /= 1.75;
+        crsrOffset /= 1.75 * 2.f;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
         scale.x -= crsrOffset.x;
         scale.y += crsrOffset.y;
     }
     else if(RT){
-        crsrOffset /= 1.75;
+        crsrOffset /= 1.75 * 2.f;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
         scale.x += crsrOffset.x;
@@ -105,7 +111,7 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
     }
     
     else if(LT){
-        crsrOffset /= 1.75;
+        crsrOffset /= 1.75 * 2.f;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
         scale.x -= crsrOffset.x;
@@ -182,7 +188,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
         i--;
     }
     else if(this->scaleToTextureResolutionButton.clicked){
-        this->scale = (glm::vec2)texture.getResolution() / *Settings::videoScale() * 100.f;
+        scaleAccordingToTextureRes(this->scale, texture);
     }
     
     this->transformedFlag = !(this->prevPos != this->pos || this->prevScale != this->scale) && this->prevTransformedFlag; 
