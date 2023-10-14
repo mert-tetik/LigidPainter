@@ -33,8 +33,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static void scaleAccordingToTextureRes(glm::vec2& scale, Texture txtr){
     float txtrRatio = (float)txtr.getResolution().x / (float)txtr.getResolution().y;
+    if((float)txtr.getResolution().x < (float)txtr.getResolution().y)
+        txtrRatio = (float)txtr.getResolution().y / (float)txtr.getResolution().x;
+
     float videoRatio = (float)Settings::videoScale()->x / (float)Settings::videoScale()->y;
-    scale = glm::vec2(glm::max(scale.x,scale.y) * txtrRatio, glm::max(scale.x,scale.y) * videoRatio);
+    
+    if((float)txtr.getResolution().x > (float)txtr.getResolution().y)
+        scale = glm::vec2(scale.x, scale.x / txtrRatio * videoRatio);
+    else
+        scale = glm::vec2(scale.y / txtrRatio / videoRatio, scale.y);
 }
 
 TextureField::TextureField(Texture texture){
@@ -89,7 +96,7 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
     glm::vec2 crsrOffset = *Mouse::mouseOffset() / (glm::vec2)getContext()->windowScale * 100.f;
     
     if(RB){
-        crsrOffset /= 1.75 * 2.f;
+        crsrOffset /= 1.75;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
         scale.x += crsrOffset.x;
@@ -97,14 +104,14 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
     }
     
     else if(LB){
-        crsrOffset /= 1.75 * 2.f;
+        crsrOffset /= 1.75;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
         scale.x -= crsrOffset.x;
         scale.y += crsrOffset.y;
     }
     else if(RT){
-        crsrOffset /= 1.75 * 2.f;
+        crsrOffset /= 1.75;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
         scale.x += crsrOffset.x;
@@ -112,7 +119,7 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
     }
     
     else if(LT){
-        crsrOffset /= 1.75 * 2.f;
+        crsrOffset /= 1.75;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
         scale.x -= crsrOffset.x;
@@ -123,9 +130,28 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
     }
+
+    if(pos.x < 0.f)
+        pos.x = 0.f;
+    if(pos.x > 100.f)
+        pos.x = 100.f;
+    
+    if(pos.y < 0.f)
+        pos.y = 0.f;
+    if(pos.y > 100.f)
+        pos.y = 100.f;
+
+    if(scale.x < 2.f){
+        pos.x -= crsrOffset.x;
+        scale.x = 2.f;
+    }
+    if(scale.y < 2.f){
+        pos.y -= crsrOffset.y;
+        scale.y = 2.f;
+    }
 }
 
-// TODOV Refresh texturefields after loading a new project
+// TODO Refresh texturefields after loading a new project
 
 void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i){
     
@@ -190,7 +216,9 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
         i--;
     }
     else if(this->scaleToTextureResolutionButton.clicked){
+        glm::vec2 prevScale = this->scale;
         scaleAccordingToTextureRes(this->scale, texture);
+        this->pos.x -= prevScale.x - this->scale.x; 
     }
     
     this->transformedFlag = !(this->prevPos != this->pos || this->prevScale != this->scale) && this->prevTransformedFlag; 

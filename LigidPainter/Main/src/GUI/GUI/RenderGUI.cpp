@@ -547,7 +547,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     if(painter.usePaintingOver){
         for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
         {
-            if(this->paintingOverTextureFields[i].active)
+            if(this->paintingOverTextureFields[i].transformedFlag)
                 updatePaintingOverTexture = true;
             
             this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode, false, this->paintingOverTextureFields, i);
