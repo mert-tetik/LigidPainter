@@ -78,6 +78,8 @@ TextureField::TextureField(Texture texture){
 }
 
 static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 &elementPos, const char* position){
+  
+
     if(position == "LEFT_TOP"){
         elementPos = glm::vec3(orgPos.x - orgScale.x, orgPos.y - orgScale.y, orgPos.z);
     }
@@ -158,15 +160,21 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
 
 void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i){
     
+
+    glm::vec3 orgPos = this->pos;
+    glm::vec2 orgScale = this->scale;
+    orgPos -= glm::vec3(*Settings::videoScale() - (glm::vec2)getContext()->windowScale, 0.f) / glm::vec3(*Settings::videoScale(), 1.f) * glm::vec3(50.f,50.f,1.f);     
+    orgScale /= (*Settings::videoScale() / (glm::vec2)getContext()->windowScale);   
+
     // Positioning the GUI elements
-    poisitionTheElement(this->pos, this->scale, this->topLeft_ResizeButton.pos, "LEFT_TOP");
-    poisitionTheElement(this->pos, this->scale, this->bottomLeft_ResizeButton.pos, "LEFT_BOTTOM");
-    poisitionTheElement(this->pos, this->scale, this->topRight_ResizeButton.pos, "RIGHT_TOP");
-    poisitionTheElement(this->pos, this->scale, this->bottomRight_ResizeButton.pos, "RIGHT_BOTTOM");
-    poisitionTheElement(this->pos, this->scale, this->textureDisplayingButton.pos, "CENTER");
-    poisitionTheElement(this->pos, this->scale, this->textureDisplayingButtonIOutline.pos, "CENTER");
-    poisitionTheElement(this->pos, this->scale, this->deleteButton.pos, "LEFT_BOTTOM");
-    poisitionTheElement(this->pos, this->scale, this->scaleToTextureResolutionButton.pos, "LEFT_BOTTOM");
+    poisitionTheElement(orgPos, orgScale, this->topLeft_ResizeButton.pos, "LEFT_TOP");
+    poisitionTheElement(orgPos, orgScale, this->bottomLeft_ResizeButton.pos, "LEFT_BOTTOM");
+    poisitionTheElement(orgPos, orgScale, this->topRight_ResizeButton.pos, "RIGHT_TOP");
+    poisitionTheElement(orgPos, orgScale, this->bottomRight_ResizeButton.pos, "RIGHT_BOTTOM");
+    poisitionTheElement(orgPos, orgScale, this->textureDisplayingButton.pos, "CENTER");
+    poisitionTheElement(orgPos, orgScale, this->textureDisplayingButtonIOutline.pos, "CENTER");
+    poisitionTheElement(orgPos, orgScale, this->deleteButton.pos, "LEFT_BOTTOM");
+    poisitionTheElement(orgPos, orgScale, this->scaleToTextureResolutionButton.pos, "LEFT_BOTTOM");
 
     deleteButton.scale.x = 1.f + deleteButton.hoverMixVal * 2.f;
     scaleToTextureResolutionButton.scale.x = 1.f + scaleToTextureResolutionButton.hoverMixVal * 5.f;
@@ -181,12 +189,13 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
     textureDisplayingButtonIOutline.color = ColorPalette::themeColor;
 
     // Scaling the texture displaying button according to the selected texture
-    textureDisplayingButton.scale = this->scale;
-    textureDisplayingButtonIOutline.scale = this->scale + glm::vec2(0.2f,0.2f * (Settings::videoScale()->x / Settings::videoScale()->y));
+    textureDisplayingButton.scale = orgScale;
+    textureDisplayingButtonIOutline.scale = orgScale + glm::vec2(0.2f,0.2f * (Settings::videoScale()->x / Settings::videoScale()->y));
     
     // Rendering the GUI elements
     if(!generatingTextureMode)
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 0.4f);
+
     this->textureDisplayingButton.render(timer, doMouseTracking); 
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
@@ -223,17 +232,17 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
         i--;
     }
     else if(this->scaleToTextureResolutionButton.clicked){
-        glm::vec2 prevScale = this->scale;
-        scaleAccordingToTextureRes(this->scale, texture);
-        this->pos.x -= prevScale.x - this->scale.x; 
+        glm::vec2 prevScale = orgScale;
+        scaleAccordingToTextureRes(orgScale, texture);
+        orgPos.x -= prevScale.x - orgScale.x; 
     }
     
-    this->transformedFlag = !(this->prevPos != this->pos || this->prevScale != this->scale) && this->prevTransformedFlag; 
+    this->transformedFlag = !(this->prevPos != orgPos || this->prevScale != orgScale) && this->prevTransformedFlag; 
 
-    this->prevTransformedFlag = this->prevPos != this->pos || this->prevScale != this->scale;
+    this->prevTransformedFlag = this->prevPos != orgPos || this->prevScale != orgScale;
 
-    this->prevPos = this->pos;
-    this->prevScale = this->scale;
+    this->prevPos = orgPos;
+    this->prevScale = orgScale;
 }
 
 bool TextureField::isHover(){

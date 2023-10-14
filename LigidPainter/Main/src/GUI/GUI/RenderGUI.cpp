@@ -543,6 +543,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     
     bool updatePaintingOverTexture = false;
     
+
     // Rendering all the painting over texture fields
     if(painter.usePaintingOver){
         for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
@@ -565,11 +566,13 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
         // Rendering all the painting over texture fields
         for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
         {
             this->paintingOverTextureFields[i].render(timer, false, true, this->paintingOverTextureFields, i);
         }    
+
 
         // Finish
         Settings::defaultFramebuffer()->FBO.bind();

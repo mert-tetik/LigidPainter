@@ -216,6 +216,9 @@ namespace Settings{
         Texture inkPenIcon;
         Texture bakingIcon;
         Texture trashIcon;
+        Texture materialChannelsIcon;
+        Texture paintingOverIcon;
+        Texture mirrorIcon;
         
         //--Textures
         Texture greetingDialogImage;  

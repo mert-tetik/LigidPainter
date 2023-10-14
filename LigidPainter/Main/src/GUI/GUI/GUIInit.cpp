@@ -154,7 +154,7 @@ void UI::init
                                     }
                                 ),
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Painting Channels"  , Settings::appTextures().modifierIcon, 3.f,true)),
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Painting Channels"  , Settings::appTextures().materialChannelsIcon, 3.f,true)),
                                     {   
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Albedo Texture"  , Texture(), 1.f,true)),//4
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Roughness Texture"  , Texture(), 1.f,true)),//4
@@ -165,7 +165,7 @@ void UI::init
                                     }
                                 ),
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Painting Over"  , Settings::appTextures().modifierIcon, 3.f,true)),
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Painting Over"  , Settings::appTextures().paintingOverIcon, 3.f,true)),
                                     {   
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Painting Over", 1.f)), //0
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Editor Mode", 1.f)), //0
@@ -176,7 +176,7 @@ void UI::init
                                     }
                                 ),
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mirror"  , Settings::appTextures().modifierIcon, 3.f,true)), // 6
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mirror"  , Settings::appTextures().mirrorIcon, 3.f,true)), // 6
                                     {   
                                         CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "X Axis", 1.f),
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "X Axis Mirror Offset", Texture(), 0.f, -1.f, 1.f, 0.f)),
