@@ -526,7 +526,9 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     if(this->paintingPanel.sections[4].elements[2].button.clicked){
         Texture texture;
         showTextureSelectionDialog(texture, 512, true);
-        this->paintingOverTextureFields.push_back(TextureField(texture));
+        
+        if(texture.ID)
+            this->paintingOverTextureFields.push_back(TextureField(texture));
     }
     else if(this->paintingPanel.sections[4].elements[3].button.clicked){
         std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
