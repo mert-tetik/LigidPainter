@@ -34,11 +34,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static void scaleAccordingToTextureRes(glm::vec2& scale, Texture txtr){
     float txtrRatio = (float)txtr.getResolution().x / (float)txtr.getResolution().y;
     float videoRatio = (float)Settings::videoScale()->x / (float)Settings::videoScale()->y;
-    scale = glm::vec2(10.f * txtrRatio, 10.f * videoRatio);
+    scale = glm::vec2(glm::max(scale.x,scale.y) * txtrRatio, glm::max(scale.x,scale.y) * videoRatio);
 }
 
 TextureField::TextureField(Texture texture){
     this->texture = texture;
+    this->scale = glm::vec2(10.f);
     scaleAccordingToTextureRes(this->scale, texture);
     pos = glm::vec3(50.f, 50.f, 0.9f);
 
