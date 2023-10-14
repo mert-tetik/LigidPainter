@@ -185,6 +185,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             );
 
     if(this->deleteButton.clicked){
+        glDeleteTextures(1, &srcVector[i].texture.ID);
         srcVector.erase(srcVector.begin() + i);
         i--;
     }
