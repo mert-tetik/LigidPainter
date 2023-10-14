@@ -64,7 +64,7 @@ TextureField::TextureField(Texture texture){
     bottomRight_ResizeButton.color = ColorPalette::themeColor;
     bottomRight_ResizeButton.radius = 0.36f;
 
-    deleteButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"", Settings::appTextures().modifierIcon, 1.f,false);
+    deleteButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"", Settings::appTextures().trashIcon, 1.f,false);
     scaleToTextureResolutionButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "", Settings::appTextures().resizingIcon, 1.f,false);
 
     textureDisplayingButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);

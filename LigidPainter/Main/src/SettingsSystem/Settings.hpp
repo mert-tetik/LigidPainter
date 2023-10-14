@@ -215,6 +215,7 @@ namespace Settings{
         Texture packageIcon;
         Texture inkPenIcon;
         Texture bakingIcon;
+        Texture trashIcon;
         
         //--Textures
         Texture greetingDialogImage;  

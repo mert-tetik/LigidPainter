@@ -68,6 +68,7 @@ void Settings::loadAppTextures(){
     __appTextures.packageIcon.load("./LigidPainter/Resources/Icons/Package.png");
     __appTextures.inkPenIcon.load("./LigidPainter/Resources/Icons/InkPen.png");
     __appTextures.bakingIcon.load("./LigidPainter/Resources/Icons/Baking.png");
+    __appTextures.trashIcon.load("./LigidPainter/Resources/Icons/Trash.png");
     __appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
     __appTextures.filterDisplayerImage.load("./LigidPainter/Resources/Images/FilterDisplayerImage.jpg");
     __appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
