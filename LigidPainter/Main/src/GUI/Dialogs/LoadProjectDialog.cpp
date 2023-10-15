@@ -186,7 +186,7 @@ void LoadProjectDialog::render(Timer timer,
     
     try
     {
-        for (const auto& entry : std::filesystem::directory_iterator("./Projects")) {
+        for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/Projects")) {
             
             //Project folder path inside of the ./Projects directory
             std::string projectPath = entry.path().string();

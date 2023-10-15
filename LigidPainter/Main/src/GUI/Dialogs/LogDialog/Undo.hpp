@@ -45,7 +45,7 @@ static void undo(){
     if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION || __actions[__actions.size()-1].ID == TEXTURE_DELETION_ACTION){
         try
         {
-            for (const auto& entry : std::filesystem::directory_iterator("./tmp")) {
+            for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")) {
                 if (entry.is_regular_file()) {
                     std::string fileName = entry.path().filename().string();
 

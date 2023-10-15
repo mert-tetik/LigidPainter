@@ -268,3 +268,19 @@ void UTIL::moveFilesToDestination(const std::string& src, const std::string& dst
         LGDLOG::start << "ERROR : Filesystem : Location ID 772611 " << ex.what() << LGDLOG::end;
     }
 }
+
+std::string UTIL::environmentSpecificAppDataFolderPath(){
+    const char* appDataPath = std::getenv("APPDATA");
+    
+    if (appDataPath) {
+        std::string roamingFolderPath = appDataPath;
+        roamingFolderPath += "\\";
+        return roamingFolderPath;
+    } 
+    else 
+    {
+        LGDLOG::start << "ERROR : Unable to access the APPDATA environment variable." << LGDLOG::end;
+    }
+
+    return "";
+}

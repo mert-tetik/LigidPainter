@@ -148,6 +148,10 @@ namespace UTIL{
     /// @brief Returns the index of the param "s" in the param "array" 
     int findCorrespondingIndex(const std::string& s, const std::vector<std::string> array);
 
+    /// @brief Returns absolute environment specific app data folder path
+    ///        For instance : "C:\Users<Username>\AppData\Roaming\" for Windows OS
+    ///        Always returns the path with the '/' or '\' at the end of the string
+    std::string environmentSpecificAppDataFolderPath();
 }
 
 

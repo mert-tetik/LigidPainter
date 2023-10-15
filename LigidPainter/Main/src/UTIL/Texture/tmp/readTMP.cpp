@@ -36,8 +36,8 @@ void Texture::readTMP(std::string tmpTitle){
     //If the tmp directory doesn't exist then create it
     try
     {
-        if(!std::filesystem::exists("./tmp")){
-            if(!std::filesystem::create_directories("./tmp"))
+        if(!std::filesystem::exists(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")){
+            if(!std::filesystem::create_directories(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp"))
                 LGDLOG::start<< "ERROR : Reading TMP file : Creating tmp folder." << LGDLOG::end; 
         }
     }
@@ -47,8 +47,8 @@ void Texture::readTMP(std::string tmpTitle){
 
     
 
-    //Destination path of the tmp file (smt like ./tmp/13_3.tmp)
-    std::string tmpFilePath = (std::string)"./tmp/" + tmpTitle + (std::string)".tmp"; 
+    //Destination path of the tmp file (smt like ./LigidPainter/tmp/13_3.tmp)
+    std::string tmpFilePath = UTIL::environmentSpecificAppDataFolderPath() + (std::string)"LigidPainter/tmp/" + tmpTitle + (std::string)".tmp"; 
 
     //Binary file stream
     std::ifstream rf(tmpFilePath , std::ios::in | std::ios::binary);
@@ -104,7 +104,7 @@ std::string Texture::getTMPTitleWithGreatestIndex(){
     std::vector<int> indices;
     
     //Check all the tmp files
-    for (const auto & entry : std::filesystem::directory_iterator("./tmp")){
+    for (const auto & entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")){
         std::string file = entry.path().string();
 
         //Remove the directory from the file name

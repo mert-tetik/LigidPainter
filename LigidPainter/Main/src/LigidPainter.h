@@ -77,6 +77,9 @@ public:
             }
         }
 
+        if(std::filesystem::exists(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp"))
+            std::filesystem::remove_all(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp");
+
         // Signal the projectUpdatingThread to exit
         //projectUpdatingThreadElements.exportCV.notify_one();
         projectUpdatingThreadElements.isRunning = false;
