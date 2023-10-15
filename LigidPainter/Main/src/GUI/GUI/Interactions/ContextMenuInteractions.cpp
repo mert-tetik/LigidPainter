@@ -69,7 +69,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             Library::addTexture(duplicatedTexture);
         }
         if(ContextMenus::texture.contextPanel.sections[0].elements[2].button.hover && *Mouse::LClick()){//Clicked to copy path button
-            LigidGL::setClipboardText(std::filesystem::absolute(project.folderPath).string() + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + Library::getTexture(ContextMenus::texture.selectedElement)->title + ".png");
+            LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + Library::getTexture(ContextMenus::texture.selectedElement)->title + ".png");
         }
         if(ContextMenus::texture.contextPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){//Clicked to edit button
             textureEditorSelectedTxtr = *Library::getTexture(ContextMenus::texture.selectedElement);
@@ -113,7 +113,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             Library::addMaterial(duplicatedMaterial);
         }
         if(ContextMenus::material.contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){//Clicked to coppy path button
-            LigidGL::setClipboardText(std::filesystem::absolute(project.folderPath).string() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(ContextMenus::material.selectedElement)->title + ".lgdmaterial");
+            LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(ContextMenus::material.selectedElement)->title + ".lgdmaterial");
         }
         if(ContextMenus::material.contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Clicked to delete button
             
@@ -180,7 +180,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
                             );
         }
         if(ContextMenus::brush.contextPanel.sections[0].elements[4].button.hover && *Mouse::LClick()){//Clicked to copy path button
-            LigidGL::setClipboardText(std::filesystem::absolute(project.folderPath).string() + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + Library::getBrush(ContextMenus::brush.selectedElement)->title + ".lgdfilter");
+            LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + Library::getBrush(ContextMenus::brush.selectedElement)->title + ".lgdfilter");
         }
         if(ContextMenus::brush.contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){//Clicked to delete button
             Library::eraseBrush(ContextMenus::brush.selectedElement);
@@ -215,7 +215,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
 
         //Open in file explorer
         if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[5].button.hover && *Mouse::LClick()){
-            UTIL::openInFileExplorer(std::filesystem::absolute(project.folderPath).string().c_str());
+            UTIL::openInFileExplorer(project.absoluteProjectPath().c_str());
         }
     }
     if(ContextMenus::menuBarHelp.dialogControl.isActive()){ //If help context menu is active

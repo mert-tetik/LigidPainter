@@ -284,3 +284,13 @@ std::string UTIL::environmentSpecificAppDataFolderPath(){
 
     return "";
 }
+
+void UTIL::correctFolderDistinguishers(std::string& path){
+    char folderDist = UTIL::folderDistinguisher();
+    for (size_t i = 0; i < path.size(); i++)
+    {
+        if(path[i] == '\\' || path[i] == '/'){
+            path[i] = folderDist;
+        }
+    }
+}

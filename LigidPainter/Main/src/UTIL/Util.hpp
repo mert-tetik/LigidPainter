@@ -152,6 +152,9 @@ namespace UTIL{
     ///        For instance : "C:\Users<Username>\AppData\Roaming\" for Windows OS
     ///        Always returns the path with the '/' or '\' at the end of the string
     std::string environmentSpecificAppDataFolderPath();
+
+    /// @brief Replaces all the '/' characters with the '\' character in the Windows OS 
+    void correctFolderDistinguishers(std::string& path);
 }
 
 
@@ -522,6 +525,7 @@ public:
     ///        (AAA/MyProject)
     ///         Doesn't have '/' at the end
     std::string folderPath;
+    std::string absoluteProjectPath();
 
     //Constructor
     Project(){}

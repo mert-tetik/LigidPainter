@@ -63,8 +63,14 @@ std::string Project::locateLigidFileInFolder(const std::string& folderPath)
     }
 }
 
+std::string Project::absoluteProjectPath(){
+    std::string res = std::filesystem::absolute(this->folderPath).string();
+    UTIL::correctFolderDistinguishers(res);
+    return res;
+}
+
 void Project::copyTheProjectPathToTheClipboard(){
-    LigidGL::setClipboardText(std::filesystem::absolute(folderPath).string().c_str());
+    LigidGL::setClipboardText(this->absoluteProjectPath().c_str());
 }
 
 std::string Project::ligidFilePath(){
