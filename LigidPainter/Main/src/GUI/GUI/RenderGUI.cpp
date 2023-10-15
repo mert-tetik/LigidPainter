@@ -564,7 +564,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         }    
     }
 
-    //TODO Prevent stacking
     //TODO Remove the wraping 
 
     if(painter.paintingoverTextureEditorMode){
