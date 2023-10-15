@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.8)
 
 # Define the project data
-project(LigidPainter VERSION 2.2.2)
+project(LigidPainter VERSION 2.2.3)
 
 # Glob all source files in the LigidPainter directory
 file(GLOB_RECURSE LIGID_SOURCES
@@ -81,11 +81,11 @@ install(
 # Set the project version
 set(PROJECT_VERSION_MAJOR 2)
 set(PROJECT_VERSION_MINOR 2)
-set(PROJECT_VERSION_PATCH 2)
+set(PROJECT_VERSION_PATCH 3)
 
 # Set CPack package details
 set(CPACK_PACKAGE_NAME LigidPainter)  # App name
-set(CPACK_PACKAGE_VENDOR LigidTools)  # Publisher name
+set(CPACK_PACKAGE_VENDOR LigidTools-MertTETIK)  # Publisher name
 set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE_BINARY_FORMAT.txt)  # The license
 set(CPACK_RESOURCE_FILE_WELCOME ${CMAKE_SOURCE_DIR}/Installer/Welcome.txt)  # The welcome text
 set(CPACK_PACKAGE_ICON ${PROJECT_SOURCE_DIR}/LigidPainter/Resources/Icons/logo-1080x.ico)
@@ -100,7 +100,7 @@ set(CPACK_CREATE_DESKTOP_LINKS Ligid)
 # Set CPack package version
 set(CPACK_PACKAGE_VERSION_MAJOR 2)
 set(CPACK_PACKAGE_VERSION_MINOR 2)
-set(CPACK_PACKAGE_VERSION_PATCH 2)
+set(CPACK_PACKAGE_VERSION_PATCH 3)
 set(CPACK_GENERATOR WIX)
 
 include(CPack)
