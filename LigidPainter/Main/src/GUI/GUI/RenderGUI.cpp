@@ -550,9 +550,40 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         {
             if(this->paintingOverTextureFields[i].transformedFlag)
                 updatePaintingOverTexture = true;
-            
-            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyDialogActive, false, this->paintingOverTextureFields, i);
+
+            bool anyHover = false;
+            for (int ii = 0; ii < this->paintingOverTextureFields.size(); ii++){
+                if(ii > i){
+                    if(this->paintingOverTextureFields[ii].isHover()){
+                        anyHover = true;
+                    }    
+                }
+            }
+
+            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyDialogActive && !anyHover, false, this->paintingOverTextureFields, i);
         }    
+    }
+
+    //TODO Prevent stacking
+    //TODO Remove the wraping 
+
+    if(painter.paintingoverTextureEditorMode){
+        ShaderSystem::dotsShader().use();
+
+        ShaderSystem::dotsShader().setMat4("projection", this->projection);
+        ShaderSystem::dotsShader().setVec3("pos", glm::vec3(getContext()->windowScale / glm::ivec2(2), 0.5f));
+        ShaderSystem::dotsShader().setVec2("scale", getContext()->windowScale / glm::ivec2(2));
+
+        ShaderSystem::dotsShader().setVec2("dotPos", glm::vec2(0.f));
+        ShaderSystem::dotsShader().setFloat("scroll", 1.f);
+
+        /* Render the dots */
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        /* Clear the depth buffer of the current framebuffers*/
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        ShaderSystem::buttonShader().use();   
     }
 
     if(updatePaintingOverTexture){
