@@ -55,8 +55,7 @@ Material Material::duplicateMaterial(){
     
     for (size_t i = 0; i < duplicatedMat.materialModifiers.size(); i++)
     {
-        duplicatedMat.materialModifiers[i].maskTexture = this->materialModifiers[i].maskTexture;
-        duplicatedMat.materialModifiers[i].maskTexture = this->materialModifiers[i].maskTexture.duplicateTexture();
+        duplicatedMat.materialModifiers[i].maskTexture.ID = this->materialModifiers[i].maskTexture.duplicateTexture();
     }
 
     return duplicatedMat;
