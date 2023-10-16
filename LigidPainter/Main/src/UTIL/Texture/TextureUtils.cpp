@@ -1012,6 +1012,7 @@ void Texture::copyDataToTheCopyContext(){
     char* pxs = new char[res.x * res.y * 4]; 
     this->getData(pxs);
 
+    mainThreadUsingCopyContext = true;
     getCopyContext()->window.makeContextCurrent();
 
     glActiveTexture(GL_TEXTURE0);
@@ -1031,5 +1032,6 @@ void Texture::copyDataToTheCopyContext(){
     glGenerateMipmap(GL_TEXTURE_2D);
 
     getContext()->window.makeContextCurrent();
+    mainThreadUsingCopyContext = false;
     delete[] pxs;
 }

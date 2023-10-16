@@ -150,7 +150,7 @@ void LigidWindow::maximize(){
     UpdateWindow(this->window);
 }
 
-void LigidWindow::makeContextCurrent(){
+bool LigidWindow::makeContextCurrent(){
 
 #if defined(_WIN32) || defined(_WIN64)
     
@@ -161,14 +161,12 @@ void LigidWindow::makeContextCurrent(){
     // Release the previous context
     wglMakeCurrent(NULL, NULL);
 
-    // activate the OpenGL rendering context
-
     // Make the created context current for the given device context
     if(!wglMakeCurrent(hdc, this->openGLContext)){
         LGDLOG::start<< "Window OpenGL context - failed to make current" << LGDLOG::end;
+        return false;
     }       
     
-
 
 #elif(__APPLE__)
 
@@ -202,6 +200,7 @@ void LigidWindow::makeContextCurrent(){
 
 #endif
 
+    return true;
 }
 void LigidWindow::releaseContext(){
 #if defined(_WIN32) || defined(_WIN64)

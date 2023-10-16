@@ -973,7 +973,7 @@ public:
 #include <mutex>
 
 struct ThreadElements{
-    std::atomic<bool> updateTextures = true;
+    std::atomic<bool> updateTextures = false;
     
     std::atomic<bool> isRunning = true;
     std::mutex mutex;

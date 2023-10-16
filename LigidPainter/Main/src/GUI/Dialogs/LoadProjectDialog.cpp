@@ -149,7 +149,7 @@ void LoadProjectDialog::render(Timer timer,
     textBtn4.render(timer,false);
     
 
-    if(loadButton.hover && *Mouse::LClick()){
+    if(loadButton.clicked){
         //Select a project file inside of a project folder
         std::string test = showFileSystemObjectSelectionDialog("Select a ligid file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_LIGID, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
@@ -230,8 +230,7 @@ void LoadProjectDialog::render(Timer timer,
             std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
             
             //Load the project
-            if(project.loadProject(ligidFilePath, appMaterialModifiers)){
-                
+            if(project.loadProject(ligidFilePath, appMaterialModifiers)){                
                 startScreen = false;
                 
                 this->dialogControl.unActivate();

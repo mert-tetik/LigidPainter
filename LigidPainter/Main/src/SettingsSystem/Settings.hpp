@@ -17,6 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define SETTINGS_HPP
 
 #include <iostream>
+#include <atomic>
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
@@ -28,6 +29,7 @@ struct Context{
 
 Context* getContext();
 Context* getCopyContext();
+extern std::atomic<bool> mainThreadUsingCopyContext;
 
 struct Camera{
     float yaw = -90.f;

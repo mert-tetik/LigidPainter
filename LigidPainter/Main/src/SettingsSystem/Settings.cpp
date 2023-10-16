@@ -100,6 +100,7 @@ Box* getBox(){
     return &__box;
 }
 
+std::atomic<bool> mainThreadUsingCopyContext = false;
 
 namespace Settings{
     AppTextures appTextures(){

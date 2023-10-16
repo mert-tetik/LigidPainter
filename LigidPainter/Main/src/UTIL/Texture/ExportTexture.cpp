@@ -43,14 +43,18 @@ bool Texture::exportTexture(std::string path,const std::string format){
         return false;
     }
     
+    if(scale.x > 9000 || scale.y > 9000){
+        LGDLOG::start << "ERROR : Can't write texture data : Resolution is : " << scale.x << "x" << scale.y << LGDLOG::end;
+        return false;
+    }
+    
     unsigned char* pixels = new unsigned char[scale.x * scale.y * 4];
     
     //getData function with unsigned byte
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE16);
     glBindTexture(GL_TEXTURE_2D,ID);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     
-
     const int channels = 4;
 
     stbi_flip_vertically_on_write(1);  // Enable flipping
@@ -86,6 +90,11 @@ bool Texture::exportTexture(std::string path, unsigned char* pixels, glm::ivec2 
 
     if(!scale.x || !scale.y){
         LGDLOG::start << "ERROR : Can't write texture data : Resolution 0" << LGDLOG::end;
+        return false;
+    }
+
+    if(scale.x > 9000 || scale.y > 9000){
+        LGDLOG::start << "ERROR : Can't write texture data : Resolution is : " << scale.x << "x" << scale.y << LGDLOG::end;
         return false;
     }
 

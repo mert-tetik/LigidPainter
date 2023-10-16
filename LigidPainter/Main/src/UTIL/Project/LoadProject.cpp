@@ -46,6 +46,7 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
         LGDLOG::start<< "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << LGDLOG::end;
+        projectUpdatingThreadElements.updateTextures = false;
         this->projectProcessing = false;
         return false;
     }
@@ -100,11 +101,38 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
         
         }
 
+        //Load the tdmodels
+        Library::clearModels();
+        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
+            std::string modelPath = entry.path().string();
+
+            Model TDModel;
+            bool error = !TDModel.loadModel(modelPath, true);
+
+            //Check if the model is an obj file
+            if(UTIL::getLastWordBySeparatingWithChar(modelPath, '.') != "obj"){
+                //The 3D model in the project folder is not an obj file
+
+                //Delete the non-obj file
+                std::filesystem::remove(modelPath);
+            
+                //Recreate the obj file
+                FileHandler::writeOBJFile(UTIL::removeExtension(modelPath) + ".obj",TDModel);
+            }
+
+            if(TDModel.meshes.size() && !error)
+                Library::addModel(TDModel);
+            else if(!error)
+                LGDLOG::start<< "ERROR : Can't add the 3D model to the Library:: Mesh size is 0!" << LGDLOG::end;
+
+        }
+
         //TODO Do smt with these variables
         time_t creationDate; 
         time_t lastOpenedDate;
 
         if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
+            projectUpdatingThreadElements.updateTextures = false;
             this->projectProcessing = false;
             return false;
         }
@@ -140,47 +168,15 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
             texturePack.load(filterPath);
             Library::addTexturePack(texturePack);
         }
-
-        
-        //Load the tdmodels
-        Library::clearModels();
-        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
-            std::string modelPath = entry.path().string();
-
-            Model TDModel;
-            bool error = !TDModel.loadModel(modelPath, true);
-
-            //Check if the model is an obj file
-            if(UTIL::getLastWordBySeparatingWithChar(modelPath, '.') != "obj"){
-                //The 3D model in the project folder is not an obj file
-
-                //Delete the non-obj file
-                std::filesystem::remove(modelPath);
-            
-                //Recreate the obj file
-                FileHandler::writeOBJFile(UTIL::removeExtension(modelPath) + ".obj",TDModel);
-            }
-
-            if(TDModel.meshes.size() && !error)
-                Library::addModel(TDModel);
-            else if(!error)
-                LGDLOG::start<< "ERROR : Can't add the 3D model to the Library:: Mesh size is 0!" << LGDLOG::end;
-
-        }
     }
     catch (const std::filesystem::filesystem_error& ex) {
         LGDLOG::start << "ERROR : Filesystem : Location ID 658972 " << ex.what() << LGDLOG::end;
     }
 
-    
-
-
-    if(Library::getModelArraySize())
-        *getModel() = *Library::getModel(0);
-    else
+    if(!getModel()->meshes.size())
         getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
 
-
+    projectUpdatingThreadElements.updateTextures = false;
     this->projectProcessing = false;
     return true;
 }

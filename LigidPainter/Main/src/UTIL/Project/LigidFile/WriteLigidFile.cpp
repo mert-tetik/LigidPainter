@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "NodeSystem/Node/Node.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -38,6 +39,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void writeDescriptionHeader(std::ofstream &wf);
 void writeDateData(std::ofstream &wf);
 void writemeshNodeSceneData(std::ofstream &wf);
+void writeCurrentModelTitle(std::ofstream &wf);
 
 
 
@@ -62,18 +64,21 @@ void Project::writeLigidFile(){
     writeDescriptionHeader(wf);
 
     //! Version number
-    uint32_t versionNumber = 0x000007D0; //2000 
-    wf.write(reinterpret_cast<char*>(   &versionNumber    ),sizeof(uint32_t));
+    uint32_t versionNumber2000 = 0x000007D0; //2000 
+    uint32_t versionNumber2100 = 0x00000834; //2100 
+    wf.write(reinterpret_cast<char*>(   &versionNumber2100    ),sizeof(uint32_t));
 
     //!Date
     writeDateData(wf);
 
+    //!Current model data
+    writeCurrentModelTitle(wf);
+    
     //!meshNodeScene
     writemeshNodeSceneData(wf);
 
-    int textureRes = Settings::properties()->textureRes;
-
     //!Texture resolution
+    int textureRes = Settings::properties()->textureRes;
     wf.write(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
 
 }
@@ -146,5 +151,15 @@ void writemeshNodeSceneData(std::ofstream &wf){
                 wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->IOs[IOI].connections[conI].nodeIndex     )    , sizeof(int));
             }
         }
+    }
+}
+
+void writeCurrentModelTitle(std::ofstream &wf){
+    uint32_t modelTitleSize = getModel()->title.size();
+    wf.write(reinterpret_cast<char*>(   &modelTitleSize    )    , sizeof(uint32_t));
+    for (size_t i = 0; i < modelTitleSize; i++)
+    {
+        char c = getModel()->title[i];
+        wf.write(reinterpret_cast<char*>(   &c     )    , sizeof(char));
     }
 }

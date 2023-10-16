@@ -52,6 +52,12 @@ void projectUpdatingThread(Project &project) {
             std::lock_guard<std::mutex> lock(projectUpdatingThreadElements.mutex);
 
             if(project.folderPath != ""){
+                
+                while(true){
+                    if(!project.projectProcessing)
+                        break;
+                }
+                
                 project.updateProject(projectUpdatingThreadElements.updateTextures, true);
                 projectUpdatingThreadElements.updateTextures = false;
             }

@@ -38,6 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //forward declerations of the util functions
 void readmeshNodeSceneData(std::ifstream &rf);
+void readCurrentModelData(std::ifstream &rf);
 
 //Returns true if path is a ligid file
 bool Project::readLigidFile(
@@ -76,10 +77,13 @@ bool Project::readLigidFile(
         }
 
         //! Version number
-        uint32_t versionNumber; 
+        uint32_t versionNumber2000 = 0x000007D0; //2000  
+        uint32_t versionNumber2100 = 0x00000834; //2100  
+        
+        uint32_t versionNumber; //2100  
         rf.read(reinterpret_cast<char*>(   &versionNumber    ),sizeof(uint32_t));
 
-        if(versionNumber != 0x000007D0){
+        if(versionNumber != versionNumber2100 && versionNumber != versionNumber2000){
             LGDLOG::start<< "WARNING! : Ligid file version number was : " << versionNumber << ". Results might be unexpected." << LGDLOG::end; 
         }
 
@@ -89,6 +93,11 @@ bool Project::readLigidFile(
         //! Read the last opened date
         rf.read(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
 
+        //!Read current model data
+        if(versionNumber == versionNumber2100){
+            readCurrentModelData(rf);
+        }
+        
         //!meshNodeScene
         readmeshNodeSceneData(rf);
 
@@ -215,5 +224,24 @@ void readmeshNodeSceneData(std::ifstream &rf){
             }
         }
     }
+}
 
+void readCurrentModelData(std::ifstream &rf){
+    std::string modelTitle = "";
+    
+    uint32_t modelTitleSize;
+    rf.read(reinterpret_cast<char*>(   &modelTitleSize    )    , sizeof(uint32_t));
+    for (size_t i = 0; i < modelTitleSize; i++)
+    {
+        char c;
+        rf.read(reinterpret_cast<char*>(   &c     )    , sizeof(char));
+        modelTitle.push_back(c);
+    }
+
+    for (size_t i = 0; i < Library::getModelArraySize(); i++)
+    {
+        if(Library::getModelObj(i).title == modelTitle){
+            *getModel() = Library::getModelObj(i);
+        }
+    }
 }

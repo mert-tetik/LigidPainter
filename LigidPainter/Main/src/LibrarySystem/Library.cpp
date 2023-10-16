@@ -208,11 +208,13 @@ void Library::eraseTexture   (int index){
 
     __changed = true;
     
+    mainThreadUsingCopyContext = true;
     getCopyContext()->window.makeContextCurrent();
     glDeleteTextures(1, &__textures[index].copyContextID);
 
     getContext()->window.makeContextCurrent();
     glDeleteTextures(1, &__textures[index].ID);
+    mainThreadUsingCopyContext = false;
 
     __textures.erase(__textures.begin() + index);
 
@@ -314,6 +316,7 @@ void Library::eraseTexturePack     (int index){
 void Library::clearTextures   (){
     __changed = true;
     
+    mainThreadUsingCopyContext = true;
     getCopyContext()->window.makeContextCurrent();
     for (size_t i = 0; i < __textures.size(); i++)
     {
@@ -324,6 +327,7 @@ void Library::clearTextures   (){
     {
         glDeleteTextures(1, &__textures[i].ID);
     }
+    mainThreadUsingCopyContext = false;
     
     __textures.clear();
 

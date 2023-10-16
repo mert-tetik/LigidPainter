@@ -65,7 +65,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
 
         std::filesystem::create_directory(updateTextureFolderPath);
 
-        if(multithreadingMode)
+        if(multithreadingMode && !mainThreadUsingCopyContext)
             getCopyContext()->window.makeContextCurrent();
         
         bool error = false;
@@ -78,12 +78,17 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
                 if(multithreadingMode)
                     threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
 
+                if(mainThreadUsingCopyContext && multithreadingMode){
+                    error = true;
+                    break;
+                }
+
                 if(!threadSafeTxtr.exportTexture(updateTextureFolderPath, "PNG"))
                     error = true;
             }
         }
     
-        if(multithreadingMode)
+        if(multithreadingMode && !mainThreadUsingCopyContext)
             getCopyContext()->window.releaseContext();
         if(!error){
             if(!UTIL::deleteFilesInFolder(textureFolderPath)){

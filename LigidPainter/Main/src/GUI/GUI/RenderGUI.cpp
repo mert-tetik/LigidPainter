@@ -166,7 +166,6 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
 
     __wasTextureSelectionDialogActive = false;
 
-    
 }
 
 
@@ -649,8 +648,8 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
         newProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
-    
+        loadProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);    
+
     if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(timer,newProjectDialog,loadProjectDialog);
 

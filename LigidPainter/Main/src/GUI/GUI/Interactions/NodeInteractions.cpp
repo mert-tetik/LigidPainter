@@ -36,9 +36,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void nodeInteraction()
 {
-    
     //Update the mesh node if a new model is added
-    if(getModel()->newModelAdded){
+    if(getModel()->newModelAdded && NodeScene::getArraySize()){
         
         Node previousNode = *NodeScene::getNode(0); //(Current node (unchanged))
 
@@ -54,7 +53,7 @@ void nodeInteraction()
         
         //Update all the connections
         NodeScene::updateAllTheNodeConnections();
-    
+
         NodeScene::updateNodeResults(Settings::properties()->textureRes, -1);
     }
 }
