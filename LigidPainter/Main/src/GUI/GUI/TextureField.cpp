@@ -232,9 +232,9 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
         i--;
     }
     else if(this->scaleToTextureResolutionButton.clicked){
-        glm::vec2 prevScale = orgScale;
-        scaleAccordingToTextureRes(orgScale, texture);
-        orgPos.x -= prevScale.x - orgScale.x; 
+        glm::vec2 prevScale = scale;
+        scaleAccordingToTextureRes(scale, texture);
+        pos.x -= prevScale.x -scale.x; 
     }
     
     this->transformedFlag = !(this->prevPos != orgPos || this->prevScale != orgScale) && this->prevTransformedFlag; 
