@@ -358,12 +358,14 @@ void Renderer::render(){
 
     //Painting
     if(
-        *Mouse::LPressed() && 
-        !userInterface.anyContextMenuActive && 
-        !userInterface.anyPanelHover && 
-        !userInterface.anyDialogActive && 
-        (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 &&
-        !painter.paintingoverTextureEditorMode
+            *Mouse::LPressed() && 
+            !userInterface.anyContextMenuActive && 
+            !userInterface.anyPanelHover && 
+            !userInterface.anyDialogActive && 
+            (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 &&
+            !painter.paintingoverTextureEditorMode &&
+            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
+            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
         )
     {
         //Paint

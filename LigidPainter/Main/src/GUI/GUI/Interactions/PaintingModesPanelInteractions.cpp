@@ -94,7 +94,7 @@ void paintingModesPanelInteraction(
         }
     }
     if(vectorPaintingModePropertyPanel.sections[0].elements[4].button.clicked){
-        painter.applyVectorStrokes(twoDPaintingPanel, windowOrtho, vectorPaintingModePropertyPanel.sections[0].elements[0].comboBox.selectedIndex, filterPaintingModeFilterBtn.filter, twoDPaintingBox);
+        painter.applyVectorStrokes(painter.vectorStrokes, twoDPaintingPanel, windowOrtho, vectorPaintingModePropertyPanel.sections[0].elements[0].comboBox.selectedIndex, filterPaintingModeFilterBtn.filter, twoDPaintingBox);
     }
 
     painter.smearTransformStrength = smearPaintingModePropertyPanel.sections[0].elements[0].rangeBar.value;

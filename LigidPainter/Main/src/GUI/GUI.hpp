@@ -92,6 +92,10 @@ private:
     bool renamingTextBoxClosed = false;
     glm::ivec2 renamingIndices = glm::vec2(0,0); //x for the context menu index, y for the element index
     std::string lastTitleBeforeRenaming;
+
+    bool prevStraightLinePaintingCondition = false;
+    glm::vec2 straightLinePaintingStartPos = glm::vec2(50.f);
+    glm::vec2 straightLinePaintingDirectionPos = glm::vec2(50.f);
 public:
     /* -- PANELS -- */
     

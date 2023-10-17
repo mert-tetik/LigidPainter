@@ -173,9 +173,6 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
         LGDLOG::start << "ERROR : Filesystem : Location ID 658972 " << ex.what() << LGDLOG::end;
     }
 
-    if(!getModel()->meshes.size())
-        getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
-
     projectUpdatingThreadElements.updateTextures = false;
     this->projectProcessing = false;
     return true;

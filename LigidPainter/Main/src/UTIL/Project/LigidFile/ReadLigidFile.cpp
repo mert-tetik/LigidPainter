@@ -98,6 +98,9 @@ bool Project::readLigidFile(
             readCurrentModelData(rf);
         }
         
+        if(!getModel()->meshes.size())
+            getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
+        
         //!meshNodeScene
         readmeshNodeSceneData(rf);
 

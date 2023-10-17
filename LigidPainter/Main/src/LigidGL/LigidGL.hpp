@@ -488,7 +488,7 @@ public:
 
         !!! Creating a window already makes it's OpenGL rendering context current
     */
-    void makeContextCurrent();
+    bool makeContextCurrent();
     
     /*!
         @brief Used to release the active context after calling the @ref makeContextCurrent function

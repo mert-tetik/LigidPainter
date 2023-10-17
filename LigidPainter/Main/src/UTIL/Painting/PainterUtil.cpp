@@ -100,7 +100,7 @@ Color Painter::getSelectedColor(){
         return this->color3;
 }
 
-void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox){
+void Painter::applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox){
     
     int textureResolution = 256;
 
@@ -122,7 +122,7 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
 
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
 
-    for (size_t i = 0; i < this->vectorStrokes.size(); i++)
+    for (size_t i = 0; i < vectorStrokes.size(); i++)
     {
         //ABS
         ShaderSystem::vectoralCurve().use();
@@ -131,10 +131,10 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
         ShaderSystem::vectoralCurve().setVec3("pos", glm::vec3(textureResolution/2.f, textureResolution/2.f, 0.9f));
         ShaderSystem::vectoralCurve().setVec2("scale", glm::vec2(textureResolution/2.f, textureResolution/2.f));
         
-        ShaderSystem::vectoralCurve().setVec2("direction", this->vectorStrokes[i].offsetPos);
+        ShaderSystem::vectoralCurve().setVec2("direction", vectorStrokes[i].offsetPos);
         
-        ShaderSystem::vectoralCurve().setVec2("startPos", this->vectorStrokes[i].startPos);
-        ShaderSystem::vectoralCurve().setVec2("destPos", this->vectorStrokes[i].endPos);
+        ShaderSystem::vectoralCurve().setVec2("startPos", vectorStrokes[i].startPos);
+        ShaderSystem::vectoralCurve().setVec2("destPos", vectorStrokes[i].endPos);
         ShaderSystem::vectoralCurve().setVec2("percScale", glm::vec2(textureResolution));
         ShaderSystem::vectoralCurve().setInt("lineCapturingMode", 1);
         
@@ -192,6 +192,10 @@ void Painter::applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho
     this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox);
 
     this->refreshPainting();
+
+    ShaderSystem::buttonShader().use();
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
 }
 
 bool __anyVectoralPointMoving = false;

@@ -784,7 +784,7 @@ public:
 
     Color getSelectedColor();
 
-    void applyVectorStrokes(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox);
+    void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox);
 
     /// @brief Clears & refreshes all the buffers
     void refreshBuffers();
