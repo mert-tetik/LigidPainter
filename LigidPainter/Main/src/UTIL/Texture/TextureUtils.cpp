@@ -397,7 +397,6 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         ShaderSystem::edgeWearShader().setFloat("brightness", this->proceduralProps.proceduralBrightness);
         ShaderSystem::edgeWearShader().setFloat("softness", this->proceduralProps.smartProperties.y);
         ShaderSystem::edgeWearShader().setFloat("noiseStrength", this->proceduralProps.smartProperties.w);
-        ShaderSystem::edgeWearShader().setVec2("txtrRes", glm::vec2(textureRes));
         ShaderSystem::edgeWearShader().setMat4("projection", projection);
         ShaderSystem::edgeWearShader().setMat4("projectedPosProjection", projection);
         ShaderSystem::edgeWearShader().setVec3("pos", glm::vec3((float)textureRes / 2.f, (float)textureRes / 2.f, 0.9f));

@@ -282,8 +282,10 @@ void BakingDialog::render(Timer timer, Skybox skybox){
                 channelTxtr.title = "ambientOcclusion_" + getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].materialName;
             }
 
-            if(this->exportChannelsIntoLibraryPanel.sections[0].elements[channelI].checkBox.clickState1)
-                Library::addTexture(channelTxtr.duplicateTexture());
+            if(this->exportChannelsIntoLibraryPanel.sections[0].elements[channelI].checkBox.clickState1){
+                channelTxtr.ID = channelTxtr.duplicateTexture();
+                Library::addTexture(channelTxtr);
+            }
         }
     }
 

@@ -44,7 +44,7 @@ vec3 blur(sampler2D sp, vec2 uv, vec2 scale) {
 }
 
 void main() {
-    vec2 ps = vec2(1.0) / txtrRes;
+    vec2 ps = vec2(0.00390625); // 1 / 256
     vec2 uv = TexCoords;
     
     fragColor.rgb = vec3(blur(txtr, uv, ps));
