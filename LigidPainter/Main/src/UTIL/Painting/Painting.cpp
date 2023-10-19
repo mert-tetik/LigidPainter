@@ -317,7 +317,7 @@ static void projectThePaintingTexture(
         
         //Draw the UV of the selected model
         if(selectedMeshIndex < getModel()->meshes.size())
-            getModel()->meshes[selectedMeshIndex].Draw();
+            getModel()->meshes[selectedMeshIndex].Draw(false);
     }
 
     // Painting the 2D scene 

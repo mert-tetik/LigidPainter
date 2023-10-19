@@ -123,6 +123,7 @@ namespace ShaderSystem{
     Shader nodeConnectionCurve();
     Shader projectingPaintedTextureShader();
     Shader projectedPaintingTextureMixerShader();
+    Shader primitiveIDShader();
 
     void initShaderSystem();
 };

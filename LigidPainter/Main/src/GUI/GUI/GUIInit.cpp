@@ -186,6 +186,13 @@ void UI::init
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Z Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),
 
                                     }
+                                ),
+                                Section(
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Painting Over"  , Settings::appTextures().TDModelIcon, 3.f,true)),
+                                    {   
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Mask to selected mesh", 1.f)), //0
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Mesh selection mode", 1.f)), //1
+                                    }
                                 )
                             },
                             

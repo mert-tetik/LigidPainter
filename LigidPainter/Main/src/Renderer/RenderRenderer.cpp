@@ -333,11 +333,14 @@ void Renderer::render(){
             ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
         //Draw the mesh
-        getModel()->meshes[i].Draw();
+        getModel()->meshes[i].Draw(painter.faceSelection.editMode);
     }
     
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
     ShaderSystem::tdModelShader().setInt("paintingOverDisplayinMode", 0);
+
+    glActiveTexture(GL_TEXTURE11);
+    glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
 
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -487,6 +490,7 @@ void Renderer::set3DUniforms(){
     ShaderSystem::tdModelShader().setInt("ambientOcclusionTxtr",7);
     ShaderSystem::tdModelShader().setInt("paintingTexture",8);
     ShaderSystem::tdModelShader().setInt("paintingOverTexture",10);
+    ShaderSystem::tdModelShader().setInt("selectedPrimitiveIDS", 11);
     ShaderSystem::tdModelShader().setVec3("viewPos", getScene()->camera.cameraPos);
     ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::tdModelShader().setMat4("projection", getScene()->projectionMatrix);

@@ -173,7 +173,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
                 ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
                 ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->viewMatrix);
 
-                getModel()->meshes[selectedMeshIndex].Draw();         
+                getModel()->meshes[selectedMeshIndex].Draw(false);         
             }
         }
         else{

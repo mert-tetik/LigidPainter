@@ -360,7 +360,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         ShaderSystem::normalVectorShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
         ShaderSystem::normalVectorShader().setMat4("view", getScene()->viewMatrix);
     
-        mesh.Draw();
+        mesh.Draw(false);
 
         // Blured normal vector txtr
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMapTxtrBlurred.ID, 0);
@@ -491,7 +491,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        mesh.Draw();
+        mesh.Draw(false);
 
         Settings::defaultFramebuffer()->FBO.bind();
         glDeleteFramebuffers(1, &FBO);

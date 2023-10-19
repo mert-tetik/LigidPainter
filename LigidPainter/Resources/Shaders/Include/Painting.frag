@@ -208,7 +208,7 @@ vec3 getPaintedTexture  (
     if(usePaintingOver == 1){
         if(paintingOverGrayScale == 1){
             destColor = paintingColor;
-            intensity *= paintingOverTxtrVal.r;
+            intensity *= paintingOverTxtrVal.r * paintingOverTxtrVal.a;
         }
         else{
             destColor = paintingOverTxtrVal.rgb;

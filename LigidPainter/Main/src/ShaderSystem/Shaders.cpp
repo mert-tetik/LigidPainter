@@ -61,11 +61,13 @@ Shader __defaultFramebufferShader;
 Shader __nodeConnectionCurve;
 Shader __projectingPaintedTextureShader;
 Shader __projectedPaintingTextureMixerShader;
+Shader __primitiveIDShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
     __depth3D.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag");
     __skyboxBall.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag");
+    __primitiveIDShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PrimitiveID.frag");
     __bakingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/Baking.frag");
     __textureUpdatingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag");
     __skyboxShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert", "LigidPainter/Resources/Shaders/aFrag/Skybox.frag");
@@ -220,4 +222,7 @@ Shader ShaderSystem::projectingPaintedTextureShader(){
 }
 Shader ShaderSystem::projectedPaintingTextureMixerShader(){
     return __projectedPaintingTextureMixerShader;
+}
+Shader ShaderSystem::primitiveIDShader(){
+    return __primitiveIDShader;
 }

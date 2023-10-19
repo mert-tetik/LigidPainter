@@ -133,7 +133,7 @@ void Mesh::generateDisplayingTexture(){
     ShaderSystem::solidShadingShader().setVec3("viewPos", camPos);
     
     //Draw the sphere
-    this->Draw();
+    this->Draw(false);
     
     //!Finish (prepare rendering the GUI)
 
@@ -164,7 +164,7 @@ void Mesh::generateUVMask(){
     ShaderSystem::uvMaskShader().setVec4("color", glm::vec4(1.));
     ShaderSystem::uvMaskShader().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f));
 
-    this->Draw();
+    this->Draw(false);
 
     Settings::defaultFramebuffer()->FBO.bind();
     FBO.deleteBuffers(false, false);
@@ -191,15 +191,29 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 }
 
 // Render the mesh
-void Mesh::Draw() 
+void Mesh::Draw(bool displayWireframe) 
 {
     // draw mesh
-    glBindBuffer(1,VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBindVertexArray(VAO);
 
     glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+
+    // Wireframe  
+    if(displayWireframe){
+        glDepthFunc(GL_LESS);
+        ShaderSystem::tdModelShader().setMat4("modelMatrix", glm::scale(getScene()->transformMatrix, glm::vec3(1.0015f)));
+        ShaderSystem::tdModelShader().setInt("wireframeMode", 1);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        ShaderSystem::tdModelShader().setMat4("modelMatrix", getScene()->transformMatrix);
+        glDepthFunc(GL_LEQUAL);
+    }
+
+    ShaderSystem::tdModelShader().setInt("wireframeMode", 0);
     
-    glBindBuffer(1, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     
     // always good practice to set everything back to defaults once configured.

@@ -648,6 +648,24 @@ struct MirrorSide{
     glm::mat4 getViewMat(glm::vec3 offset);
 };
 
+struct FaceSelection{
+public:
+    // Painting the selected mesh mode activated flag 
+    bool activated = false;
+    // Selecting mesh mode activated flag 
+    bool editMode = false;
+
+    /// @brief Contains the indices of the selected faces
+    ///        Being processed in the PBR shader
+    std::vector<int> selectedPrimitiveIDs;
+    Texture selectedFaces;
+
+    /// @brief 3D model rendered with primitive ID renderin shader
+    Texture modelPrimitives;
+
+    bool interaction(Mesh& selectedMesh);
+};
+
 class Painter
 {
 public:
@@ -707,6 +725,8 @@ public:
     int getSelectedTextureIndexInLibrary();
 
     std::vector<VectorStroke> vectorStrokes;
+
+    FaceSelection faceSelection;
 
     /*!
     * @brief Indicates which painting mode is selected

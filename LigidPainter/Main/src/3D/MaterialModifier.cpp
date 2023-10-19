@@ -1082,7 +1082,7 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
             glBindTexture(GL_TEXTURE_2D, 0);
 
         //Render the result to the framebuffer
-        mesh.Draw();
+        mesh.Draw(false);
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -1203,7 +1203,7 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
-        mesh.Draw();
+        mesh.Draw(false);
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -1311,7 +1311,7 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
 
         //Render the result to the framebuffer
-        mesh.Draw();
+        mesh.Draw(false);
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -1431,7 +1431,7 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
-        mesh.Draw();
+        mesh.Draw(false);
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -1563,7 +1563,7 @@ void liquidModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
-        mesh.Draw();
+        mesh.Draw(false);
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -1699,7 +1699,7 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
-        mesh.Draw();
+        mesh.Draw(false);
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -1831,7 +1831,7 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
-        mesh.Draw();
+        mesh.Draw(false);
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -1964,7 +1964,7 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
-        mesh.Draw();
+        mesh.Draw(false);
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -2094,7 +2094,7 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
             glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
         
         //Render the result to the framebuffer
-        mesh.Draw();
+        mesh.Draw(false);
         
         //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);

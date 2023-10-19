@@ -73,9 +73,17 @@ out vec4 fragColor;
 uniform vec3 mirrorState = vec3(0.);
 uniform vec3 mirrorOffsets = vec3(0.);
 
+uniform int wireframeMode = 0;
+uniform sampler2D selectedPrimitiveIDS;
+
 
 void main() {
 
+    if(wireframeMode == 1 || texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID, 0), 0).r > 0.5){
+        fragColor = vec4(1.);
+        return;
+    }
+    
     //Material channels
     vec3 albedo;
     float roughness;

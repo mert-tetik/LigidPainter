@@ -366,7 +366,7 @@ void BakingDialog::render(Timer timer, Skybox skybox){
         glActiveTexture(GL_TEXTURE7);
         glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].ambientOcclusion.ID);
         
-        getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].Draw();
+        getModel()->meshes[selectMeshPanel.sections[0].elements[0].button.selectedMeshI].Draw(false);
 
         glDeleteFramebuffers(1, &FBO);
         glDeleteRenderbuffers(1, &RBO);

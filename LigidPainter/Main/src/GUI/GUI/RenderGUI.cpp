@@ -401,7 +401,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.modelPrimitives.ID);
 
         // Render the texture as it's pixels can be seen
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -660,6 +660,12 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     prevStraightLinePaintingCondition = straightLinePaintingCondition;
 
 
+    // ------------------------- Face Selection ----------------------------
+    painter.faceSelection.activated = paintingPanel.sections[6].elements[0].checkBox.clickState1;
+    painter.faceSelection.editMode = paintingPanel.sections[6].elements[1].checkBox.clickState1;
+
+    if(painter.selectedMeshIndex < getModel()->meshes.size() && *Mouse::LPressed())
+        painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex]);
 }
 
 void UI::renderRenamingTextbox(Timer &timer, Painter &painter){

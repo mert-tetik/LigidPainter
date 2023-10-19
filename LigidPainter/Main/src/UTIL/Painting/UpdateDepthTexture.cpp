@@ -88,7 +88,7 @@ void Painter::updateDepthTexture(){
 
         //Draw the selected mesh in 3D
         if(selectedMeshIndex < getModel()->meshes.size())
-            getModel()->meshes[selectedMeshIndex].Draw();
+            getModel()->meshes[selectedMeshIndex].Draw(false);
     }
     
 
