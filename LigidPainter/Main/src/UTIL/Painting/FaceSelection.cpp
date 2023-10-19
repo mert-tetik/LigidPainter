@@ -106,42 +106,59 @@ bool FaceSelection::interaction(Mesh& selectedMesh){
 
     selectedMesh.Draw(false);
 
-    float px[1]; 
-
-    //if(cursorPos.x >= windowSize.x)
-    //    cursorPos.x = 0;
-    //if(cursorPos.y >= windowSize.y)
-    //    cursorPos.y = 0;
-
+    float* pxs = new float[this->radius * this->radius]; 
     FBO.bind();
     glReadPixels(
-                    cursorPos.x, 
-                    windowSize.y - cursorPos.y, 
-                    1, 
-                    1,
+                    cursorPos.x - this->radius/2, 
+                    (windowSize.y - cursorPos.y) - this->radius/2, 
+                    this->radius, 
+                    this->radius,
                     GL_RED,
                     GL_FLOAT,
-                    &px
+                    pxs
                 );
                 
     bool changesMade = false; 
 
-    int pxInt = px[0];
+    if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && *Mouse::LClick()){
+        if(this->selectedPrimitiveIDs.size())
+            changesMade = true;
+        this->selectedPrimitiveIDs.clear();
+    }
+    
+    for (size_t i = 0; i < this->radius * this->radius; i++)
+    {
+        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+            if(!isInArray(this->selectedPrimitiveIDs, pxs[i] - 1)){
+                this->selectedPrimitiveIDs.push_back(pxs[i] - 1);
+                changesMade = true;
+            }
+        }
+        else{
+            for (size_t ei = 0; ei < this->selectedPrimitiveIDs.size(); ei++)
+            {
+                if(this->selectedPrimitiveIDs[ei] == pxs[i] - 1){
+                    this->selectedPrimitiveIDs.erase(this->selectedPrimitiveIDs.begin() + ei);
+                    ei--;
+                    changesMade = true;
+                }
+            }
+        }
 
-    if(!isInArray(this->selectedPrimitiveIDs, pxInt)){
-        this->selectedPrimitiveIDs.push_back(pxInt);
+    }
 
-        glm::vec2 txtrRes = selectedFaces.getResolution();
 
+    
+
+    if(changesMade){
         const int fragmentCount = selectedMesh.indices.size() / 3; 
 
-            changesMade = true;
-            updatePrimitivesArrayTexture(
-                                            this->selectedFaces, 
-                                            this->selectedPrimitiveIDs, 
-                                            selectedMesh, 
-                                            fragmentCount
-                                        );
+        updatePrimitivesArrayTexture(
+                                        this->selectedFaces, 
+                                        this->selectedPrimitiveIDs, 
+                                        selectedMesh, 
+                                        fragmentCount
+                                    );
     }
 
     // Set back to default
@@ -149,5 +166,6 @@ bool FaceSelection::interaction(Mesh& selectedMesh){
     Settings::defaultFramebuffer()->setViewport();
 
     FBO.deleteBuffers(false, true);
+    delete[] pxs;
     return changesMade;
 }

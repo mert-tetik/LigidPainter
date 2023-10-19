@@ -650,10 +650,17 @@ struct MirrorSide{
 
 struct FaceSelection{
 public:
-    // Painting the selected mesh mode activated flag 
+    /// @brief Painting the selected mesh mode activated flag 
     bool activated = false;
-    // Selecting mesh mode activated flag 
+    /// @brief Selecting mesh mode activated flag 
     bool editMode = false;
+    /// @brief 0 : circle | 1 : box  
+    int selectionModeIndex = 0;
+    /// @brief radius value of the circle selection mode
+    int radius = 10;
+    /// @brief flag to indicate if the xray selection is active
+    bool xray = false;
+
 
     /// @brief Contains the indices of the selected faces
     ///        Being processed in the PBR shader

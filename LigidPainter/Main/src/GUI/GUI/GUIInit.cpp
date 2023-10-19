@@ -188,10 +188,13 @@ void UI::init
                                     }
                                 ),
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Painting Over"  , Settings::appTextures().TDModelIcon, 3.f,true)),
-                                    {   
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Mask to selected mesh", 1.f)), //0
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Mesh selection mode", 1.f)), //1
+                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Face Selection"  , Settings::appTextures().TDModelIcon, 3.f,true)),
+                                    {  
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mask to selected mesh", 1.f), //0
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mesh selection mode", 1.f), //1
+                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //2
+                                        RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2,1.f), "Circle radius"  , Texture(), 1.f, 1.f, 100.f, 10.f), //3
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "XRay", 1.f), //4
                                     }
                                 )
                             },

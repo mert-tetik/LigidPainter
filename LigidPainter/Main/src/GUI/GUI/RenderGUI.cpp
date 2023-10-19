@@ -149,6 +149,7 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
             !this->anyContextMenuActive && 
             (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 &&
             !painter.paintingoverTextureEditorMode &&
+            !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
         )
@@ -561,11 +562,11 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
                 }
             }
 
-            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyDialogActive && !anyHover, false, this->paintingOverTextureFields, i);
+            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyDialogActive && !anyHover && !painter.faceSelection.editMode, false, this->paintingOverTextureFields, i);
         }    
     }
 
-    if(painter.paintingoverTextureEditorMode){
+    if(painter.paintingoverTextureEditorMode && !painter.faceSelection.editMode){
         ShaderSystem::dotsShader().use();
 
         ShaderSystem::dotsShader().setMat4("projection", this->projection);
@@ -610,7 +611,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
 
     bool straightLinePaintingCondition = (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && *Mouse::LPressed(); 
-    if(straightLinePaintingCondition){
+    if(straightLinePaintingCondition && !painter.faceSelection.editMode){
 
         if(!prevStraightLinePaintingCondition){
             straightLinePaintingStartPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
@@ -663,8 +664,11 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     // ------------------------- Face Selection ----------------------------
     painter.faceSelection.activated = paintingPanel.sections[6].elements[0].checkBox.clickState1;
     painter.faceSelection.editMode = paintingPanel.sections[6].elements[1].checkBox.clickState1;
+    painter.faceSelection.selectionModeIndex = paintingPanel.sections[6].elements[2].comboBox.selectedIndex;
+    painter.faceSelection.radius = paintingPanel.sections[6].elements[3].rangeBar.value;
+    painter.faceSelection.xray = paintingPanel.sections[6].elements[4].checkBox.clickState1;
 
-    if(painter.selectedMeshIndex < getModel()->meshes.size() && *Mouse::LPressed())
+    if(painter.selectedMeshIndex < getModel()->meshes.size() && *Mouse::LPressed() && !anyPanelHover && !anyDialogActive && painter.faceSelection.editMode)
         painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex]);
 }
 

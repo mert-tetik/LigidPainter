@@ -367,6 +367,7 @@ void Renderer::render(){
             !userInterface.anyDialogActive && 
             (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 &&
             !painter.paintingoverTextureEditorMode &&
+            !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
         )
