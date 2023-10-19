@@ -338,6 +338,8 @@ void Renderer::render(){
     
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
     ShaderSystem::tdModelShader().setInt("paintingOverDisplayinMode", 0);
+    ShaderSystem::tdModelShader().setInt("usingMeshSelection", painter.faceSelection.activated);
+    ShaderSystem::tdModelShader().setInt("meshSelectionEditing", painter.faceSelection.editMode);
 
     glActiveTexture(GL_TEXTURE11);
     glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);

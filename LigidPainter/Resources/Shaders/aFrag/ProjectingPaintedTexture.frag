@@ -39,6 +39,10 @@ uniform int doDepthTest;
 //Fragment shader output
 out vec4 fragColor;
 
+uniform int usingMeshSelection;
+uniform sampler2D selectedPrimitiveIDS;
+
+
 bool isPainted  (
                     vec3 uv, //Screen position (projected position) of the vertex
                     sampler2D depthTexture //Model's depth texture (linearized) 
@@ -78,6 +82,11 @@ void main(){
     vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w);
 
     vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, screenPos, paintingOpacity, doDepthTest);
-    
+
+    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID, 0), 0).r > 0.5;
+    if(!selectedPrim && usingMeshSelection == 1){
+        brushTxtr = vec4(0.);
+    }
+
     fragColor = brushTxtr;
 }

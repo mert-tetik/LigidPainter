@@ -54,7 +54,7 @@ static void sendPainterDataToThe3DModelShaderProgram(
 static void projectThePaintingTexture(
                                         Texture& selectedTexture, Texture& projectedPaintingTexture, unsigned int paintingTexture, unsigned int depthTexture, 
                                         int selectedPaintingModeIndex, float brushPropertiesOpacity, bool threeDimensionalMode, glm::mat4 windowOrtho, 
-                                        int selectedMeshIndex, Box twoDPaintingBox, glm::mat4 viewMat
+                                        int selectedMeshIndex, Box twoDPaintingBox, glm::mat4 viewMat, bool faceSelectionActive, Texture selectedPrimitives
                                     );
 
 static void generateMirroredProjectedPaintingTexture(   
@@ -62,7 +62,7 @@ static void generateMirroredProjectedPaintingTexture(
                                                         MirrorSide& oXZSide, MirrorSide& oYZSide, MirrorSide& oXYZSide, float mirrorXOffset, float mirrorYOffset, 
                                                         float mirrorZOffset,Texture paintingTxtrObj, Texture& selectedTexture,  Texture& projectedPaintingTexture,  
                                                         int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode,  glm::mat4 windowOrtho,  
-                                                        int selectedMeshIndex, Box twoDPaintingBox
+                                                        int selectedMeshIndex, Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives
                                                     );
 
 void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox){
@@ -169,7 +169,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
                                                 this->oSide, this->oXSide, this->oYSide, this->oXYSide, this->oZSide, this->oXZSide, this->oYZSide, 
                                                 this->oXYZSide, this->mirrorXOffset, this->mirrorYOffset, this->mirrorZOffset, paintingTxtrObj, this->selectedTexture, 
                                                 this->projectedPaintingTexture, paintingMode, this->brushProperties.opacity, 
-                                                this->threeDimensionalMode, windowOrtho, this->selectedMeshIndex, twoDPaintingBox
+                                                this->threeDimensionalMode, windowOrtho, this->selectedMeshIndex, twoDPaintingBox, this->faceSelection.activated, this->faceSelection.selectedFaces
                                             );
 
     // If painting mode is set to 3 generate the normal map using paintingTexture8 and write to the paintingTexture16f
@@ -255,7 +255,9 @@ static void projectThePaintingTexture(
                                         glm::mat4 windowOrtho,
                                         int selectedMeshIndex,
                                         Box twoDPaintingBox,
-                                        glm::mat4 viewMat
+                                        glm::mat4 viewMat,
+                                        bool faceSelectionActive,
+                                        Texture selectedPrimitives
                                     )
 {
     // The resolution of the selected texture (painted texture)
@@ -296,6 +298,8 @@ static void projectThePaintingTexture(
     ShaderSystem::projectingPaintedTextureShader().setInt("paintingTexture", 6);
     ShaderSystem::projectingPaintedTextureShader().setInt("depthTexture", 7);
     ShaderSystem::projectingPaintedTextureShader().setFloat("paintingOpacity", brushPropertiesOpacity);
+    ShaderSystem::projectingPaintedTextureShader().setInt("usingMeshSelection", faceSelectionActive);
+    ShaderSystem::projectingPaintedTextureShader().setInt("selectedPrimitiveIDS", 8);
 
     // Bind the painting texture
     glActiveTexture(GL_TEXTURE6);
@@ -304,6 +308,9 @@ static void projectThePaintingTexture(
     // Bind the depth texture for the depth testing
     glActiveTexture(GL_TEXTURE7);
     glBindTexture(GL_TEXTURE_2D, depthTexture);
+    
+    glActiveTexture(GL_TEXTURE8);
+    glBindTexture(GL_TEXTURE_2D, selectedPrimitives.ID);
     
     // Painting a 3D model
     if(threeDimensionalMode){
@@ -388,7 +395,9 @@ static void generateMirroredProjectedPaintingTexture(
                                                         bool threeDimensionalMode, 
                                                         glm::mat4 windowOrtho, 
                                                         int selectedMeshIndex, 
-                                                        Box twoDPaintingBox
+                                                        Box twoDPaintingBox,
+                                                        bool faceSelectionActive,
+                                                        Texture selectedPrimitives
                                                     )
 {
     std::vector<MirrorSide> mirrorSides;
@@ -472,7 +481,9 @@ static void generateMirroredProjectedPaintingTexture(
 
         projectThePaintingTexture(selectedTexture, mirrorSides[i].projectedPaintingTexture, mirrorSides[i].mirroredPaintingTexture.ID, mirrorSides[i].depthTexture.ID, 
                                         selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, windowOrtho, 
-                                        selectedMeshIndex, twoDPaintingBox, mirrorSides[i].getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)));
+                                        selectedMeshIndex, twoDPaintingBox, mirrorSides[i].getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)),
+                                        faceSelectionActive, selectedPrimitives
+                                );
 
     }
 
