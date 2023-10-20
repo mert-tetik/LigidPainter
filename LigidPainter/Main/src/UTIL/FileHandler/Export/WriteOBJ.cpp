@@ -117,63 +117,70 @@ void writeIndices(std::ofstream& wf, std::vector<glm::vec3>& uniquePos, std::vec
     //All the meshes
     for (size_t meshI = 0; meshI < model.meshes.size(); meshI++)
     {
-
-        //Indicate the material 
-        wf << "usemtl " + model.meshes[meshI].materialName + '\n';
-        
-        //Smooth normals off (change that) (maybe) (🥱)
-        if(meshI == 0)
-            wf << "s off \n";
-
-        //Write all the indices
-        for (size_t indI = 0; indI < model.meshes[meshI].indices.size();)
+        for (size_t objI = 0; objI < model.meshes[meshI].objects.size(); objI++)
         {
-            try
-            {
-                //Write a face
+            //Indicate the object 
+            wf << "o " + model.meshes[meshI].objects[objI].title + '\n';
             
-                wf << "f ";
+            //Smooth normals off (change that)
+            if(meshI == 0)
+                wf << "s off \n";
 
-                for (size_t i = 0; i < 3; i++)
+            //Write all the indices
+            for (size_t indI = 0; indI < model.meshes[meshI].indices.size();)
+            {
+                try
                 {
-                    Vertex currentVertex = model.meshes[meshI].vertices[model.meshes[meshI].indices[indI]]; 
-                    
-                    long additionalIndex = 0;
-                    for (size_t i = 0; i < meshI; i++)
+                    //Write a face
+                
+                    wf << "f ";
+
+                    for (size_t i = 0; i < 3; i++)
                     {
-                        additionalIndex += model.meshes[i].vertices.size();
+                        Vertex currentVertex = model.meshes[meshI].vertices[model.meshes[meshI].indices[indI]]; 
+                        
+                        long additionalIndex = 0;
+                        for (size_t i = 0; i < meshI; i++)
+                        {
+                            additionalIndex += model.meshes[i].vertices.size();
+                        }
+                        
+
+                        //Find the index of the vertex pos
+                        wf << model.meshes[meshI].indices[indI] + 1 + additionalIndex;
+
+                        wf << '/';
+
+                        //Find the index of the vertex texture coordinate
+                        wf << model.meshes[meshI].indices[indI] + 1 + additionalIndex;
+                        
+                        wf << '/';
+
+                        //Find the index of the vertex normal vector
+                        wf << model.meshes[meshI].indices[indI] + 1 + additionalIndex;
+
+                        if(i == 2)
+                            wf << '\n';
+                        else
+                            wf << ' ';
+
+                        indI++;
                     }
-                     
-
-                    //Find the index of the vertex pos
-                    wf << model.meshes[meshI].indices[indI] + 1 + additionalIndex;
-
-                    wf << '/';
-
-                    //Find the index of the vertex texture coordinate
-                    wf << model.meshes[meshI].indices[indI] + 1 + additionalIndex;
                     
-                    wf << '/';
-
-                    //Find the index of the vertex normal vector
-                    wf << model.meshes[meshI].indices[indI] + 1 + additionalIndex;
-
-                    if(i == 2)
-                        wf << '\n';
-                    else
-                        wf << ' ';
-
-                    indI++;
+                    
                 }
                 
-                
+                catch(const std::exception& e)
+                {
+                    std::cerr << e.what() << '\n';
+                }
             }
+
             
-            catch(const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
-            }
+            //Indicate the material 
+            wf << "usemtl " + model.meshes[meshI].materialName + '\n';
         }
+
     }
 }
 

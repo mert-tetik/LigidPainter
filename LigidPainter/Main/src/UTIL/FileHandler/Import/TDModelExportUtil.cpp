@@ -88,7 +88,7 @@ void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, st
     }
 }
 
-Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles){
+Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles, std::vector<std::vector<MeshObject>> objectData){
     Model model;
     
     float big = 0.f;
@@ -142,8 +142,10 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
             meshVertices[i][vi].Position.y = meshVertices[i][vi].Position.y / big;
             meshVertices[i][vi].Position.z = meshVertices[i][vi].Position.z / big;
         }
-        if(meshVertices[i].size())
+        if(meshVertices[i].size()){
             model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle));
+            model.meshes[model.meshes.size() - 1].objects = objectData[i];
+        }
     }
 
     model.newModelAdded = true;

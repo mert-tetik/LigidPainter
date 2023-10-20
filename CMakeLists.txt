@@ -49,6 +49,7 @@ install(TARGETS Ligid)
 install(
             FILES
             "${CMAKE_SOURCE_DIR}/freetype.dll"
+            "${CMAKE_SOURCE_DIR}/assimp-vc142-mtd.dll"
             "${CMAKE_SOURCE_DIR}/OpenAL32.dll"
             "${CMAKE_SOURCE_DIR}/zlibd.dll"
             "C:/compiling/mingw64/bin/libstdc++-6.dll"
@@ -120,6 +121,9 @@ include(CPack)
 # Set the MacOS version you want to target
 # set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "Minimum macOS version to target")
 
+list(APPEND CMAKE_MODULE_PATH "C:/Users/CASPER/source/repos/assimp-5.2.5/assimp-5.2.5/cmake-modules")
+
+
 find_package(OpenGL REQUIRED)
 
 # Add include directories for Ligid target
@@ -136,6 +140,7 @@ target_link_directories(Ligid PRIVATE
 
 # Link libraries for Ligid target
 target_link_libraries(Ligid PRIVATE 
+    assimp-vc142-mtd 
     freetype
     zlibd 
     OpenAL32 

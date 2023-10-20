@@ -123,6 +123,18 @@ private:
     unsigned int VAO;
 };
 
+struct MeshObject{
+    std::string title;
+    /// @brief start & end
+    glm::ivec2 vertIndices; 
+
+    MeshObject(){}
+    MeshObject(std::string title, glm::ivec2 vertIndices){
+        this->title = title; 
+        this->vertIndices = vertIndices; 
+    }
+};
+
 class Mesh {
 public:
     
@@ -145,6 +157,8 @@ public:
     Texture uvMask;
 
     Texture displayingTxtr;
+
+    std::vector<MeshObject> objects;
 
     /*! @brief Vertices of the mesh */
     std::vector<Vertex>       vertices;
@@ -184,6 +198,7 @@ private:
 
 };
 
+#include <assimp/scene.h>
 
 class Model{
 public:

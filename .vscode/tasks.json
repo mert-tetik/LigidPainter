@@ -4,7 +4,7 @@
         {
             "label": "run",
             "type": "shell",
-            "command": "cmake --build build/ --parallel 4 ; ${workspaceFolder}/build/Ligid.exe",
+            "command": "cmake --build build/ --parallel 4 ; ${workspaceFolder}/build/Debug/Ligid.exe",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

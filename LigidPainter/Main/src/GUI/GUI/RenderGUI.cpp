@@ -667,7 +667,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     painter.faceSelection.selectionModeIndex = paintingPanel.sections[6].elements[2].comboBox.selectedIndex;
     painter.faceSelection.radius = paintingPanel.sections[6].elements[3].rangeBar.value;
 
-    bool applyBoxSelection;
+    bool applyBoxSelection = false;
     if(!anyDialogActive && painter.faceSelection.editMode && painter.faceSelection.selectionModeIndex == 1)
         applyBoxSelection = painter.faceSelection.boxSelectionInteraction(timer);
 

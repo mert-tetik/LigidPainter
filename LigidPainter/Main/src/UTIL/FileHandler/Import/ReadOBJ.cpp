@@ -17,7 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
     v - vertex pos
     vt - vertex texture coordinates
     vn - vertex normal vector
-    f - face
+    f - face (position index / TexCoords index / Normal vector index)
     usemtl - indicate the material
     # - comment lines
 
@@ -41,18 +41,106 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 
-// Forward declarations for the utilities
-void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
-Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
-void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
-
-// Forward declarations for the obj file processing functions
-static void parseOBJMeshData(std::vector<glm::vec3> uniquePositions,std::vector<glm::vec2> uniqueUVS,std::vector<glm::vec3> uniqueNormals,std::vector<std::string> matTitles,std::vector<std::vector<std::vector<glm::vec3>>> faces,std::vector<std::vector<Vertex>>& meshVertices,std::vector<std::vector<unsigned int>>& meshIndices);
-static void getDataFromWavefrontFile( std::ifstream& rf, std::vector<glm::vec3>& uniquePositions, std::vector<glm::vec2>& uniqueUVS, std::vector<glm::vec3>& uniqueNormals, std::vector<std::string>& matTitles, std::vector<std::vector<std::vector<glm::vec3>>>& faces);
-
 #define LIGID_OBJ_IMPORTER_TRIANGULATE true
 
-int __obj_Read_Face_I = 0;
+// Forward declarations for the utilities
+void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
+Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles, std::vector<std::vector<MeshObject>> objectData);
+void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
+
+struct WavefrontObject{
+public:
+    std::string title;
+    std::string material;
+
+    /// @brief Face count * face vertex count * 3(pos, texcoords, normal)
+    std::vector<std::vector<glm::vec3>> faces; 
+
+    std::vector<glm::vec3> positions;
+    std::vector<glm::vec2> texCoords;
+    std::vector<glm::vec3> normals;
+
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+
+    void calculateVertices(){
+        for (size_t faceI = 0; faceI < faces.size(); faceI++)
+        {
+            for (size_t vertI = 0; vertI < faces[faceI].size(); vertI++)
+            {
+                Vertex vertex;
+                unsigned int positionI = faces[faceI][vertI].x;
+                unsigned int texCoordsI = faces[faceI][vertI].y;
+                unsigned int normalVecI = faces[faceI][vertI].z;
+
+                // Positions
+                if(positionI < positions.size())
+                    vertex.Position = positions[positionI];
+                else
+                    LGDLOG::start << "ERROR : Wavefront reader : Invalid index value for the vertex position!" << LGDLOG::end;
+                
+                // TexCoords
+                if(positionI < positions.size())
+                    vertex.TexCoords = texCoords[texCoordsI];
+                else
+                    LGDLOG::start << "ERROR : Wavefront reader : Invalid index value for the vertex UV!" << LGDLOG::end;
+                
+                // Normal vectors
+                if(positionI < positions.size())
+                    vertex.Normal = normals[normalVecI];
+                else
+                    LGDLOG::start << "ERROR : Wavefront reader : Invalid index value for the vertex normal vectors!" << LGDLOG::end;
+
+                vertices.push_back(vertex);
+                indices.push_back(vertices.size());
+            }
+            
+            // Generate tangents if the face is a triangle 
+            if(faces[faceI].size() == 3){
+                calculateTangentBitangent(vertices[vertices.size()-3], vertices[vertices.size()-2], vertices[vertices.size()-1]);
+            }
+        }
+    }
+
+
+    void triangulateFaces(){
+        std::vector<std::vector<glm::vec3>> triangulatedFaces; 
+
+        for (size_t faceI = 0; faceI < faces.size(); faceI++){
+
+            /* Triangulation */
+            int faceCount = faces[faceI].size() - 2;
+
+            if(faceCount < 0)
+                faceCount = 0;
+
+            int vStartI = 0;
+
+            for (size_t fI = 0; fI < faceCount; fI++)
+            {
+                std::vector<glm::vec3> newFace;
+
+                glm::vec3 vert1 = faces[faceI][vStartI];
+                glm::vec3 vert2 = faces[faceI][vStartI + 1 + fI];
+                glm::vec3 vert3 = faces[faceI][vStartI + 2 + fI];
+
+                newFace.push_back(vert1);
+                newFace.push_back(vert2);
+                newFace.push_back(vert3);
+
+                triangulatedFaces.push_back(newFace);
+            }
+        }
+    }
+
+    WavefrontObject(std::string title){
+        this->title = title;
+    }
+};
+
+static std::vector<std::string> parseOBJMeshData(std::vector<WavefrontObject> objects, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices, std::vector<std::vector<MeshObject>>& objectData);
+static std::vector<WavefrontObject> getDataFromWavefrontFile(std::ifstream& rf);
+
 
 Model FileHandler::readOBJFile(std::string path){
 
@@ -63,30 +151,31 @@ Model FileHandler::readOBJFile(std::string path){
     }
 
     // Unique values retrieved from the wavefront file
-    std::vector<glm::vec3> uniquePositions;
-    std::vector<glm::vec2> uniqueUVS;
-    std::vector<glm::vec3> uniqueNormals;
-    std::vector<std::string> matTitles;
-    
-    std::vector< // Material
-            std::vector< // Faces
-                        std::vector< // A face
-                                    glm::vec3>>> faces; // Indices of a vertex
-
+    std::vector<WavefrontObject> objects;
 
     // Retrieve data from the file (exactly whatever written to the wavefront file)
-    getDataFromWavefrontFile(rf, uniquePositions, uniqueUVS, uniqueNormals, matTitles, faces);
+    objects = getDataFromWavefrontFile(rf);
+
+    // Triangulate the faces
+    if(LIGID_OBJ_IMPORTER_TRIANGULATE){
+        for (size_t i = 0; i < objects.size(); i++)
+        {
+            objects[i].triangulateFaces();
+        }
+    }
 
     // We're done with the obj file from now on
     rf.close();
 
     std::vector<std::vector<Vertex>> meshVertices;
     std::vector<std::vector<unsigned int>> meshIndices;
+    std::vector<std::vector<MeshObject>> objectData;
+    std::vector<std::string> matTitles;
 
-    parseOBJMeshData(uniquePositions, uniqueUVS, uniqueNormals, matTitles, faces, meshVertices, meshIndices);
+    matTitles = parseOBJMeshData(objects, meshVertices, meshIndices, objectData);
 
     if(meshVertices.size()){
-        return createModel(meshVertices, meshIndices, matTitles);
+        return createModel(meshVertices, meshIndices, matTitles, objectData);
     }
     else{
         LGDLOG::start<< "WARNING! Reading FBX file : No mesh data received" << LGDLOG::end;
@@ -95,20 +184,33 @@ Model FileHandler::readOBJFile(std::string path){
 
 }
 
-static void getDataFromWavefrontFile(
-                                std::ifstream& rf,
-                                std::vector<glm::vec3>& uniquePositions,
-                                std::vector<glm::vec2>& uniqueUVS,
-                                std::vector<glm::vec3>& uniqueNormals,
-                                std::vector<std::string>& matTitles,
-                                std::vector<std::vector<std::vector<glm::vec3>>>& faces
-                            ) // Indices of a vertex)
+
+
+static std::vector<WavefrontObject> getDataFromWavefrontFile(
+                                                                std::ifstream& rf
+                                                            )
 {
+    std::vector<WavefrontObject> objects;
+
     std::string line;
     while (std::getline(rf, line))
     {
+        // ---- Object data detected
+        if(line.substr(0,2) == "o "){
+
+            std::stringstream ss(line); // Create a stringstream object with the input string
+            
+            std::string fStr;
+            ss >> fStr; // Read and discard the first string "o "
+
+            std::string title;
+            ss >> title; // Read the object title
+
+            objects.push_back(WavefrontObject(title));
+        }
+
         // ---- Vertex position data detected
-        if(line.substr(0,2) == "v "){
+        else if(line.substr(0,2) == "v "){
 
             std::stringstream ss(line); // Create a stringstream object with the input string
 
@@ -119,7 +221,10 @@ static void getDataFromWavefrontFile(
             ss >> value1 >> value2 >> value3; // Extract the three numeric values
 
             if (!ss.fail()) { // Check if the extraction was successful
-                uniquePositions.push_back(glm::vec3(value1, value2, value3));
+                if(objects.size())
+                    objects[objects.size()-1].positions.push_back(glm::vec3(value1, value2, value3));
+                else
+                    LGDLOG::start << "WARNING! : Wavefront file reader - tried to write object data without identifying an object!" << LGDLOG::end;
             } 
             else 
             {
@@ -139,7 +244,10 @@ static void getDataFromWavefrontFile(
             ss >> value1 >> value2; // Extract the three numeric values
 
             if (!ss.fail()) { // Check if the extraction was successful
-                uniqueUVS.push_back(glm::vec2(value1, value2));
+                if(objects.size())
+                    objects[objects.size()-1].texCoords.push_back(glm::vec2(value1, value2));
+                else
+                    LGDLOG::start << "WARNING! : Wavefront file reader - tried to write object data without identifying an object!" << LGDLOG::end;
             } 
             else 
             {
@@ -159,39 +267,14 @@ static void getDataFromWavefrontFile(
             ss >> value1 >> value2 >> value3; // Extract the three numeric values
 
             if (!ss.fail()) { // Check if the extraction was successful
-                uniqueNormals.push_back(glm::vec3(value1, value2, value3));
+                if(objects.size())
+                    objects[objects.size()-1].normals.push_back(glm::vec3(value1, value2, value3));
+                else
+                    LGDLOG::start << "WARNING! : Wavefront file reader - tried to write object data without identifying an object!" << LGDLOG::end;
             } 
             else 
             {
                 LGDLOG::start<< "LigidExporter : Failed to extract values from the string. (Vertex Normal data)" << LGDLOG::end;
-            }
-        }
-
-        // ---- Material data detected
-        else if(line.substr(0,6) == "usemtl"){
-
-            std::stringstream ss(line); // Create a stringstream object with the input string
-            
-            std::string fStr;
-            ss >> fStr; // Read and discard the first string "usemtl"
-
-            std::string matStr;
-            ss >> matStr; // Read the material title
-
-            bool matched = false;
-            for (size_t i = 0; i < matTitles.size(); i++)
-            {
-                if(matTitles[i] == matStr){
-                    matched = true;
-                    __obj_Read_Face_I = i;
-                    break;
-                }
-            }
-            
-            if(!matched){
-                faces.push_back({});
-                __obj_Read_Face_I = faces.size() - 1;
-                matTitles.push_back(matStr);
             }
         }
 
@@ -219,112 +302,80 @@ static void getDataFromWavefrontFile(
                 }
             }
             
-            if(faces.size() == 0){
-                __obj_Read_Face_I = 0;
-                faces.push_back({});
-            }
+            if(objects.size())
+                objects[objects.size()-1].faces.push_back(vec3List);
+            else
+                LGDLOG::start << "WARNING! : Wavefront file reader - tried to write object data without identifying an object!" << LGDLOG::end;
+        }
+
+        else if(line.substr(0, 6) == "usemtl"){
+            std::stringstream ss(line);
+
+            std::string fStr;
+            ss >> fStr; // Read and discard the first string "usemtl"
+
+            std::string matStr;
+            ss >> matStr; // Read the material title
             
-            if(__obj_Read_Face_I < faces.size())
-                faces[__obj_Read_Face_I].push_back(vec3List);
+            if(objects.size())
+                objects[objects.size()-1].material = matStr;
+            else
+                LGDLOG::start << "WARNING! : Wavefront file reader - tried to write object data without identifying an object!" << LGDLOG::end;
         }
     }
+
+    return objects;
 }
 
-static void parseOBJMeshData(
-                                std::vector<glm::vec3> uniquePositions,
-                                std::vector<glm::vec2> uniqueUVS,
-                                std::vector<glm::vec3> uniqueNormals,
-                                std::vector<std::string> matTitles,
-                                std::vector<std::vector<std::vector<glm::vec3>>> faces,
-                                std::vector<std::vector<Vertex>>& meshVertices,
-                                std::vector<std::vector<unsigned int>>& meshIndices
-                            )
+
+
+static std::vector<std::string> parseOBJMeshData(
+                                                    std::vector<WavefrontObject> objects,
+                                                    std::vector<std::vector<Vertex>>& meshVertices,
+                                                    std::vector<std::vector<unsigned int>>& meshIndices,
+                                                    std::vector<std::vector<MeshObject>>& objectData
+                                                )
 {
-    
-    //TODO : Unique vertices
-    
-    std::vector<std::vector<std::vector<glm::vec3>>> triangulatedFaces;
-
-    if(LIGID_OBJ_IMPORTER_TRIANGULATE){
-        for (size_t matI = 0; matI < faces.size(); matI++){
-            triangulatedFaces.push_back({});
-
-            for (size_t faceI = 0; faceI < faces[matI].size(); faceI++){
-
-                /* Triangulation */
-                int faceCount = faces[matI][faceI].size() - 2;
-
-                if(faceCount < 0)
-                    faceCount = 0;
-
-                int vStartI = 0;
-
-                for (size_t fI = 0; fI < faceCount; fI++)
-                {
-                    std::vector<glm::vec3> newFace;
-
-                    glm::vec3 vert1 = faces[matI][faceI][vStartI];
-                    glm::vec3 vert2 = faces[matI][faceI][vStartI + 1 + fI];
-                    glm::vec3 vert3 = faces[matI][faceI][vStartI + 2 + fI];
-
-                    newFace.push_back(vert1);
-                    newFace.push_back(vert2);
-                    newFace.push_back(vert3);
-
-                    triangulatedFaces[matI].push_back(newFace);
-
-                }
-            }
-        }
-    }
-    else{
-        triangulatedFaces = faces;
-    }
-
-
-    for (size_t matI = 0; matI < triangulatedFaces.size(); matI++)
+    for (size_t i = 0; i < objects.size(); i++)
     {
-        meshVertices.push_back({});  
-        meshIndices.push_back({});  
-        
-        for (size_t faceI = 0; faceI < triangulatedFaces[matI].size(); faceI++)
+        objects[i].calculateVertices();
+    }
+    
+    std::vector<std::string> matTitles;
+
+    for (size_t objI = 0; objI < objects.size(); objI++)
+    {
+        bool matTitleMatches = false;
+        int index = 0;
+        for (size_t matTitleI = 0; matTitleI < matTitles.size(); matTitleI++)
         {
-            /*Ignore lines and points*/
-            if(triangulatedFaces[matI][faceI].size() > 2){
-
-                Vertex vert1;
-                vert1.Position = uniquePositions[triangulatedFaces[matI][faceI][0].x - 1];  
-                vert1.TexCoords = uniqueUVS[triangulatedFaces[matI][faceI][0].y - 1];  
-                vert1.Normal = uniqueNormals[triangulatedFaces[matI][faceI][0].z - 1];
-                Vertex vert2;
-                vert2.Position = uniquePositions[triangulatedFaces[matI][faceI][1].x - 1];  
-                vert2.TexCoords = uniqueUVS[triangulatedFaces[matI][faceI][1].y - 1];  
-                vert2.Normal = uniqueNormals[triangulatedFaces[matI][faceI][1].z - 1];
-                Vertex vert3;
-                vert3.Position = uniquePositions[triangulatedFaces[matI][faceI][2].x - 1];  
-                vert3.TexCoords = uniqueUVS[triangulatedFaces[matI][faceI][2].y - 1];  
-                vert3.Normal = uniqueNormals[triangulatedFaces[matI][faceI][2].z - 1];
-
-                /* Ignore untriangulated vertices */
-                
-                /* Tangent calculations */
-                calculateTangentBitangent(vert1, vert2, vert3);
-
-                /* Normalize tangent values */
-                vert1.Tangent = glm::normalize(vert1.Tangent);
-                vert1.Bitangent = glm::normalize(vert1.Bitangent);
-                vert2.Tangent = glm::normalize(vert2.Tangent);
-                vert2.Bitangent = glm::normalize(vert2.Bitangent);
-                vert3.Tangent = glm::normalize(vert3.Tangent);
-                vert3.Bitangent = glm::normalize(vert3.Bitangent);
-
-                meshIndices[matI].push_back(meshVertices[matI].size());
-                meshVertices[matI].push_back(vert1);  
-                meshIndices[matI].push_back(meshVertices[matI].size());
-                meshVertices[matI].push_back(vert2);  
-                meshIndices[matI].push_back(meshVertices[matI].size());
-                meshVertices[matI].push_back(vert3);  
+            if(matTitles[matTitleI] == objects[objI].material){
+                matTitleMatches = true;
+                index = matTitleI;
             }
         }
+        
+        if(!matTitleMatches){
+            matTitles.push_back(objects[objI].material);
+            meshVertices.push_back(objects[objI].vertices);
+            meshIndices.push_back(objects[objI].indices);
+            objectData.push_back({MeshObject(objects[objI].title, glm::ivec2(0, objects[objI].vertices.size()))});
+        }
+        else{
+            int startI = meshVertices[index].size();
+            for (size_t i = 0; i < objects[objI].vertices.size(); i++)
+            {
+                meshIndices[index].push_back(objects[objI].indices[i] + meshVertices[index].size());
+            }
+            
+            for (size_t i = 0; i < objects[objI].vertices.size(); i++)
+            {
+                meshVertices[index].push_back(objects[objI].vertices[i]);
+            }
+            objectData[index].push_back(MeshObject(objects[objI].title, glm::ivec2(startI, meshVertices[index].size())));
+        }
     }
+
+    return matTitles;
+    
 } 

@@ -76,7 +76,7 @@ struct FBXTransform{
 #define LIGID_FBX_IMPORTER_TRIANGULATE true
 
 // Forward declarations for the utilities
-Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles);
+Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std::vector<unsigned int>> meshIndices, std::vector<std::string> matTitles, std::vector<std::vector<MeshObject>> objectData);
 void seperateUnitedVertices(std::vector<std::vector<Vertex>>& unitedVertices, std::vector<std::vector<Vertex>>& meshVertices, std::vector<std::vector<unsigned int>>& meshIndices);
 void calculateTangentBitangent(Vertex& v0, Vertex& v1, Vertex& v2);
 
@@ -172,6 +172,7 @@ Model FileHandler::readFBXFile(std::string path) {
 
     std::vector<std::vector<Vertex>> meshVertices;
     std::vector<std::vector<unsigned int>> meshIndices;
+    std::vector<std::vector<MeshObject>> objectData;
 
     if(!matTitles.size())
         matTitles.push_back("FirstDefMat");
@@ -217,13 +218,15 @@ Model FileHandler::readFBXFile(std::string path) {
             {
                 meshVertices[i].push_back(in_meshVertices[i][ii]);
             }
+            objectData.push_back({});            
+            objectData[i].push_back(MeshObject("objects[objI].title", glm::ivec2(0, 0)));
         }
     }
     
 
 
     if(meshVertices.size()){
-        return createModel(meshVertices, meshIndices, matTitles);
+        return createModel(meshVertices, meshIndices, matTitles, objectData);
     }
     else{
         LGDLOG::start<< "WARNING! Reading FBX file : No mesh data received" << LGDLOG::end;

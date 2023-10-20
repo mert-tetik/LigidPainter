@@ -107,23 +107,13 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
             std::string modelPath = entry.path().string();
 
             Model TDModel;
-            bool error = !TDModel.loadModel(modelPath, true);
+            bool success = TDModel.loadModel(modelPath, true);
 
-            //Check if the model is an obj file
-            if(UTIL::getLastWordBySeparatingWithChar(modelPath, '.') != "obj"){
-                //The 3D model in the project folder is not an obj file
-
-                //Delete the non-obj file
-                std::filesystem::remove(modelPath);
-            
-                //Recreate the obj file
-                FileHandler::writeOBJFile(UTIL::removeExtension(modelPath) + ".obj",TDModel);
-            }
-
-            if(TDModel.meshes.size() && !error)
+            if(TDModel.meshes.size() && success){
                 Library::addModel(TDModel);
-            else if(!error)
-                LGDLOG::start<< "ERROR : Can't add the 3D model to the Library:: Mesh size is 0!" << LGDLOG::end;
+            }
+            else if(success)
+                LGDLOG::start<< "ERROR : Can't add the 3D model to the Library : Mesh size is 0!" << LGDLOG::end;
 
         }
 

@@ -157,36 +157,6 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     std::filesystem::remove_all(updateBrushFolderPath);
 
 
-    std::cout << "UPDATE MODE : 3D MODEL" << std::endl;
-
-
-    
-    //!3D Models
-    std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
-    std::string updateTdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels" + UTIL::folderDistinguisher() + copyFolderTitle;
-
-    if(std::filesystem::exists(updateTdModelFolderPath))
-        std::filesystem::remove_all(updateTdModelFolderPath);
-
-    std::filesystem::create_directory(updateTdModelFolderPath);
-
-    //Write the 3D models
-    for (size_t i = 0; i < Library::getModelArraySize(); i++)
-    {
-        //Export 3D model
-        FileHandler::writeOBJFile(updateTdModelFolderPath + UTIL::folderDistinguisher() + Library::getModelObj(i).title + ".obj", Library::getModelObj(i));
-    }
-
-    if(!UTIL::deleteFilesInFolder(tdModelFolderPath)){
-        this->projectProcessing = false;
-        return;
-    }
-
-    UTIL::moveFilesToDestination(updateTdModelFolderPath, tdModelFolderPath);
-    std::filesystem::remove_all(updateTdModelFolderPath);
-
-    std::cout << "UPDATE MODE : LIGID" << std::endl;
-
     this->writeLigidFile();
 
     this->projectProcessing = false;

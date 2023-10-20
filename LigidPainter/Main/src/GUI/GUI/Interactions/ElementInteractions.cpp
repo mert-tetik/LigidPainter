@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 //Forward declarations for the interaction functions defined in the Interactions directory 
-void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Panel &paintingPanel, Painter &painter, NewTextureDialog &newTextureDialog, AppMaterialModifiers& appMaterialModifiers, MaterialDisplayerDialog &materialDisplayerDialog, FilterDisplayerDialog &filterDisplayerDialog, Button& zoomingDisplayingButton, Timer& timer);
+void libraryPanelDisplayerInteraction(Panel &libraryPanelDisplayer, Panel &paintingPanel, Painter &painter, NewTextureDialog &newTextureDialog, AppMaterialModifiers& appMaterialModifiers, MaterialDisplayerDialog &materialDisplayerDialog, FilterDisplayerDialog &filterDisplayerDialog, Button& zoomingDisplayingButton, Timer& timer, Project& project);
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int frameCounter);
 void paintingPanelInteraction(Panel &paintingPanel, Painter &painter, Dropper &dropper);
 void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog,BakingDialog &bakingDialog);
@@ -86,7 +86,7 @@ void UI::elementInteraction(
     
     updateLibraryPanelDisplayerElements(libraryPanelDisplayer, frameCounter);
     
-    libraryPanelDisplayerInteraction(libraryPanelDisplayer, paintingPanel, painter, newTextureDialog, appMaterialModifiers, materialDisplayerDialog, filterDisplayerDialog, zoomingDisplayingButton, timer);
+    libraryPanelDisplayerInteraction(libraryPanelDisplayer, paintingPanel, painter, newTextureDialog, appMaterialModifiers, materialDisplayerDialog, filterDisplayerDialog, zoomingDisplayingButton, timer, project);
     
     this->libraryPanelLeftInteraction(libraryPanelLeft);
 

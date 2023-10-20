@@ -180,7 +180,7 @@ void Library::addBrush(Brush brush){
 
 void Library::addModel(Model model){
     __changed = true;
-    
+
     __TDModels.push_back(model);
 }
 

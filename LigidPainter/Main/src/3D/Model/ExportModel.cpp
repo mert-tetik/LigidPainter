@@ -12,17 +12,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
 
-
-
-
-
-    !  USE THE FILEHANDLER INSTEAD!!!!!!!!!!!!!!!
-    
-
-
-
-
-
 */
 
 #include<glad/glad.h>
@@ -32,12 +21,19 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/Exporter.hpp>
+
 #include <string>
 #include <iostream>
 #include <vector>
+#include <filesystem>
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
+#include "GUI/GUI.hpp"
 
 // dae
 // collada
@@ -127,8 +123,50 @@ Official Web Page : https://ligidtools.com/ligidpainter
 // assjson
 // 21
 
+
+
+
 /// @brief Exports the 3D model in fbx format
 /// @param path folder path
 void Model::exportModel(std::string path){
+    if(!std::filesystem::is_directory(path)){
+        LGDLOG::start << "ERROR : Exporting 3D model : path is not a folder : " << path << LGDLOG::end;
+    }
 
+    // Create an Assimp scene
+    aiScene scene;
+    scene.mRootNode = new aiNode;
+    scene.mRootNode->mName = "root"; // Set the name of the root node.
+
+    // Create an Assimp mesh for each Mesh in the vector
+    scene.mNumMeshes = static_cast<unsigned int>(meshes.size());
+    scene.mMeshes = new aiMesh*[scene.mNumMeshes];
+
+    for (size_t i = 0; i < meshes.size(); i++) {
+        aiMesh* assimpMesh = new aiMesh;
+        assimpMesh->mName = "mesh_" + std::to_string(i); // Set the name of the mesh.
+
+        // Fill in vertex data, normals, UVs, and faces from the current Mesh object
+        assimpMesh->mNumVertices = meshes[i].vertices.size();
+        assimpMesh->mVertices = new aiVector3D[assimpMesh->mNumVertices];
+
+        for (unsigned int j = 0; j < meshes[i].vertices.size(); j++) {
+            assimpMesh->mVertices[j] = aiVector3D(meshes[i].vertices[j].Position.x, meshes[i].vertices[j].Position.y, meshes[i].vertices[j].Position.z);
+        }
+
+        // Add the mesh to the scene
+        scene.mMeshes[i] = assimpMesh;
+    }
+
+    // Export the scene to an .obj file
+    Assimp::Exporter exporter;
+    exporter.Export(&scene, "obj", path + UTIL::folderDistinguisher() + this->title + ".obj", aiProcess_Triangulate); // Triangulate is typically required for .obj format.
+
+    // Clean up
+    //for (size_t i = 0; i < meshes.size(); i++) {
+    //    delete[] scene.mMeshes[i]->mVertices;
+    //    delete scene.mMeshes[i];
+    //}
+    //delete[] scene.mMeshes;
+    //delete scene.mRootNode;
 }

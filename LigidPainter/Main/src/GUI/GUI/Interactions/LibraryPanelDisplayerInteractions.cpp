@@ -46,7 +46,8 @@ void libraryPanelDisplayerInteraction(
                                         MaterialDisplayerDialog &materialDisplayerDialog,
                                         FilterDisplayerDialog &filterDisplayerDialog,
                                         Button& zoomingDisplayingButton,
-                                        Timer& timer
+                                        Timer& timer,
+                                        Project& project
                                     )
 {
     bool anyElementHover = false;
@@ -158,9 +159,13 @@ void libraryPanelDisplayerInteraction(
             std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
                 Model tdModel;
-                tdModel.loadModel(test, true);
-                if(tdModel.meshes.size())
+                bool success = tdModel.loadModel(test, true);
+                if(tdModel.meshes.size() && success){
                     Library::addModel(tdModel);
+                    if(std::filesystem::exists(test)){
+                        if(std::filesystem::is_regular_file(test))
+                            std::filesystem::copy(test, project.folderPath + UTIL::folderDistinguisher() + "3DModels" + UTIL::folderDistinguisher() + UTIL::getLastWordBySeparatingWithChar(test, UTIL::folderDistinguisher()));
+                    }                }
                 else
                     LGDLOG::start<< "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << LGDLOG::end;
             }
@@ -224,9 +229,14 @@ void libraryPanelDisplayerInteraction(
             
             if(test.size()){
                 Model tdModel;
-                tdModel.loadModel(test,true);
-                if(tdModel.meshes.size())
+                bool success = tdModel.loadModel(test,true);
+                if(tdModel.meshes.size() && success){
                     Library::addModel(tdModel);
+                    if(std::filesystem::exists(test)){
+                        if(std::filesystem::is_regular_file(test))
+                            std::filesystem::copy(test, project.folderPath + UTIL::folderDistinguisher() + "3DModels" + UTIL::folderDistinguisher() + UTIL::getLastWordBySeparatingWithChar(test, UTIL::folderDistinguisher()));
+                    }
+                }
                 else
                     LGDLOG::start<< "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << LGDLOG::end;
             }
