@@ -21,11 +21,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 // LigidPainter
 #include "UTIL/Util.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "GUI/GUI.hpp"
 
 // System
 #include <string>
@@ -88,10 +90,12 @@ bool FaceSelection::interaction(Mesh& selectedMesh){
     this->modelPrimitives.update(nullptr, windowSize.x, windowSize.y, GL_NEAREST, GL_RED, GL_R32F);
 
     // Generate & bind the framebuffer object to render the model primitives into the modelPrimitives texture
-    Framebuffer FBO = Framebuffer(this->modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, windowSize));
-    FBO.bind();
+    if(!this->FBO.ID)
+        this->FBO = Framebuffer(this->modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, windowSize));
+        
+    this->FBO.bind();
 
-    glClearColor(0.,0.,0.,1.);
+    glClearColor(0.,0.,0.,0.);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glViewport(0, 0, windowSize.x, windowSize.y);
@@ -106,17 +110,53 @@ bool FaceSelection::interaction(Mesh& selectedMesh){
 
     selectedMesh.Draw(false);
 
-    float* pxs = new float[this->radius * this->radius]; 
-    FBO.bind();
-    glReadPixels(
-                    cursorPos.x - this->radius/2, 
-                    (windowSize.y - cursorPos.y) - this->radius/2, 
-                    this->radius, 
-                    this->radius,
-                    GL_RED,
-                    GL_FLOAT,
-                    pxs
-                );
+    glm::vec2 scale;
+    glm::vec2 pos;
+    
+    if(this->selectionModeIndex == 0){
+        pos.x = cursorPos.x - this->radius/2;
+        pos.y = (windowSize.y - cursorPos.y) - this->radius/2;
+        scale = glm::vec2(radius);
+    }
+    
+    else if(this->selectionModeIndex == 1){
+        
+        glm::vec2 boxSelectionStartSc = this->boxSelectionStart / 100.f * *Settings::videoScale();
+        glm::vec2 boxSelectionEndSc = this->boxSelectionEnd / 100.f * *Settings::videoScale();
+ 
+        boxSelectionStartSc.y = (windowSize.y - boxSelectionStartSc.y);
+        boxSelectionEndSc.y = (windowSize.y - boxSelectionEndSc.y);
+        
+        scale = (boxSelectionEndSc - boxSelectionStartSc);
+        pos = boxSelectionStartSc;
+
+        if(boxSelectionStartSc.x > boxSelectionEndSc.x){
+            scale.x = (boxSelectionStartSc.x - boxSelectionEndSc.x);
+            pos.x = boxSelectionEndSc.x;
+        } 
+        if(boxSelectionStartSc.y > boxSelectionEndSc.y){
+            scale.y = (boxSelectionStartSc.y - boxSelectionEndSc.y);
+            pos.y = boxSelectionEndSc.y;
+        } 
+
+    }
+
+    float* pxs = new float[(int)scale.x * (int)scale.y]; 
+    this->FBO.bind();
+    
+    if(pos.x + scale.x < windowSize.x && pos.y + scale.y < windowSize.y){
+        std::cout << "AAA" << glm::to_string(pos) << " , " << glm::to_string(scale) << std::endl;
+        glReadPixels(
+                        pos.x, 
+                        pos.y, 
+                        scale.x, 
+                        scale.y,
+                        GL_RED,
+                        GL_FLOAT,
+                        pxs
+                    );
+    }
+
                 
     bool changesMade = false; 
 
@@ -126,7 +166,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh){
         this->selectedPrimitiveIDs.clear();
     }
     
-    for (size_t i = 0; i < this->radius * this->radius; i++)
+    for (size_t i = 0; i < scale.x * scale.y; i++)
     {
         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
             if(!isInArray(this->selectedPrimitiveIDs, pxs[i] - 1)){
@@ -144,10 +184,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh){
                 }
             }
         }
-
     }
-
-
     
 
     if(changesMade){
@@ -165,7 +202,50 @@ bool FaceSelection::interaction(Mesh& selectedMesh){
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 
-    FBO.deleteBuffers(false, true);
+    ShaderSystem::buttonShader().use();
+
+    glDepthFunc(GL_LEQUAL);
+
     delete[] pxs;
     return changesMade;
+}
+
+static bool __lastMousePressState = false;
+
+bool FaceSelection::boxSelectionInteraction(Timer &timer){
+    
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    if(*Mouse::LClick()){
+        this->boxSelectionStart = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+    }
+
+    this->boxSelectionEnd = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+    
+    glm::vec2 btnScale = (this->boxSelectionEnd - this->boxSelectionStart) / 2.f;
+
+    if(this->boxSelectionStart.x > this->boxSelectionEnd.x){
+        btnScale.x = (this->boxSelectionStart.x - this->boxSelectionEnd.x) / 2.f;
+    } 
+    if(this->boxSelectionStart.y > this->boxSelectionEnd.y){
+        btnScale.y = (this->boxSelectionStart.y - this->boxSelectionEnd.y) / 2.f;
+    } 
+
+    Button btn = Button(ELEMENT_STYLE_SOLID, btnScale, "", Texture(), 0.f, false);
+    btn.pos = glm::vec3(this->boxSelectionStart + btn.scale, 0.9f); 
+    
+    if(this->boxSelectionStart.x > this->boxSelectionEnd.x)
+        btn.pos.x = this->boxSelectionEnd.x + btn.scale.x;
+    if(this->boxSelectionStart.y > this->boxSelectionEnd.y)
+        btn.pos.y = this->boxSelectionEnd.y + btn.scale.y;
+    
+    if(*Mouse::LPressed())
+        btn.render(timer, false); 
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+    
+    bool applyBox = __lastMousePressState && !*Mouse::LPressed();
+    __lastMousePressState = *Mouse::LPressed();
+    
+    return applyBox;
 }

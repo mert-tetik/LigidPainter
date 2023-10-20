@@ -446,7 +446,7 @@ public:
 
 class Framebuffer{
 public:
-    unsigned int ID;
+    unsigned int ID = 0;
 
     Texture colorBuffer;
     Renderbuffer renderBuffer;
@@ -454,6 +454,8 @@ public:
     Framebuffer();
     Framebuffer(Texture colorBuffer, unsigned int textureTarget);
     Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer);
+    void update(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer);
+
 
     void generate();
     void bind();
@@ -658,9 +660,12 @@ public:
     int selectionModeIndex = 0;
     /// @brief radius value of the circle selection mode
     int radius = 10;
-    /// @brief flag to indicate if the xray selection is active
-    bool xray = false;
+    
+    Framebuffer FBO;
 
+    glm::vec2 boxSelectionStart = glm::vec2(0.f);
+    glm::vec2 boxSelectionEnd = glm::vec2(0.f);
+    bool boxSelectionInteraction(Timer &timer);
 
     /// @brief Contains the indices of the selected faces
     ///        Being processed in the PBR shader

@@ -108,6 +108,17 @@ Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Render
     TEST_FRAMEBUFFER
 }
 
+void Framebuffer::update(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer){
+    this->colorBuffer = colorBuffer;
+    this->renderBuffer = renderbuffer;
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, renderbuffer.attachment, GL_RENDERBUFFER, renderbuffer.ID);
+
+    TEST_FRAMEBUFFER
+}
+
 void Framebuffer::generate(){
     glGenFramebuffers(1, &this->ID);
 }

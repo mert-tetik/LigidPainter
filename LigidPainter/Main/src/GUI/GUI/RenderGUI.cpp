@@ -666,10 +666,14 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     painter.faceSelection.editMode = paintingPanel.sections[6].elements[1].checkBox.clickState1;
     painter.faceSelection.selectionModeIndex = paintingPanel.sections[6].elements[2].comboBox.selectedIndex;
     painter.faceSelection.radius = paintingPanel.sections[6].elements[3].rangeBar.value;
-    painter.faceSelection.xray = paintingPanel.sections[6].elements[4].checkBox.clickState1;
 
-    if(painter.selectedMeshIndex < getModel()->meshes.size() && *Mouse::LPressed() && !anyPanelHover && !anyDialogActive && painter.faceSelection.editMode)
+    bool applyBoxSelection;
+    if(!anyDialogActive && painter.faceSelection.editMode && painter.faceSelection.selectionModeIndex == 1)
+        applyBoxSelection = painter.faceSelection.boxSelectionInteraction(timer);
+
+    if(painter.selectedMeshIndex < getModel()->meshes.size() && ((*Mouse::LPressed() && painter.faceSelection.selectionModeIndex == 0) || (applyBoxSelection && painter.faceSelection.selectionModeIndex == 1)) && !anyPanelHover && !anyDialogActive && painter.faceSelection.editMode)
         painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex]);
+    
 }
 
 void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
