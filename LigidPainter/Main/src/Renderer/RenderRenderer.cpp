@@ -347,7 +347,8 @@ void Renderer::render(){
             ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
         }
         
-        getModel()->meshes[i].Draw(painter.faceSelection.editMode && i == painter.selectedMeshIndex);
+        if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected))
+            getModel()->meshes[i].Draw(painter.faceSelection.editMode && i == painter.selectedMeshIndex);
     }
     
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
