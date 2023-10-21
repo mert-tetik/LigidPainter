@@ -114,6 +114,7 @@ void Renderer::scrollCallback(
 {
     if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
         getScene()->camera.originLocked = false;
+
     getScene()->camera.XPLocked = false;
     getScene()->camera.XNLocked = false;
     getScene()->camera.YPLocked = false;
@@ -193,6 +194,8 @@ void Renderer::cursorPositionCallback(
 
         // Straight Movement
       
+        float straightMovSensivity = glm::distance(getScene()->camera.originPos,getScene()->camera.cameraPos)/10;
+
         // Calculate half the sensitivity for later use
         const float half_sensitivity = sensitivity / 2.0f;
 
@@ -203,19 +206,19 @@ void Renderer::cursorPositionCallback(
         const float cos_pitch = cos(glm::radians(cam->pitch));
 
         // Calculate the x and z offsets based on yaw angle, mouse movement, sensitivity, and half sensitivity
-        float x_offset = sin_yaw * mouseOffset.x * sensitivity * half_sensitivity;
-        float z_offset = cos_yaw * mouseOffset.x * sensitivity * half_sensitivity;
+        float x_offset = sin_yaw * mouseOffset.x * sensitivity * straightMovSensivity * half_sensitivity;
+        float z_offset = cos_yaw * mouseOffset.x * sensitivity * straightMovSensivity * half_sensitivity;
 
         // Check if pitch is greater than 60 degrees or less than -60 degrees
         if (cam->pitch > 60.0f || cam->pitch < -60.0f) {
             
             // Add additional x and z offsets based on yaw, pitch, mouse movement, sensitivity, and half sensitivity
-            x_offset += cos_yaw * sin_pitch * mouseOffset.y * sensitivity * half_sensitivity;
-            z_offset -= sin_yaw * sin_pitch * mouseOffset.y * sensitivity * half_sensitivity;
+            x_offset += cos_yaw * sin_pitch * mouseOffset.y * sensitivity * straightMovSensivity * half_sensitivity;
+            z_offset -= sin_yaw * sin_pitch * mouseOffset.y * sensitivity * straightMovSensivity * half_sensitivity;
         }
 
         // Calculate the y offset based on pitch, mouse movement, sensitivity, and half sensitivity
-        const float y_offset = cos_pitch * mouseOffset.y * sensitivity * half_sensitivity;
+        const float y_offset = cos_pitch * mouseOffset.y * sensitivity * straightMovSensivity * half_sensitivity;
 
         // Update camera's x position and origin position by subtracting x offset
         cam->cameraPos.x -= x_offset;
