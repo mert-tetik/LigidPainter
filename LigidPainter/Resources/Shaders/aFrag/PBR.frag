@@ -82,6 +82,8 @@ uniform sampler2D selectedPrimitiveIDS;
 
 void main() {
 
+    gl_FragDepth = gl_FragCoord.z;
+
     bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID, 0), 0).r > 0.5;
 
     if(wireframeMode == 1 || (selectedPrim && meshSelectionEditing == 1)){
@@ -179,9 +181,11 @@ void main() {
 
     if(!selectedPrim && usingMeshSelection == 1 && meshSelectionEditing == 0){
         if(hideUnselected == 0)
-            fragColor.rgb = mix(fragColor.rgb, vec3(0.5), 0.5);
-        else
+            fragColor.rgb = mix(fragColor.rgb, vec3(1.), 0.6);
+        else{
             fragColor.rgba = vec4(0.);
+            gl_FragDepth = 1.;
+        }
     }
 
     float mirrorDisplayerLineThickness = 0.005;
