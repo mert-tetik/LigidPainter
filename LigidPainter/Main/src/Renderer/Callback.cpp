@@ -130,7 +130,7 @@ void Renderer::scrollCallback(
         float originCameraDistance = glm::distance(getScene()->camera.originPos,getScene()->camera.cameraPos)/10;
 
         //Change the distance between camera & center (radius)
-        if (yoffset > 0 && getScene()->camera.radius > 1) {
+        if (yoffset > 0) {
             getScene()->camera.radius -= originCameraDistance;
         }
         else if (yoffset < 0) {
@@ -171,7 +171,7 @@ void Renderer::cursorPositionCallback(
     if(getScene()->camera.isCamInverted())
         mouseOffset.x *= -1;
 
-    const float sensitivity = 0.2f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
+    const float sensitivity = 0.14f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
     
     Camera* cam = &getScene()->camera;
 
