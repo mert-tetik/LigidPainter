@@ -84,7 +84,7 @@ void main() {
     bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID, 0), 0).r > 0.5;
 
     if(wireframeMode == 1 || (selectedPrim && meshSelectionEditing == 1)){
-        fragColor = vec4(1.);
+        fragColor = vec4(0.18, 0.42, 0.64, 1.);
         return;
     }
     

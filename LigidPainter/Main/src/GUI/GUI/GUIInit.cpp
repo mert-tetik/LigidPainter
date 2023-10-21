@@ -193,7 +193,8 @@ void UI::init
                                         CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mask to selected mesh", 1.f), //0
                                         CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mesh selection mode", 1.f), //1
                                         ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //2
-                                        RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2,1.f), "Circle radius"  , Texture(), 1.f, 1.f, 100.f, 10.f) //3
+                                        RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2,1.f), "Circle radius"  , Texture(), 1.f, 1.f, 100.f, 10.f), //3
+                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Custom"}, "Auto Select", 1.f), //2
                                     }
                                 )
                             },

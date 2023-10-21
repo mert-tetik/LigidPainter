@@ -250,7 +250,9 @@ static void parseMeshData(std::vector<AssimpObject> &objects, std::vector<Mesh> 
 
     for (size_t i = 0; i < meshes.size(); i++)
     {
+        std::vector<MeshObject> prevObjectData = meshes[i].objects; 
         meshes[i] = Mesh(meshes[i].vertices, meshes[i].indices, meshes[i].materialName);
+        meshes[i].objects = prevObjectData;
     }
     
 }

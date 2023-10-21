@@ -332,14 +332,20 @@ void Renderer::render(){
         else
             ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
-        //Draw the mesh
-        getModel()->meshes[i].Draw(painter.faceSelection.editMode);
+        ShaderSystem::tdModelShader().setInt("paintingOverDisplayinMode", 0);
+        if(i == painter.selectedMeshIndex){
+            ShaderSystem::tdModelShader().setInt("usingMeshSelection", painter.faceSelection.activated);
+            ShaderSystem::tdModelShader().setInt("meshSelectionEditing", painter.faceSelection.editMode);
+        }
+        else{
+            ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
+            ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
+        }
+        
+        getModel()->meshes[i].Draw(painter.faceSelection.editMode && i == painter.selectedMeshIndex);
     }
     
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
-    ShaderSystem::tdModelShader().setInt("paintingOverDisplayinMode", 0);
-    ShaderSystem::tdModelShader().setInt("usingMeshSelection", painter.faceSelection.activated);
-    ShaderSystem::tdModelShader().setInt("meshSelectionEditing", painter.faceSelection.editMode);
 
     glActiveTexture(GL_TEXTURE11);
     glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);

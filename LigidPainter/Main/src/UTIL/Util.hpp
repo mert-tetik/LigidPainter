@@ -675,7 +675,7 @@ public:
     /// @brief 3D model rendered with primitive ID renderin shader
     Texture modelPrimitives;
 
-    bool interaction(Mesh& selectedMesh);
+    bool interaction(Mesh& selectedMesh, bool mouseInteraction);
 };
 
 class Painter

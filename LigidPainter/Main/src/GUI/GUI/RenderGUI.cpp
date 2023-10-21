@@ -197,6 +197,9 @@ static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection){
     ShaderSystem::buttonShader().use();
 }
 
+std::string __faceSelectionActiveMesh = "";
+int __faceSelectionActiveObjIndex = 0;
+
 void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     navigationPanel.render(timer,!anyDialogActive);
     if(navigationPanel.resizingDone){
@@ -652,7 +655,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         
         ShaderSystem::buttonShader().use();
     }
-    else if(prevStraightLinePaintingCondition){
+    else if(prevStraightLinePaintingCondition && !painter.faceSelection.editMode){
         std::vector<VectorStroke> strokeArray;
         strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
         painter.applyVectorStrokes(strokeArray, this->twoDPaintingPanel, this->projection, painter.selectedPaintingModeIndex, this->filterPaintingModeFilterBtn.filter, this->twoDPaintingBox);
@@ -667,13 +670,79 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     painter.faceSelection.selectionModeIndex = paintingPanel.sections[6].elements[2].comboBox.selectedIndex;
     painter.faceSelection.radius = paintingPanel.sections[6].elements[3].rangeBar.value;
 
+    if(painter.selectedMeshIndex < getModel()->meshes.size()){
+        if(getModel()->newModelAdded || getModel()->meshes[painter.selectedMeshIndex].materialName != __faceSelectionActiveMesh){
+            paintingPanel.sections[6].elements[4].comboBox.texts.clear();
+            paintingPanel.sections[6].elements[4].comboBox.hover.clear();
+            paintingPanel.sections[6].elements[4].comboBox.hoverMixVal.clear();
+            paintingPanel.sections[6].elements[4].comboBox.clickedMixVal.clear();
+
+            paintingPanel.sections[6].elements[4].comboBox.texts.push_back("Custom");
+
+            __faceSelectionActiveMesh = getModel()->meshes[painter.selectedMeshIndex].materialName;
+
+            for (size_t ii = 0; ii < getModel()->meshes[painter.selectedMeshIndex].objects.size(); ii++)
+            {
+                paintingPanel.sections[6].elements[4].comboBox.texts.push_back(getModel()->meshes[painter.selectedMeshIndex].objects[ii].title);
+            }
+
+            for (size_t i = 0; i < paintingPanel.sections[6].elements[4].comboBox.texts.size(); i++)
+            {
+                paintingPanel.sections[6].elements[4].comboBox.hover.push_back(0);
+                paintingPanel.sections[6].elements[4].comboBox.hoverMixVal.push_back(0);
+                paintingPanel.sections[6].elements[4].comboBox.clickedMixVal.push_back(0);
+            }
+
+            paintingPanel.sections[6].elements[4].comboBox.selectedIndex = 0;
+        }
+    }
+    
+    if(paintingPanel.sections[6].elements[4].comboBox.selectedIndex != 0){
+        painter.faceSelection.selectedPrimitiveIDs.clear();
+
+        if(painter.selectedMeshIndex < getModel()->meshes.size()){
+            int objI = 0;
+            for (size_t ii = 0; ii < getModel()->meshes[painter.selectedMeshIndex].objects.size(); ii++)
+            {
+                if(getModel()->meshes[painter.selectedMeshIndex].objects[ii].title == paintingPanel.sections[6].elements[4].comboBox.texts[paintingPanel.sections[6].elements[4].comboBox.selectedIndex]){
+                    objI = ii;
+                }
+            }
+
+            for (size_t i = getModel()->meshes[painter.selectedMeshIndex].objects[objI].vertIndices.x / 3; i < getModel()->meshes[painter.selectedMeshIndex].objects[objI].vertIndices.y / 3; i++)
+            {
+                painter.faceSelection.selectedPrimitiveIDs.push_back(i);
+            }
+        }
+    }
+    
+
+    //for (size_t i = 0; i < painter.faceSelection.radius = paintingPanel.sections[6].elements[3].comboBox.texts.size(); i++)
+    //{
+    //    /* code */
+    //}
+    
+
     bool applyBoxSelection = false;
     if(!anyDialogActive && painter.faceSelection.editMode && painter.faceSelection.selectionModeIndex == 1)
         applyBoxSelection = painter.faceSelection.boxSelectionInteraction(timer);
 
-    if(painter.selectedMeshIndex < getModel()->meshes.size() && ((*Mouse::LPressed() && painter.faceSelection.selectionModeIndex == 0) || (applyBoxSelection && painter.faceSelection.selectionModeIndex == 1)) && !anyPanelHover && !anyDialogActive && painter.faceSelection.editMode)
-        painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex]);
-    
+    if(
+            (painter.selectedMeshIndex < getModel()->meshes.size() && 
+            ((*Mouse::LPressed() && painter.faceSelection.selectionModeIndex == 0) || (applyBoxSelection && painter.faceSelection.selectionModeIndex == 1)) && 
+            !anyPanelHover && 
+            !anyDialogActive && 
+            painter.faceSelection.editMode) ||
+            __faceSelectionActiveObjIndex != paintingPanel.sections[6].elements[4].comboBox.selectedIndex
+
+        )
+    {
+        if(painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex], !anyPanelHover)){
+            if(__faceSelectionActiveObjIndex == paintingPanel.sections[6].elements[4].comboBox.selectedIndex)
+                paintingPanel.sections[6].elements[4].comboBox.selectedIndex = 0;
+        }
+        __faceSelectionActiveObjIndex = paintingPanel.sections[6].elements[4].comboBox.selectedIndex;
+    }
 }
 
 void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
