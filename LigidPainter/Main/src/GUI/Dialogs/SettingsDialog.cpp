@@ -120,7 +120,6 @@ SettingsDialog::SettingsDialog(){
                                         
                                         Element(ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.5f), 
                                         {
-                                            "0.900000",
                                             "1.000000",
                                             "1.050000",
                                             "1.100000",
@@ -131,9 +130,7 @@ SettingsDialog::SettingsDialog(){
                                             "1.700000",
                                             "2.000000",
                                             "2.500000",
-                                            "3.000000",
-                                            "4.000000",
-                                            "8.000000"
+                                            "3.000000"
 
                                         }, "Framebuffer Resolution Divider",2.f)),
 
