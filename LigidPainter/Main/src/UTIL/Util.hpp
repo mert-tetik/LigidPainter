@@ -660,6 +660,8 @@ public:
     int selectionModeIndex = 0;
     /// @brief radius value of the circle selection mode
     int radius = 10;
+
+    bool hideUnselected = false;
     
     Framebuffer FBO;
 

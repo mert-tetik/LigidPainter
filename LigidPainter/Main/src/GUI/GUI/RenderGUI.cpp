@@ -669,6 +669,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     painter.faceSelection.editMode = paintingPanel.sections[6].elements[1].checkBox.clickState1;
     painter.faceSelection.selectionModeIndex = paintingPanel.sections[6].elements[2].comboBox.selectedIndex;
     painter.faceSelection.radius = paintingPanel.sections[6].elements[3].rangeBar.value;
+    painter.faceSelection.hideUnselected = paintingPanel.sections[6].elements[5].checkBox.clickState1;
 
     if(painter.selectedMeshIndex < getModel()->meshes.size()){
         if(getModel()->newModelAdded || getModel()->meshes[painter.selectedMeshIndex].materialName != __faceSelectionActiveMesh){

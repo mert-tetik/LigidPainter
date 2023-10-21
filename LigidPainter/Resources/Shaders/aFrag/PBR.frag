@@ -76,6 +76,7 @@ uniform vec3 mirrorOffsets = vec3(0.);
 uniform int wireframeMode = 0;
 uniform int usingMeshSelection = 0;
 uniform int meshSelectionEditing = 0;
+uniform int hideUnselected = 0;
 uniform sampler2D selectedPrimitiveIDS;
 
 
@@ -177,7 +178,10 @@ void main() {
                     );
 
     if(!selectedPrim && usingMeshSelection == 1 && meshSelectionEditing == 0){
-        fragColor.rgb = mix(fragColor.rgb, vec3(0.5), 0.5);
+        if(hideUnselected == 0)
+            fragColor.rgb = mix(fragColor.rgb, vec3(0.5), 0.5);
+        else
+            fragColor.rgba = vec4(0.);
     }
 
     float mirrorDisplayerLineThickness = 0.005;
