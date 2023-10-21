@@ -153,7 +153,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
         }
 
                 
-        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && *Mouse::LClick()){
+        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && (*Mouse::LClick() || this->selectionModeIndex == 1)){
             if(this->selectedPrimitiveIDs.size())
                 changesMade = true;
             this->selectedPrimitiveIDs.clear();
@@ -200,6 +200,8 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
     Settings::defaultFramebuffer()->setViewport();
 
     ShaderSystem::buttonShader().use();
+
+    getBox()->bindBuffers();
 
     glDepthFunc(GL_LEQUAL);
 
