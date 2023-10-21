@@ -120,9 +120,30 @@ void ComboBox::render(
     //Render the buttons (elements)
     for (size_t i = 0; i < texts.size(); i++)
     {
+        glm::vec2 rPos = glm::vec2(pos.x,pos.y + i * scale.y*2.f * clickedMixVal[0]);
+        int wCounter = 1;
+        if(this->pressed){
+            while(rPos.y > 90){
+                rPos.x -= scale.x * 2.f;
+                
+                int maxI = 1;
+                for (size_t i = 0; i < texts.size(); i++)
+                {                    
+                    glm::vec2 rrPos =  glm::vec2(pos.x,pos.y + i * scale.y*2.f * clickedMixVal[0]);
+                    if(rrPos.y < 90){
+                        maxI = i;
+                    }
+                }
+
+                rPos.y -= maxI * scale.y * 2.f;
+
+                wCounter++;
+            }
+        }
+
         //Position value in the screen coordinates
         glm::vec3 resultPos = glm::vec3( 
-                  UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y + i * scale.y*2.f * clickedMixVal[0])) //Don't include the depth
+                  UTIL::getPercent(*Settings::videoScale(), rPos) //Don't include the depth
                   ,pos.z + zOffset); //Use the original depth value
         
         //Check if mouse on top of the element
