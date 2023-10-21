@@ -27,11 +27,26 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //Fragment shader output
 out vec4 color;
 
+uniform int usingMeshSelection = 0;
+uniform int hideUnselected = 0;
+uniform sampler2D selectedPrimitiveIDS;
+
 void main() {
+
+    gl_FragDepth = gl_FragCoord.z;
 
     //Output the linearized depth value from the fragment shader
     color = vec4(
                     vec3(gl_FragCoord.z), //Linearized depth value
                     1.0 //Full opacity
                 );
+
+    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID, 0), 0).r > 0.5;
+
+    if(!selectedPrim && usingMeshSelection == 1){
+        if(hideUnselected == 1){
+            color.rgba = vec4(0.);
+            gl_FragDepth = 1.;
+        }
+    }
 }

@@ -74,9 +74,9 @@ uniform vec3 mirrorState = vec3(0.);
 uniform vec3 mirrorOffsets = vec3(0.);
 
 uniform int wireframeMode = 0;
-uniform int usingMeshSelection = 0;
 uniform int meshSelectionEditing = 0;
 uniform int hideUnselected = 0;
+uniform int usingMeshSelection = 0;
 uniform sampler2D selectedPrimitiveIDS;
 
 
