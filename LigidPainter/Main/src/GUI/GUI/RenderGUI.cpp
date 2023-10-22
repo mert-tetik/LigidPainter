@@ -80,7 +80,7 @@ bool wasTextureSelectionDialogActive(){
 
 /* -- Forward declerations -- */
 
-static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection);
+static void renderBrushCursor(float radius, glm::mat4 guiProjection);
 
 void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox){
     
@@ -154,8 +154,10 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
         )
     {
-        renderBrushCursor(painter, this->projection);
+        renderBrushCursor(painter.brushProperties.radius, this->projection);
     }
+    else if(painter.faceSelection.editMode && painter.faceSelection.selectionModeIndex == 0 && !anyDialogActive && !anyPanelHover)
+        renderBrushCursor(painter.faceSelection.radius / Settings::videoScale()->x, this->projection);
     else
         getContext()->window.setCursorVisibility(true);
 
@@ -175,14 +177,14 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
 
 //UTILITY FUNCTIONS
 
-static void renderBrushCursor(Painter& painter, glm::mat4 guiProjection){
+static void renderBrushCursor(float radius, glm::mat4 guiProjection){
     /* Use the circle shader */
     ShaderSystem::circleShader().use();
 
     /* Set the transform data & the projection */
     ShaderSystem::circleShader().setMat4("projection", guiProjection);
     ShaderSystem::circleShader().setVec3("pos", Mouse::cursorPos()->x, Mouse::cursorPos()->y, 1);
-    ShaderSystem::circleShader().setVec2("scale", glm::vec2(painter.brushProperties.radius * (Settings::videoScale()->x)));
+    ShaderSystem::circleShader().setVec2("scale", glm::vec2(radius * (Settings::videoScale()->x)));
 
     /* Hide the cursor */
     getContext()->window.setCursorVisibility(false);

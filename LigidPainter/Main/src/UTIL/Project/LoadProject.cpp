@@ -40,6 +40,8 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
         if(!this->projectProcessing)
             break;
     }
+    
+    std::cout << "LOAD MODE : START" << std::endl;
 
     this->projectProcessing = true;
 
@@ -59,9 +61,11 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
         this->folderPath.pop_back();
 
     //writeLigidFile(meshNodeScene);
+    
 
     try
     {
+        std::cout << "LOAD MODE : TEXTURES" << std::endl;
         //Load the textures
         Library::clearTextures();
         for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
@@ -90,6 +94,8 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
 
 
 
+        std::cout << "LOAD MODE : MATERIALS" << std::endl;
+
         //Load the materials
         Library::clearMaterials();
         for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
@@ -101,6 +107,8 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
         
         }
 
+        std::cout << "LOAD MODE : 3D MODELS" << std::endl;
+        
         //Load the tdmodels
         Library::clearModels();
         for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
@@ -117,6 +125,8 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
 
         }
 
+        std::cout << "LOAD MODE : LIGID FILE" << std::endl;
+
         //TODO Do smt with these variables
         time_t creationDate; 
         time_t lastOpenedDate;
@@ -126,6 +136,8 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
             this->projectProcessing = false;
             return false;
         }
+        
+        std::cout << "LOAD MODE : BRUSHES" << std::endl;
         
         //Load the brushes
         Library::clearBrushes();
@@ -138,6 +150,8 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
             }
         }
 
+        std::cout << "LOAD MODE : FILTERS" << std::endl;
+
         //Load the filters
         Library::clearFilters();
         for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Filters")){
@@ -148,6 +162,7 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
                 Library::addFilter(filter);
         }
 
+        std::cout << "LOAD MODE : TEXTURE PACKS" << std::endl;
    
         //Load the texture packs
         Library::clearTexturePacks();

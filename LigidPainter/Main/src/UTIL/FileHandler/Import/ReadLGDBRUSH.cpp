@@ -71,11 +71,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
                             }
 
 struct LGDBRUSHProp{
-    std::string title;
-    char valueType;
+    std::string title = "";
+    char valueType = 'F';
 
-    bool boolVal;
-    float floatVal;
+    bool boolVal = false;
+    float floatVal = 0.f;
     Texture texture;
 };
 
@@ -97,7 +97,7 @@ bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     }
         
     //!HEADER
-        
+
     //!Description
     uint64_t h1 = 0x8A3F9B0E5CFA2D71; 
     uint64_t h2 = 0xE6724F8D319BCA06; 

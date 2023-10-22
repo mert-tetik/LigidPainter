@@ -141,9 +141,10 @@ void Brush::updateDisplayTexture(float radius){
 
     captureFBO.bind();
 
-    for (size_t i = 0; i < wave.size() / strokeSize; i++)
+    for (int i = 0; i < wave.size() / strokeSize; i++)
     {
-        ShaderSystem::twoDPainting().setInt("frame", (i + 1 / (wave.size() / 75)) * 1.5f * strokeSize);
+
+        ShaderSystem::twoDPainting().setInt("frame", i);
 
         Texture bgTxtr = displayingTexture.duplicateTexture();
         captureFBO.bind();

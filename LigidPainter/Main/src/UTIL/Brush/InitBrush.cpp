@@ -59,7 +59,7 @@ Brush::Brush(
     this->individualTexture = individualTexture;
     this->sinWavePattern = sinWavePattern;
     this->title = title;
-    
+
     this->texture.proceduralProps = texture.proceduralProps;
     this->texture.ID = texture.duplicateTexture();
 
