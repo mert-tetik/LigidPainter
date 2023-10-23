@@ -497,6 +497,7 @@ public:
     Texture graphics;
     void updateGraphics(Timer &timer);
     void updateUpdateGraphicsFlag();
+    double updateGraphicsTime = 0.;
 
     /*Previous properties*/
     glm::vec2 prevScale;
