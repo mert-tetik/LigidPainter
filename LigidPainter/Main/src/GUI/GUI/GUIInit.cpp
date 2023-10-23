@@ -544,4 +544,17 @@ void UI::init
     navigationPanel.solidStyle = true;
 
     this->twoDPaintingBox.customMeshInit(glm::vec3(0.),glm::vec2(0.)); 
+
+    this->navigationPanel.preRenderingMode = true;
+    this->windowPanel.preRenderingMode = true;
+    this->paintingPanel.preRenderingMode = true;
+    this->libraryPanelLeft.preRenderingMode = true;
+    this->libraryPanelDisplayer.preRenderingMode = true;
+    this->nodeEditorDisplayer.preRenderingMode = true;
+    this->selectedTextureDisplayer.preRenderingMode = true;
+    this->twoDPaintingPanel.preRenderingMode = true;
+    this->paintingModesPanel.preRenderingMode = true;
+    this->vectorPaintingModePropertyPanel.preRenderingMode = true;
+    this->smearPaintingModePropertyPanel.preRenderingMode = true;
+    this->displayingModesPanel.preRenderingMode = true;
 }   

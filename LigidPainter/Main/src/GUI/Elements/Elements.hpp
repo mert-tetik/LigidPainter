@@ -491,6 +491,19 @@ public:
         Panel renders the elements
     */ 
     std::vector<Section> sections;
+
+    bool preRenderingMode = false;
+    bool updateGraphicsFlag = true;
+    Texture graphics;
+    void updateGraphics(Timer &timer);
+    void updateUpdateGraphicsFlag();
+
+    /*Previous properties*/
+    glm::vec2 prevScale;
+    glm::vec3 prevPos;
+    float prevSlideVal;
+    std::vector<Section> prevSections;
+    std::vector<Button> prevBarButtons;
     
     /*! @brief Scale of the panel in the range of 0 - 100*/
     glm::vec2 scale;  

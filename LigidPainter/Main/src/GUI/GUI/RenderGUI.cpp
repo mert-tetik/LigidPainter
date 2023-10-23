@@ -132,7 +132,7 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     Debugger::block("GUI : Complete Panels"); // Start
 
     //Render the panels
-    //renderPanels(timer, painter, screenGapPerc);
+    renderPanels(timer, painter, screenGapPerc);
 
     Debugger::block("GUI : Complete Panels"); // End
 

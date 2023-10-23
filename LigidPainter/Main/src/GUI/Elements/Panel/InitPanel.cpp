@@ -51,7 +51,6 @@ Panel::Panel(
                 bool hasSlider
             )
     {
-    
     this->vertical = vertical;
     this->scale = scale;
     this->color = color;

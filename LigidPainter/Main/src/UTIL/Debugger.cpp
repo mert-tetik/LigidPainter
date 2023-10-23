@@ -57,6 +57,5 @@ void Debugger::block(std::string name){
         if(!matched){
             objects.push_back(DebugObject(LigidGL::getTime(), name));
         }
-
     }
 }

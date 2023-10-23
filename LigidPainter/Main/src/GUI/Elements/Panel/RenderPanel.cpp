@@ -19,6 +19,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "GUI/Elements/Elements.hpp"
 #include "ShaderSystem/Shader.hpp"
@@ -28,8 +29,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 #include <iostream>
 #include <vector>
+
     
-void Panel::render(Timer &timer,bool doMouseTracking){
+void Panel::render(Timer &timer, bool doMouseTracking){
     
     this->doMouseTracking = doMouseTracking;
     
@@ -46,8 +48,166 @@ void Panel::render(Timer &timer,bool doMouseTracking){
     
     resizeThePanel();
 
-    drawPanel(resultPos,resultScale,timer);
+    if(preRenderingMode){
+        this->updateUpdateGraphicsFlag();
 
+        if(this->updateGraphicsFlag){
+            this->updateGraphics(timer);
+            this->updateGraphicsFlag = false;
+        }
+        
+        glm::mat4 projection = glm::ortho(0.f, (float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
+
+        getBox()->bindBuffers();
+
+        // Render the panel's graphics
+        ShaderSystem::textureRenderingShader().use();
+        ShaderSystem::textureRenderingShader().setMat4("projection", projection);
+        ShaderSystem::textureRenderingShader().setVec3("pos", resultPos);
+        ShaderSystem::textureRenderingShader().setVec2("scale", resultScale);
+        ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
+        ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
+        ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, graphics.ID);
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        ShaderSystem::buttonShader().use();    
+        
+        if(this->clearDepthBuffer)
+            glClear(GL_DEPTH_BUFFER_BIT);
+    }
+
+    else{
+        drawPanel(resultPos, resultScale, timer);
+    }
+    
+
+    prevScale = this->scale;
+    prevPos = this->pos;
+    prevSlideVal = this->slideVal;
+    prevSections = this->sections;
+    prevBarButtons = this->barButtons;
+}
+
+void Panel::updateUpdateGraphicsFlag(){
+    if(this->hover)
+        updateGraphicsFlag = true;
+
+    if(barButtons.size() == prevBarButtons.size()){
+        for (size_t i = 0; i < prevBarButtons.size(); i++)
+        {
+            if(
+                    prevBarButtons[i].text != barButtons[i].text ||
+                    prevBarButtons[i].hoverMixVal != barButtons[i].hoverMixVal ||
+                    prevBarButtons[i].clickedMixVal != barButtons[i].clickedMixVal 
+                )
+            {
+                this->updateGraphicsFlag = true;
+            }
+        }
+    }
+    else
+        this->updateGraphicsFlag = true;
+
+    if(prevSections.size() == sections.size()){
+        for (size_t secI = 0; secI < prevSections.size(); secI++)
+        {
+            if(
+                    prevSections[secI].header.button.text != sections[secI].header.button.text ||
+                    prevSections[secI].header.button.hoverMixVal != sections[secI].header.button.hoverMixVal ||
+                    prevSections[secI].header.button.clickedMixVal != sections[secI].header.button.clickedMixVal 
+                )
+            {
+                this->updateGraphicsFlag = true;
+            }
+
+            if(prevSections[secI].elements.size() == sections[secI].elements.size()){
+                for (size_t eI = 0; eI < prevSections[secI].elements.size(); eI++)
+                {
+                    bool comboBoxChanged = false;
+
+                    if(
+                            prevSections[secI].elements[eI].button.text != sections[secI].elements[eI].button.text ||
+                            prevSections[secI].elements[eI].button.hoverMixVal != sections[secI].elements[eI].button.hoverMixVal ||
+                            prevSections[secI].elements[eI].button.clickedMixVal != sections[secI].elements[eI].button.clickedMixVal ||
+                            prevSections[secI].elements[eI].rangeBar.value != sections[secI].elements[eI].rangeBar.value ||
+                            prevSections[secI].elements[eI].rangeBar.hoverMixVal != sections[secI].elements[eI].rangeBar.hoverMixVal ||
+                            prevSections[secI].elements[eI].rangeBar.clickedMixVal != sections[secI].elements[eI].rangeBar.clickedMixVal ||
+                            prevSections[secI].elements[eI].rangeBar.leftArrowMixVal != sections[secI].elements[eI].rangeBar.leftArrowMixVal ||
+                            prevSections[secI].elements[eI].rangeBar.rightArrowMixVal != sections[secI].elements[eI].rangeBar.rightArrowMixVal ||
+                            prevSections[secI].elements[eI].rangeBar.leftArrowClickedMixVal != sections[secI].elements[eI].rangeBar.leftArrowClickedMixVal ||
+                            prevSections[secI].elements[eI].rangeBar.rightArrowClickedMixVal != sections[secI].elements[eI].rangeBar.rightArrowClickedMixVal ||
+                            prevSections[secI].elements[eI].textBox.text != sections[secI].elements[eI].textBox.text ||
+                            prevSections[secI].elements[eI].textBox.hoverMixVal != sections[secI].elements[eI].textBox.hoverMixVal ||
+                            prevSections[secI].elements[eI].textBox.clickedMixVal != sections[secI].elements[eI].textBox.clickedMixVal ||
+                            prevSections[secI].elements[eI].checkBox.clickState1 != sections[secI].elements[eI].checkBox.clickState1 ||
+                            prevSections[secI].elements[eI].checkBox.hoverMixVal != sections[secI].elements[eI].checkBox.hoverMixVal ||
+                            prevSections[secI].elements[eI].checkBox.clickedMixVal != sections[secI].elements[eI].checkBox.clickedMixVal ||
+                            comboBoxChanged
+                        )
+                    {
+                        this->updateGraphicsFlag = true;
+                        break;
+                    }
+                }
+            }
+            else{
+                this->updateGraphicsFlag = true;
+            }
+            
+        }
+    }
+    else{
+        this->updateGraphicsFlag = true;
+    }
+
+    if(prevScale != this->scale){
+        this->updateGraphicsFlag = true;
+    }
+    if(prevPos != this->pos){
+        this->updateGraphicsFlag = true;
+    }
+    if(prevSlideVal != this->slideVal){
+        this->updateGraphicsFlag = true;
+    }
+}
+
+void Panel::updateGraphics(Timer &timer){
+    glm::vec2 displayRes = this->resultScale * 2.f; 
+
+    if(!this->graphics.ID){
+        glGenTextures(1, &this->graphics.ID);
+    }
+    this->graphics.update(nullptr, displayRes.x, displayRes.y, GL_NEAREST);
+
+    Framebuffer captureGraphicsFBO = Framebuffer(this->graphics, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)));
+    captureGraphicsFBO.bind();
+
+    glClearColor(this->color.r, this->color.g, this->color.b, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glViewport(0, 0, displayRes.x, displayRes.y);
+
+    glm::mat4 projection = glm::ortho(
+                                        resultPos.x - resultScale.x, 
+                                        (resultPos.x + resultScale.x) , 
+                                        (resultPos.y + resultScale.y) , 
+                                        resultPos.y - resultScale.y
+                                    );
+    ShaderSystem::buttonShader().setMat4("projection", projection);
+
+    drawPanel(resultPos, this->resultScale, timer);
+    
+    //Finish
+    projection = glm::ortho(0.f, (float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
+    ShaderSystem::buttonShader().setMat4("projection", projection);
+
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
+    captureGraphicsFBO.deleteBuffers(false, true);
 }
 
 static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, float outlineThickness, float cornerRadius){
@@ -164,8 +324,11 @@ void Panel::drawPanel(
     if(this->solidStyle)
         outlineRadius = 1.f;
 
+    glDisable(GL_BLEND);
     //Draw the panel's itself
     drawThePanel(resultPos, resultScale, this->color, this->color2, this->outlineThickness, outlineRadius);
+    glEnable(GL_BLEND);
+
 
     /*Render the barriers if the depth texture of the framebuffer will be refreshed at the end of the panel rendering process*/
     if(clearDepthBuffer)
