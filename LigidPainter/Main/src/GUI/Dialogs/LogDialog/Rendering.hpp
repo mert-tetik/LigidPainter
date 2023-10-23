@@ -51,19 +51,21 @@ static void rendering(
 {
 
 
-    if(logBtnL.clicked){
-        messagesActive = !messagesActive;
-        actionHistoryActive = false;
-    }
-    
-    if(logBtnR.clicked){
-        actionHistoryActive = !actionHistoryActive;
-        messagesActive = false;
-    }
-    
-    if(logBtn.clicked){
-        messagesActive = false;
-        actionHistoryActive = false;
+    if(*Mouse::LClick()){
+        if(logBtnL.hover){
+            messagesActive = !messagesActive;
+            actionHistoryActive = false;
+        }
+        
+        else if(logBtnR.hover){
+            actionHistoryActive = !actionHistoryActive;
+            messagesActive = false;
+        }
+        
+        else{
+            messagesActive = false;
+            actionHistoryActive = false;
+        }
     }
 
     if(logBtn.clickState1){ 

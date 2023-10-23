@@ -159,32 +159,32 @@ void LogDialog::render(Timer timer){
                                         }
                                     )
                             );
+        
         for (size_t i = 0; i < __actions.size(); i++)
         {
             logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), __actions[i].title, Texture(), 0., false));
             logSections[0].elements[logSections[0].elements.size() - 1].button.color = glm::vec4(0.11f, 0.55f, 0.38f, 1.f);
         }
 
-
         if(this->panel.sections[0].elements.size()){
-            if(this->panel.sections[0].elements[this->panel.sections[0].elements.size()-1].button.text == "Undo"){
+            if(this->panel.sections[0].elements[this->panel.sections[0].elements.size()-1].button.text == "Undo / CTRL+Z"){
                 logSections[0].elements.push_back(this->panel.sections[0].elements[this->panel.sections[0].elements.size()-1].button);
             }
             else
-                logSections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo", Texture(), 0., false));
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo / CTRL+Z", Texture(), 0., false));
         }
         else
-            logSections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo", Texture(), 0., false));
+            logSections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo / CTRL+Z", Texture(), 0., false));
         
         this->panel.sections = logSections;
     }
-    else if(this->panelYAxisMixVal < 0.2)
-        this->panel.sections.clear();
 
-    if(actionHistoryActive && this->panel.sections.size()){
-        if(this->panel.sections[0].elements[this->panel.sections[0].elements.size() - 1].button.clicked){
-            undo();
-        }
+    if(
+            actionHistoryActive && this->panel.sections.size() && this->panel.sections[0].elements.size() && this->panel.sections[0].elements[this->panel.sections[0].elements.size() - 1].button.clicked  ||
+            Shortcuts::CTRL_Z()
+        )
+    {
+        undo();
     }
 }
 
