@@ -271,7 +271,7 @@ void UI::init
                             true,
                             true,
                             1.f,
-                            2,
+                            3,
                             {
                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Add"        , Texture(), 0.f,false),
                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Import"        , Texture(), 0.f,false)

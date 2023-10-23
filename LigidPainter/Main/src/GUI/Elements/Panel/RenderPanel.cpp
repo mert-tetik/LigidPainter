@@ -328,10 +328,12 @@ void Panel::drawPanel(
     if(this->solidStyle)
         outlineRadius = 1.f;
 
-    glDisable(GL_BLEND);
+    if(preRenderingMode)
+        glDisable(GL_BLEND);
     //Draw the panel's itself
     drawThePanel(resultPos, resultScale, this->color, this->color2, this->outlineThickness, outlineRadius);
-    glEnable(GL_BLEND);
+    if(preRenderingMode)
+        glEnable(GL_BLEND);
 
 
     /*Render the barriers if the depth texture of the framebuffer will be refreshed at the end of the panel rendering process*/
