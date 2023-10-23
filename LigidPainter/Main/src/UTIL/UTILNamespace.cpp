@@ -212,7 +212,7 @@ bool UTIL::uniqueName(std::string &s, std::vector<std::string> sArray){
     }
 
     if(isTheSame){
-        for (size_t i = 0; i < 1000; i++)
+        for (size_t i = 0; i < 50; i++)
         {
             bool matched = false;
             for (size_t txtrI = 0; txtrI < sArray.size(); txtrI++)

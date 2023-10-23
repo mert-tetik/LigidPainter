@@ -74,6 +74,8 @@ struct Camera{
         this->setCameraPosition(camPos);
     }
 
+    void posShortcutInteraction(bool active);
+
     bool XPLocked = false;
     bool XNLocked = false;
     bool YPLocked = false;

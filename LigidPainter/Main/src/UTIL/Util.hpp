@@ -1003,6 +1003,10 @@ public:
     void load(const std::string path);
 };
 
+namespace Debugger{
+    void block(std::string name);
+};
+
 #include <thread>
 #include <mutex>
 

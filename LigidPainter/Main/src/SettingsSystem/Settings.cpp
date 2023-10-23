@@ -185,3 +185,112 @@ namespace Settings{
             glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
     }
 };
+
+void Camera::posShortcutInteraction(bool active){
+    if(active){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_0) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_0)){
+            this->originLocked = true;
+            
+            this->XPLocked = false;
+            this->XNLocked = false;
+            this->YPLocked = false;
+            this->YNLocked = false;
+            this->ZPLocked = false;
+            this->ZNLocked = false;
+        }
+
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_1) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_1)){
+            this->XPLocked = true;
+            this->XNLocked = false;
+            this->YPLocked = false;
+            this->YNLocked = false;
+            this->ZPLocked = false;
+            this->ZNLocked = false;
+        }
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_2) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_2)){
+            this->XNLocked = true;
+            this->XPLocked = false;
+            this->YPLocked = false;
+            this->YNLocked = false;
+            this->ZPLocked = false;
+            this->ZNLocked = false;
+            
+        }
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_3) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_3)){
+            this->YPLocked = true;
+            this->XNLocked = false;
+            this->XPLocked = false;
+            this->YNLocked = false;
+            this->ZPLocked = false;
+            this->ZNLocked = false;
+        }
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_4) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_4)){
+            this->YNLocked = true;
+            this->XNLocked = false;
+            this->YPLocked = false;
+            this->XPLocked = false;
+            this->ZPLocked = false;
+            this->ZNLocked = false;
+        }
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_5) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_5)){
+            this->ZPLocked = true;
+            this->XNLocked = false;
+            this->YPLocked = false;
+            this->YNLocked = false;
+            this->XPLocked = false;
+            this->ZNLocked = false;
+        }
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_6) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_6)){
+            this->ZNLocked = true;
+            this->XNLocked = false;
+            this->YPLocked = false;
+            this->YNLocked = false;
+            this->ZPLocked = false;
+            this->XPLocked = false;
+        }
+    }
+
+
+    if(this->originLocked){        
+        this->transition(glm::vec3(10.f, 0.f, 0.f), glm::vec3(0.f));
+        getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
+    }
+    if(this->XPLocked){        
+        this->transition(glm::vec3(10.f, 0.f, 0.f) + this->originPos);
+        getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
+    }
+    if(this->XNLocked){        
+        this->transition(glm::vec3(-10.f, 0.f, 0.f) + this->originPos);
+        getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
+    }
+    if(this->YPLocked){        
+        this->transition(glm::vec3(0.f, 10.f, 0.f) + this->originPos);
+        getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
+    }
+    if(this->YNLocked){        
+        this->transition(glm::vec3(0.f, -10.f, 0.f) + this->originPos);
+        getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
+    }
+    if(this->ZPLocked){        
+        this->transition(glm::vec3(0.f, 0.f, 10.f) + this->originPos);
+        getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
+    }
+    if(this->ZNLocked){        
+        this->transition(glm::vec3(0.f, 0.f, -10.f) + this->originPos);
+        getScene()->updateViewMatrix();
+        getScene()->updateProjectionMatrix();
+
+    }
+}

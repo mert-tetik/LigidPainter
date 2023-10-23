@@ -84,6 +84,8 @@ static void renderBrushCursor(float radius, glm::mat4 guiProjection);
 
 void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox){
     
+    Debugger::block("GUI : Start"); // Start
+    
     __texture_selection_dialog = this->textureSelectionDialog;
     __filter_selection_dialog = this->filterSelectionDialog;
     __texture_Pack_Editor_Dialog = this->texturePackEditorDialog;
@@ -92,7 +94,6 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
 
     //Set pass less or equal
     glDepthFunc(GL_LEQUAL);
-
 
     //Give projection to the curve shader        
     ShaderSystem::vectoralCurve().use();
@@ -122,25 +123,42 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     //Calculate the screen gap in 0 - 100 range
     float screenGapPerc = screenGap / Settings::videoScale()->x * 100.f; 
     
-    //TODO Don't call that everyframe (maybe)
     //Rename every library element if their name is doubled 
-    if(!this->renamingTextBox.active)
-        Library::nameControl();
+    //if(!this->renamingTextBox.active)
+    //    Library::nameControl();
+
+    Debugger::block("GUI : Start"); // End
+    
+    Debugger::block("GUI : Complete Panels"); // Start
 
     //Render the panels
-    renderPanels(timer, painter, screenGapPerc);
+    //renderPanels(timer, painter, screenGapPerc);
+
+    Debugger::block("GUI : Complete Panels"); // End
 
     //Render renaming textbox
     renderRenamingTextbox(timer, painter);
     
+    Debugger::block("GUI : Nodes"); // Start
+    
     //Render the nodes
     NodeScene::render(timer,nodeEditorDisplayer, nodePanel, !this->anyDialogActive);
+    
+    Debugger::block("GUI : Nodes"); // End
+    
+    Debugger::block("GUI : Dialogs"); // Start
     
     //Render the dialogs
     renderDialogs(timer, project, skybox, painter);
     
+    Debugger::block("GUI : Dialogs"); // End
+    
+    Debugger::block("GUI : Dropper"); // Start
+    
     //Render the dropper & pick color if mouse left button clicked
     renderDropper(painter);
+    
+    Debugger::block("GUI : Dropper"); // End
 
     //Render the brush cursor
     if(
@@ -161,8 +179,12 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     else
         getContext()->window.setCursorVisibility(true);
 
+    Debugger::block("GUI : Element Interaction"); // Start
+
     //Interactions of the UI elements
     elementInteraction(painter, timer, screenGapPerc, project, this->materialEditorDialog.appMaterialModifiers);
+
+    Debugger::block("GUI : Element Interaction"); // End
 
     frameCounter++;
 
@@ -203,6 +225,9 @@ std::string __faceSelectionActiveMesh = "";
 int __faceSelectionActiveObjIndex = 0;
 
 void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
+    
+    Debugger::block("GUI : Panels : Panel rendering"); // Start
+    
     navigationPanel.render(timer,!anyDialogActive);
     if(navigationPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
@@ -314,6 +339,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     ShaderSystem::buttonShader().use();
     //
+
 
     if(!painter.threeDimensionalMode){
         
@@ -473,8 +499,10 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             this->panelPositioning(screenGapPerc, painter);
     }
 
-    
-    
+    Debugger::block("GUI : Panels : Panel rendering"); // End
+
+    Debugger::block("GUI : Panels : Rest"); // Start
+
     bool anyVectorPointHover = false;
     for (size_t i = 0; i < painter.vectorStrokes.size(); i++){
         if(painter.vectorStrokes[i].endPointHover || painter.vectorStrokes[i].startPointHover || painter.vectorStrokes[i].offsetPointHover)
@@ -591,6 +619,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
 
     if(updatePaintingOverTexture){
+        std::cout << "AAAAAA" << std::endl;
         glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
 
         Framebuffer FBO = Framebuffer(painter.paintingOverTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, paintingRes));
@@ -746,6 +775,8 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         }
         __faceSelectionActiveObjIndex = paintingPanel.sections[6].elements[4].comboBox.selectedIndex;
     }
+
+    Debugger::block("GUI : Panels : Rest"); // End
 }
 
 void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
