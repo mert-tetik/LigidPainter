@@ -578,6 +578,12 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     
     bool updatePaintingOverTexture = false;
     
+    getBox()->bindBuffers();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
+    ShaderSystem::buttonShader().use();
+    ShaderSystem::buttonShader().setMat4("projection", this->projection);
 
     // Rendering all the painting over texture fields
     if(painter.usePaintingOver){
@@ -619,7 +625,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
 
     if(updatePaintingOverTexture){
-        std::cout << "AAAAAA" << std::endl;
         glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
 
         Framebuffer FBO = Framebuffer(painter.paintingOverTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, paintingRes));

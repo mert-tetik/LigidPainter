@@ -20,6 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
@@ -77,7 +78,7 @@ TextureField::TextureField(Texture texture){
     textureDisplayingButtonIOutline = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
 }
 
-static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 &elementPos, const char* position){
+static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 &elementPos, std::string position){
   
 
     if(position == "LEFT_TOP"){

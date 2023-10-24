@@ -238,7 +238,7 @@ void Renderer::render(){
 
 
     // ------- Rendering the framebuffer result ------- 
-    if(Settings::properties()->framebufferResolutionDivier != 1.f){
+    if(true){
 
         Debugger::block("Low resolution framebuffer result"); // Start
 

@@ -22,6 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "GUI/GUI.hpp"
 #include "LibrarySystem/Library.hpp"
@@ -51,6 +52,10 @@ static void drawBG(unsigned int bgTexture);
 
 void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selectedMeshI){
     
+    ShaderSystem::buttonShader().use();
+    ShaderSystem::buttonShader().setMat4("projection", guiProjection);
+    Settings::defaultFramebuffer()->setViewport(); 
+
     this->dialogControl.activate();
 
     this->selectedMeshIndex = selectedMeshI;
@@ -61,6 +66,8 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
     {
         getContext()->window.pollEvents();
         
+        std::cout << glm::to_string(bgPanel.pos) << std::endl;
+
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -137,6 +144,11 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
         Settings::defaultFramebuffer()->render();    
         Settings::defaultFramebuffer()->setViewport();   
     }
+
+    ShaderSystem::buttonShader().use();
+    ShaderSystem::buttonShader().setMat4("projection", guiProjection);
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport(); 
 }
 
 

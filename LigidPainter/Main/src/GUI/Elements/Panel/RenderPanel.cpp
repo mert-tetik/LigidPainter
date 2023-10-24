@@ -137,6 +137,7 @@ void Panel::updateUpdateGraphicsFlag(){
                             prevSections[secI].elements[eI].button.text != sections[secI].elements[eI].button.text ||
                             prevSections[secI].elements[eI].button.hoverMixVal != sections[secI].elements[eI].button.hoverMixVal ||
                             prevSections[secI].elements[eI].button.clickedMixVal != sections[secI].elements[eI].button.clickedMixVal ||
+                            prevSections[secI].elements[eI].button.clicked || sections[secI].elements[eI].button.clicked ||
                             prevSections[secI].elements[eI].rangeBar.value != sections[secI].elements[eI].rangeBar.value ||
                             prevSections[secI].elements[eI].rangeBar.hoverMixVal != sections[secI].elements[eI].rangeBar.hoverMixVal ||
                             prevSections[secI].elements[eI].rangeBar.clickedMixVal != sections[secI].elements[eI].rangeBar.clickedMixVal ||
