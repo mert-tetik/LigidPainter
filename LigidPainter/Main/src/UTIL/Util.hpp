@@ -1023,6 +1023,7 @@ namespace Shortcuts{
     bool CTRL_W();
     bool CTRL_SHIFT_S();
     bool F11();
+    bool anyShortCut();
 }
 
 #include <thread>

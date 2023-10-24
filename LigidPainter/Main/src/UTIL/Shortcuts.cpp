@@ -72,3 +72,21 @@ bool Shortcuts::CTRL_SHIFT_S(){
 bool Shortcuts::F11(){
     return (getContext()->window.isKeyPressed(LIGIDGL_KEY_F11) && textRenderer.keyInput);
 }
+
+bool Shortcuts::anyShortCut(){
+    return Shortcuts::CTRL_Z()||
+            Shortcuts::CTRL_X()||
+            Shortcuts::CTRL_S()||
+            Shortcuts::CTRL_N()||
+            Shortcuts::CTRL_O()||
+            Shortcuts::CTRL_P()||
+            Shortcuts::CTRL_Y()||
+            Shortcuts::CTRL_C()||
+            Shortcuts::CTRL_V()||
+            Shortcuts::CTRL_A()||
+            Shortcuts::CTRL_F()||
+            Shortcuts::CTRL_G()||
+            Shortcuts::CTRL_W()||
+            Shortcuts::CTRL_SHIFT_S()||
+            Shortcuts::F11();
+}
