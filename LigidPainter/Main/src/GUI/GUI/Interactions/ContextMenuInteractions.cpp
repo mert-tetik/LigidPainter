@@ -138,12 +138,12 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     if(Library::getSelectedElementIndex() == 2 && ContextMenus::brush.dialogControl.isActive() && ContextMenus::brush.selectedElement < Library::getBrushArraySize()){ //If brush context menu is active
         if(ContextMenus::brush.contextPanel.sections[0].elements[0].button.clicked){//Clicked to use brush button
             
-            Library::getBrush(ContextMenus::brush.selectedElement)->useBrush(paintingPanel);
+            Library::getBrush(ContextMenus::brush.selectedElement)->useBrush(brushSection);
 
         }
         if(ContextMenus::brush.contextPanel.sections[0].elements[1].button.clicked){//Clicked to apply brush settings
 
-            Library::getBrush(ContextMenus::brush.selectedElement)->applyToBrush(paintingPanel);
+            Library::getBrush(ContextMenus::brush.selectedElement)->applyToBrush(brushSection);
 
         }
         if(ContextMenus::brush.contextPanel.sections[0].elements[2].button.clicked){//Clicked to rename button

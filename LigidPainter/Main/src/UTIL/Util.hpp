@@ -59,6 +59,9 @@ struct AppMaterialModifiers;
 struct Context;
 /// @brief forward declared Box class
 class Box;
+/// @brief forward declared Section struct
+struct Section;
+
 
 
 /// @brief Global utility functions to help to do stuff
@@ -426,10 +429,10 @@ public:
     void updateDisplayTexture(float radius);
 
     /// @brief move brush properties to the painting panel
-    void useBrush(Panel &paintingPanel);
+    void useBrush(Section &brushSection);
 
     /// @brief move painting panel brush properties to the class's brush properties
-    void applyToBrush(Panel &paintingPanel);
+    void applyToBrush(Section &brushSection);
 };
 
 class Renderbuffer{

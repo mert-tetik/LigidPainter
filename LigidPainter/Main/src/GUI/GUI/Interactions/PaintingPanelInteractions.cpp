@@ -34,49 +34,47 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-void paintingPanelInteraction(
-                                Panel &paintingPanel, 
-                                Painter &painter, 
-                                Dropper &dropper
+void UI::paintingPanelInteraction(
+                                Painter &painter 
                             )
 {
 
     //Get the brush data from GUI to the painter class
-    painter.brushProperties.radius = paintingPanel.sections[1].elements[1].rangeBar.value;
-    painter.brushProperties.opacity = paintingPanel.sections[1].elements[2].rangeBar.value;
-    painter.brushProperties.hardness = paintingPanel.sections[1].elements[3].rangeBar.value;
-    painter.brushProperties.spacing = paintingPanel.sections[1].elements[4].rangeBar.value;
-    painter.brushProperties.sizeJitter = paintingPanel.sections[1].elements[5].rangeBar.value;
-    painter.brushProperties.fade = paintingPanel.sections[1].elements[6].rangeBar.value;
-    painter.brushProperties.sinWavePattern = paintingPanel.sections[1].elements[7].checkBox.clickState1;
-    painter.brushProperties.scatter = paintingPanel.sections[1].elements[8].rangeBar.value;
-    painter.brushProperties.brushTexture = paintingPanel.sections[1].elements[9].button.texture;
-    painter.brushProperties.individualTexture = paintingPanel.sections[1].elements[11].checkBox.clickState1;
-    painter.brushProperties.rotation = paintingPanel.sections[1].elements[12].rangeBar.value;
-    painter.brushProperties.rotationJitter = paintingPanel.sections[1].elements[13].rangeBar.value;
-    painter.brushProperties.alphaJitter = paintingPanel.sections[1].elements[14].rangeBar.value;
+    painter.brushProperties.radius = brushSection.elements[1].rangeBar.value;
+    painter.brushProperties.opacity = brushSection.elements[2].rangeBar.value;
+    painter.brushProperties.hardness = brushSection.elements[3].rangeBar.value;
+    painter.brushProperties.spacing = brushSection.elements[4].rangeBar.value;
+    painter.brushProperties.sizeJitter = brushSection.elements[5].rangeBar.value;
+    painter.brushProperties.fade = brushSection.elements[6].rangeBar.value;
+    painter.brushProperties.sinWavePattern = brushSection.elements[7].checkBox.clickState1;
+    painter.brushProperties.scatter = brushSection.elements[8].rangeBar.value;
+    painter.brushProperties.brushTexture = brushSection.elements[9].button.texture;
+    painter.brushProperties.individualTexture = brushSection.elements[11].checkBox.clickState1;
+    painter.brushProperties.rotation = brushSection.elements[12].rangeBar.value;
+    painter.brushProperties.rotationJitter = brushSection.elements[13].rangeBar.value;
+    painter.brushProperties.alphaJitter = brushSection.elements[14].rangeBar.value;
 
     
-    if(paintingPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){//Pressed to first color button element
+    if(colorSection.elements[0].button.hover && *Mouse::LDoubleClick()){//Pressed to first color button element
         painter.loadColor1();
     }
-    if(paintingPanel.sections[0].elements[1].button.hover && *Mouse::LDoubleClick()){//Pressed to second color button element
+    if(colorSection.elements[1].button.hover && *Mouse::LDoubleClick()){//Pressed to second color button element
         painter.loadColor2();
     }
-    if(paintingPanel.sections[0].elements[2].button.hover && *Mouse::LDoubleClick()){//Pressed to third color button element
+    if(colorSection.elements[2].button.hover && *Mouse::LDoubleClick()){//Pressed to third color button element
         painter.loadColor3();
     }
 
     //Prevent multiple selection and update the painter.selectedColorIndex for colors
-    for (size_t i = 0; i < paintingPanel.sections[0].elements.size(); i++)
+    for (size_t i = 0; i < colorSection.elements.size(); i++)
     {
         if(i == 3) 
             break; //Don't bring the dropper button
         
-        if(paintingPanel.sections[0].elements[i].button.clickState1){ //If a color button is clicked
+        if(colorSection.elements[i].button.clickState1){ //If a color button is clicked
          
             if(painter.selectedColorIndex != i){ //If the clicked button is not selected 
-                paintingPanel.sections[0].elements[painter.selectedColorIndex].button.clickState1 = false; //Unselect the selected one
+                colorSection.elements[painter.selectedColorIndex].button.clickState1 = false; //Unselect the selected one
                 painter.selectedColorIndex = i; //Select the clicked color button
                 break; 
             }
@@ -86,34 +84,34 @@ void paintingPanelInteraction(
     }
 
     //Keep the selected color button pressed
-    for (size_t i = 0; i < paintingPanel.sections[0].elements.size(); i++){
+    for (size_t i = 0; i < colorSection.elements.size(); i++){
         if(i == painter.selectedColorIndex){
-            paintingPanel.sections[0].elements[i].button.clickState1 = true;           
+            colorSection.elements[i].button.clickState1 = true;           
         }
     }
     
     //Update the color values of the color buttons
-    paintingPanel.sections[0].elements[0].button.color = glm::vec4(painter.color1.getRGB_normalized(), 1.f);
-    paintingPanel.sections[0].elements[1].button.color = glm::vec4(painter.color2.getRGB_normalized(), 1.f);
-    paintingPanel.sections[0].elements[2].button.color = glm::vec4(painter.color3.getRGB_normalized(), 1.f);
+    colorSection.elements[0].button.color = glm::vec4(painter.color1.getRGB_normalized(), 1.f);
+    colorSection.elements[1].button.color = glm::vec4(painter.color2.getRGB_normalized(), 1.f);
+    colorSection.elements[2].button.color = glm::vec4(painter.color3.getRGB_normalized(), 1.f);
     
 
     //If clicked to the dropper button activate the dropper
-    if(paintingPanel.sections[0].elements[3].button.hover && *Mouse::LClick()){
+    if(colorSection.elements[3].button.hover && *Mouse::LClick()){
         dropper.active = true;
     }
 
-    if(paintingPanel.sections[1].elements[10].button.hover && *Mouse::LClick()){ //If pressed to remove the brush texture button from brush/more
+    if(brushSection.elements[10].button.hover && *Mouse::LClick()){ //If pressed to remove the brush texture button from brush/more
         char whitePixel[] = { 127, 127, 127, 127 };
-        paintingPanel.sections[1].elements[9].button.textureSelection2D = true;
-        paintingPanel.sections[1].elements[9].button.texture = Texture(whitePixel, 1, 1, GL_NEAREST);
-        paintingPanel.sections[1].elements[9].button.texture.proceduralProps.proceduralID = 24; //Solid white
-        paintingPanel.sections[1].elements[9].button.texture.proceduralProps.proceduralnverted = 0;
-        paintingPanel.sections[1].elements[9].button.texture.proceduralProps.proceduralScale = 1.f;
-        paintingPanel.sections[1].elements[9].button.texture.title = "AutoGeneratedMask";        
+        brushSection.elements[9].button.textureSelection2D = true;
+        brushSection.elements[9].button.texture = Texture(whitePixel, 1, 1, GL_NEAREST);
+        brushSection.elements[9].button.texture.proceduralProps.proceduralID = 24; //Solid white
+        brushSection.elements[9].button.texture.proceduralProps.proceduralnverted = 0;
+        brushSection.elements[9].button.texture.proceduralProps.proceduralScale = 1.f;
+        brushSection.elements[9].button.texture.title = "AutoGeneratedMask";        
     }
     
-    if(paintingPanel.sections[1].elements[15].button.hover && *Mouse::LClick()){ //If pressed to create new brush button
+    if(brushSection.elements[15].button.hover && *Mouse::LClick()){ //If pressed to create new brush button
         Brush newBrush
                         (    
                             0.1f,
@@ -134,7 +132,7 @@ void paintingPanelInteraction(
         Library::addBrush(newBrush);
     }
     
-    if(paintingPanel.sections[1].elements[16].button.hover && *Mouse::LClick()){ //If pressed to export brush file button
+    if(brushSection.elements[16].button.hover && *Mouse::LClick()){ //If pressed to export brush file button
         Brush exportBrush
                         (    
                             0.1f,
@@ -162,39 +160,39 @@ void paintingPanelInteraction(
 
     //Update the meshes section of the painting panel if a new model is added
     if(getModel()->newModelAdded){
-        paintingPanel.sections[2].elements[0].button.selectedMeshI = 0;
+        meshSection.elements[0].button.selectedMeshI = 0;
     }
 
-    painter.selectedMeshIndex = paintingPanel.sections[2].elements[0].button.selectedMeshI;
+    painter.selectedMeshIndex = meshSection.elements[0].button.selectedMeshI;
 
     //Check all the mesh buttons if they are pressed
-    for (size_t i = 0; i < paintingPanel.sections[3].elements.size(); i++) 
+    for (size_t i = 0; i < paintingChannelsSection.elements.size(); i++) 
     {
-        if(paintingPanel.sections[3].elements[i].button.hover && *Mouse::LClick()){//If any button element is pressed
+        if(paintingChannelsSection.elements[i].button.hover && *Mouse::LClick()){//If any button element is pressed
             if(painter.selectedPaintingChannelIndex != i){
-                paintingPanel.sections[3].elements[painter.selectedPaintingChannelIndex].button.clickState1 = false;
+                paintingChannelsSection.elements[painter.selectedPaintingChannelIndex].button.clickState1 = false;
                 painter.selectedPaintingChannelIndex = i;
-                painter.selectedTexture = paintingPanel.sections[3].elements[painter.selectedPaintingChannelIndex].button.texture;
+                painter.selectedTexture = paintingChannelsSection.elements[painter.selectedPaintingChannelIndex].button.texture;
                 break;
             }
         } 
     }
 
     //Set the selected mesh button as selected 
-    for (size_t i = 0; i < paintingPanel.sections[3].elements.size(); i++)
+    for (size_t i = 0; i < paintingChannelsSection.elements.size(); i++)
     {
         if(i == painter.selectedPaintingChannelIndex)
-            paintingPanel.sections[3].elements[i].button.clickState1 = true;
+            paintingChannelsSection.elements[i].button.clickState1 = true;
     }
 
     painter.oSide.active = true;
     
-    painter.oXSide.active = paintingPanel.sections[5].elements[0].checkBox.clickState1; 
-    painter.mirrorXOffset = paintingPanel.sections[5].elements[1].rangeBar.value;
-    painter.oYSide.active = paintingPanel.sections[5].elements[2].checkBox.clickState1; 
-    painter.mirrorYOffset = paintingPanel.sections[5].elements[3].rangeBar.value;
-    painter.oZSide.active = paintingPanel.sections[5].elements[4].checkBox.clickState1; 
-    painter.mirrorZOffset = paintingPanel.sections[5].elements[5].rangeBar.value;
+    painter.oXSide.active = mirrorSection.elements[0].checkBox.clickState1; 
+    painter.mirrorXOffset = mirrorSection.elements[1].rangeBar.value;
+    painter.oYSide.active = mirrorSection.elements[2].checkBox.clickState1; 
+    painter.mirrorYOffset = mirrorSection.elements[3].rangeBar.value;
+    painter.oZSide.active = mirrorSection.elements[4].checkBox.clickState1; 
+    painter.mirrorZOffset = mirrorSection.elements[5].rangeBar.value;
 
 
     painter.oXYSide.active = painter.oXSide.active && painter.oYSide.active;     
@@ -204,18 +202,18 @@ void paintingPanelInteraction(
 
     // Updating the depth texture if interacted with the gui elements related to mirroring
     if( 
-        paintingPanel.sections[5].elements[0].isInteracted() || 
-        paintingPanel.sections[5].elements[1].isInteracted() || 
-        paintingPanel.sections[5].elements[2].isInteracted() || 
-        paintingPanel.sections[5].elements[3].isInteracted() || 
-        paintingPanel.sections[5].elements[4].isInteracted() || 
-        paintingPanel.sections[5].elements[5].isInteracted()
+        mirrorSection.elements[0].isInteracted() || 
+        mirrorSection.elements[1].isInteracted() || 
+        mirrorSection.elements[2].isInteracted() || 
+        mirrorSection.elements[3].isInteracted() || 
+        mirrorSection.elements[4].isInteracted() || 
+        mirrorSection.elements[5].isInteracted()
     ) {
         painter.updateDepthTexture();
     }
 
 
-    paintingPanel.sections[1].elements[0].button.texture = painter.displayingBrush.displayingTexture; 
+    brushSection.elements[0].button.texture = painter.displayingBrush.displayingTexture; 
 
     if(!painter.displayingBrush.displayingTexture.ID){
         // Init brush settings displaying brush
@@ -236,9 +234,9 @@ void paintingPanelInteraction(
                                         );
     }
     
-    for (size_t i = 0; i < paintingPanel.sections[1].elements.size(); i++)
+    for (size_t i = 0; i < brushSection.elements.size(); i++)
     {
-        if(paintingPanel.sections[1].elements[i].isInteracted() || (ContextMenus::brush.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick())){
+        if(brushSection.elements[i].isInteracted() || (ContextMenus::brush.contextPanel.sections[0].elements[0].button.hover && *Mouse::LClick())){
             // Update brush settings displaying brush
             painter.displayingBrush.update(
                                                 painter.brushProperties.radius * 2.f,
@@ -257,5 +255,24 @@ void paintingPanelInteraction(
         }
     }
     
-
+    for (size_t i = 0; i < paintingPanelModePanel.sections[0].elements.size(); i++)
+    {
+        if(paintingPanelModePanel.sections[0].elements[i].button.clickState1 && selectedPaintingPanelMode != i){
+            selectedPaintingPanelMode = i;
+            for (size_t i = 0; i < paintingPanelModePanel.sections[0].elements.size(); i++){
+                paintingPanelModePanel.sections[0].elements[i].button.clickState1 = false;
+            }
+        }
+        if(selectedPaintingPanelMode == i){
+            paintingPanelModePanel.sections[0].elements[i].button.clickState1 = true;
+        }
+        else{
+            paintingPanelModePanel.sections[0].elements[i].button.clickState1 = false;
+        }
+    }
+    for (size_t i = 0; i < paintingPanelModePanel.sections[0].elements.size(); i++){
+        if(i == selectedPaintingPanelMode){
+            paintingPanelModePanel.sections[0].elements[i].button.clickState1 = true;
+        }
+    }
 }

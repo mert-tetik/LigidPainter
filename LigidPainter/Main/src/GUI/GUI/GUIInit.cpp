@@ -115,87 +115,9 @@ void UI::init
     paintingPanel=Panel(
                             {
                                 Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color"  , Settings::appTextures().colorIcon, 0.f,true)),
-                                    {   
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color1"  , Texture(), 1.f, true)),
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color2"  , Texture(), 1.f, true)),
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color3"  , Texture(), 1.f, true)),
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Dropper"  , Texture(), 1.f, false))
-                                    }
-                                ),
+                                    Element(),
+                                    {
 
-                                Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Brush"  , Settings::appTextures().brushIcon, 3.f,true)),
-                                    {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5), ""  , Texture(), 0.f, false)),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Radius"  , Texture(), 2.f, 0.005f, 0.05f, 0.01f)),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Opacity"  , Texture(), 1.f, 0.f, 1.f, 1.f)),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Hardness"  , Texture(), 1.f, -10.f, 10.f, 0.f)),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Spacing"  , Texture(), 1.f, 0.f, 100.f, 0.f)),
-
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Size Jitter"  , Texture(), 4.f, 0.f, 1.f, 0.f)), //0
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Fade"  , Texture(), 1.f, 0.f, 1.f, 0.f)),//1
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Sin Wave Pattern"  , 1.f)),//2
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Scatter"  , Texture(), 1.f, 0.f, 1.f, 0.f)),//3
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Texture"  , Texture(), 1.f, false)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Remove"  , Texture(), 0.f,false)),//5
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Individual Texture"  , 1.f)),//6
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Rotation"  , Texture(), 1.f, 0.f, 360.f, 0.f)), //7
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Rotation Jitter"  , Texture(), 1.f, 0.f, 1.f, 0.f)), //8
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Alpha Jitter"  , Texture(), 1.f, 0.f, 1.f, 0.f)), //9
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),"Create New Brush"  , Texture(), 2.f,false)),//10
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),"Export"  , Texture(), 0.5f,false)),//11
-                                    }
-                                ),
-                                Section(
-                                    Element(Button()),
-                                    {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "Select A Mesh"  , Texture(), 1.f, false)),//4
-                                    }
-                                ),
-                                Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Painting Channels"  , Settings::appTextures().materialChannelsIcon, 3.f,true)),
-                                    {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Albedo Texture"  , Texture(), 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Roughness Texture"  , Texture(), 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Metallic Texture"  , Texture(), 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Normal Map Texture"  , Texture(), 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Height Map Texture"  , Texture(), 1.f,true)),//4
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Ambient Occlusion Texture"  , Texture(), 1.f,true)),//4
-                                    }
-                                ),
-                                Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Painting Over"  , Settings::appTextures().paintingOverIcon, 3.f,true)),
-                                    {   
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Painting Over", 1.f)), //0
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Editor Mode", 1.f)), //0
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Library", Texture(), 1.f,false)), //1
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Computer", Texture(), 1.f,false)), //1
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Grayscale Masking", 1.f)),// 2
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Wrap", 1.f)), //3
-                                    }
-                                ),
-                                Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mirror"  , Settings::appTextures().mirrorIcon, 3.f,true)), // 6
-                                    {   
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "X Axis", 1.f),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "X Axis Mirror Offset", Texture(), 0.f, -1.f, 1.f, 0.f)),
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Y Axis", 1.f),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Z Axis", 1.f),
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Z Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),
-
-                                    }
-                                ),
-                                Section(
-                                    Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Face Selection"  , Settings::appTextures().TDModelIcon, 3.f,true)),
-                                    {  
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mask to selected mesh", 1.f), //0
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mesh selection mode", 1.f), //1
-                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //2
-                                        RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2,1.f), "Circle radius"  , Texture(), 2.f, 1.f, 100.f, 10.f), //3
-                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Custom"}, "Auto Select", 2.f), //4
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Hide unselected mesh", 1.f), //5
                                     }
                                 )
                             },
@@ -206,6 +128,37 @@ void UI::init
                             ColorPalette::thirdColor, //Color of the panel
                             true,
                             false,
+                            true,
+                            true,
+                            true,
+                            1.f,
+                            1,
+                            {},
+                            20.f,
+                            true
+                        );
+
+    //Init the painting panel mode panel 
+    paintingPanelModePanel=Panel(
+                            {
+                                Section(
+                                    Element(),
+                                    {
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Color"  , Settings::appTextures().colorIcon, 4.f, true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Painting Channels"  , Settings::appTextures().materialChannelsIcon, 1.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Brush"  , Settings::appTextures().brushIcon, 1.f, true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Mesh"  , Settings::appTextures().TDModelIcon, 1.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f), "Mirror"  , Settings::appTextures().mirrorIcon, 1.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Painting Over"  , Settings::appTextures().paintingOverIcon, 1.f,true))
+                                    }
+                                )
+                            },
+                            glm::vec2(1.f, 48.f), //Initial scale value
+                            glm::vec3(50.f,50.f,0.1f),  //Initial position value
+                            ColorPalette::secondColor, //Color of the panel
+                            ColorPalette::thirdColor, //Color of the panel
+                            true,
+                            true,
                             true,
                             true,
                             true,
@@ -503,31 +456,6 @@ void UI::init
     materialDisplayerDialog     = MaterialDisplayerDialog();
     filterDisplayerDialog       = FilterDisplayerDialog();
 
-    char whitePixel[] = { 127, 127, 127, 127 };
-    paintingPanel.sections[1].elements[9].button.textureSelection2D = true;
-    paintingPanel.sections[1].elements[9].button.texture = Texture(whitePixel, 1, 1, GL_NEAREST);
-    paintingPanel.sections[1].elements[9].button.texture.proceduralProps.proceduralID = 24; //Solid white
-    paintingPanel.sections[1].elements[9].button.texture.proceduralProps.proceduralnverted = 0;
-    paintingPanel.sections[1].elements[9].button.texture.proceduralProps.proceduralScale = 1.f;
-    paintingPanel.sections[1].elements[9].button.texture.title = "AutoGeneratedMask";
-    
-    paintingPanel.sections[2].elements[0].button.meshSelection = true;
-
-    //Change the properties of the color elements in the painting panel (color section)
-    for (size_t i = 0; i < 3; i++)
-    {
-        paintingPanel.sections[0] //Color section
-                                 .elements[i] //Color button
-                                             .button.outlineThickness = 5.f;
-        
-        paintingPanel.sections[0] //Color section
-                                 .elements[i] //Color button
-                                            .button.animationStyle = 2;
-        
-        paintingPanel.sections[0] //Color section
-                                 .elements[i] //Color button
-                                            .button.solidColor = true;
-    }
     
     //Init renaming textbox
     libraryPanelDisplayer.isLibraryDisplayer = true;
@@ -557,4 +485,138 @@ void UI::init
     this->vectorPaintingModePropertyPanel.preRenderingMode = true;
     this->smearPaintingModePropertyPanel.preRenderingMode = true;
     this->displayingModesPanel.preRenderingMode = true;
+    this->paintingPanelModePanel.preRenderingMode = true;
+    
+    this->navigationPanel.solidStyle = true;
+    this->windowPanel.solidStyle = true;
+    this->paintingPanel.solidStyle = true;
+    this->libraryPanelLeft.solidStyle = true;
+    this->libraryPanelDisplayer.solidStyle = true;
+    this->nodeEditorDisplayer.solidStyle = true;
+    this->selectedTextureDisplayer.solidStyle = true;
+    this->twoDPaintingPanel.solidStyle = true;
+    this->paintingModesPanel.solidStyle = true;
+    this->vectorPaintingModePropertyPanel.solidStyle = true;
+    this->smearPaintingModePropertyPanel.solidStyle = true;
+    this->displayingModesPanel.solidStyle = true;
+    this->paintingPanelModePanel.solidStyle = true;
+
+    this->meshSection =         Section(
+                                    Element(),
+                                    {  
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "Select A Mesh"  , Texture(), 5.f, false)),//4
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mask to selected mesh", 1.f), //0
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mesh selection mode", 1.f), //1
+                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //2
+                                        RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2,1.f), "Circle radius"  , Texture(), 2.f, 1.f, 100.f, 10.f), //3
+                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Custom"}, "Auto Select", 2.f), //4
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Hide unselected mesh", 1.f), //5
+                                    }
+                                );
+    
+    this->mirrorSection =       Section(
+                                    Element(),
+                                    {   
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "X Axis", 5.f),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "X Axis Mirror Offset", Texture(), 0.f, -1.f, 1.f, 0.f)),
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Y Axis", 1.f),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Z Axis", 1.f),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Z Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),
+
+                                    }
+                                );
+            
+
+    this->paintingOverSection = Section(
+                                    Element(),
+                                    {   
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Painting Over", 5.f)), //0
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Editor Mode", 1.f)), //0
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Library", Texture(), 1.f,false)), //1
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Computer", Texture(), 1.f,false)), //1
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Grayscale Masking", 1.f)),// 2
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Wrap", 1.f)), //3
+                                    }
+                                );
+
+    this->paintingChannelsSection = Section(
+                                        Element(),
+                                        {   
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Albedo Texture"  , Texture(), 5.f,true)),//4
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Roughness Texture"  , Texture(), 1.f,true)),//4
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Metallic Texture"  , Texture(), 1.f,true)),//4
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Normal Map Texture"  , Texture(), 1.f,true)),//4
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Height Map Texture"  , Texture(), 1.f,true)),//4
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Ambient Occlusion Texture"  , Texture(), 1.f,true)),//4
+                                        }
+                                    );
+
+    this->brushSection =        Section(
+                                    Element(),
+                                    {   
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5), ""  , Texture(), 5.f, false)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Radius"  , Texture(), 2.f, 0.005f, 0.05f, 0.01f)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Opacity"  , Texture(), 1.f, 0.f, 1.f, 1.f)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Hardness"  , Texture(), 1.f, -10.f, 10.f, 0.f)),
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Spacing"  , Texture(), 1.f, 0.f, 100.f, 0.f)),
+
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Size Jitter"  , Texture(), 4.f, 0.f, 1.f, 0.f)), //0
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Fade"  , Texture(), 1.f, 0.f, 1.f, 0.f)),//1
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Sin Wave Pattern"  , 1.f)),//2
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Scatter"  , Texture(), 1.f, 0.f, 1.f, 0.f)),//3
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Texture"  , Texture(), 1.f, false)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Remove"  , Texture(), 0.f,false)),//5
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Individual Texture"  , 1.f)),//6
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Rotation"  , Texture(), 1.f, 0.f, 360.f, 0.f)), //7
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Rotation Jitter"  , Texture(), 1.f, 0.f, 1.f, 0.f)), //8
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Alpha Jitter"  , Texture(), 1.f, 0.f, 1.f, 0.f)), //9
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),"Create New Brush"  , Texture(), 2.f,false)),//10
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,1),"Export"  , Texture(), 0.5f,false)),//11
+                                    }
+                                );
+
+
+    this->colorSection =        Section(
+                                    Element(),
+                                    {   
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color1"  , Texture(), 5.f, true)),
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color2"  , Texture(), 1.f, true)),
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color3"  , Texture(), 1.f, true)),
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Dropper"  , Texture(), 1.f, false))
+                                    }
+                                );
+    
+    char whitePixel[] = { 127, 127, 127, 127 };
+    brushSection.elements[9].button.textureSelection2D = true;
+    brushSection.elements[9].button.texture = Texture(whitePixel, 1, 1, GL_NEAREST);
+    brushSection.elements[9].button.texture.proceduralProps.proceduralID = 24; //Solid white
+    brushSection.elements[9].button.texture.proceduralProps.proceduralnverted = 0;
+    brushSection.elements[9].button.texture.proceduralProps.proceduralScale = 1.f;
+    brushSection.elements[9].button.texture.title = "AutoGeneratedMask";
+    
+    meshSection.elements[0].button.meshSelection = true;
+
+    //Change the properties of the color elements in the painting panel (color section)
+    for (size_t i = 0; i < 3; i++)
+    {
+        colorSection //Color section
+                                 .elements[i] //Color button
+                                             .button.outlineThickness = 5.f;
+        
+        colorSection //Color section
+                                 .elements[i] //Color button
+                                            .button.animationStyle = 2;
+        
+        colorSection //Color section
+                                 .elements[i] //Color button
+                                            .button.solidColor = true;
+    }
+
+    for (size_t i = 0; i < paintingPanelModePanel.sections[0].elements.size(); i++)
+    {
+        paintingPanelModePanel.sections[0].elements[i].button.outlineThickness = 0.f;
+        paintingPanelModePanel.sections[0].elements[i].button.color.a = 0.;
+    }
+    
 }   

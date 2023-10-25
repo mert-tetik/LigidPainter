@@ -378,7 +378,7 @@ void Renderer::renderMainModel(){
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
             }
         else if(painter.selectedDisplayingModeIndex == 1)
-            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[3].elements[0].button.texture.ID);
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingChannelsSection.elements[0].button.texture.ID);
 
         /* Roughness */
         glActiveTexture(GL_TEXTURE3);
@@ -389,7 +389,7 @@ void Renderer::renderMainModel(){
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
         else if(painter.selectedDisplayingModeIndex == 1)
-            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[3].elements[1].button.texture.ID);
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingChannelsSection.elements[1].button.texture.ID);
 
         /* Metallic*/
         glActiveTexture(GL_TEXTURE4);
@@ -400,7 +400,7 @@ void Renderer::renderMainModel(){
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
         else if(painter.selectedDisplayingModeIndex == 1)
-            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[3].elements[2].button.texture.ID);
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingChannelsSection.elements[2].button.texture.ID);
 
         /* Normal Map*/
         glActiveTexture(GL_TEXTURE5);
@@ -411,7 +411,7 @@ void Renderer::renderMainModel(){
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
         else if(painter.selectedDisplayingModeIndex == 1)
-            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[3].elements[3].button.texture.ID);
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingChannelsSection.elements[3].button.texture.ID);
 
         /* Height Map*/
         glActiveTexture(GL_TEXTURE6);
@@ -422,7 +422,7 @@ void Renderer::renderMainModel(){
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
         else if(painter.selectedDisplayingModeIndex == 1)
-            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[3].elements[4].button.texture.ID);
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingChannelsSection.elements[4].button.texture.ID);
 
         /* Ambient Occlusion*/
         glActiveTexture(GL_TEXTURE7);
@@ -433,7 +433,7 @@ void Renderer::renderMainModel(){
                 glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialConnectedToTheMeshWarningImage.ID);
         }
         else if(painter.selectedDisplayingModeIndex == 1)
-            glBindTexture(GL_TEXTURE_2D, userInterface.paintingPanel.sections[3].elements[5].button.texture.ID);
+            glBindTexture(GL_TEXTURE_2D, userInterface.paintingChannelsSection.elements[5].button.texture.ID);
 
         ShaderSystem::tdModelShader().setInt("paintedTxtrStateIndex", painter.selectedPaintingChannelIndex);
         

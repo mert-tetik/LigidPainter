@@ -37,15 +37,9 @@ size_t __libraryPanelDisplayerInteractionHoverStartSecond = 0.f;
 bool __libraryPanelDisplayerInteractionFirstHover = false;
 int __libraryPanelDisplayerInteractionFocusedElementIndex = 0;
 
-void libraryPanelDisplayerInteraction(
-                                        Panel &libraryPanelDisplayer, 
-                                        Panel &paintingPanel, 
+void UI::libraryPanelDisplayerInteraction(
                                         Painter &painter, 
-                                        NewTextureDialog &newTextureDialog,
                                         AppMaterialModifiers &appMaterialModifiers,
-                                        MaterialDisplayerDialog &materialDisplayerDialog,
-                                        FilterDisplayerDialog &filterDisplayerDialog,
-                                        Button& zoomingDisplayingButton,
                                         Timer& timer,
                                         Project& project
                                     )
@@ -79,7 +73,7 @@ void libraryPanelDisplayerInteraction(
         if(Library::getSelectedElementIndex() == 0){ //Textures selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.clicked){
                 painter.selectedTexture = *Library::getTexture(i); //Select the texture 
-                paintingPanel.sections[3].elements[painter.selectedPaintingChannelIndex].button.texture = painter.selectedTexture;
+                paintingChannelsSection.elements[painter.selectedPaintingChannelIndex].button.texture = painter.selectedTexture;
             } //If any texture button element is pressed
         
             if(Library::getTexture(i)->ID == painter.selectedTexture.ID) //Highlight the selected texture

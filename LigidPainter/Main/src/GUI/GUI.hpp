@@ -101,7 +101,6 @@ public:
     
     Panel navigationPanel;
     Panel windowPanel;
-    Panel paintingPanel; //Main panel (kinda)
     Panel libraryPanelLeft; 
     Panel libraryPanelDisplayer; 
     Panel nodeEditorDisplayer; 
@@ -112,6 +111,16 @@ public:
     Panel smearPaintingModePropertyPanel;
     Panel displayingModesPanel; 
     Button filterPaintingModeFilterBtn;
+    
+    Panel paintingPanel;
+    Panel paintingPanelModePanel;
+    int selectedPaintingPanelMode = 0;
+    Section colorSection; 
+    Section brushSection; 
+    Section meshSection; 
+    Section paintingChannelsSection; 
+    Section mirrorSection; 
+    Section paintingOverSection; 
 
     bool anyPanelHover = false;
 
@@ -182,6 +191,9 @@ private:
     void contextMenuInteraction(Timer &timer, Project& project, Painter &painter);
 
     void libraryPanelLeftInteraction(Panel &libraryPanelLeft);
+    void paintingPanelInteraction(Painter &painter);
+    void libraryPanelDisplayerInteraction(Painter &painter, AppMaterialModifiers& appMaterialModifiers, Timer& timer, Project& project);
+
 
     void panelPositioning(float &screenGapPerc,  Painter &painter);
 };

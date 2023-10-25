@@ -50,17 +50,17 @@ void UI::panelPositioning(
     libraryPanelDisplayer.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
     libraryPanelLeft.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanelDisplayer.scale.y; //Keep beneath the navigation bar
     libraryPanelLeft.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
-    nodeEditorDisplayer.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - nodeEditorDisplayer.scale.x; //Keep on the left side of the window panel 
+    nodeEditorDisplayer.pos.x = paintingPanelModePanel.pos.x - paintingPanelModePanel.scale.x - nodeEditorDisplayer.scale.x; //Keep on the left side of the window panel 
     selectedTextureDisplayer.pos.x = libraryPanelDisplayer.pos.x - libraryPanelLeft.pos.x;
     selectedTextureDisplayer.pos.y = nodeEditorDisplayer.pos.y;
     selectedTextureDisplayer.scale.y = nodeEditorDisplayer.scale.y;
     selectedTextureDisplayer.scale.x = libraryPanelDisplayer.scale.x + libraryPanelLeft.scale.x;
     
-    nodeEditorDisplayer.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (paintingPanel.scale.x+windowPanel.scale.x);
+    nodeEditorDisplayer.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (paintingPanelModePanel.scale.x+windowPanel.scale.x+paintingPanel.scale.x);
     
-    twoDPaintingPanel.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (paintingPanel.scale.x+windowPanel.scale.x);
+    twoDPaintingPanel.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (paintingPanelModePanel.scale.x+windowPanel.scale.x+paintingPanel.scale.x);
     twoDPaintingPanel.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
-    twoDPaintingPanel.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - twoDPaintingPanel.scale.x; //Keep on the left side of the window panel 
+    twoDPaintingPanel.pos.x = paintingPanelModePanel.pos.x - paintingPanelModePanel.scale.x - twoDPaintingPanel.scale.x; //Keep on the left side of the window panel 
     twoDPaintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + twoDPaintingPanel.scale.y; //Keep beneath the navigation bar
     paintingModesPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + paintingModesPanel.scale.x + 1;
     paintingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingModesPanel.scale.y;
@@ -74,11 +74,14 @@ void UI::panelPositioning(
     filterPaintingModeFilterBtn.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + filterPaintingModeFilterBtn.scale.x + 1;
     filterPaintingModeFilterBtn.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + filterPaintingModeFilterBtn.scale.y + 1;
 
-    displayingModesPanel.pos.x = paintingPanel.pos.x - paintingPanel.scale.x - displayingModesPanel.scale.x - 0.5f;
+    displayingModesPanel.pos.x = paintingPanelModePanel.pos.x - paintingPanelModePanel.scale.x - displayingModesPanel.scale.x - 0.5f;
     displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;
 
     selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
     if(Library::getTextureArraySize())
         selectedTextureDisplayer.sections[0].elements[0].button.texture = painter.selectedTexture;
     twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
+
+    paintingPanelModePanel.pos = paintingPanel.pos;
+    paintingPanelModePanel.pos.x -= paintingPanel.scale.x + paintingPanelModePanel.scale.x;
 }

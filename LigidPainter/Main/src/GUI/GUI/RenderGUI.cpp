@@ -180,7 +180,6 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
         getContext()->window.setCursorVisibility(true);
 
     Debugger::block("GUI : Element Interaction"); // Start
-
     //Interactions of the UI elements
     elementInteraction(painter, timer, screenGapPerc, project, this->materialEditorDialog.appMaterialModifiers);
 
@@ -238,11 +237,36 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+    
+    paintingPanelModePanel.render(timer,!anyDialogActive);
+    if(paintingPanelModePanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, painter);
+    }
+
+    Section* paintingPanelActiveSection;
+
+    if(selectedPaintingPanelMode == 0)
+        paintingPanelActiveSection = &this->colorSection;
+    if(selectedPaintingPanelMode == 1)
+        paintingPanelActiveSection = &this->paintingChannelsSection;
+    if(selectedPaintingPanelMode == 2)
+        paintingPanelActiveSection = &this->brushSection;
+    if(selectedPaintingPanelMode == 3)
+        paintingPanelActiveSection = &this->meshSection;
+    if(selectedPaintingPanelMode == 4)
+        paintingPanelActiveSection = &this->mirrorSection;
+    if(selectedPaintingPanelMode == 5)
+        paintingPanelActiveSection = &this->paintingOverSection;
+    
+    paintingPanel.sections[0] = *paintingPanelActiveSection;
+    
     paintingPanel.render(timer,!anyDialogActive);
     if(paintingPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+    *paintingPanelActiveSection = paintingPanel.sections[0];
     
     libraryPanelLeft.render(timer,!anyDialogActive);
     if(libraryPanelLeft.resizingDone){
@@ -553,19 +577,19 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     //---------------- Updating the painting over texture ----------------- 
     
-    painter.usePaintingOver = this->paintingPanel.sections[4].elements[0].checkBox.clickState1;
-    painter.paintingoverTextureEditorMode = this->paintingPanel.sections[4].elements[1].checkBox.clickState1;
-    painter.paintingOverGrayScale = this->paintingPanel.sections[4].elements[4].checkBox.clickState1;
-    painter.paintingOverWraping = this->paintingPanel.sections[4].elements[5].checkBox.clickState1;
+    painter.usePaintingOver = this->paintingOverSection.elements[0].checkBox.clickState1;
+    painter.paintingoverTextureEditorMode = this->paintingOverSection.elements[1].checkBox.clickState1;
+    painter.paintingOverGrayScale = this->paintingOverSection.elements[4].checkBox.clickState1;
+    painter.paintingOverWraping = this->paintingOverSection.elements[5].checkBox.clickState1;
     
-    if(this->paintingPanel.sections[4].elements[2].button.clicked){
+    if(this->paintingOverSection.elements[2].button.clicked){
         Texture texture;
         showTextureSelectionDialog(texture, 512, true);
         
         if(texture.ID)
             this->paintingOverTextureFields.push_back(TextureField(texture));
     }
-    else if(this->paintingPanel.sections[4].elements[3].button.clicked){
+    else if(this->paintingOverSection.elements[3].button.clicked){
         std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
         if(test.size()){
@@ -701,47 +725,47 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
 
     // ------------------------- Face Selection ----------------------------
-    painter.faceSelection.activated = paintingPanel.sections[6].elements[0].checkBox.clickState1;
-    painter.faceSelection.editMode = paintingPanel.sections[6].elements[1].checkBox.clickState1;
-    painter.faceSelection.selectionModeIndex = paintingPanel.sections[6].elements[2].comboBox.selectedIndex;
-    painter.faceSelection.radius = paintingPanel.sections[6].elements[3].rangeBar.value;
-    painter.faceSelection.hideUnselected = paintingPanel.sections[6].elements[5].checkBox.clickState1;
+    painter.faceSelection.activated = meshSection.elements[1].checkBox.clickState1;
+    painter.faceSelection.editMode = meshSection.elements[2].checkBox.clickState1;
+    painter.faceSelection.selectionModeIndex = meshSection.elements[3].comboBox.selectedIndex;
+    painter.faceSelection.radius = meshSection.elements[4].rangeBar.value;
+    painter.faceSelection.hideUnselected = meshSection.elements[6].checkBox.clickState1;
 
     if(painter.selectedMeshIndex < getModel()->meshes.size()){
         if(getModel()->newModelAdded || getModel()->meshes[painter.selectedMeshIndex].materialName != __faceSelectionActiveMesh){
-            paintingPanel.sections[6].elements[4].comboBox.texts.clear();
-            paintingPanel.sections[6].elements[4].comboBox.hover.clear();
-            paintingPanel.sections[6].elements[4].comboBox.hoverMixVal.clear();
-            paintingPanel.sections[6].elements[4].comboBox.clickedMixVal.clear();
+            meshSection.elements[5].comboBox.texts.clear();
+            meshSection.elements[5].comboBox.hover.clear();
+            meshSection.elements[5].comboBox.hoverMixVal.clear();
+            meshSection.elements[5].comboBox.clickedMixVal.clear();
 
-            paintingPanel.sections[6].elements[4].comboBox.texts.push_back("Custom");
+            meshSection.elements[5].comboBox.texts.push_back("Custom");
 
             __faceSelectionActiveMesh = getModel()->meshes[painter.selectedMeshIndex].materialName;
 
             for (size_t ii = 0; ii < getModel()->meshes[painter.selectedMeshIndex].objects.size(); ii++)
             {
-                paintingPanel.sections[6].elements[4].comboBox.texts.push_back(getModel()->meshes[painter.selectedMeshIndex].objects[ii].title);
+                meshSection.elements[5].comboBox.texts.push_back(getModel()->meshes[painter.selectedMeshIndex].objects[ii].title);
             }
 
-            for (size_t i = 0; i < paintingPanel.sections[6].elements[4].comboBox.texts.size(); i++)
+            for (size_t i = 0; i < meshSection.elements[5].comboBox.texts.size(); i++)
             {
-                paintingPanel.sections[6].elements[4].comboBox.hover.push_back(0);
-                paintingPanel.sections[6].elements[4].comboBox.hoverMixVal.push_back(0);
-                paintingPanel.sections[6].elements[4].comboBox.clickedMixVal.push_back(0);
+                meshSection.elements[5].comboBox.hover.push_back(0);
+                meshSection.elements[5].comboBox.hoverMixVal.push_back(0);
+                meshSection.elements[5].comboBox.clickedMixVal.push_back(0);
             }
 
-            paintingPanel.sections[6].elements[4].comboBox.selectedIndex = 0;
+            meshSection.elements[5].comboBox.selectedIndex = 0;
         }
     }
     
-    if(paintingPanel.sections[6].elements[4].comboBox.selectedIndex != 0){
+    if(meshSection.elements[5].comboBox.selectedIndex != 0){
         painter.faceSelection.selectedPrimitiveIDs.clear();
 
         if(painter.selectedMeshIndex < getModel()->meshes.size()){
             int objI = 0;
             for (size_t ii = 0; ii < getModel()->meshes[painter.selectedMeshIndex].objects.size(); ii++)
             {
-                if(getModel()->meshes[painter.selectedMeshIndex].objects[ii].title == paintingPanel.sections[6].elements[4].comboBox.texts[paintingPanel.sections[6].elements[4].comboBox.selectedIndex]){
+                if(getModel()->meshes[painter.selectedMeshIndex].objects[ii].title == meshSection.elements[5].comboBox.texts[meshSection.elements[5].comboBox.selectedIndex]){
                     objI = ii;
                 }
             }
@@ -754,12 +778,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
     
 
-    //for (size_t i = 0; i < painter.faceSelection.radius = paintingPanel.sections[6].elements[3].comboBox.texts.size(); i++)
-    //{
-    //    /* code */
-    //}
-    
-
     bool applyBoxSelection = false;
     if(!anyDialogActive && painter.faceSelection.editMode && painter.faceSelection.selectionModeIndex == 1)
         applyBoxSelection = painter.faceSelection.boxSelectionInteraction(timer);
@@ -770,15 +788,15 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             !anyPanelHover && 
             !anyDialogActive && 
             painter.faceSelection.editMode) ||
-            __faceSelectionActiveObjIndex != paintingPanel.sections[6].elements[4].comboBox.selectedIndex
+            __faceSelectionActiveObjIndex != meshSection.elements[5].comboBox.selectedIndex
 
         )
     {
         if(painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex], !anyPanelHover)){
-            if(__faceSelectionActiveObjIndex == paintingPanel.sections[6].elements[4].comboBox.selectedIndex)
-                paintingPanel.sections[6].elements[4].comboBox.selectedIndex = 0;
+            if(__faceSelectionActiveObjIndex == meshSection.elements[5].comboBox.selectedIndex)
+                meshSection.elements[5].comboBox.selectedIndex = 0;
         }
-        __faceSelectionActiveObjIndex = paintingPanel.sections[6].elements[4].comboBox.selectedIndex;
+        __faceSelectionActiveObjIndex = meshSection.elements[5].comboBox.selectedIndex;
     }
 
     Debugger::block("GUI : Panels : Rest"); // End
