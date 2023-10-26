@@ -145,7 +145,7 @@ void UI::init
                                     Element(),
                                     {
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Color"  , Settings::appTextures().colorIcon, 4.f, true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Painting Channels"  , Settings::appTextures().materialChannelsIcon, 1.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Channels"  , Settings::appTextures().materialChannelsIcon, 1.f,true)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Brush"  , Settings::appTextures().brushIcon, 1.f, true)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Mesh"  , Settings::appTextures().TDModelIcon, 1.f,true)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f), "Mirror"  , Settings::appTextures().mirrorIcon, 1.f,true)),
@@ -504,7 +504,7 @@ void UI::init
     this->meshSection =         Section(
                                     Element(),
                                     {  
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "Select A Mesh"  , Texture(), 5.f, false)),//4
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "Select A Mesh"  , Texture(), 7.f, false)),//4
                                         CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mask to selected mesh", 1.f), //0
                                         CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mesh selection mode", 1.f), //1
                                         ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //2
@@ -517,7 +517,7 @@ void UI::init
     this->mirrorSection =       Section(
                                     Element(),
                                     {   
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "X Axis", 5.f),
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "X Axis", 7.f),
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "X Axis Mirror Offset", Texture(), 0.f, -1.f, 1.f, 0.f)),
                                         CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Y Axis", 1.f),
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),
@@ -531,7 +531,7 @@ void UI::init
     this->paintingOverSection = Section(
                                     Element(),
                                     {   
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Painting Over", 5.f)), //0
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Painting Over", 7.f)), //0
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Editor Mode", 1.f)), //0
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Library", Texture(), 1.f,false)), //1
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Computer", Texture(), 1.f,false)), //1
@@ -543,7 +543,7 @@ void UI::init
     this->paintingChannelsSection = Section(
                                         Element(),
                                         {   
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Albedo Texture"  , Texture(), 5.f,true)),//4
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Albedo Texture"  , Texture(), 7.f,true)),//4
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Roughness Texture"  , Texture(), 1.f,true)),//4
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Metallic Texture"  , Texture(), 1.f,true)),//4
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Normal Map Texture"  , Texture(), 1.f,true)),//4
@@ -555,7 +555,7 @@ void UI::init
     this->brushSection =        Section(
                                     Element(),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5), ""  , Texture(), 5.f, false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5), ""  , Texture(), 7.f, false)),
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Radius"  , Texture(), 2.f, 0.005f, 0.05f, 0.01f)),
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Opacity"  , Texture(), 1.f, 0.f, 1.f, 1.f)),
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Hardness"  , Texture(), 1.f, -10.f, 10.f, 0.f)),
@@ -580,7 +580,7 @@ void UI::init
     this->colorSection =        Section(
                                     Element(),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color1"  , Texture(), 5.f, true)),
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color1"  , Texture(), 7.f, true)),
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color2"  , Texture(), 1.f, true)),
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color3"  , Texture(), 1.f, true)),
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Dropper"  , Texture(), 1.f, false))
@@ -619,4 +619,9 @@ void UI::init
         paintingPanelModePanel.sections[0].elements[i].button.color.a = 0.;
     }
     
+    paintingPanelModeDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2), ""  , Texture(), 0.f, true);
+    paintingPanelModeDisplayer.color = glm::vec4(0.);
+    paintingPanelModeDisplayer.color2 = glm::vec4(0.);
+    paintingPanelModeDisplayer.outlineColor = glm::vec4(0.);
+    paintingPanelModeDisplayer.outlineColor2 = glm::vec4(0.);
 }   

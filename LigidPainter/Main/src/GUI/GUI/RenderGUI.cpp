@@ -268,6 +268,11 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
     *paintingPanelActiveSection = paintingPanel.sections[0];
     
+    paintingPanelModeDisplayer.text = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.text; 
+    paintingPanelModeDisplayer.texture = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.texture; 
+
+    paintingPanelModeDisplayer.render(timer, false);
+    
     libraryPanelLeft.render(timer,!anyDialogActive);
     if(libraryPanelLeft.resizingDone){
         for (size_t i = 0; i < 5; i++)

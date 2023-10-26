@@ -114,6 +114,7 @@ public:
     
     Panel paintingPanel;
     Panel paintingPanelModePanel;
+    Button paintingPanelModeDisplayer;
     int selectedPaintingPanelMode = 0;
     Section colorSection; 
     Section brushSection; 

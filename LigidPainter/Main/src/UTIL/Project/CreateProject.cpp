@@ -109,9 +109,9 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << folderPath << LGDLOG::end; 
 
         //Create the saved data folder
-        std::string savedFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Saved";
-        if(!std::filesystem::create_directory(savedFolderPath))
-            LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << savedFolderPath << LGDLOG::end; 
+        std::string recoverFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Recover";
+        if(!std::filesystem::create_directory(recoverFolderPath))
+            LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << recoverFolderPath << LGDLOG::end; 
         
         //Create the textures folder
         std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";

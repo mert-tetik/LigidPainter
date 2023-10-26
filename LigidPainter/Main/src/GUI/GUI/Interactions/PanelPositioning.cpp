@@ -84,4 +84,11 @@ void UI::panelPositioning(
 
     paintingPanelModePanel.pos = paintingPanel.pos;
     paintingPanelModePanel.pos.x -= paintingPanel.scale.x + paintingPanelModePanel.scale.x;
+
+    paintingPanelModeDisplayer.pos = paintingPanel.pos;
+    paintingPanelModeDisplayer.scale.x = 5.f;
+    if(paintingPanel.scale.x < 6.f)
+        paintingPanelModeDisplayer.scale.x = paintingPanel.scale.x;
+    paintingPanelModeDisplayer.pos.x = paintingPanel.pos.x - paintingPanel.scale.x + paintingPanelModeDisplayer.scale.x;
+    paintingPanelModeDisplayer.pos.y -= paintingPanel.scale.y - paintingPanelModeDisplayer.scale.y - 2.f;
 }

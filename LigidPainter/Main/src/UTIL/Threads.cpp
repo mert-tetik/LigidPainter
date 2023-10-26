@@ -58,12 +58,20 @@ void projectUpdatingThread(Project &project) {
                         break;
                 }
                 
-                project.updateProject(projectUpdatingThreadElements.updateTextures, true);
+                project.updateProject(true, true);
                 projectUpdatingThreadElements.updateTextures = false;
             }
         }
 
         // Sleep between exports
-        std::this_thread::sleep_for(std::chrono::seconds(5)); // Adjust export frequency as needed
+        const int durationSec = 10;
+        for (size_t i = 0; i < durationSec; i++)
+        {
+            if(!projectUpdatingThreadElements.isRunning)
+                break;
+                
+            std::this_thread::sleep_for(std::chrono::seconds(1)); 
+        }
+        
     }
 }

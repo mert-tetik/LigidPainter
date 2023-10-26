@@ -11,9 +11,6 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
-
-    TODO UPDATE LIGID FILE DATE
-
 */
 
 #include<glad/glad.h>
@@ -37,130 +34,209 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
+#define CEATE_FOLDER_IF_NOT_EXISTS(aPath)    if(!std::filesystem::exists(aPath)){ \
+                                                if(!std::filesystem::create_directories(aPath)){ \
+                                                    LGDLOG::start << "ERROR : Can't write recover files : Can't create the folder : " << aPath << LGDLOG::end; \
+                                                    projectProcessing = false; \
+                                                    return; \
+                                                } \
+                                            }         
+                                        
+
 static const std::string copyFolderTitle = "Updating_Folder-Remove_if_you_see";
+
+// Forward declared utility functions
+static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode);
+static void PROJECT_updateMaterials(std::string materialFolderPath);
+static void PROJECT_updateBrushes(std::string brushFolderPath);
+
+// Goes from 1 to 3
+static int currentRecoverSlot = 1;
 
 void Project::updateProject(bool updateTextures, bool multithreadingMode){
     
+    // Multithreading compat
     while(true){
         if(!this->projectProcessing)
             break;
     }
     this->projectProcessing = true;
-
+    
+    // If the project path is not valid
     if(!std::filesystem::exists(folderPath)){
-        LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : Can't access the project path : " << this->folderPath << LGDLOG::end;
+        LGDLOG::start<< "ERROR CAN'T UPDATE THE PROJECT FOLDER : Can't access the project path : " << folderPath << LGDLOG::end;
         this->projectProcessing = false;
         return;
     }
+    
+    // Process the destination path / Project folder
+    std::string destinationPath = this->folderPath;
+    if(multithreadingMode){
+        destinationPath = this->folderPath + UTIL::folderDistinguisher() + "Recover" + UTIL::folderDistinguisher() + std::to_string(currentRecoverSlot);   
+        currentRecoverSlot++;
+        if(currentRecoverSlot == 4)
+            currentRecoverSlot = 1;
+        CEATE_FOLDER_IF_NOT_EXISTS(destinationPath)
+    }
 
+    //----------------- Textures
     std::cout << "UPDATE MODE : TEXTURES" << std::endl;
 
     if(updateTextures){
-        //!Textures
-        std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
-        std::string updateTextureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + copyFolderTitle;
-
-        if(std::filesystem::exists(updateTextureFolderPath))
-            std::filesystem::remove_all(updateTextureFolderPath);
-
-        std::filesystem::create_directory(updateTextureFolderPath);
-
-        if(multithreadingMode && !mainThreadUsingCopyContext)
-            getCopyContext()->window.makeContextCurrent();
-        
-        bool error = false;
-
-        //Write the textures
-        for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-        {
-            if(i < Library::getTextureArraySize()){
-                Texture threadSafeTxtr = Library::getTextureObj(i);
-                if(multithreadingMode)
-                    threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
-
-                if(mainThreadUsingCopyContext && multithreadingMode){
-                    error = true;
-                    break;
-                }
-
-                if(!threadSafeTxtr.exportTexture(updateTextureFolderPath, "PNG"))
-                    error = true;
-            }
-        }
-    
-        if(multithreadingMode && !mainThreadUsingCopyContext)
-            getCopyContext()->window.releaseContext();
-        if(!error){
-            if(!UTIL::deleteFilesInFolder(textureFolderPath)){
-                this->projectProcessing = false;
-                return;
-            }
-
-            UTIL::moveFilesToDestination(updateTextureFolderPath, textureFolderPath);
-            std::filesystem::remove_all(updateTextureFolderPath);
-        }
-
+        std::string textureFolderPath = destinationPath + UTIL::folderDistinguisher() + "Textures";
+        CEATE_FOLDER_IF_NOT_EXISTS(textureFolderPath)
+        PROJECT_updateTextures(textureFolderPath, multithreadingMode);
     }
-
+    
+    //----------------- Materials
     std::cout << "UPDATE MODE : MATERIALS" << std::endl;
 
-    
-    //!Materials
-    std::string materialFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials";
-    std::string updateMaterialFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + copyFolderTitle;
+    std::string materialFolderPath = destinationPath + UTIL::folderDistinguisher() + "Materials";
+    CEATE_FOLDER_IF_NOT_EXISTS(materialFolderPath)
+    PROJECT_updateMaterials(materialFolderPath);
 
-    if(std::filesystem::exists(updateMaterialFolderPath))
-        std::filesystem::remove_all(updateMaterialFolderPath);
-
-    std::filesystem::create_directory(updateMaterialFolderPath);
-
-    //Write the materials
-    for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
-    {
-        //Export material
-        FileHandler::writeLGDMATERIALFile(updateMaterialFolderPath + UTIL::folderDistinguisher() + Library::getMaterialObj(i).title + ".lgdmaterial", Library::getMaterialObj(i));
-    }
-
-    if(!UTIL::deleteFilesInFolder(materialFolderPath)){
-        this->projectProcessing = false;
-        return;
-    }
-
-    UTIL::moveFilesToDestination(updateMaterialFolderPath, materialFolderPath);
-    std::filesystem::remove_all(updateMaterialFolderPath);
-
+    //----------------- Brushes
     std::cout << "UPDATE MODE : BRUSHES" << std::endl;
 
+    std::string brushFolderPath = destinationPath + UTIL::folderDistinguisher() + "Brushes";
+    CEATE_FOLDER_IF_NOT_EXISTS(brushFolderPath)
+    PROJECT_updateBrushes(brushFolderPath);
 
-    //!Brushes
-    std::string brushFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
-    std::string updateBrushFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + copyFolderTitle;
+    //----------------- Ligid
+    std::cout << "UPDATE MODE : LIGID" << std::endl;
+    
+    this->writeLigidFile();
+    this->projectProcessing = false;
+
+    std::cout << "UPDATE MODE : FINISH" << std::endl;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ---------------------------- UTILITY FUNCTIONS ---------------------------------
+static void PROJECT_updateBrushes(std::string brushFolderPath){
+    std::string updateBrushFolderPath = brushFolderPath + UTIL::folderDistinguisher() + copyFolderTitle;
 
     if(std::filesystem::exists(updateBrushFolderPath))
         std::filesystem::remove_all(updateBrushFolderPath);
 
-    std::filesystem::create_directory(updateBrushFolderPath);
+    if(!std::filesystem::create_directory(updateBrushFolderPath)){
+        LGDLOG::start << "ERROR : Updating project : faced with an issue while creating the update folder!" << LGDLOG::end;
+        return;
+    }
 
     //Write the brushes
     for (size_t i = 0; i < Library::getBrushArraySize(); i++)
     {
         //Export brush
-        FileHandler::writeLGDBRUSHFile(updateBrushFolderPath, Library::getBrushObj(i));
+        if(!FileHandler::writeLGDBRUSHFile(updateBrushFolderPath, Library::getBrushObj(i))){
+            LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a brush file!" << LGDLOG::end;
+        }
     }
 
-    if(!UTIL::deleteFilesInFolder(brushFolderPath)){
-        this->projectProcessing = false;
+    if(UTIL::deleteFilesInFolder(brushFolderPath)){
+        UTIL::moveFilesToDestination(updateBrushFolderPath, brushFolderPath);
+        std::filesystem::remove_all(updateBrushFolderPath);
+    }
+    else{
+        LGDLOG::start << "WARNING! : Updating project : faced with an issue while deleting the brush folder" << LGDLOG::end;
+    }
+}
+
+static void PROJECT_updateMaterials(std::string materialFolderPath){
+    std::string updateMaterialFolderPath = materialFolderPath + UTIL::folderDistinguisher() + copyFolderTitle;
+
+    if(std::filesystem::exists(updateMaterialFolderPath))
+        std::filesystem::remove_all(updateMaterialFolderPath);
+
+    if(!std::filesystem::create_directory(updateMaterialFolderPath)){
+        LGDLOG::start << "ERROR : Updating project : faced with an issue while creating the update folder!" << LGDLOG::end;
         return;
     }
 
-    UTIL::moveFilesToDestination(updateBrushFolderPath, brushFolderPath);
-    std::filesystem::remove_all(updateBrushFolderPath);
+    //Write the materials
+    for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
+    {
+        //Export material
+        if(!FileHandler::writeLGDMATERIALFile(updateMaterialFolderPath + UTIL::folderDistinguisher() + Library::getMaterialObj(i).title + ".lgdmaterial", Library::getMaterialObj(i))){
+            LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a material file!" << LGDLOG::end;
+        }
+    }
 
+    if(UTIL::deleteFilesInFolder(materialFolderPath)){
+        UTIL::moveFilesToDestination(updateMaterialFolderPath, materialFolderPath);
+        std::filesystem::remove_all(updateMaterialFolderPath);
+    }
+    else{
+        LGDLOG::start << "WARNING! : Updating project : faced with an issue while deleting the material folder" << LGDLOG::end;
+    }
+}
 
-    this->writeLigidFile();
+static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode){
+    
+    // Folder path to write the textures in it
+    std::string updateTextureFolderPath = textureFolderPath + UTIL::folderDistinguisher() + copyFolderTitle;
 
-    this->projectProcessing = false;
+    // Remove the previous one
+    if(std::filesystem::exists(updateTextureFolderPath))
+        std::filesystem::remove_all(updateTextureFolderPath);
 
-    std::cout << "UPDATE MODE : FINISH" << std::endl;
+    // Create the texture writing folder from scratch
+    if(!std::filesystem::create_directory(updateTextureFolderPath)){
+        LGDLOG::start << "ERROR : Updating project : faced with an issue while creating the update folder!" << LGDLOG::end;
+        return;
+    }
 
+    // Use the copy OpenGL context
+    if(multithreadingMode && !mainThreadUsingCopyContext)
+        getCopyContext()->window.makeContextCurrent();
+    
+    bool error = false;
+
+    // Write the textures
+    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+    {
+        if(i < Library::getTextureArraySize()){
+            Texture threadSafeTxtr = Library::getTextureObj(i);
+            if(multithreadingMode)
+                threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
+
+            if(mainThreadUsingCopyContext && multithreadingMode){
+                error = true;
+                LGDLOG::start << "ERROR : Updating project : OpenGL context is shared at the same time" << LGDLOG::end;
+                break;
+            }
+
+            if(!threadSafeTxtr.exportTexture(updateTextureFolderPath, "PNG")){
+                LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a texture file!" << LGDLOG::end;
+                error = true;
+            }
+        }
+    }
+
+    // Release the copy OpenGL context
+    if(multithreadingMode && !mainThreadUsingCopyContext)
+        getCopyContext()->window.releaseContext();
+
+    // If there are no errors move the textures inside of the updating folder to the Textures folder
+    if(!error){
+        if(UTIL::deleteFilesInFolder(textureFolderPath)){
+            UTIL::moveFilesToDestination(updateTextureFolderPath, textureFolderPath);
+            std::filesystem::remove_all(updateTextureFolderPath);
+        }
+        else{
+            LGDLOG::start << "WARNING! : Updating project : faced with an issue while deleting the texture folder" << LGDLOG::end;
+        }
+    }
 }
