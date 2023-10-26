@@ -69,6 +69,10 @@ std::string Project::absoluteProjectPath(){
     return res;
 }
 
+std::string Project::recoverSlotPath(int slot){
+    return this->folderPath + UTIL::folderDistinguisher() + "Recover" + UTIL::folderDistinguisher() + std::to_string(slot) + UTIL::folderDistinguisher();
+}
+
 void Project::copyTheProjectPathToTheClipboard(){
     LigidGL::setClipboardText(this->absoluteProjectPath().c_str());
 }

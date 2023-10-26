@@ -378,9 +378,6 @@ public:
 
 class ExportDialog
 {
-private:
-   
-   
 public:
    Panel panel;
    Panel subPanel;
@@ -688,6 +685,34 @@ class LogDialog
    void render(Timer timer);
 
    bool isHovered();
+};
+
+void showProjectRecoverDialog(Project &project);
+
+class ProjectRecoverDialog
+{
+public:
+   Panel panel;
+
+   Panel projectPanel;
+   Panel project_texturesPanel;
+   Panel project_materialsPanel;
+   Panel project_brushesPanel;
+
+   bool projectSelectionMode = false;
+
+   Button lpIconBtn;
+   Button recover1Btn;
+   Button recover2Btn;
+   Button recover3Btn;
+
+   DialogControl dialogControl;
+
+   //Constructors
+   ProjectRecoverDialog();
+
+   //Public member functions
+   void render(Timer timer, Project &project);
 };
 
 #endif

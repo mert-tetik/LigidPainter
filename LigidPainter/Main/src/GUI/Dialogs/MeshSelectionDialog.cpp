@@ -66,8 +66,6 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
     {
         getContext()->window.pollEvents();
         
-        std::cout << glm::to_string(bgPanel.pos) << std::endl;
-
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -136,6 +134,7 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
         *Mouse::mods() = 0;
         *Mouse::mouseScroll() = 0;
         *Mouse::action() = 0;
+        Mouse::updateCursor();  
 
         //Set keyboard states to default
         textRenderer.keyInput = false;
@@ -143,6 +142,8 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
 
         Settings::defaultFramebuffer()->render();    
         Settings::defaultFramebuffer()->setViewport();   
+
+
     }
 
     ShaderSystem::buttonShader().use();

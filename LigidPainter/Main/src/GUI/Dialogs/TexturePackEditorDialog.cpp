@@ -324,6 +324,7 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
         *Mouse::mods() = 0;
         *Mouse::mouseScroll() = 0;
         *Mouse::action() = 0;
+        Mouse::updateCursor();  
 
         //Set keyboard states to default
         textRenderer.keyInput = false;

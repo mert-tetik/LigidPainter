@@ -52,7 +52,7 @@ void Button::render(
     if(clickState1 && !this->colorSelection && !this->solidColor)//If button is pressed
         ShaderSystem::buttonShader().setVec4("properties.color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
     else
-        ShaderSystem::buttonShader().setVec4("properties.color"  ,     color     ); //Default button color
+        ShaderSystem::buttonShader().setVec4("properties.color"  ,     glm::mix(color, glm::vec4(color.r, color.g, color.b, color.a * 0.5), this->locked)); //Default button color
     
 
     ShaderSystem::buttonShader().setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
@@ -193,7 +193,7 @@ void Button::manageMouseActivity(
                                     
                                 ){
     //Check if mouse on top of the button
-    if(doMouseTracking)
+    if(doMouseTracking && !locked)
         hover = Mouse::isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
     else
         hover = false;

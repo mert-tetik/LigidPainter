@@ -455,6 +455,7 @@ void UI::init
     exportDialog                = ExportDialog();
     materialDisplayerDialog     = MaterialDisplayerDialog();
     filterDisplayerDialog       = FilterDisplayerDialog();
+    projectRecoverDialog       = ProjectRecoverDialog();
 
     
     //Init renaming textbox

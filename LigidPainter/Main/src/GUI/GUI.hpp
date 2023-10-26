@@ -147,6 +147,7 @@ public:
     DisplayerDialog displayerDialog;
     TextureEditorDialog textureEditorDialog;
     TexturePackEditorDialog texturePackEditorDialog;
+    ProjectRecoverDialog projectRecoverDialog;
 
     float twoDPaintingSceneScroll = 2.f;
     glm::vec2 twoDPaintingScenePos = glm::vec2(0.f);

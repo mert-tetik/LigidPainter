@@ -72,7 +72,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     // Process the destination path / Project folder
     std::string destinationPath = this->folderPath;
     if(multithreadingMode){
-        destinationPath = this->folderPath + UTIL::folderDistinguisher() + "Recover" + UTIL::folderDistinguisher() + std::to_string(currentRecoverSlot);   
+        destinationPath = this->recoverSlotPath(currentRecoverSlot);   
         currentRecoverSlot++;
         if(currentRecoverSlot == 4)
             currentRecoverSlot = 1;

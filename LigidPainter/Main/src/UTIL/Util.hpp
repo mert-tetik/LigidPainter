@@ -532,6 +532,8 @@ public:
     std::string folderPath;
     std::string absoluteProjectPath();
 
+    std::string recoverSlotPath(int slot);
+
     //Constructor
     Project(){}
 

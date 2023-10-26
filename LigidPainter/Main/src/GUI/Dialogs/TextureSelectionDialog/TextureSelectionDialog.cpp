@@ -169,6 +169,8 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         *Mouse::mods() = 0;
         *Mouse::mouseScroll() = 0;
         *Mouse::action() = 0;
+        Mouse::updateCursor();  
+
 
         //Set keyboard states to default
         textRenderer.keyInput = false;

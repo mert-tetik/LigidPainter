@@ -217,6 +217,11 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[5].button.clicked){
             UTIL::openInFileExplorer(project.absoluteProjectPath().c_str());
         }
+
+        //Recover
+        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[6].button.clicked){
+            showProjectRecoverDialog(project);
+        }
     }
     if(ContextMenus::menuBarHelp.dialogControl.isActive()){ //If help context menu is active
         if(ContextMenus::menuBarHelp.contextPanel.sections[0].elements[0].button.clicked){

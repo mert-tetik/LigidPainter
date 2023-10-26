@@ -131,6 +131,7 @@ public:
     glm::vec3 resultPos;
     glm::vec2 resultScale;
     bool doMouseTracking;
+    bool locked = false;
     bool hover = false;
     float hoverMixVal = 0.f;
     float clickedMixVal = 0.f;

@@ -45,6 +45,7 @@ TextureSelectionDialog __texture_selection_dialog;
 FilterSelectionDialog __filter_selection_dialog;
 MeshSelectionDialog __mesh_selection_dialog;
 TexturePackEditorDialog __texture_Pack_Editor_Dialog;
+ProjectRecoverDialog __project_recover_dialog;
 glm::mat4 __projection;
 Timer __timer; 
 bool __wasTextureSelectionDialogActive = false;
@@ -74,6 +75,12 @@ void showTexturePackEditorDialog(TexturePack& texturePack){
     Settings::defaultFramebuffer()->setViewport();
 }
 
+void showProjectRecoverDialog(Project &project){
+    __project_recover_dialog.render(__timer, project);
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
+}
+
 bool wasTextureSelectionDialogActive(){
     return __wasTextureSelectionDialogActive;
 }
@@ -89,6 +96,7 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     __texture_selection_dialog = this->textureSelectionDialog;
     __filter_selection_dialog = this->filterSelectionDialog;
     __texture_Pack_Editor_Dialog = this->texturePackEditorDialog;
+    __project_recover_dialog = this->projectRecoverDialog;
     __projection = this->projection;
     __timer = timer; 
 
