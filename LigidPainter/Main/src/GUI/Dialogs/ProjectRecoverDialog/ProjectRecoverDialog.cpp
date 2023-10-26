@@ -131,7 +131,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
                                 )
                             },
                             projectPnSc,
-                            glm::vec3(projectPanel.pos.x - projectPnSc.x * 2.f, projectPanel.pos.y - projectPanel.scale.y + projectPnSc, 0.8f),
+                            glm::vec3(projectPanel.pos.x - projectPnSc.x * 2.f, projectPanel.pos.y - projectPanel.scale.y + projectPnSc.y, 0.8f),
                             ColorPalette::secondColor,
                             ColorPalette::thirdColor,
                             true,
@@ -155,7 +155,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
                                 )
                             },
                             projectPnSc,
-                            glm::vec3(projectPanel.pos.x, projectPanel.pos.y - projectPanel.scale.y + projectPnSc, 0.8f),
+                            glm::vec3(projectPanel.pos.x, projectPanel.pos.y - projectPanel.scale.y + projectPnSc.y, 0.8f),
                             ColorPalette::secondColor,
                             ColorPalette::thirdColor,
                             true,
@@ -179,7 +179,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
                                 )
                             },
                             projectPnSc,
-                            glm::vec3(projectPanel.pos.x + projectPnSc.x * 2.f, projectPanel.pos.y - projectPanel.scale.y + projectPnSc, 0.8f),
+                            glm::vec3(projectPanel.pos.x + projectPnSc.x * 2.f, projectPanel.pos.y - projectPanel.scale.y + projectPnSc.y, 0.8f),
                             ColorPalette::secondColor,
                             ColorPalette::thirdColor,
                             true,
@@ -205,6 +205,11 @@ void ProjectRecoverDialog::render(Timer timer, Project &project){
     while (!getContext()->window.shouldClose())
     {
         getContext()->window.pollEvents();
+
+        // Prevent rendering the application if the window is minimized
+        while (getContext()->window.isMinimized()){
+            getContext()->window.pollEvents();
+        }
         
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

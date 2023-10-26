@@ -145,6 +145,10 @@ void LigidWindow::minimize(){
     UpdateWindow(this->window);
 }
 
+bool LigidWindow::isMinimized(){
+    return IsIconic(this->window) != 0;
+}
+
 void LigidWindow::maximize(){
     ShowWindow(this->window, SW_MAXIMIZE);
     UpdateWindow(this->window);

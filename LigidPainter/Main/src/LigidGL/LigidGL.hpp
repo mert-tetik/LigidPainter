@@ -527,6 +527,11 @@ public:
     */
     void minimize();
 
+    /*!
+    *   @brief Minimize the window
+    */
+    bool isMinimized();
+
 
     //----------    CALLLBACKS  ----------
 

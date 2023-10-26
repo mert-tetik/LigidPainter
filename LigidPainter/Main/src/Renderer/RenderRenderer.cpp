@@ -37,11 +37,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 bool _ligid_renderer_render_first_frame = true;
 
 void Renderer::render(){
+    //Handle user input and interact with the windowing system
+    getContext()->window.pollEvents();
+
+    // Prevent rendering the application if the window is minimized
+    while (getContext()->window.isMinimized()){
+        getContext()->window.pollEvents();
+    }
 
     Debugger::block("Complete rendering"); // Start
     
-    //Handle user input and interact with the windowing system
-    getContext()->window.pollEvents();
     //Update local timer data
     if(timer.runTimer(1.f)){
         std::cout << timer.FPS << std::endl;

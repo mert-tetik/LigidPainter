@@ -66,6 +66,11 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
     {
         getContext()->window.pollEvents();
         
+        // Prevent rendering the application if the window is minimized
+        while (getContext()->window.isMinimized()){
+            getContext()->window.pollEvents();
+        }
+        
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
