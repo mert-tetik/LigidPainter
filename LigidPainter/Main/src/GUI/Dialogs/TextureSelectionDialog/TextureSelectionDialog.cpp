@@ -93,7 +93,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
             //If pressed any of the texture select the texture
             for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
             {
-                if(this->textureSelectingPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
+                if(this->textureSelectingPanel.sections[0].elements[i].button.clicked){
                     selectedTextureIndex = i;
                     if(this->selectedTextureMode == 4){
                         if(selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){

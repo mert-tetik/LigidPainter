@@ -178,44 +178,46 @@ void LoadProjectDialog::render(Timer timer,
     
     int counter = 0;
 
-    //Create a new section to give the projects panel    
-    Section projectSection;
 
-    //Clear the elements of the projects panel (will be updated)
-    projectsPanel.sections.clear();
-    
-    try
-    {
-        for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/Projects")) {
-            
-            //Project folder path inside of the ./Projects directory
-            std::string projectPath = entry.path().string();
-            
-            //Create the button for the project path
-            Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),projectPath,Texture(),0.f,false);
-            
-            //Scale the button in x axis
-            btn.scale.x = projectsPanel.scale.x;
-            
-            //Get the ligid file path inside of the project folder 
-            std::string ligidFilePath; 
-            
-            //If a ligid file is loacted
-            if(project.locateLigidFileInFolder(projectPath, ligidFilePath)){
-                //Transfer the button to the new section
-                projectSection.elements.push_back(btn);
+    if(!projectsPanel.hover){
+        //Create a new section to give the projects panel    
+        Section projectSection;
+
+        //Clear the elements of the projects panel (will be updated)
+        projectsPanel.sections.clear();
+        
+        try
+        {
+            for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/Projects")) {
                 
-                counter++;
+                //Project folder path inside of the ./Projects directory
+                std::string projectPath = entry.path().string();
+                
+                //Create the button for the project path
+                Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),projectPath,Texture(),0.f,false);
+                
+                //Scale the button in x axis
+                btn.scale.x = projectsPanel.scale.x;
+                
+                //Get the ligid file path inside of the project folder 
+                std::string ligidFilePath; 
+                
+                //If a ligid file is loacted
+                if(project.locateLigidFileInFolder(projectPath, ligidFilePath)){
+                    //Transfer the button to the new section
+                    projectSection.elements.push_back(btn);
+                    
+                    counter++;
+                }
             }
         }
+        catch (const std::filesystem::filesystem_error& ex) {
+            LGDLOG::start << "ERROR : Filesystem : Location ID 894682 " << ex.what() << LGDLOG::end;
+        }
+
+        //Give the new section to the projects panel
+        projectsPanel.sections.push_back(projectSection);
     }
-    catch (const std::filesystem::filesystem_error& ex) {
-        LGDLOG::start << "ERROR : Filesystem : Location ID 894682 " << ex.what() << LGDLOG::end;
-    }
-    
-    
-    //Give the new section to the projects panel
-    projectsPanel.sections.push_back(projectSection);
     
     //After refreshing the elements render the projects panel
     projectsPanel.render(timer,dialogControl.isComplete());
@@ -224,28 +226,38 @@ void LoadProjectDialog::render(Timer timer,
     for (size_t i = 0; i < projectsPanel.sections[0].elements.size(); i++)
     {
         //If pressed to the project button
-        if(projectsPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
+        if(projectsPanel.sections[0].elements[i].button.clicked){
             
-            //Get the ligid file path using the button's text as a project folder path source
-            std::string ligidFilePath; 
-            project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text, ligidFilePath);
-            
-            //Load the project
-            if(project.loadProject(ligidFilePath, appMaterialModifiers)){                
-                startScreen = false;
+            if(std::filesystem::exists(projectsPanel.sections[0].elements[i].button.text)){
+                //Get the ligid file path using the button's text as a project folder path source
+                std::string ligidFilePath; 
+                project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text, ligidFilePath);
                 
-                this->dialogControl.unActivate();
-            
+                //Load the project
+                if(project.loadProject(ligidFilePath, appMaterialModifiers)){                
+                    startScreen = false;
+                    
+                    this->dialogControl.unActivate();
+                
+                }
+                else{
+
+                    showMessageBox(
+                                    "Warning!", 
+                                    "Error while reading the ligid file! Detailed error message is printed to the terminal." , 
+                                    MESSAGEBOX_TYPE_WARNING, 
+                                    MESSAGEBOX_BUTTON_OK
+                                );
+
+                }
             }
             else{
-
                 showMessageBox(
-                                "Warning!", 
-                                "Error while reading the *.ligid file! Detailed error message is printed to the terminal." , 
-                                MESSAGEBOX_TYPE_WARNING, 
+                                "ERROR", 
+                                "Project path is not valid", 
+                                MESSAGEBOX_TYPE_ERROR, 
                                 MESSAGEBOX_BUTTON_OK
                             );
-
             }
         }
     }

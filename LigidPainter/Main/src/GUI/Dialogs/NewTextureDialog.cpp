@@ -80,7 +80,7 @@ void NewTextureDialog::render(Timer timer){
     dialogControl.updateStart();
     
     //Show the color picker dialog if clicked to the color button
-    if(panel.sections[0].elements[0].button.hover && *Mouse::LClick()){
+    if(panel.sections[0].elements[0].button.clicked){
         unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
         Color clrObj;
         clrObj.loadRGB_normalized(glm::vec3(panel.sections[0].elements[0].button.color.r, panel.sections[0].elements[0].button.color.g, panel.sections[0].elements[0].button.color.b));
@@ -94,7 +94,7 @@ void NewTextureDialog::render(Timer timer){
     }
 
     //Clicked to the create button
-    if(panel.sections[0].elements[4].button.hover && *Mouse::LClick() && !panel.sections[0].elements[2].comboBox.pressed){
+    if(panel.sections[0].elements[4].button.clicked && !panel.sections[0].elements[2].comboBox.pressed){
         
         //Create the texture class
         Texture txtr;
@@ -113,7 +113,7 @@ void NewTextureDialog::render(Timer timer){
         }
     }
     
-    if(panel.sections[0].elements[3].button.hover && *Mouse::LClick() && !panel.sections[0].elements[2].comboBox.pressed){
+    if(panel.sections[0].elements[3].button.clicked && !panel.sections[0].elements[2].comboBox.pressed){
         
         //Create the texture class
         Texture txtr;
@@ -153,8 +153,8 @@ void NewTextureDialog::render(Timer timer){
     }
 
     //End the dialog
-    if((panel.sections[0].elements[3].button.hover && *Mouse::LClick()) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
-        if(!(panel.sections[0].elements[4].button.hover && *Mouse::LClick())){
+    if((panel.sections[0].elements[3].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
+        if(!(panel.sections[0].elements[4].button.clicked)){
             if(!panel.sections[0].elements[2].comboBox.pressed){
                 panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
                 panel.sections[0].elements[1].textBox.text = "NewTexture";
@@ -163,7 +163,7 @@ void NewTextureDialog::render(Timer timer){
         }
     }
 
-    __newTxtrDialog_last_texture_selection_dialog_state = panel.sections[0].elements[4].button.hover && *Mouse::LClick();
+    __newTxtrDialog_last_texture_selection_dialog_state = panel.sections[0].elements[4].button.clicked;
 
     //Render the panel
     panel.render(timer,true);

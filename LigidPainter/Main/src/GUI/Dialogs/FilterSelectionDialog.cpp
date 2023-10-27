@@ -196,7 +196,7 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
         //If pressed any of the texture select the texture
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
         {
-            if(this->textureSelectingPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
+            if(this->textureSelectingPanel.sections[0].elements[i].button.clicked){
                 selectedFilterIndex = i;
             }
         }

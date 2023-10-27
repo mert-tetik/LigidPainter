@@ -139,7 +139,7 @@ void DisplayerDialog::render(Timer timer,
             skyboxes[i].render(timer, true);
             
             //If pressed to the skybox load the pressed skybox
-            if(skyboxes[i].button.hover && *Mouse::LClick()){
+            if(skyboxes[i].button.clicked){
                 skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky" + std::to_string(i+1));
                 skybox.createPrefilterMap();
                 skybox.createDisplayingTxtr();
@@ -207,7 +207,7 @@ void DisplayerDialog::render(Timer timer,
     skybox.opacity = panel.sections[0].elements[3].rangeBar.value/100.f;
     
     //End the dialog
-    if((panel.sections[0].elements[2].button.hover && *Mouse::LClick()) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
+    if((panel.sections[0].elements[2].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
             panel.sections[0].elements[0].button.clickState1 = false;
             dialogControl.unActivate();

@@ -480,7 +480,6 @@ void UI::init
     this->libraryPanelLeft.preRenderingMode = true;
     this->libraryPanelDisplayer.preRenderingMode = true;
     this->nodeEditorDisplayer.preRenderingMode = true;
-    this->selectedTextureDisplayer.preRenderingMode = true;
     this->twoDPaintingPanel.preRenderingMode = true;
     this->paintingModesPanel.preRenderingMode = true;
     this->vectorPaintingModePropertyPanel.preRenderingMode = true;

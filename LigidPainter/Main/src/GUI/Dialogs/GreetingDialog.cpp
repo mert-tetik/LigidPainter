@@ -94,13 +94,13 @@ void GreetingDialog::render(Timer timer,NewProjectDialog &newProjectDialog,LoadP
     // textButton1.render(timer,false);
     
     //Show new project dialog if create project button is pressed
-    if(createProjectButton.hover && *Mouse::LClick()){
+    if(createProjectButton.clicked){
         newProjectDialog.dialogControl.activate();
         this->dialogControl.unActivate();
     }
 
     //Show load project dialog if load project button is pressed
-    if(loadProjectButton.hover && *Mouse::LClick()){
+    if(loadProjectButton.clicked){
         loadProjectDialog.dialogControl.activate();
         this->dialogControl.unActivate();
     }
