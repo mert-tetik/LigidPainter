@@ -85,12 +85,23 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
     lpIconBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(5.f), "", Settings::appTextures().ligidPainterIcon, 0.f, false);
     lpIconBtn.color = glm::vec4(0.);
     lpIconBtn.outlineColor = glm::vec4(0.);
+
+    recoverTitleBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(10.f, 4.f), "Project Recovering Dialog", Texture(), 0.f, false);
+    recoverTitleBtn.color = glm::vec4(0.);
+    recoverTitleBtn.outlineColor = glm::vec4(0.);
+    recoverTitleBtn.textScale = 1.2f;
     
+    recoverInfoBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(20.f, 4.f), "Select a recovery slot to recover", Texture(), 0.f, false);
+    recoverInfoBtn.color = glm::vec4(0.);
+    recoverInfoBtn.outlineColor = glm::vec4(0.);
+    recoverInfoBtn.textScale = 0.8f;
+
     recover1Btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 20.f), "Slot 1", Texture(), 0.f, false);
     recover2Btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 20.f), "Slot 2", Texture(), 0.f, false);
     recover3Btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 20.f), "Slot 3", Texture(), 0.f, false);
 
     projectPanelSelectBtn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(6.f, 2.f), "Select", Texture(), 0.f, false);
+    projectPanelFileExplorerBtn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(8.f, 2.f), "Open In File Explorer", Texture(), 0.f, false);
     projectPanelExitBtn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(6.f, 2.f), "Exit", Texture(), 0.f, false);
     projectPanelExitBtn.color = glm::vec4(0.9f, 0.f, 0.f, 1.f);
 
@@ -234,6 +245,12 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
         this->lpIconBtn.pos = this->panel.pos;
         this->lpIconBtn.pos.y -= this->panel.scale.y - this->lpIconBtn.scale.y * 1.5f;
 
+        this->recoverTitleBtn.pos = this->lpIconBtn.pos;
+        this->recoverTitleBtn.pos.y += 10.f;
+        
+        this->recoverInfoBtn.pos = this->recoverTitleBtn.pos;
+        this->recoverInfoBtn.pos.y += 4.f;
+
         this->recover1Btn.pos = this->panel.pos;
         this->recover1Btn.pos.y += 10.f;
         this->recover1Btn.pos.x -= 25.f;
@@ -253,6 +270,8 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
         recover3Btn.render(timer, !projectSelectionMode);
 
         this->lpIconBtn.render(timer, false);
+        this->recoverTitleBtn.render(timer, false);
+        this->recoverInfoBtn.render(timer, false);
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -340,15 +359,23 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
             projectPanelSelectBtn.pos.y += projectPanel.scale.y - projectPanelSelectBtn.scale.y - 1.f;     
             projectPanelSelectBtn.pos.x += projectPanel.scale.x - projectPanelSelectBtn.scale.x - 1.f;     
             
+            projectPanelFileExplorerBtn.pos = projectPanelSelectBtn.pos;     
+            projectPanelFileExplorerBtn.pos.x -= projectPanelSelectBtn.scale.x + projectPanelFileExplorerBtn.scale.x + 1.f;     
+            
             projectPanelExitBtn.pos = projectPanel.pos;     
             projectPanelExitBtn.pos.y += projectPanel.scale.y - projectPanelExitBtn.scale.y - 1.f;     
             projectPanelExitBtn.pos.x -= projectPanel.scale.x - projectPanelExitBtn.scale.x - 1.f;     
             
-            projectPanelSelectBtn.render(timer, true);
             projectPanelExitBtn.render(timer, true);
+            projectPanelFileExplorerBtn.render(timer, true);
+            projectPanelSelectBtn.render(timer, true);
         }
 
         dialogControl.updateEnd(timer,0.15f);
+
+        if(this->projectPanelFileExplorerBtn.clicked){
+            UTIL::openInFileExplorer(std::filesystem::absolute(project.recoverSlotPath(slot)).string().c_str());
+        }
 
         //End the dialog
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->panel.hover && *Mouse::LClick()) && !projectSelectionMode){

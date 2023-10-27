@@ -700,10 +700,13 @@ public:
    Panel project_brushesPanel;
    Button projectPanelSelectBtn;
    Button projectPanelExitBtn;
+   Button projectPanelFileExplorerBtn;
 
    bool projectSelectionMode = false;
 
    Button lpIconBtn;
+   Button recoverTitleBtn;
+   Button recoverInfoBtn;
    Button recover1Btn;
    Button recover2Btn;
    Button recover3Btn;
