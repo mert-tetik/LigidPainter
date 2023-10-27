@@ -300,11 +300,6 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
                             Material mat = Material("", 0);
                             FileHandler::readLGDMATERIALFile(path, mat, appMaterialModifiers);
 
-                            Camera cam;
-                            cam.cameraPos = glm::vec3(0,0,-5.f);
-                            cam.radius = 5.f;                            
-                            mat.updateMaterialDisplayingTexture(256, true, cam, 0);
-
                             std::string title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
                             project_materialsPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 3.f), title, mat.displayingTexture, 0.f, false));
                             project_materialsPanel.sections[0].elements[project_materialsPanel.sections[0].elements.size() - 1].button.textureSizeScale = 0.98f;

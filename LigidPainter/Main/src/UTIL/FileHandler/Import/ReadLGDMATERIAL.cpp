@@ -205,6 +205,11 @@ bool FileHandler::readLGDMATERIALFile(
         }    
     }
 
+    Camera cam;
+    cam.cameraPos = glm::vec3(0,0,-4.f);
+    cam.radius = 4.f;                            
+    material.updateMaterialDisplayingTexture(256, true, cam, 0);
+
     return true;
 }
 
