@@ -177,7 +177,9 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
     std::cout << "CREATE MODE : 2" << std::endl;
 
     //Create the .ligid file
-    writeLigidFile();
+    std::string lgdPath;
+    this->locateLigidFileInFolder(this->folderPath, lgdPath);
+    writeLigidFile(lgdPath);
     
     std::cout << "CREATE MODE : FINISH" << std::endl;
 

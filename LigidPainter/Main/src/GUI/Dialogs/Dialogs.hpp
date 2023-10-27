@@ -698,6 +698,8 @@ public:
    Panel project_texturesPanel;
    Panel project_materialsPanel;
    Panel project_brushesPanel;
+   Button projectPanelSelectBtn;
+   Button projectPanelExitBtn;
 
    bool projectSelectionMode = false;
 

@@ -64,7 +64,7 @@ void projectUpdatingThread(Project &project) {
         }
 
         // Sleep between exports
-        const int durationSec = 10;
+        const int durationSec = 15;
         for (size_t i = 0; i < durationSec; i++)
         {
             if(!projectUpdatingThreadElements.isRunning)

@@ -43,17 +43,11 @@ void writeCurrentModelTitle(std::ofstream &wf);
 
 
 
-void Project::writeLigidFile(){
+void Project::writeLigidFile(std::string path){
     
     std::ofstream wf;
     
-    if(std::filesystem::exists(this->ligidFilePath()))
-        wf = std::ofstream(this->ligidFilePath(), std::ios::out | std::ios::binary);
-    else{
-        std::string dist = "";
-        dist.push_back(UTIL::folderDistinguisher());
-        wf = std::ofstream(this->folderPath + dist + (std::string)this->projectName() + ".ligid", std::ios::out | std::ios::binary);
-    }
+    wf = std::ofstream(path, std::ios::out | std::ios::binary);
 
     if(!wf) {
         LGDLOG::start<< "ERROR! : Writing ligid file." << LGDLOG::end;

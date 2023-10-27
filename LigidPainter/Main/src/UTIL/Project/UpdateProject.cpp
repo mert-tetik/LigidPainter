@@ -108,13 +108,14 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     //----------------- Ligid
     if(!discardUpdateProjectFlag){
         std::cout << "UPDATE MODE : LIGID" << std::endl;
-        this->writeLigidFile();
+        std::string lgdPath;
+        locateLigidFileInFolder(destinationPath, lgdPath); 
+        this->writeLigidFile(lgdPath);
     }
 
     if(discardUpdateProjectFlag){
         LGDLOG::start << "INFO : Updating project discarded" << LGDLOG::end;
     }
-
 
     this->projectProcessing = false;
     this->discardUpdateProjectFlag = false;

@@ -90,6 +90,10 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
     recover2Btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 20.f), "Slot 2", Texture(), 0.f, false);
     recover3Btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 20.f), "Slot 3", Texture(), 0.f, false);
 
+    projectPanelSelectBtn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(6.f, 2.f), "Select", Texture(), 0.f, false);
+    projectPanelExitBtn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(6.f, 2.f), "Exit", Texture(), 0.f, false);
+    projectPanelExitBtn.color = glm::vec4(0.9f, 0.f, 0.f, 1.f);
+
     recover1Btn.textScale = 0.9f;
     recover2Btn.textScale = 0.9f;
     recover3Btn.textScale = 0.9f;
@@ -118,8 +122,9 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
                             0.25f,
                             false
                         );
+    projectPanel.color.a = 1.;
 
-    glm::vec2 projectPnSc = glm::vec2(projectPanel.scale.x/3, projectPanel.scale.y/1.2f);
+    glm::vec2 projectPnSc = glm::vec2(projectPanel.scale.x/4, projectPanel.scale.y/1.2f);
 
     project_texturesPanel = Panel(
                             
@@ -131,7 +136,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
                                 )
                             },
                             projectPnSc,
-                            glm::vec3(projectPanel.pos.x - projectPnSc.x * 2.f, projectPanel.pos.y - projectPanel.scale.y + projectPnSc.y, 0.8f),
+                            glm::vec3(projectPanel.pos.x - projectPnSc.x * 2.f - 2.f, projectPanel.pos.y - projectPanel.scale.y + projectPnSc.y + 1.f, 0.8f),
                             ColorPalette::secondColor,
                             ColorPalette::thirdColor,
                             true,
@@ -155,7 +160,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
                                 )
                             },
                             projectPnSc,
-                            glm::vec3(projectPanel.pos.x, projectPanel.pos.y - projectPanel.scale.y + projectPnSc.y, 0.8f),
+                            glm::vec3(projectPanel.pos.x, projectPanel.pos.y - projectPanel.scale.y + projectPnSc.y + 1.f, 0.8f),
                             ColorPalette::secondColor,
                             ColorPalette::thirdColor,
                             true,
@@ -179,7 +184,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
                                 )
                             },
                             projectPnSc,
-                            glm::vec3(projectPanel.pos.x + projectPnSc.x * 2.f, projectPanel.pos.y - projectPanel.scale.y + projectPnSc.y, 0.8f),
+                            glm::vec3(projectPanel.pos.x + projectPnSc.x * 2.f + 2.f, projectPanel.pos.y - projectPanel.scale.y + projectPnSc.y + 1.f, 0.8f),
                             ColorPalette::secondColor,
                             ColorPalette::thirdColor,
                             true,
@@ -195,6 +200,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
                         );
 }
 
+static int slot = 1;
 
 void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModifiers appMaterialModifiers){
     
@@ -242,14 +248,18 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
         recover2Btn.locked = !std::filesystem::exists(project.recoverSlotPath(2));
         recover3Btn.locked = !std::filesystem::exists(project.recoverSlotPath(3));
 
-        recover1Btn.render(timer, true);
-        recover2Btn.render(timer, true);
-        recover3Btn.render(timer, true);
+        recover1Btn.render(timer, !projectSelectionMode);
+        recover2Btn.render(timer, !projectSelectionMode);
+        recover3Btn.render(timer, !projectSelectionMode);
+
+        this->lpIconBtn.render(timer, false);
+
+        glClear(GL_DEPTH_BUFFER_BIT);
 
         if(recover1Btn.clicked || recover2Btn.clicked || recover3Btn.clicked){
             projectSelectionMode = true;
 
-            int slot = 1;
+            slot = 1;
 
             if(recover2Btn.clicked)
                 slot = 2;
@@ -325,10 +335,18 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
             project_texturesPanel.render(timer, false);
             project_materialsPanel.render(timer, false);
             project_brushesPanel.render(timer, false);
+
+            projectPanelSelectBtn.pos = projectPanel.pos;     
+            projectPanelSelectBtn.pos.y += projectPanel.scale.y - projectPanelSelectBtn.scale.y - 1.f;     
+            projectPanelSelectBtn.pos.x += projectPanel.scale.x - projectPanelSelectBtn.scale.x - 1.f;     
+            
+            projectPanelExitBtn.pos = projectPanel.pos;     
+            projectPanelExitBtn.pos.y += projectPanel.scale.y - projectPanelExitBtn.scale.y - 1.f;     
+            projectPanelExitBtn.pos.x -= projectPanel.scale.x - projectPanelExitBtn.scale.x - 1.f;     
+            
+            projectPanelSelectBtn.render(timer, true);
+            projectPanelExitBtn.render(timer, true);
         }
-
-
-        this->lpIconBtn.render(timer, false);
 
         dialogControl.updateEnd(timer,0.15f);
 
@@ -337,7 +355,7 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
             dialogControl.unActivate();
         }
         
-        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->projectPanel.hover && *Mouse::LClick()) && projectSelectionMode){
+        if(((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->projectPanel.hover && *Mouse::LClick()) || projectPanelExitBtn.clicked || projectPanelSelectBtn.clicked) && projectSelectionMode ){
             projectSelectionMode = false;
 
             for (size_t i = 0; i < project_texturesPanel.sections[0].elements.size(); i++)
@@ -358,6 +376,24 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
             project_texturesPanel.sections[0].elements.clear();
             project_brushesPanel.sections[0].elements.clear();
             project_materialsPanel.sections[0].elements.clear();
+        
+            if(projectPanelSelectBtn.clicked){
+                if(showMessageBox("WARNING!", "Are you sure you want to recover this project", MESSAGEBOX_TYPE_WARNING, MESSAGEBOX_BUTTON_OKCANCEL)){
+                    dialogControl.unActivate();
+                    
+                    std::string lgdPath; 
+                    if(project.locateLigidFileInFolder(project.recoverSlotPath(slot), lgdPath)){
+                        std::string projectPath = project.folderPath; 
+                        project.loadProject(lgdPath, appMaterialModifiers);
+                        project.folderPath = projectPath; 
+                    }
+                    else{
+                        LGDLOG::start << "WARNING! No ligid file detected. Only the library elements will be updated." << LGDLOG::end;
+
+                        project.loadLibraryElements(project.recoverSlotPath(slot),  appMaterialModifiers, "");
+                    }
+                }
+            }
         }
 
 

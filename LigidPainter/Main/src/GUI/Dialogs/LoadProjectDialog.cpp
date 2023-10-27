@@ -198,10 +198,10 @@ void LoadProjectDialog::render(Timer timer,
             btn.scale.x = projectsPanel.scale.x;
             
             //Get the ligid file path inside of the project folder 
-            std::string ligidFilePath = project.locateLigidFileInFolder(projectPath);
+            std::string ligidFilePath; 
             
             //If a ligid file is loacted
-            if(ligidFilePath.size()){
+            if(project.locateLigidFileInFolder(projectPath, ligidFilePath)){
                 //Transfer the button to the new section
                 projectSection.elements.push_back(btn);
                 
@@ -227,7 +227,8 @@ void LoadProjectDialog::render(Timer timer,
         if(projectsPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
             
             //Get the ligid file path using the button's text as a project folder path source
-            std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
+            std::string ligidFilePath; 
+            project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text, ligidFilePath);
             
             //Load the project
             if(project.loadProject(ligidFilePath, appMaterialModifiers)){                

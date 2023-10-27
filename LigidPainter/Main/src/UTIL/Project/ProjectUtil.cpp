@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 
-std::string Project::locateLigidFileInFolder(const std::string& folderPath)
+bool Project::locateLigidFileInFolder(const std::string& folderPath, std::string& ligidPath)
 {
     const std::string extension = ".ligid";
     std::vector<std::string> matchingFiles;
@@ -54,12 +54,16 @@ std::string Project::locateLigidFileInFolder(const std::string& folderPath)
 
     if (matchingFiles.empty())
     {
-        return ""; // No file with the given extension found
+        ligidPath = this->folderPath + UTIL::folderDistinguisher() + this->projectName() + ".ligid"; // No file with the given extension found
+        return false;
     }
     else
     {
         // Return the first matching file path
-        return matchingFiles[0];
+        ligidPath = matchingFiles[0];
+        if(matchingFiles.size() > 1)
+            LGDLOG::start << "WARNING : Multiple ligid files detected!" << LGDLOG::end;
+        return true;
     }
 }
 
@@ -78,7 +82,9 @@ void Project::copyTheProjectPathToTheClipboard(){
 }
 
 std::string Project::ligidFilePath(){
-    return this->locateLigidFileInFolder(this->folderPath);
+    std::string a;
+    this->locateLigidFileInFolder(this->folderPath, a);
+    return a;
 }
 
 std::string Project::projectName(){

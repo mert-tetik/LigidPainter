@@ -555,6 +555,8 @@ public:
     /// @return 
     bool loadProject(std::string ligidFilePath, AppMaterialModifiers& appMaterialModifiers);
 
+    bool loadLibraryElements(std::string folderPath, AppMaterialModifiers& appMaterialModifiers, std::string ligidFilePath);
+
     /// @brief Used to save as
     /// @param dstPath where to duplicate
     void duplicateFolder(std::string dstPath);
@@ -566,7 +568,7 @@ public:
     /// @brief Locates the ligid file in the folderPath 
     /// @param folderPath 
     /// @return path to the ligidpainter "" if not located
-    std::string locateLigidFileInFolder(const std::string& folderPath);
+    bool locateLigidFileInFolder(const std::string& folderPath, std::string& ligidPath);
     
     /// @brief Retrieve data from the ligid file
     /// @param path 
@@ -578,9 +580,7 @@ public:
     bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate);
     
     /// @brief Write ligid file to the project folder
-    /// @param meshNodeScene 
-    /// @param textureRes 
-    void writeLigidFile();
+    void writeLigidFile(std::string path);
 
         /// @brief Returns the ligid file path of the project
     ///        (AAA/MyProject/MyProject.ligid)

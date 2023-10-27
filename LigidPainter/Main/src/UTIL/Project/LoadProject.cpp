@@ -34,6 +34,156 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
+bool Project::loadLibraryElements(std::string folderPath, AppMaterialModifiers& appMaterialModifiers, std::string ligidFilePath){
+    try
+    {
+        //Load the textures
+        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
+            std::cout << "LOAD MODE : TEXTURES" << std::endl;
+            
+            Library::clearTextures();
+            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
+                std::string texturePath = entry.path().string();
+
+                Texture texture;
+                bool error = !texture.load(texturePath.c_str());
+
+                if(!error){
+                    //Check if the texture is a png file
+                    if(UTIL::getLastWordBySeparatingWithChar(texturePath, '.') != "png"){
+                        //The texture in the project folder is not an png file
+
+                        //Delete the non-png file
+                        std::filesystem::remove(texturePath);
+                    
+                        //Recreate the png file
+                        texture.exportTexture(UTIL::removeLastWordBySeparatingWithChar(texturePath, UTIL::folderDistinguisher()), "PNG");
+                    }
+
+                    
+                    Library::addTexture(texture);
+                }
+            }
+        }
+        else{
+            LGDLOG::start << "WARNING! Loading project folder : Textures folder doesn't exists" << LGDLOG::end;
+        }
+
+
+
+        //Load the materials
+        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
+            std::cout << "LOAD MODE : MATERIALS" << std::endl;
+
+            Library::clearMaterials();
+            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
+                std::string materialPath = entry.path().string();
+
+                Material material("", 0);
+                if(FileHandler::readLGDMATERIALFile(materialPath, material, appMaterialModifiers))
+                    Library::addMaterial(material);
+            
+            }
+        }
+        else{
+            LGDLOG::start << "WARNING! Loading project folder : Materials folder doesn't exists" << LGDLOG::end;
+        }
+
+        //Load the tdmodels
+        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
+            std::cout << "LOAD MODE : 3D MODELS" << std::endl;
+            
+            Library::clearModels();
+            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
+                std::string modelPath = entry.path().string();
+
+                Model TDModel;
+                bool success = TDModel.loadModel(modelPath, true);
+
+                if(TDModel.meshes.size() && success){
+                    Library::addModel(TDModel);
+                }
+                else if(success)
+                    LGDLOG::start<< "ERROR : Can't add the 3D model to the Library : Mesh size is 0!" << LGDLOG::end;
+            }
+        }
+        else{
+            LGDLOG::start << "WARNING! Loading project folder : 3DModels folder doesn't exists" << LGDLOG::end;
+        }
+
+
+        if(ligidFilePath.size()){
+            std::cout << "LOAD MODE : LIGID FILE" << std::endl;
+            //TODO Do smt with these variables
+            time_t creationDate; 
+            time_t lastOpenedDate;
+
+            if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
+                projectUpdatingThreadElements.updateTextures = false;
+                this->projectProcessing = false;
+                return false;
+            }
+        }
+        
+        //Load the brushes
+        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Brushes")){
+            std::cout << "LOAD MODE : BRUSHES" << std::endl;
+            
+            Library::clearBrushes();
+            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Brushes")){
+                std::string brushPath = entry.path().string();
+
+                Brush brush;
+                if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
+                    Library::addBrush(brush);
+                }
+            }
+        }
+        else{
+            LGDLOG::start << "WARNING! Loading project folder : Brushes folder doesn't exists" << LGDLOG::end;
+        }
+
+        //Load the filters
+        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Filters")){
+            std::cout << "LOAD MODE : FILTERS" << std::endl;
+
+            Library::clearFilters();
+            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Filters")){
+                std::string filterPath = entry.path().string();
+
+                Filter filter;
+                if(filter.load(filterPath))
+                    Library::addFilter(filter);
+            }
+        }
+        else{
+            LGDLOG::start << "WARNING! Loading project folder : Filters folder doesn't exists" << LGDLOG::end;
+        }
+
+        //Load the texture packs
+        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Texture Packs")){
+            std::cout << "LOAD MODE : TEXTURE PACKS" << std::endl;
+    
+            Library::clearTexturePacks();
+            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Texture Packs")){
+                std::string filterPath = entry.path().string();
+
+                TexturePack texturePack;
+                texturePack.load(filterPath);
+                Library::addTexturePack(texturePack);
+            }
+        }
+        else{
+            LGDLOG::start << "WARNING! Loading project folder : Texture Packs folder doesn't exists" << LGDLOG::end;
+        }
+    }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 658972 " << ex.what() << LGDLOG::end;
+    }
+
+    return true;
+}
+
 bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMaterialModifiers){
     
     while(true){
@@ -62,121 +212,7 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
 
     //writeLigidFile(meshNodeScene);
     
-
-    try
-    {
-        std::cout << "LOAD MODE : TEXTURES" << std::endl;
-        //Load the textures
-        Library::clearTextures();
-        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
-            std::string texturePath = entry.path().string();
-
-            Texture texture;
-            bool error = !texture.load(texturePath.c_str());
-
-            if(!error){
-                //Check if the texture is a png file
-                if(UTIL::getLastWordBySeparatingWithChar(texturePath, '.') != "png"){
-                    //The texture in the project folder is not an png file
-
-                    //Delete the non-png file
-                    std::filesystem::remove(texturePath);
-                
-                    //Recreate the png file
-                    texture.exportTexture(UTIL::removeLastWordBySeparatingWithChar(texturePath, UTIL::folderDistinguisher()), "PNG");
-                }
-
-                
-                Library::addTexture(texture);
-            }
-        }
-
-
-
-
-        std::cout << "LOAD MODE : MATERIALS" << std::endl;
-
-        //Load the materials
-        Library::clearMaterials();
-        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
-            std::string materialPath = entry.path().string();
-
-            Material material("", 0);
-            if(FileHandler::readLGDMATERIALFile(materialPath, material, appMaterialModifiers))
-                Library::addMaterial(material);
-        
-        }
-
-        std::cout << "LOAD MODE : 3D MODELS" << std::endl;
-        
-        //Load the tdmodels
-        Library::clearModels();
-        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
-            std::string modelPath = entry.path().string();
-
-            Model TDModel;
-            bool success = TDModel.loadModel(modelPath, true);
-
-            if(TDModel.meshes.size() && success){
-                Library::addModel(TDModel);
-            }
-            else if(success)
-                LGDLOG::start<< "ERROR : Can't add the 3D model to the Library : Mesh size is 0!" << LGDLOG::end;
-
-        }
-
-        std::cout << "LOAD MODE : LIGID FILE" << std::endl;
-
-        //TODO Do smt with these variables
-        time_t creationDate; 
-        time_t lastOpenedDate;
-
-        if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
-            projectUpdatingThreadElements.updateTextures = false;
-            this->projectProcessing = false;
-            return false;
-        }
-        
-        std::cout << "LOAD MODE : BRUSHES" << std::endl;
-        
-        //Load the brushes
-        Library::clearBrushes();
-        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Brushes")){
-            std::string brushPath = entry.path().string();
-
-            Brush brush;
-            if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
-                Library::addBrush(brush);
-            }
-        }
-
-        std::cout << "LOAD MODE : FILTERS" << std::endl;
-
-        //Load the filters
-        Library::clearFilters();
-        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Filters")){
-            std::string filterPath = entry.path().string();
-
-            Filter filter;
-            if(filter.load(filterPath))
-                Library::addFilter(filter);
-        }
-
-        std::cout << "LOAD MODE : TEXTURE PACKS" << std::endl;
-   
-        //Load the texture packs
-        Library::clearTexturePacks();
-        for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Texture Packs")){
-            std::string filterPath = entry.path().string();
-
-            TexturePack texturePack;
-            texturePack.load(filterPath);
-            Library::addTexturePack(texturePack);
-        }
-    }
-    catch (const std::filesystem::filesystem_error& ex) {
-        LGDLOG::start << "ERROR : Filesystem : Location ID 658972 " << ex.what() << LGDLOG::end;
-    }
+    this->loadLibraryElements(this->folderPath, appMaterialModifiers, ligidFilePath);
 
     projectUpdatingThreadElements.updateTextures = false;
     this->projectProcessing = false;

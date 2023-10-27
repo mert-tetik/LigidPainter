@@ -890,12 +890,16 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
 
 void UI::renderDropper(Painter &painter){
     if(*Mouse::LClick() && dropper.active){
-        //Dropper active pick color
-        glm::vec3 cursorHoverPixelRGBData;
-        //Read the cursor position from the default frame buffer
-        glReadPixels(Mouse::cursorPos()->x, Mouse::cursorPos()->y,1,1,GL_RGB,GL_FLOAT,&cursorHoverPixelRGBData);
+        Settings::defaultFramebuffer()->FBO.bind();
         
-        dropper.value = cursorHoverPixelRGBData; 
+        //Dropper active pick color
+        glm::vec4 cursorHoverPixelRGBData;
+        //Read the cursor position from the default frame buffer
+        glReadPixels(Mouse::cursorPos()->x, Mouse::cursorPos()->y,1,1,GL_RGBA,GL_FLOAT, &cursorHoverPixelRGBData);
+        
+        dropper.value = cursorHoverPixelRGBData;
+
+        std::cout << glm::to_string(cursorHoverPixelRGBData) << std::endl; 
     
         dropper.active = false;
         if(painter.selectedColorIndex == 0)
