@@ -256,10 +256,6 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
             
             else if(recover3Btn.clicked)
                 slot = 3;
-        
-            project_texturesPanel.sections[0].elements.clear();
-            project_brushesPanel.sections[0].elements.clear();
-            project_materialsPanel.sections[0].elements.clear();
 
             project_texturesPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(10.f, 2.f), "Textures", Texture(), 0.f, false));
             project_brushesPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(10.f, 2.f), "Brushes", Texture(), 0.f, false));
@@ -303,6 +299,18 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
                             std::string title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
                             project_materialsPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 3.f), title, mat.displayingTexture, 0.f, false));
                             project_materialsPanel.sections[0].elements[project_materialsPanel.sections[0].elements.size() - 1].button.textureSizeScale = 0.98f;
+                        
+                            mat.displayingFBO.deleteBuffers(false, true);
+                            for (size_t modI = 0; modI < mat.materialModifiers.size(); modI++)
+                            {
+                                for (size_t secI = 0; secI < mat.materialModifiers[modI].sections.size(); secI++)
+                                {
+                                    for (size_t elI = 0; elI < mat.materialModifiers[modI].sections[secI].elements.size(); elI++)
+                                    {
+                                        glDeleteTextures(1, &mat.materialModifiers[modI].sections[secI].elements[elI].button.texture.ID);
+                                    }
+                                }
+                            }
                         }
                     }            
                 }
@@ -331,6 +339,25 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
         
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->projectPanel.hover && *Mouse::LClick()) && projectSelectionMode){
             projectSelectionMode = false;
+
+            for (size_t i = 0; i < project_texturesPanel.sections[0].elements.size(); i++)
+            {
+                glDeleteTextures(1, &project_texturesPanel.sections[0].elements[i].button.texture.ID);
+            }
+            for (size_t i = 0; i < project_materialsPanel.sections[0].elements.size(); i++)
+            {
+                glDeleteTextures(1, &project_materialsPanel.sections[0].elements[i].button.texture.ID);
+            }
+            /*
+            for (size_t i = 0; i < project_brushesPanel.sections[0].elements.size(); i++)
+            {
+                glDeleteTextures(1, &project_brushesPanel.sections[0].elements[i].button.texture.ID);
+            }
+            */
+
+            project_texturesPanel.sections[0].elements.clear();
+            project_brushesPanel.sections[0].elements.clear();
+            project_materialsPanel.sections[0].elements.clear();
         }
 
 
