@@ -46,9 +46,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static const std::string copyFolderTitle = "Updating_Folder-Remove_if_you_see";
 
 // Forward declared utility functions
-static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode);
-static void PROJECT_updateMaterials(std::string materialFolderPath);
-static void PROJECT_updateBrushes(std::string brushFolderPath);
+static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode, bool& discardUpdateProjectFlag);
+static void PROJECT_updateMaterials(std::string materialFolderPath, bool& discardUpdateProjectFlag);
+static void PROJECT_updateBrushes(std::string brushFolderPath, bool& discardUpdateProjectFlag);
 
 // Goes from 1 to 3
 static int currentRecoverSlot = 1;
@@ -80,36 +80,46 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     }
 
     //----------------- Textures
-    std::cout << "UPDATE MODE : TEXTURES" << std::endl;
-
-    if(updateTextures){
+    if(updateTextures && !discardUpdateProjectFlag){
+        std::cout << "UPDATE MODE : TEXTURES" << std::endl;
         std::string textureFolderPath = destinationPath + UTIL::folderDistinguisher() + "Textures";
         CEATE_FOLDER_IF_NOT_EXISTS(textureFolderPath)
-        PROJECT_updateTextures(textureFolderPath, multithreadingMode);
+        PROJECT_updateTextures(textureFolderPath, multithreadingMode, this->discardUpdateProjectFlag);
     }
     
     //----------------- Materials
-    std::cout << "UPDATE MODE : MATERIALS" << std::endl;
+    if(!discardUpdateProjectFlag){
+        std::cout << "UPDATE MODE : MATERIALS" << std::endl;
 
-    std::string materialFolderPath = destinationPath + UTIL::folderDistinguisher() + "Materials";
-    CEATE_FOLDER_IF_NOT_EXISTS(materialFolderPath)
-    PROJECT_updateMaterials(materialFolderPath);
+        std::string materialFolderPath = destinationPath + UTIL::folderDistinguisher() + "Materials";
+        CEATE_FOLDER_IF_NOT_EXISTS(materialFolderPath)
+        PROJECT_updateMaterials(materialFolderPath, this->discardUpdateProjectFlag);
+    }
 
     //----------------- Brushes
-    std::cout << "UPDATE MODE : BRUSHES" << std::endl;
+    if(!discardUpdateProjectFlag){
+        std::cout << "UPDATE MODE : BRUSHES" << std::endl;
 
-    std::string brushFolderPath = destinationPath + UTIL::folderDistinguisher() + "Brushes";
-    CEATE_FOLDER_IF_NOT_EXISTS(brushFolderPath)
-    PROJECT_updateBrushes(brushFolderPath);
+        std::string brushFolderPath = destinationPath + UTIL::folderDistinguisher() + "Brushes";
+        CEATE_FOLDER_IF_NOT_EXISTS(brushFolderPath)
+        PROJECT_updateBrushes(brushFolderPath, this->discardUpdateProjectFlag);
+    }
 
     //----------------- Ligid
-    std::cout << "UPDATE MODE : LIGID" << std::endl;
-    
-    this->writeLigidFile();
+    if(!discardUpdateProjectFlag){
+        std::cout << "UPDATE MODE : LIGID" << std::endl;
+        this->writeLigidFile();
+    }
+
+    if(discardUpdateProjectFlag){
+        LGDLOG::start << "INFO : Updating project discarded" << LGDLOG::end;
+    }
+
+
     this->projectProcessing = false;
+    this->discardUpdateProjectFlag = false;
 
     std::cout << "UPDATE MODE : FINISH" << std::endl;
-
 }
 
 
@@ -125,7 +135,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
 
 
 // ---------------------------- UTILITY FUNCTIONS ---------------------------------
-static void PROJECT_updateBrushes(std::string brushFolderPath){
+static void PROJECT_updateBrushes(std::string brushFolderPath, bool& discardUpdateProjectFlag){
     std::string updateBrushFolderPath = brushFolderPath + UTIL::folderDistinguisher() + copyFolderTitle;
 
     if(std::filesystem::exists(updateBrushFolderPath))
@@ -140,21 +150,28 @@ static void PROJECT_updateBrushes(std::string brushFolderPath){
     for (size_t i = 0; i < Library::getBrushArraySize(); i++)
     {
         //Export brush
-        if(!FileHandler::writeLGDBRUSHFile(updateBrushFolderPath, Library::getBrushObj(i))){
-            LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a brush file!" << LGDLOG::end;
+        if(!discardUpdateProjectFlag){
+            if(!FileHandler::writeLGDBRUSHFile(updateBrushFolderPath, Library::getBrushObj(i))){
+                LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a brush file!" << LGDLOG::end;
+            }
         }
     }
 
-    if(UTIL::deleteFilesInFolder(brushFolderPath)){
-        UTIL::moveFilesToDestination(updateBrushFolderPath, brushFolderPath);
-        std::filesystem::remove_all(updateBrushFolderPath);
+    if(!discardUpdateProjectFlag){
+        if(UTIL::deleteFilesInFolder(brushFolderPath)){
+            UTIL::moveFilesToDestination(updateBrushFolderPath, brushFolderPath);
+            std::filesystem::remove_all(updateBrushFolderPath);
+        }
+        else{
+            LGDLOG::start << "WARNING! : Updating project : faced with an issue while deleting the brush folder" << LGDLOG::end;
+        }
     }
     else{
-        LGDLOG::start << "WARNING! : Updating project : faced with an issue while deleting the brush folder" << LGDLOG::end;
+        std::filesystem::remove_all(updateBrushFolderPath);
     }
 }
 
-static void PROJECT_updateMaterials(std::string materialFolderPath){
+static void PROJECT_updateMaterials(std::string materialFolderPath, bool& discardUpdateProjectFlag){
     std::string updateMaterialFolderPath = materialFolderPath + UTIL::folderDistinguisher() + copyFolderTitle;
 
     if(std::filesystem::exists(updateMaterialFolderPath))
@@ -169,21 +186,28 @@ static void PROJECT_updateMaterials(std::string materialFolderPath){
     for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
     {
         //Export material
-        if(!FileHandler::writeLGDMATERIALFile(updateMaterialFolderPath + UTIL::folderDistinguisher() + Library::getMaterialObj(i).title + ".lgdmaterial", Library::getMaterialObj(i))){
-            LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a material file!" << LGDLOG::end;
+        if(!discardUpdateProjectFlag){
+            if(!FileHandler::writeLGDMATERIALFile(updateMaterialFolderPath + UTIL::folderDistinguisher() + Library::getMaterialObj(i).title + ".lgdmaterial", Library::getMaterialObj(i))){
+                LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a material file!" << LGDLOG::end;
+            }
         }
     }
 
-    if(UTIL::deleteFilesInFolder(materialFolderPath)){
-        UTIL::moveFilesToDestination(updateMaterialFolderPath, materialFolderPath);
-        std::filesystem::remove_all(updateMaterialFolderPath);
+    if(!discardUpdateProjectFlag){
+        if(UTIL::deleteFilesInFolder(materialFolderPath)){
+            UTIL::moveFilesToDestination(updateMaterialFolderPath, materialFolderPath);
+            std::filesystem::remove_all(updateMaterialFolderPath);
+        }
+        else{
+            LGDLOG::start << "WARNING! : Updating project : faced with an issue while deleting the material folder" << LGDLOG::end;
+        }
     }
     else{
-        LGDLOG::start << "WARNING! : Updating project : faced with an issue while deleting the material folder" << LGDLOG::end;
+        std::filesystem::remove_all(updateMaterialFolderPath);
     }
 }
 
-static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode){
+static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode, bool& discardUpdateProjectFlag){
     
     // Folder path to write the textures in it
     std::string updateTextureFolderPath = textureFolderPath + UTIL::folderDistinguisher() + copyFolderTitle;
@@ -218,9 +242,11 @@ static void PROJECT_updateTextures(std::string textureFolderPath, bool multithre
                 break;
             }
 
-            if(!threadSafeTxtr.exportTexture(updateTextureFolderPath, "PNG")){
-                LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a texture file!" << LGDLOG::end;
-                error = true;
+            if(!discardUpdateProjectFlag){
+                if(!threadSafeTxtr.exportTexture(updateTextureFolderPath, "PNG")){
+                    LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a texture file!" << LGDLOG::end;
+                    error = true;
+                }
             }
         }
     }
@@ -230,7 +256,7 @@ static void PROJECT_updateTextures(std::string textureFolderPath, bool multithre
         getCopyContext()->window.releaseContext();
 
     // If there are no errors move the textures inside of the updating folder to the Textures folder
-    if(!error){
+    if(!error && !discardUpdateProjectFlag){
         if(UTIL::deleteFilesInFolder(textureFolderPath)){
             UTIL::moveFilesToDestination(updateTextureFolderPath, textureFolderPath);
             std::filesystem::remove_all(updateTextureFolderPath);
@@ -238,5 +264,8 @@ static void PROJECT_updateTextures(std::string textureFolderPath, bool multithre
         else{
             LGDLOG::start << "WARNING! : Updating project : faced with an issue while deleting the texture folder" << LGDLOG::end;
         }
+    }
+    else{
+        std::filesystem::remove_all(updateTextureFolderPath);
     }
 }

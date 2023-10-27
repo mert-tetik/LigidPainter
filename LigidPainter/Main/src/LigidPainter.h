@@ -84,6 +84,8 @@ public:
         //projectUpdatingThreadElements.exportCV.notify_one();
         projectUpdatingThreadElements.isRunning = false;
 
+        renderer.project.discardUpdateProjectFlag = true;
+
         // Wait for the projectUpdatingThread to finish
         projectUpdatingThreadX.join();
 

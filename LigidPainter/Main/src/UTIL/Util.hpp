@@ -545,6 +545,8 @@ public:
     /// @return true if success
     bool createProject(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths, int textureRes);
     
+    bool discardUpdateProjectFlag = false;
+
     /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
     void updateProject(bool updateTextures, bool multithreadingMode);
     

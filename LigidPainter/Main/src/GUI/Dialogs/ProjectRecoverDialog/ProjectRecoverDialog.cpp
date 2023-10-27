@@ -204,6 +204,8 @@ void ProjectRecoverDialog::render(Timer timer, Project &project){
 
     while (!getContext()->window.shouldClose())
     {
+        project.discardUpdateProjectFlag = true;
+
         getContext()->window.pollEvents();
 
         // Prevent rendering the application if the window is minimized
