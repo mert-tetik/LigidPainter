@@ -75,8 +75,8 @@ void showTexturePackEditorDialog(TexturePack& texturePack){
     Settings::defaultFramebuffer()->setViewport();
 }
 
-void showProjectRecoverDialog(Project &project){
-    __project_recover_dialog.render(__timer, project);
+void showProjectRecoverDialog(Project &project, AppMaterialModifiers appMaterialModifiers){
+    __project_recover_dialog.render(__timer, project, appMaterialModifiers);
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }

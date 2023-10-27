@@ -80,7 +80,7 @@ void UI::elementInteraction(
                     logDialog.isHovered() ||
                     vectorPaintingModePropertyPanel.hover;
 
-    this->contextMenuInteraction(timer, project, painter);
+    this->contextMenuInteraction(timer, project, painter, appMaterialModifiers);
     
     updateLibraryPanelDisplayerElements(libraryPanelDisplayer, frameCounter);
     

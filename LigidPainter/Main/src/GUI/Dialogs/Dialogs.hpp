@@ -687,7 +687,7 @@ class LogDialog
    bool isHovered();
 };
 
-void showProjectRecoverDialog(Project &project);
+void showProjectRecoverDialog(Project &project, AppMaterialModifiers appMaterialModifiers);
 
 class ProjectRecoverDialog
 {
@@ -712,7 +712,7 @@ public:
    ProjectRecoverDialog();
 
    //Public member functions
-   void render(Timer timer, Project &project);
+   void render(Timer timer, Project &project, AppMaterialModifiers appMaterialModifiers);
 };
 
 #endif

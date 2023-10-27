@@ -196,7 +196,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
 }
 
 
-void ProjectRecoverDialog::render(Timer timer, Project &project){
+void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModifiers appMaterialModifiers){
     
     dialogControl.updateStart();
 
@@ -248,6 +248,73 @@ void ProjectRecoverDialog::render(Timer timer, Project &project){
 
         if(recover1Btn.clicked || recover2Btn.clicked || recover3Btn.clicked){
             projectSelectionMode = true;
+
+            int slot = 1;
+
+            if(recover2Btn.clicked)
+                slot = 2;
+            
+            else if(recover3Btn.clicked)
+                slot = 3;
+        
+            project_texturesPanel.sections[0].elements.clear();
+            project_brushesPanel.sections[0].elements.clear();
+            project_materialsPanel.sections[0].elements.clear();
+
+            project_texturesPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(10.f, 2.f), "Textures", Texture(), 0.f, false));
+            project_brushesPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(10.f, 2.f), "Brushes", Texture(), 0.f, false));
+            project_materialsPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(10.f, 2.f), "Materials", Texture(), 0.f, false));
+
+            try
+            {
+                if(std::filesystem::exists(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Textures")){
+                    for (const auto& entry : std::filesystem::directory_iterator(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Textures")) {
+                        std::string path = entry.path().string();
+
+                        if(std::filesystem::is_regular_file(path)){
+                            Texture txtr;
+                            txtr.load(path.c_str(), glm::ivec2(256));
+
+                            std::string title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
+
+                            project_texturesPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 3.f), title, txtr, 0.f, false));
+                            project_texturesPanel.sections[0].elements[project_texturesPanel.sections[0].elements.size() - 1].button.textureSizeScale = 0.98f;
+                        }
+                    }            
+                }
+                if(std::filesystem::exists(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Brushes")){
+                    for (const auto& entry : std::filesystem::directory_iterator(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Brushes")) {
+                        std::string path = entry.path().string();
+
+                        if(std::filesystem::is_regular_file(path)){
+                            std::string title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
+                            project_brushesPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 2.f), title, Texture(), 0.f, false));
+                        }
+                    }            
+                }
+                if(std::filesystem::exists(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Materials")){
+                    for (const auto& entry : std::filesystem::directory_iterator(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Materials")) {
+                        std::string path = entry.path().string();
+
+                        if(std::filesystem::is_regular_file(path)){
+                            Material mat = Material("", 0);
+                            FileHandler::readLGDMATERIALFile(path, mat, appMaterialModifiers);
+
+                            Camera cam;
+                            cam.cameraPos = glm::vec3(0,0,-5.f);
+                            cam.radius = 5.f;                            
+                            mat.updateMaterialDisplayingTexture(256, true, cam, 0);
+
+                            std::string title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
+                            project_materialsPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 3.f), title, mat.displayingTexture, 0.f, false));
+                            project_materialsPanel.sections[0].elements[project_materialsPanel.sections[0].elements.size() - 1].button.textureSizeScale = 0.98f;
+                        }
+                    }            
+                }
+            }
+            catch (const std::filesystem::filesystem_error& ex) {
+                LGDLOG::start << "ERROR : Filesystem : Location ID 784689 " << ex.what() << LGDLOG::end;
+            }
         }
             
         if(projectSelectionMode){

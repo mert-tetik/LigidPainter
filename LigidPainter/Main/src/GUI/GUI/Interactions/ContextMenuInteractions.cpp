@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter){
+void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter, AppMaterialModifiers appMaterialModifiers){
 
     anyContextMenuActive = ContextMenus::texture.dialogControl.isActive() ||
                            ContextMenus::material.dialogControl.isActive() ||
@@ -186,43 +186,43 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             Library::eraseBrush(ContextMenus::brush.selectedElement);
         }
     }
-    if(ContextMenus::menuBarProject.dialogControl.isActive() || Shortcuts::anyShortCut()){ //If project context menu is active
-        //Save
-        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[0].button.clicked || Shortcuts::CTRL_S()){
-            project.updateProject(true, false);
-        }
-        
-        //Save as
-        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[1].button.clicked || Shortcuts::CTRL_SHIFT_S()){
-            project.updateProject(true, false);
-            project.duplicateFolder("");
-        }
-        
-        //Create new
-        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[2].button.clicked){
-            newProjectDialog.dialogControl.activate();
-        }
-        
-        //Load new
-        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[3].button.clicked){
-            loadProjectDialog.dialogControl.activate();
-        }
-        
-        //Copy path
-        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[4].button.clicked){
-            project.copyTheProjectPathToTheClipboard();
-        }
-
-        //Open in file explorer
-        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[5].button.clicked){
-            UTIL::openInFileExplorer(project.absoluteProjectPath().c_str());
-        }
-
-        //Recover
-        if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[6].button.clicked){
-            showProjectRecoverDialog(project);
-        }
+    
+    //Save
+    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[0].button.clicked || Shortcuts::CTRL_S()){
+        project.updateProject(true, false);
     }
+    
+    //Save as
+    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[1].button.clicked || Shortcuts::CTRL_SHIFT_S()){
+        project.updateProject(true, false);
+        project.duplicateFolder("");
+    }
+    
+    //Create new
+    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[2].button.clicked){
+        newProjectDialog.dialogControl.activate();
+    }
+    
+    //Load new
+    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[3].button.clicked){
+        loadProjectDialog.dialogControl.activate();
+    }
+    
+    //Copy path
+    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[4].button.clicked){
+        project.copyTheProjectPathToTheClipboard();
+    }
+
+    //Open in file explorer
+    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[5].button.clicked){
+        UTIL::openInFileExplorer(project.absoluteProjectPath().c_str());
+    }
+
+    //Recover
+    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[6].button.clicked){
+        showProjectRecoverDialog(project, appMaterialModifiers);
+    }
+    
     if(ContextMenus::menuBarHelp.dialogControl.isActive()){ //If help context menu is active
         if(ContextMenus::menuBarHelp.contextPanel.sections[0].elements[0].button.clicked){
             websites.ligidTools.open();
