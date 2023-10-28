@@ -737,7 +737,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     else if(prevStraightLinePaintingCondition && !painter.faceSelection.editMode){
         std::vector<VectorStroke> strokeArray;
         strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
-        painter.applyVectorStrokes(strokeArray, this->twoDPaintingPanel, this->projection, painter.selectedPaintingModeIndex, this->filterPaintingModeFilterBtn.filter, this->twoDPaintingBox);
+        painter.applyVectorStrokes(strokeArray, this->twoDPaintingPanel, this->projection, painter.selectedPaintingModeIndex, this->filterPaintingModeFilterBtn.filter, this->twoDPaintingBox, paintingChannelsSection);
     }
     
     prevStraightLinePaintingCondition = straightLinePaintingCondition;

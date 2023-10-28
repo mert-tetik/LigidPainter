@@ -100,7 +100,7 @@ Color Painter::getSelectedColor(){
         return this->color3;
 }
 
-void Painter::applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox){
+void Painter::applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Section paintingChannelsSection){
     
     int textureResolution = 256;
 
@@ -189,7 +189,7 @@ void Painter::applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel&
         this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingBox);
     }
 
-    this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox);
+    this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingChannelsSection);
 
     this->refreshPainting();
 

@@ -41,7 +41,8 @@ void paintingModesPanelInteraction(
                                     float twoDSceneScroll, 
                                     glm::vec2 twoDScenePos,
                                     Button filterPaintingModeFilterBtn,
-                                    Box twoDPaintingBox
+                                    Box twoDPaintingBox,
+                                    Section paintingChannelsSection
                                 )
 {
     //!PAINTING MODES PANEL
@@ -94,7 +95,7 @@ void paintingModesPanelInteraction(
         }
     }
     if(vectorPaintingModePropertyPanel.sections[0].elements[4].button.clicked){
-        painter.applyVectorStrokes(painter.vectorStrokes, twoDPaintingPanel, windowOrtho, vectorPaintingModePropertyPanel.sections[0].elements[0].comboBox.selectedIndex, filterPaintingModeFilterBtn.filter, twoDPaintingBox);
+        painter.applyVectorStrokes(painter.vectorStrokes, twoDPaintingPanel, windowOrtho, vectorPaintingModePropertyPanel.sections[0].elements[0].comboBox.selectedIndex, filterPaintingModeFilterBtn.filter, twoDPaintingBox, paintingChannelsSection);
     }
 
     painter.smearTransformStrength = smearPaintingModePropertyPanel.sections[0].elements[0].rangeBar.value;

@@ -275,4 +275,17 @@ void UI::paintingPanelInteraction(
             paintingPanelModePanel.sections[0].elements[i].button.clickState1 = true;
         }
     }
+
+    painter.materialPainting = colorSection.elements[4].checkBox.clickState1;
+    painter.enableAlbedoChannel = colorSection.elements[5].checkBox.clickState1;
+    painter.enableRoughnessChannel = colorSection.elements[6].checkBox.clickState1;
+    painter.roughnessVal = colorSection.elements[7].rangeBar.value;
+    painter.enableMetallicChannel = colorSection.elements[8].checkBox.clickState1;
+    painter.metallicVal = colorSection.elements[9].rangeBar.value;
+    painter.enableNormalMapChannel = colorSection.elements[10].checkBox.clickState1;
+    painter.normalMapStrengthVal = colorSection.elements[11].rangeBar.value;
+    painter.enableHeightMapChannel = colorSection.elements[12].checkBox.clickState1;
+    painter.heightMapVal = colorSection.elements[13].rangeBar.value;
+    painter.enableAOChannel = colorSection.elements[14].checkBox.clickState1;
+    painter.ambientOcclusionVal = colorSection.elements[15].rangeBar.value;
 }

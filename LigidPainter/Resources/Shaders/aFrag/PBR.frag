@@ -51,6 +51,8 @@ uniform float smearBlurStrength;
 //5 = paint the ambient Occlusion
 uniform int paintedTxtrStateIndex;
 
+uniform int paintingMode;
+
 //0 = paint
 //1 = soften
 //2 = smear
@@ -79,6 +81,19 @@ uniform int hideUnselected = 0;
 uniform int usingMeshSelection = 0;
 uniform sampler2D selectedPrimitiveIDS;
 
+uniform int materialPainting;
+uniform int enableAlbedoChannel;
+uniform int enableRoughnessChannel;
+uniform float roughnessVal;
+uniform int enableMetallicChannel;
+uniform float metallicVal;
+uniform int enableNormalMapChannel;
+uniform float normalMapStrengthVal;
+uniform int enableHeightMapChannel;
+uniform float heightMapVal;
+uniform int enableAOChannel;
+uniform float ambientOcclusionVal;
+
 
 void main() {
 
@@ -99,6 +114,7 @@ void main() {
     float height;
     float ao;
 
+
     vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w);
 
     // Brush value (mask) (painting texture) 
@@ -109,42 +125,63 @@ void main() {
     }
 
     //Get Albedo
-    if(paintedTxtrStateIndex == 0)
-        albedo = getBrushedTexture(albedoTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).rgb;
+    if(((paintedTxtrStateIndex == 0 && materialPainting == 0) || (materialPainting == 1 && enableAlbedoChannel == 1)) && paintingMode == 1)
+        albedo = getBrushedTexture(albedoTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength, materialPainting == 1, 0, 1.).rgb;
     else
         albedo = texture(albedoTxtr,TexCoords).rgb;
     
 
     //Get Roughness
-    if(paintedTxtrStateIndex == 1)
-        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).r;
+    if(((paintedTxtrStateIndex == 1 && materialPainting == 0) || (materialPainting == 1 && enableRoughnessChannel == 1)) && paintingMode == 1){
+        vec3 clr = paintingColor;
+        if((materialPainting == 1 && enableRoughnessChannel == 1))
+            clr = vec3(roughnessVal);
+        roughness = getBrushedTexture(roughnessTxtr,brushTxtr,TexCoords, screenPos.xy, clr, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength, materialPainting == 1, 1, roughnessVal).r;
+    }
     else
         roughness = texture(roughnessTxtr,TexCoords).r;
     
 
     //Get Metallic
-    if(paintedTxtrStateIndex == 2)
-        metallic = getBrushedTexture(metallicTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).r;
+    if(((paintedTxtrStateIndex == 2 && materialPainting == 0) || (materialPainting == 1 && enableMetallicChannel == 1)) && paintingMode == 1){
+        vec3 clr = paintingColor;
+        if((materialPainting == 1 && enableMetallicChannel == 1))
+            clr = vec3(metallicVal);
+        metallic = getBrushedTexture(metallicTxtr,brushTxtr,TexCoords, screenPos.xy, clr, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength, materialPainting == 1, 2, metallicVal).r;
+    }
     else
         metallic = texture(metallicTxtr,TexCoords).r;
 
 
     //Get Normal Map
-    if(paintedTxtrStateIndex == 3)
-        normal = getBrushedTexture(normalMapTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).rgb;
+    if(((paintedTxtrStateIndex == 3 && materialPainting == 0) || (materialPainting == 1 && enableNormalMapChannel == 1)) && paintingMode == 1){
+        vec3 clr = paintingColor;
+        if((materialPainting == 1 && enableNormalMapChannel == 1))
+            clr = texNormalMap(paintingTexture, TexCoords, normalMapStrengthVal).rgb;
+        
+        normal = getBrushedTexture(normalMapTxtr,brushTxtr,TexCoords, screenPos.xy, clr, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength, materialPainting == 1, 3, normalMapStrengthVal).rgb;
+    }
     else
         normal = texture(normalMapTxtr,TexCoords).rgb;
     
     //Get Height
-    if(paintedTxtrStateIndex == 4)
-        height = getBrushedTexture(heightMapTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).r;
+    if(((paintedTxtrStateIndex == 4 && materialPainting == 0) || (materialPainting == 1 && enableHeightMapChannel == 1)) && paintingMode == 1){
+        vec3 clr = paintingColor;
+        if((materialPainting == 1 && enableHeightMapChannel == 1))
+            clr = vec3(heightMapVal);
+        height = getBrushedTexture(heightMapTxtr,brushTxtr,TexCoords, screenPos.xy, clr, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength, materialPainting == 1, 4, heightMapVal).r;
+    }
     else
         height = texture(heightMapTxtr,TexCoords).r;
     
 
     //Get Ambient Occlusion
-    if(paintedTxtrStateIndex == 5)
-        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength).r;
+    if(((paintedTxtrStateIndex == 5 && materialPainting == 0) || (materialPainting == 1 && enableAOChannel == 1)) && paintingMode == 1){
+        vec3 clr = paintingColor;
+        if((materialPainting == 1 && enableAOChannel == 1))
+            clr = vec3(ambientOcclusionVal);
+        ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,TexCoords, screenPos.xy, clr, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength, materialPainting == 1, 5, ambientOcclusionVal).r;
+    }
     else
         ao = texture(ambientOcclusionTxtr,TexCoords).r;
 

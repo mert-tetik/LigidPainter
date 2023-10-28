@@ -169,6 +169,17 @@ vec3 getSmearedTexture(
 
 //----------------------- NORMAL BRUSH -----------------------
 
+vec4 texNormalMap(sampler2D heightMap, in vec2 uv, float str)
+{
+    vec2 s = vec2(0.00390625); // 1 / 256
+    
+    float p = texture2D(heightMap, uv).x;
+    float h1 = texture2D(heightMap, uv + s * vec2(1.0,0)).x;
+    float v1 = texture2D(heightMap, uv + s * vec2(0,1.0)).x;
+       
+   	return vec4(vec2(p - vec2(h1, v1)) * str + 0.5, 1., texture2D(heightMap, uv).a);
+}
+
 /**
 *    Apply default brush to the given texture
 *
@@ -192,14 +203,37 @@ vec3 getPaintedTexture  (
                             sampler2D paintingOverTexture, //Painting color
                             int usePaintingOver,
                             int paintingOverGrayScale,
-                            int paintingOverWraping
+                            int paintingOverWraping,
+                            bool multiChannelsPaintingMod,
+                            int channelI,
+                            float channelStrength
                         )
 {
+
+    vec2 uv = modelCoord;
+    if(paintingOverWraping == 1)
+        uv = TexCoords;
+
     vec4 paintingOverTxtrVal;
-    if(paintingOverWraping == 0)
-        paintingOverTxtrVal = texture(paintingOverTexture, modelCoord);
-    else 
-        paintingOverTxtrVal = texture(paintingOverTexture, TexCoords);
+    if(multiChannelsPaintingMod){
+        // Albedo
+        if(channelI == 0){
+            paintingOverTxtrVal = texture2D(paintingOverTexture, uv);
+        }
+
+        // Normal map
+        else if(channelI == 3){
+            paintingOverTxtrVal = texNormalMap(paintingOverTexture, uv, channelStrength);   
+        }
+
+        else{
+            vec4 s = texture2D(paintingOverTexture, uv);
+            float rs = max(max(s.r,s.g),s.b);
+            paintingOverTxtrVal = vec4(vec3(mix(1.-rs, rs, channelStrength)), s.a);
+        }
+    }
+    else
+        paintingOverTxtrVal = texture2D(paintingOverTexture, uv);
 
     float intensity = brushTxtr.a;
 
@@ -291,12 +325,15 @@ vec3 getBrushedTexture (
                             int paintingOverGrayScale,
                             int paintingOverWraping,
                             float smearTransformStrength,
-                            float smearBlurStrength
+                            float smearBlurStrength,
+                            bool multiChannelsPaintingMod,
+                            int channelI,
+                            float channelStrength
                         )
 {
     //Apply painting with color
     if(brushModeState == 0)
-        return getPaintedTexture(txtr,brushTxtr,TexCoords, modelCoord, paintingColor, paintingOverTexture, usePaintingOver, paintingOverGrayScale, paintingOverWraping);
+        return getPaintedTexture(txtr,brushTxtr,TexCoords, modelCoord, paintingColor, paintingOverTexture, usePaintingOver, paintingOverGrayScale, paintingOverWraping, multiChannelsPaintingMod, channelI, channelStrength);
 
     //Apply painting with softening
     if(brushModeState == 1)

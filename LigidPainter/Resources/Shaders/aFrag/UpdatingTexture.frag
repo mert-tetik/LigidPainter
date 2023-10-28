@@ -53,6 +53,10 @@ uniform int paintingOverWraping;
 uniform float smearTransformStrength;
 uniform float smearBlurStrength;
 
+uniform int multiChannelsPaintingMod;
+uniform int channelI;
+uniform float channelStrength;
+
 //Do depth testing (painting) if set to 1
 uniform int doDepthTest;
 
@@ -64,11 +68,17 @@ void main(){
 
     vec4 brushTxtr = texture(paintingTexture, TexCoords);
 
+    vec3 clr = paintingColor;
+
+    if(channelI == 3){
+        clr = texNormalMap(paintingTexture, TexCoords, channelStrength).rgb;
+    }
+
     if(!(brushModeState == 2 || brushModeState == 3)){
         brushTxtr.a = brushTxtr.r;
     }
 
     float txtrAlpha = texture(txtr, TexCoords).a; 
 
-    fragColor = vec4(getBrushedTexture(txtr, brushTxtr, TexCoords, screenPos.xy, paintingColor, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength), txtrAlpha);
+    fragColor = vec4(getBrushedTexture(txtr, brushTxtr, TexCoords, screenPos.xy, clr, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength, multiChannelsPaintingMod == 1, channelI, channelStrength), txtrAlpha);
 }

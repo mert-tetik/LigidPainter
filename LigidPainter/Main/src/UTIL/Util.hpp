@@ -720,6 +720,19 @@ public:
     float smearTransformStrength = 1.f;
     float smearBlurStrength = 1.f;
 
+    bool materialPainting = false;
+    bool enableAlbedoChannel = false;
+    bool enableRoughnessChannel = false;
+    float roughnessVal = 0.f;
+    bool enableMetallicChannel = false;
+    float metallicVal = 0.f;
+    bool enableNormalMapChannel = false;
+    float normalMapStrengthVal = 0.f;
+    bool enableHeightMapChannel = false;
+    float heightMapVal = 0.f;
+    bool enableAOChannel = false;
+    float ambientOcclusionVal = 0.f;
+
     // Used to create the displaying texture for the brush section in the paintingPanel
     Brush displayingBrush;
 
@@ -811,7 +824,9 @@ public:
     * @param scene structure contains matrices related to 3D model rendering & cam pos
     * @param twoDPaintingPanel if the painting mode is 2D use this panel's transform data 
     */
-    void updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox);
+    void updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Section paintingChannelsSection);
+    void updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, glm::vec3 paintingColor, int channelI, float channelStr);
+
     
     /*!
     * @brief updates the @ref depthTexture right after painting is done.
@@ -825,7 +840,7 @@ public:
 
     Color getSelectedColor();
 
-    void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox);
+    void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Section paintingChannelsSection);
 
     /// @brief Clears & refreshes all the buffers
     void refreshBuffers();

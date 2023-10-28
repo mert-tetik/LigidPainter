@@ -197,7 +197,7 @@ void Renderer::render(){
         }
         */
         //Update the selected texture after painting
-        painter.updateTexture(userInterface.twoDPaintingPanel, userInterface.projection, painter.selectedPaintingModeIndex, userInterface.filterPaintingModeFilterBtn.filter, userInterface.twoDPaintingBox);
+        painter.updateTexture(userInterface.twoDPaintingPanel, userInterface.projection, painter.selectedPaintingModeIndex, userInterface.filterPaintingModeFilterBtn.filter, userInterface.twoDPaintingBox, userInterface.paintingChannelsSection);
         //Refresh the 2D painting texture
         painter.refreshPainting();
 
@@ -479,6 +479,21 @@ void Renderer::renderMainModel(){
             ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
             ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
         }
+        
+        ShaderSystem::tdModelShader().setInt("materialPainting", painter.materialPainting);
+        ShaderSystem::tdModelShader().setInt("enableAlbedoChannel", painter.enableAlbedoChannel);
+        ShaderSystem::tdModelShader().setInt("enableRoughnessChannel", painter.enableRoughnessChannel);
+        ShaderSystem::tdModelShader().setFloat("roughnessVal", painter.roughnessVal);
+        ShaderSystem::tdModelShader().setInt("enableMetallicChannel", painter.enableMetallicChannel);
+        ShaderSystem::tdModelShader().setFloat("metallicVal", painter.metallicVal);
+        ShaderSystem::tdModelShader().setInt("enableNormalMapChannel", painter.enableNormalMapChannel);
+        ShaderSystem::tdModelShader().setFloat("normalMapStrengthVal", painter.normalMapStrengthVal);
+        ShaderSystem::tdModelShader().setInt("enableHeightMapChannel", painter.enableHeightMapChannel);
+        ShaderSystem::tdModelShader().setFloat("heightMapVal", painter.heightMapVal);
+        ShaderSystem::tdModelShader().setInt("enableAOChannel", painter.enableAOChannel);
+        ShaderSystem::tdModelShader().setFloat("ambientOcclusionVal", painter.ambientOcclusionVal);
+
+        ShaderSystem::tdModelShader().setInt("paintingMode", painter.refreshable);
         
         glActiveTexture(GL_TEXTURE11);
         glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
