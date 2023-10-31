@@ -176,9 +176,10 @@ void Renderer::cursorPositionCallback(
     
     Camera* cam = &getScene()->camera;
 
-    if ((
-            getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) && //If pressed to right mouse button
-            window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS &&  //If pressed to CTRL button
+    if (
+            ((getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
+            window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS) || getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE) == LIGIDGL_PRESS) 
+            &&  //If pressed to CTRL button
             !this->userInterface.anyDialogActive && //If there is no active dialog (don't move the camera if a dialog is active)
             !this->userInterface.anyPanelHover        //Don't move the camera if cursor hover a panel
         ) 
