@@ -521,6 +521,8 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         ShaderSystem::buttonShader().use();
     }
 
+    glClear(GL_DEPTH_BUFFER_BIT);
+
     paintingModesPanel.render(timer,!anyDialogActive);
 
     if(painter.selectedPaintingModeIndex == 2)
