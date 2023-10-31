@@ -532,6 +532,12 @@ public:
     */
     bool isMinimized();
 
+    /*!
+    *   @brief Deletes the OpenGL context and it's buffers along with it
+    *          Call this function as you are done with the window (as the app closes)
+    */
+    void deleteContext();
+
 
     //----------    CALLLBACKS  ----------
 

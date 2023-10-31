@@ -89,6 +89,8 @@ public:
         // Wait for the projectUpdatingThread to finish
         projectUpdatingThreadX.join();
 
+        getContext()->window.deleteContext();
+
         return 1;
     }
 };

@@ -574,3 +574,12 @@ bool LigidWindow::setWindowIcon(const wchar_t* iconPath) {
 
     return true;
 }
+
+void LigidWindow::deleteContext(){
+    // Release the context
+    wglMakeCurrent(NULL, NULL);
+    // Delete the context
+    wglDeleteContext(this->openGLContext);
+    // Release the device
+    ReleaseDC(this->window, GetDC(this->window));
+}
