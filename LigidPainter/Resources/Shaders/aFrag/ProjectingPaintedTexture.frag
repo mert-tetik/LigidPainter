@@ -36,6 +36,8 @@ uniform float paintingOpacity;
 //Do depth testing (painting) if set to 1
 uniform int doDepthTest;
 
+uniform int selectedPaintingModeIndex;
+
 //Fragment shader output
 out vec4 fragColor;
 
@@ -75,8 +77,16 @@ vec4 getBrushValue(
     if(testDepth == 1){
         if(!isPainted(modelCoords,depthTexture)){
             brushTxtr = vec4(0);
-            gl_FragDepth = 0.9;
         }
+    }
+
+    if(selectedPaintingModeIndex == 2 || selectedPaintingModeIndex == 3){
+        if(brushTxtr.a < 0.01)
+            gl_FragDepth = 1.;
+    }
+    else{
+        if(brushTxtr.r < 0.01)
+            gl_FragDepth = 1.;
     }
 
     return brushTxtr;

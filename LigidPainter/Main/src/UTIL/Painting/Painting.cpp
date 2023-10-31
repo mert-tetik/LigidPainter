@@ -284,7 +284,8 @@ static void projectThePaintingTexture(
     }
 
     // Generate and bind the capturing framebuffer
-    Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D);
+    // TODO Don't create the render buffer there
+    Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, textureRes));
     captureFBO.bind();
     
     glClearColor(0, 0, 0, 0);
@@ -300,6 +301,7 @@ static void projectThePaintingTexture(
     ShaderSystem::projectingPaintedTextureShader().setFloat("paintingOpacity", brushPropertiesOpacity);
     ShaderSystem::projectingPaintedTextureShader().setInt("usingMeshSelection", faceSelectionActive);
     ShaderSystem::projectingPaintedTextureShader().setInt("selectedPrimitiveIDS", 8);
+    ShaderSystem::projectingPaintedTextureShader().setInt("selectedPaintingModeIndex", selectedPaintingModeIndex);
 
     // Bind the painting texture
     glActiveTexture(GL_TEXTURE6);
@@ -342,7 +344,7 @@ static void projectThePaintingTexture(
     }
 
     // Finish
-    captureFBO.deleteBuffers(false ,false);
+    captureFBO.deleteBuffers(false, true);
 }
 
 static void sendPainterDataToThe3DModelShaderProgram(
