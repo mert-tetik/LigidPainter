@@ -138,7 +138,7 @@ NewProjectDialog::NewProjectDialog(AppMaterialModifiers& appMaterialModifiers){
     this->createBtn.radius = 0.3f;
 
     this->titleTextbox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(11,2), "MyProject", 2.f, false);
-    this->pathTextbox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(11,2), UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/Projects", 2.f, true);
+    this->pathTextbox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(11,2), UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter" + UTIL::folderDistinguisher() + "Projects", 2.f, true);
     this->resolutionCombobox = ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(10,2),
                                                                             {
                                                                                 "256",

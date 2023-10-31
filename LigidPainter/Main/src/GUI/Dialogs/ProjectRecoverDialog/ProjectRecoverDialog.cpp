@@ -215,9 +215,9 @@ static int slot = 1;
 
 void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModifiers appMaterialModifiers){
     
-    dialogControl.updateStart();
 
     this->dialogControl.activate();
+    dialogControl.updateStart();
 
     while (!getContext()->window.shouldClose())
     {
@@ -371,18 +371,16 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
             projectPanelSelectBtn.render(timer, true);
         }
 
-        dialogControl.updateEnd(timer,0.15f);
-
         if(this->projectPanelFileExplorerBtn.clicked){
             UTIL::openInFileExplorer(std::filesystem::absolute(project.recoverSlotPath(slot)).string().c_str());
         }
 
         //End the dialog
-        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->panel.hover && *Mouse::LClick()) && !projectSelectionMode){
+        if(((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->panel.hover && *Mouse::LClick()) && !projectSelectionMode) && !this->dialogControl.firstFrameActivated){
             dialogControl.unActivate();
         }
         
-        if(((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->projectPanel.hover && *Mouse::LClick()) || projectPanelExitBtn.clicked || projectPanelSelectBtn.clicked) && projectSelectionMode ){
+        if((((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) ) || (!this->projectPanel.hover && *Mouse::LClick()) || projectPanelExitBtn.clicked || projectPanelSelectBtn.clicked) && projectSelectionMode) && !this->dialogControl.firstFrameActivated){
             projectSelectionMode = false;
 
             for (size_t i = 0; i < project_texturesPanel.sections[0].elements.size(); i++)

@@ -81,23 +81,43 @@ void UI::elementInteraction(
                     logDialog.isHovered() ||
                     vectorPaintingModePropertyPanel.hover;
 
+    Debugger::block("GUI : Interactions : contextMenuInteraction"); // Start
     this->contextMenuInteraction(timer, project, painter, appMaterialModifiers);
+    Debugger::block("GUI : Interactions : contextMenuInteraction"); // End
     
+    Debugger::block("GUI : Interactions : updateLibraryPanelDisplayerElements"); // Start
     updateLibraryPanelDisplayerElements(libraryPanelDisplayer, frameCounter);
+    Debugger::block("GUI : Interactions : updateLibraryPanelDisplayerElements"); // End
     
+    Debugger::block("GUI : Interactions : libraryPanelDisplayerInteraction"); // Start
     this->libraryPanelDisplayerInteraction(painter, appMaterialModifiers, timer, project);
+    Debugger::block("GUI : Interactions : libraryPanelDisplayerInteraction"); // End
     
+    Debugger::block("GUI : Interactions : libraryPanelLeftInteraction"); // Start
     this->libraryPanelLeftInteraction(libraryPanelLeft);
+    Debugger::block("GUI : Interactions : libraryPanelLeftInteraction"); // End
 
+    Debugger::block("GUI : Interactions : paintingPanelInteraction"); // Start
     this->paintingPanelInteraction(painter);
+    Debugger::block("GUI : Interactions : paintingPanelInteraction"); // End
     
+    Debugger::block("GUI : Interactions : windowPanelInteraction"); // Start
     windowPanelInteraction(windowPanel, painter, this->settingsDialog, this->displayerDialog, this->exportDialog, this->bakingDialog);
+    Debugger::block("GUI : Interactions : windowPanelInteraction"); // End
 
+    Debugger::block("GUI : Interactions : paintingModesPanelInteraction"); // Start
     paintingModesPanelInteraction(this->paintingModesPanel, this->vectorPaintingModePropertyPanel, this->smearPaintingModePropertyPanel, painter, twoDPaintingPanel, this->projection, this->twoDPaintingSceneScroll, this->twoDPaintingScenePos, this->filterPaintingModeFilterBtn, this->twoDPaintingBox, this->paintingChannelsSection);
+    Debugger::block("GUI : Interactions : paintingModesPanelInteraction"); // End
 
+    Debugger::block("GUI : Interactions : displayingModesPanelInteraction"); // Start
     displayingModesPanelInteraction(displayingModesPanel, painter);
+    Debugger::block("GUI : Interactions : displayingModesPanelInteraction"); // End
 
+    Debugger::block("GUI : Interactions : nodeInteraction"); // Start
     nodeInteraction();
+    Debugger::block("GUI : Interactions : nodeInteraction"); // End
     
+    Debugger::block("GUI : Interactions : panelPositioning"); // Start
     this->panelPositioning(screenGapPerc,painter);
+    Debugger::block("GUI : Interactions : panelPositioning"); // End
 }

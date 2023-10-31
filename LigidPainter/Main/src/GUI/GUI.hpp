@@ -190,7 +190,7 @@ private:
 
     void renderDropper(Painter &painter);
 
-    void contextMenuInteraction(Timer &timer, Project& project, Painter &painter, AppMaterialModifiers appMaterialModifiers);
+    void contextMenuInteraction(Timer &timer, Project& project, Painter &painter, AppMaterialModifiers& appMaterialModifiers);
 
     void libraryPanelLeftInteraction(Panel &libraryPanelLeft);
     void paintingPanelInteraction(Painter &painter);

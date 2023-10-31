@@ -106,7 +106,10 @@ void Panel::updateUpdateGraphicsFlag(){
             if(
                     prevBarButtons[i].text != barButtons[i].text ||
                     prevBarButtons[i].hoverMixVal != barButtons[i].hoverMixVal ||
-                    prevBarButtons[i].clickedMixVal != barButtons[i].clickedMixVal 
+                    prevBarButtons[i].clickedMixVal != barButtons[i].clickedMixVal || 
+                    prevBarButtons[i].clicked || barButtons[i].clicked ||
+                    prevBarButtons[i].color != barButtons[i].color ||
+                    prevBarButtons[i].texture.ID != barButtons[i].texture.ID 
                 )
             {
                 this->updateGraphicsFlag = true;
@@ -122,7 +125,10 @@ void Panel::updateUpdateGraphicsFlag(){
             if(
                     prevSections[secI].header.button.text != sections[secI].header.button.text ||
                     prevSections[secI].header.button.hoverMixVal != sections[secI].header.button.hoverMixVal ||
-                    prevSections[secI].header.button.clickedMixVal != sections[secI].header.button.clickedMixVal 
+                    prevSections[secI].header.button.clickedMixVal != sections[secI].header.button.clickedMixVal || 
+                    prevSections[secI].header.button.clicked || sections[secI].header.button.clicked ||
+                    prevSections[secI].header.button.color != sections[secI].header.button.color ||
+                    prevSections[secI].header.button.texture.ID != sections[secI].header.button.texture.ID
                 )
             {
                 this->updateGraphicsFlag = true;

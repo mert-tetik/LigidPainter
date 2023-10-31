@@ -161,22 +161,22 @@ void Renderer::initRenderer(){
         }
         
         //Create the projects folder if not exists
-        if(!std::filesystem::exists(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/Projects")){
-            if(!std::filesystem::create_directory(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/Projects"))
+        if(!std::filesystem::exists(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter" + UTIL::folderDistinguisher() + "Projects")){
+            if(!std::filesystem::create_directory(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter" + UTIL::folderDistinguisher() + "Projects"))
                 LGDLOG::start<< "ERROR : Creating projects folder." << LGDLOG::end;
         }
         
         //If the tmp directory doesn't exist then create 
-        if(!std::filesystem::exists(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")){
-            if(!std::filesystem::create_directory(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp"))
+        if(!std::filesystem::exists(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter" + UTIL::folderDistinguisher() + "tmp")){
+            if(!std::filesystem::create_directory(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter" + UTIL::folderDistinguisher() + "tmp"))
                 LGDLOG::start<< "ERROR : Creating tmp folder." << LGDLOG::end;
         }
 
         //If the tmp directory exists empty the folder
         else{
-            if(!std::filesystem::remove_all(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp"))
+            if(!std::filesystem::remove_all(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter" + UTIL::folderDistinguisher() + "tmp"))
                 LGDLOG::start<< "ERROR : Deleting tmp folder." << LGDLOG::end;
-            if(!std::filesystem::create_directory(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp"))
+            if(!std::filesystem::create_directory(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter" + UTIL::folderDistinguisher() + "tmp"))
                 LGDLOG::start<< "ERROR : Creating tmp folder. (after deleting)" << LGDLOG::end;
         }
     }

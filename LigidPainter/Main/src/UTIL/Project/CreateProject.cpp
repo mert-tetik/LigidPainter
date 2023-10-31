@@ -163,10 +163,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         
         for (size_t i = 0; i < TDModelPaths.size(); i++)
         {
-            if(std::filesystem::exists(TDModelPaths[i])){
-                if(std::filesystem::is_regular_file(TDModelPaths[i]))
-                    std::filesystem::copy(TDModelPaths[i], tdModelFolderPath + UTIL::folderDistinguisher() + UTIL::getLastWordBySeparatingWithChar(TDModelPaths[i], UTIL::folderDistinguisher()));
-            }
+            UTIL::copyFileToFolder(TDModelPaths[i], tdModelFolderPath, 1);
         }
         
     }
@@ -191,8 +188,8 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
 void completeFolder(std::string path, int action){
     
     if(action == TD_MODEL_FOLDER_CREATION){
-        std::filesystem::copy("./LigidPainter/Resources/3D Models/sphere.fbx", path + UTIL::folderDistinguisher() + "sphere.fbx");
-        std::filesystem::copy("./LigidPainter/Resources/3D Models/plane.fbx", path + UTIL::folderDistinguisher() + "plane.fbx");
+        UTIL::copyFileToFolder("./LigidPainter/Resources/3D Models/sphere.fbx", path, 1);
+        UTIL::copyFileToFolder("./LigidPainter/Resources/3D Models/plane.fbx", path, 1);
     }
     else if(action == FILTER_FOLDER_CREATION){
         for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Filters")) {

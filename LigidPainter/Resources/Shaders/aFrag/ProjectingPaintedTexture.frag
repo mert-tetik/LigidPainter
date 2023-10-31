@@ -70,9 +70,13 @@ vec4 getBrushValue(
     vec4 brushTxtr = texture(paintingTexture, modelCoords.xy);
     brushTxtr.a *= opacity; 
 
+    gl_FragDepth = 0.1;
+
     if(testDepth == 1){
-        if(!isPainted(modelCoords,depthTexture))
+        if(!isPainted(modelCoords,depthTexture)){
             brushTxtr = vec4(0);
+            gl_FragDepth = 0.9;
+        }
     }
 
     return brushTxtr;

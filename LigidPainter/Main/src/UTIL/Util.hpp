@@ -158,6 +158,11 @@ namespace UTIL{
 
     /// @brief Replaces all the '/' characters with the '\' character in the Windows OS 
     void correctFolderDistinguishers(std::string& path);
+
+    /// @brief Copies the param file into the param folder
+    ///        Renames the file if already has one
+    /// @param mode 0 = abort if already exists, 1 = rename the file if already exists, 2 = delete the existing file if already exists 
+    void copyFileToFolder(const std::string file, const std::string folder, int mode);
 }
 
 

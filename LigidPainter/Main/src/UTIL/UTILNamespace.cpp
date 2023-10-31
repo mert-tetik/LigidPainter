@@ -294,3 +294,58 @@ void UTIL::correctFolderDistinguishers(std::string& path){
         }
     }
 }
+
+#define ABSOLUTE_DEST destinationFolder + fileTitle + fileExtension
+
+void UTIL::copyFileToFolder(const std::string file, const std::string folder, int mode){
+
+    if(!std::filesystem::exists(file)){
+        LGDLOG::start << "ERROR : Requested file to copy doesn't exists : " << file << LGDLOG::end;
+        return;
+    }
+
+    if(!std::filesystem::is_regular_file(file)){
+        LGDLOG::start << "ERROR : Requested file to copy is not a regular file : " << file << LGDLOG::end;
+        return;
+    }
+
+    std::string destinationFolder = folder;
+    if(destinationFolder[destinationFolder.size()-1] != '/' && destinationFolder[destinationFolder.size()-1] != '\\'){
+        destinationFolder.push_back(UTIL::folderDistinguisher());
+    }
+
+    std::string fileTitle = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(file, UTIL::folderDistinguisher()));
+    std::string fileExtension = UTIL::getLastWordBySeparatingWithChar(file, '.');
+
+    if(fileExtension.size()){
+        if(fileExtension[0] != '.'){
+            fileExtension.insert(fileExtension.begin(), '.');
+        }
+    }
+
+    try{
+        if(mode == 0){
+            if(std::filesystem::exists(ABSOLUTE_DEST)){
+                LGDLOG::start << "WARNING! Copy request (Mode 1) aborted! " << fileTitle << " was already existing in the " << destinationFolder << LGDLOG::end; 
+                return;
+            }
+        }
+        else if(mode == 2){
+            if(std::filesystem::exists(ABSOLUTE_DEST)){
+                LGDLOG::start << "WARNING! Copy request (Mode 1)! " << ABSOLUTE_DEST << " was already existing in the " << destinationFolder << " !existing one was deleted!" << LGDLOG::end; 
+                std::filesystem::remove(ABSOLUTE_DEST);
+            }
+        }
+        else if(mode == 1){
+            while (std::filesystem::exists(ABSOLUTE_DEST))
+            {
+                fileTitle.push_back('_');
+            }
+        }
+
+        std::filesystem::copy_file(file, ABSOLUTE_DEST);
+    }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 784586 " << ex.what() << LGDLOG::end;
+    }
+}
