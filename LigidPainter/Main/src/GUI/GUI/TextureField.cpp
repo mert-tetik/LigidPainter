@@ -32,6 +32,64 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+static float degreesBetweenPoints(const glm::vec2& point1, const glm::vec2& point2) {
+    // Calculate the angle in radians between the points and the origin.
+    float angleRadians = glm::atan(point2.y, point2.x) - glm::atan(point1.y, point1.x);
+
+    // Convert radians to degrees.
+    float angleDegrees = glm::degrees(angleRadians);
+
+    // Ensure the result is within the [0, 360] range.
+    angleDegrees = fmod(angleDegrees + 360.0f, 360.0f);
+
+    return angleDegrees;
+}
+
+glm::vec2 rotate2D(glm::vec2 v, float angleDegrees) {
+    float angleRadians = glm::radians(angleDegrees);
+    float cosA = cos(angleRadians);
+    float sinA = sin(angleRadians);
+
+    glm::mat2 rotationMatrix = glm::mat2(cosA, -sinA, sinA, cosA);
+
+    return rotationMatrix * v;
+}
+
+static void rotateSquareCorners(glm::vec3& corner1, glm::vec3& corner2, glm::vec3& corner3, glm::vec3& corner4, float rotationDegrees) {
+    
+    // Calculate the center of the square.
+    glm::vec2 center = 0.25f * (glm::vec2(corner1) + glm::vec2(corner2) + glm::vec2(corner3) + glm::vec2(corner4));
+
+    // Translate the corners so that the center becomes the origin.
+    corner1 -= glm::vec3(center, 0.0f);
+    corner2 -= glm::vec3(center, 0.0f);
+    corner3 -= glm::vec3(center, 0.0f);
+    corner4 -= glm::vec3(center, 0.0f);
+
+    // Convert the rotation angle to radians.
+    float rotationRadians = glm::radians(rotationDegrees);
+
+    // Create a 2D rotation matrix.
+    glm::mat3 rotationMatrix = glm::mat3(
+        glm::vec3(glm::cos(rotationRadians), -glm::sin(rotationRadians), 0.0f),
+        glm::vec3(glm::sin(rotationRadians), glm::cos(rotationRadians), 0.0f),
+        glm::vec3(0.0f, 0.0f, 1.0f)
+    );
+
+    // Apply the rotation to each corner.
+    corner1 = glm::vec3(rotationMatrix * glm::vec3(glm::vec2(corner1), 1.0f));
+    corner2 = glm::vec3(rotationMatrix * glm::vec3(glm::vec2(corner2), 1.0f));
+    corner3 = glm::vec3(rotationMatrix * glm::vec3(glm::vec2(corner3), 1.0f));
+    corner4 = glm::vec3(rotationMatrix * glm::vec3(glm::vec2(corner4), 1.0f));
+
+    // Translate the corners back to their original position.
+    corner1 += glm::vec3(center, 0.0f);
+    corner2 += glm::vec3(center, 0.0f);
+    corner3 += glm::vec3(center, 0.0f);
+    corner4 += glm::vec3(center, 0.0f);
+}
+
+
 static void scaleAccordingToTextureRes(glm::vec2& scale, Texture txtr){
     float txtrRatio = (float)txtr.getResolution().x / (float)txtr.getResolution().y;
     if((float)txtr.getResolution().x < (float)txtr.getResolution().y)
@@ -78,24 +136,29 @@ TextureField::TextureField(Texture texture){
     textureDisplayingButtonIOutline = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
 }
 
-static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 &elementPos, std::string position){
+static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 &elementPos, std::string position, float rot){
   
+    glm::vec2 nPos = glm::vec2(0.);  
 
     if(position == "LEFT_TOP"){
-        elementPos = glm::vec3(orgPos.x - orgScale.x, orgPos.y - orgScale.y, orgPos.z);
+        nPos = glm::vec2(-orgScale.x, -orgScale.y);
     }
     else if(position == "RIGHT_TOP"){
-        elementPos = glm::vec3(orgPos.x + orgScale.x, orgPos.y - orgScale.y, orgPos.z);
+        nPos = glm::vec2(+orgScale.x, -orgScale.y);
     }
     else if(position == "LEFT_BOTTOM"){
-        elementPos = glm::vec3(orgPos.x - orgScale.x, orgPos.y + orgScale.y, orgPos.z);
+        nPos = glm::vec2(-orgScale.x, +orgScale.y);
     }
     else if(position == "RIGHT_BOTTOM"){
-        elementPos = glm::vec3(orgPos.x + orgScale.x, orgPos.y + orgScale.y, orgPos.z);
+        nPos = glm::vec2(+orgScale.x, +orgScale.y);
     }
     else if(position == "CENTER"){
-        elementPos = glm::vec3(orgPos.x, orgPos.y, orgPos.z);
+    
     }
+    
+    //nPos = rotate2D(nPos, rot);
+
+    elementPos = glm::vec3(orgPos.x + nPos.x, orgPos.y + nPos.y, orgPos.z);
 }
 
 static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT, bool RB, bool center){
@@ -161,21 +224,49 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
 
 void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i){
     
-
     glm::vec3 orgPos = this->pos;
     glm::vec2 orgScale = this->scale;
     orgPos -= glm::vec3(*Settings::videoScale() - (glm::vec2)getContext()->windowScale, 0.f) / glm::vec3(*Settings::videoScale(), 1.f) * glm::vec3(50.f,50.f,1.f);     
     orgScale /= (*Settings::videoScale() / (glm::vec2)getContext()->windowScale);   
 
     // Positioning the GUI elements
-    poisitionTheElement(orgPos, orgScale, this->topLeft_ResizeButton.pos, "LEFT_TOP");
-    poisitionTheElement(orgPos, orgScale, this->bottomLeft_ResizeButton.pos, "LEFT_BOTTOM");
-    poisitionTheElement(orgPos, orgScale, this->topRight_ResizeButton.pos, "RIGHT_TOP");
-    poisitionTheElement(orgPos, orgScale, this->bottomRight_ResizeButton.pos, "RIGHT_BOTTOM");
-    poisitionTheElement(orgPos, orgScale, this->textureDisplayingButton.pos, "CENTER");
-    poisitionTheElement(orgPos, orgScale, this->textureDisplayingButtonIOutline.pos, "CENTER");
-    poisitionTheElement(orgPos, orgScale, this->deleteButton.pos, "LEFT_BOTTOM");
-    poisitionTheElement(orgPos, orgScale, this->scaleToTextureResolutionButton.pos, "LEFT_BOTTOM");
+    poisitionTheElement(orgPos, orgScale, this->topLeft_ResizeButton.pos, "LEFT_TOP", this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->bottomLeft_ResizeButton.pos, "LEFT_BOTTOM", this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->topRight_ResizeButton.pos, "RIGHT_TOP", this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->bottomRight_ResizeButton.pos, "RIGHT_BOTTOM", this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->textureDisplayingButton.pos, "CENTER", this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->textureDisplayingButtonIOutline.pos, "CENTER", this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->deleteButton.pos, "LEFT_BOTTOM", this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->scaleToTextureResolutionButton.pos, "LEFT_BOTTOM", this->rotation);
+
+    //rotateSquareCorners(this->topLeft_ResizeButton.pos, this->bottomLeft_ResizeButton.pos, this->topRight_ResizeButton.pos, this->bottomRight_ResizeButton.pos, this->rotation);
+    glm::vec2 crsPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+
+	if(getContext()->window.isKeyPressed(LIGIDGL_KEY_R)){
+        glm::vec2 direction = glm::normalize(crsPos - glm::vec2(orgPos));
+        // Left side
+        if(direction.x < -0.5 && direction.y > -0.85 && direction.y < 0.85){
+            this->rotation += Mouse::mouseOffset()->y / 2.f;
+        }
+        // Right side
+        if(direction.x > 0.5 && direction.y > -0.85 && direction.y < 0.85){
+            this->rotation -= Mouse::mouseOffset()->y / 2.f;
+        }
+        // Top side
+        if(direction.y < -0.85 && direction.x > -0.5 && direction.x < 0.5){
+            this->rotation -= Mouse::mouseOffset()->x / 2.f;
+        }
+        // Bottom side
+        if(direction.y > 0.85 && direction.x > -0.5 && direction.x < 0.5){
+            this->rotation += Mouse::mouseOffset()->x / 2.f;
+        }
+	}
+
+    if(rotation > 360)
+        rotation = 0;
+    if(rotation < 0)
+        rotation = 360;
+
 
     deleteButton.scale.x = 1.f + deleteButton.hoverMixVal * 2.f;
     scaleToTextureResolutionButton.scale.x = 1.f + scaleToTextureResolutionButton.hoverMixVal * 5.f;
@@ -197,7 +288,11 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
     if(!generatingTextureMode)
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 0.4f);
 
+    ShaderSystem::buttonShader().setFloat("rotation", this->rotation);
+    
     this->textureDisplayingButton.render(timer, doMouseTracking); 
+    
+    ShaderSystem::buttonShader().setFloat("rotation", 0.f);
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
     if(*Mouse::LClick()){
@@ -206,7 +301,9 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
 
     if(this->active && !generatingTextureMode){
         glDepthFunc(GL_LESS);
+        ShaderSystem::buttonShader().setFloat("rotation", this->rotation);
         this->textureDisplayingButtonIOutline.render(timer, false);
+        ShaderSystem::buttonShader().setFloat("rotation", 0.f);
         glDepthFunc(GL_LEQUAL);
 
         this->topLeft_ResizeButton.render(timer, doMouseTracking);

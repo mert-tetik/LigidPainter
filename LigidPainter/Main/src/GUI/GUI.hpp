@@ -54,6 +54,7 @@ public:
 
     glm::vec2 scale;
     glm::vec3 pos;
+    float rotation = 45.f;
 
     Button topLeft_ResizeButton;
     Button bottomLeft_ResizeButton;
@@ -74,6 +75,7 @@ public:
     void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i);
     
     bool isHover();
+
 
 private:
     glm::vec2 prevScale;
