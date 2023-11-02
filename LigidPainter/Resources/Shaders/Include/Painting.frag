@@ -173,9 +173,9 @@ vec4 texNormalMap(sampler2D heightMap, in vec2 uv, float str)
 {
     vec2 s = vec2(0.00390625); // 1 / 256
     
-    float p = texture2D(heightMap, uv).x;
-    float h1 = texture2D(heightMap, uv + s * vec2(1.0,0)).x;
-    float v1 = texture2D(heightMap, uv + s * vec2(0,1.0)).x;
+    float p = texture2D(heightMap, uv).a;
+    float h1 = texture2D(heightMap, uv + s * vec2(1.0,0)).a;
+    float v1 = texture2D(heightMap, uv + s * vec2(0,1.0)).a;
        
    	return vec4(vec2(p - vec2(h1, v1)) * str + 0.5, 1., texture2D(heightMap, uv).a);
 }
@@ -196,67 +196,50 @@ vec4 texNormalMap(sampler2D heightMap, in vec2 uv, float str)
 **/
 vec3 getPaintedTexture  ( 
                             sampler2D txtr, //The texture that will be painted  
-                            vec4 brushTxtr, //Brush value (painted texture value)
+                            sampler2D brushTxtr, //Brush value (painted texture value)
                             vec2 TexCoords,  //The texture coordinates
                             vec2 modelCoord,  //The texture coordinates
-                            vec3 paintingColor, //Painting color
-                            sampler2D paintingOverTexture, //Painting color
-                            int usePaintingOver,
-                            int paintingOverGrayScale,
-                            int paintingOverWraping,
                             bool multiChannelsPaintingMod,
                             int channelI,
-                            float channelStrength
+                            float channelStrength,
+                            bool paintingOverActive
                         )
 {
 
-    vec2 uv = modelCoord;
-    if(paintingOverWraping == 1)
-        uv = TexCoords;
-
-    vec4 paintingOverTxtrVal;
+    float brushTxtrAlpha = texture(brushTxtr, TexCoords).a; 
+    vec3 paintColor; 
     if(multiChannelsPaintingMod){
         // Albedo
         if(channelI == 0){
-            paintingOverTxtrVal = texture2D(paintingOverTexture, uv);
+            paintColor = texture2D(brushTxtr, TexCoords).rgb;
         }
 
         // Normal map
         else if(channelI == 3){
-            paintingOverTxtrVal = texNormalMap(paintingOverTexture, uv, channelStrength);   
+            paintColor = texNormalMap(brushTxtr, TexCoords, channelStrength).rgb;   
         }
 
         else{
-            vec4 s = texture2D(paintingOverTexture, uv);
-            float rs = max(max(s.r,s.g),s.b);
-            paintingOverTxtrVal = vec4(vec3(mix(1.-rs, rs, channelStrength)), s.a);
+            if(paintingOverActive){
+                vec4 s = texture2D(brushTxtr, TexCoords);
+                float rs = max(max(s.r,s.g),s.b);
+                paintColor = vec3(mix(1.-rs, rs, channelStrength));
+            }
+            else{
+                paintColor = vec3(channelStrength);
+            }
         }
     }
     else
-        paintingOverTxtrVal = texture2D(paintingOverTexture, uv);
+        paintColor = texture2D(brushTxtr, TexCoords).rgb;
 
-    float intensity = brushTxtr.a;
+    vec3 srcTxtr = texture(txtr, TexCoords).rgb;
 
-    //Mix the original color data with painting color using the intensity of the painted texture
-    vec3 destColor = vec3(0);
-    if(usePaintingOver == 1){
-        if(paintingOverGrayScale == 1){
-            destColor = paintingColor;
-            intensity *= paintingOverTxtrVal.r * paintingOverTxtrVal.a;
-        }
-        else{
-            destColor = paintingOverTxtrVal.rgb;
-            intensity *= paintingOverTxtrVal.a;
-        }
-    }
-    else
-        destColor = paintingColor;
-
-    return mix  (
-                    texture(txtr,TexCoords).rgb,
-                    destColor, //paintingColor
-                    intensity
-                );
+    return mix(
+                srcTxtr, 
+                paintColor, 
+                brushTxtrAlpha
+            );
 }
 
 vec3 getPaintedTextureTxtrClr( 
@@ -315,41 +298,38 @@ vec3 getPaintedTextureFilterDisplayingMode(
 **/
 vec3 getBrushedTexture (
                             sampler2D txtr, //The texture that will be painted  
-                            vec4 brushTxtr, //Brush value (painted texture value)
+                            vec4 brushTxtrVal, //Brush value (painted texture value)
+                            sampler2D brushTxtr, //Brush value (painted texture value)
                             vec2 TexCoords,  //The texture coordinates
                             vec2 modelCoord,  //The texture coordinates
-                            vec3 paintingColor, //Painting color (used for painting with color (if brushModeState == 0))
-                            sampler2D paintingOverTexture, //Painting color (used for painting with color (if brushModeState == 0))
                             int brushModeState, //Decide which painting mode will be used
-                            int usePaintingOver,
-                            int paintingOverGrayScale,
-                            int paintingOverWraping,
                             float smearTransformStrength,
                             float smearBlurStrength,
                             bool multiChannelsPaintingMod,
                             int channelI,
-                            float channelStrength
+                            float channelStrength,
+                            bool paintingOverActive
                         )
 {
     //Apply painting with color
     if(brushModeState == 0)
-        return getPaintedTexture(txtr,brushTxtr,TexCoords, modelCoord, paintingColor, paintingOverTexture, usePaintingOver, paintingOverGrayScale, paintingOverWraping, multiChannelsPaintingMod, channelI, channelStrength);
+        return getPaintedTexture(txtr, brushTxtr, TexCoords, modelCoord, multiChannelsPaintingMod, channelI, channelStrength, paintingOverActive);
 
     //Apply painting with softening
     if(brushModeState == 1)
-        return getSoftenedTexture(txtr,brushTxtr,TexCoords);
+        return getSoftenedTexture(txtr,brushTxtrVal,TexCoords);
 
     //Apply painting with smearing
     if(brushModeState == 2)
-        return getSmearedTexture(txtr,brushTxtr,TexCoords, smearTransformStrength, smearBlurStrength);
+        return getSmearedTexture(txtr,brushTxtrVal,TexCoords, smearTransformStrength, smearBlurStrength);
     
     //Apply painting with painting texture color data
     if(brushModeState == 3)
-        return getPaintedTextureTxtrClr(txtr, brushTxtr, TexCoords);
+        return getPaintedTextureTxtrClr(txtr, brushTxtrVal, TexCoords);
     
     //Apply painting with inverted texture color
     if(brushModeState == 4)
-        return getPaintedTextureFilterDisplayingMode(txtr, brushTxtr, TexCoords);
+        return getPaintedTextureFilterDisplayingMode(txtr, brushTxtrVal, TexCoords);
     
     if(brushModeState == 5)
         return texture(txtr, TexCoords).rgb;

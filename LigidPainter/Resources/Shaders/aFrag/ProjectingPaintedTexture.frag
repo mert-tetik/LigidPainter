@@ -27,8 +27,16 @@ in vec4 ProjectedPos;
 //Contains the brush strokes
 uniform sampler2D paintingTexture;
 
+uniform vec3 paintingColor;
+
 //3D Model rendered with depth shader (to compare depth)
 uniform sampler2D depthTexture;
+
+// Painting over
+uniform sampler2D paintingOverTexture;
+uniform int paintingOverWraping;
+uniform int usePaintingOver;
+uniform int paintingOverGrayScale;
 
 //Selected opacity for painting
 uniform float paintingOpacity;
@@ -70,24 +78,45 @@ vec4 getBrushValue(
                 )
 {
     vec4 brushTxtr = texture(paintingTexture, modelCoords.xy);
+    if(selectedPaintingModeIndex == 0){
+        brushTxtr.a = brushTxtr.r;
+    }
     brushTxtr.a *= opacity; 
 
-    gl_FragDepth = 0.1;
 
+
+    // Check if should be painted
     if(testDepth == 1){
         if(!isPainted(modelCoords,depthTexture)){
             brushTxtr = vec4(0);
         }
     }
 
-    if(selectedPaintingModeIndex == 2 || selectedPaintingModeIndex == 3){
-        if(brushTxtr.a < 0.01)
-            gl_FragDepth = 1.;
+    // Painting over
+    vec2 paintOverUV = modelCoords.xy;
+    if(paintingOverWraping == 1)
+        paintOverUV = TexCoords;
+    vec4 paintingOverTxtrVal = texture(paintingOverTexture, paintOverUV);
+
+    // Calculate color val
+    if(usePaintingOver == 1){
+        if(paintingOverGrayScale == 0){
+            brushTxtr.rgb = paintingOverTxtrVal.rgb;
+            brushTxtr.a *= paintingOverTxtrVal.a;
+        }
+        else{
+            brushTxtr.rgb = paintingColor;
+            brushTxtr.a *= paintingOverTxtrVal.r * paintingOverTxtrVal.a;
+        }
     }
     else{
-        if(brushTxtr.r < 0.01)
-            gl_FragDepth = 1.;
+        brushTxtr.rgb = paintingColor;
     }
+
+    // Display the painted side on top of the unpainted
+    gl_FragDepth = 0.1;
+    if(brushTxtr.a < 0.01)
+        gl_FragDepth = 0.9;
 
     return brushTxtr;
 }

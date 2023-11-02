@@ -255,9 +255,9 @@ void Painter::refreshPainting(){
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
     
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->projectedPaintingTexture.ID, 0);
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->projectedPaintingTexture.ID, 0);
+    //glClearColor(0,0,0,0);
+    //glClear(GL_COLOR_BUFFER_BIT);
 
     Settings::defaultFramebuffer()->FBO.bind();
 }

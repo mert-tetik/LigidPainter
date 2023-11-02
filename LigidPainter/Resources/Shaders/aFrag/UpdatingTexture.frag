@@ -31,9 +31,6 @@ uniform sampler2D txtr;
 //Contains the brush strokes
 uniform sampler2D paintingTexture;
 
-//3D Model rendered with depth shader (to compare depth)
-uniform sampler2D depthTexture;
-
 //0 = paint
 //1 = soften
 //2 = smear
@@ -49,6 +46,9 @@ uniform sampler2D paintingOverTexture;
 uniform int usePaintingOver;
 uniform int paintingOverGrayScale;
 uniform int paintingOverWraping;
+
+//3D Model rendered with depth shader (to compare depth)
+uniform sampler2D depthTexture;
 
 uniform float smearTransformStrength;
 uniform float smearBlurStrength;
@@ -68,17 +68,11 @@ void main(){
 
     vec4 brushTxtr = texture(paintingTexture, TexCoords);
 
-    vec3 clr = paintingColor;
-
-    if(channelI == 3){
-        clr = texNormalMap(paintingTexture, TexCoords, channelStrength).rgb;
-    }
-
     if(!(brushModeState == 2 || brushModeState == 3)){
         brushTxtr.a = brushTxtr.r;
     }
 
     float txtrAlpha = texture(txtr, TexCoords).a; 
 
-    fragColor = vec4(getBrushedTexture(txtr, brushTxtr, TexCoords, screenPos.xy, clr, paintingOverTexture, brushModeState, usePaintingOver, paintingOverGrayScale, paintingOverWraping, smearTransformStrength, smearBlurStrength, multiChannelsPaintingMod == 1, channelI, channelStrength), txtrAlpha);
+    fragColor = vec4(getBrushedTexture(txtr, brushTxtr, paintingTexture, TexCoords, screenPos.xy, brushModeState, smearTransformStrength, smearBlurStrength, multiChannelsPaintingMod == 1, channelI, channelStrength, usePaintingOver == 1), txtrAlpha);
 }

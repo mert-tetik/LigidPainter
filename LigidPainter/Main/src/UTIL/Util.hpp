@@ -850,8 +850,6 @@ public:
     /// @brief Clears & refreshes all the buffers
     void refreshBuffers();
 
-public:
-    
     /// @brief renderbuffer object used to depth test (used to create the depth texture)
     unsigned int depthRBO; 
 
@@ -875,6 +873,19 @@ public:
     
     std::vector<glm::vec2> getCursorSubstitution(float spacing);
     void changeColor(Color &color);
+
+private:
+    void Painter::projectThePaintingTexture(Texture& selectedTexture,  Texture& projectedPaintingTexture,  unsigned int paintingTexture,  unsigned int depthTexture, 
+                                            int selectedPaintingModeIndex, float brushPropertiesOpacity, bool threeDimensionalMode,glm::mat4 windowOrtho,int selectedMeshIndex,
+                                            Box twoDPaintingBox,glm::mat4 viewMat,bool faceSelectionActive,Texture selectedPrimitives);
+
+    void generateMirroredProjectedPaintingTexture(   
+                                                        MirrorSide& oSide, MirrorSide& oXSide, MirrorSide& oYSide, MirrorSide& oXYSide, MirrorSide& oZSide, 
+                                                        MirrorSide& oXZSide, MirrorSide& oYZSide, MirrorSide& oXYZSide, float mirrorXOffset, float mirrorYOffset, 
+                                                        float mirrorZOffset,Texture paintingTxtrObj, Texture& selectedTexture,  Texture& projectedPaintingTexture,  
+                                                        int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode,  glm::mat4 windowOrtho,  
+                                                        int selectedMeshIndex, Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives
+                                                    );
 };
 
 /// @brief A single char

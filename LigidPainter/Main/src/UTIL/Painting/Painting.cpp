@@ -50,21 +50,6 @@ static void sendPainterDataToThe3DModelShaderProgram(
                                                         bool paintingOverWraping
                                                      );
 
-
-static void projectThePaintingTexture(
-                                        Texture& selectedTexture, Texture& projectedPaintingTexture, unsigned int paintingTexture, unsigned int depthTexture, 
-                                        int selectedPaintingModeIndex, float brushPropertiesOpacity, bool threeDimensionalMode, glm::mat4 windowOrtho, 
-                                        int selectedMeshIndex, Box twoDPaintingBox, glm::mat4 viewMat, bool faceSelectionActive, Texture selectedPrimitives
-                                    );
-
-static void generateMirroredProjectedPaintingTexture(   
-                                                        MirrorSide& oSide, MirrorSide& oXSide, MirrorSide& oYSide, MirrorSide& oXYSide, MirrorSide& oZSide, 
-                                                        MirrorSide& oXZSide, MirrorSide& oYZSide, MirrorSide& oXYZSide, float mirrorXOffset, float mirrorYOffset, 
-                                                        float mirrorZOffset,Texture paintingTxtrObj, Texture& selectedTexture,  Texture& projectedPaintingTexture,  
-                                                        int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode,  glm::mat4 windowOrtho,  
-                                                        int selectedMeshIndex, Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives
-                                                    );
-
 void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox){
 
     glm::vec2 firstCursorPos = *Mouse::cursorPos();
@@ -241,7 +226,7 @@ static void setBrushProperties (
 
 
 
-static void projectThePaintingTexture(
+void Painter::projectThePaintingTexture(
                                         // Textures
                                         Texture& selectedTexture, 
                                         Texture& projectedPaintingTexture, 
@@ -276,8 +261,8 @@ static void projectThePaintingTexture(
             internalFormat = GL_RGBA8;
         }
         else{
-            format = GL_RED;
-            internalFormat = GL_RED;
+            format = GL_RGBA;
+            internalFormat = GL_RGBA8;
         }
 
         projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, format, internalFormat);
@@ -302,6 +287,12 @@ static void projectThePaintingTexture(
     ShaderSystem::projectingPaintedTextureShader().setInt("usingMeshSelection", faceSelectionActive);
     ShaderSystem::projectingPaintedTextureShader().setInt("selectedPrimitiveIDS", 8);
     ShaderSystem::projectingPaintedTextureShader().setInt("selectedPaintingModeIndex", selectedPaintingModeIndex);
+    
+    ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverTexture", 9);
+    ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverWraping", this->paintingOverWraping);
+    ShaderSystem::projectingPaintedTextureShader().setInt("usePaintingOver", this->usePaintingOver);
+    ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
+    ShaderSystem::projectingPaintedTextureShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
 
     // Bind the painting texture
     glActiveTexture(GL_TEXTURE6);
@@ -313,6 +304,10 @@ static void projectThePaintingTexture(
     
     glActiveTexture(GL_TEXTURE8);
     glBindTexture(GL_TEXTURE_2D, selectedPrimitives.ID);
+
+    // Bind the painting over texture
+    glActiveTexture(GL_TEXTURE9);
+    glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
     
     // Painting a 3D model
     if(threeDimensionalMode){
@@ -374,7 +369,7 @@ static void sendPainterDataToThe3DModelShaderProgram(
 }
 
 
-static void generateMirroredProjectedPaintingTexture(
+void Painter::generateMirroredProjectedPaintingTexture(
                                                         // Mirror sides
                                                         MirrorSide& oSide,
                                                         MirrorSide& oXSide,
@@ -507,8 +502,8 @@ static void generateMirroredProjectedPaintingTexture(
             internalFormat = GL_RGBA8;
         }
         else{
-            format = GL_RED;
-            internalFormat = GL_RED;
+            format = GL_RGBA;
+            internalFormat = GL_RGBA8;
         }
 
         projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, format, internalFormat);
@@ -528,7 +523,7 @@ static void generateMirroredProjectedPaintingTexture(
     ShaderSystem::projectedPaintingTextureMixerShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
     ShaderSystem::projectedPaintingTextureMixerShader().setVec2("scale", glm::vec2(0.5f));
 
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("redChannel", selectedPaintingModeIndex != 2);
+    ShaderSystem::projectedPaintingTextureMixerShader().setInt("redChannel", false);
     
     ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr1", 1);
     glActiveTexture(GL_TEXTURE1);

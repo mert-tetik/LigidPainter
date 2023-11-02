@@ -79,8 +79,8 @@ void UI::panelPositioning(
     displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;
 
     selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
-    if(Library::getTextureArraySize())
-        selectedTextureDisplayer.sections[0].elements[0].button.texture = painter.selectedTexture;
+
+    selectedTextureDisplayer.sections[0].elements[0].button.texture = painter.oSide.projectedPaintingTexture;
     twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
 
     paintingPanelModePanel.pos = paintingPanel.pos;
