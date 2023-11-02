@@ -83,8 +83,6 @@ vec4 getBrushValue(
     }
     brushTxtr.a *= opacity; 
 
-
-
     // Check if should be painted
     if(testDepth == 1){
         if(!isPainted(modelCoords,depthTexture)){
@@ -92,25 +90,27 @@ vec4 getBrushValue(
         }
     }
 
-    // Painting over
-    vec2 paintOverUV = modelCoords.xy;
-    if(paintingOverWraping == 1)
-        paintOverUV = TexCoords;
-    vec4 paintingOverTxtrVal = texture(paintingOverTexture, paintOverUV);
+    if(selectedPaintingModeIndex == 0){
+        // Painting over
+        vec2 paintOverUV = modelCoords.xy;
+        if(paintingOverWraping == 1)
+            paintOverUV = TexCoords;
+        vec4 paintingOverTxtrVal = texture(paintingOverTexture, paintOverUV);
 
-    // Calculate color val
-    if(usePaintingOver == 1){
-        if(paintingOverGrayScale == 0){
-            brushTxtr.rgb = paintingOverTxtrVal.rgb;
-            brushTxtr.a *= paintingOverTxtrVal.a;
+        // Calculate color val
+        if(usePaintingOver == 1){
+            if(paintingOverGrayScale == 0){
+                brushTxtr.rgb = paintingOverTxtrVal.rgb;
+                brushTxtr.a *= paintingOverTxtrVal.a;
+            }
+            else{
+                brushTxtr.rgb = paintingColor;
+                brushTxtr.a *= paintingOverTxtrVal.r * paintingOverTxtrVal.a;
+            }
         }
         else{
             brushTxtr.rgb = paintingColor;
-            brushTxtr.a *= paintingOverTxtrVal.r * paintingOverTxtrVal.a;
         }
-    }
-    else{
-        brushTxtr.rgb = paintingColor;
     }
 
     // Display the painted side on top of the unpainted
