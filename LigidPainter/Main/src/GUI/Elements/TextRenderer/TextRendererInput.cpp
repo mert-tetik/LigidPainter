@@ -142,9 +142,13 @@ void charInput(int &key, bool &caps, std::string& text, int& activeChar, int& ac
 		//Numpad Optimization
 		key -= 272;
 	}
-
-    text.insert(text.begin() + (activeChar + 1), key);
-
+    
+    if(std::isalpha(key) || std::isdigit(key)){
+        if((activeChar + 1) >= text.size())
+            text.push_back(key);
+        else
+            text.insert(text.begin() + (activeChar + 1), key);
+    }
     activeChar++;
     activeChar2 = activeChar;
 }

@@ -212,8 +212,18 @@ void TextBox::render(
             active = false;
         }
         else{
-            //Take key input
-            textRenderer.processTextInput(text, activeChar, activeChar2, textPosCharIndex);
+            // Take key input
+            textRenderer.processTextInput(this->text, activeChar, activeChar2, textPosCharIndex);
+
+            // Remove the non-numeric characters right-after getting the input
+            if(this->numeric){
+                for (size_t i = 0; i < this->text.size(); i++)
+                {
+                    if(!std::isdigit(this->text[i])){
+                        this->text.erase(this->text.begin() + i);
+                    }
+                }
+            }
         }
     }
 
