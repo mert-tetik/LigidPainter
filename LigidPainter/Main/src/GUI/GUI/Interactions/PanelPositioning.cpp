@@ -80,7 +80,7 @@ void UI::panelPositioning(
 
     selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
 
-    selectedTextureDisplayer.sections[0].elements[0].button.texture = painter.oSide.projectedPaintingTexture;
+    selectedTextureDisplayer.sections[0].elements[0].button.texture = painter.selectedTexture;
     twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
 
     paintingPanelModePanel.pos = paintingPanel.pos;

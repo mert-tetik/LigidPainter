@@ -94,7 +94,7 @@ vec3 getSoftenedTexture(
                         )
 { //Intensity from the painted texture
     const float width = 1024;
-    int range = 20;
+    int range = 10;
     
     vec4 O = vec4(0); 
     int s = range/sLOD;
