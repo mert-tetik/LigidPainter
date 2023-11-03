@@ -288,4 +288,9 @@ void UI::paintingPanelInteraction(
     painter.heightMapVal = colorSection.elements[13].rangeBar.value;
     painter.enableAOChannel = colorSection.elements[14].checkBox.clickState1;
     painter.ambientOcclusionVal = colorSection.elements[15].rangeBar.value;
+
+    if(selectedPaintingPanelMode != 3)
+        this->meshSection.elements[2].checkBox.clickState1 = false;
+    if(selectedPaintingPanelMode != 5)
+        this->paintingOverSection.elements[1].checkBox.clickState1 = false;
 }

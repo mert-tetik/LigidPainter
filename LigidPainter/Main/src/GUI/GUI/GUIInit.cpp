@@ -504,13 +504,13 @@ void UI::init
     this->meshSection =         Section(
                                     Element(),
                                     {  
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "Select A Mesh"  , Texture(), 7.f, false)),//4
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mask to selected mesh", 1.f), //0
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mesh selection mode", 1.f), //1
-                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //2
-                                        RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2,1.f), "Circle radius"  , Texture(), 2.f, 1.f, 100.f, 10.f), //3
-                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Custom"}, "Auto Select", 2.f), //4
-                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Hide unselected mesh", 1.f), //5
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "Select A Mesh"  , Texture(), 7.f, false)),//0
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mask to selected mesh", 1.f), //1
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mesh selection mode", 1.f), //2
+                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //3
+                                        RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2,1.f), "Circle radius"  , Texture(), 2.f, 1.f, 100.f, 10.f), //4
+                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Custom"}, "Auto Select", 2.f), //5
+                                        CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Hide unselected mesh", 1.f), //6
                                     }
                                 );
     
@@ -532,11 +532,11 @@ void UI::init
                                     Element(),
                                     {   
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Painting Over", 7.f)), //0
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Editor Mode", 1.f)), //0
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Library", Texture(), 1.f,false)), //1
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Computer", Texture(), 1.f,false)), //1
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Grayscale Masking", 1.f)),// 2
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Wrap", 1.f)), //3
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Editor Mode", 1.f)), //1
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Library", Texture(), 1.f,false)), //2
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Computer", Texture(), 1.f,false)), //3
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Grayscale Masking", 1.f)),// 4
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Wrap", 1.f)), //5
                                     }
                                 );
 
