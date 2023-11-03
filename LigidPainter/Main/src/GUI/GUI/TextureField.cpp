@@ -136,7 +136,7 @@ TextureField::TextureField(Texture texture){
     textureDisplayingButtonIOutline = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
 }
 
-static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 &elementPos, std::string position, float rot){
+static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 &elementPos, std::string position, bool rotate, float rot){
   
     glm::vec2 nPos = glm::vec2(0.);  
 
@@ -156,7 +156,8 @@ static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 
     
     }
     
-    //nPos = rotate2D(nPos, rot);
+    if(rotate)
+        nPos = rotate2D(nPos, rot);
 
     elementPos = glm::vec3(orgPos.x + nPos.x, orgPos.y + nPos.y, orgPos.z);
 }
@@ -230,19 +231,19 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
     orgScale /= (*Settings::videoScale() / (glm::vec2)getContext()->windowScale);   
 
     // Positioning the GUI elements
-    poisitionTheElement(orgPos, orgScale, this->topLeft_ResizeButton.pos, "LEFT_TOP", this->rotation);
-    poisitionTheElement(orgPos, orgScale, this->bottomLeft_ResizeButton.pos, "LEFT_BOTTOM", this->rotation);
-    poisitionTheElement(orgPos, orgScale, this->topRight_ResizeButton.pos, "RIGHT_TOP", this->rotation);
-    poisitionTheElement(orgPos, orgScale, this->bottomRight_ResizeButton.pos, "RIGHT_BOTTOM", this->rotation);
-    poisitionTheElement(orgPos, orgScale, this->textureDisplayingButton.pos, "CENTER", this->rotation);
-    poisitionTheElement(orgPos, orgScale, this->textureDisplayingButtonIOutline.pos, "CENTER", this->rotation);
-    poisitionTheElement(orgPos, orgScale, this->deleteButton.pos, "LEFT_BOTTOM", this->rotation);
-    poisitionTheElement(orgPos, orgScale, this->scaleToTextureResolutionButton.pos, "LEFT_BOTTOM", this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->topLeft_ResizeButton.pos, "LEFT_TOP", false, this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->bottomLeft_ResizeButton.pos, "LEFT_BOTTOM", false, this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->topRight_ResizeButton.pos, "RIGHT_TOP", false, this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->bottomRight_ResizeButton.pos, "RIGHT_BOTTOM", false, this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->textureDisplayingButton.pos, "CENTER", false, this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->textureDisplayingButtonIOutline.pos, "CENTER", false, this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->deleteButton.pos, "LEFT_BOTTOM", true, this->rotation);
+    poisitionTheElement(orgPos, orgScale, this->scaleToTextureResolutionButton.pos, "LEFT_BOTTOM", true, this->rotation);
 
     //rotateSquareCorners(this->topLeft_ResizeButton.pos, this->bottomLeft_ResizeButton.pos, this->topRight_ResizeButton.pos, this->bottomRight_ResizeButton.pos, this->rotation);
     glm::vec2 crsPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
 
-	if(getContext()->window.isKeyPressed(LIGIDGL_KEY_R)){
+	if(getContext()->window.isKeyPressed(LIGIDGL_KEY_R) && this->active){
         glm::vec2 direction = glm::normalize(crsPos - glm::vec2(orgPos));
         // Left side
         if(direction.x < -0.5 && direction.y > -0.85 && direction.y < 0.85){
@@ -260,6 +261,8 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
         if(direction.y > 0.85 && direction.x > -0.5 && direction.x < 0.5){
             this->rotation += Mouse::mouseOffset()->x / 2.f;
         }
+
+
 	}
 
     if(rotation > 360)
@@ -335,12 +338,17 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
         pos.x -= prevScale.x -scale.x; 
     }
     
-    this->transformedFlag = !(this->prevPos != orgPos || this->prevScale != orgScale) && this->prevTransformedFlag; 
+    this->transformedFlag = !(this->prevPos != orgPos || this->prevScale != orgScale || this->prevRot != this->rotation) && this->prevTransformedFlag; 
 
-    this->prevTransformedFlag = this->prevPos != orgPos || this->prevScale != orgScale;
+    this->prevTransformedFlag = this->prevPos != orgPos || this->prevScale != orgScale || this->prevRot != this->rotation;
+
+    if(this->transformedFlag){
+        std::cout << "A" << std::endl;
+    }
 
     this->prevPos = orgPos;
     this->prevScale = orgScale;
+    this->prevRot = this->rotation;
 }
 
 bool TextureField::isHover(){

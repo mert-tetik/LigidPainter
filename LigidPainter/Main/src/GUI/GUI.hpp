@@ -78,6 +78,7 @@ public:
 
 
 private:
+    float prevRot;
     glm::vec2 prevScale;
     glm::vec3 prevPos;
     bool prevTransformedFlag = false;
