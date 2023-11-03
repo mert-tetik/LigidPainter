@@ -342,10 +342,6 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
 
     this->prevTransformedFlag = this->prevPos != orgPos || this->prevScale != orgScale || this->prevRot != this->rotation;
 
-    if(this->transformedFlag){
-        std::cout << "A" << std::endl;
-    }
-
     this->prevPos = orgPos;
     this->prevScale = orgScale;
     this->prevRot = this->rotation;
