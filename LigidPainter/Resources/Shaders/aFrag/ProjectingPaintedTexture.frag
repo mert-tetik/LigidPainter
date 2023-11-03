@@ -78,7 +78,7 @@ vec4 getBrushValue(
                 )
 {
     vec4 brushTxtr = texture(paintingTexture, modelCoords.xy);
-    if(selectedPaintingModeIndex == 0){
+    if(selectedPaintingModeIndex != 2 && selectedPaintingModeIndex != 3){
         brushTxtr.a = brushTxtr.r;
     }
     brushTxtr.a *= opacity; 

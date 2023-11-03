@@ -301,7 +301,6 @@ void Renderer::set3DUniforms(){
     ShaderSystem::tdModelShader().setInt("heightMapTxtr",6);
     ShaderSystem::tdModelShader().setInt("ambientOcclusionTxtr",7);
     ShaderSystem::tdModelShader().setInt("paintingTexture",8);
-    ShaderSystem::tdModelShader().setInt("paintingOverTexture",10);
     ShaderSystem::tdModelShader().setInt("selectedPrimitiveIDS", 11);
     ShaderSystem::tdModelShader().setVec3("viewPos", getScene()->camera.cameraPos);
     ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
@@ -442,10 +441,6 @@ void Renderer::renderMainModel(){
 
         ShaderSystem::tdModelShader().setInt("paintedTxtrStateIndex", painter.selectedPaintingChannelIndex);
         
-        // Painting over texture
-        glActiveTexture(GL_TEXTURE10);
-        glBindTexture(GL_TEXTURE_2D, painter.paintingOverTexture);
-        
         if(painter.selectedDisplayingModeIndex == 2){
             ShaderSystem::tdModelShader().setInt("paintedTxtrStateIndex", 0);
             ShaderSystem::tdModelShader().setInt("displayingMode", 1);
@@ -469,7 +464,6 @@ void Renderer::renderMainModel(){
         else
             ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
-        ShaderSystem::tdModelShader().setInt("paintingOverDisplayinMode", 0);
         if(i == painter.selectedMeshIndex){
             ShaderSystem::tdModelShader().setInt("usingMeshSelection", painter.faceSelection.activated);
             ShaderSystem::tdModelShader().setInt("meshSelectionEditing", painter.faceSelection.editMode);

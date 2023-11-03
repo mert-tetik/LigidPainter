@@ -107,12 +107,8 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
     //*Fragment
     ShaderSystem::textureUpdatingShader().setInt("txtr", 5);
     ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6);
-    ShaderSystem::textureUpdatingShader().setInt("paintingOverTexture", 10);
     ShaderSystem::textureUpdatingShader().setInt("brushModeState", paintingMode);
     ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", this->usePaintingOver);
-    ShaderSystem::textureUpdatingShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
-    ShaderSystem::textureUpdatingShader().setInt("paintingOverWraping", this->paintingOverWraping);
-    ShaderSystem::textureUpdatingShader().setVec3("paintingColor", paintingColor);
     ShaderSystem::textureUpdatingShader().setFloat("smearTransformStrength", this->smearTransformStrength);
     ShaderSystem::textureUpdatingShader().setFloat("smearBlurStrength", this->smearBlurStrength);
     ShaderSystem::textureUpdatingShader().setInt("multiChannelsPaintingMod", this->materialPainting);
@@ -128,16 +124,10 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
     glActiveTexture(GL_TEXTURE6);
     glBindTexture(GL_TEXTURE_2D, this->projectedPaintingTexture.ID);
     
-    ///@ref paintingOverTexture 
-    glActiveTexture(GL_TEXTURE10);
-    glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
-
     
     if(this->threeDimensionalMode){
         //Draw the UV of the selected model
         if(selectedMeshIndex < getModel()->meshes.size()){
-            //*Fragment
-            ShaderSystem::textureUpdatingShader().setInt("doDepthTest", 1);
 
             //*Vertex
             ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);

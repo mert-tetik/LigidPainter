@@ -463,14 +463,13 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         //*Fragment
         ShaderSystem::twoDPaintingModeAreaShader().setInt("txtr", 5);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingTexture", 6);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverTexture", 10);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", painter.selectedPaintingModeIndex);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", painter.usePaintingOver);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverGrayScale", painter.paintingOverGrayScale);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingOverWraping", painter.paintingOverWraping);
-        ShaderSystem::twoDPaintingModeAreaShader().setVec3("paintingColor", painter.getSelectedColor().getRGB_normalized());
         ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearTransformStrength", painter.smearTransformStrength);
         ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearBlurStrength", painter.smearBlurStrength);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("multiChannelsPaintingMod", false);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("channelI", 0);
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("channelStrength", 1.f);
 
         //* Bind the textures
         //painted texture
@@ -481,19 +480,12 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         
-        // Painting over texture
-        glActiveTexture(GL_TEXTURE10);
-        glBindTexture(GL_TEXTURE_2D, painter.paintingOverTexture);
-        
         //paintingTexture 
         glActiveTexture(GL_TEXTURE6);
         if(painter.selectedDisplayingModeIndex == 0)
             glBindTexture(GL_TEXTURE_2D, 0);
         else
             glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
-
-        //*Fragment
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("doDepthTest", 0);
 
         //*Vertex
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", this->projection);

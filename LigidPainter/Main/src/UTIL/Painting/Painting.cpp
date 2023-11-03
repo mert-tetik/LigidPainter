@@ -356,16 +356,7 @@ static void sendPainterDataToThe3DModelShaderProgram(
 {
     ShaderSystem::tdModelShader().use();
     ShaderSystem::tdModelShader().setInt("brushModeState", selectedPaintingModeIndex);
-    if(selectedColorIndex == 0)
-        ShaderSystem::tdModelShader().setVec3("paintingColor", color1.getRGB_normalized());
-    if(selectedColorIndex == 1)
-        ShaderSystem::tdModelShader().setVec3("paintingColor", color2.getRGB_normalized());
-    if(selectedColorIndex == 2)
-        ShaderSystem::tdModelShader().setVec3("paintingColor", color3.getRGB_normalized());
-    
     ShaderSystem::tdModelShader().setInt("usePaintingOver", usePaintingOver);
-    ShaderSystem::tdModelShader().setInt("paintingOverGrayScale", paintingOverGrayScale);
-    ShaderSystem::tdModelShader().setInt("paintingOverWraping", paintingOverWraping);
 }
 
 

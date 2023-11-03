@@ -34,13 +34,7 @@ uniform sampler2D ambientOcclusionTxtr; //Ambient occlusion (ao)
 //Contains the brush strokes
 uniform sampler2D paintingTexture;
 
-uniform sampler2D paintingOverTexture;
 uniform int usePaintingOver;
-uniform int paintingOverGrayScale;
-uniform int paintingOverWraping;
-uniform int paintingOverDisplayinMode;
-uniform float paintingOpacity;
-uniform vec3 paintingColor;
 
 uniform float smearTransformStrength;
 uniform float smearBlurStrength;
@@ -116,10 +110,6 @@ void main() {
 
     // Brush value (mask) (painting texture) 
     vec4 brushTxtr = texture(paintingTexture, TexCoords);
-    
-    if(!(brushModeState == 2 || brushModeState == 3)){
-        brushTxtr.a = brushTxtr.r;
-    }
 
     //Get Albedo
     if(((paintedTxtrStateIndex == 0 && materialPainting == 0) || (materialPainting == 1 && enableAlbedoChannel == 1)) && paintingMode == 1)
