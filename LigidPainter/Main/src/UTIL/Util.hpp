@@ -383,7 +383,8 @@ public:
     unsigned int generateProceduralTexture(Mesh &mesh, int textureRes);
 
     /// @brief Generates 2D displaying texture using the proceduralProps & writes the texture into the this->ID
-    void generateProceduralDisplayingTexture(int displayingTextureRes, bool threeDMode);
+    /// @param displayMode 0 : solid 2D, 1 : Material ball PBR, 2 : Custom mesh PBR
+    void generateProceduralDisplayingTexture(int displayingTextureRes, int displayMode);
 
     void flipTexture(bool horizontal, bool vertical);
 };

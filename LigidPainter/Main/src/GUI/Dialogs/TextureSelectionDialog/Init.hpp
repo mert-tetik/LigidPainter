@@ -382,4 +382,11 @@ TextureSelectionDialog::TextureSelectionDialog(){
     {
         this->textureModesPanel.sections[0].elements[i].button.color = glm::vec4(0);
     }
+
+    this->selectedTextureSolidDisplayingModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Solid", Settings::appTextures().solidPaintingDisplayingMode, 1.f,false);
+    this->selectedTextureSolidDisplayingModeBtn.textColor2 = glm::vec4(1.);
+    this->selectedTextureMaterialBallDisplayingMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1),"Material Ball", Settings::appTextures().ligidPainterIcon, 1.f,false);
+    this->selectedTextureMaterialBallDisplayingMode.textColor2 = glm::vec4(1.);
+    this->selectedTextureCustomMeshDisplayingMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1),"Custom Mesh", Settings::appTextures().TDModelIcon, 1.f,false);
+    this->selectedTextureCustomMeshDisplayingMode.textColor2 = glm::vec4(1.);
 }

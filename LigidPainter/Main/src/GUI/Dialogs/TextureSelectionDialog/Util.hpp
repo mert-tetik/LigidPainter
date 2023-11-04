@@ -40,6 +40,8 @@ void TextureSelectionDialog::initTextureSelectionDialog(
     selectedTextureMode = receivedTexture.proceduralProps.textureSelectionDialog_selectedMode;
     selectedTextureIndex = receivedTexture.proceduralProps.textureSelectionDialog_selectedTextureIndex;
 
+    this->activeSelectedTextureDisplayingMode = !twoDMode;
+
     // Texture pack mode
     if(selectedTextureMode == 3){
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Invert_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralnverted;
@@ -207,7 +209,7 @@ void TextureSelectionDialog::updateProceduralDisplayingTexturesArray(bool twoDMo
         {
             Texture dispTxtr;
             this->selectedTextureIndex = i;
-            this->selectTheTexture(dispTxtr, 256, twoDMode);
+            this->selectTheTexture(dispTxtr, 256, !twoDMode, true);
             this->proceduralDisplayingTextures.push_back(dispTxtr);
         }
 }
@@ -239,7 +241,7 @@ void TextureSelectionDialog::updateTextureModesPanel(bool twoDMode){
     }
 }
 
-void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int displayingTextureRes, bool twoDMode){
+void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int displayingTextureRes, int displayMode, bool defaultProperties){
     
     // ------------------ Seting the proceduralID & proceduralTextureID values ------------------
 
@@ -351,6 +353,12 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
         receivedTexture.proceduralProps.proceduralBrightness = this->subPanel.sections[0].elements[subPanel_Brightness_INDEX].rangeBar.value;
     }
 
+    if(defaultProperties){
+        ProceduralProperties defaultProps;
+        defaultProps.proceduralID = receivedTexture.proceduralProps.proceduralID;
+        receivedTexture.proceduralProps = defaultProps;
+    }
+
     // ------------------ Finish ------------------
 
     // Set other data
@@ -359,7 +367,7 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     receivedTexture.title = "SelectedTexture";
 
     // Generate the displaying texture of the selected texture
-    receivedTexture.generateProceduralDisplayingTexture(displayingTextureRes, !twoDMode);
+    receivedTexture.generateProceduralDisplayingTexture(displayingTextureRes, displayMode);
     
 }
 
@@ -393,6 +401,33 @@ void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection)
 
     // Selected texture displaying panel
     this->selectedTextureDisplayingPanel.render(timer, false);
+
+
+    selectedTextureSolidDisplayingModeBtn.scale.x = 1.f + selectedTextureSolidDisplayingModeBtn.hoverMixVal * 1.5f;
+    selectedTextureMaterialBallDisplayingMode.scale.x = 1.f + selectedTextureMaterialBallDisplayingMode.hoverMixVal * 2.5f;
+    selectedTextureCustomMeshDisplayingMode.scale.x = 1.f + selectedTextureCustomMeshDisplayingMode.hoverMixVal * 2.8f;
+
+    selectedTextureSolidDisplayingModeBtn.pos = selectedTextureDisplayingPanel.pos;
+    selectedTextureSolidDisplayingModeBtn.pos.x -= selectedTextureDisplayingPanel.scale.x - selectedTextureSolidDisplayingModeBtn.scale.x - 1.f; 
+    selectedTextureSolidDisplayingModeBtn.pos.y -= selectedTextureDisplayingPanel.scale.y - selectedTextureSolidDisplayingModeBtn.scale.y - 1.f; 
+
+    selectedTextureMaterialBallDisplayingMode.pos.x = selectedTextureSolidDisplayingModeBtn.pos.x + selectedTextureSolidDisplayingModeBtn.scale.x + selectedTextureMaterialBallDisplayingMode.scale.x;
+    selectedTextureMaterialBallDisplayingMode.pos.y = selectedTextureSolidDisplayingModeBtn.pos.y;
+    selectedTextureMaterialBallDisplayingMode.pos.z = selectedTextureSolidDisplayingModeBtn.pos.z;
+    selectedTextureCustomMeshDisplayingMode.pos.x = selectedTextureMaterialBallDisplayingMode.pos.x + selectedTextureMaterialBallDisplayingMode.scale.x + selectedTextureCustomMeshDisplayingMode.scale.x;
+    selectedTextureCustomMeshDisplayingMode.pos.y = selectedTextureMaterialBallDisplayingMode.pos.y;
+    selectedTextureCustomMeshDisplayingMode.pos.z = selectedTextureMaterialBallDisplayingMode.pos.z;
+    
+    selectedTextureSolidDisplayingModeBtn.render(timer, true);
+    selectedTextureMaterialBallDisplayingMode.render(timer, true);
+    selectedTextureCustomMeshDisplayingMode.render(timer, true);
+
+    if(selectedTextureSolidDisplayingModeBtn.clicked)
+        activeSelectedTextureDisplayingMode = 0;
+    if(selectedTextureMaterialBallDisplayingMode.clicked)
+        activeSelectedTextureDisplayingMode = 1;
+    if(selectedTextureCustomMeshDisplayingMode.clicked)
+        activeSelectedTextureDisplayingMode = 2;
 
     // Set the button shader program back
     ShaderSystem::buttonShader().use();

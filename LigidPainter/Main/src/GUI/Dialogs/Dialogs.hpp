@@ -447,11 +447,13 @@ class TextureSelectionDialog
 {
 private:
    int selectedTextureMode = 1;
-   void selectTheTexture(Texture& receivedTxtr, int displayingTextureRes, bool twoDMode);
+   void selectTheTexture(Texture& receivedTxtr, int displayingTextureRes, int displayMode, bool defaultProperties);
    void renderPanels(Timer& timer, glm::mat4 guiProjection);
    void updateTextureModesPanel(bool twoDMode);
    void updateProceduralDisplayingTexturesArray(bool twoDMode);
    void initTextureSelectionDialog(Texture& receivedTexture, bool twoDMode);
+
+   int activeSelectedTextureDisplayingMode = 0;
 
 
 public:
@@ -464,6 +466,10 @@ public:
    
    Panel selectedTextureDisplayingPanel;
    Panel textureSelectingPanel;
+
+   Button selectedTextureSolidDisplayingModeBtn;
+   Button selectedTextureMaterialBallDisplayingMode;
+   Button selectedTextureCustomMeshDisplayingMode;
 
    Panel smartPositionTexturePanel;
    bool smartPositionTexturePanelActive = false;

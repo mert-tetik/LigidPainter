@@ -617,7 +617,7 @@ void Texture::applyNormalMap(float proceduralNormalStrength, bool proceduralNorm
     glDeleteTextures(1, &tx.ID);
 }
 
-void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, bool threeDMode){
+void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int displayMode){
     
     // ------------- Set Up -------------
 
@@ -691,7 +691,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, bool
     glViewport(0, 0, displayRes, displayRes);
 
     // Generate the smart texture displaying texture
-    if(threeDMode){
+    if(displayMode == 1 || displayMode == 2){
         Camera matCam;
         matCam.cameraPos = glm::vec3(0,0,-4.f);
         matCam.radius = 4.f;
@@ -719,26 +719,39 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, bool
         ShaderSystem::tdModelShader().setMat4("view",view);
         ShaderSystem::tdModelShader().setMat4("projection",projectionMatrix);
 
-        unsigned int proc = this->generateProceduralTexture(getMaterialDisplayerModel()->meshes[0], 512);
-        glViewport(0, 0, displayRes, displayRes);
-        glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-        ShaderSystem::tdModelShader().use();
+        Model model;
+        if(displayMode == 1)
+            model = *getMaterialDisplayerModel();
+        else if(displayMode == 2)
+            model = *getModel();
 
-        //Bind the channels of the material
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, proc);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, proc);
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, proc);
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, proc);
-        glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, proc);
-        glActiveTexture(GL_TEXTURE7);        
-        glBindTexture(GL_TEXTURE_2D, proc);
+        for (size_t i = 0; i < model.meshes.size(); i++)
+        {
+            unsigned int proc = this->generateProceduralTexture(model.meshes[i], 416);
+            glViewport(0, 0, displayRes, displayRes);
+            glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+            ShaderSystem::tdModelShader().use();
 
-        getMaterialDisplayerModel()->Draw();
+            //Bind the channels of the material
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, proc);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, proc);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, proc);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, proc);
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D, proc);
+            glActiveTexture(GL_TEXTURE7);        
+            glBindTexture(GL_TEXTURE_2D, proc);
+
+            model.meshes[i].Draw(false);
+
+            glDeleteTextures(1, &proc);
+        }
+        
+
 
         //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
         ShaderSystem::buttonShader().use();
@@ -748,7 +761,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, bool
     }
 
     // Generate regular procedural textures
-    if(this->proceduralProps.textureSelectionDialog_selectedMode != 3 && !threeDMode){
+    if(this->proceduralProps.textureSelectionDialog_selectedMode != 3 && displayMode == 0){
 
         /* Displaying texture */
         ShaderSystem::proceduralDisplayerShader().use();
@@ -772,7 +785,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, bool
     }
 
     // Generate normal map
-    if(this->proceduralProps.proceduralNormalMap && !threeDMode){
+    if(this->proceduralProps.proceduralNormalMap && displayMode == 0){
         Texture txtrObject = Texture(this->ID);
         Texture normalMapRes = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
 
