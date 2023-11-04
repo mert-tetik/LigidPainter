@@ -617,7 +617,7 @@ void Texture::applyNormalMap(float proceduralNormalStrength, bool proceduralNorm
     glDeleteTextures(1, &tx.ID);
 }
 
-void Texture::generateProceduralDisplayingTexture(int displayingTextureRes){
+void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, bool threeDMode){
     
     // ------------- Set Up -------------
 
@@ -691,10 +691,10 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes){
     glViewport(0, 0, displayRes, displayRes);
 
     // Generate the smart texture displaying texture
-    if(this->proceduralProps.textureSelectionDialog_selectedMode == 4){
+    if(threeDMode){
         Camera matCam;
-        matCam.cameraPos = glm::vec3(0,0,-8.f);
-        matCam.radius = 8.f;
+        matCam.cameraPos = glm::vec3(0,0,-4.f);
+        matCam.radius = 4.f;
 
 
         //Move the camera to the side
@@ -748,7 +748,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes){
     }
 
     // Generate regular procedural textures
-    if(this->proceduralProps.textureSelectionDialog_selectedMode != 3 && this->proceduralProps.textureSelectionDialog_selectedMode != 4){
+    if(this->proceduralProps.textureSelectionDialog_selectedMode != 3 && !threeDMode){
 
         /* Displaying texture */
         ShaderSystem::proceduralDisplayerShader().use();
@@ -772,7 +772,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes){
     }
 
     // Generate normal map
-    if(this->proceduralProps.proceduralNormalMap && this->proceduralProps.textureSelectionDialog_selectedMode != 4){
+    if(this->proceduralProps.proceduralNormalMap && !threeDMode){
         Texture txtrObject = Texture(this->ID);
         Texture normalMapRes = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
 
@@ -851,7 +851,7 @@ bool Texture::writeTextureData(std::ofstream& wf){
                                 return false; \
                             }
 
-bool Texture::readTextureData(std::ifstream& rf){
+bool Texture::readTextureData(std::ifstream& rf, bool threeDMode){
 
     // --------- Read procedural data ---------
 
@@ -957,7 +957,7 @@ bool Texture::readTextureData(std::ifstream& rf){
 
     glGenTextures(1, &this->ID);
 
-    this->generateProceduralDisplayingTexture(512);
+    this->generateProceduralDisplayingTexture(512, threeDMode);
 
     return true;
 }

@@ -46,21 +46,9 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
     
     this->dialogControl.activate();
     
-    // Generating the smart texture displaying textures
-    if(!this->smartTextureDisplayingTextures.size()){
-        for (size_t i = 0; i < MAX_PROCEDURAL_SMART_TEXTURE_SIZE; i++)
-        {
-            Texture dispTxtr;
-            this->selectedTextureMode = 4;
-            this->selectedTextureIndex = i;
-            this->selectTheTexture(dispTxtr, 256);
-            this->smartTextureDisplayingTextures.push_back(dispTxtr);
-        }
-    }
-    
     // Assign the default values
-    initTextureSelectionDialog(this->selectedTextureMode, this->subPanel, this->subPanelTxtrPack, this->subPanelSmartTextures, this->selectedTextureIndex, receivedTexture);
-
+    initTextureSelectionDialog(receivedTexture, twoDMode);
+    
     // Rendering loop
     while (!getContext()->window.shouldClose())
     {
@@ -77,16 +65,16 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         dialogControl.updateStart();
 
         // Updating the displaying texture
-        this->selectTheTexture(this->displayingTexture, 512);
+        this->selectTheTexture(this->displayingTexture, 512, twoDMode);
 
         // Recreating the texture selection panel's elements every frame
-        updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, this->smartTextureDisplayingTextures);
+        updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, this->proceduralDisplayingTextures);
 
         // Rendering all the panels
         this->renderPanels(timer, guiProjection);
         
         // Updating the texture modes panel
-        updateTextureModesPanel(this->textureModesPanel, this->selectedTextureMode, this->selectedTextureIndex, twoDMode);
+        updateTextureModesPanel(twoDMode);
         
         if(this->textureSelectingPanel.sections.size()){
 
@@ -138,7 +126,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
             // Assigning the procedural values to the received texture then generating the displaying texture
             else
-                this->selectTheTexture(receivedTexture, displayingTextureRes);
+                this->selectTheTexture(receivedTexture, displayingTextureRes, twoDMode);
 
             // Close the dialog
             dialogControl.unActivate();

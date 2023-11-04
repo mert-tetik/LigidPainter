@@ -138,7 +138,7 @@ void readmeshNodeSceneData(std::ifstream &rf){
         if(nodeIndex == MESH_NODE)
             node.uploadNewIOs();
         else if(nodeIndex == MATERIAL_MASK_NODE || nodeIndex == MATERIAL_ID_NODE)
-            node.nodePanel.sections[0].elements[0].button.texture.readTextureData(rf);
+            node.nodePanel.sections[0].elements[0].button.texture.readTextureData(rf, true);
 
         if(nodeIndex == MATERIAL_MASK_NODE)
             rf.read(reinterpret_cast<char*>(   &node.nodePanel.sections[0].elements[1].rangeBar.value    ), sizeof(int));

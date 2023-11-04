@@ -144,7 +144,7 @@ bool FileHandler::readLGDMATERIALFile(
                 return false;
             }
 
-            modifier.maskTexture.readTextureData(rf);
+            modifier.maskTexture.readTextureData(rf, true);
 
             if(modifier.modifierIndex == TEXTURE_MATERIAL_MODIFIER){
                 if(!readTextureModifier_ver_2000(rf, modifier)){
@@ -217,17 +217,17 @@ bool FileHandler::readLGDMATERIALFile(
 bool readTextureModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     // ---- Channel Textures ----
     // albedoTexture
-    modifier.sections[0].elements[1].button.texture.readTextureData(rf);
+    modifier.sections[0].elements[1].button.texture.readTextureData(rf, true);
     // roughnessTexture
-    modifier.sections[0].elements[2].button.texture.readTextureData(rf);
+    modifier.sections[0].elements[2].button.texture.readTextureData(rf, true);
     // metallicTexture
-    modifier.sections[0].elements[3].button.texture.readTextureData(rf);
+    modifier.sections[0].elements[3].button.texture.readTextureData(rf, true);
     // normalMapTexture
-    modifier.sections[0].elements[4].button.texture.readTextureData(rf);
+    modifier.sections[0].elements[4].button.texture.readTextureData(rf, true);
     // heightMapTexture
-    modifier.sections[0].elements[5].button.texture.readTextureData(rf);
+    modifier.sections[0].elements[5].button.texture.readTextureData(rf, true);
     // ambientOcclusionTexture
-    modifier.sections[0].elements[6].button.texture.readTextureData(rf);
+    modifier.sections[0].elements[6].button.texture.readTextureData(rf, true);
 
     // ---- Channel Opacities ----
     // albedoOpacity
@@ -251,7 +251,7 @@ bool readTextureModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier)
     // albedoFilter
     modifier.sections[3].elements[0].button.filter.readFilterData(rf);
     modifier.sections[3].elements[0].button.texture = modifier.sections[3].elements[0].button.filter.displayingTxtr;
-    modifier.sections[3].elements[1].button.texture.readTextureData(rf);
+    modifier.sections[3].elements[1].button.texture.readTextureData(rf, true);
 
     return true;
 }
@@ -303,7 +303,7 @@ bool readSolidModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     // albedoFilter
     modifier.sections[2].elements[0].button.filter.readFilterData(rf);
     modifier.sections[2].elements[0].button.texture = modifier.sections[2].elements[0].button.filter.displayingTxtr;
-    modifier.sections[2].elements[1].button.texture.readTextureData(rf);
+    modifier.sections[2].elements[1].button.texture.readTextureData(rf, true);
 
     return true;
 }
@@ -393,7 +393,7 @@ bool readLiquidModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     // albedoFilter
     modifier.sections[7].elements[0].button.filter.readFilterData(rf);
     modifier.sections[7].elements[0].button.texture = modifier.sections[7].elements[0].button.filter.displayingTxtr;
-    modifier.sections[7].elements[1].button.texture.readTextureData(rf);
+    modifier.sections[7].elements[1].button.texture.readTextureData(rf, true);
 
     return true;
 }
@@ -473,7 +473,7 @@ bool readMossModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     // albedoFilter
     modifier.sections[9].elements[0].button.filter.readFilterData(rf);
     modifier.sections[9].elements[0].button.texture = modifier.sections[9].elements[0].button.filter.displayingTxtr;
-    modifier.sections[9].elements[1].button.texture.readTextureData(rf);
+    modifier.sections[9].elements[1].button.texture.readTextureData(rf, true);
 
     return true;
 }
@@ -557,7 +557,7 @@ bool readRustModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     // albedoFilter
     modifier.sections[9].elements[0].button.filter.readFilterData(rf);
     modifier.sections[9].elements[0].button.texture = modifier.sections[9].elements[0].button.filter.displayingTxtr;
-    modifier.sections[9].elements[1].button.texture.readTextureData(rf);
+    modifier.sections[9].elements[1].button.texture.readTextureData(rf, true);
 
     return true;
 }
@@ -635,7 +635,7 @@ bool readSkinModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     // albedoFilter
     modifier.sections[8].elements[0].button.filter.readFilterData(rf);
     modifier.sections[8].elements[0].button.texture = modifier.sections[8].elements[0].button.filter.displayingTxtr;
-    modifier.sections[8].elements[1].button.texture.readTextureData(rf);
+    modifier.sections[8].elements[1].button.texture.readTextureData(rf, true);
 
     return true;
 }
@@ -721,7 +721,7 @@ bool readWoodenModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     // albedoFilter
     modifier.sections[9].elements[0].button.filter.readFilterData(rf);
     modifier.sections[9].elements[0].button.texture = modifier.sections[9].elements[0].button.filter.displayingTxtr;
-    modifier.sections[9].elements[1].button.texture.readTextureData(rf);
+    modifier.sections[9].elements[1].button.texture.readTextureData(rf, true);
 
     return true;
 }
@@ -790,7 +790,7 @@ bool readAsphaltModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier)
     // albedoFilter
     modifier.sections[8].elements[0].button.filter.readFilterData(rf);
     modifier.sections[8].elements[0].button.texture = modifier.sections[8].elements[0].button.filter.displayingTxtr;
-    modifier.sections[8].elements[1].button.texture.readTextureData(rf);
+    modifier.sections[8].elements[1].button.texture.readTextureData(rf, true);
 
     return true;
 }
@@ -875,7 +875,7 @@ bool readDustModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     // albedoFilter
     modifier.sections[8].elements[0].button.filter.readFilterData(rf);
     modifier.sections[8].elements[0].button.texture = modifier.sections[8].elements[0].button.filter.displayingTxtr;
-    modifier.sections[8].elements[1].button.texture.readTextureData(rf);
+    modifier.sections[8].elements[1].button.texture.readTextureData(rf, true);
 
     return true;
 }

@@ -357,7 +357,7 @@ public:
 
     bool writeTextureData(std::ofstream& wf);
     
-    bool readTextureData(std::ifstream& rf);
+    bool readTextureData(std::ifstream& rf, bool threeDMode);
 
     void copyDataToTheCopyContext();
 
@@ -383,7 +383,7 @@ public:
     unsigned int generateProceduralTexture(Mesh &mesh, int textureRes);
 
     /// @brief Generates 2D displaying texture using the proceduralProps & writes the texture into the this->ID
-    void generateProceduralDisplayingTexture(int displayingTextureRes);
+    void generateProceduralDisplayingTexture(int displayingTextureRes, bool threeDMode);
 
     void flipTexture(bool horizontal, bool vertical);
 };

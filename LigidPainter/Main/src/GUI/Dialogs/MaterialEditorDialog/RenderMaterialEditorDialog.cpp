@@ -282,7 +282,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                             Texture ambientOcc;
 
                             albedo.proceduralProps = txtr->proceduralProps;
-                            albedo.generateProceduralDisplayingTexture(256);
+                            albedo.generateProceduralDisplayingTexture(256, true);
                             albedo.title = "AutoFilledTexture";
 
                             roughness.proceduralProps = txtr->proceduralProps;
@@ -292,7 +292,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                             roughness.proceduralProps.proceduralNormalGrayScale = false;
                             roughness.proceduralProps.proceduralNormalStrength = 0.f;
                             roughness.proceduralProps.proceduralnverted = false;
-                            roughness.generateProceduralDisplayingTexture(256);
+                            roughness.generateProceduralDisplayingTexture(256, true);
                             roughness.title = "AutoFilledTexture";
 
                             metallic.proceduralProps = txtr->proceduralProps;
@@ -302,7 +302,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                             metallic.proceduralProps.proceduralNormalGrayScale = false;
                             metallic.proceduralProps.proceduralNormalStrength = 0.f;
                             metallic.proceduralProps.proceduralnverted = true;
-                            metallic.generateProceduralDisplayingTexture(256);
+                            metallic.generateProceduralDisplayingTexture(256, true);
                             metallic.title = "AutoFilledTexture";
                             
                             normalMap.proceduralProps = txtr->proceduralProps;
@@ -312,7 +312,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                             normalMap.proceduralProps.proceduralNormalGrayScale = false;
                             normalMap.proceduralProps.proceduralNormalStrength = 1.f;
                             normalMap.proceduralProps.proceduralnverted = false;
-                            normalMap.generateProceduralDisplayingTexture(256);
+                            normalMap.generateProceduralDisplayingTexture(256, true);
                             normalMap.title = "AutoFilledTexture";
                             
                             heightMap.proceduralProps = txtr->proceduralProps;
@@ -322,7 +322,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                             heightMap.proceduralProps.proceduralNormalGrayScale = false;
                             heightMap.proceduralProps.proceduralNormalStrength = 0.f;
                             heightMap.proceduralProps.proceduralnverted = true;
-                            heightMap.generateProceduralDisplayingTexture(256);
+                            heightMap.generateProceduralDisplayingTexture(256, true);
                             heightMap.title = "AutoFilledTexture";
                             
                             ambientOcc.proceduralProps = txtr->proceduralProps;
@@ -332,7 +332,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                             ambientOcc.proceduralProps.proceduralNormalGrayScale = false;
                             ambientOcc.proceduralProps.proceduralNormalStrength = 0.f;
                             ambientOcc.proceduralProps.proceduralnverted = false;
-                            ambientOcc.generateProceduralDisplayingTexture(256);
+                            ambientOcc.generateProceduralDisplayingTexture(256, true);
                             ambientOcc.title = "AutoFilledTexture";
                             
                             material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[1].button.texture = albedo;

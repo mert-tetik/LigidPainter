@@ -447,8 +447,12 @@ class TextureSelectionDialog
 {
 private:
    int selectedTextureMode = 1;
-   void selectTheTexture(Texture& receivedTxtr, int displayingTextureRes);
+   void selectTheTexture(Texture& receivedTxtr, int displayingTextureRes, bool twoDMode);
    void renderPanels(Timer& timer, glm::mat4 guiProjection);
+   void updateTextureModesPanel(bool twoDMode);
+   void updateProceduralDisplayingTexturesArray(bool twoDMode);
+   void initTextureSelectionDialog(Texture& receivedTexture, bool twoDMode);
+
 
 public:
    Panel bgPanel;
@@ -470,7 +474,7 @@ public:
    Panel smartDistanceTexturePanel;
    bool smartDistanceTexturePanelActive = false;
 
-   std::vector<Texture> smartTextureDisplayingTextures;
+   std::vector<Texture> proceduralDisplayingTextures;
 
    Texture displayingTexture;
    int selectedTextureIndex = 0; 

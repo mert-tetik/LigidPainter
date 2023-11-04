@@ -289,7 +289,7 @@ static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& propert
             LGDBRUSH_READBITS(prop.boolVal, bool, "scatter");
         }
         else if(prop.valueType == 't'){
-            prop.texture.readTextureData(rf);
+            prop.texture.readTextureData(rf, false);
         }
         else{
             LGDLOG::start<< "ERROR! Reading lgdbrush file. Unknown property value type!" << LGDLOG::end;

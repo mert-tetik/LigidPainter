@@ -30,14 +30,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 // ---------- UTILITY FUNCTIONS -----------
-static void initTextureSelectionDialog(
-                                        int &selectedTextureMode, 
-                                        Panel& subPanel, 
-                                        Panel& subPanelTxtrPack, 
-                                        Panel& subPanelSmartTextures, 
-                                        int& selectedTextureIndex, 
-                                        Texture& receivedTexture
-                                    )
+void TextureSelectionDialog::initTextureSelectionDialog(
+                                                            Texture& receivedTexture,
+                                                            bool twoDMode
+                                                        )
 {
 
     
@@ -80,6 +76,7 @@ static void initTextureSelectionDialog(
         subPanel.sections[0].elements[subPanel_Brightness_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralBrightness;
     }
 
+    this->updateProceduralDisplayingTexturesArray(twoDMode);
 }
 
 static void drawBG(
@@ -102,7 +99,7 @@ static void drawBG(
     ShaderSystem::buttonShader().use();
 }
 
-static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, std::vector<Texture> smartTextureDisplayingTextures){
+static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, int selectedTextureMode, std::vector<Texture> proceduralDisplayingTextures){
     textureSelectingPanel.sections.clear();
     std::vector<Element> sectionElements;
     if(selectedTextureMode == 0){
@@ -114,25 +111,41 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
     else if(selectedTextureMode == 1){
         for (size_t i = 0; i < MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE; i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),""       , Texture(), 0.f,false)));
+            Texture txtr;
+            if(i < proceduralDisplayingTextures.size())
+                txtr = proceduralDisplayingTextures[i];
+            
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),""       , txtr, 0.f,false)));
         }
     }
     else if(selectedTextureMode == 2){
         for (size_t i = 0; i < MAX_PROCEDURAL_NOISE_TEXTURE_SIZE; i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),""       , Texture(), 0.f,false)));
+            Texture txtr;
+            if(i < proceduralDisplayingTextures.size())
+                txtr = proceduralDisplayingTextures[i];
+            
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),""       , txtr, 0.f,false)));
         }
     }
     else if(selectedTextureMode == 3){
         for (size_t i = 0; i < Library::getTexturePackArraySize(); i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),Library::getTexturePack(i)->title   , Texture(), 0.f,false)));
+            Texture txtr;
+            if(i < proceduralDisplayingTextures.size())
+                txtr = proceduralDisplayingTextures[i];
+            
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),Library::getTexturePack(i)->title   , txtr, 0.f,false)));
         }
     }
     else if(selectedTextureMode == 4){
         for (size_t i = 0; i < MAX_PROCEDURAL_SMART_TEXTURE_SIZE; i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),""       , smartTextureDisplayingTextures[i], 0.f,false)));
+            Texture txtr;
+            if(i < proceduralDisplayingTextures.size())
+                txtr = proceduralDisplayingTextures[i];
+            
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),""       , txtr, 0.f,false)));
         }
     }
     else if(selectedTextureMode == 5){
@@ -158,7 +171,47 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
                                             );  
 }
 
-static void updateTextureModesPanel(Panel& textureModesPanel, int& selectedTextureMode, int& selectedTextureIndex, bool twoDMode){
+void TextureSelectionDialog::updateProceduralDisplayingTexturesArray(bool twoDMode){
+        int elementSize = 0;
+
+        if(selectedTextureMode == 0){
+            elementSize = Library::getTextureArraySize();
+        }
+        else if(selectedTextureMode == 1){
+            elementSize = MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
+        }
+        else if(selectedTextureMode == 2){
+            elementSize = MAX_PROCEDURAL_NOISE_TEXTURE_SIZE;
+        }
+        else if(selectedTextureMode == 3){
+            elementSize = Library::getTexturePackArraySize();
+        }
+        else if(selectedTextureMode == 4){
+            elementSize = MAX_PROCEDURAL_SMART_TEXTURE_SIZE;
+        }
+        else if(selectedTextureMode == 5){
+            elementSize = Library::getgetSrcLibTxtrsArraySize();
+        }
+        else if(selectedTextureMode == 6){
+            elementSize = getModel()->meshes.size();
+        }
+
+        for (size_t i = 0; i < this->proceduralDisplayingTextures.size(); i++)
+        {
+            glDeleteTextures(1, &this->proceduralDisplayingTextures[i].ID); 
+        }
+        
+        this->proceduralDisplayingTextures.clear();
+
+        for (size_t i = 0; i < elementSize; i++)
+        {
+            Texture dispTxtr;
+            this->selectedTextureIndex = i;
+            this->selectTheTexture(dispTxtr, 256, twoDMode);
+            this->proceduralDisplayingTextures.push_back(dispTxtr);
+        }
+}
+void TextureSelectionDialog::updateTextureModesPanel(bool twoDMode){
     
     if(twoDMode)
         textureModesPanel.sections[0].elements[0].button.texture = Settings::appTextures().twoDIcon;
@@ -167,14 +220,17 @@ static void updateTextureModesPanel(Panel& textureModesPanel, int& selectedTextu
     
     for (size_t i = 1; i < 8; i++)
     {
-        if(textureModesPanel.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
+        if(textureModesPanel.sections[0].elements[i].button.clickState1 && selectedTextureMode != i - 1){
             selectedTextureMode = i - 1;
+
+            this->updateProceduralDisplayingTexturesArray(twoDMode);
+
             selectedTextureIndex = 0;
             for (size_t i = 0; i < textureModesPanel.sections[0].elements.size(); i++){
                 textureModesPanel.sections[0].elements[i].button.clickState1 = false;
             }
         }
-        if(selectedTextureMode == i){
+        if(selectedTextureMode == i - 1){
             textureModesPanel.sections[0].elements[i].button.clickState1 = true;
         }
         else{
@@ -183,7 +239,7 @@ static void updateTextureModesPanel(Panel& textureModesPanel, int& selectedTextu
     }
 }
 
-void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int displayingTextureRes){
+void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int displayingTextureRes, bool twoDMode){
     
     // ------------------ Seting the proceduralID & proceduralTextureID values ------------------
 
@@ -303,7 +359,7 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     receivedTexture.title = "SelectedTexture";
 
     // Generate the displaying texture of the selected texture
-    receivedTexture.generateProceduralDisplayingTexture(displayingTextureRes);
+    receivedTexture.generateProceduralDisplayingTexture(displayingTextureRes, !twoDMode);
     
 }
 
@@ -337,46 +393,6 @@ void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection)
 
     // Selected texture displaying panel
     this->selectedTextureDisplayingPanel.render(timer, false);
-
-    // Rendering the procedural textures on top of the texture selection panel's buttons
-    if(this->selectedTextureMode == 1 || this->selectedTextureMode == 2){
-        for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
-        {
-            ShaderSystem::proceduralDisplayerShader().use();
-            ShaderSystem::proceduralDisplayerShader().setVec3("pos"         ,       this->textureSelectingPanel.sections[0].elements[i].button.resultPos);
-            ShaderSystem::proceduralDisplayerShader().setVec2("scale"       ,       glm::vec2(std::min(this->textureSelectingPanel.sections[0].elements[i].button.resultScale.x, this->textureSelectingPanel.sections[0].elements[i].button.resultScale.y)));
-            ShaderSystem::proceduralDisplayerShader().setMat4("projection"  ,       guiProjection);
-            
-            if(this->selectedTextureMode == 0)
-                ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", -1);
-            else if(this->selectedTextureMode == 1)
-                ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", i);
-            else if(this->selectedTextureMode == 2)
-                ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", i + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE);
-            else if(this->selectedTextureMode == 4)
-                ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", i + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE + MAX_PROCEDURAL_NOISE_TEXTURE_SIZE);
-
-            if(this->selectedTextureMode == 0)
-                ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", 1.f);
-            else
-                ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", 2.5f);
-            
-            ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", 0);
-            ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", 0);
-            ShaderSystem::proceduralDisplayerShader().setFloat("proceduralBrightness", 1.f);
-            ShaderSystem::proceduralDisplayerShader().setFloat("displayOpacity", this->dialogControl.mixVal);
-            
-            ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
-            
-            glActiveTexture(GL_TEXTURE0);
-            
-            //if(i < getModel()->meshes.size() && this->selectedTextureMode == 6)
-            //    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].uvMask.ID);
-            
-
-            glDrawArrays(GL_TRIANGLES, 0, 6);
-        }
-    }
 
     // Set the button shader program back
     ShaderSystem::buttonShader().use();
