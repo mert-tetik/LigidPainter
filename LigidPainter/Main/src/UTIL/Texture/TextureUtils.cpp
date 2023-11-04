@@ -698,8 +698,8 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
 
 
         //Move the camera to the side
-        glm::mat4 view = glm::lookAt(matCam.cameraPos, 
-                                     glm::vec3(0), 
+        glm::mat4 view = glm::lookAt(matCam.cameraPos,
+                                     glm::vec3(0),
                                      glm::vec3(0.0, 1.0, 0.0));
 
         //The perspective projection matrix    

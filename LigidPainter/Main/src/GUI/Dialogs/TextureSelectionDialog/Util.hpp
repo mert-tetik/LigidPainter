@@ -65,6 +65,31 @@ void TextureSelectionDialog::initTextureSelectionDialog(
         subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Normal_Gray_Scale_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralNormalGrayScale;
         subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Normal_Strength_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralNormalStrength;
         subPanelSmartTextures.sections[0].elements[subPanelSmartTextures_Brightness_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralBrightness;
+
+        if(selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){
+            this->smartPositionTexturePanel.sections[0].elements[0].rangeBar.value = receivedTexture.proceduralProps.smartProperties.x;
+            this->smartPositionTexturePanel.sections[0].elements[1].rangeBar.value = receivedTexture.proceduralProps.smartProperties.y;
+            this->smartPositionTexturePanel.sections[0].elements[2].rangeBar.value = receivedTexture.proceduralProps.smartProperties.z;
+            this->smartPositionTexturePanel.sections[0].elements[3].rangeBar.value = receivedTexture.proceduralProps.smartProperties.w;
+        }
+        if(selectedTextureIndex == 3 || selectedTextureIndex == 4){
+            this->smartStripesTexturePanel.sections[0].elements[0].rangeBar.value = receivedTexture.proceduralProps.smartProperties.x;
+            this->smartStripesTexturePanel.sections[0].elements[1].rangeBar.value = receivedTexture.proceduralProps.smartProperties.y;
+            this->smartStripesTexturePanel.sections[0].elements[2].rangeBar.value = receivedTexture.proceduralProps.smartProperties.z;
+            this->smartStripesTexturePanel.sections[0].elements[3].rangeBar.value = receivedTexture.proceduralProps.smartProperties.w;
+        }
+        if(selectedTextureIndex == 5){
+            this->edgeWearTexturePanel.sections[0].elements[0].rangeBar.value = receivedTexture.proceduralProps.smartProperties.x;
+            this->edgeWearTexturePanel.sections[0].elements[1].rangeBar.value = receivedTexture.proceduralProps.smartProperties.y;
+            this->edgeWearTexturePanel.sections[0].elements[2].rangeBar.value = receivedTexture.proceduralProps.smartProperties.z;
+            this->edgeWearTexturePanel.sections[0].elements[3].rangeBar.value = receivedTexture.proceduralProps.smartProperties.w;
+        }
+        if(selectedTextureIndex == 6){
+            this->smartDistanceTexturePanel.sections[0].elements[0].rangeBar.value = receivedTexture.proceduralProps.smartProperties.x;
+            this->smartDistanceTexturePanel.sections[0].elements[1].rangeBar.value = receivedTexture.proceduralProps.smartProperties.y;
+            this->smartDistanceTexturePanel.sections[0].elements[2].rangeBar.value = receivedTexture.proceduralProps.smartProperties.z;
+            this->smartDistanceTexturePanel.sections[0].elements[3].rangeBar.value = receivedTexture.proceduralProps.smartProperties.w;
+        }
     }
 
     // Other texture modes
@@ -76,6 +101,7 @@ void TextureSelectionDialog::initTextureSelectionDialog(
         subPanel.sections[0].elements[subPanel_Normal_Strength_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralNormalStrength;
         subPanel.sections[0].elements[subPanel_Gray_Scale_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralGrayScale;
         subPanel.sections[0].elements[subPanel_Brightness_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralBrightness;
+        subPanel.sections[0].elements[subPanel_Use_Texture_Coordinates_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralUseTexCoords;
     }
 
     this->updateProceduralDisplayingTexturesArray(twoDMode);
@@ -205,6 +231,8 @@ void TextureSelectionDialog::updateProceduralDisplayingTexturesArray(bool twoDMo
         
         this->proceduralDisplayingTextures.clear();
 
+        int prevSelectedTextureI = this->selectedTextureIndex;
+
         for (size_t i = 0; i < elementSize; i++)
         {
             Texture dispTxtr;
@@ -212,6 +240,8 @@ void TextureSelectionDialog::updateProceduralDisplayingTexturesArray(bool twoDMo
             this->selectTheTexture(dispTxtr, 256, !twoDMode, true);
             this->proceduralDisplayingTextures.push_back(dispTxtr);
         }
+
+        this->selectedTextureIndex = prevSelectedTextureI;
 }
 void TextureSelectionDialog::updateTextureModesPanel(bool twoDMode){
     
@@ -329,7 +359,7 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
             smartPropPanel = &this->smartDistanceTexturePanel;
         }
         else{
-            skipPanel = true;
+            skipPanel = true;        
         }
         if(!skipPanel){
             receivedTexture.proceduralProps.smartProperties = glm::vec4(
@@ -356,6 +386,30 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     if(defaultProperties){
         ProceduralProperties defaultProps;
         defaultProps.proceduralID = receivedTexture.proceduralProps.proceduralID;
+        if(this->selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){
+            defaultProps.smartProperties.x = 1.f;
+            defaultProps.smartProperties.y = 0.f;
+            defaultProps.smartProperties.z = 0.f;
+            defaultProps.smartProperties.w = 0.f;
+        }
+        else if(this->selectedTextureIndex == 3 || selectedTextureIndex == 4){
+            defaultProps.smartProperties.x = 1.f;
+            defaultProps.smartProperties.y = 0.25f;
+            defaultProps.smartProperties.z = 0.0005f;
+            defaultProps.smartProperties.w = 0.f;
+        }
+        else if(this->selectedTextureIndex == 5){
+            defaultProps.smartProperties.x = 0.15f;
+            defaultProps.smartProperties.y = 3.37f;
+            defaultProps.smartProperties.z = 0.f;
+            defaultProps.smartProperties.w = 1.f;
+        }
+        else if(this->selectedTextureIndex == 6){
+            defaultProps.smartProperties.x = 0.944f;
+            defaultProps.smartProperties.y = 1.f;
+            defaultProps.smartProperties.z = 13.15f;
+            defaultProps.smartProperties.w = 0.f;
+        }
         receivedTexture.proceduralProps = defaultProps;
     }
 
