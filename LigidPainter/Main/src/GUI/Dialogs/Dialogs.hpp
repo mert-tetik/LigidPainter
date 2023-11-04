@@ -446,7 +446,7 @@ bool wasTextureSelectionDialogActive();
 class TextureSelectionDialog
 {
 private:
-   int selectedTextureMode = 0;
+   int selectedTextureMode = 1;
    void selectTheTexture(Texture& receivedTxtr, int displayingTextureRes);
    void renderPanels(Timer& timer, glm::mat4 guiProjection);
 

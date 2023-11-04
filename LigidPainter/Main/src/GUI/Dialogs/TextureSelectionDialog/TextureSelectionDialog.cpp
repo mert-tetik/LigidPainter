@@ -86,14 +86,14 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         this->renderPanels(timer, guiProjection);
         
         // Updating the texture modes panel
-        updateTextureModesPanel(this->textureModesPanel, this->selectedTextureMode, this->selectedTextureIndex);
+        updateTextureModesPanel(this->textureModesPanel, this->selectedTextureMode, this->selectedTextureIndex, twoDMode);
         
         if(this->textureSelectingPanel.sections.size()){
 
             //If pressed any of the texture select the texture
             for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
             {
-                if(this->textureSelectingPanel.sections[0].elements[i].button.clicked){
+                if(this->textureSelectingPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
                     selectedTextureIndex = i;
                     if(this->selectedTextureMode == 4){
                         if(selectedTextureIndex == 0 || selectedTextureIndex == 1 || selectedTextureIndex == 2){

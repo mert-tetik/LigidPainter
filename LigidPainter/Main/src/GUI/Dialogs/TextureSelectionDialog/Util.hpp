@@ -108,43 +108,43 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
     if(selectedTextureMode == 0){
         for (size_t i = 0; i < Library::getTextureArraySize(); i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f), "", *Library::getTexture(i), 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f), "", *Library::getTexture(i), 0.f,false)));
         }
     }
     else if(selectedTextureMode == 1){
         for (size_t i = 0; i < MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE; i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),""       , Texture(), 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),""       , Texture(), 0.f,false)));
         }
     }
     else if(selectedTextureMode == 2){
         for (size_t i = 0; i < MAX_PROCEDURAL_NOISE_TEXTURE_SIZE; i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),""       , Texture(), 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),""       , Texture(), 0.f,false)));
         }
     }
     else if(selectedTextureMode == 3){
         for (size_t i = 0; i < Library::getTexturePackArraySize(); i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),Library::getTexturePack(i)->title   , Texture(), 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),Library::getTexturePack(i)->title   , Texture(), 0.f,false)));
         }
     }
     else if(selectedTextureMode == 4){
         for (size_t i = 0; i < MAX_PROCEDURAL_SMART_TEXTURE_SIZE; i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),""       , smartTextureDisplayingTextures[i], 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),""       , smartTextureDisplayingTextures[i], 0.f,false)));
         }
     }
     else if(selectedTextureMode == 5){
         for (size_t i = 0; i < Library::getgetSrcLibTxtrsArraySize(); i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f), "", Library::getSrcLibTxtr(i).displayingTexture, 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f), "", Library::getSrcLibTxtr(i).displayingTexture, 0.f,false)));
         }
     }
     else if(selectedTextureMode == 6){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,3.f),getModel()->meshes[i].materialName       , getModel()->meshes[i].uvMask, 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),getModel()->meshes[i].materialName       , getModel()->meshes[i].uvMask, 0.f,false)));
         }
     }
 
@@ -158,11 +158,17 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
                                             );  
 }
 
-static void updateTextureModesPanel(Panel& textureModesPanel, int& selectedTextureMode, int& selectedTextureIndex){
-    for (size_t i = 0; i < 7; i++)
+static void updateTextureModesPanel(Panel& textureModesPanel, int& selectedTextureMode, int& selectedTextureIndex, bool twoDMode){
+    
+    if(twoDMode)
+        textureModesPanel.sections[0].elements[0].button.texture = Settings::appTextures().twoDIcon;
+    else
+        textureModesPanel.sections[0].elements[0].button.texture = Settings::appTextures().threeDIcon;
+    
+    for (size_t i = 1; i < 8; i++)
     {
         if(textureModesPanel.sections[0].elements[i].button.clickState1 && selectedTextureMode != i){
-            selectedTextureMode = i;
+            selectedTextureMode = i - 1;
             selectedTextureIndex = 0;
             for (size_t i = 0; i < textureModesPanel.sections[0].elements.size(); i++){
                 textureModesPanel.sections[0].elements[i].button.clickState1 = false;
@@ -317,19 +323,16 @@ void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection)
     textureModesPanel.render(timer, true);
 
     // Positioning the selected texture displayer panel & the texture selection panel (to the center)
-    selectedTextureDisplayingPanel.scale.x = this->scale.x - subPanel.scale.x - textureModesPanel.scale.x;
-    selectedTextureDisplayingPanel.pos.x = this->pos.x + subPanel.scale.x - textureModesPanel.scale.x;
-    textureSelectingPanel.pos.x = selectedTextureDisplayingPanel.pos.x;
-    textureSelectingPanel.scale.x = selectedTextureDisplayingPanel.scale.x;
+    selectedTextureDisplayingPanel.scale.x = this->subPanel.scale.x;
+    selectedTextureDisplayingPanel.pos.x = this->subPanel.pos.x;
+    textureSelectingPanel.pos.x = this->pos.x + textureModesPanel.scale.x - subPanel.scale.x;
+    textureSelectingPanel.scale.x = this->scale.x - subPanel.scale.x - textureModesPanel.scale.x;
 
     // Update the displaying panel's displaying button's texture
     selectedTextureDisplayingPanel.sections[0].elements[0].button.texture = displayingTexture;
 
     // Seting the selected texture displaying panel's row count
-    if(this->selectedTextureMode == 4)
-        this->textureSelectingPanel.rowCount = 7;    
-    else
-        this->textureSelectingPanel.rowCount = 12;    
+    this->textureSelectingPanel.rowCount = 7;    
     this->textureSelectingPanel.render(timer, true);
 
     // Selected texture displaying panel

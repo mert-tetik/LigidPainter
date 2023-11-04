@@ -81,8 +81,8 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                                         )
                                                         */
                                                     },
-                                                    glm::vec2(scale.x / 6.f, scale.y / 2.f),
-                                                    glm::vec3(pos.x, pos.y + scale.y - scale.y / 2.f, pos.z),
+                                                    glm::vec2(scale.x / 6.f, scale.y),
+                                                    glm::vec3(pos.x, pos.y, pos.z),
                                                     ColorPalette::mainColor,
                                                     ColorPalette::thirdColor,
                                                     true,
@@ -104,12 +104,12 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                                         Section(
                                                             Button(),
                                                             {
-                                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2, scale.y / 2.f),"", Texture(), 0.f, true),
+                                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2, scale.y / 3.f),"", Texture(), 0.f, true),
                                                             }
                                                         )
                                                     },
-                                                    glm::vec2(scale.x / 6.f, scale.y / 2.f),
-                                                    glm::vec3(pos.x, pos.y - scale.y + scale.y / 2.f, pos.z),
+                                                    glm::vec2(scale.x / 6.f, scale.y / 3.f),
+                                                    glm::vec3(pos.x, pos.y - scale.y + scale.y / 3.f, pos.z),
                                                     ColorPalette::mainColor,
                                                     ColorPalette::thirdColor,
                                                     true,
@@ -132,7 +132,8 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                     Section(
                                         Button(),
                                         {
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Library Textures", Texture(), 5.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Selection Mode", Texture(), 1.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Library Textures", Texture(), 3.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Pattern Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Procedural Noise Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
@@ -163,7 +164,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                     Section(
                                         Button(),
                                         {
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Gray Scale", 8.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Gray Scale", 1.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 2.f, 1.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 0.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 0.f, 0.f, 200.f, 10.f),
@@ -175,8 +176,8 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         }
                                     )
                                 },
-                                glm::vec2(scale.x / 6.f, scale.y),
-                                glm::vec3(pos.x + scale.x - (scale.x / 6.f) , pos.y, pos.z),
+                                glm::vec2(scale.x / 4.f, scale.y - selectedTextureDisplayingPanel.scale.y),
+                                glm::vec3(pos.x + scale.x - (scale.x / 4.f) , selectedTextureDisplayingPanel.pos.y + selectedTextureDisplayingPanel.scale.y + (scale.y - selectedTextureDisplayingPanel.scale.y), pos.z),
                                 ColorPalette::secondColor,
                                 ColorPalette::thirdColor,
                                 true,
@@ -198,7 +199,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                     Section(
                                         Button(),
                                         {
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 8.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 1.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 2.f, 1.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 4.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 0.f),
@@ -207,8 +208,8 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         }
                                     )
                                 },
-                                glm::vec2(scale.x / 6.f, scale.y),
-                                glm::vec3(pos.x + scale.x - (scale.x / 6.f) , pos.y, pos.z),
+                                glm::vec2(scale.x / 4.f, scale.y - selectedTextureDisplayingPanel.scale.y),
+                                glm::vec3(pos.x + scale.x - (scale.x / 4.f) , selectedTextureDisplayingPanel.pos.y + selectedTextureDisplayingPanel.scale.y + (scale.y - selectedTextureDisplayingPanel.scale.y), pos.z),
                                 ColorPalette::secondColor,
                                 ColorPalette::thirdColor,
                                 true,
@@ -228,7 +229,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                     Section(
                                         Button(),
                                         {
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Gray Scale", 8.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Gray Scale", 1.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Brightness", Texture(), 0.f, 0.f, 100.f, 10.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Invert", 0.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale", Texture(), 0.f, 0.f, 200.f, 10.f),
@@ -241,12 +242,12 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Opacity Jitter", Texture(), 0.5f, 0.f, 1.f, 0.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scatter", Texture(), 0.5f, 0.f, 1.f, 1.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 4.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 6.f, false)
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 3.f, false)
                                         }
                                     )
                                 },
-                                glm::vec2(scale.x / 6.f, scale.y),
-                                glm::vec3(pos.x + scale.x - (scale.x / 6.f) , pos.y, pos.z),
+                                glm::vec2(scale.x / 4.f, scale.y - selectedTextureDisplayingPanel.scale.y),
+                                glm::vec3(pos.x + scale.x - (scale.x / 4.f) , selectedTextureDisplayingPanel.pos.y + selectedTextureDisplayingPanel.scale.y + (scale.y - selectedTextureDisplayingPanel.scale.y), pos.z),
                                 ColorPalette::secondColor,
                                 ColorPalette::thirdColor,
                                 true,
@@ -373,7 +374,11 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                 true
                             );
 
-    for (size_t i = 0; i < 7; i++)
+    this->textureModesPanel.sections[0].elements[0].button.color = glm::vec4(0);
+    this->textureModesPanel.sections[0].elements[0].button.color2 = glm::vec4(0);
+    this->textureModesPanel.sections[0].elements[0].button.textColor2 = ColorPalette::oppositeColor;
+    
+    for (size_t i = 1; i < 8; i++)
     {
         this->textureModesPanel.sections[0].elements[i].button.color = glm::vec4(0);
     }
