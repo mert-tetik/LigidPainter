@@ -326,7 +326,7 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
     unsigned int proceduralTxtr;
     
     // ------- Edge Wear ------- 
-    if(this->proceduralProps.proceduralID == 111){
+    if(this->proceduralProps.proceduralID == 121){
         Texture normalMapTxtr = Texture(nullptr, textureRes, textureRes);
         Texture normalMapTxtrBlurred = Texture(nullptr, textureRes, textureRes);
         Texture noiseTxtr;

@@ -1557,65 +1557,6 @@ float innerHash(vec3 src) {
     return uintBitsToFloat(h & 0x007fffffu | 0x3f800000u) - 1.0;
 }
 
-float innerNoise2D( in vec3 x )
-{
-    vec3 i = floor(x);
-    vec3 f = fract(x);
-    f = f*f*(3.0-2.0*f);
-	
-    return mix(mix(mix( innerHash(i+vec3(0,0,0)), 
-                        innerHash(i+vec3(1,0,0)),f.x),
-                   mix( innerHash(i+vec3(0,1,0)), 
-                        innerHash(i+vec3(1,1,0)),f.x),f.y),
-               mix(mix( innerHash(i+vec3(0,0,1)), 
-                        innerHash(i+vec3(1,0,1)),f.x),
-                   mix( innerHash(i+vec3(0,1,1)), 
-                        innerHash(i+vec3(1,1,1)),f.x),f.y),f.z);
-}
-
-float innerFbm(vec3 p, int octaves, float roughness) {
-    
-    float freq = 1.;
-    
-    float amplitude = 1.0;
-    
-    float total = 0.0;
-    float maxTotal = 0.0;
-    
-    for (int i = 0; i < octaves; ++i) {
-        total += amplitude * innerNoise2D(p * freq);
-        maxTotal += amplitude;
-        
-        freq *= 2.0;
-        amplitude *= roughness;
-    }
-    
-    return total / maxTotal;
-}
-
-float innerFbmX(vec3 p, int maxOctaves, float persistance) {
-    vec3 noise = vec3(innerNoise2D(p + vec3(0.)), innerNoise2D(p + vec3(1.)), innerNoise2D(p + vec3(2.)));
-    p += noise;
-    return innerFbm(p, maxOctaves, persistance);
-}
-
-float innerMusgrave(vec3 p, float octaves, float dimension, float lacunarity) {
-    float sum = 0.0;
-    float amp = 1.0;
-    float m = pow(lacunarity, -dimension);
-    
-    while (octaves-- > 0.0) {
-        float n = innerNoise2D(p) * 2.0 - 1.0;
-        sum += n * amp;
-        amp *= m * 1.;
-        p *= lacunarity;
-    }
-    
-    return sum;
-}
-
-
-
 // Hash by David_Hoskins
 #define UI0 1597334673U
 #define UI1 3812015801U
@@ -1636,6 +1577,77 @@ vec3 innerHash33_1(vec3 p)
 	q = (q.x ^ q.y ^ q.z)*UI3;
 	return -1. + 2. * vec3(q) * UIF;
 }
+
+float innerNoise2D( in vec3 x, bool deepHash)
+{
+    vec3 i = floor(x);
+    vec3 f = fract(x);
+    f = f*f*(3.0-2.0*f);
+	
+    if(!deepHash){
+        return mix(mix(mix( innerHash(i+vec3(0,0,0)), 
+                            innerHash(i+vec3(1,0,0)),f.x),
+                    mix( innerHash(i+vec3(0,1,0)), 
+                            innerHash(i+vec3(1,1,0)),f.x),f.y),
+                mix(mix( innerHash(i+vec3(0,0,1)), 
+                            innerHash(i+vec3(1,0,1)),f.x),
+                    mix( innerHash(i+vec3(0,1,1)), 
+                            innerHash(i+vec3(1,1,1)),f.x),f.y),f.z);
+    }
+    else{
+        return mix(mix(mix( innerHash33_1(i+vec3(0,0,0)).x, 
+                            innerHash33_1(i+vec3(1,0,0)).x,f.x),
+                    mix( innerHash33_1(i+vec3(0,1,0)).x, 
+                            innerHash33_1(i+vec3(1,1,0)).x,f.x),f.y),
+                mix(mix( innerHash33_1(i+vec3(0,0,1)).x, 
+                            innerHash33_1(i+vec3(1,0,1)).x,f.x),
+                    mix( innerHash33_1(i+vec3(0,1,1)).x, 
+                            innerHash33_1(i+vec3(1,1,1)).x,f.x),f.y),f.z);
+
+    }
+}
+
+float innerFbm(vec3 p, int octaves, float roughness, bool deepHash) {
+    
+    float freq = 1.;
+    
+    float amplitude = 1.0;
+    
+    float total = 0.0;
+    float maxTotal = 0.0;
+    
+    for (int i = 0; i < octaves; ++i) {
+        total += amplitude * innerNoise2D(p * freq, deepHash);
+        maxTotal += amplitude;
+        
+        freq *= 2.0;
+        amplitude *= roughness;
+    }
+    
+    return total / maxTotal;
+}
+
+float innerFbmX(vec3 p, int maxOctaves, float persistance, bool deepHash) {
+    vec3 noise = vec3(innerNoise2D(p + vec3(0.), deepHash), innerNoise2D(p + vec3(1.), deepHash), innerNoise2D(p + vec3(2.), deepHash));
+    p += noise;
+    return innerFbm(p, maxOctaves, persistance, deepHash);
+}
+
+float innerMusgrave(vec3 p, float octaves, float dimension, float lacunarity, bool deepHash) {
+    float sum = 0.0;
+    float amp = 1.0;
+    float m = pow(lacunarity, -dimension);
+    
+    while (octaves-- > 0.0) {
+        float n = innerNoise2D(p, deepHash) * 2.0 - 1.0;
+        sum += n * amp;
+        amp *= m * 1.;
+        p *= lacunarity;
+    }
+    
+    return sum;
+}
+
 
 // Gradient noise by iq (modified to be tileable)
 float innerGradientNoise(vec3 x, float freq)
@@ -2048,66 +2060,66 @@ float innergetDroplets(vec3 uv, float dropletsCount, float dropletsOpacityJitter
 
 //0
 float basicNoiseA(vec3 uv){
-    return innerNoise2D(uv);
+    return innerNoise2D(uv, false);
 }
 
 //1
 float basicStretchedNoiseA(vec3 uv){
-    return innerNoise2D(vec3(uv.x, uv.y*5., uv.z));
+    return innerNoise2D(vec3(uv.x, uv.y*5., uv.z), false);
 }
 
 //2
 float fbmNoiseA(vec3 uv){
     int maxOctaves = 8;
     float persistance = 0.5;
-    return innerFbm(uv, maxOctaves, persistance);
+    return innerFbm(uv, maxOctaves, persistance, false);
 } 
 
 //3
 float fbmHightPersistanceNoiseA(vec3 uv){
     int maxOctaves = 8;
     float persistance = 1.;
-    return innerFbm(uv, maxOctaves, persistance);
+    return innerFbm(uv, maxOctaves, persistance, false);
 } 
 
 //4
 float fbmLowOctaveNoiseA(vec3 uv){
     int maxOctaves = 2;
     float persistance = 0.5;
-    return innerFbm(uv, maxOctaves, persistance);
+    return innerFbm(uv, maxOctaves, persistance, false);
 } 
 
 //5
 float fbmWaveNoiseA(vec3 uv){
     int maxOctaves = 8;
     float persistance = 0.5;
-    return innerFbmX(uv, maxOctaves, persistance);
+    return innerFbmX(uv, maxOctaves, persistance, false);
 }
 
 //6
 float fbmWaveLowPersistanceNoiseA(vec3 uv){
     int maxOctaves = 8;
     float persistance = 0.2;
-    return innerFbmX(uv, maxOctaves, persistance);
+    return innerFbmX(uv, maxOctaves, persistance, false);
 }
 
 //7
 float fbmWaveHighPersistanceNoiseA(vec3 uv){
     int maxOctaves = 8;
     float persistance = 1.;
-    return innerFbmX(uv, maxOctaves, persistance);
+    return innerFbmX(uv, maxOctaves, persistance, false);
 }
 
 //8
 float musgraveDefNoiseA(vec3 uv){
     //octave, dimension, lacunarity
-    return innerMusgrave(uv, 8., 0. ,2.5);
+    return innerMusgrave(uv, 8., 0. ,2.5, false);
 }
 
 //9
 float musgraveHighDimensionalNoiseA(vec3 uv){
     //octave, dimension, lacunarity
-    return innerMusgrave(uv, 8., 1. ,2.5);
+    return innerMusgrave(uv, 8., 1. ,2.5, false);
 }
 
 //10
@@ -2570,7 +2582,7 @@ float fbm (vec3 p)
     for (float i = 0.; i < 4.; ++i, a /= 2.)
     {
         q += (result-.5);
-        result += (innerNoise2D(q/a)*2. + gyroid(q/a)) * a;
+        result += (innerNoise2D(q/a, false)*2. + gyroid(q/a)) * a;
     }
     return result;
 }
@@ -2747,6 +2759,70 @@ float smartDistance(vec3 pos, float mn, float mx, float blurStrength, float nois
     m = mix(orgM, m, noiseStrength);
 
     return m;
+}
+
+//0
+float basicNoiseA_deep(vec3 uv){
+    return innerNoise2D(uv, true);
+}
+
+//1
+float basicStretchedNoiseA_deep(vec3 uv){
+    return innerNoise2D(vec3(uv.x, uv.y*5., uv.z), true);
+}
+
+//2
+float fbmNoiseA_deep(vec3 uv){
+    int maxOctaves = 8;
+    float persistance = 0.5;
+    return innerFbm(uv, maxOctaves, persistance, true);
+} 
+
+//3
+float fbmHightPersistanceNoiseA_deep(vec3 uv){
+    int maxOctaves = 8;
+    float persistance = 1.;
+    return innerFbm(uv, maxOctaves, persistance, true);
+} 
+
+//4
+float fbmLowOctaveNoiseA_deep(vec3 uv){
+    int maxOctaves = 2;
+    float persistance = 0.5;
+    return innerFbm(uv, maxOctaves, persistance, true);
+} 
+
+//5
+float fbmWaveNoiseA_deep(vec3 uv){
+    int maxOctaves = 8;
+    float persistance = 0.5;
+    return innerFbmX(uv, maxOctaves, persistance, true);
+}
+
+//6
+float fbmWaveLowPersistanceNoiseA_deep(vec3 uv){
+    int maxOctaves = 8;
+    float persistance = 0.2;
+    return innerFbmX(uv, maxOctaves, persistance, true);
+}
+
+//7
+float fbmWaveHighPersistanceNoiseA_deep(vec3 uv){
+    int maxOctaves = 8;
+    float persistance = 1.;
+    return innerFbmX(uv, maxOctaves, persistance, true);
+}
+
+//8
+float musgraveDefNoiseA_deep(vec3 uv){
+    //octave, dimension, lacunarity
+    return innerMusgrave(uv, 8., 0. ,2.5, true);
+}
+
+//9
+float musgraveHighDimensionalNoiseA_deep(vec3 uv){
+    //octave, dimension, lacunarity
+    return innerMusgrave(uv, 8., 1. ,2.5, true);
 }
 
 float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, vec2 uv, vec4 smartProperties, vec2 txtrRes){
@@ -2974,23 +3050,43 @@ float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, ve
         res = gyroidNoise1(pos);
     else if(proceduralID == 105)
         res = gyroidNoise2(pos);
-    
-    
-
-
     else if(proceduralID == 106)
-        res = smartPos(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+        res = basicNoiseA_deep(pos);
     else if(proceduralID == 107)
-        res = smartPos2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+        res = basicStretchedNoiseA_deep(pos);
     else if(proceduralID == 108)
-        res = smartPos3(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+        res = fbmNoiseA_deep(pos);
     else if(proceduralID == 109)
-        res = smartStripes(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
+        res = fbmHightPersistanceNoiseA_deep(pos);
     else if(proceduralID == 110)
-        res = smartStripes2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
-    //else if(proceduralID == 111)
-    //   edge wear
+        res = fbmLowOctaveNoiseA_deep(pos);
+    else if(proceduralID == 111)
+        res = fbmWaveNoiseA_deep(pos);
     else if(proceduralID == 112)
+        res = fbmWaveLowPersistanceNoiseA_deep(pos);
+    else if(proceduralID == 113)
+        res = fbmWaveHighPersistanceNoiseA_deep(pos);
+    else if(proceduralID == 114)
+        res = musgraveDefNoiseA_deep(pos);
+    else if(proceduralID == 115)
+        res = musgraveHighDimensionalNoiseA_deep(pos);
+    
+    
+
+
+    else if(proceduralID == 116)
+        res = smartPos(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 117)
+        res = smartPos2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 118)
+        res = smartPos3(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w);
+    else if(proceduralID == 119)
+        res = smartStripes(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
+    else if(proceduralID == 120)
+        res = smartStripes2(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
+    //else if(proceduralID == 121)
+    //   edge wear
+    else if(proceduralID == 122)
         res = smartDistance(pos, smartProperties.x, smartProperties.y, smartProperties.z, smartProperties.w, txtrRes);
     else
         res = 1.;

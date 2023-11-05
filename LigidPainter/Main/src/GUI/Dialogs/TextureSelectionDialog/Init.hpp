@@ -30,7 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #define MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE 66
-#define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 40
+#define MAX_PROCEDURAL_NOISE_TEXTURE_SIZE 50
 #define MAX_PROCEDURAL_SMART_TEXTURE_SIZE 7
 
 #define subPanel_Gray_Scale_INDEX 0
