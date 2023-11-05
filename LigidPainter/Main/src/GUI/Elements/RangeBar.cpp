@@ -217,17 +217,17 @@ void RangeBar::render(
     //Render the range bar
     render(resultPos,resultScale,resultRadius,color,color2,hoverMixVal,true,resultOutlineThickness); //Back side
     
+    bool defaultPointHover = false;
     if(!this->isNumeric && this->defaultPointMode){
         glm::vec2 defPointScale = UTIL::getPercent(glm::vec2(Settings::videoScale()->y), glm::vec2(0.6f));
-        bool hover = false;
         if(Mouse::isMouseHover(defPointScale, glm::vec2(resultPos.x + (displayValueConstruct*2.f), resultPos.y + resultScale.y + defPointScale.y * 1.5f))){
-            hover = true;
+            defaultPointHover = true;
             
             if(*Mouse::LClick())
                 this->value = this->constructValue;
         }
 
-        timer.transition(hover, this->defPointMixVal, 0.2f);
+        timer.transition(defaultPointHover, this->defPointMixVal, 0.2f);
 
         //Render the default point
         render(glm::vec3(resultPos.x + (displayValueConstruct*2.f), resultPos.y + resultScale.y + defPointScale.y * 1.5f, resultPos.z), defPointScale, resultRadius, color, color2, defPointMixVal,true,resultOutlineThickness); //Back side
@@ -337,4 +337,10 @@ void RangeBar::render(
                              );
 
     textRenderer.renderText();
+
+    if(leftArrowHover || rightArrowHover || defaultPointHover)
+        Mouse::setCursor(*Mouse::pointerCursor());
+        
+    if(this->pointerPressed)
+        Mouse::setCursor(*Mouse::hSlideCursor());
 }
