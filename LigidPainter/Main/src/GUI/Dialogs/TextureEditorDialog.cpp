@@ -708,6 +708,9 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
         }
 
         glDeleteTextures(1, &txtr.ID);
+    
+        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
+            this->dialogControl.unActivate();
     }
 
     if(this->saveAsButton.clicked){
@@ -715,6 +718,9 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
         newTxtr = Texture(nullptr, receivedTexture.getResolution().x, receivedTexture.getResolution().y);
         this->updateDisplayingTexture(receivedTexture, newTxtr.ID);
         Library::addTexture(newTxtr);
+        
+        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
+            this->dialogControl.unActivate();
     }
 
     //End the dialog
