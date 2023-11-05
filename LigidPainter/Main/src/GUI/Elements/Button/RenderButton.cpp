@@ -114,13 +114,15 @@ void Button::render(
     }
 
     if(this->meshSelection){
-        if(getModel()->newModelAdded){
+        if(getModel()->newModelAdded)
             this->selectedMeshI = 0;
-            if(this->selectedMeshI < getModel()->meshes.size()){
-                this->texture = getModel()->meshes[this->selectedMeshI].displayingTxtr; 
-                this->text = getModel()->meshes[this->selectedMeshI].materialName; 
-            }
+
+        if(this->selectedMeshI < getModel()->meshes.size()){
+            this->texture = getModel()->meshes[this->selectedMeshI].displayingTxtr; 
+            this->text = getModel()->meshes[this->selectedMeshI].materialName; 
         }
+        else
+            this->selectedMeshI = 0;
     }
 
     //Render the text and the texture
