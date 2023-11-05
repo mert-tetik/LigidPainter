@@ -75,10 +75,15 @@ void ContextMenu::render(Timer &timer){
     
     dialogControl.updateEnd(timer, 0.15f);
 
-    if (   //Conditions to turn any context menu off
-        *Mouse::LClick() || //Mouse left cli                       2.ck
-        *Mouse::RClick() || //Mouse right click
-        *Mouse::MClick() || //Mouse middle click11
+    bool anyBtnClicked = false;
+    for (size_t i = 0; i < this->contextPanel.sections[0].elements.size(); i++)
+    {
+        if(this->contextPanel.sections[0].elements[i].button.clicked)
+            anyBtnClicked = true;
+    }
+
+    if (   // Conditions to turn any context menu off
+        anyBtnClicked  || // Mouse left click
         *Mouse::mouseScroll() || //Mouse middle click
         getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Pressed to escape key 
         getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || //Pressed to enter key
