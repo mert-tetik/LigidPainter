@@ -268,13 +268,13 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         Button(),
                                         {
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Offset", Texture(), 1.f, 0.f, 10.f, 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Yaw", Texture(), 1.f, 0.f, 360.f, 0.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Pitch", Texture(), 1.f, 0.f, 360.f, 0.0f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Position", Texture(), 1.f, -1.f, 1.f, 0.f)
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Yaw", Texture(), 2.f, 0.f, 360.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Pitch", Texture(), 2.f, 0.f, 360.f, 0.0f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Position", Texture(), 2.f, -1.f, 1.f, 0.f)
                                         }
                                     )
                                 },
-                                glm::vec2(8.f, 7.f),
+                                glm::vec2(8.f, 9.f),
                                 glm::vec3(glm::vec2(50.f, 80.f), pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
@@ -296,13 +296,13 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         Button(),
                                         {
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rows", Texture(), 1.f, 0.f, 10.f, 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Thickness", Texture(), 1.f, 0.f, 1.f, 0.25f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Blur", Texture(), 1.f, 0.f, 0.001, 0.0005f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rotation", Texture(), 1.f, 0.f, 360.f, 0.f)
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Thickness", Texture(), 2.f, 0.f, 1.f, 0.25f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Blur", Texture(), 2.f, 0.f, 0.001, 0.0005f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Rotation", Texture(), 2.f, 0.f, 360.f, 0.f)
                                         }
                                     )
                                 },
-                                glm::vec2(8.f, 7.f),
+                                glm::vec2(8.f, 9.f),
                                 glm::vec3(glm::vec2(50.f, 80.f), pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
@@ -324,13 +324,13 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         Button(),
                                         {
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Radius", Texture(), 1.f, 0.f, 10.f, 0.15f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Multiply", Texture(), 1.f, 0.f, 10.f, 3.37f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Blur", Texture(), 1.f, 0.f, 10.f, 0.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Noise Strength", Texture(), 1.f, 0.f, 1.f, 1.f)
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Multiply", Texture(), 2.f, 0.f, 10.f, 3.37f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Blur", Texture(), 2.f, 0.f, 10.f, 0.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Noise Strength", Texture(), 2.f, 0.f, 1.f, 1.f)
                                         }
                                     )
                                 },
-                                glm::vec2(8.f, 7.f),
+                                glm::vec2(8.f, 9.f),
                                 glm::vec3(glm::vec2(50.f, 80.f), pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
@@ -352,13 +352,13 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                         Button(),
                                         {
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Min", Texture(), 1.f, 0.f, 1.f, 0.944f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Max", Texture(), 1.f, 0.f, 1.f, 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Offset", Texture(), 1.f, 0.f, 20.f, 13.15f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Noise Strength", Texture(), 1.f, 0.f, 1.f, 0.f)
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Max", Texture(), 2.f, 0.f, 1.f, 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Offset", Texture(), 2.f, 0.f, 20.f, 13.15f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Noise Strength", Texture(), 2.f, 0.f, 1.f, 0.f)
                                         }
                                     )
                                 },
-                                glm::vec2(8.f, 7.f),
+                                glm::vec2(8.f, 9.f),
                                 glm::vec3(glm::vec2(50.f, 80.f), pos.z),
                                 ColorPalette::mainColor,
                                 ColorPalette::thirdColor,
