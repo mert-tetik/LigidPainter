@@ -384,12 +384,15 @@ public:
     glm::vec3 pos;
     bool hover = false; 
     float hoverMixVal = 0.f; 
+    float defPointMixVal = 0.f; 
     float clickedMixVal = 0.f; 
     float minValue = -50.f; 
     float maxValue = 50.f; 
     float value = (maxValue+minValue)/2.f; 
+    float constructValue = value; 
     bool doMouseTracking; 
     bool isNumeric = false;
+    bool defaultPointMode = true;
     float leftArrowMixVal = 0.f;
     float leftArrowClickedMixVal = 0.f;
     float rightArrowMixVal = 0.f;

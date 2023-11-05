@@ -54,22 +54,22 @@ DisplayerDialog::DisplayerDialog(){
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),"",  Texture(), 1.f,true)),
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Rotation"  , Texture(), 1.f,0.f,360.f,0.f)), 
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Blur"  , Texture(), 1.f,0.f,100.f,0.f)), 
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Opacity"  , Texture(), 1.f,0.f,100.f,0.f)), 
-                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color"  , Texture(), 1.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),"",  Texture(), 1.f, false)),
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Rotation"  , Texture(), 2.f,0.f,360.f,0.f)), 
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Blur"  , Texture(), 2.f,0.f,100.f,0.f)), 
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Opacity"  , Texture(), 2.f,0.f,100.f,0.f)), 
+                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color"  , Texture(), 2.f, false)),
                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"",  bgTxtr0, 2.f,false)),
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Image Opacity"  , Texture(), 1.f,0.f,1.f,0.f)), 
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr0, 0.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr1, 0.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr2, 0.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr3, 0.f, false)),
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Image Opacity"  , Texture(), 2.f,0.f,1.f,0.f)), 
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr0, 1.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr1, 1.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr2, 1.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr3, 1.f, false)),
                     }
                 )
             }
         },
-        glm::vec2(20.f),
+        glm::vec2(20.f, 35.f),
         glm::vec3(50.f,50.f,0.8f),
         ColorPalette::mainColor,
         ColorPalette::thirdColor,
@@ -123,30 +123,28 @@ void DisplayerDialog::render(Timer timer,
     panel.sections[0].elements[0].button.texture = Texture(skybox.displayingTexture);
     
     //Render the skybox buttons if the skybox displayer is pressed
-    if(panel.sections[0].elements[0].button.clickState1){
-        for (size_t i = 0; i < skyboxes.size(); i++)
-        {
-            //Positioning the buttons
-            skyboxes[i].pos = panel.sections[0].elements[0].button.pos;
-            skyboxes[i].pos.y -= panel.sections[0].elements[0].button.scale.y;
-            skyboxes[i].pos.x -= panel.sections[0].elements[0].button.scale.x;
-            skyboxes[i].pos.y -= skyboxes[i].scale.y;
-            skyboxes[i].pos.x += skyboxes[i].scale.x;
-            skyboxes[i].pos.x += skyboxes[i].scale.x * 2 * i;
-            skyboxes[i].scale.x = panel.sections[0].elements[0].button.scale.x/skyboxes.size();
+    for (size_t i = 0; i < skyboxes.size(); i++)
+    {
+        //Positioning the buttons
+        skyboxes[i].pos = panel.sections[0].elements[0].button.pos;
+        skyboxes[i].pos.y -= panel.sections[0].elements[0].button.scale.y;
+        skyboxes[i].pos.x -= panel.sections[0].elements[0].button.scale.x;
+        skyboxes[i].pos.y += skyboxes[i].scale.y;
+        skyboxes[i].pos.x += skyboxes[i].scale.x;
+        skyboxes[i].pos.x += skyboxes[i].scale.x * 2 * i;
+        skyboxes[i].scale.x = panel.sections[0].elements[0].button.scale.x/skyboxes.size();
 
-            //Render the button
-            skyboxes[i].render(timer, true);
-            
-            //If pressed to the skybox load the pressed skybox
-            if(skyboxes[i].button.clicked){
-                skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky" + std::to_string(i+1));
-                skybox.createPrefilterMap();
-                skybox.createDisplayingTxtr();
+        //Render the button
+        skyboxes[i].render(timer, true);
+        
+        //If pressed to the skybox load the pressed skybox
+        if(skyboxes[i].button.clicked){
+            skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky" + std::to_string(i+1));
+            skybox.createPrefilterMap();
+            skybox.createDisplayingTxtr();
 
-                //Unpress the skybox displayer
-                panel.sections[0].elements[0].button.clickState1 = false;
-            }
+            //Unpress the skybox displayer
+            panel.sections[0].elements[0].button.clickState1 = false;
         }
     }
     

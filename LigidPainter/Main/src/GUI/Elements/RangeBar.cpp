@@ -97,6 +97,7 @@ RangeBar::RangeBar(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4
     this->minValue = minValue;
     this->maxValue = maxValue;
     this->value = value;
+    this->constructValue = value;
 }
 
 //Style constructor
@@ -128,6 +129,7 @@ RangeBar::RangeBar(int style,glm::vec2 scale,std::string text,Texture texture,fl
     this->minValue = minValue;
     this->maxValue = maxValue;
     this->value = value;
+    this->constructValue = value;
     
     
 }
@@ -158,6 +160,10 @@ void RangeBar::render(
     float normalizedVal = ((value+0.000001f) - minValue) / (maxValue-minValue);//0-1
     float resultVal = ((normalizedVal*2.f)-1.f)*50.f; //-50,50
     float displayValue = UTIL::getPercent(resultScale.x, resultVal);
+
+    float normalizedValConstruct = ((constructValue+0.000001f) - minValue) / (maxValue-minValue);//0-1
+    float resultValConstruct = ((normalizedValConstruct*2.f)-1.f)*50.f; //-50,50
+    float displayValueConstruct = UTIL::getPercent(resultScale.x, resultValConstruct);
 
         
     //Check if mouse on top of the slider
@@ -211,7 +217,23 @@ void RangeBar::render(
     //Render the range bar
     render(resultPos,resultScale,resultRadius,color,color2,hoverMixVal,true,resultOutlineThickness); //Back side
     
-        //Render the pointer
+    if(!this->isNumeric && this->defaultPointMode){
+        glm::vec2 defPointScale = UTIL::getPercent(glm::vec2(Settings::videoScale()->y), glm::vec2(0.6f));
+        bool hover = false;
+        if(Mouse::isMouseHover(defPointScale, glm::vec2(resultPos.x + (displayValueConstruct*2.f), resultPos.y + resultScale.y + defPointScale.y * 1.5f))){
+            hover = true;
+            
+            if(*Mouse::LClick())
+                this->value = this->constructValue;
+        }
+
+        timer.transition(hover, this->defPointMixVal, 0.2f);
+
+        //Render the default point
+        render(glm::vec3(resultPos.x + (displayValueConstruct*2.f), resultPos.y + resultScale.y + defPointScale.y * 1.5f, resultPos.z), defPointScale, resultRadius, color, color2, defPointMixVal,true,resultOutlineThickness); //Back side
+    }
+    
+    //Render the pointer
     render( 
             glm::vec3(resultPos.x + displayValue - resultScale.x/2.f, resultPos.y,resultPos.z),
             glm::vec2(resultScale.x/2.f + displayValue ,resultScale.y),

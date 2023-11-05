@@ -637,4 +637,9 @@ void UI::init
     paintingPanelModeDisplayer.color2 = glm::vec4(0.);
     paintingPanelModeDisplayer.outlineColor = glm::vec4(0.);
     paintingPanelModeDisplayer.outlineColor2 = glm::vec4(0.);
+
+    for (size_t i = 0; i < brushSection.elements.size(); i++)
+    {
+        brushSection.elements[i].rangeBar.defaultPointMode = false;
+    }
 }   

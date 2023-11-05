@@ -52,16 +52,16 @@ SettingsDialog::SettingsDialog(){
                                 Element(),
                                 {
                                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"X : Rotation",Texture(),15.f, 0.f, 360.f, 0.f)), 
-                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Y : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
-                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Z : Rotation",Texture(),0.f, 0.f, 360.f, 0.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Y : Rotation",Texture(),2.f, 0.f, 360.f, 0.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Z : Rotation",Texture(),2.f, 0.f, 360.f, 0.f)), 
                                     
-                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"X : Transform",Texture(),2.f, -50.f, 50.f, 0.f)), 
-                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Y : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
-                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Z : Transform",Texture(),0.f, -50.f, 50.f, 0.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"X : Transform",Texture(),3.f, -50.f, 50.f, 0.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Y : Transform",Texture(),2.f, -50.f, 50.f, 0.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Z : Transform",Texture(),2.f, -50.f, 50.f, 0.f)), 
                                 
-                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Fov", Texture(),2.f, 1.f, 180.f, 40.f)), 
-                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Near", Texture(),0.f, 0.f, 1.f, 0.1f)), 
-                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Far", Texture(),0.f, 0.f, 1000.f, 1000.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Fov", Texture(),3.f, 1.f, 180.f, 40.f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Near", Texture(),2.f, 0.f, 1.f, 0.1f)), 
+                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Far", Texture(),2.f, 0.f, 1000.f, 1000.f)), 
                                     Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Orthographic projection"  , 0.f)),
 
                                     Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Backface Culling"  , 2.f)),
