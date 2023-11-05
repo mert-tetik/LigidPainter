@@ -1542,14 +1542,20 @@ float fabric3(vec2 uv){
 
 
 
-//https://www.shadertoy.com/view/4sfGzS
-float innerHash(vec3 p)  // replace this by something better
-{
-    p  = fract( p*0.3183099+.1 );
-	p *= 17.0;
-    return fract( p.x*p.y*p.z*(p.x+p.y+p.z) );
+uint murmurHash13(uvec3 src) {
+    const uint M = 0x5bd1e995u;
+    uint h = 1190494759u;
+    src *= M; src ^= src>>24u; src *= M;
+    h *= M; h ^= src.x; h *= M; h ^= src.y; h *= M; h ^= src.z;
+    h ^= h>>13u; h *= M; h ^= h>>15u;
+    return h;
 }
-//TODO REPLACE NOISE FUNCTIONS WITH THAT
+
+// 1 output, 3 inputs
+float innerHash(vec3 src) {
+    uint h = murmurHash13(floatBitsToUint(src));
+    return uintBitsToFloat(h & 0x007fffffu | 0x3f800000u) - 1.0;
+}
 
 float innerNoise2D( in vec3 x )
 {
