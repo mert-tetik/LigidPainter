@@ -400,6 +400,7 @@ public:
     bool leftArrowHover = false;
     bool rightArrowHover = false;
     bool valueDoneChanging = false;
+    bool defaultPointBtnPressed = false;
 
     //Constructors
     RangeBar();

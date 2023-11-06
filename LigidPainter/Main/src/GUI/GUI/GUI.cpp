@@ -107,7 +107,7 @@ Element::Element(TextBox textBox){
 bool Element::isInteracted(){
     if(this->state == 0 && this->button.clicked)
         return true;
-    if(this->state == 1 && this->rangeBar.valueDoneChanging || ((this->rangeBar.leftArrowHover || this->rangeBar.rightArrowHover) && *Mouse::LClick()))
+    if(this->state == 1 && this->rangeBar.valueDoneChanging || this->rangeBar.defaultPointBtnPressed || ((this->rangeBar.leftArrowHover || this->rangeBar.rightArrowHover) && *Mouse::LClick()))
         return true;
     if(this->state == 2 && this->checkBox.hover && Mouse::LClick())
         return true;
