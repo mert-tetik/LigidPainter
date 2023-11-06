@@ -198,6 +198,8 @@ namespace Settings{
         Texture brushIcon;
         Texture arrowR;
         Texture arrowL;
+        Texture arrowB;
+        Texture arrowT;
         Texture threeDIcon;
         Texture twoDIcon;
         Texture exportIcon;

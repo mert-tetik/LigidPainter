@@ -415,6 +415,29 @@ public:
 };
 
 
+// Use this class instead of the header button
+class SectionHolder{
+public:
+    glm::vec4 sectionColor;
+    float panelOffset = 0.f;
+    std::string text;
+
+    float scaleY = 1.f;
+
+    //Button button;
+
+    bool active = false;
+    float activeMixVal = 0.f;
+
+    SectionHolder(){}
+
+    SectionHolder(glm::vec4 sectionColor, float panelOffset, std::string text){
+        this->sectionColor = sectionColor; 
+        this->panelOffset = panelOffset;
+        this->text = text;
+
+    }
+};
 
 struct Element{
     //The UI Element
@@ -424,6 +447,7 @@ struct Element{
     CheckBox checkBox;
     ComboBox comboBox;
     TextBox textBox;
+    SectionHolder sectionHolder;
 
     /*!
         @brief Decide which GUI element will be used 
@@ -432,14 +456,15 @@ struct Element{
         2 = checbox 
         3 = combobox 
         4 = textbox
+        5 = sectionHolder
     */
-    int state; 
+    int state = -1; 
     
     //Those variables will be transported to the element
     //  - Manipulated & used by the panel
-    glm::vec3 pos;
-    glm::vec2 scale;
-    float panelOffset;
+    glm::vec3 pos = glm::vec3(0.f);
+    glm::vec2 scale = glm::vec2(0.f);
+    float panelOffset = 0.f;
 
     //Constructors
     Element();
@@ -448,16 +473,17 @@ struct Element{
     Element(CheckBox checkBox);
     Element(ComboBox comboBox);
     Element(TextBox textBox);
+    Element(SectionHolder sectionHolder);
 
     bool isInteracted();
 
     //Public member function
-    void render(Timer &timer,bool doMouseTracking);
+    void render(Timer &timer, bool doMouseTracking);
 };
 struct Section{ //Sections seperates the elements in the panel
     
     // Header element (After pressing that button you can display other elements in that section)
-    //! Is always button
+    //! Is always button or section holder
     Element header; 
 
     std::vector<Element> elements; //Elements of that section

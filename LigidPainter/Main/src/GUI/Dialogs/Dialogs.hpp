@@ -102,9 +102,10 @@ private:
 public:
    Button systemSettingsBtn; 
    Button TDRendererSettingsBtn; 
-   Section systemSettings;
-   Section TDRendererSettings;
+   std::vector<Section> systemSettings;
+   std::vector<Section> TDRendererSettings;
    Panel panel;
+   Panel bgPanel;
    DialogControl dialogControl;
 
    int selectedSettingsMode = 0;
@@ -494,8 +495,6 @@ public:
 
    //Public member functions
    void show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes, bool twoDMode);
-
-
 };
 
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------

@@ -47,6 +47,8 @@ void Settings::loadAppTextures(){
     __appTextures.brushIcon.load("./LigidPainter/Resources/Icons/Brush.png");
     __appTextures.arrowR.load("./LigidPainter/Resources/Icons/ArrowR.png");
     __appTextures.arrowL.load("./LigidPainter/Resources/Icons/ArrowL.png");
+    __appTextures.arrowB.load("./LigidPainter/Resources/Icons/ArrowB.png");
+    __appTextures.arrowT.load("./LigidPainter/Resources/Icons/ArrowT.png");
     __appTextures.threeDIcon.load("./LigidPainter/Resources/Icons/3D.png");
     __appTextures.twoDIcon.load("./LigidPainter/Resources/Icons/2D.png");
     __appTextures.exportIcon.load("./LigidPainter/Resources/Icons/Export.png");

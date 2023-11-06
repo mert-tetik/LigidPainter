@@ -67,7 +67,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 TextureSelectionDialog::TextureSelectionDialog(){
-
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
     this->textureSelectingPanel = Panel(
                                                     
@@ -389,4 +388,5 @@ TextureSelectionDialog::TextureSelectionDialog(){
     this->selectedTextureMaterialBallDisplayingMode.textColor2 = glm::vec4(1.);
     this->selectedTextureCustomMeshDisplayingMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1),"Custom Mesh", Settings::appTextures().TDModelIcon, 1.f,false);
     this->selectedTextureCustomMeshDisplayingMode.textColor2 = glm::vec4(1.);
+
 }

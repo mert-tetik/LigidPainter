@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ShaderSystem/Shader.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -277,7 +278,7 @@ static float calculateElementStartingPosition(bool vertical, std::vector<Section
     //Get the starting position
     if(vertical){//If the panel is vertical
         if(sections.size()){//If there are sections
-            if(sections[0].header.button.text.size()) //If there is a header in the section
+            if((sections[0].header.button.text.size() && sections[0].header.state == 0) || sections[0].header.state == 5) //If there is a header in the section
                 elementPos = pos.y-scale.y + sections[0].header.scale.y + sections[0].header.panelOffset; //Take the starting position by including the height of the section header
             else if(sections[0].elements.size()) //If there are buttons in the first section
                 elementPos = pos.y-scale.y + sections[0].elements[0].scale.y + sections[0].elements[0].panelOffset; //Take the starting position by including the height of the first button of the section
@@ -285,7 +286,7 @@ static float calculateElementStartingPosition(bool vertical, std::vector<Section
     }
     else{//If the panel is horizontal
         if(sections.size()){//If there are sections
-            if(sections[0].header.button.text.size())  //If there is a header in the section
+            if((sections[0].header.button.text.size() && sections[0].header.state == 0) || sections[0].header.state == 5)  //If there is a header in the section
                 elementPos = pos.x-scale.x + sections[0].header.scale.x + sections[0].header.panelOffset; //Take the starting position by including the height of the section header
             else if(sections[0].elements.size())//If there are buttons in the first section
                 elementPos = pos.x-scale.x + sections[0].elements[0].scale.x + sections[0].elements[0].panelOffset; //Take the starting position by including the width of the first button of the section
@@ -320,8 +321,10 @@ void Panel::renderTheHeader(int sectionI,float &elementPos, int &btnCounter, Tim
         this->prepDrawBtnVertically(sections[sectionI].header,sections[std::max(sectionI,0)].elements[sections[std::max(sectionI,0)].elements.size()-1],elementPos,btnCounter);
     else
         this->prepDrawBtnHorizontally(sections[sectionI].header,sections[std::max(sectionI,0)].elements[sections[std::max(sectionI,0)].elements.size()-1],elementPos,btnCounter);
+    
     //Draw the button
     this->sections[sectionI].header.render(timer, this->doMouseTracking && !sliderButton.hover);
+
     btnCounter++; //Indexing buttons to position them
 }
 
@@ -355,7 +358,7 @@ void Panel::drawPanel(
     float elementStartPos = calculateElementStartingPosition(this->vertical, this->sections, this->pos + this->additionalPos, this->scale);
     float elementPos = elementStartPos;
     if(sections.size() && vertical){
-        if(sections[0].header.button.text.size())
+        if((sections[0].header.button.text.size() && sections[0].header.state == 0) || sections[0].header.state == 5)
             elementStartPos -= sections[0].header.scale.y;
         else if(sections[0].elements.size()){
             elementStartPos -= sections[0].elements[0].scale.y;
@@ -377,7 +380,7 @@ void Panel::drawPanel(
     for (int sI = 0; sI < sections.size(); sI++)
     {
         /*-- HEADER --*/
-        if(sections[sI].header.button.text.size()) //If there is a header
+        if((sections[sI].header.button.text.size() && sections[sI].header.state == 0) || sections[sI].header.state == 5) //If there is a header
         { 
             //Section header button
             this->renderTheHeader(sI, elementPos, btnCounter, timer);
@@ -386,9 +389,32 @@ void Panel::drawPanel(
         /*-- ELEMENTS --*/
         if(
                 sections[sI].header.button.clickState1 == true || //If the header button is pressed 
-                !sections[sI].header.button.text.size()  //Or there is no header
+                sections[sI].header.sectionHolder.active == true || //If the header button is pressed 
+                sections[sI].header.state == -1 ||
+                (sections[sI].header.state == 0 && !sections[sI].header.button.text.size())
             ) 
         {
+            if(sections[sI].header.state == 5){
+                float elementsLength = 2.f;
+                for (size_t i = 0; i < sections[sI].elements.size(); i++)
+                {
+                    elementsLength += sections[sI].elements[i].scale.y * 2.f +  sections[sI].elements[i].panelOffset;
+                }
+                
+                Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4,2), "", Texture(), 0.f, true);
+                btn.color = ColorPalette::secondColor;
+                btn.color.a /= 2.;
+                btn.outline = false;
+                btn.outlineExtra = false;
+                
+                btn.scale.x = sections[sI].header.scale.x;
+                btn.scale.y = elementsLength / 2.f;
+                btn.pos = sections[sI].header.pos;
+                btn.pos.y += sections[sI].header.scale.y + btn.scale.y;
+
+                btn.render(timer, false);
+            }
+
             /*Render each element of the section*/
             for (int i = 0; i < sections[sI].elements.size(); i++) //
             {

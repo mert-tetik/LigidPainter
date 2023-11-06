@@ -104,6 +104,16 @@ Element::Element(TextBox textBox){
     state = 4;
 }
 
+Element::Element(SectionHolder sectionHolder){
+
+    //Init as text box
+    this->sectionHolder = sectionHolder;
+    panelOffset = sectionHolder.panelOffset;
+    scale.y = sectionHolder.scaleY;
+    state = 5;
+
+}
+
 bool Element::isInteracted(){
     if(this->state == 0 && this->button.clicked)
         return true;
@@ -154,6 +164,29 @@ void Element::render(Timer &timer,bool doMouseTracking){
         textBox.panelOffset = panelOffset;
         textBox.doMouseTracking = doMouseTracking;
         textBox.render(timer,doMouseTracking);
+    }
+    if(state == 5){ //Render the sectionHolder
+        Texture arrowTxtr = Settings::appTextures().arrowR;
+        if(sectionHolder.active)
+            arrowTxtr = Settings::appTextures().arrowB;
+
+        Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4,2), this->sectionHolder.text, arrowTxtr, 0.f, true);
+        btn.solidColor = true;
+        btn.color = sectionHolder.sectionColor;
+        btn.color2 = sectionHolder.sectionColor;
+        btn.outline = false;
+        btn.outlineExtra = false;
+
+        btn.clickState1 = sectionHolder.active;
+
+        btn.pos = pos;
+        btn.scale.x = scale.x;
+        btn.scale.y = sectionHolder.scaleY;
+        btn.panelOffset = panelOffset;
+        btn.doMouseTracking = doMouseTracking;
+        btn.render(timer,doMouseTracking);
+
+        sectionHolder.active = btn.clickState1;
     }
 }
 

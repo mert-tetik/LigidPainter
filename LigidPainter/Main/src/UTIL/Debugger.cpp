@@ -26,8 +26,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-#define LIGIDPAINTER_DEBUGGING_MODE true
-#define LIGIDPAINTER_DEBUGGING_TEST_MODE true
+#define LIGIDPAINTER_DEBUGGING_MODE false
+#define LIGIDPAINTER_DEBUGGING_TEST_MODE false
 
 struct DebugObject{
     double time = 0.;
@@ -50,7 +50,7 @@ void Debugger::block(std::string name){
             if(objects[i].name == name){
                 if(LIGIDPAINTER_DEBUGGING_TEST_MODE){
                     if(name == "TEST")
-                    std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << std::endl; 
+                        std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << std::endl; 
                 }
                 else
                     std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << std::endl; 
