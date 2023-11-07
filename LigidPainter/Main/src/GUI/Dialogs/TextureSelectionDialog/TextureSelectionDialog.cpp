@@ -126,7 +126,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
 
             // Assigning the procedural values to the received texture then generating the displaying texture
             else
-                this->selectTheTexture(receivedTexture, displayingTextureRes, twoDMode, false);
+                this->selectTheTexture(receivedTexture, displayingTextureRes, !twoDMode, false);
 
             // Close the dialog
             dialogControl.unActivate();
