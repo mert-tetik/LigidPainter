@@ -54,7 +54,7 @@ public:
 
     glm::vec2 scale;
     glm::vec3 pos;
-    float rotation = 45.f;
+    float rotation = 0.f;
 
     Button topLeft_ResizeButton;
     Button bottomLeft_ResizeButton;
