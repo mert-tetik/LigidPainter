@@ -174,8 +174,17 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
         for (size_t i = 0; i < scale.x * scale.y; i++)
         {
             if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-                this->selectedPrimitiveIDs.push_back(pxs[i] - 1);
-                changesMade = true;
+                bool matched = false;
+                for (size_t ei = 0; ei < this->selectedPrimitiveIDs.size(); ei++)
+                {
+                    if(this->selectedPrimitiveIDs[ei] == pxs[i] - 1){
+                        matched = true;
+                    }
+                }
+                if(!matched){
+                    this->selectedPrimitiveIDs.push_back(pxs[i] - 1);
+                    changesMade = true;
+                }
             }
             else{
                 for (size_t ei = 0; ei < this->selectedPrimitiveIDs.size(); ei++)
