@@ -235,8 +235,13 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                         material.materialModifiers[modI].sections[secI].elements[elementI].button.clicked = false;
 
                     //If range bar's value changed update the material
-                    if(material.materialModifiers[modI].sections[secI].elements[elementI].state == 1)
+                    if(material.materialModifiers[modI].sections[secI].elements[elementI].state == 1){
                         material.materialModifiers[modI].sections[secI].elements[elementI].rangeBar.pointerPressed = false;
+                        material.materialModifiers[modI].sections[secI].elements[elementI].rangeBar.leftArrowHover = false;
+                        material.materialModifiers[modI].sections[secI].elements[elementI].rangeBar.rightArrowHover = false;
+                        material.materialModifiers[modI].sections[secI].elements[elementI].rangeBar.defaultPointBtnPressed = false;
+
+                    }
 
                     //If checkbox clicked update the material
                     if(material.materialModifiers[modI].sections[secI].elements[elementI].state == 2)
@@ -258,120 +263,123 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
     //Update the material if interacted with modifier's panel
     for (size_t secI = 0; secI < modifiersPanel.sections.size(); secI++)
     {
-        for (size_t elementI = 0; elementI < modifiersPanel.sections[secI].elements.size(); elementI++)
-        {
-            //If button is clicked update the material
-            if(modifiersPanel.sections[secI].elements[elementI].state == 0)
-                if(modifiersPanel.sections[secI].elements[elementI].button.clicked){
-                    if(secI == modifiersPanel.sections.size()-1 && elementI == modifiersPanel.sections[secI].elements.size()-1){
-                        modifiersPanel.sections[secI].elements[0].button.filter.shader.ID = 0;
-                        glDeleteTextures(1, &modifiersPanel.sections[secI].elements[0].button.texture.ID);
-                        modifiersPanel.sections[secI].elements[0].button.texture = Texture();
-                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[0].button.filter.shader.ID = 0; 
-                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[0].button.texture = Texture(); 
-                    }
-                    if(secI == 0 && elementI == 0 && material.materialModifiers[this->selectedMaterialModifierIndex].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
-                        Texture* txtr = &modifiersPanel.sections[secI].elements[elementI].button.texture;
-                        
-                        if(txtr->ID){
-                            Texture albedo;
-                            Texture roughness;
-                            Texture metallic;
-                            Texture normalMap;
-                            Texture heightMap;
-                            Texture ambientOcc;
+        if(modifiersPanel.sections[secI].header.button.clickState1){
+            for (size_t elementI = 0; elementI < modifiersPanel.sections[secI].elements.size(); elementI++)
+            {
+                //If button is clicked update the material
+                if(modifiersPanel.sections[secI].elements[elementI].state == 0)
+                    if(modifiersPanel.sections[secI].elements[elementI].button.clicked){
+                        if(secI == modifiersPanel.sections.size()-1 && elementI == modifiersPanel.sections[secI].elements.size()-1){
+                            modifiersPanel.sections[secI].elements[0].button.filter.shader.ID = 0;
+                            glDeleteTextures(1, &modifiersPanel.sections[secI].elements[0].button.texture.ID);
+                            modifiersPanel.sections[secI].elements[0].button.texture = Texture();
+                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[0].button.filter.shader.ID = 0; 
+                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[0].button.texture = Texture(); 
+                        }
+                        if(secI == 0 && elementI == 0 && material.materialModifiers[this->selectedMaterialModifierIndex].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
+                            Texture* txtr = &modifiersPanel.sections[secI].elements[elementI].button.texture;
+                            
+                            if(txtr->ID){
+                                Texture albedo;
+                                Texture roughness;
+                                Texture metallic;
+                                Texture normalMap;
+                                Texture heightMap;
+                                Texture ambientOcc;
 
-                            albedo.proceduralProps = txtr->proceduralProps;
-                            albedo.generateProceduralDisplayingTexture(256, true);
-                            albedo.title = "AutoFilledTexture";
+                                albedo.proceduralProps = txtr->proceduralProps;
+                                albedo.generateProceduralDisplayingTexture(256, true);
+                                albedo.title = "AutoFilledTexture";
 
-                            roughness.proceduralProps = txtr->proceduralProps;
-                            roughness.proceduralProps.proceduralBrightness = 1.f;
-                            roughness.proceduralProps.proceduralGrayScale = true;
-                            roughness.proceduralProps.proceduralNormalMap = false;
-                            roughness.proceduralProps.proceduralNormalGrayScale = false;
-                            roughness.proceduralProps.proceduralNormalStrength = 0.f;
-                            roughness.proceduralProps.proceduralnverted = false;
-                            roughness.generateProceduralDisplayingTexture(256, true);
-                            roughness.title = "AutoFilledTexture";
+                                roughness.proceduralProps = txtr->proceduralProps;
+                                roughness.proceduralProps.proceduralBrightness = 1.f;
+                                roughness.proceduralProps.proceduralGrayScale = true;
+                                roughness.proceduralProps.proceduralNormalMap = false;
+                                roughness.proceduralProps.proceduralNormalGrayScale = false;
+                                roughness.proceduralProps.proceduralNormalStrength = 0.f;
+                                roughness.proceduralProps.proceduralnverted = false;
+                                roughness.generateProceduralDisplayingTexture(256, true);
+                                roughness.title = "AutoFilledTexture";
 
-                            metallic.proceduralProps = txtr->proceduralProps;
-                            metallic.proceduralProps.proceduralBrightness = 1.f;
-                            metallic.proceduralProps.proceduralGrayScale = true;
-                            metallic.proceduralProps.proceduralNormalMap = false;
-                            metallic.proceduralProps.proceduralNormalGrayScale = false;
-                            metallic.proceduralProps.proceduralNormalStrength = 0.f;
-                            metallic.proceduralProps.proceduralnverted = true;
-                            metallic.generateProceduralDisplayingTexture(256, true);
-                            metallic.title = "AutoFilledTexture";
-                            
-                            normalMap.proceduralProps = txtr->proceduralProps;
-                            normalMap.proceduralProps.proceduralBrightness = 1.f;
-                            normalMap.proceduralProps.proceduralGrayScale = false;
-                            normalMap.proceduralProps.proceduralNormalMap = true;
-                            normalMap.proceduralProps.proceduralNormalGrayScale = false;
-                            normalMap.proceduralProps.proceduralNormalStrength = 1.f;
-                            normalMap.proceduralProps.proceduralnverted = false;
-                            normalMap.generateProceduralDisplayingTexture(256, true);
-                            normalMap.title = "AutoFilledTexture";
-                            
-                            heightMap.proceduralProps = txtr->proceduralProps;
-                            heightMap.proceduralProps.proceduralBrightness = 1.f;
-                            heightMap.proceduralProps.proceduralGrayScale = true;
-                            heightMap.proceduralProps.proceduralNormalMap = false;
-                            heightMap.proceduralProps.proceduralNormalGrayScale = false;
-                            heightMap.proceduralProps.proceduralNormalStrength = 0.f;
-                            heightMap.proceduralProps.proceduralnverted = true;
-                            heightMap.generateProceduralDisplayingTexture(256, true);
-                            heightMap.title = "AutoFilledTexture";
-                            
-                            ambientOcc.proceduralProps = txtr->proceduralProps;
-                            ambientOcc.proceduralProps.proceduralBrightness = 2.f;
-                            ambientOcc.proceduralProps.proceduralGrayScale = true;
-                            ambientOcc.proceduralProps.proceduralNormalMap = false;
-                            ambientOcc.proceduralProps.proceduralNormalGrayScale = false;
-                            ambientOcc.proceduralProps.proceduralNormalStrength = 0.f;
-                            ambientOcc.proceduralProps.proceduralnverted = false;
-                            ambientOcc.generateProceduralDisplayingTexture(256, true);
-                            ambientOcc.title = "AutoFilledTexture";
-                            
-                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[1].button.texture = albedo;
-                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[2].button.texture = roughness;
-                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[3].button.texture = metallic;
-                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[4].button.texture = normalMap;
-                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[5].button.texture = heightMap;
-                            material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[6].button.texture = ambientOcc;
-                            
-                            modifiersPanel.sections[secI].elements[1].button.texture = albedo;
-                            modifiersPanel.sections[secI].elements[2].button.texture = roughness;
-                            modifiersPanel.sections[secI].elements[3].button.texture = metallic;
-                            modifiersPanel.sections[secI].elements[4].button.texture = normalMap;
-                            modifiersPanel.sections[secI].elements[5].button.texture = heightMap;
-                            modifiersPanel.sections[secI].elements[6].button.texture = ambientOcc;
+                                metallic.proceduralProps = txtr->proceduralProps;
+                                metallic.proceduralProps.proceduralBrightness = 1.f;
+                                metallic.proceduralProps.proceduralGrayScale = true;
+                                metallic.proceduralProps.proceduralNormalMap = false;
+                                metallic.proceduralProps.proceduralNormalGrayScale = false;
+                                metallic.proceduralProps.proceduralNormalStrength = 0.f;
+                                metallic.proceduralProps.proceduralnverted = true;
+                                metallic.generateProceduralDisplayingTexture(256, true);
+                                metallic.title = "AutoFilledTexture";
+                                
+                                normalMap.proceduralProps = txtr->proceduralProps;
+                                normalMap.proceduralProps.proceduralBrightness = 1.f;
+                                normalMap.proceduralProps.proceduralGrayScale = false;
+                                normalMap.proceduralProps.proceduralNormalMap = true;
+                                normalMap.proceduralProps.proceduralNormalGrayScale = false;
+                                normalMap.proceduralProps.proceduralNormalStrength = 1.f;
+                                normalMap.proceduralProps.proceduralnverted = false;
+                                normalMap.generateProceduralDisplayingTexture(256, true);
+                                normalMap.title = "AutoFilledTexture";
+                                
+                                heightMap.proceduralProps = txtr->proceduralProps;
+                                heightMap.proceduralProps.proceduralBrightness = 1.f;
+                                heightMap.proceduralProps.proceduralGrayScale = true;
+                                heightMap.proceduralProps.proceduralNormalMap = false;
+                                heightMap.proceduralProps.proceduralNormalGrayScale = false;
+                                heightMap.proceduralProps.proceduralNormalStrength = 0.f;
+                                heightMap.proceduralProps.proceduralnverted = true;
+                                heightMap.generateProceduralDisplayingTexture(256, true);
+                                heightMap.title = "AutoFilledTexture";
+                                
+                                ambientOcc.proceduralProps = txtr->proceduralProps;
+                                ambientOcc.proceduralProps.proceduralBrightness = 2.f;
+                                ambientOcc.proceduralProps.proceduralGrayScale = true;
+                                ambientOcc.proceduralProps.proceduralNormalMap = false;
+                                ambientOcc.proceduralProps.proceduralNormalGrayScale = false;
+                                ambientOcc.proceduralProps.proceduralNormalStrength = 0.f;
+                                ambientOcc.proceduralProps.proceduralnverted = false;
+                                ambientOcc.generateProceduralDisplayingTexture(256, true);
+                                ambientOcc.title = "AutoFilledTexture";
+                                
+                                material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[1].button.texture = albedo;
+                                material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[2].button.texture = roughness;
+                                material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[3].button.texture = metallic;
+                                material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[4].button.texture = normalMap;
+                                material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[5].button.texture = heightMap;
+                                material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[6].button.texture = ambientOcc;
+                                
+                                modifiersPanel.sections[secI].elements[1].button.texture = albedo;
+                                modifiersPanel.sections[secI].elements[2].button.texture = roughness;
+                                modifiersPanel.sections[secI].elements[3].button.texture = metallic;
+                                modifiersPanel.sections[secI].elements[4].button.texture = normalMap;
+                                modifiersPanel.sections[secI].elements[5].button.texture = heightMap;
+                                modifiersPanel.sections[secI].elements[6].button.texture = ambientOcc;
 
-                            txtr->title = "";
-                            txtr->ID = 0;
+                                txtr->title = "";
+                                txtr->ID = 0;
+                            }
+
                         }
 
+                        this->updateTheMaterial = true;
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button = modifiersPanel.sections[secI].elements[elementI].button; 
                     }
 
-                    this->updateTheMaterial = true;
-                    material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button = modifiersPanel.sections[secI].elements[elementI].button; 
-                }
+                //If range bar's value changed update the material
+                if(modifiersPanel.sections[secI].elements[elementI].state == 1)
+                    if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true || modifiersPanel.sections[secI].elements[elementI].rangeBar.defaultPointBtnPressed || (modifiersPanel.sections[secI].elements[elementI].rangeBar.leftArrowHover && *Mouse::LClick()) || (modifiersPanel.sections[secI].elements[elementI].rangeBar.rightArrowHover && *Mouse::LClick())){
+                        this->updateTheMaterial = true;
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar = modifiersPanel.sections[secI].elements[elementI].rangeBar; 
+                    }
 
-            //If range bar's value changed update the material
-            if(modifiersPanel.sections[secI].elements[elementI].state == 1)
-                if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true || modifiersPanel.sections[secI].elements[elementI].rangeBar.defaultPointBtnPressed || (modifiersPanel.sections[secI].elements[elementI].rangeBar.leftArrowHover && *Mouse::LClick()) || (modifiersPanel.sections[secI].elements[elementI].rangeBar.rightArrowHover && *Mouse::LClick())){
-                    this->updateTheMaterial = true;
-                    material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar = modifiersPanel.sections[secI].elements[elementI].rangeBar; 
-                }
+                //If checkbox clicked update the material
+                if(modifiersPanel.sections[secI].elements[elementI].state == 2)
+                    if(modifiersPanel.sections[secI].elements[elementI].checkBox.hover && *Mouse::LClick() == true){
+                        this->updateTheMaterial = true;
+                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox = modifiersPanel.sections[secI].elements[elementI].checkBox; 
+                    }
+            }
 
-            //If checkbox clicked update the material
-            if(modifiersPanel.sections[secI].elements[elementI].state == 2)
-                if(modifiersPanel.sections[secI].elements[elementI].checkBox.hover && *Mouse::LClick() == true){
-                    this->updateTheMaterial = true;
-                    material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox = modifiersPanel.sections[secI].elements[elementI].checkBox; 
-                }
         }
     }
     /*
