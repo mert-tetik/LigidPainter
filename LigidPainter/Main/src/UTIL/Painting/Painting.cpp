@@ -320,8 +320,10 @@ void Painter::projectThePaintingTexture(
         ShaderSystem::projectingPaintedTextureShader().setMat4("view", viewMat);
         
         //Draw the UV of the selected model
-        if(selectedMeshIndex < getModel()->meshes.size())
+        if(selectedMeshIndex < getModel()->meshes.size()){
+            ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", getModel()->meshes[selectedMeshIndex].indices.size() / 3);
             getModel()->meshes[selectedMeshIndex].Draw(false);
+        }
     }
 
     // Painting the 2D scene 
@@ -335,6 +337,8 @@ void Painter::projectThePaintingTexture(
         ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
         twoDPaintingBox.bindBuffers();
+        
+        ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", 2);
         glDrawArrays(GL_TRIANGLES, 0 ,6);
     }
 

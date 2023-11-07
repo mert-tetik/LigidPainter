@@ -492,8 +492,10 @@ void Renderer::renderMainModel(){
         glActiveTexture(GL_TEXTURE11);
         glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
         
-        if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected))
+        if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected)){
+            ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);
             getModel()->meshes[i].Draw(painter.faceSelection.editMode && i == painter.selectedMeshIndex);
+        }
     }
     
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);

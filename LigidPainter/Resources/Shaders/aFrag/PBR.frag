@@ -85,12 +85,14 @@ uniform float heightMapVal;
 uniform int enableAOChannel;
 uniform float ambientOcclusionVal;
 
+uniform int primitiveCount;
+
 
 void main() {
 
     gl_FragDepth = gl_FragCoord.z;
 
-    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID, 0), 0).r > 0.5;
+    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r > 0.5;
 
     if(wireframeMode == 1 || (selectedPrim && meshSelectionEditing == 1)){
         fragColor = vec4(0.18, 0.42, 0.64, 1.);
@@ -106,7 +108,7 @@ void main() {
     float ao;
 
 
-    vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w);
+    vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w); 
 
     // Brush value (mask) (painting texture) 
     vec4 brushTxtr = texture(paintingTexture, TexCoords);

@@ -93,8 +93,10 @@ void Painter::updateDepthTexture(){
         glBindTexture(GL_TEXTURE_2D, this->faceSelection.selectedFaces.ID);
 
         //Draw the selected mesh in 3D
-        if(selectedMeshIndex < getModel()->meshes.size())
+        if(selectedMeshIndex < getModel()->meshes.size()){
+            ShaderSystem::depth3D().setInt("primitiveCount", getModel()->meshes[selectedMeshIndex].indices.size() / 3);
             getModel()->meshes[selectedMeshIndex].Draw(false);
+        }
     }
     
 

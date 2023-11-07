@@ -30,6 +30,7 @@ out vec4 color;
 uniform int usingMeshSelection = 0;
 uniform int hideUnselected = 0;
 uniform sampler2D selectedPrimitiveIDS;
+uniform int primitiveCount;
 
 void main() {
 
@@ -41,7 +42,7 @@ void main() {
                     1.0 //Full opacity
                 );
 
-    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID, 0), 0).r > 0.5;
+    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r > 0.5;
 
     if(!selectedPrim && usingMeshSelection == 1){
         if(hideUnselected == 1){

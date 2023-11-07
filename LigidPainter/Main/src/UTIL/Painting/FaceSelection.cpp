@@ -45,8 +45,11 @@ static void setPxsValues(std::vector<int> &primitivesArray, unsigned char* pxs, 
 
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<int> primitivesArray, Mesh& selectedMesh, const int fragmentCount){
 
-    unsigned char* pxs = new unsigned char[fragmentCount];
-    setPxsValues(primitivesArray, pxs, fragmentCount);
+    const int arraySize = (int)sqrt(fragmentCount) * (int)sqrt(fragmentCount);
+
+    unsigned char* pxs = new unsigned char[arraySize];
+    setPxsValues(primitivesArray, pxs, arraySize);
+
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, primitivesArrayTexture.ID);
@@ -54,7 +57,16 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<i
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, fragmentCount, 1, 0, GL_RED, GL_UNSIGNED_BYTE, pxs);
+    while (glGetError() != GL_NO_ERROR)
+    {
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, (int)sqrt(fragmentCount), (int)sqrt(fragmentCount), 0, GL_RED, GL_UNSIGNED_BYTE, pxs);
+
+    if(glGetError() == 1281){
+        LGDLOG::start << "ERROR : Face selection : This mesh's vertex data is too high to apply a face selection." << LGDLOG::end;
+    }
+
     glGenerateMipmap(GL_TEXTURE_2D);
 
     delete[] pxs;
