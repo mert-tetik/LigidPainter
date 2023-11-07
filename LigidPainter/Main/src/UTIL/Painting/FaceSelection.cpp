@@ -35,21 +35,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <unordered_set>
 
-static void setPxsValues(std::vector<int> &primitivesArray, unsigned char* pxs, size_t fragmentCount) {
-    std::unordered_set<int> primitiveSet(primitivesArray.begin(), primitivesArray.end());
+static std::vector<bool> prevPrimArray;
 
-    for (size_t i = 0; i < fragmentCount; i++) {
-        pxs[i] = (primitiveSet.find(i) != primitiveSet.end()) ? 255 : 0;
-    }
-}
-
-void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<int> primitivesArray, Mesh& selectedMesh, const int fragmentCount){
-
-    const int arraySize = (int)sqrt(fragmentCount) * (int)sqrt(fragmentCount);
-
-    unsigned char* pxs = new unsigned char[arraySize];
-    setPxsValues(primitivesArray, pxs, arraySize);
-
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, const int fragmentCount){
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, primitivesArrayTexture.ID);
@@ -57,19 +45,33 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<i
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-    while (glGetError() != GL_NO_ERROR)
-    {
+    if(primitivesArray.size() != prevPrimArray.size()){
+        while (glGetError() != GL_NO_ERROR)
+        {
+        }
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, (int)sqrt(primitivesArray.size()), (int)sqrt(primitivesArray.size()), 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        if(glGetError() == 1281){
+            LGDLOG::start << "ERROR : Face selection : This mesh's vertex data is too high to apply a face selection." << LGDLOG::end;
+        }
     }
+    else{
+        const std::vector<bool> c = prevPrimArray;
+        for (size_t i = 0; i < c.size(); i++)
+        {
+            if(primitivesArray[i] != c[i]){
+                unsigned char pxs[1];
+                pxs[0] = (unsigned char)(primitivesArray[i] * 255);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, (int)sqrt(fragmentCount), (int)sqrt(fragmentCount), 0, GL_RED, GL_UNSIGNED_BYTE, pxs);
-
-    if(glGetError() == 1281){
-        LGDLOG::start << "ERROR : Face selection : This mesh's vertex data is too high to apply a face selection." << LGDLOG::end;
+                glm::ivec2 offset = glm::ivec2(i % int(sqrt(primitivesArray.size())), i / int(sqrt(primitivesArray.size())));
+                glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x - 1, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);
+            }
+        }
     }
-
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    delete[] pxs;
+    
+    prevPrimArray = primitivesArray;
 }
 
 bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
@@ -82,6 +84,10 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
     
     // Position of the cursor
     glm::vec2 cursorPos = *Mouse::cursorPos();
+
+    if(this->selectedPrimitiveIDs.size() != selectedMesh.indices.size() / 3){
+        this->selectedPrimitiveIDs.resize(selectedMesh.indices.size() / 3);
+    }
 
     // Generating the model primitives texture
     if(!this->modelPrimitives.ID)
@@ -166,32 +172,34 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
 
                 
         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && (*Mouse::LClick() || this->selectionModeIndex == 1)){
-            if(this->selectedPrimitiveIDs.size())
-                changesMade = true;
-            this->selectedPrimitiveIDs.clear();
+            changesMade = true;
+            std::fill(this->selectedPrimitiveIDs.begin(), this->selectedPrimitiveIDs.end(), false);
         }
         
         for (size_t i = 0; i < scale.x * scale.y; i++)
         {
-            if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-                bool matched = false;
-                for (size_t ei = 0; ei < this->selectedPrimitiveIDs.size(); ei++)
-                {
-                    if(this->selectedPrimitiveIDs[ei] == pxs[i] - 1){
-                        matched = true;
+            
+            if(
+                    i+1 == 1 || // TOP LEFT 
+                    i+1 == scale.x/2 || // TOP MID
+                    i+1 == scale.x ||  // TOP RIGHT
+                    i+1 == scale.x * scale.y/2 || // MID LEFT
+                    i+1 == scale.x * scale.y/2 + scale.x/2 || // CENTER
+                    i+1 == scale.x * scale.y/2 + scale.x || // MID RIGHT
+                    i+1 == scale.x * scale.y + scale.x || // BOTTOM RIGHT
+                    i+1 == scale.x * scale.y + scale.x || // BOTTOM RIGHT
+                    i+1 == scale.x * scale.y + scale.x  // BOTTOM RIGHT
+                )
+            {
+                if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+                    if(this->selectedPrimitiveIDs[pxs[i]] == false){
+                        this->selectedPrimitiveIDs[pxs[i]] = true;
+                        changesMade = true;
                     }
                 }
-                if(!matched){
-                    this->selectedPrimitiveIDs.push_back(pxs[i] - 1);
-                    changesMade = true;
-                }
-            }
-            else{
-                for (size_t ei = 0; ei < this->selectedPrimitiveIDs.size(); ei++)
-                {
-                    if(this->selectedPrimitiveIDs[ei] == pxs[i] - 1){
-                        this->selectedPrimitiveIDs.erase(this->selectedPrimitiveIDs.begin() + ei);
-                        ei--;
+                else{
+                    if(this->selectedPrimitiveIDs[pxs[i]] == true){
+                        this->selectedPrimitiveIDs[pxs[i]] = false;
                         changesMade = true;
                     }
                 }

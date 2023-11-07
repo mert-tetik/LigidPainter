@@ -684,7 +684,7 @@ public:
 
     /// @brief Contains the indices of the selected faces
     ///        Being processed in the PBR shader
-    std::vector<int> selectedPrimitiveIDs;
+    std::vector<bool> selectedPrimitiveIDs;
     Texture selectedFaces;
 
     /// @brief 3D model rendered with primitive ID renderin shader
