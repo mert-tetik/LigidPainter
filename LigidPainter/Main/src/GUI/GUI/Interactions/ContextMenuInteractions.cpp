@@ -140,6 +140,23 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             
             Library::getBrush(ContextMenus::brush.selectedElement)->useBrush(brushSection);
 
+            painter.setBrushProperties(brushSection);
+
+            painter.displayingBrush.update(
+                                                painter.brushProperties.radius * 2.f,
+                                                painter.brushProperties.spacing,
+                                                painter.brushProperties.hardness,
+                                                painter.brushProperties.sizeJitter,
+                                                painter.brushProperties.scatter,
+                                                painter.brushProperties.fade,
+                                                painter.brushProperties.rotation,
+                                                painter.brushProperties.rotationJitter,
+                                                painter.brushProperties.alphaJitter,
+                                                painter.brushProperties.individualTexture,
+                                                painter.brushProperties.sinWavePattern,
+                                                painter.brushProperties.brushTexture
+                                            );
+
         }
         else if(ContextMenus::brush.contextPanel.sections[0].elements[1].button.clicked){//Clicked to apply brush settings
 

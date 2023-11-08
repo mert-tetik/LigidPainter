@@ -40,7 +40,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <cstdlib>
 
 //forward declerations for the utility functions
-static void setBrushProperties(
+static void twoDPaintShaderSetBrushProperties(
                                     BrushProperties brushProperties
                                 );
 
@@ -103,7 +103,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(0.));
 
     //Set brush properties
-    setBrushProperties(this->brushProperties);
+    twoDPaintShaderSetBrushProperties(this->brushProperties);
 
     //Stroke positions
     std::vector<glm::vec2> holdLocations = getCursorSubstitution(this->brushProperties.spacing);
@@ -195,7 +195,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 // ------------------------------ UTIL FUNCTIONS -----------------------------
 
 
-static void setBrushProperties (
+static void twoDPaintShaderSetBrushProperties (
                                     BrushProperties brushProperties
                                )
 {

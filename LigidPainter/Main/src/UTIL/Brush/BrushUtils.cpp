@@ -44,6 +44,7 @@ void Brush::useBrush(Section &brushSection){
     brushSection.elements[7].checkBox.clickState1  =   this->sinWavePattern;
     brushSection.elements[9].button.texture.proceduralProps = this->texture.proceduralProps;
     brushSection.elements[9].button.texture.generateProceduralDisplayingTexture(512, false);
+    
 }
 
 void Brush::applyToBrush(Section &brushSection){

@@ -805,6 +805,8 @@ public:
     /// Is the same as the GUI elements
     BrushProperties brushProperties;
 
+    void setBrushProperties(Section brushSection);
+
     /// @brief Painter constructor (use initPainter to initialize the painter class)
     Painter();
     

@@ -40,21 +40,8 @@ void UI::paintingPanelInteraction(
 {
 
     //Get the brush data from GUI to the painter class
-    painter.brushProperties.radius = brushSection.elements[1].rangeBar.value;
-    painter.brushProperties.opacity = brushSection.elements[2].rangeBar.value;
-    painter.brushProperties.hardness = brushSection.elements[3].rangeBar.value;
-    painter.brushProperties.spacing = brushSection.elements[4].rangeBar.value;
-    painter.brushProperties.sizeJitter = brushSection.elements[5].rangeBar.value;
-    painter.brushProperties.fade = brushSection.elements[6].rangeBar.value;
-    painter.brushProperties.sinWavePattern = brushSection.elements[7].checkBox.clickState1;
-    painter.brushProperties.scatter = brushSection.elements[8].rangeBar.value;
-    painter.brushProperties.brushTexture = brushSection.elements[9].button.texture;
-    painter.brushProperties.individualTexture = brushSection.elements[11].checkBox.clickState1;
-    painter.brushProperties.rotation = brushSection.elements[12].rangeBar.value;
-    painter.brushProperties.rotationJitter = brushSection.elements[13].rangeBar.value;
-    painter.brushProperties.alphaJitter = brushSection.elements[14].rangeBar.value;
+    painter.setBrushProperties(brushSection);
 
-    
     if(colorSection.elements[0].button.hover && *Mouse::LDoubleClick()){//Pressed to first color button element
         painter.loadColor1();
     }
@@ -236,7 +223,7 @@ void UI::paintingPanelInteraction(
     
     for (size_t i = 0; i < brushSection.elements.size(); i++)
     {
-        if(brushSection.elements[i].isInteracted() || (ContextMenus::brush.contextPanel.sections[0].elements[0].button.clicked)){
+        if(brushSection.elements[i].isInteracted()){
             // Update brush settings displaying brush
             painter.displayingBrush.update(
                                                 painter.brushProperties.radius * 2.f,
