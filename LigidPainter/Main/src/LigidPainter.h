@@ -90,6 +90,7 @@ public:
         projectUpdatingThreadX.join();
 
         getContext()->window.deleteContext();
+        getCopyContext()->window.deleteContext();
 
         return 1;
     }

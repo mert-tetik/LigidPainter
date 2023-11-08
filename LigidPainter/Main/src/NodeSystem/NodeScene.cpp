@@ -133,7 +133,7 @@ static void deleteMaterialChannels(Mesh &mesh){
     glDeleteTextures(1, &mesh.ambientOcclusion.ID);
 }
 
-Mesh NodeScene::processNode(Node &node, Mesh& mesh,   int textureRes){
+Mesh NodeScene::processNode(Node &node, Mesh& mesh, int textureRes){
     Mesh msh = mesh;
     initTexture(msh.albedo.ID, textureRes);
     initTexture(msh.roughness.ID, textureRes);
