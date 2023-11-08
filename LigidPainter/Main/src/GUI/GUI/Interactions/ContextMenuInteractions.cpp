@@ -212,7 +212,6 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     
     //Save as
     else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[1].button.clicked || Shortcuts::CTRL_SHIFT_S()){
-        project.updateProject(true, false);
         project.duplicateFolder("");
     }
     

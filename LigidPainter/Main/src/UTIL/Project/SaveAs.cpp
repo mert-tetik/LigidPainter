@@ -35,6 +35,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Project::duplicateFolder(std::string dstPath)
 {
+    LGDLOG::start << "WARNING! Saving as feature for the project folder is disabled for that version!" << LGDLOG::end;
+    return;
+    
+    // Save the project before duplicating the project folder    
+    this->updateProject(true, false);
+    
     while(true){
         if(!this->projectProcessing)
             break;
@@ -43,16 +49,13 @@ void Project::duplicateFolder(std::string dstPath)
     this->projectProcessing = true;
 
     if(dstPath == ""){
-        dstPath = showFileSystemObjectSelectionDialog("Select a folder to duplicate the project folder file.", "", {}, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
+        dstPath = showFileSystemObjectSelectionDialog("Select a folder to duplicate the project folder file.", UTIL::removeLastWordBySeparatingWithChar(this->absoluteProjectPath(), UTIL::folderDistinguisher()), {}, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
     }
 
     if(!dstPath.size()){
         this->projectProcessing = false;
         return;
     }
-
-    // Save the project before duplicating the project folder    
-    this->updateProject(true, false);
 
     //Remove the / or \ at the end of the destination path if there are any
     if(dstPath.size()){
@@ -71,11 +74,9 @@ void Project::duplicateFolder(std::string dstPath)
     // DestinationPath/MyProject
     std::string dstProjectPath = dstPath + UTIL::folderDistinguisher() + this->projectName();
 
-    //If there is already a folder with that name
-    if(std::filesystem::exists(dstProjectPath)){
-        LGDLOG::start<< "ERROR : Can't duplicate the project folder! There is already a folder with the same name : " << dstPath << LGDLOG::end;
-        this->projectProcessing = false;
-        return;
+    while (std::filesystem::exists(dstProjectPath))
+    {
+        dstProjectPath.push_back('_');
     }
 
     //Duplicate files and folders from the original path to destination path

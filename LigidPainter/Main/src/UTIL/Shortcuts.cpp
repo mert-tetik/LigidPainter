@@ -27,50 +27,55 @@ Box.hpp : Is used to render a single 2D square.
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
     
+#define CTRL LIGIDGL_KEY_LEFT_CONTROL
+#define SHIFT LIGIDGL_KEY_LEFT_SHIFT
+
+#define IS_PRESSED(key) getContext()->window.isKeyPressed(key)  
+
 bool Shortcuts::CTRL_Z(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_Z) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_Z) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_X(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_X) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_X) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_S(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_S) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_S) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_N(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_N) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_N) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_O(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_O) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_O) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_P(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_P) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_P) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_Y(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_Y) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_Y) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_C(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_C) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_C) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_V(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_V) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_V) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_A(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_A) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_A) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_F(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_F) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_F) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_G(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_G) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_G) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_W(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_W) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_W) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_SHIFT_S(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_S) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(SHIFT) && IS_PRESSED(LIGIDGL_KEY_S) && textRenderer.keyInput);
 }
 bool Shortcuts::F11(){
-    return (getContext()->window.isKeyPressed(LIGIDGL_KEY_F11) && textRenderer.keyInput);
+    return (IS_PRESSED(LIGIDGL_KEY_F11) && textRenderer.keyInput);
 }
 
 bool Shortcuts::anyShortCut(){
