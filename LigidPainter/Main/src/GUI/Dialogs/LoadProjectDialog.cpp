@@ -238,7 +238,7 @@ void LoadProjectDialog::render(Timer timer,
                     startScreen = false;
                     
                     this->dialogControl.unActivate();
-                
+                    break;
                 }
                 else{
 

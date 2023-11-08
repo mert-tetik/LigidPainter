@@ -62,20 +62,20 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             renamingIndices.x = 0;
             renamingIndices.y = ContextMenus::texture.selectedElement;
         }
-        if(ContextMenus::texture.contextPanel.sections[0].elements[1].button.clicked){//Clicked to duplicate button
+        else if(ContextMenus::texture.contextPanel.sections[0].elements[1].button.clicked){//Clicked to duplicate button
             Texture duplicatedTexture = *Library::getTexture(ContextMenus::texture.selectedElement);
             duplicatedTexture.ID = Library::getTexture(ContextMenus::texture.selectedElement)->duplicateTexture();
             duplicatedTexture.title += "_duplicated";
             Library::addTexture(duplicatedTexture);
         }
-        if(ContextMenus::texture.contextPanel.sections[0].elements[2].button.clicked){//Clicked to copy path button
+        else if(ContextMenus::texture.contextPanel.sections[0].elements[2].button.clicked){//Clicked to copy path button
             LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + Library::getTexture(ContextMenus::texture.selectedElement)->title + ".png");
         }
-        if(ContextMenus::texture.contextPanel.sections[0].elements[3].button.clicked){//Clicked to edit button
+        else if(ContextMenus::texture.contextPanel.sections[0].elements[3].button.clicked){//Clicked to edit button
             textureEditorSelectedTxtr = *Library::getTexture(ContextMenus::texture.selectedElement);
             this->textureEditorDialog.dialogControl.activate();
         }
-        if(ContextMenus::texture.contextPanel.sections[0].elements[4].button.clicked){//Clicked to delete button
+        else if(ContextMenus::texture.contextPanel.sections[0].elements[4].button.clicked){//Clicked to delete button
             Library::eraseTexture(ContextMenus::texture.selectedElement);
         }
     }
@@ -86,7 +86,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             selectedMaterialIndex = ContextMenus::material.selectedElement;
             materialEditorDialog.activate();
         }
-        if(ContextMenus::material.contextPanel.sections[0].elements[1].button.clicked){//Clicked to add to scene button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[1].button.clicked){//Clicked to add to scene button
             //Create the node of the materail an add to the node scene
             Node materialNode = Node(
                                         MATERIAL_NODE, 
@@ -95,7 +95,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             materialNode.barButton.text = Library::getMaterial(ContextMenus::material.selectedElement)->title;
             NodeScene::addNode(materialNode); //Add material node
         }
-        if(ContextMenus::material.contextPanel.sections[0].elements[2].button.clicked){//Clicked to rename button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[2].button.clicked){//Clicked to rename button
             renamingTextBox.active = true;
             Library::setChanged(true);
             renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[ContextMenus::material.selectedElement].button.pos;
@@ -108,14 +108,14 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             renamingIndices.x = 1;
             renamingIndices.y = ContextMenus::material.selectedElement;
         }
-        if(ContextMenus::material.contextPanel.sections[0].elements[3].button.clicked){//Clicked to duplicate button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[3].button.clicked){//Clicked to duplicate button
             Material duplicatedMaterial = Library::getMaterial(ContextMenus::material.selectedElement)->duplicateMaterial();
             Library::addMaterial(duplicatedMaterial);
         }
-        if(ContextMenus::material.contextPanel.sections[0].elements[4].button.clicked){//Clicked to coppy path button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[4].button.clicked){//Clicked to coppy path button
             LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(ContextMenus::material.selectedElement)->title + ".lgdmaterial");
         }
-        if(ContextMenus::material.contextPanel.sections[0].elements[5].button.clicked){//Clicked to delete button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[5].button.clicked){//Clicked to delete button
             
             //Delete the nodes using same material
             for (int nodeI = 0; nodeI < NodeScene::getArraySize(); nodeI++)
@@ -129,7 +129,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             //Delete the material
             Library::eraseMaterial(ContextMenus::material.selectedElement);
         }
-        if(ContextMenus::material.contextPanel.sections[0].elements[6].button.clicked){//Clicked to export button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[6].button.clicked){//Clicked to export button
             std::string exportingPath = showFileSystemObjectSelectionDialog("Export the lgdmaterial file", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false,FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE);
             if(exportingPath.size())
                 FileHandler::writeLGDMATERIALFile(exportingPath, *Library::getMaterial(ContextMenus::material.selectedElement));
@@ -141,12 +141,12 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             Library::getBrush(ContextMenus::brush.selectedElement)->useBrush(brushSection);
 
         }
-        if(ContextMenus::brush.contextPanel.sections[0].elements[1].button.clicked){//Clicked to apply brush settings
+        else if(ContextMenus::brush.contextPanel.sections[0].elements[1].button.clicked){//Clicked to apply brush settings
 
             Library::getBrush(ContextMenus::brush.selectedElement)->applyToBrush(brushSection);
 
         }
-        if(ContextMenus::brush.contextPanel.sections[0].elements[2].button.clicked){//Clicked to rename button
+        else if(ContextMenus::brush.contextPanel.sections[0].elements[2].button.clicked){//Clicked to rename button
             renamingTextBox.active = true;
             Library::setChanged(true);
             renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[ContextMenus::brush.selectedElement].button.pos;
@@ -159,7 +159,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             renamingIndices.x = 2;
             renamingIndices.y = ContextMenus::brush.selectedElement;
         }
-        if(ContextMenus::brush.contextPanel.sections[0].elements[3].button.clicked && ContextMenus::brush.selectedElement < Library::getBrushArraySize()){//Clicked to duplicate button
+        else if(ContextMenus::brush.contextPanel.sections[0].elements[3].button.clicked && ContextMenus::brush.selectedElement < Library::getBrushArraySize()){//Clicked to duplicate button
             Brush selectedBrush = *Library::getBrush(ContextMenus::brush.selectedElement);
             Library::addBrush(
                                 Brush(
@@ -179,10 +179,10 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
                                     )
                             );
         }
-        if(ContextMenus::brush.contextPanel.sections[0].elements[4].button.clicked){//Clicked to copy path button
+        else if(ContextMenus::brush.contextPanel.sections[0].elements[4].button.clicked){//Clicked to copy path button
             LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + Library::getBrush(ContextMenus::brush.selectedElement)->title + ".lgdfilter");
         }
-        if(ContextMenus::brush.contextPanel.sections[0].elements[5].button.clicked){//Clicked to delete button
+        else if(ContextMenus::brush.contextPanel.sections[0].elements[5].button.clicked){//Clicked to delete button
             Library::eraseBrush(ContextMenus::brush.selectedElement);
         }
     }
@@ -194,33 +194,33 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     }
     
     //Save as
-    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[1].button.clicked || Shortcuts::CTRL_SHIFT_S()){
+    else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[1].button.clicked || Shortcuts::CTRL_SHIFT_S()){
         project.updateProject(true, false);
         project.duplicateFolder("");
     }
     
     //Create new
-    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[2].button.clicked){
+    else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[2].button.clicked){
         newProjectDialog.dialogControl.activate();
     }
     
     //Load new
-    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[3].button.clicked){
+    else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[3].button.clicked){
         loadProjectDialog.dialogControl.activate();
     }
     
     //Copy path
-    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[4].button.clicked){
+    else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[4].button.clicked){
         project.copyTheProjectPathToTheClipboard();
     }
 
     //Open in file explorer
-    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[5].button.clicked){
+    else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[5].button.clicked){
         UTIL::openInFileExplorer(project.absoluteProjectPath().c_str());
     }
 
     //Recover
-    if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[6].button.clicked){
+    else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[6].button.clicked){
         showProjectRecoverDialog(project, appMaterialModifiers);
     }
     
