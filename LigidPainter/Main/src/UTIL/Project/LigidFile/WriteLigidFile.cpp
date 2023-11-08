@@ -35,46 +35,93 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
+#define WRITE_BITS(var, type, loc)   if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
+                                                    LGDLOG::start<< "ERROR : Writing ligid file. Failed to write at : " << loc << LGDLOG::end;\
+                                                    return false; \
+                                                }
+
+#define WRITE_STR(str)  int strSize = str.size(); \
+                        WRITE_BITS(strSize, int, "String size"); \
+                        for (size_t i = 0; i < strSize; i++) \
+                        {\
+                            char c = str[i]; \
+                            WRITE_BITS(c, char, "String character");\
+                        }\
+
+
 //Forward declerations for the util functions
-void writeDescriptionHeader(std::ofstream &wf);
-void writeDateData(std::ofstream &wf);
-void writemeshNodeSceneData(std::ofstream &wf);
-void writeCurrentModelTitle(std::ofstream &wf);
+bool writemeshNodeSceneData(std::ofstream &wf);
 
-
-
-void Project::writeLigidFile(std::string path){
-    
+bool Project::wrtLigidFile(std::string path){
     std::ofstream wf;
     
     wf = std::ofstream(path, std::ios::out | std::ios::binary);
 
     if(!wf) {
         LGDLOG::start<< "ERROR! : Writing ligid file." << LGDLOG::end;
-        return;
+        return false;
     }
 
-    //!Description
-    writeDescriptionHeader(wf);
-
-    //! Version number
-    uint32_t versionNumber2000 = 0x000007D0; //2000 
-    uint32_t versionNumber2100 = 0x00000834; //2100 
-    wf.write(reinterpret_cast<char*>(   &versionNumber2100    ),sizeof(uint32_t));
-
-    //!Date
-    writeDateData(wf);
-
-    //!Current model data
-    writeCurrentModelTitle(wf);
+    // ------------- Description ------------
+    uint64_t h1 = 0xBBBBBBBB; 
+    uint64_t h2 = 0xCA4B6C78; 
+    uint64_t h3 = 0x9A9A2C48; 
+    WRITE_BITS(h1, uint64_t, "");
+    WRITE_BITS(h2, uint64_t, "");
+    WRITE_BITS(h3, uint64_t, "");
     
-    //!meshNodeScene
-    writemeshNodeSceneData(wf);
+    // ------------- Version number ------------
+    uint32_t versionNumber2000 = 2000;  
+    uint32_t versionNumber2100 = 2100;  
+    uint32_t versionNumber2200 = 2200;
 
-    //!Texture resolution
+    WRITE_BITS(versionNumber2200, uint32_t, "");
+
+    // ------------- Date ------------
+    time_t currentDate = time(0);
+    WRITE_BITS(currentDate, time_t, "");
+
+    time_t lastOpenedDate = time(0);
+    WRITE_BITS(lastOpenedDate, time_t, "");
+
+    // ------------- Current model data ------------
+    uint32_t modelTitleSize = getModel()->title.size();
+    wf.write(reinterpret_cast<char*>(   &modelTitleSize    )    , sizeof(uint32_t));
+    for (size_t i = 0; i < modelTitleSize; i++)
+    {
+        char c = getModel()->title[i];
+        wf.write(reinterpret_cast<char*>(   &c     )    , sizeof(char));
+    }
+    
+    // ------------- Node scene ------------
+    if(!writemeshNodeSceneData(wf))
+        return false;
+
+    // ------------- Settings ------------
     int textureRes = Settings::properties()->textureRes;
-    wf.write(reinterpret_cast<char*>(   &textureRes    ),sizeof(int));
+    WRITE_BITS(textureRes, int, "");
 
+    return true;
+}
+
+bool Project::writeLigidFile(std::string path){
+    bool res = wrtLigidFile(path);
+    if(!res){
+        try
+        {
+            if(std::filesystem::exists(path))
+                std::filesystem::remove(path);
+            
+            std::ofstream outputFile(path);
+            
+            outputFile.close();
+        }
+        catch (const std::filesystem::filesystem_error& ex) {
+            LGDLOG::start << "ERROR : Filesystem : Recreating ligid file : " << ex.what() << LGDLOG::end;
+        }
+    }
+
+    return res;
 }
 
 
@@ -82,31 +129,11 @@ void Project::writeLigidFile(std::string path){
 //------------ UTIL FUNCTIONS -------------
 
 
-void writeDescriptionHeader(std::ofstream &wf){
-    uint64_t h1 = 0xBBBBBBBB; 
-    uint64_t h2 = 0xCA4B6C78; 
-    uint64_t h3 = 0x9A9A2C48; 
-
-    wf.write(reinterpret_cast<char*>(   &h1    ),sizeof(uint64_t));
-    wf.write(reinterpret_cast<char*>(   &h2    ),sizeof(uint64_t));
-    wf.write(reinterpret_cast<char*>(   &h3    ),sizeof(uint64_t));
-}
-
-void writeDateData(std::ofstream &wf){
-    //! Write the creation date
-    time_t currentDate = time(0);
-    wf.write(reinterpret_cast<char*>(   &currentDate    ),sizeof(time_t));
-    
-    //! Write the last opened date
-    time_t lastOpenedDate = time(0);
-    wf.write(reinterpret_cast<char*>(   &lastOpenedDate    ),sizeof(time_t));
-}
-
-void writemeshNodeSceneData(std::ofstream &wf){
+bool writemeshNodeSceneData(std::ofstream &wf){
     
     //Write the node size
     uint64_t nodeSize = NodeScene::getArraySize();
-    wf.write(reinterpret_cast<char*>(   &nodeSize    )    , sizeof(uint64_t));
+    WRITE_BITS(nodeSize, uint64_t, "");
     
     //For each node
     for (size_t i = 0; i < nodeSize; i++)
@@ -120,9 +147,20 @@ void writemeshNodeSceneData(std::ofstream &wf){
         if(NodeScene::getNode(i)->nodeIndex == MATERIAL_MASK_NODE)
             wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->nodePanel.sections[0].elements[1].rangeBar.value    ), sizeof(int));
         
-        //Write the material ID
-        wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->materialID    ), sizeof(int));
-
+        //Write the material title
+        std::string destMaterialTitle = "Disappeared Material";
+        for (size_t matI = 0; matI < Library::getMaterialArraySize(); matI++)
+        {
+            if(Library::getMaterialObj(matI).uniqueID == NodeScene::getNode(i)->materialID){
+                if(destMaterialTitle != "Disappeared Material")
+                    LGDLOG::start << "WARNING! : Multiple materials with the same ID detected." << LGDLOG::end;
+                
+                destMaterialTitle = Library::getMaterialObj(matI).title;
+            }
+        }
+        
+        WRITE_STR(destMaterialTitle)
+        
         //Write the node pos
         wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->nodePanel.pos    ), sizeof(glm::vec3));
 
@@ -146,14 +184,6 @@ void writemeshNodeSceneData(std::ofstream &wf){
             }
         }
     }
-}
 
-void writeCurrentModelTitle(std::ofstream &wf){
-    uint32_t modelTitleSize = getModel()->title.size();
-    wf.write(reinterpret_cast<char*>(   &modelTitleSize    )    , sizeof(uint32_t));
-    for (size_t i = 0; i < modelTitleSize; i++)
-    {
-        char c = getModel()->title[i];
-        wf.write(reinterpret_cast<char*>(   &c     )    , sizeof(char));
-    }
+    return true;
 }

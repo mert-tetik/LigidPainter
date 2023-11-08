@@ -110,7 +110,12 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
         std::cout << "UPDATE MODE : LIGID" << std::endl;
         std::string lgdPath;
         locateLigidFileInFolder(destinationPath, lgdPath); 
-        this->writeLigidFile(lgdPath);
+        if(!this->writeLigidFile(lgdPath)){
+            if(!multithreadingMode)
+                LGDLOG::start << "Saving project folder : Failed to write the ligid file!" << LGDLOG::end; 
+            else
+                std::cout << "Writing recover files : Failed to write the ligid file!" << std::endl; 
+        }
     }
 
     if(discardUpdateProjectFlag){

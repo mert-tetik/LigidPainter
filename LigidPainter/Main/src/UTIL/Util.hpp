@@ -586,7 +586,7 @@ public:
     bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate);
     
     /// @brief Write ligid file to the project folder
-    void writeLigidFile(std::string path);
+    bool writeLigidFile(std::string path);
 
         /// @brief Returns the ligid file path of the project
     ///        (AAA/MyProject/MyProject.ligid)
@@ -597,6 +597,10 @@ public:
     std::string projectName();
 
     std::atomic<bool> projectProcessing = false;
+
+private:
+    bool wrtLigidFile(std::string path);
+
 };
 
 /*!

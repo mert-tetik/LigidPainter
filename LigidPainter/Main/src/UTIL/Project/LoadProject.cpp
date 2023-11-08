@@ -118,10 +118,16 @@ bool Project::loadLibraryElements(std::string folderPath, AppMaterialModifiers& 
             time_t creationDate; 
             time_t lastOpenedDate;
 
-            if(!readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
-                projectUpdatingThreadElements.updateTextures = false;
-                this->projectProcessing = false;
-                return false;
+            if(!this->readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
+                LGDLOG::start << "WARNING : Failed to load the ligid file : New ligid file will be generated!" << LGDLOG::end;
+                if(this->writeLigidFile(ligidFilePath)){
+                    if(!this->readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
+                        LGDLOG::start << "WARNING : Failed to load the regenerated ligid file : Ligid file will be ignored." << LGDLOG::end;
+                    }
+                }
+                else{
+                    LGDLOG::start << "WARNING : Failed to rewrite the ligid file : Ligid file will be ignored." << LGDLOG::end;
+                }
             }
         }
         

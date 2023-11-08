@@ -132,8 +132,8 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     float screenGapPerc = screenGap / Settings::videoScale()->x * 100.f; 
     
     //Rename every library element if their name is doubled 
-    //if(!this->renamingTextBox.active)
-    //    Library::nameControl();
+    if(!this->renamingTextBox.active)
+        Library::nameControl();
 
     Debugger::block("GUI : Start"); // End
     

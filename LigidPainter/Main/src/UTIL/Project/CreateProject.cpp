@@ -176,7 +176,10 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
     //Create the .ligid file
     std::string lgdPath;
     this->locateLigidFileInFolder(this->folderPath, lgdPath);
-    writeLigidFile(lgdPath);
+    
+    if(!writeLigidFile(lgdPath)){
+        LGDLOG::start << "ERROR : Creating project folder : Failed to write ligid file." << LGDLOG::end;
+    }
     
     std::cout << "CREATE MODE : FINISH" << std::endl;
 

@@ -297,13 +297,38 @@ void UTIL::correctFolderDistinguishers(std::string& path){
 
 #define ABSOLUTE_DEST destinationFolder + fileTitle + fileExtension
 
-void UTIL::copyFileToFolder(const std::string file, const std::string folder, int mode){
+void UTIL::copyFileToFolder(std::string file, std::string folder, int mode){
+
+    if(UTIL::folderDistinguisher() == '\\'){
+        for (size_t i = 0; i < file.size(); i++)
+        {
+            if(file[i] == '/')
+                file[i] = '\\';
+        }
+    }
+    else{
+        for (size_t i = 0; i < file.size(); i++)
+        {
+            if(file[i] == '\\')
+                file[i] = '/';
+        }
+    }
 
     if(!std::filesystem::exists(file)){
         LGDLOG::start << "ERROR : Requested file to copy doesn't exists : " << file << LGDLOG::end;
         return;
     }
+    
+    if(!std::filesystem::exists(folder)){
+        LGDLOG::start << "ERROR : Requested folder to copy doesn't exists : " << folder << LGDLOG::end;
+        return;
+    }
 
+    if(!std::filesystem::is_directory(folder)){
+        LGDLOG::start << "ERROR : Requested folder to copy is not a directory : " << folder << LGDLOG::end;
+        return;
+    }
+    
     if(!std::filesystem::is_regular_file(file)){
         LGDLOG::start << "ERROR : Requested file to copy is not a regular file : " << file << LGDLOG::end;
         return;
