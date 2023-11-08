@@ -36,6 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <unordered_set>
 
 static std::vector<bool> prevPrimArray;
+static std::vector<int> changedIndices;
 
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, const int fragmentCount){
 
@@ -58,22 +59,24 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
         }
     }
     else{
-        const std::vector<bool> c = prevPrimArray;
-        for (size_t i = 0; i < c.size(); i++)
+        for (size_t i = 0; i < changedIndices.size(); i++)
         {
-            if(primitivesArray[i] != c[i]){
-                unsigned char pxs[1];
-                pxs[0] = (unsigned char)(primitivesArray[i] * 255);
+            if(changedIndices[i] < primitivesArray.size()){
+                if(primitivesArray[changedIndices[i]] != prevPrimArray[changedIndices[i]]){
+                    unsigned char pxs[1];
+                    pxs[0] = (unsigned char)(primitivesArray[changedIndices[i]] * 255);
 
-                glm::ivec2 offset = glm::ivec2(i % int(sqrt(primitivesArray.size())), i / int(sqrt(primitivesArray.size())));
-                glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x - 1, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);
+                    glm::ivec2 offset = glm::ivec2(changedIndices[i] % int(sqrt(primitivesArray.size())), changedIndices[i] / int(sqrt(primitivesArray.size())));
+                    glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x - 1, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);
+                }
             }
         }
+        changedIndices.clear();
     }
     
     prevPrimArray = primitivesArray;
 }
-
+static glm::vec2 lastMousePos;
 bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
 
     // Scale of the window
@@ -98,7 +101,10 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
     
     // Updating the model primitives texture
     this->modelPrimitives.update(nullptr, windowSize.x, windowSize.y, GL_NEAREST, GL_RED, GL_R32F);
-
+    
+    if(*Mouse::LClick()){
+        lastMousePos = *Mouse::cursorPos();
+    }
 
     bool changesMade = false;
     if(mouseInteraction){
@@ -124,89 +130,106 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
 
         selectedMesh.Draw(false);
 
-        glm::vec2 scale;
-        glm::vec2 pos;
-        
-        if(this->selectionModeIndex == 0){
-            pos.x = cursorPos.x - this->radius/2;
-            pos.y = (windowSize.y - cursorPos.y) - this->radius/2;
-            scale = glm::vec2(radius);
-        }
-        
-        else if(this->selectionModeIndex == 1){
-            
-            glm::vec2 boxSelectionStartSc = this->boxSelectionStart / 100.f * *Settings::videoScale();
-            glm::vec2 boxSelectionEndSc = this->boxSelectionEnd / 100.f * *Settings::videoScale();
-    
-            boxSelectionStartSc.y = (windowSize.y - boxSelectionStartSc.y);
-            boxSelectionEndSc.y = (windowSize.y - boxSelectionEndSc.y);
-            
-            scale = (boxSelectionEndSc - boxSelectionStartSc);
-            pos = boxSelectionStartSc;
+        const int mouseFillQuality = 3;
 
-            if(boxSelectionStartSc.x > boxSelectionEndSc.x){
-                scale.x = (boxSelectionStartSc.x - boxSelectionEndSc.x);
-                pos.x = boxSelectionEndSc.x;
-            } 
-            if(boxSelectionStartSc.y > boxSelectionEndSc.y){
-                scale.y = (boxSelectionStartSc.y - boxSelectionEndSc.y);
-                pos.y = boxSelectionEndSc.y;
-            } 
-
-        }
-
-        float* pxs = new float[(int)scale.x * (int)scale.y]; 
-        this->FBO.bind();
-        
-        if(pos.x + scale.x < windowSize.x && pos.y + scale.y < windowSize.y){
-            glReadPixels(
-                            pos.x, 
-                            pos.y, 
-                            scale.x, 
-                            scale.y,
-                            GL_RED,
-                            GL_FLOAT,
-                            pxs
-                        );
-        }
-
-                
-        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && (*Mouse::LClick() || this->selectionModeIndex == 1)){
-            changesMade = true;
-            std::fill(this->selectedPrimitiveIDs.begin(), this->selectedPrimitiveIDs.end(), false);
-        }
-        
-        for (size_t i = 0; i < scale.x * scale.y; i++)
+        for (size_t distI = 0; distI < mouseFillQuality; distI++)
         {
+            glm::vec2 scale;
+            glm::vec2 pos;
+
+            if(this->selectionModeIndex == 0){
+                pos.x = (lastMousePos.x + (cursorPos.x - lastMousePos.x) / mouseFillQuality * distI) - this->radius/2;
+                pos.y = (windowSize.y - (lastMousePos.y + (cursorPos.y - lastMousePos.y) / mouseFillQuality * distI)) - this->radius/2;
+                scale = glm::vec2(radius);
+            }
             
-            if(
-                    i+1 == 1 || // TOP LEFT 
-                    i+1 == scale.x/2 || // TOP MID
-                    i+1 == scale.x ||  // TOP RIGHT
-                    i+1 == scale.x * scale.y/2 || // MID LEFT
-                    i+1 == scale.x * scale.y/2 + scale.x/2 || // CENTER
-                    i+1 == scale.x * scale.y/2 + scale.x || // MID RIGHT
-                    i+1 == scale.x * scale.y + scale.x || // BOTTOM RIGHT
-                    i+1 == scale.x * scale.y + scale.x || // BOTTOM RIGHT
-                    i+1 == scale.x * scale.y + scale.x  // BOTTOM RIGHT
-                )
-            {
-                if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-                    if(this->selectedPrimitiveIDs[pxs[i]] == false){
-                        this->selectedPrimitiveIDs[pxs[i]] = true;
-                        changesMade = true;
-                    }
+            else if(this->selectionModeIndex == 1){
+                
+                glm::vec2 boxSelectionStartSc = this->boxSelectionStart / 100.f * *Settings::videoScale();
+                glm::vec2 boxSelectionEndSc = this->boxSelectionEnd / 100.f * *Settings::videoScale();
+        
+                boxSelectionStartSc.y = (windowSize.y - boxSelectionStartSc.y);
+                boxSelectionEndSc.y = (windowSize.y - boxSelectionEndSc.y);
+                
+                scale = (boxSelectionEndSc - boxSelectionStartSc);
+                pos = boxSelectionStartSc;
+
+                if(boxSelectionStartSc.x > boxSelectionEndSc.x){
+                    scale.x = (boxSelectionStartSc.x - boxSelectionEndSc.x);
+                    pos.x = boxSelectionEndSc.x;
+                } 
+                if(boxSelectionStartSc.y > boxSelectionEndSc.y){
+                    scale.y = (boxSelectionStartSc.y - boxSelectionEndSc.y);
+                    pos.y = boxSelectionEndSc.y;
+                } 
+            }
+            
+            float* pxs = new float[(int)scale.x * (int)scale.y]; 
+            this->FBO.bind();
+            
+            if(pos.x + scale.x < windowSize.x && pos.y + scale.y < windowSize.y){
+                glReadPixels(
+                                pos.x, 
+                                pos.y, 
+                                scale.x, 
+                                scale.y,
+                                GL_RED,
+                                GL_FLOAT,
+                                pxs
+                            );
+            }
+
+                    
+            if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && (*Mouse::LClick() || this->selectionModeIndex == 1)){
+                changesMade = true;
+                
+                std::fill(this->selectedPrimitiveIDs.begin(), this->selectedPrimitiveIDs.end(), false);
+                
+                changedIndices.clear();
+                for (size_t i = 0; i < this->selectedPrimitiveIDs.size(); i++)
+                {
+                    changedIndices.push_back(i);
                 }
-                else{
-                    if(this->selectedPrimitiveIDs[pxs[i]] == true){
-                        this->selectedPrimitiveIDs[pxs[i]] = false;
-                        changesMade = true;
+            }
+            
+            for (size_t i = 0; i < scale.x * scale.y; i++)
+            {
+                
+                if(
+                        i+1 == 1 || // TOP LEFT 
+                        i+1 == scale.x/2 || // TOP MID
+                        i+1 == scale.x ||  // TOP RIGHT
+                        i+1 == scale.x * scale.y/2 || // MID LEFT
+                        i+1 == scale.x * scale.y/2 + scale.x/2 || // CENTER
+                        i+1 == scale.x * scale.y/2 + scale.x || // MID RIGHT
+                        i+1 == scale.x * scale.y + scale.x || // BOTTOM RIGHT
+                        i+1 == scale.x * scale.y + scale.x || // BOTTOM RIGHT
+                        i+1 == scale.x * scale.y + scale.x ||  // BOTTOM RIGHT
+                        this->selectionModeIndex == 1
+                    )
+                {
+                    if(pxs[i] < this->selectedPrimitiveIDs.size() && pxs[i] >= 0){
+                        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+                            if(this->selectedPrimitiveIDs[pxs[i]] == false){
+                                this->selectedPrimitiveIDs[pxs[i]] = true;
+                                changedIndices.push_back(pxs[i]);
+                                changesMade = true;
+                            }
+                        }
+                        else{
+                            if(this->selectedPrimitiveIDs[pxs[i]] == true){
+                                this->selectedPrimitiveIDs[pxs[i]] = false;
+                                changedIndices.push_back(pxs[i]);
+                                changesMade = true;
+                            }
+                        }
                     }
                 }
             }
+
+            delete[] pxs;
         }
 
-        delete[] pxs;
     }
     else{
         changesMade = true;
@@ -234,6 +257,8 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
 
     glDepthFunc(GL_LEQUAL);
 
+    lastMousePos = *Mouse::cursorPos();
+
     return changesMade;
 }
 
@@ -245,6 +270,7 @@ bool FaceSelection::boxSelectionInteraction(Timer &timer){
 
     if(*Mouse::LClick()){
         this->boxSelectionStart = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+        lastMousePos = *Mouse::cursorPos();
     }
 
     this->boxSelectionEnd = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
