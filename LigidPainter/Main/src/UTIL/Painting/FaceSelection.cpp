@@ -130,7 +130,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
 
         selectedMesh.Draw(false);
 
-        const int mouseFillQuality = 3;
+        const int mouseFillQuality = 5;
 
         for (size_t distI = 0; distI < mouseFillQuality; distI++)
         {

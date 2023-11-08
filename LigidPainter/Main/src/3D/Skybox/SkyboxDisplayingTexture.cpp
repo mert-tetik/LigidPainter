@@ -34,6 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Skybox::createDisplayingTxtr(){
 	
+	// Generate the displaying texture
 	glActiveTexture(GL_TEXTURE0);
 	if(displayingTexture == 0)
 		glGenTextures(1,&displayingTexture);
@@ -48,34 +49,30 @@ void Skybox::createDisplayingTxtr(){
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 100, 100, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-	unsigned int FBO; //That framebuffer will be used to get the results of the shader (modifier)
-	glGenFramebuffers(1,&FBO);
-	glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-	
+	// Create the capture framebuffer object
+	Framebuffer FBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(100)));
+	FBO.bind();
+
+	//	
 	glViewport(0,0,100,100);
-
-	unsigned int RBO;
-	glGenRenderbuffers(1,&RBO);
-	glBindRenderbuffer(GL_RENDERBUFFER,RBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, 100, 100);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
-
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, displayingTexture, 0);
-
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	ShaderSystem::skyboxBall().use();
-	glm::mat4 view = glm::lookAt(glm::vec3(3.f,0,0), 
-									glm::vec3(0), 
-									glm::vec3(0.0, 1.0, 0.0));
+	glm::vec3 viewPos = glm::vec3(1.5f,0,0);
 	
-	glm::vec3 viewPos = glm::vec3(3.f,0,0);
-
-	glm::mat4 projectionMatrix = glm::perspective(glm::radians(90.f), 
-										1.f, 
-										100.f, 
-										0.1f);
+	glm::mat4 view = glm::lookAt(	
+									viewPos, 
+									glm::vec3(0), 
+									glm::vec3(0.0, -1.0, 0.0)
+								);
+	
+	glm::mat4 projectionMatrix = glm::perspective(
+													glm::radians(90.f), 
+													1.f, 
+													100.f, 
+													0.1f
+												);
 
 
 	ShaderSystem::skyboxBall().setVec3("viewPos",viewPos);
@@ -91,14 +88,11 @@ void Skybox::createDisplayingTxtr(){
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP,ID);
 	
-	getModel()->Draw();
-	
-	glGenerateMipmap(GL_TEXTURE_2D);
+	getSphereModel()->Draw();
 
 	//Finish
-	//buttonShader.use();
 	Settings::defaultFramebuffer()->FBO.bind();
-	glDeleteFramebuffers(1,&FBO);
-
 	Settings::defaultFramebuffer()->setViewport();
+
+	FBO.deleteBuffers(false, true);
 }

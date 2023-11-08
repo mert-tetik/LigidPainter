@@ -54,7 +54,7 @@ DisplayerDialog::DisplayerDialog(){
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),"",  Texture(), 1.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),"",  Texture(), 2.f, false)),
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Rotation"  , Texture(), 2.f,0.f,360.f,0.f)), 
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Blur"  , Texture(), 2.f,0.f,100.f,0.f)), 
                         Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Opacity"  , Texture(), 2.f,0.f,100.f,0.f)), 
@@ -69,7 +69,7 @@ DisplayerDialog::DisplayerDialog(){
                 )
             }
         },
-        glm::vec2(20.f, 35.f),
+        glm::vec2(20.f, 34.f),
         glm::vec3(50.f,50.f,0.8f),
         ColorPalette::mainColor,
         ColorPalette::thirdColor,
@@ -127,11 +127,11 @@ void DisplayerDialog::render(Timer timer,
     {
         //Positioning the buttons
         skyboxes[i].pos = panel.sections[0].elements[0].button.pos;
-        skyboxes[i].pos.y -= panel.sections[0].elements[0].button.scale.y;
         skyboxes[i].pos.x -= panel.sections[0].elements[0].button.scale.x;
-        skyboxes[i].pos.y += skyboxes[i].scale.y;
         skyboxes[i].pos.x += skyboxes[i].scale.x;
         skyboxes[i].pos.x += skyboxes[i].scale.x * 2 * i;
+        skyboxes[i].pos.y -= panel.sections[0].elements[0].button.scale.y;
+        skyboxes[i].pos.y -= skyboxes[i].scale.y;
         skyboxes[i].scale.x = panel.sections[0].elements[0].button.scale.x/skyboxes.size();
 
         //Render the button
