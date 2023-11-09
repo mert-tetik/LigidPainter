@@ -244,6 +244,7 @@ bool readMeshNodeSceneData(std::ifstream &rf){
         NodeScene::addNode(node);
     }
 
+    // Create the node connections after loading all the nodes
     for (size_t nodeI = 0; nodeI < connections.size(); nodeI++)
     {
         for (size_t inputI = 0; inputI < connections[nodeI].size(); inputI++)
@@ -253,6 +254,8 @@ bool readMeshNodeSceneData(std::ifstream &rf){
             }
         }
     }
+
+    NodeScene::updateNodeResults(512, -1);
 
     return true;
 }
