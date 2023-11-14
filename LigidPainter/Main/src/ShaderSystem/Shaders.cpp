@@ -62,6 +62,7 @@ Shader __nodeConnectionCurve;
 Shader __projectingPaintedTextureShader;
 Shader __projectedPaintingTextureMixerShader;
 Shader __primitiveIDShader;
+Shader __modelObjectID;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -104,6 +105,7 @@ void ShaderSystem::initShaderSystem(){
     __nodeConnectionCurve.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/NodeConnectionCurve.frag");
     __projectingPaintedTextureShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/ProjectingPaintedTexture.frag");
     __projectedPaintingTextureMixerShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/ProjectedPaintingTextureMixer.frag");
+    __modelObjectID.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/ModelObjectID.frag");
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -225,4 +227,7 @@ Shader ShaderSystem::projectedPaintingTextureMixerShader(){
 }
 Shader ShaderSystem::primitiveIDShader(){
     return __primitiveIDShader;
+}
+Shader ShaderSystem::modelObjectID(){
+    return __modelObjectID;
 }

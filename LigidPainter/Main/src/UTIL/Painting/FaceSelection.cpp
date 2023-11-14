@@ -36,9 +36,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <unordered_set>
 
 static std::vector<bool> prevPrimArray;
-static std::vector<int> changedIndices;
 
-void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, const int fragmentCount){
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, const int fragmentCount, std::vector<int>& changedIndices){
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, primitivesArrayTexture.ID);
@@ -196,16 +195,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
             {
                 
                 if(
-                        i+1 == 1 || // TOP LEFT 
-                        i+1 == scale.x/2 || // TOP MID
-                        i+1 == scale.x ||  // TOP RIGHT
-                        i+1 == scale.x * scale.y/2 || // MID LEFT
-                        i+1 == scale.x * scale.y/2 + scale.x/2 || // CENTER
-                        i+1 == scale.x * scale.y/2 + scale.x || // MID RIGHT
-                        i+1 == scale.x * scale.y + scale.x || // BOTTOM RIGHT
-                        i+1 == scale.x * scale.y + scale.x || // BOTTOM RIGHT
-                        i+1 == scale.x * scale.y + scale.x ||  // BOTTOM RIGHT
-                        this->selectionModeIndex == 1
+                        true
                     )
                 {
                     if(pxs[i] < this->selectedPrimitiveIDs.size() && pxs[i] >= 0){
@@ -242,7 +232,8 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
                                         this->selectedFaces, 
                                         this->selectedPrimitiveIDs, 
                                         selectedMesh, 
-                                        fragmentCount
+                                        fragmentCount,
+                                        changedIndices
                                     );
     }
 

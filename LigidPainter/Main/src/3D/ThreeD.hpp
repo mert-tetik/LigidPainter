@@ -214,13 +214,28 @@ public:
     */
     bool newModelAdded = false;
 
-    Texture displayingTxtr; 
+    std::vector<int> selectedObjectIndices;
+    std::vector<bool> selectedObjectPrimitiveIDFlags;
 
-    //Public member functions
+    Texture displayingTxtr; 
+    
+    /*! @brief 3D Model rendered with different color values for each object
+            Created in the updateObjectIDsTexture function 
+            Params : GL_NEAREST, GL_RED, GL_R32F
+    */
+    Texture objectIDs;
     
     void Draw();
     void exportModel(std::string path);
     bool loadModel(std::string const &path, bool triangulate);
+    void updateObjectIDsTexture();
+
+    /*! 
+        @brief Call this function as the mouse is clicked
+               Detects the selected object (based on the cursor position)
+               and applies it's index to the @ref selectedObjectIndices array
+    */
+    void selectObject();
 };
 
 class SceneTiles

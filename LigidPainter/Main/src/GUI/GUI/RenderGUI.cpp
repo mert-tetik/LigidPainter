@@ -297,7 +297,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    nodeEditorDisplayer.render(timer,!anyDialogActive);
+    //nodeEditorDisplayer.render(timer,!anyDialogActive);
     if(nodeEditorDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
@@ -474,7 +474,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, getModel()->objectIDs.ID);
 
         // Render the texture as it's pixels can be seen
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -771,7 +771,17 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
     
     if(meshSection.elements[5].comboBox.selectedIndex != 0){
-        painter.faceSelection.selectedPrimitiveIDs.clear();
+        painter.faceSelection.changedIndices.clear();
+        for (size_t i = 0; i < painter.faceSelection.selectedPrimitiveIDs.size(); i++)
+        {
+            painter.faceSelection.changedIndices.push_back(i);
+        }
+        
+        for (size_t i = 0; i < painter.faceSelection.selectedPrimitiveIDs.size(); i++)
+        {
+            painter.faceSelection.selectedPrimitiveIDs[i] = false;
+        }
+        
 
         if(painter.selectedMeshIndex < getModel()->meshes.size()){
             int objI = 0;
@@ -784,7 +794,8 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
             for (size_t i = getModel()->meshes[painter.selectedMeshIndex].objects[objI].vertIndices.x / 3; i < getModel()->meshes[painter.selectedMeshIndex].objects[objI].vertIndices.y / 3; i++)
             {
-                painter.faceSelection.selectedPrimitiveIDs.push_back(i);
+                if(i < painter.faceSelection.selectedPrimitiveIDs.size())
+                    painter.faceSelection.selectedPrimitiveIDs[i] = true;
             }
         }
     }

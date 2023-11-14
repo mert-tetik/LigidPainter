@@ -209,9 +209,9 @@ void Mesh::Draw(bool displayWireframe)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         ShaderSystem::tdModelShader().setMat4("modelMatrix", getScene()->transformMatrix);
         glDepthFunc(GL_LEQUAL);
+        ShaderSystem::tdModelShader().setInt("wireframeMode", 0);
     }
 
-    ShaderSystem::tdModelShader().setInt("wireframeMode", 0);
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);

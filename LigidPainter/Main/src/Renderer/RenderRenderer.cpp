@@ -91,6 +91,9 @@ void Renderer::render(){
         //Update the depth texture
         painter.updateDepthTexture();
         painter.updateTheDepthTexture = false;
+        
+        // Update the model's object id texture
+        getModel()->updateObjectIDsTexture();
     }
 
     // Set backface culling property
@@ -141,6 +144,9 @@ void Renderer::render(){
 
     Debugger::block("3D Model"); // End
 
+    // Check if an object is selected after rendering the mesh
+    if(*Mouse::LClick())
+        getModel()->selectObject();
 
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
     glClear(GL_DEPTH_BUFFER_BIT);
