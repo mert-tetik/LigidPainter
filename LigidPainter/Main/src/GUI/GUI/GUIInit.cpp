@@ -467,6 +467,8 @@ void UI::init
 
     this->zoomingDisplayingButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f,8.f), "", Texture(), 0.f, true);
     
+    this->textureSelectedObjectsButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(4.f,3.f), "texture Selected Objects", Texture(), 0.f, false);
+    
     this->filterPaintingModeFilterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4.f,5.f), "Select Filter", Texture(), 0.f, false);
     this->filterPaintingModeFilterBtn.filterSelection = true;
 

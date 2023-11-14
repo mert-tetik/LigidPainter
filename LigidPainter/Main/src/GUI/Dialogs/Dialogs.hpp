@@ -138,6 +138,39 @@ public:
    void render(Timer timer);
  };
 
+//!------------------------------OBJECT TEXTURING DIALOG------------------------------
+
+
+class ObjectTexturingDialog
+{
+public:
+   Panel panel;
+     
+   DialogControl dialogControl;
+
+   Button maskViaFaceSelection;
+   Button maskViaTexture;
+   
+   Button assignRelatedTexturesButton;
+   Button createNewTextureButton;
+   Button assignToCustomTexturesButton;
+   
+   Button materialDisplayerButton;
+   Button editMaterialButton;
+   Button selectMaterialButton;
+
+   Panel elementSelectionPanel;
+
+   bool materialSelection = false;
+   bool textureSelection = false;
+
+   //Constructor
+   ObjectTexturingDialog();
+    
+   //Public member function
+   void render(Timer timer);
+ };
+
 
 //!------------------------------LOAD PROJECT DIALOG------------------------------
 

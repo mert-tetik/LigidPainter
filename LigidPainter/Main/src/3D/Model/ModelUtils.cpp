@@ -121,6 +121,7 @@ void Model::selectObject(){
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 
+    /*
     for (size_t meshI = 0; meshI < this->meshes.size(); meshI++)
     {
         selectedObjectPrimitiveIDFlags.resize(this->meshes[meshI].indices.size() / 3);
@@ -132,10 +133,7 @@ void Model::selectObject(){
                 if(i < selectedObjectPrimitiveIDFlags.size())
                     selectedObjectPrimitiveIDFlags[i] = true;
             }
-            
         }
-        
     }
-    
-    
+    */
 }

@@ -114,6 +114,7 @@ public:
     Panel smearPaintingModePropertyPanel;
     Panel displayingModesPanel; 
     Button filterPaintingModeFilterBtn;
+    Button textureSelectedObjectsButton;
     
     Panel paintingPanel;
     Panel paintingPanelModePanel;
@@ -151,6 +152,7 @@ public:
     TextureEditorDialog textureEditorDialog;
     TexturePackEditorDialog texturePackEditorDialog;
     ProjectRecoverDialog projectRecoverDialog;
+    ObjectTexturingDialog objectTexturingDialog;
 
     float twoDPaintingSceneScroll = 2.f;
     glm::vec2 twoDPaintingScenePos = glm::vec2(0.f);

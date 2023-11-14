@@ -514,21 +514,30 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    paintingModesPanel.render(timer,!anyDialogActive);
+    if(painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2){
+        paintingModesPanel.render(timer,!anyDialogActive);
+        if(paintingModesPanel.resizingDone){
+            for (size_t i = 0; i < 5; i++)
+                this->panelPositioning(screenGapPerc, painter);
+        }
 
-    if(painter.selectedPaintingModeIndex == 2)
-        smearPaintingModePropertyPanel.render(timer, !anyDialogActive); 
-    
-    if(painter.selectedPaintingModeIndex == 4)
-        this->filterPaintingModeFilterBtn.render(timer, !anyDialogActive);
+        if(painter.selectedPaintingModeIndex == 2)
+            smearPaintingModePropertyPanel.render(timer, !anyDialogActive); 
+        
+        if(painter.selectedPaintingModeIndex == 4)
+            this->filterPaintingModeFilterBtn.render(timer, !anyDialogActive);
 
-    if(painter.selectedPaintingModeIndex == 5)
-        vectorPaintingModePropertyPanel.render(timer, !anyDialogActive); 
-
-    if(paintingModesPanel.resizingDone){
-        for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, painter);
+        if(painter.selectedPaintingModeIndex == 5)
+            vectorPaintingModePropertyPanel.render(timer, !anyDialogActive); 
     }
+    else{
+        this->textureSelectedObjectsButton.render(timer, !anyDialogActive);
+
+        if(this->textureSelectedObjectsButton.clicked){
+            this->objectTexturingDialog.dialogControl.activate();
+        }
+    }
+
     displayingModesPanel.render(timer,!anyDialogActive);
     if(displayingModesPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
@@ -891,6 +900,9 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     
     if(bakingDialog.dialogControl.isActive())
         bakingDialog.render(timer, skybox);
+    
+    if(objectTexturingDialog.dialogControl.isActive())
+        objectTexturingDialog.render(timer);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
         materialEditorDialog.render(timer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex));

@@ -74,6 +74,10 @@ void UI::panelPositioning(
     filterPaintingModeFilterBtn.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + filterPaintingModeFilterBtn.scale.x + 1;
     filterPaintingModeFilterBtn.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + filterPaintingModeFilterBtn.scale.y + 1;
     filterPaintingModeFilterBtn.pos.z = libraryPanelDisplayer.pos.z;
+    
+    textureSelectedObjectsButton.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + textureSelectedObjectsButton.scale.x + 1;
+    textureSelectedObjectsButton.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + textureSelectedObjectsButton.scale.y + 1;
+    textureSelectedObjectsButton.pos.z = libraryPanelDisplayer.pos.z;
 
     displayingModesPanel.pos.x = paintingPanelModePanel.pos.x - paintingPanelModePanel.scale.x - displayingModesPanel.scale.x - 0.5f;
     displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;
