@@ -145,7 +145,7 @@ void Renderer::render(){
     Debugger::block("3D Model"); // End
 
     // Check if an object is selected after rendering the mesh
-    if(*Mouse::LClick())
+    if(*Mouse::LClick() && painter.selectedDisplayingModeIndex == 0 && !userInterface.anyPanelHover && !userInterface.anyDialogActive) 
         getModel()->selectObject();
 
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
@@ -470,14 +470,21 @@ void Renderer::renderMainModel(){
         else
             ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
-        if(i == painter.selectedMeshIndex){
-            ShaderSystem::tdModelShader().setInt("usingMeshSelection", painter.faceSelection.activated);
-            ShaderSystem::tdModelShader().setInt("meshSelectionEditing", painter.faceSelection.editMode);
-            ShaderSystem::tdModelShader().setInt("hideUnselected", painter.faceSelection.hideUnselected);
+        if(painter.selectedDisplayingModeIndex == 2 || painter.selectedDisplayingModeIndex == 3){
+            if(i == painter.selectedMeshIndex){
+                ShaderSystem::tdModelShader().setInt("usingMeshSelection", painter.faceSelection.activated);
+                ShaderSystem::tdModelShader().setInt("meshSelectionEditing", painter.faceSelection.editMode);
+                ShaderSystem::tdModelShader().setInt("hideUnselected", painter.faceSelection.hideUnselected);
+            }
+            else{
+                ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
+                ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
+            }
         }
         else{
             ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
-            ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
+            ShaderSystem::tdModelShader().setInt("meshSelectionEditing", true);
+            ShaderSystem::tdModelShader().setInt("hideUnselected", false);
         }
         
         ShaderSystem::tdModelShader().setInt("materialPainting", painter.materialPainting);

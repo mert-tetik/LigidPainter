@@ -31,12 +31,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "MouseSystem/Mouse.hpp"
 
 // Defined in Painter/faceSelection.cpp
-void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices);
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 
 void Model::updateObjectIDsTexture(){
     glDepthFunc(GL_LESS);
     
-    glm::ivec2 resolution = glm::ivec2(*Settings::videoScale());
+    glm::ivec2 resolution = glm::ivec2(getContext()->windowScale);
 
     // Create the texture if it wasn't created
     if(!this->objectIDs.ID){
@@ -123,21 +123,35 @@ void Model::selectObject(){
 
     delete[] pxs;
 
-    std::cout << "meshI" << meshI << std::endl;
+    for (size_t i = 0; i < this->meshes.size(); i++){
+        if(!this->meshes[i].selectedObjectPrimitivesTxtr.ID){
+            glGenTextures(1, &this->meshes[i].selectedObjectPrimitivesTxtr.ID);
+        }
+        
+        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+            this->meshes[i].selectedObjectIndices.clear();
+            this->meshes[i].selectedObjectPrimitivesTxtr.update(nullptr, 1, 1);
+        }        
+    }
 
     if(meshI < this->meshes.size() && meshI >= 0){
-
         std::vector<int> changedIndices;
 
-        bool matched = false;
+        int match = -1;
         for (size_t i = 0; i < this->meshes[meshI].selectedObjectIndices.size(); i++)
         {
             if(this->meshes[meshI].selectedObjectIndices[i] == objI)
-                matched = true; 
+                match = i; 
         }
         
-        if(!matched)
-            this->meshes[meshI].selectedObjectIndices.push_back(objI);
+        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+            if(match == -1)
+                this->meshes[meshI].selectedObjectIndices.push_back(objI);
+        }
+        else{
+            if(match != -1)
+                this->meshes[meshI].selectedObjectIndices.erase(this->meshes[meshI].selectedObjectIndices.begin() + match);
+        }
 
         std::vector<bool> primitivesArray;
         primitivesArray.resize(this->meshes[meshI].indices.size() / 3);
@@ -149,7 +163,6 @@ void Model::selectObject(){
                 if(this->meshes[meshI].selectedObjectIndices[i] == oI)
                     contains = true;
             }
-            std::cout << "a" << std::endl;
             if(contains){
                 for (size_t i = this->meshes[meshI].objects[oI].vertIndices.x / 3; i < this->meshes[meshI].objects[oI].vertIndices.y / 3; i++)
                 {
@@ -159,14 +172,8 @@ void Model::selectObject(){
                     }
                 }
             }
-            std::cout << "b" << std::endl;
-        }
-    
-
-        if(!this->meshes[meshI].selectedObjectPrimitivesTxtr.ID){
-            glDeleteTextures(1, &this->meshes[meshI].selectedObjectPrimitivesTxtr.ID);
         }
 
-        updatePrimitivesArrayTexture(this->meshes[meshI].selectedObjectPrimitivesTxtr, primitivesArray, this->meshes[meshI], changedIndices);
+        updatePrimitivesArrayTexture(this->meshes[meshI].selectedObjectPrimitivesTxtr, primitivesArray, this->meshes[meshI], changedIndices, true);
     }
 }

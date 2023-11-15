@@ -104,6 +104,9 @@ void Renderer::framebufferSizeCallback(
 
     //And ofc update the OpenGL viewport
     Settings::defaultFramebuffer()->setViewport();
+
+    this->painter.updateTheDepthTexture = true;
+
 }
 
 void Renderer::scrollCallback(

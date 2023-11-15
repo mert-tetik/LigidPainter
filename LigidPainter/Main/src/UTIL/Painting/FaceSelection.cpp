@@ -37,7 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static std::vector<bool> prevPrimArray;
 
-void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices){
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll){
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, primitivesArrayTexture.ID);
@@ -45,7 +45,7 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-    if(primitivesArray.size() != prevPrimArray.size() || changedIndices.size() > 100){
+    if((primitivesArray.size() != prevPrimArray.size() || changedIndices.size() > 100) || updateAll){
         while (glGetError() != GL_NO_ERROR)
         {
         }
@@ -239,7 +239,8 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
                                         this->selectedFaces, 
                                         this->selectedPrimitiveIDs, 
                                         selectedMesh, 
-                                        changedIndices
+                                        changedIndices,
+                                        false
                                     );
     }
 
