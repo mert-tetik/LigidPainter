@@ -4,6 +4,7 @@
 uniform vec2 objIndices[MAX_OBJECT_COUNT];
 
 uniform int objIndicesArraySize;
+uniform int meshI;
 
 out vec4 fragColor;
 
@@ -17,4 +18,5 @@ void main(){
 
     fragColor = vec4(1);
     fragColor.r = val;
+    fragColor.g = meshI;
 }

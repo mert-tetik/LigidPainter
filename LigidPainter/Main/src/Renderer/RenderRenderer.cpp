@@ -496,7 +496,7 @@ void Renderer::renderMainModel(){
         ShaderSystem::tdModelShader().setInt("paintingMode", painter.refreshable);
         
         glActiveTexture(GL_TEXTURE11);
-        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].selectedObjectPrimitivesTxtr.ID);
         
         if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);

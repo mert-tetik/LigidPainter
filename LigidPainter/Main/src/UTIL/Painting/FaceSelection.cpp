@@ -37,7 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static std::vector<bool> prevPrimArray;
 
-void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, const int fragmentCount, std::vector<int>& changedIndices){
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices){
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, primitivesArrayTexture.ID);
@@ -45,12 +45,19 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-    if(primitivesArray.size() != prevPrimArray.size()){
+    if(primitivesArray.size() != prevPrimArray.size() || changedIndices.size() > 100){
         while (glGetError() != GL_NO_ERROR)
         {
         }
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, (int)sqrt(primitivesArray.size()), (int)sqrt(primitivesArray.size()), 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+        unsigned char* pxs = new unsigned char[primitivesArray.size()];
+        
+        for (size_t i = 0; i < primitivesArray.size(); i++)
+        {
+            pxs[i] = primitivesArray[i] * 255;
+        }
+
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, (int)sqrt(primitivesArray.size()), (int)sqrt(primitivesArray.size()), 0, GL_RED, GL_UNSIGNED_BYTE, pxs);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         if(glGetError() == 1281){
@@ -232,7 +239,6 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
                                         this->selectedFaces, 
                                         this->selectedPrimitiveIDs, 
                                         selectedMesh, 
-                                        fragmentCount,
                                         changedIndices
                                     );
     }

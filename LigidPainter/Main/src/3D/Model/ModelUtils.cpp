@@ -30,6 +30,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "MouseSystem/Mouse.hpp"
 
+// Defined in Painter/faceSelection.cpp
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices);
+
 void Model::updateObjectIDsTexture(){
     glDepthFunc(GL_LESS);
     
@@ -41,7 +44,7 @@ void Model::updateObjectIDsTexture(){
     }
 
     // Remove if slow
-    this->objectIDs.update(nullptr, resolution.x, resolution.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->objectIDs.update(nullptr, resolution.x, resolution.y, GL_LINEAR, GL_RG, GL_RG32F);
 
     Framebuffer captureFBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)));
     captureFBO.bind();
@@ -61,16 +64,15 @@ void Model::updateObjectIDsTexture(){
         for (size_t i = 0; i < this->meshes.size(); i++){
             
             ShaderSystem::modelObjectID().setInt("objIndicesArraySize", this->meshes[i].objects.size());
+            ShaderSystem::modelObjectID().setInt("meshI", i + 1);
             
             for (size_t objI = 0; objI < this->meshes[i].objects.size(); objI++)
             {
-                ShaderSystem::modelObjectID().setVec2("objIndices[" + std::to_string(objI* 2) + "]", this->meshes[i].objects[objI].vertIndices / glm::ivec2(3));
+                ShaderSystem::modelObjectID().setVec2("objIndices[" + std::to_string(objI) + "]", this->meshes[i].objects[objI].vertIndices / glm::ivec2(3));
             }
             
             this->meshes[i].Draw(false);
         }
-
-        std::cout << std::endl;
     }
     
     //!Finished
@@ -89,28 +91,23 @@ void Model::updateObjectIDsTexture(){
 
 void Model::selectObject(){
     
-    std::cout << objectIDs.ID << std::endl;
     Framebuffer FBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D);
     FBO.bind();
 
     glm::vec2 pos = *Mouse::cursorPos();
     pos.y = getContext()->windowScale.y - pos.y;
 
-    float* pxs = new float[1]; 
+    float* pxs = new float[2]; 
     
     glReadPixels(
                     pos.x, 
                     pos.y, 
                     1, 
                     1,
-                    GL_RED,
+                    GL_RG,
                     GL_FLOAT,
                     pxs
                 );
-
-    std::cout << "WOW : " << pxs[0] << std::endl;
-    
-    delete[] pxs;
 
     //Set back to default shader
     ShaderSystem::buttonShader().use();
@@ -121,19 +118,55 @@ void Model::selectObject(){
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 
-    /*
-    for (size_t meshI = 0; meshI < this->meshes.size(); meshI++)
-    {
-        selectedObjectPrimitiveIDFlags.resize(this->meshes[meshI].indices.size() / 3);
+    int objI = pxs[0];
+    int meshI = pxs[1] - 1;
 
-        for (size_t objI = 0; objI < this->meshes[meshI].objects.size(); objI++)
+    delete[] pxs;
+
+    std::cout << "meshI" << meshI << std::endl;
+
+    if(meshI < this->meshes.size() && meshI >= 0){
+
+        std::vector<int> changedIndices;
+
+        bool matched = false;
+        for (size_t i = 0; i < this->meshes[meshI].selectedObjectIndices.size(); i++)
         {
-            for (size_t i = this->meshes[meshI].objects[objI].vertIndices.x / 3; i < this->meshes[meshI].objects[objI].vertIndices.y / 3; i++)
-            {
-                if(i < selectedObjectPrimitiveIDFlags.size())
-                    selectedObjectPrimitiveIDFlags[i] = true;
-            }
+            if(this->meshes[meshI].selectedObjectIndices[i] == objI)
+                matched = true; 
         }
+        
+        if(!matched)
+            this->meshes[meshI].selectedObjectIndices.push_back(objI);
+
+        std::vector<bool> primitivesArray;
+        primitivesArray.resize(this->meshes[meshI].indices.size() / 3);
+        for (size_t oI = 0; oI < this->meshes[meshI].objects.size(); oI++)
+        {
+            bool contains = false;
+            for (size_t i = 0; i < this->meshes[meshI].selectedObjectIndices.size(); i++)
+            {
+                if(this->meshes[meshI].selectedObjectIndices[i] == oI)
+                    contains = true;
+            }
+            std::cout << "a" << std::endl;
+            if(contains){
+                for (size_t i = this->meshes[meshI].objects[oI].vertIndices.x / 3; i < this->meshes[meshI].objects[oI].vertIndices.y / 3; i++)
+                {
+                    if(i < primitivesArray.size()){
+                        changedIndices.push_back(i);
+                        primitivesArray[i] = true;
+                    }
+                }
+            }
+            std::cout << "b" << std::endl;
+        }
+    
+
+        if(!this->meshes[meshI].selectedObjectPrimitivesTxtr.ID){
+            glDeleteTextures(1, &this->meshes[meshI].selectedObjectPrimitivesTxtr.ID);
+        }
+
+        updatePrimitivesArrayTexture(this->meshes[meshI].selectedObjectPrimitivesTxtr, primitivesArray, this->meshes[meshI], changedIndices);
     }
-    */
 }

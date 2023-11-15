@@ -146,7 +146,6 @@ public:
       (don't try to equate to another txtr) 
     
     */
-
     Texture albedo;
     Texture roughness;
     Texture metallic; 
@@ -157,6 +156,9 @@ public:
     Texture uvMask;
 
     Texture displayingTxtr;
+
+    std::vector<int> selectedObjectIndices;
+    Texture selectedObjectPrimitivesTxtr;
 
     std::vector<MeshObject> objects;
 
@@ -213,9 +215,6 @@ public:
                 And is set to false back in the renderer.render  
     */
     bool newModelAdded = false;
-
-    std::vector<int> selectedObjectIndices;
-    std::vector<bool> selectedObjectPrimitiveIDFlags;
 
     Texture displayingTxtr; 
     

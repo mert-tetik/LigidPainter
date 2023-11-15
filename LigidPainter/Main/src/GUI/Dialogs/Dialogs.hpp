@@ -161,6 +161,8 @@ public:
 
    Panel elementSelectionPanel;
 
+   Texture displayingTexture;
+
    bool materialSelection = false;
    bool textureSelection = false;
 
