@@ -92,7 +92,10 @@ void main() {
 
     gl_FragDepth = gl_FragCoord.z;
 
-    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r > 0.5;
+    float prim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r;
+
+    bool selectedPrim = prim > 0.9;
+    bool hoveredPrim = prim > 0.3 && prim < 0.9;
 
     if(wireframeMode == 1 || (selectedPrim && meshSelectionEditing == 1)){
         fragColor = vec4(0.18, 0.42, 0.64, 1.);
@@ -193,6 +196,9 @@ void main() {
             gl_FragDepth = 1.;
         }
     }
+
+    if(hoveredPrim)
+        fragColor.rgb /= 1.25;
 
     float mirrorDisplayerLineThickness = 0.005;
     if(mirrorState.x == 1.){

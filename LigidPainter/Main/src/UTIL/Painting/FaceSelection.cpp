@@ -35,9 +35,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <unordered_set>
 
-static std::vector<bool> prevPrimArray;
+static std::vector<byte> prevPrimArray;
 
-void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll){
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll){
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, primitivesArrayTexture.ID);
@@ -54,7 +54,7 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
         
         for (size_t i = 0; i < primitivesArray.size(); i++)
         {
-            pxs[i] = primitivesArray[i] * 255;
+            pxs[i] = primitivesArray[i] * 126;
         }
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, (int)sqrt(primitivesArray.size()), (int)sqrt(primitivesArray.size()), 0, GL_RED, GL_UNSIGNED_BYTE, pxs);
@@ -70,7 +70,7 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
             if(changedIndices[i] < primitivesArray.size()){
                 if(primitivesArray[changedIndices[i]] != prevPrimArray[changedIndices[i]]){
                     unsigned char pxs[1];
-                    pxs[0] = (unsigned char)(primitivesArray[changedIndices[i]] * 255);
+                    pxs[0] = (unsigned char)(primitivesArray[changedIndices[i]] * 126);
 
                     glm::ivec2 offset = glm::ivec2(changedIndices[i] % int(sqrt(primitivesArray.size())), changedIndices[i] / int(sqrt(primitivesArray.size())));
                     glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x - 1, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);
@@ -207,15 +207,15 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
                 {
                     if(pxs[i] < this->selectedPrimitiveIDs.size() && pxs[i] >= 0){
                         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-                            if(this->selectedPrimitiveIDs[pxs[i]] == false){
-                                this->selectedPrimitiveIDs[pxs[i]] = true;
+                            if(this->selectedPrimitiveIDs[pxs[i]] == 0){
+                                this->selectedPrimitiveIDs[pxs[i]] = 2;
                                 changedIndices.push_back(pxs[i]);
                                 changesMade = true;
                             }
                         }
                         else{
-                            if(this->selectedPrimitiveIDs[pxs[i]] == true){
-                                this->selectedPrimitiveIDs[pxs[i]] = false;
+                            if(this->selectedPrimitiveIDs[pxs[i]] == 2){
+                                this->selectedPrimitiveIDs[pxs[i]] = 0;
                                 changedIndices.push_back(pxs[i]);
                                 changesMade = true;
                             }

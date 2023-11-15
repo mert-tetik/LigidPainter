@@ -42,7 +42,7 @@ void main() {
                     1.0 //Full opacity
                 );
 
-    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r > 0.5;
+    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r > 0.9;
 
     if(!selectedPrim && usingMeshSelection == 1){
         if(hideUnselected == 1){

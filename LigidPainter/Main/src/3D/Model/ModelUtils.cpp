@@ -31,7 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "MouseSystem/Mouse.hpp"
 
 // Defined in Painter/faceSelection.cpp
-void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<bool> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 
 void Model::updateObjectIDsTexture(){
     glDepthFunc(GL_LESS);
@@ -129,14 +129,13 @@ void Model::selectObject(){
         }
         
         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-            this->meshes[i].selectedObjectIndices.clear();
+            if(*Mouse::LClick())
+                this->meshes[i].selectedObjectIndices.clear();
             this->meshes[i].selectedObjectPrimitivesTxtr.update(nullptr, 1, 1);
         }        
     }
 
     if(meshI < this->meshes.size() && meshI >= 0){
-        std::vector<int> changedIndices;
-
         int match = -1;
         for (size_t i = 0; i < this->meshes[meshI].selectedObjectIndices.size(); i++)
         {
@@ -144,36 +143,49 @@ void Model::selectObject(){
                 match = i; 
         }
         
-        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-            if(match == -1)
-                this->meshes[meshI].selectedObjectIndices.push_back(objI);
-        }
-        else{
-            if(match != -1)
-                this->meshes[meshI].selectedObjectIndices.erase(this->meshes[meshI].selectedObjectIndices.begin() + match);
+        if(*Mouse::LClick()){
+            if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+                if(match == -1)
+                    this->meshes[meshI].selectedObjectIndices.push_back(objI);
+            }
+            else{
+                if(match != -1)
+                    this->meshes[meshI].selectedObjectIndices.erase(this->meshes[meshI].selectedObjectIndices.begin() + match);
+            }
         }
 
-        std::vector<bool> primitivesArray;
-        primitivesArray.resize(this->meshes[meshI].indices.size() / 3);
-        for (size_t oI = 0; oI < this->meshes[meshI].objects.size(); oI++)
+        Mouse::setCursor(*Mouse::pointerCursor());
+    }
+
+
+    for (size_t mshI = 0; mshI < this->meshes.size(); mshI++)
+    {
+        std::vector<int> changedIndices;
+        std::vector<byte> primitivesArray;
+        primitivesArray.resize(this->meshes[mshI].indices.size() / 3);
+        for (size_t oI = 0; oI < this->meshes[mshI].objects.size(); oI++)
         {
             bool contains = false;
-            for (size_t i = 0; i < this->meshes[meshI].selectedObjectIndices.size(); i++)
-            {
-                if(this->meshes[meshI].selectedObjectIndices[i] == oI)
-                    contains = true;
-            }
-            if(contains){
-                for (size_t i = this->meshes[meshI].objects[oI].vertIndices.x / 3; i < this->meshes[meshI].objects[oI].vertIndices.y / 3; i++)
+                for (size_t i = 0; i < this->meshes[mshI].selectedObjectIndices.size(); i++)
+                {
+                    if(this->meshes[mshI].selectedObjectIndices[i] == oI)
+                        contains = true;
+                }
+            
+            if(contains || (oI == objI && mshI == meshI)){
+                for (size_t i = this->meshes[mshI].objects[oI].vertIndices.x / 3; i < this->meshes[mshI].objects[oI].vertIndices.y / 3; i++)
                 {
                     if(i < primitivesArray.size()){
                         changedIndices.push_back(i);
-                        primitivesArray[i] = true;
+                        if(contains)
+                            primitivesArray[i] = 2;
+                        else
+                            primitivesArray[i] = 1;
                     }
                 }
             }
         }
 
-        updatePrimitivesArrayTexture(this->meshes[meshI].selectedObjectPrimitivesTxtr, primitivesArray, this->meshes[meshI], changedIndices, true);
+        updatePrimitivesArrayTexture(this->meshes[mshI].selectedObjectPrimitivesTxtr, primitivesArray, this->meshes[mshI], changedIndices, true);
     }
 }

@@ -145,7 +145,7 @@ void Renderer::render(){
     Debugger::block("3D Model"); // End
 
     // Check if an object is selected after rendering the mesh
-    if(*Mouse::LClick() && painter.selectedDisplayingModeIndex == 0 && !userInterface.anyPanelHover && !userInterface.anyDialogActive) 
+    if(painter.selectedDisplayingModeIndex == 0 && !userInterface.anyPanelHover && !userInterface.anyDialogActive) 
         getModel()->selectObject();
 
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
