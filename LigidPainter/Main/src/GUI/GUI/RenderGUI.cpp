@@ -32,6 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "NodeSystem/Node/Node.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <fstream>
@@ -535,6 +536,27 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
         if(this->textureSelectedObjectsButton.clicked){
             this->objectTexturingDialog.dialogControl.activate();
+        }
+
+        this->objectsPanel.render(timer, !anyDialogActive);
+
+        if(getModel()->newModelAdded){
+            this->objectsPanel.sections.clear();
+            
+            for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+            {
+                Section section;
+                section.header = SectionHolder(ColorPalette::secondColor,0.f,getModel()->meshes[meshI].materialName);
+                section.header.sectionHolder.active = true;
+
+                for (size_t objI = 0; objI < getModel()->meshes[meshI].objects.size(); objI++){
+                    Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), getModel()->meshes[meshI].objects[objI].title, Texture(), 0.f, false));
+                    btn.button.color = ColorPalette::mainColor;
+                    section.elements.push_back(btn);
+                }
+
+                objectsPanel.sections.push_back(section);
+            }
         }
     }
 

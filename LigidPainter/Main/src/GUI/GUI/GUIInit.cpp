@@ -438,6 +438,26 @@ void UI::init
                             false
                         );
 
+    objectsPanel = Panel(
+                            {
+                            },
+                            
+                            glm::vec2(6.f ,10.f), //Initial scale value
+                            glm::vec3(50 ,50 ,0.1f),  //Initial position value
+                            ColorPalette::mainColor, //Color of the panel
+                            ColorPalette::thirdColor, //Color of the panel
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            1.f,
+                            1,
+                            {},
+                            20.f,
+                            false
+                        );
+
     //Init dialogs
     greetingDialog              = GreetingDialog();
     newTextureDialog            = NewTextureDialog();
@@ -467,7 +487,7 @@ void UI::init
 
     this->zoomingDisplayingButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(8.f,8.f), "", Texture(), 0.f, true);
     
-    this->textureSelectedObjectsButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(4.f,3.f), "texture Selected Objects", Texture(), 0.f, false);
+    this->textureSelectedObjectsButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(4.f,3.f), "Texture Selected Objects", Texture(), 0.f, false);
     
     this->filterPaintingModeFilterBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4.f,5.f), "Select Filter", Texture(), 0.f, false);
     this->filterPaintingModeFilterBtn.filterSelection = true;

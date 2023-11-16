@@ -78,6 +78,10 @@ void UI::panelPositioning(
     textureSelectedObjectsButton.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + textureSelectedObjectsButton.scale.x + 1;
     textureSelectedObjectsButton.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + textureSelectedObjectsButton.scale.y + 1;
     textureSelectedObjectsButton.pos.z = libraryPanelDisplayer.pos.z;
+    
+    objectsPanel.pos = textureSelectedObjectsButton.pos;
+    objectsPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + objectsPanel.scale.x + 1;
+    objectsPanel.pos.y += textureSelectedObjectsButton.scale.y + objectsPanel.scale.y + 1.f;
 
     displayingModesPanel.pos.x = paintingPanelModePanel.pos.x - paintingPanelModePanel.scale.x - displayingModesPanel.scale.x - 0.5f;
     displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;

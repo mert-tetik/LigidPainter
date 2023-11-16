@@ -234,7 +234,7 @@ public:
                Detects the selected object (based on the cursor position)
                and applies it's index to the @ref selectedObjectIndices array
     */
-    void selectObject();
+    void selectObject(Panel objectsPanel);
 };
 
 class SceneTiles

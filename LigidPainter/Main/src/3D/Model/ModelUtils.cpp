@@ -89,7 +89,7 @@ void Model::updateObjectIDsTexture(){
     glDepthFunc(GL_LEQUAL);
 }
 
-void Model::selectObject(){
+void Model::selectObject(Panel objectsPanel){
     
     Framebuffer FBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D);
     FBO.bind();
@@ -121,6 +121,16 @@ void Model::selectObject(){
     int objI = pxs[0];
     int meshI = pxs[1] - 1;
 
+    for (size_t secI = 0; secI < objectsPanel.sections.size(); secI++)
+    {
+        for (size_t elI = 0; elI < objectsPanel.sections[secI].elements.size(); elI++){
+            if(objectsPanel.sections[secI].elements[elI].button.hover){
+                meshI = secI;
+                objI = elI;
+            }
+        }
+    }
+    
     delete[] pxs;
 
     for (size_t i = 0; i < this->meshes.size(); i++){

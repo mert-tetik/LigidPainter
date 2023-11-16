@@ -78,6 +78,7 @@ void UI::elementInteraction(
                     displayingModesPanel.hover          ||
                     filterPaintingModeFilterBtn.hover   ||
                     textureSelectedObjectsButton.hover   ||
+                    objectsPanel.hover   ||
                     smearPaintingModePropertyPanel.hover||
                     logDialog.isHovered() ||
                     vectorPaintingModePropertyPanel.hover;

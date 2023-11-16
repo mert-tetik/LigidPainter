@@ -115,6 +115,7 @@ public:
     Panel displayingModesPanel; 
     Button filterPaintingModeFilterBtn;
     Button textureSelectedObjectsButton;
+    Panel objectsPanel;
     
     Panel paintingPanel;
     Panel paintingPanelModePanel;
