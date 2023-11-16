@@ -115,36 +115,40 @@ void Renderer::scrollCallback(
                                 double yoffset
                             )
 {
-    if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
-        getScene()->camera.originLocked = false;
+    Camera* cam = &getScene()->camera;
+    if(this->userInterface.objectTexturingDialog.dialogControl.isActive())
+        cam = &this->userInterface.objectTexturingDialog.sceneCam;
 
-    getScene()->camera.XPLocked = false;
-    getScene()->camera.XNLocked = false;
-    getScene()->camera.YPLocked = false;
-    getScene()->camera.YNLocked = false;
-    getScene()->camera.ZPLocked = false;
-    getScene()->camera.ZNLocked = false;
+    if(glm::distance(cam->cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
+        cam->originLocked = false;
+
+    cam->XPLocked = false;
+    cam->XNLocked = false;
+    cam->YPLocked = false;
+    cam->YNLocked = false;
+    cam->ZPLocked = false;
+    cam->ZNLocked = false;
 
     //Update the scroll value of the mouse class
     *Mouse::mouseScroll() = yoffset;
     
-    if(!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode)
+    if((!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode) || this->userInterface.objectTexturingDialog.dialogControl.isActive())
     {
         //The distance between the camera & center 
-        float originCameraDistance = glm::distance(getScene()->camera.originPos,getScene()->camera.cameraPos)/10;
+        float originCameraDistance = glm::distance(cam->originPos,cam->cameraPos)/10;
 
         //Change the distance between camera & center (radius)
         if (yoffset > 0) {
-            getScene()->camera.radius -= originCameraDistance;
+            cam->radius -= originCameraDistance;
         }
         else if (yoffset < 0) {
-            getScene()->camera.radius += originCameraDistance;
+            cam->radius += originCameraDistance;
         }
         
         //Zoom in-out
-        getScene()->camera.cameraPos.x = cos(glm::radians(getScene()->camera.yaw)) * cos(glm::radians(getScene()->camera.pitch)) * getScene()->camera.radius + getScene()->camera.originPos.x;
-        getScene()->camera.cameraPos.y = sin(glm::radians(getScene()->camera.pitch)) * -getScene()->camera.radius + getScene()->camera.originPos.y;
-        getScene()->camera.cameraPos.z = sin(glm::radians(getScene()->camera.yaw)) * cos(glm::radians(getScene()->camera.pitch)) * getScene()->camera.radius + getScene()->camera.originPos.z;
+        cam->cameraPos.x = cos(glm::radians(cam->yaw)) * cos(glm::radians(cam->pitch)) * cam->radius + cam->originPos.x;
+        cam->cameraPos.y = sin(glm::radians(cam->pitch)) * -cam->radius + cam->originPos.y;
+        cam->cameraPos.z = sin(glm::radians(cam->yaw)) * cos(glm::radians(cam->pitch)) * cam->radius + cam->originPos.z;
 
         //Update the view matrix after the camera position is changed
         getScene()->updateViewMatrix();
@@ -178,13 +182,16 @@ void Renderer::cursorPositionCallback(
     const float sensitivity = 0.14f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
     
     Camera* cam = &getScene()->camera;
+    if(this->userInterface.objectTexturingDialog.dialogControl.isActive())
+        cam = &this->userInterface.objectTexturingDialog.sceneCam;
+
 
     if (
             ((getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
             window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS) || getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE) == LIGIDGL_PRESS) 
             &&  //If pressed to CTRL button
-            !this->userInterface.anyDialogActive && //If there is no active dialog (don't move the camera if a dialog is active)
-            !this->userInterface.anyPanelHover        //Don't move the camera if cursor hover a panel
+            ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || this->userInterface.objectTexturingDialog.dialogControl.isActive()) && //If there is no active dialog (don't move the camera if a dialog is active)
+            !this->userInterface.anyPanelHover       //Don't move the camera if cursor hover a panel
         ) 
     { 
         if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
@@ -243,8 +250,9 @@ void Renderer::cursorPositionCallback(
 
     else if (
                 getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
-                (!this->userInterface.anyDialogActive || //If there is no active dialog (don't move the camera if a dialog is active)
+                ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || //If there is no active dialog (don't move the camera if a dialog is active)
                 this->userInterface.materialEditorDialog.dialogControl.isActive() ||
+                this->userInterface.objectTexturingDialog.dialogControl.isActive() ||
                 this->userInterface.materialDisplayerDialog.dialogControl.isActive()) &&
                 !this->userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel
             ) 

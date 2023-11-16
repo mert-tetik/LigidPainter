@@ -63,6 +63,7 @@ void UI::elementInteraction(
                     settingsDialog.dialogControl.isActive() ||
                     displayerDialog.dialogControl.isActive() ||
                     textureEditorDialog.dialogControl.isActive() ||
+                    objectTexturingDialog.dialogControl.isActive() ||
                     texturePackEditorDialog.dialogControl.isActive();
 
     this->anyPanelHover = 

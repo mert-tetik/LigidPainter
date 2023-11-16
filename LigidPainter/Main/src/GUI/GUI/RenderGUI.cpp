@@ -924,7 +924,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
         bakingDialog.render(timer, skybox);
     
     if(objectTexturingDialog.dialogControl.isActive())
-        objectTexturingDialog.render(timer);
+        objectTexturingDialog.render(timer, this->projection);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
         materialEditorDialog.render(timer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex));

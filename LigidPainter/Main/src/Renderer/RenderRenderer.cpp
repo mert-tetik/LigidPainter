@@ -480,11 +480,17 @@ void Renderer::renderMainModel(){
                 ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
                 ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
             }
+            
+            glActiveTexture(GL_TEXTURE11);
+            glBindTexture(GL_TEXTURE_2D, painter.faceSelection.modelPrimitives.ID);
         }
         else{
             ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
             ShaderSystem::tdModelShader().setInt("meshSelectionEditing", true);
             ShaderSystem::tdModelShader().setInt("hideUnselected", false);
+        
+            glActiveTexture(GL_TEXTURE11);
+            glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].selectedObjectPrimitivesTxtr.ID);
         }
         
         ShaderSystem::tdModelShader().setInt("materialPainting", painter.materialPainting);
@@ -501,9 +507,6 @@ void Renderer::renderMainModel(){
         ShaderSystem::tdModelShader().setFloat("ambientOcclusionVal", painter.ambientOcclusionVal);
 
         ShaderSystem::tdModelShader().setInt("paintingMode", painter.refreshable);
-        
-        glActiveTexture(GL_TEXTURE11);
-        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].selectedObjectPrimitivesTxtr.ID);
         
         if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);

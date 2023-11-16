@@ -32,6 +32,8 @@
 
 #include "tinyfiledialogs.h"
 
+#define DISPLAY_RESOLUTION glm::vec2(this->panel.scale * 30.f)
+
 ObjectTexturingDialog::ObjectTexturingDialog(){
     //Create the panel
     this->panel = Panel(
@@ -40,7 +42,7 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,40.f), ""  , Texture(), 1.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,40.f), ""  , Texture(), 1.f, false)),
                     }
                 )
             }
@@ -93,13 +95,25 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
     this->materialDisplayerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(6, 4.f), "", Texture(), 1.f, false);
     this->editMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Edit material", Texture(), 1.f, false);
     this->selectMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f, 4.f), "", Settings::appTextures().arrowB, 1.f, false);
+
+    this->displayingTexture = Texture(nullptr, DISPLAY_RESOLUTION.x, DISPLAY_RESOLUTION.y);
+
+    this->displayingFBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, DISPLAY_RESOLUTION));
+
 }
 
-void ObjectTexturingDialog::render(Timer timer){
+void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection){
     dialogControl.updateStart();
 
-    // Modifying the elements
-    this->panel.sections[0].elements[0].button.texture = getModel()->displayingTxtr;
+    if(dialogControl.firstFrameActivated){
+        this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
+        this->sceneCam.radius = 3.5f;
+    }
+
+    // Update the scene texture
+    updateDisplayingTexture();
+
+    // Modifying the elements    
     this->panel.sections[0].elements[0].button.scale = this->panel.scale;
 
     this->maskViaFaceSelection.pos = this->panel.pos;
@@ -126,6 +140,20 @@ void ObjectTexturingDialog::render(Timer timer){
     //Render the panel
     this->panel.render(timer, false);
 
+    ShaderSystem::textureRenderingShader().use();
+    ShaderSystem::textureRenderingShader().setMat4("projection", projection);
+    ShaderSystem::textureRenderingShader().setVec2("scale", this->panel.resultScale);
+    ShaderSystem::textureRenderingShader().setVec3("pos", this->panel.resultPos);
+    ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+    ShaderSystem::textureRenderingShader().setFloat("opacity", this->dialogControl.mixVal);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, this->displayingTexture.ID);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    ShaderSystem::buttonShader().use();
+
     // Render the elements
     this->maskViaFaceSelection.render(timer, !this->materialSelection && !this->textureSelection);
     this->maskViaTexture.render(timer, !this->materialSelection && !this->textureSelection);
@@ -148,4 +176,82 @@ void ObjectTexturingDialog::render(Timer timer){
         this->dialogControl.unActivate();
 
     dialogControl.updateEnd(timer,0.15f);
+}
+
+void ObjectTexturingDialog::updateDisplayingTexture(){
+    //Move the camera to the side
+    glm::mat4 view = glm::lookAt(this->sceneCam.cameraPos, 
+                                 this->sceneCam.originPos, 
+                                 glm::vec3(0.0, 1.0, 0.0));
+    
+    //The perspective projection matrix    
+    glm::mat4 projectionMatrix = glm::perspective(
+                                                    glm::radians(30.f), //Fov  
+                                                    (float)getContext()->windowScale.x / (float)getContext()->windowScale.y,  //Ratio (is 1 since the width & the height is equal to DISPLAY_RESOLUTION)
+                                                    0.1f,   //Near
+                                                    1000.f  //Far (the material is pretty close to the camera actually  ) 
+                                                );
+    
+    this->displayingFBO.bind();
+    
+    //Set the OpenGL viewport to the resolution of the material displaying texture
+    glViewport(0,0, DISPLAY_RESOLUTION.x, DISPLAY_RESOLUTION.y);
+
+    //Clear the capture framebuffer (displaying texture) with alpha zero color
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    //Use the 3D model rendering shader
+    ShaderSystem::tdModelShader().use();
+
+    //Throw the camera data to the shader
+    ShaderSystem::tdModelShader().setInt("displayingMode", 0);
+    ShaderSystem::tdModelShader().setVec3("viewPos", this->sceneCam.cameraPos);
+    ShaderSystem::tdModelShader().setMat4("view",view);
+    ShaderSystem::tdModelShader().setMat4("projection",projectionMatrix);
+    ShaderSystem::tdModelShader().setMat4("modelMatrix", glm::mat4(1));
+
+    
+    //Bind the channels of the material
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].albedo.ID);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].roughness.ID);
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].metallic.ID);
+    glActiveTexture(GL_TEXTURE5);
+    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].normalMap.ID);
+    glActiveTexture(GL_TEXTURE6);
+    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].heightMap.ID);
+    glActiveTexture(GL_TEXTURE7);
+    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].ambientOcclusion.ID);
+    
+    ShaderSystem::tdModelShader().setInt("displayingMode", 0);
+    
+    for (size_t i = 0; i < getModel()->meshes.size(); i++)
+    {
+        ShaderSystem::tdModelShader().setInt("usingMeshSelection", true);
+        ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
+        ShaderSystem::tdModelShader().setInt("hideUnselected", true);
+        ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);
+
+        glActiveTexture(GL_TEXTURE11);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].selectedObjectPrimitivesTxtr.ID);
+    
+        getModel()->meshes[i].Draw(false);
+    }
+    
+    
+    //!Finish (prepare rendering the GUI)
+
+    //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
+    ShaderSystem::buttonShader().use();
+
+    //Bind the default framebuffer
+    Settings::defaultFramebuffer()->FBO.bind();
+    
+    //Set the OpenGL viewport to default
+    Settings::defaultFramebuffer()->setViewport();
+
+    getBox()->bindBuffers();
 }

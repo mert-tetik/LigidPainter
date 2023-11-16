@@ -161,7 +161,9 @@ public:
 
    Panel elementSelectionPanel;
 
+   Camera sceneCam;
    Texture displayingTexture;
+   Framebuffer displayingFBO;
 
    bool materialSelection = false;
    bool textureSelection = false;
@@ -170,7 +172,9 @@ public:
    ObjectTexturingDialog();
     
    //Public member function
-   void render(Timer timer);
+   void render(Timer timer, glm::mat4 projection);
+
+   void updateDisplayingTexture();
  };
 
 

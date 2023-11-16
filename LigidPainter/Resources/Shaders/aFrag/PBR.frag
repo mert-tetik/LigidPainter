@@ -101,6 +101,12 @@ void main() {
         fragColor = vec4(0.18, 0.42, 0.64, 1.);
         return;
     }
+
+    if(!selectedPrim && usingMeshSelection == 1 && meshSelectionEditing == 0 && hideUnselected == 1){
+        fragColor.rgba = vec4(0.);
+        gl_FragDepth = 1.;
+        return;
+    }
     
     //Material channels
     vec3 albedo;
@@ -189,12 +195,7 @@ void main() {
                     );
 
     if(!selectedPrim && usingMeshSelection == 1 && meshSelectionEditing == 0){
-        if(hideUnselected == 0)
-            fragColor.rgb = mix(fragColor.rgb, vec3(1.), 0.6);
-        else{
-            fragColor.rgba = vec4(0.);
-            gl_FragDepth = 1.;
-        }
+        fragColor.rgb = mix(fragColor.rgb, vec3(1.), 0.6);
     }
 
     if(hoveredPrim)
