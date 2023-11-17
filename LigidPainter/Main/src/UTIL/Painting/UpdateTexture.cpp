@@ -163,7 +163,7 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
 
 }
 
-void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Section paintingChannelsSection){
+void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox){
     
     glm::vec2 textureRes = this->selectedTexture.getResolution();
 
@@ -220,7 +220,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
                     enableChannel = this->enableAOChannel;
                 }
                 if(enableChannel)
-                    updateTheTexture(paintingChannelsSection.elements[i].button.texture, twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, clr, i, clr.r);
+                    updateTheTexture(getModel()->meshes[this->selectedMeshIndex].albedo, twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, clr, i, clr.r);
             }
         }
         else{

@@ -263,8 +263,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     if(selectedPaintingPanelMode == 0)
         paintingPanelActiveSection = &this->colorSection;
-    if(selectedPaintingPanelMode == 1)
-        paintingPanelActiveSection = &this->paintingChannelsSection;
     if(selectedPaintingPanelMode == 2)
         paintingPanelActiveSection = &this->brushSection;
     if(selectedPaintingPanelMode == 3)
@@ -274,14 +272,24 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     if(selectedPaintingPanelMode == 5)
         paintingPanelActiveSection = &this->paintingOverSection;
     
-    paintingPanel.sections[0] = *paintingPanelActiveSection;
+    if(selectedPaintingPanelMode == 1)
+        paintingPanel.sections = this->paintingChannelsSection;
+    else{
+        if(paintingPanel.sections.size() > 1)
+            paintingPanel.sections.erase(paintingPanel.sections.begin()+1, paintingPanel.sections.end());
+           
+        paintingPanel.sections[0] = *paintingPanelActiveSection;
+    }
     
     paintingPanel.render(timer,!anyDialogActive);
     if(paintingPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    *paintingPanelActiveSection = paintingPanel.sections[0];
+    if(selectedPaintingPanelMode == 1)
+        this->paintingChannelsSection = paintingPanel.sections; 
+    else
+        *paintingPanelActiveSection = paintingPanel.sections[0];
     
     paintingPanelModeDisplayer.text = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.text; 
     paintingPanelModeDisplayer.texture = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.texture; 
@@ -307,6 +315,21 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     if(selectedTextureDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
+    }
+
+    if(paintingChannelsTextureSelectionPanelActive){
+
+        paintingChannelsTextureSelectionPanel.sections[0].elements.clear();
+
+        for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+        {
+            paintingChannelsTextureSelectionPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getTextureObj(i).title, Library::getTextureObj(i), 0.f, false));
+        }  
+
+        paintingChannelsTextureSelectionPanel.render(timer, true);
+        
+        if(!paintingChannelsTextureSelectionPanel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE))
+            paintingChannelsTextureSelectionPanelActive = false;
     }
     
     if(nodeEditorDisplayer.hover){
@@ -761,7 +784,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     else if(prevStraightLinePaintingCondition && !painter.faceSelection.editMode){
         std::vector<VectorStroke> strokeArray;
         strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
-        painter.applyVectorStrokes(strokeArray, this->twoDPaintingPanel, this->projection, painter.selectedPaintingModeIndex, this->filterPaintingModeFilterBtn.filter, this->twoDPaintingBox, paintingChannelsSection);
+        painter.applyVectorStrokes(strokeArray, this->twoDPaintingPanel, this->projection, painter.selectedPaintingModeIndex, this->filterPaintingModeFilterBtn.filter, this->twoDPaintingBox);
     }
     
     prevStraightLinePaintingCondition = straightLinePaintingCondition;
@@ -910,6 +933,9 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     
     if(newTextureDialog.dialogControl.isActive())
         newTextureDialog.render(timer);
+    
+    if(paintingChannelsAutoCreateTexturesDialog.dialogControl.isActive())
+        paintingChannelsAutoCreateTexturesDialog.render(timer, this->paintingChannelsSection);
     
     if(settingsDialog.dialogControl.isActive())
         settingsDialog.render(timer, painter);

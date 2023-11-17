@@ -124,7 +124,9 @@ public:
     Section colorSection; 
     Section brushSection; 
     Section meshSection; 
-    Section paintingChannelsSection; 
+    std::vector<Section> paintingChannelsSection; 
+    Panel paintingChannelsTextureSelectionPanel;
+    bool paintingChannelsTextureSelectionPanelActive = false;
     Section mirrorSection; 
     Section paintingOverSection; 
 
@@ -148,6 +150,7 @@ public:
     BakingDialog bakingDialog;
     FilterSelectionDialog filterSelectionDialog;
     NewTextureDialog newTextureDialog;
+    PaintingChannelsAutoCreateTexturesDialog paintingChannelsAutoCreateTexturesDialog;
     SettingsDialog settingsDialog;
     DisplayerDialog displayerDialog;
     TextureEditorDialog textureEditorDialog;

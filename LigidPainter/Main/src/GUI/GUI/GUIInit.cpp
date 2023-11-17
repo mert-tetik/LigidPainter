@@ -458,6 +458,27 @@ void UI::init
                             false
                         );
 
+    paintingChannelsTextureSelectionPanel = Panel(
+                            {
+                                Section()
+                            },
+                            
+                            glm::vec2(6.f ,10.f), //Initial scale value
+                            glm::vec3(50 ,50 ,0.1f),  //Initial position value
+                            ColorPalette::mainColor, //Color of the panel
+                            ColorPalette::thirdColor, //Color of the panel
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            1.f,
+                            1,
+                            {},
+                            20.f,
+                            false
+                        );
+
     //Init dialogs
     greetingDialog              = GreetingDialog();
     newTextureDialog            = NewTextureDialog();
@@ -562,17 +583,7 @@ void UI::init
                                     }
                                 );
 
-    this->paintingChannelsSection = Section(
-                                        Element(),
-                                        {   
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Albedo Texture"  , Texture(), 7.f,true)),//4
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Roughness Texture"  , Texture(), 1.f,true)),//4
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Metallic Texture"  , Texture(), 1.f,true)),//4
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Normal Map Texture"  , Texture(), 1.f,true)),//4
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Height Map Texture"  , Texture(), 1.f,true)),//4
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Ambient Occlusion Texture"  , Texture(), 1.f,true)),//4
-                                        }
-                                    );
+    this->paintingChannelsSection = {};
 
     this->brushSection =        Section(
                                     Element(),

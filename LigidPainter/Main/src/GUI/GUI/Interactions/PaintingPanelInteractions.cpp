@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <fstream>
@@ -152,26 +153,6 @@ void UI::paintingPanelInteraction(
 
     painter.selectedMeshIndex = meshSection.elements[0].button.selectedMeshI;
 
-    //Check all the mesh buttons if they are pressed
-    for (size_t i = 0; i < paintingChannelsSection.elements.size(); i++) 
-    {
-        if(paintingChannelsSection.elements[i].button.hover && *Mouse::LClick()){//If any button element is pressed
-            if(painter.selectedPaintingChannelIndex != i){
-                paintingChannelsSection.elements[painter.selectedPaintingChannelIndex].button.clickState1 = false;
-                painter.selectedPaintingChannelIndex = i;
-                painter.selectedTexture = paintingChannelsSection.elements[painter.selectedPaintingChannelIndex].button.texture;
-                break;
-            }
-        } 
-    }
-
-    //Set the selected mesh button as selected 
-    for (size_t i = 0; i < paintingChannelsSection.elements.size(); i++)
-    {
-        if(i == painter.selectedPaintingChannelIndex)
-            paintingChannelsSection.elements[i].button.clickState1 = true;
-    }
-
     painter.oSide.active = true;
     
     painter.oXSide.active = mirrorSection.elements[0].checkBox.clickState1; 
@@ -280,4 +261,50 @@ void UI::paintingPanelInteraction(
         this->meshSection.elements[2].checkBox.clickState1 = false;
     if(selectedPaintingPanelMode != 5)
         this->paintingOverSection.elements[1].checkBox.clickState1 = false;
+
+    if(getModel()->newModelAdded){
+        paintingChannelsSection.clear(); 
+
+        paintingChannelsSection.push_back(
+                                            Section(
+                                                Element(),
+                                                {
+                                                    Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2,2), "Auto Create Textures"  , Texture(), 7.f, false)),//4
+                                                }
+                                            )
+                                        );
+        
+        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        {
+            paintingChannelsSection.push_back(
+                                                Section(
+                                                    SectionHolder(ColorPalette::secondColor, 2.f, getModel()->meshes[i].materialName),
+                                                    {
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Albedo Texture"  , Texture(), 1.f, false)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Roughness Texture"  , Texture(), 1.f, false)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Metallic Texture"  , Texture(), 1.f, false)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Normal Map Texture"  , Texture(), 1.f, false)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Height Map Texture"  , Texture(), 1.f, false)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Ambient Occlusion Texture"  , Texture(), 1.f, false)),//4
+                                                    }
+                                                )
+                                            );
+        }
+    }
+
+    if(paintingChannelsSection.size()){
+        if(paintingChannelsSection[0].elements.size()){
+            if(paintingChannelsSection[0].elements[0].button.clicked)
+                paintingChannelsAutoCreateTexturesDialog.dialogControl.activate();
+        }
+    }
+
+    for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
+    {
+        for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
+            if(paintingChannelsSection[secI].elements[elI].button.clicked){
+                this->paintingChannelsTextureSelectionPanelActive = true;
+            }
+        }
+    }
 }

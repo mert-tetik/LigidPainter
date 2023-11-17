@@ -138,6 +138,26 @@ public:
    void render(Timer timer);
  };
 
+//!------------------------------PaintingChannelsAutoCreateTexturesDialog ------------------------------
+
+
+class PaintingChannelsAutoCreateTexturesDialog
+{
+private:
+   
+public:
+     
+   Panel panel;
+     
+   DialogControl dialogControl;
+
+   //Constructor
+   PaintingChannelsAutoCreateTexturesDialog();
+    
+   //Public member function
+   void render(Timer timer, std::vector<Section>& paintingChannelsSection);
+ };
+
 //!------------------------------LOAD PROJECT DIALOG------------------------------
 
 
