@@ -463,7 +463,7 @@ void UI::init
                                 Section()
                             },
                             
-                            glm::vec2(6.f ,10.f), //Initial scale value
+                            glm::vec2(10.f ,15.f), //Initial scale value
                             glm::vec3(50 ,50 ,0.1f),  //Initial position value
                             ColorPalette::mainColor, //Color of the panel
                             ColorPalette::thirdColor, //Color of the panel

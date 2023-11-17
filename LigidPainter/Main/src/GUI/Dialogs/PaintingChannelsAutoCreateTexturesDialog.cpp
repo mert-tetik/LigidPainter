@@ -94,28 +94,29 @@ void PaintingChannelsAutoCreateTexturesDialog::render(Timer timer, std::vector<S
                 else if(channelI == 5)
                     channelTitle = "Ambient_Occlusion";
 
-                if(!paintingChannelsSection[meshI+1].elements[channelI].button.texture.ID){
-                    char* pxs = nullptr;
-                    
-                    if(panel.sections[0].elements[1].checkBox.clickState1){
-                        pxs = new char[textureRes * textureRes * 4];
-                        for (size_t i = 0; i < textureRes * textureRes; i++)
-                        {
-                            pxs[i*4+3] = 127;
+                if(meshI+1 < paintingChannelsSection.size()){
+                    if(!paintingChannelsSection[meshI+1].elements[channelI].button.texture.ID){
+                        char* pxs = nullptr;
+                        
+                        if(panel.sections[0].elements[1].checkBox.clickState1){
+                            pxs = new char[textureRes * textureRes * 4];
+                            for (size_t i = 0; i < textureRes * textureRes; i++)
+                            {
+                                pxs[i*4+3] = 127;
+                            }
                         }
+
+                        Texture texture = Texture(pxs, textureRes, textureRes);
+                        texture.title = meshTitle + "_" + channelTitle;
+
+                        if(panel.sections[0].elements[1].checkBox.clickState1)
+                            delete[] pxs;
+                        
+                        paintingChannelsSection[meshI+1].elements[channelI].button.texture = texture;
+
+                        Library::addTexture(texture);
                     }
-
-                    Texture texture = Texture(pxs, textureRes, textureRes);
-                    texture.title = meshTitle + "_" + channelTitle;
-
-                    if(panel.sections[0].elements[1].checkBox.clickState1)
-                        delete[] pxs;
-                    
-                    paintingChannelsSection[meshI+1].elements[channelI].button.texture = texture;
-
-                    Library::addTexture(texture);
                 }
-
             }
         }
     }

@@ -280,12 +280,12 @@ void UI::paintingPanelInteraction(
                                                 Section(
                                                     SectionHolder(ColorPalette::secondColor, 2.f, getModel()->meshes[i].materialName),
                                                     {
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Albedo Texture"  , Texture(), 1.f, false)),//4
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Roughness Texture"  , Texture(), 1.f, false)),//4
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Metallic Texture"  , Texture(), 1.f, false)),//4
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Normal Map Texture"  , Texture(), 1.f, false)),//4
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Height Map Texture"  , Texture(), 1.f, false)),//4
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Ambient Occlusion Texture"  , Texture(), 1.f, false)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Albedo Texture"  , Texture(), 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Roughness Texture"  , Texture(), 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Metallic Texture"  , Texture(), 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Normal Map Texture"  , Texture(), 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Height Map Texture"  , Texture(), 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Ambient Occlusion Texture"  , Texture(), 1.f, true)),//4
                                                     }
                                                 )
                                             );
@@ -302,8 +302,10 @@ void UI::paintingPanelInteraction(
     for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
     {
         for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
-            if(paintingChannelsSection[secI].elements[elI].button.clicked){
+            if(paintingChannelsSection[secI].elements[elI].button.clickState1){
                 this->paintingChannelsTextureSelectionPanelActive = true;
+                this->paintingChannelsTextureSelectionPanel.pos = paintingPanelModePanel.pos;
+                this->paintingChannelsTextureSelectionPanel.pos.x -= paintingPanelModePanel.scale.x + this->paintingChannelsTextureSelectionPanel.scale.x;
             }
         }
     }

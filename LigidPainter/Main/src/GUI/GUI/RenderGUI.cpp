@@ -323,13 +323,41 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
         for (size_t i = 0; i < Library::getTextureArraySize(); i++)
         {
-            paintingChannelsTextureSelectionPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getTextureObj(i).title, Library::getTextureObj(i), 0.f, false));
+            Button btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getTextureObj(i).title, Library::getTextureObj(i), 0.f, false);
+            btn.textureSizeScale = 1.2f;
+            paintingChannelsTextureSelectionPanel.sections[0].elements.push_back(btn);
         }  
 
         paintingChannelsTextureSelectionPanel.render(timer, true);
+
+        for (size_t i = 0; i < paintingChannelsTextureSelectionPanel.sections[0].elements.size(); i++)
+        {
+            if(paintingChannelsTextureSelectionPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
+                for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
+                {
+                    for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
+                        if(paintingChannelsSection[secI].elements[elI].button.clickState1){
+                            paintingChannelsSection[secI].elements[elI].button.texture = *Library::getTexture(i);
+                            paintingChannelsSection[secI].elements[elI].button.clickState1 = false;
+                        }
+                    }
+                }
+                
+                paintingChannelsTextureSelectionPanelActive = false;
+            }
+        }
         
-        if(!paintingChannelsTextureSelectionPanel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE))
+        if(!paintingChannelsTextureSelectionPanel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)){
+            for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
+            {
+                for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
+                    paintingChannelsSection[secI].elements[elI].button.clickState1 = false;
+                }
+            }
+           
             paintingChannelsTextureSelectionPanelActive = false;
+        }
+
     }
     
     if(nodeEditorDisplayer.hover){
