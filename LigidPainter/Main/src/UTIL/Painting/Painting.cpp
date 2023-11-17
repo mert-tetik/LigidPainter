@@ -248,6 +248,29 @@ void Painter::projectThePaintingTexture(
     // The resolution of the selected texture (painted texture)
     glm::vec2 textureRes = selectedTexture.getResolution();
 
+    if(this->materialPainting && this->selectedMeshIndex < getModel()->meshes.size()){
+        if(!getModel()->meshes[this->selectedMeshIndex].albedo.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
+
+        else if(!getModel()->meshes[this->selectedMeshIndex].roughness.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].roughness.getResolution();
+
+        else if(!getModel()->meshes[this->selectedMeshIndex].metallic.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].metallic.getResolution();
+
+        else if(!getModel()->meshes[this->selectedMeshIndex].normalMap.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].normalMap.getResolution();
+
+        else if(!getModel()->meshes[this->selectedMeshIndex].heightMap.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].heightMap.getResolution();
+
+        else if(!getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.getResolution();
+    
+        else
+            textureRes = glm::vec2(1024);
+    }
+
     // Update the resolution & the format of the projected painting texture in the first frame the painting started
     if(*Mouse::LClick()){
         unsigned int format = 0;
@@ -483,6 +506,29 @@ void Painter::generateMirroredProjectedPaintingTexture(
 
     // The resolution of the selected texture (painted texture)
     glm::vec2 textureRes = selectedTexture.getResolution();
+
+    if(this->materialPainting && this->selectedMeshIndex < getModel()->meshes.size()){
+        if(!getModel()->meshes[this->selectedMeshIndex].albedo.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
+
+        else if(!getModel()->meshes[this->selectedMeshIndex].roughness.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].roughness.getResolution();
+
+        else if(!getModel()->meshes[this->selectedMeshIndex].metallic.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].metallic.getResolution();
+
+        else if(!getModel()->meshes[this->selectedMeshIndex].normalMap.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].normalMap.getResolution();
+
+        else if(!getModel()->meshes[this->selectedMeshIndex].heightMap.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].heightMap.getResolution();
+
+        else if(!getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.getResolution();
+    
+        else
+            textureRes = glm::vec2(1024);
+    }
 
     // Update the resolution & the format of the projected painting texture in the first frame the painting started
     if(*Mouse::LClick()){

@@ -83,7 +83,6 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
     
     //Since the UV is between 0 - 1
     glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
-    
 
     ShaderSystem::buttonShader().use();
     
@@ -152,7 +151,7 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
     
     if(this->threeDimensionalMode)
         if(selectedMeshIndex < getModel()->meshes.size())
-            this->selectedTexture.removeSeams(getModel()->meshes[selectedMeshIndex], destScale);
+            txtr.removeSeams(getModel()->meshes[selectedMeshIndex], destScale);
 
     //Delete the capture framebuffer
     captureFBO.deleteBuffers(false, false);
@@ -165,8 +164,6 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
 
 void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox){
     
-    glm::vec2 textureRes = this->selectedTexture.getResolution();
-
     std::string actionTitle = "Unknown painting mode";
     
     if(paintingMode == 0)
@@ -195,32 +192,40 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
             {
                 glm::vec3 clr;
                 bool enableChannel;
+                Texture txtr;
                 if(i == 0){
                     clr = this->getSelectedColor().getRGB_normalized();
                     enableChannel = this->enableAlbedoChannel;
+                    txtr = getModel()->meshes[this->selectedMeshIndex].albedo;
                 }
                 if(i == 1){
                     clr = glm::vec3(this->roughnessVal);
                     enableChannel = this->enableRoughnessChannel;
+                    txtr = getModel()->meshes[this->selectedMeshIndex].roughness;
                 }
                 if(i == 2){
                     clr = glm::vec3(this->metallicVal);
                     enableChannel = this->enableMetallicChannel;
+                    txtr = getModel()->meshes[this->selectedMeshIndex].metallic;
                 }
                 if(i == 3){
                     clr = glm::vec3(this->normalMapStrengthVal);
                     enableChannel = this->enableNormalMapChannel;
+                    txtr = getModel()->meshes[this->selectedMeshIndex].normalMap;
                 }
                 if(i == 4){
                     clr = glm::vec3(this->heightMapVal);
                     enableChannel = this->enableHeightMapChannel;
+                    txtr = getModel()->meshes[this->selectedMeshIndex].heightMap;
                 }
                 if(i == 5){
                     clr = glm::vec3(this->ambientOcclusionVal);
                     enableChannel = this->enableAOChannel;
+                    txtr = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion;
                 }
+
                 if(enableChannel)
-                    updateTheTexture(getModel()->meshes[this->selectedMeshIndex].albedo, twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, clr, i, clr.r);
+                    updateTheTexture(txtr, twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, clr, i, clr.r);
             }
         }
         else{
