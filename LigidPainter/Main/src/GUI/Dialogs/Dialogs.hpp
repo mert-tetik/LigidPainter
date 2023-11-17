@@ -138,46 +138,6 @@ public:
    void render(Timer timer);
  };
 
-//!------------------------------OBJECT TEXTURING DIALOG------------------------------
-
-
-class ObjectTexturingDialog
-{
-public:
-   Panel panel;
-     
-   DialogControl dialogControl;
-
-   Button maskViaFaceSelection;
-   Button maskViaTexture;
-   
-   Button assignRelatedTexturesButton;
-   Button createNewTextureButton;
-   Button assignToCustomTexturesButton;
-   
-   Button materialDisplayerButton;
-   Button editMaterialButton;
-   Button selectMaterialButton;
-
-   Panel elementSelectionPanel;
-
-   Camera sceneCam;
-   Texture displayingTexture;
-   Framebuffer displayingFBO;
-
-   bool materialSelection = false;
-   bool textureSelection = false;
-
-   //Constructor
-   ObjectTexturingDialog();
-    
-   //Public member function
-   void render(Timer timer, glm::mat4 projection);
-
-   void updateDisplayingTexture();
- };
-
-
 //!------------------------------LOAD PROJECT DIALOG------------------------------
 
 
@@ -361,12 +321,13 @@ public:
 
    Camera displayerCamera;
     
+   Material* material;
+
    //Constructors
    MaterialEditorDialog();
 
    //Public member functions
-   void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog,
-               Material &material);
+   void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
 };
@@ -436,6 +397,48 @@ public:
 
    //Public member functions
    void render(Timer timer,Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog);
+ };
+
+//!------------------------------OBJECT TEXTURING DIALOG------------------------------
+
+
+class ObjectTexturingDialog
+{
+public:
+   Panel panel;
+     
+   DialogControl dialogControl;
+
+   Button maskViaFaceSelection;
+   Button maskViaTexture;
+   
+   Button assignRelatedTexturesButton;
+   Button createNewTextureButton;
+   Button assignToCustomTexturesButton;
+   
+   Button materialDisplayerButton;
+   Button editMaterialButton;
+   Button selectMaterialButton;
+
+   Panel elementSelectionPanel;
+
+   Camera sceneCam;
+   Texture displayingTexture;
+   Framebuffer displayingFBO;
+
+   bool materialSelection = false;
+   bool textureSelection = false;
+
+   Material material;
+
+   //Constructor
+   ObjectTexturingDialog();
+    
+   //Public member function
+   void render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog);
+
+   void updateDisplayingTexture();
+   void updateMeshTextures();
  };
 
 //!------------------------------MATERIAL DISPLAYER------------------------------

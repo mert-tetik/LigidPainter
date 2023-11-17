@@ -49,8 +49,7 @@ bool __lastDisplayModeComboBoxPressed = false;
 void MaterialEditorDialog::render
                                 (
                                     Timer &timer,
-                                    TextureSelectionDialog &textureSelectionDialog,
-                                    Material &material
+                                    TextureSelectionDialog &textureSelectionDialog
                                 )
 {
     
@@ -70,7 +69,7 @@ void MaterialEditorDialog::render
     modifiersPanel.additionalPos = -glm::vec3((*Settings::videoScale() - glm::vec2(getContext()->windowScale)) / *Settings::videoScale() * 50.f ,0);
 
     //Update the texture, scale & position of the material displayer button
-    updateMaterialDisplayerButton(materialDisplayer, material, bgPanel, modifiersPanel, layerPanel);
+    updateMaterialDisplayerButton(materialDisplayer, *material, bgPanel, modifiersPanel, layerPanel);
     
     //If texture selection dialog is not active reset the index values used to navigate textures
     if(textureSelectionDialog.dialogControl.isActive() == false){
@@ -79,26 +78,26 @@ void MaterialEditorDialog::render
     }
 
     //Make sure selectedMaterialModifierIndex won't cause any vector out of range error
-    if(selectedMaterialModifierIndex >= material.materialModifiers.size()){
-        selectedMaterialModifierIndex = material.materialModifiers.size()-1;
+    if(selectedMaterialModifierIndex >= material->materialModifiers.size()){
+        selectedMaterialModifierIndex = material->materialModifiers.size()-1;
         if(selectedMaterialModifierIndex < 0)
             selectedMaterialModifierIndex = 0;
     }
 
     //Check layerpanel if any modifier is clicked & change selectedMaterialModifierIndex if clicked
-    checkLayerPanel(material);
+    checkLayerPanel(*material);
     
     //Check the modifier's panel and update the material if interacted with any of the GUI element (show the texture selection dialog if pressed to a texture modifier's channel button)
-    checkModifiersPanel(material, textureSelectionDialog);
+    checkModifiersPanel(*material, textureSelectionDialog);
     
     //Manage actions of the context menus 
-    this->manageContextMenuActions(material);
+    this->manageContextMenuActions(*material);
 
-    //Update the layer panel recreate all the modifiers using material.materialModifiers vector & add a new modifier if add is pressed to that vector
-    updateLayerPanelElements(material);
+    //Update the layer panel recreate all the modifiers using material->materialModifiers vector & add a new modifier if add is pressed to that vector
+    updateLayerPanelElements(*material);
     
     //If texture selection done
-    checkTextureSelectionDialog(textureSelectionDialog,material);
+    checkTextureSelectionDialog(textureSelectionDialog, *material);
 
     //Render the material displayer
     materialDisplayer.render(timer,false);
@@ -111,7 +110,7 @@ void MaterialEditorDialog::render
     dialogControl.updateEnd(timer,0.15f);
 
     if(!this->updateTheMaterial && this->prevUpdateTheMaterial){
-        material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
     }
     
     this->prevUpdateTheMaterial = this->updateTheMaterial;
@@ -132,7 +131,7 @@ void MaterialEditorDialog::render
         if(!wasTextureSelectionDialogActive() && !ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
             NodeScene::updateNodeResults(Settings::properties()->textureRes, -1);
             this->displayModeComboBox.selectedIndex = 0;
-            material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+            material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
 
             this->deactivate(textureSelectionDialog);
         }
@@ -142,7 +141,7 @@ void MaterialEditorDialog::render
     __materialEditorDialogESCFirstFramePressed = false; 
 
     if((!ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive() && getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) || __lastDisplayModeComboBoxPressed)
-        material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
 
     __lastDisplayModeComboBoxPressed = this->displayModeComboBox.pressed;
 }

@@ -161,7 +161,6 @@ public:
 
     int frameCounter = 0; 
 
-    int selectedMaterialIndex = 0; //In the library (to manipulate with)
     Texture textureEditorSelectedTxtr;
     
     bool anyContextMenuActive = false;

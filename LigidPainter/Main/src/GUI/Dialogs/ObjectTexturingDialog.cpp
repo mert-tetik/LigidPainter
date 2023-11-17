@@ -42,7 +42,7 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,40.f), ""  , Texture(), 1.f, false)),
+                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,40.f), ""  , Texture(), 1.f, false)),
                     }
                 )
             }
@@ -69,10 +69,10 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
                 Section()
             }
         },
-        glm::vec2(40.f),
+        glm::vec2(15.f, 35.f),
         glm::vec3(50.f,50.f,0.8f),
-        glm::vec4(0.),
-        glm::vec4(0.),
+        ColorPalette::secondColor,
+        ColorPalette::thirdColor,
         true,
         true,
         true,
@@ -100,9 +100,10 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
 
     this->displayingFBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, DISPLAY_RESOLUTION));
 
+    this->material = Material("ObjectTexturingMaterial", 0);
 }
 
-void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection){
+void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog){
     dialogControl.updateStart();
 
     if(dialogControl.firstFrameActivated){
@@ -115,6 +116,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection){
 
     // Modifying the elements    
     this->panel.sections[0].elements[0].button.scale = this->panel.scale;
+
+    this->materialDisplayerButton.texture = this->material.displayingTexture;
 
     this->maskViaFaceSelection.pos = this->panel.pos;
     this->maskViaFaceSelection.pos.x -= this->panel.scale.x - this->maskViaFaceSelection.scale.x - 2.f;
@@ -171,12 +174,49 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection){
     else if(this->assignToCustomTexturesButton.clicked){
         this->textureSelection = true;
     }
+    else if(this->editMaterialButton.clicked){
+        materialEditorDialog.material = &this->material;
+        materialEditorDialog.activate();
+    }
+    else if(this->assignRelatedTexturesButton.clicked)
+        this->updateMeshTextures();
 
-    if(!this->panel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && !this->materialSelection)
+
+    if(!this->panel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && !this->materialSelection && !this->textureSelection)
         this->dialogControl.unActivate();
+    
+    if(this->materialSelection || this->textureSelection){
+        
+        if(this->selectMaterialButton.clicked || this->assignToCustomTexturesButton.clicked){
+            this->elementSelectionPanel.sections[0].elements.clear();
+            
+            if(this->materialSelection){
+                for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
+                {
+                    this->elementSelectionPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getMaterialObj(i).title, Library::getMaterialObj(i).displayingTexture, 0.f, false));
+                }
+            }
+            
+            if(this->textureSelection){
+                for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+                {
+                    this->elementSelectionPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getTextureObj(i).title, Library::getTextureObj(i), 0.f, false));
+                }
+            }
+        }
+        
+        this->elementSelectionPanel.render(timer, true);
+
+        if(!this->elementSelectionPanel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)){
+            this->materialSelection = false; 
+            this->textureSelection = false;
+        }
+    }
 
     dialogControl.updateEnd(timer,0.15f);
 }
+
+
 
 void ObjectTexturingDialog::updateDisplayingTexture(){
     //Move the camera to the side
@@ -212,24 +252,24 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
     ShaderSystem::tdModelShader().setMat4("modelMatrix", glm::mat4(1));
 
     
-    //Bind the channels of the material
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].albedo.ID);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].roughness.ID);
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].metallic.ID);
-    glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].normalMap.ID);
-    glActiveTexture(GL_TEXTURE6);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].heightMap.ID);
-    glActiveTexture(GL_TEXTURE7);
-    glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].ambientOcclusion.ID);
-    
     ShaderSystem::tdModelShader().setInt("displayingMode", 0);
     
     for (size_t i = 0; i < getModel()->meshes.size(); i++)
     {
+        //Bind the channels of the material
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].albedo.ID);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].roughness.ID);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].metallic.ID);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].normalMap.ID);
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].heightMap.ID);
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].ambientOcclusion.ID);
+        
         ShaderSystem::tdModelShader().setInt("usingMeshSelection", true);
         ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
         ShaderSystem::tdModelShader().setInt("hideUnselected", true);
@@ -241,6 +281,9 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
         getModel()->meshes[i].Draw(false);
     }
     
+    ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
+    ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
+    ShaderSystem::tdModelShader().setInt("hideUnselected", false);
     
     //!Finish (prepare rendering the GUI)
 
@@ -254,4 +297,11 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
     Settings::defaultFramebuffer()->setViewport();
 
     getBox()->bindBuffers();
+}
+
+void ObjectTexturingDialog::updateMeshTextures(){
+    for (int i = this->material.materialModifiers.size() - 1; i >= 0; --i)    
+    {
+        this->material.materialModifiers[i].updateMaterialChannels(this->material, getModel()->meshes[0], 512, i);
+    }
 }

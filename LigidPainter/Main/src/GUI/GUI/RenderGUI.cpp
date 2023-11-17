@@ -923,11 +923,11 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     if(bakingDialog.dialogControl.isActive())
         bakingDialog.render(timer, skybox);
     
-    if(objectTexturingDialog.dialogControl.isActive())
-        objectTexturingDialog.render(timer, this->projection);
+    if(objectTexturingDialog.dialogControl.isActive() && !materialEditorDialog.dialogControl.active)
+        objectTexturingDialog.render(timer, this->projection, materialEditorDialog);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
-        materialEditorDialog.render(timer,textureSelectionDialog,*Library::getMaterial(selectedMaterialIndex));
+        materialEditorDialog.render(timer,textureSelectionDialog);
     
     logDialog.render(timer);
 }

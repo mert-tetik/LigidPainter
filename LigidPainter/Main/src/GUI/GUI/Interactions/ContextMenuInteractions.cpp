@@ -83,7 +83,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     if(Library::getSelectedElementIndex() == 1 && ContextMenus::material.dialogControl.isActive() && ContextMenus::material.selectedElement < Library::getMaterialArraySize()){ //If material context menu is active
         if(ContextMenus::material.contextPanel.sections[0].elements[0].button.clicked){//Clicked to edit button
             //Select the material that material editor will edit & show the material editor dialog
-            selectedMaterialIndex = ContextMenus::material.selectedElement;
+            materialEditorDialog.material = Library::getMaterial(ContextMenus::material.selectedElement);
             materialEditorDialog.activate();
         }
         else if(ContextMenus::material.contextPanel.sections[0].elements[1].button.clicked){//Clicked to add to scene button
