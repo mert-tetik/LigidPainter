@@ -99,6 +99,7 @@ void main() {
 
     if(wireframeMode == 1){
         fragColor = vec4(0.18, 0.42, 0.64, 1.);
+        return;
     }
 
     if(!selectedPrim && usingMeshSelection == 1 && meshSelectionEditing == 0 && hideUnselected == 1){

@@ -486,7 +486,7 @@ void Renderer::renderMainModel(){
         
         if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);
-            getModel()->meshes[i].Draw(painter.faceSelection.editMode && i == painter.selectedMeshIndex);
+            getModel()->meshes[i].Draw(painter.faceSelection.editMode && i == painter.selectedMeshIndex && painter.selectedDisplayingModeIndex != 0);
         }
     }
     
