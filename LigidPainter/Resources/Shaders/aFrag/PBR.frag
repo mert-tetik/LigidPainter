@@ -97,9 +97,8 @@ void main() {
     bool selectedPrim = prim > 0.9;
     bool hoveredPrim = prim > 0.3 && prim < 0.9;
 
-    if(wireframeMode == 1 || (selectedPrim && meshSelectionEditing == 1)){
+    if(wireframeMode == 1){
         fragColor = vec4(0.18, 0.42, 0.64, 1.);
-        return;
     }
 
     if(!selectedPrim && usingMeshSelection == 1 && meshSelectionEditing == 0 && hideUnselected == 1){
@@ -196,6 +195,10 @@ void main() {
 
     if(!selectedPrim && usingMeshSelection == 1 && meshSelectionEditing == 0){
         fragColor.rgb = mix(fragColor.rgb, vec3(1.), 0.6);
+    }
+
+    if(selectedPrim && meshSelectionEditing == 1){
+        fragColor.rgb = mix(fragColor.rgb, vec3(0.18, 0.42, 0.64), 0.6);
     }
 
     if(hoveredPrim)
