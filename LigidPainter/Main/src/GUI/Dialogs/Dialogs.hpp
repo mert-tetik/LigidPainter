@@ -446,6 +446,8 @@ public:
    Texture displayingTexture;
    Framebuffer displayingFBO;
 
+   std::vector<Mesh> texturesMesh;
+
    bool materialSelection = false;
    bool textureSelection = false;
 

@@ -125,6 +125,7 @@ namespace ShaderSystem{
     Shader projectedPaintingTextureMixerShader();
     Shader primitiveIDShader();
     Shader modelObjectID();
+    Shader objectTexturingAssign();
 
     void initShaderSystem();
 };
