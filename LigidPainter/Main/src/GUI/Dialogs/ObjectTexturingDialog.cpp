@@ -93,6 +93,15 @@ ObjectTexturingDialog::ObjectTexturingDialog(AppMaterialModifiers appMaterialMod
     this->maskViaTexture = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Mask via texture", Texture(), 1.f, false);
     this->cancelMasks = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Cancel masks", Texture(), 1.f, false);
     
+    this->ctrlInfoBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(7, 4.f), "CTRL - Unselect the selected faces", Texture(), 1.f, false);
+    this->shiftInfoBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(7, 4.f), "SHIFT - Add to selected faces", Texture(), 1.f, false);
+    this->ctrlInfoBtn.color = glm::vec4(0.);
+    this->ctrlInfoBtn.color2 = glm::vec4(0.);
+    this->ctrlInfoBtn.textScale = 0.6f;
+    this->shiftInfoBtn.color = glm::vec4(0.);
+    this->shiftInfoBtn.color2 = glm::vec4(0.);
+    this->shiftInfoBtn.textScale = 0.6f;
+    
     this->assignRelatedTexturesButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Assign to related textures", Texture(), 1.f, false);
 
     this->materialDisplayerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(6, 4.f), "", Texture(), 1.f, false);
@@ -259,6 +268,13 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->cancelMasks.pos = this->maskViaTexture.pos;
     this->cancelMasks.pos.y += this->cancelMasks.scale.y + this->maskViaTexture.scale.y;
 
+    this->ctrlInfoBtn.pos = this->panel.pos;
+    this->ctrlInfoBtn.pos.y += this->panel.scale.y - this->ctrlInfoBtn.scale.y;
+    this->ctrlInfoBtn.pos.x -= this->ctrlInfoBtn.scale.x + 2;
+    this->shiftInfoBtn.pos = this->panel.pos;
+    this->shiftInfoBtn.pos.y += this->panel.scale.y - this->ctrlInfoBtn.scale.y;
+    this->shiftInfoBtn.pos.x += this->shiftInfoBtn.scale.x + 2;
+
     this->assignRelatedTexturesButton.pos = cancelMasks.pos;
     this->assignRelatedTexturesButton.pos.y += assignRelatedTexturesButton.scale.y + cancelMasks.scale.y * 2.f;
 
@@ -295,6 +311,10 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->materialDisplayerButton.render(timer, false);
     this->editMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
     this->selectMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
+    if(this->faceSelectionMode){
+        this->ctrlInfoBtn.render(timer, false);
+        this->shiftInfoBtn.render(timer, false);
+    }
 
     // Element interactions
     if(this->selectMaterialButton.clicked){

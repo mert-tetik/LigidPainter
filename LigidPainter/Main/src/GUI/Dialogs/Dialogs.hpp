@@ -433,6 +433,9 @@ public:
    Button maskViaTexture;
    Button cancelMasks;
    
+   Button ctrlInfoBtn;
+   Button shiftInfoBtn;
+   
    Button assignRelatedTexturesButton;
    
    Button materialDisplayerButton;
