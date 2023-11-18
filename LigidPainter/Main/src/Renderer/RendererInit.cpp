@@ -111,7 +111,7 @@ void Renderer::initRenderer(){
     //Load shaders
     ShaderSystem::initShaderSystem();
 
-    //Load the sphere model
+    //Load the 3D models
     getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
     getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
     getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj",true);

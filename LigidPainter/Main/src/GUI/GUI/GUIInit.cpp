@@ -483,6 +483,7 @@ void UI::init
     greetingDialog              = GreetingDialog();
     newTextureDialog            = NewTextureDialog();
     logDialog                   = LogDialog(materialEditorDialog.appMaterialModifiers);
+    objectTexturingDialog       = ObjectTexturingDialog(materialEditorDialog.appMaterialModifiers);
     displayerDialog             = DisplayerDialog();
     textureEditorDialog         = TextureEditorDialog();
     texturePackEditorDialog     = TexturePackEditorDialog();

@@ -34,7 +34,10 @@
 
 #define DISPLAY_RESOLUTION glm::vec2(this->panel.scale * 30.f)
 
-ObjectTexturingDialog::ObjectTexturingDialog(){
+static AppMaterialModifiers appMatMods;
+
+ObjectTexturingDialog::ObjectTexturingDialog(){}
+ObjectTexturingDialog::ObjectTexturingDialog(AppMaterialModifiers appMaterialModifiers){
     //Create the panel
     this->panel = Panel(
         {
@@ -89,9 +92,7 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
     this->maskViaTexture = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Mask via texture", Texture(), 1.f, false);
     
     this->assignRelatedTexturesButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Assign to related textures", Texture(), 1.f, false);
-    this->createNewTextureButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Create new texture and assign", Texture(), 1.f, false);
-    this->assignToCustomTexturesButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Assign to custom textures", Texture(), 1.f, false);
-    
+
     this->materialDisplayerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(6, 4.f), "", Texture(), 1.f, false);
     this->editMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Edit material", Texture(), 1.f, false);
     this->selectMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f, 4.f), "", Settings::appTextures().arrowB, 1.f, false);
@@ -100,7 +101,10 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
 
     this->displayingFBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, DISPLAY_RESOLUTION));
 
-    this->material = Material("ObjectTexturingMaterial", 0);
+    this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
+    this->sceneCam.radius = 3.5f;
+
+    appMatMods = appMaterialModifiers;
 }
 
 static bool __materialEditBtn = false;
@@ -108,7 +112,61 @@ static bool __materialEditBtn = false;
 void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog){
     dialogControl.updateStart();
 
-    
+    if(this->material.title == "" || materialSelection){
+
+        int matI = -1;
+        bool elementClicked = false;
+
+        if(materialSelection && elementSelectionPanel.sections.size()){
+            for (size_t i = 0; i < elementSelectionPanel.sections[0].elements.size(); i++)
+            {
+                if(elementSelectionPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
+                    matI = i;
+                    elementClicked = true;
+                }
+            }
+        }
+
+        if(matI >= Library::getMaterialArraySize())
+            matI = -1;        
+
+        if(materialSelection && elementClicked || this->material.title == ""){
+
+            materialSelection = false;
+
+            // Delete the buffers of the material
+            this->material.displayingFBO.deleteBuffers(true, true);
+            glDeleteTextures(1, &this->material.displayingTexture.ID);
+
+            for (size_t i = 0; i < this->material.materialModifiers.size(); i++)
+            {
+                for (size_t seci = 0; seci < this->material.materialModifiers[i].sections.size(); seci++)
+                {
+                    for (size_t eli = 0; eli < this->material.materialModifiers[i].sections[seci].elements.size(); eli++)
+                    {
+                        glDeleteTextures(1, &this->material.materialModifiers[i].sections[seci].elements[eli].button.texture.ID);
+                    }
+                }
+            }
+
+            if(matI == -1){
+                this->material = Material("ObjectTexturingMaterial", 0);
+                this->material.materialModifiers.push_back(appMatMods.solidModifier);
+            }
+            else{
+                this->material = Library::getMaterialObj(matI).duplicateMaterial();
+            }
+
+            Camera cam;
+            cam.cameraPos = glm::vec3(0,0,-4.f);
+            cam.radius = 4.f;                            
+            this->material.updateMaterialDisplayingTexture(256, true, cam, 0);
+            this->material.displayingTexture.title = "ObjectTexturingMaterial_DisplayingTexture";
+            
+            if(!dialogControl.firstFrameActivated)
+                this->updateMeshTextures();
+        }
+    }
 
     if(getModel()->meshes.size() != texturesMesh.size()){
         for (size_t i = 0; i < texturesMesh.size(); i++)
@@ -141,6 +199,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     if(dialogControl.firstFrameActivated){
         this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
         this->sceneCam.radius = 3.5f;
+
+        this->updateMeshTextures();
     }
 
     // Update the scene texture
@@ -159,10 +219,6 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
 
     this->assignRelatedTexturesButton.pos = maskViaTexture.pos;
     this->assignRelatedTexturesButton.pos.y += assignRelatedTexturesButton.scale.y + maskViaTexture.scale.y * 2.f;
-    this->createNewTextureButton.pos = assignRelatedTexturesButton.pos;
-    this->createNewTextureButton.pos.y += createNewTextureButton.scale.y + assignRelatedTexturesButton.scale.y;
-    this->assignToCustomTexturesButton.pos = createNewTextureButton.pos;
-    this->assignToCustomTexturesButton.pos.y += assignToCustomTexturesButton.scale.y + createNewTextureButton.scale.y;
 
     this->materialDisplayerButton.pos = this->panel.pos;
     this->materialDisplayerButton.pos.x += this->panel.scale.x - this->materialDisplayerButton.scale.x - 6.f;
@@ -193,9 +249,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->maskViaFaceSelection.render(timer, !this->materialSelection && !this->textureSelection);
     this->maskViaTexture.render(timer, !this->materialSelection && !this->textureSelection);
     this->assignRelatedTexturesButton.render(timer, !this->materialSelection && !this->textureSelection);
-    this->createNewTextureButton.render(timer, !this->materialSelection && !this->textureSelection);
-    this->assignToCustomTexturesButton.render(timer, !this->materialSelection && !this->textureSelection);
-    this->materialDisplayerButton.render(timer, !this->materialSelection && !this->textureSelection);
+    this->materialDisplayerButton.render(timer, false);
     this->editMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
     this->selectMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
 
@@ -203,16 +257,12 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     if(this->selectMaterialButton.clicked){
         this->materialSelection = true;
     }
-    else if(this->assignToCustomTexturesButton.clicked){
-        this->textureSelection = true;
-    }
     else if(this->editMaterialButton.clicked){
         materialEditorDialog.material = &this->material;
         materialEditorDialog.activate();
         __materialEditBtn = true;
     }
     else if(assignRelatedTexturesButton.clicked){
-
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {
             for (size_t channelI = 0; channelI < 6; channelI++)
@@ -275,7 +325,6 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         }    
     }
     
-    
     if(!this->editMaterialButton.clicked && __materialEditBtn || assignRelatedTexturesButton.clicked){
         this->updateMeshTextures();
         __materialEditBtn = false;
@@ -287,7 +336,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     
     if(this->materialSelection || this->textureSelection){
         
-        if(this->selectMaterialButton.clicked || this->assignToCustomTexturesButton.clicked){
+        if(this->selectMaterialButton.clicked){
             this->elementSelectionPanel.sections[0].elements.clear();
             
             if(this->materialSelection){
@@ -400,9 +449,6 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
 }
 
 void ObjectTexturingDialog::updateMeshTextures(){
-    
-
-
     for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
     {
         Texture albedo = getModel()->meshes[meshI].albedo; 

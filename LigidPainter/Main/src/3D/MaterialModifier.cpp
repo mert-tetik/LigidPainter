@@ -1084,7 +1084,6 @@ void textureModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         //Render the result to the framebuffer
         mesh.Draw(false);
         
-        //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
@@ -1184,7 +1183,6 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         modifierShader.setFloat("metallic", material.materialModifiers[curModI].sections[5].elements[1].rangeBar.value);
         modifierShader.setFloat("height", material.materialModifiers[curModI].sections[5].elements[2].rangeBar.value);
         
-
         // Bind the mask texture
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, proceduralTexture);
@@ -1205,7 +1203,6 @@ void dustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Render the result to the framebuffer
         mesh.Draw(false);
         
-        //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
@@ -1313,7 +1310,6 @@ void solidModifierUpdateMat(Material &material, Mesh &mesh, int textureResolutio
         //Render the result to the framebuffer
         mesh.Draw(false);
         
-        //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
@@ -1433,7 +1429,6 @@ void asphaltModifierUpdateMat(Material &material, Mesh &mesh, int textureResolut
         //Render the result to the framebuffer
         mesh.Draw(false);
         
-        //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
@@ -1565,7 +1560,6 @@ void liquidModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Render the result to the framebuffer
         mesh.Draw(false);
         
-        //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
@@ -1701,7 +1695,6 @@ void woodenModifierUpdateMat(Material &material, Mesh &mesh, int textureResoluti
         //Render the result to the framebuffer
         mesh.Draw(false);
         
-        //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
@@ -1833,7 +1826,6 @@ void mossModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Render the result to the framebuffer
         mesh.Draw(false);
         
-        //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
@@ -1966,7 +1958,6 @@ void rustModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Render the result to the framebuffer
         mesh.Draw(false);
         
-        //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel
@@ -2096,7 +2087,6 @@ void skinModifierUpdateMat(Material &material, Mesh &mesh, int textureResolution
         //Render the result to the framebuffer
         mesh.Draw(false);
         
-        //Just in case 🤫😁🤑 
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Delete the framebuffer after completing the channel

@@ -433,8 +433,6 @@ public:
    Button maskViaTexture;
    
    Button assignRelatedTexturesButton;
-   Button createNewTextureButton;
-   Button assignToCustomTexturesButton;
    
    Button materialDisplayerButton;
    Button editMaterialButton;
@@ -455,6 +453,7 @@ public:
 
    //Constructor
    ObjectTexturingDialog();
+   ObjectTexturingDialog(AppMaterialModifiers appMaterialModifiers);
     
    //Public member function
    void render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog);
