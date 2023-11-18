@@ -35,9 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <unordered_set>
 
-static std::vector<byte> prevPrimArray;
-
-void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll){
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll){
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, primitivesArrayTexture.ID);
@@ -45,7 +43,7 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
-    if((primitivesArray.size() != prevPrimArray.size() || changedIndices.size() > 100) || updateAll){
+    if((primitivesArray.size() != prevPrimArray.size()) || updateAll){
         while (glGetError() != GL_NO_ERROR)
         {
         }
@@ -82,8 +80,7 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
     
     prevPrimArray = primitivesArray;
 }
-static glm::vec2 lastMousePos;
-bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
+bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction, glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel){
 
     // Scale of the window
     glm::vec2 windowSize = getContext()->windowScale;
@@ -91,9 +88,6 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
     // Scale of the user's primary monitor
     glm::vec2 videoScale = *Settings::videoScale();
     
-    // Position of the cursor
-    glm::vec2 cursorPos = *Mouse::cursorPos();
-
     if(this->selectedPrimitiveIDs.size() != selectedMesh.indices.size() / 3){
         this->selectedPrimitiveIDs.resize(selectedMesh.indices.size() / 3);
     }
@@ -109,12 +103,11 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
     this->modelPrimitives.update(nullptr, windowSize.x, windowSize.y, GL_NEAREST, GL_RED, GL_R32F);
     
     if(*Mouse::LClick()){
-        lastMousePos = *Mouse::cursorPos();
+        lastMousePos = cursorPos;
     }
 
     bool changesMade = false;
     if(mouseInteraction){
-
         // Generate & bind the framebuffer object to render the model primitives into the modelPrimitives texture
         if(!this->FBO.ID)
             this->FBO = Framebuffer(this->modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, windowSize));
@@ -128,13 +121,23 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
 
         // Seting the primitive ID rendering shader 
         ShaderSystem::primitiveIDShader().use();
-        ShaderSystem::primitiveIDShader().setMat4("view", getScene()->viewMatrix);
-        ShaderSystem::primitiveIDShader().setMat4("projection", getScene()->projectionMatrix);
-        ShaderSystem::primitiveIDShader().setMat4("modelMatrix", getScene()->transformMatrix);
+        ShaderSystem::primitiveIDShader().setMat4("view", viewMatrix);
+        ShaderSystem::primitiveIDShader().setMat4("projection", projectionMatrix);
+        ShaderSystem::primitiveIDShader().setMat4("modelMatrix", transformMatrix);
         
         glDepthFunc(GL_LESS);
 
-        selectedMesh.Draw(false);
+        if(!renderAllModel){
+            ShaderSystem::primitiveIDShader().setInt("emptyFlag", false);
+            selectedMesh.Draw(false);
+        }
+        else{
+            for (size_t i = 0; i < getModel()->meshes.size(); i++)
+            {
+                ShaderSystem::primitiveIDShader().setInt("emptyFlag", getModel()->meshes[i].materialName != selectedMesh.materialName);
+                getModel()->meshes[i].Draw(false);
+            }
+        }
 
         const int mouseFillQuality = 5;
 
@@ -238,6 +241,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
         updatePrimitivesArrayTexture(
                                         this->selectedFaces, 
                                         this->selectedPrimitiveIDs, 
+                                        this->prevPrimArray, 
                                         selectedMesh, 
                                         changedIndices,
                                         false
@@ -255,7 +259,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction){
 
     glDepthFunc(GL_LEQUAL);
 
-    lastMousePos = *Mouse::cursorPos();
+    lastMousePos = cursorPos;
 
     return changesMade;
 }

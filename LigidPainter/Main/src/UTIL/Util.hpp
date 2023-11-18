@@ -696,7 +696,11 @@ public:
     /// @brief 3D model rendered with primitive ID renderin shader
     Texture modelPrimitives;
 
-    bool interaction(Mesh& selectedMesh, bool mouseInteraction);
+    bool interaction(Mesh& selectedMesh, bool mouseInteraction, glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel);
+
+private:
+    std::vector<byte> prevPrimArray;
+    glm::vec2 lastMousePos;
 };
 
 class Painter

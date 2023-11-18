@@ -20,6 +20,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "GUI/GUI.hpp"
 #include "LibrarySystem/Library.hpp"
@@ -201,6 +202,41 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         this->sceneCam.radius = 3.5f;
 
         this->updateMeshTextures();
+
+        for (size_t i = 0; i < faceSelection.size(); i++)
+        {
+            glDeleteTextures(1, &faceSelection[i].selectedFaces.ID);
+            glDeleteTextures(1, &faceSelection[i].modelPrimitives.ID);
+        }
+        
+        faceSelection.clear();
+
+        for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+        {
+            faceSelection.push_back(FaceSelection());
+            faceSelection[faceSelection.size()-1].selectedFaces = getModel()->meshes[meshI].selectedObjectPrimitivesTxtr.duplicateTexture();
+        
+            faceSelection[faceSelection.size()-1].selectedPrimitiveIDs.resize(getModel()->meshes[meshI].indices.size() / 3);
+            for (size_t oI = 0; oI < getModel()->meshes[meshI].objects.size(); oI++)
+            {
+                bool contains = false;
+                    for (size_t i = 0; i < getModel()->meshes[meshI].selectedObjectIndices.size(); i++)
+                    {
+                        if(getModel()->meshes[meshI].selectedObjectIndices[i] == oI)
+                            contains = true;
+                    }
+                
+                if(contains){
+                    for (size_t i = getModel()->meshes[meshI].objects[oI].vertIndices.x / 3; i < getModel()->meshes[meshI].objects[oI].vertIndices.y / 3; i++)
+                    {
+                        if(i < faceSelection[faceSelection.size()-1].selectedPrimitiveIDs.size()){
+                            faceSelection[faceSelection.size()-1].changedIndices.push_back(i);
+                            faceSelection[faceSelection.size()-1].selectedPrimitiveIDs[i] = 2;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     // Update the scene texture
@@ -312,7 +348,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                     glBindTexture(GL_TEXTURE_2D, texturesMesh[i].ambientOcclusion.ID);
                 
                 glActiveTexture(GL_TEXTURE1);
-                glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].selectedObjectPrimitivesTxtr.ID);
+                glBindTexture(GL_TEXTURE_2D, faceSelection[i].selectedFaces.ID);
 
                 getModel()->meshes[i].Draw(false);
                 
@@ -323,6 +359,13 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                 Settings::defaultFramebuffer()->setViewport();
             }
         }    
+    }
+    else if(maskViaFaceSelection.clicked){
+        faceSelectionMode = !faceSelectionMode;
+        if(faceSelectionMode)
+            maskViaFaceSelection.text = "Cancel face selection";
+        else
+            maskViaFaceSelection.text = "Mask via face selection";
     }
     
     if(!this->editMaterialButton.clicked && __materialEditBtn || assignRelatedTexturesButton.clicked){
@@ -419,20 +462,34 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
         glActiveTexture(GL_TEXTURE7);
         glBindTexture(GL_TEXTURE_2D, texturesMesh[i].ambientOcclusion.ID);
         
-        ShaderSystem::tdModelShader().setInt("usingMeshSelection", true);
-        ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
-        ShaderSystem::tdModelShader().setInt("hideUnselected", true);
+        ShaderSystem::tdModelShader().setInt("usingMeshSelection", !this->faceSelectionMode);
+        ShaderSystem::tdModelShader().setInt("meshSelectionEditing", this->faceSelectionMode);
+        ShaderSystem::tdModelShader().setInt("hideUnselected", !this->faceSelectionMode);
         ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);
 
         glActiveTexture(GL_TEXTURE11);
-        glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].selectedObjectPrimitivesTxtr.ID);
+        glBindTexture(GL_TEXTURE_2D, faceSelection[i].selectedFaces.ID);
     
-        getModel()->meshes[i].Draw(false);
+        getModel()->meshes[i].Draw(faceSelectionMode);
     }
     
+    if(*Mouse::LPressed() && this->faceSelectionMode && !this->anyElementHover()){
+        glm::vec2 cursorPos = *Mouse::cursorPos();
+        cursorPos -= glm::vec2(*Settings::videoScale() * glm::vec2(0.1f));    
+        cursorPos *= glm::vec2(glm::vec2(1.25f));    
+
+        for (size_t i = 0; i < this->faceSelection.size(); i++)
+        {
+            this->faceSelection[i].interaction(getModel()->meshes[i], true, view, projectionMatrix, glm::mat4(1), cursorPos, true);
+        }
+    }
+
     ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
     ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
     ShaderSystem::tdModelShader().setInt("hideUnselected", false);
+
+    // 190 - 1727
+    // 114 - 967
     
     //!Finish (prepare rendering the GUI)
 
@@ -477,6 +534,8 @@ void ObjectTexturingDialog::updateMeshTextures(){
         getModel()->meshes[meshI].heightMap = heightMap; 
         getModel()->meshes[meshI].ambientOcclusion = ambientOcclusion; 
     }
-    
+}
 
+bool ObjectTexturingDialog::anyElementHover(){
+    return maskViaFaceSelection.hover || maskViaTexture.hover || assignRelatedTexturesButton.hover || materialDisplayerButton.hover || editMaterialButton.hover || selectMaterialButton.hover;
 }

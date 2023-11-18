@@ -897,7 +897,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
         )
     {
-        if(painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex], !anyPanelHover)){
+        if(painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex], !anyPanelHover, getScene()->viewMatrix, getScene()->projectionMatrix, getScene()->transformMatrix, *Mouse::cursorPos(), false)){
             if(__faceSelectionActiveObjIndex == meshSection.elements[5].comboBox.selectedIndex)
                 meshSection.elements[5].comboBox.selectedIndex = 0;
         }

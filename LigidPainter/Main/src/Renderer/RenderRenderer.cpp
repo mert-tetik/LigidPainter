@@ -428,7 +428,7 @@ void Renderer::renderMainModel(){
         else
             ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
-        if(painter.selectedDisplayingModeIndex == 2 || painter.selectedDisplayingModeIndex == 3){
+        if(painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2){
             if(i == painter.selectedMeshIndex){
                 ShaderSystem::tdModelShader().setInt("usingMeshSelection", painter.faceSelection.activated);
                 ShaderSystem::tdModelShader().setInt("meshSelectionEditing", painter.faceSelection.editMode);
@@ -440,7 +440,7 @@ void Renderer::renderMainModel(){
             }
             
             glActiveTexture(GL_TEXTURE11);
-            glBindTexture(GL_TEXTURE_2D, painter.faceSelection.modelPrimitives.ID);
+            glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
         }
         else{
             ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);

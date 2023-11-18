@@ -444,6 +444,9 @@ public:
    Texture displayingTexture;
    Framebuffer displayingFBO;
 
+   bool faceSelectionMode = false;
+   std::vector<FaceSelection> faceSelection;
+
    std::vector<Mesh> texturesMesh;
 
    bool materialSelection = false;
@@ -457,6 +460,7 @@ public:
     
    //Public member function
    void render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog);
+   bool anyElementHover();
 
    void updateDisplayingTexture();
    void updateMeshTextures();

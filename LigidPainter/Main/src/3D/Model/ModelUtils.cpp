@@ -31,7 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "MouseSystem/Mouse.hpp"
 
 // Defined in Painter/faceSelection.cpp
-void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 
 void Model::updateObjectIDsTexture(){
     glDepthFunc(GL_LESS);
@@ -196,6 +196,6 @@ void Model::selectObject(Panel objectsPanel){
             }
         }
 
-        updatePrimitivesArrayTexture(this->meshes[mshI].selectedObjectPrimitivesTxtr, primitivesArray, this->meshes[mshI], changedIndices, true);
+        updatePrimitivesArrayTexture(this->meshes[mshI].selectedObjectPrimitivesTxtr, primitivesArray, primitivesArray, this->meshes[mshI], changedIndices, true);
     }
 }
