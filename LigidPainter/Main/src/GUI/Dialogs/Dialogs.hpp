@@ -431,6 +431,7 @@ public:
 
    Button maskViaFaceSelection;
    Button maskViaTexture;
+   Button cancelMasks;
    
    Button assignRelatedTexturesButton;
    

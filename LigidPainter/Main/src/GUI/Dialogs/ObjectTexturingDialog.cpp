@@ -91,6 +91,7 @@ ObjectTexturingDialog::ObjectTexturingDialog(AppMaterialModifiers appMaterialMod
 
     this->maskViaFaceSelection = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Mask via face selection", Texture(), 1.f, false);
     this->maskViaTexture = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Mask via texture", Texture(), 1.f, false);
+    this->cancelMasks = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Cancel masks", Texture(), 1.f, false);
     
     this->assignRelatedTexturesButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Assign to related textures", Texture(), 1.f, false);
 
@@ -200,7 +201,10 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     if(dialogControl.firstFrameActivated){
         this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
         this->sceneCam.radius = 3.5f;
-
+        
+        this->updateMeshTextures();
+    }
+    if(dialogControl.firstFrameActivated || this->cancelMasks.clicked){
         this->updateMeshTextures();
 
         for (size_t i = 0; i < faceSelection.size(); i++)
@@ -252,9 +256,11 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->maskViaFaceSelection.pos.y += 15.f;
     this->maskViaTexture.pos = this->maskViaFaceSelection.pos;
     this->maskViaTexture.pos.y += this->maskViaTexture.scale.y + this->maskViaFaceSelection.scale.y;
+    this->cancelMasks.pos = this->maskViaTexture.pos;
+    this->cancelMasks.pos.y += this->cancelMasks.scale.y + this->maskViaTexture.scale.y;
 
-    this->assignRelatedTexturesButton.pos = maskViaTexture.pos;
-    this->assignRelatedTexturesButton.pos.y += assignRelatedTexturesButton.scale.y + maskViaTexture.scale.y * 2.f;
+    this->assignRelatedTexturesButton.pos = cancelMasks.pos;
+    this->assignRelatedTexturesButton.pos.y += assignRelatedTexturesButton.scale.y + cancelMasks.scale.y * 2.f;
 
     this->materialDisplayerButton.pos = this->panel.pos;
     this->materialDisplayerButton.pos.x += this->panel.scale.x - this->materialDisplayerButton.scale.x - 6.f;
@@ -284,6 +290,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     // Render the elements
     this->maskViaFaceSelection.render(timer, !this->materialSelection && !this->textureSelection);
     this->maskViaTexture.render(timer, !this->materialSelection && !this->textureSelection);
+    this->cancelMasks.render(timer, !this->materialSelection && !this->textureSelection);
     this->assignRelatedTexturesButton.render(timer, !this->materialSelection && !this->textureSelection);
     this->materialDisplayerButton.render(timer, false);
     this->editMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
@@ -537,5 +544,5 @@ void ObjectTexturingDialog::updateMeshTextures(){
 }
 
 bool ObjectTexturingDialog::anyElementHover(){
-    return maskViaFaceSelection.hover || maskViaTexture.hover || assignRelatedTexturesButton.hover || materialDisplayerButton.hover || editMaterialButton.hover || selectMaterialButton.hover;
+    return maskViaFaceSelection.hover || maskViaTexture.hover || cancelMasks.hover || assignRelatedTexturesButton.hover || materialDisplayerButton.hover || editMaterialButton.hover || selectMaterialButton.hover;
 }
