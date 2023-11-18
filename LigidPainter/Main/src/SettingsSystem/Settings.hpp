@@ -231,6 +231,7 @@ namespace Settings{
         Texture filterDisplayerImage;  
         Texture noMaterialConnectedToTheMeshWarningImage;  
         Texture noMaterialModifierIsConnectedToMaterialWarningImage;
+        Texture materialChannelMissingTexture;
     };
 
     struct Properties{
