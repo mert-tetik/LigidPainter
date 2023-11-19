@@ -71,6 +71,7 @@ uniform int meshSelectionEditing = 0;
 uniform int hideUnselected = 0;
 uniform int usingMeshSelection = 0;
 uniform sampler2D selectedPrimitiveIDS;
+uniform sampler2D meshMask;
 
 uniform int materialPainting;
 uniform int enableAlbedoChannel;
@@ -94,7 +95,7 @@ void main() {
 
     float prim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r;
 
-    bool selectedPrim = prim > 0.9;
+    bool selectedPrim = prim > 0.9 && texture(meshMask, TexCoords).r > 0.5;
     bool hoveredPrim = prim > 0.3 && prim < 0.9;
 
     if(wireframeMode == 1){

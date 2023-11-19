@@ -232,6 +232,11 @@ namespace Settings{
         Texture noMaterialConnectedToTheMeshWarningImage;  
         Texture noMaterialModifierIsConnectedToMaterialWarningImage;
         Texture materialChannelMissingTexture;
+        
+        //--SYSTEM
+        Texture white;
+        Texture black;
+        Texture transparent;
     };
 
     struct Properties{

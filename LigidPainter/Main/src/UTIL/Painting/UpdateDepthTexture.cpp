@@ -88,9 +88,13 @@ void Painter::updateDepthTexture(){
         ShaderSystem::depth3D().setInt("usingMeshSelection",this->faceSelection.activated);
         ShaderSystem::depth3D().setInt("hideUnselected",this->faceSelection.hideUnselected);
         ShaderSystem::depth3D().setInt("selectedPrimitiveIDS", 0);
+        ShaderSystem::depth3D().setInt("meshMask", 1);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->faceSelection.selectedFaces.ID);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
 
         //Draw the selected mesh in 3D
         if(selectedMeshIndex < getModel()->meshes.size()){

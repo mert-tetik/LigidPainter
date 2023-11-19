@@ -692,6 +692,7 @@ public:
     std::vector<int> changedIndices;
 
     Texture selectedFaces;
+    Texture meshMask;
 
     /// @brief 3D model rendered with primitive ID renderin shader
     Texture modelPrimitives;

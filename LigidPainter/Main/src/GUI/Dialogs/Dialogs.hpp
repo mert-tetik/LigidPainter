@@ -448,6 +448,8 @@ public:
    Texture displayingTexture;
    Framebuffer displayingFBO;
 
+   Texture meshMask;
+
    bool faceSelectionMode = false;
    std::vector<FaceSelection> faceSelection;
 
@@ -468,6 +470,7 @@ public:
 
    void updateDisplayingTexture();
    void updateMeshTextures();
+   int getResolution();
  };
 
 //!------------------------------MATERIAL DISPLAYER------------------------------

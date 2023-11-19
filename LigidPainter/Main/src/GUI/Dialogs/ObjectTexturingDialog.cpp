@@ -213,13 +213,19 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         
         this->updateMeshTextures();
     }
-    if(dialogControl.firstFrameActivated || this->cancelMasks.clicked){
+    
+    if(dialogControl.firstFrameActivated || this->cancelMasks.clicked || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput && faceSelectionMode)){
         this->updateMeshTextures();
+
+        glDeleteTextures(1, &this->meshMask.ID);
+        this->meshMask.ID = 0;
+        this->meshMask.title = "";
 
         for (size_t i = 0; i < faceSelection.size(); i++)
         {
             glDeleteTextures(1, &faceSelection[i].selectedFaces.ID);
             glDeleteTextures(1, &faceSelection[i].modelPrimitives.ID);
+            glDeleteTextures(1, &faceSelection[i].meshMask.ID);
         }
         
         faceSelection.clear();
@@ -228,6 +234,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         {
             faceSelection.push_back(FaceSelection());
             faceSelection[faceSelection.size()-1].selectedFaces = getModel()->meshes[meshI].selectedObjectPrimitivesTxtr.duplicateTexture();
+            faceSelection[faceSelection.size()-1].meshMask = Settings::appTextures().white.duplicateTexture();
         
             faceSelection[faceSelection.size()-1].selectedPrimitiveIDs.resize(getModel()->meshes[meshI].indices.size() / 3);
             for (size_t oI = 0; oI < getModel()->meshes[meshI].objects.size(); oI++)
@@ -259,6 +266,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->panel.sections[0].elements[0].button.scale = this->panel.scale;
 
     this->materialDisplayerButton.texture = this->material.displayingTexture;
+    this->maskViaTexture.texture = this->meshMask;
 
     this->maskViaFaceSelection.pos = this->panel.pos;
     this->maskViaFaceSelection.pos.x -= this->panel.scale.x - this->maskViaFaceSelection.scale.x - 2.f;
@@ -319,11 +327,15 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     // Element interactions
     if(this->selectMaterialButton.clicked){
         this->materialSelection = true;
+
+        this->faceSelectionMode = false;
     }
     else if(this->editMaterialButton.clicked){
         materialEditorDialog.material = &this->material;
         materialEditorDialog.activate();
         __materialEditBtn = true;
+
+        this->faceSelectionMode = false;
     }
     else if(assignRelatedTexturesButton.clicked){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
@@ -358,6 +370,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                 ShaderSystem::objectTexturingAssign().setMat4("view", getScene()->viewMatrix);
                 ShaderSystem::objectTexturingAssign().setInt("txtr", 0);
                 ShaderSystem::objectTexturingAssign().setInt("selectedPrimitiveIDS", 1);
+                ShaderSystem::objectTexturingAssign().setInt("meshMask", 2);
                 ShaderSystem::objectTexturingAssign().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);
 
                 glActiveTexture(GL_TEXTURE0);
@@ -376,6 +389,9 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                 
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, faceSelection[i].selectedFaces.ID);
+                
+                glActiveTexture(GL_TEXTURE2);
+                glBindTexture(GL_TEXTURE_2D, faceSelection[i].meshMask.ID);
 
                 getModel()->meshes[i].Draw(false);
                 
@@ -386,6 +402,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                 Settings::defaultFramebuffer()->setViewport();
             }
         }    
+
+        this->dialogControl.unActivate();
     }
     else if(maskViaFaceSelection.clicked){
         faceSelectionMode = !faceSelectionMode;
@@ -394,6 +412,22 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         else
             maskViaFaceSelection.text = "Mask via face selection";
     }
+    else if(maskViaTexture.clicked){
+        
+        showTextureSelectionDialog(this->meshMask, this->getResolution(), false);
+        
+        if(this->meshMask.ID){
+            for (size_t i = 0; i < getModel()->meshes.size(); i++)
+            {
+                if(i < this->faceSelection.size()){
+                    glDeleteTextures(1, &this->faceSelection[i].meshMask.ID);
+                    this->faceSelection[i].meshMask = this->meshMask.generateProceduralTexture(getModel()->meshes[i], this->getResolution());
+                }
+            }
+        }
+    
+        this->faceSelectionMode = false;
+    }
     
     if(!this->editMaterialButton.clicked && __materialEditBtn || assignRelatedTexturesButton.clicked){
         this->updateMeshTextures();
@@ -401,8 +435,12 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     }
 
 
-    if(!this->panel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && !this->materialSelection && !this->textureSelection)
-        this->dialogControl.unActivate();
+    if(!this->panel.hover && *Mouse::LClick() || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput) && !this->materialSelection && !this->textureSelection){
+        if(!faceSelectionMode)
+            this->dialogControl.unActivate();
+        else
+            faceSelectionMode = false;
+    }
     
     if(this->materialSelection || this->textureSelection){
         
@@ -496,6 +534,9 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
 
         glActiveTexture(GL_TEXTURE11);
         glBindTexture(GL_TEXTURE_2D, faceSelection[i].selectedFaces.ID);
+        
+        glActiveTexture(GL_TEXTURE12);
+        glBindTexture(GL_TEXTURE_2D, faceSelection[i].meshMask.ID);
     
         getModel()->meshes[i].Draw(faceSelectionMode);
     }
@@ -565,4 +606,33 @@ void ObjectTexturingDialog::updateMeshTextures(){
 
 bool ObjectTexturingDialog::anyElementHover(){
     return maskViaFaceSelection.hover || maskViaTexture.hover || cancelMasks.hover || assignRelatedTexturesButton.hover || materialDisplayerButton.hover || editMaterialButton.hover || selectMaterialButton.hover;
+}
+
+int ObjectTexturingDialog::getResolution(){
+    for (size_t i = 0; i < getModel()->meshes.size(); i++)
+    {
+        if(getModel()->meshes[i].albedo.ID)
+            return getModel()->meshes[i].albedo.getResolution().x;
+
+        else if(getModel()->meshes[i].roughness.ID)
+            return getModel()->meshes[i].roughness.getResolution().x;
+
+        else if(getModel()->meshes[i].metallic.ID)
+            return getModel()->meshes[i].metallic.getResolution().x;
+
+        else if(getModel()->meshes[i].normalMap.ID)
+            return getModel()->meshes[i].normalMap.getResolution().x;
+
+        else if(getModel()->meshes[i].heightMap.ID)
+            return getModel()->meshes[i].heightMap.getResolution().x;
+
+        else if(getModel()->meshes[i].ambientOcclusion.ID)
+            return getModel()->meshes[i].ambientOcclusion.getResolution().x;
+    
+        else
+            return 1024;
+    }
+
+    Settings::defaultFramebuffer()->FBO.bind();
+    
 }

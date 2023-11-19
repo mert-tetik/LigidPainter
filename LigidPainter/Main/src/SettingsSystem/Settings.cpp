@@ -79,6 +79,12 @@ void Settings::loadAppTextures(){
     __appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
     __appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.load("./LigidPainter/Resources/Images/NoMaterialModifierIsConnectedToMaterial.jpg");
     __appTextures.materialChannelMissingTexture.load("./LigidPainter/Resources/Images/MaterialChannelMissingTexture.jpg");
+    
+    char whitePxs[4] = {127,127,127,127};
+    char blackPxs[4] = {0,0,0,127};
+    __appTextures.white = Texture(whitePxs, 1, 1, GL_NEAREST);
+    __appTextures.black = Texture(blackPxs, 1, 1, GL_NEAREST);
+    __appTextures.transparent = Texture(nullptr, 1, 1, GL_NEAREST);
 }
 
 Context* getContext(){

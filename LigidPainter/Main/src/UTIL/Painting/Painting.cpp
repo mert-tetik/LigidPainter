@@ -249,22 +249,22 @@ void Painter::projectThePaintingTexture(
     glm::vec2 textureRes = selectedTexture.getResolution();
 
     if(this->materialPainting && this->selectedMeshIndex < getModel()->meshes.size()){
-        if(!getModel()->meshes[this->selectedMeshIndex].albedo.ID)
+        if(getModel()->meshes[this->selectedMeshIndex].albedo.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
 
-        else if(!getModel()->meshes[this->selectedMeshIndex].roughness.ID)
+        else if(getModel()->meshes[this->selectedMeshIndex].roughness.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].roughness.getResolution();
 
-        else if(!getModel()->meshes[this->selectedMeshIndex].metallic.ID)
+        else if(getModel()->meshes[this->selectedMeshIndex].metallic.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].metallic.getResolution();
 
-        else if(!getModel()->meshes[this->selectedMeshIndex].normalMap.ID)
+        else if(getModel()->meshes[this->selectedMeshIndex].normalMap.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].normalMap.getResolution();
 
-        else if(!getModel()->meshes[this->selectedMeshIndex].heightMap.ID)
+        else if(getModel()->meshes[this->selectedMeshIndex].heightMap.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].heightMap.getResolution();
 
-        else if(!getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
+        else if(getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.getResolution();
     
         else
@@ -309,6 +309,7 @@ void Painter::projectThePaintingTexture(
     ShaderSystem::projectingPaintedTextureShader().setFloat("paintingOpacity", brushPropertiesOpacity);
     ShaderSystem::projectingPaintedTextureShader().setInt("usingMeshSelection", faceSelectionActive);
     ShaderSystem::projectingPaintedTextureShader().setInt("selectedPrimitiveIDS", 8);
+    ShaderSystem::projectingPaintedTextureShader().setInt("meshMask", 10);
     ShaderSystem::projectingPaintedTextureShader().setInt("selectedPaintingModeIndex", selectedPaintingModeIndex);
     
     ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverTexture", 9);
@@ -331,6 +332,10 @@ void Painter::projectThePaintingTexture(
     // Bind the painting over texture
     glActiveTexture(GL_TEXTURE9);
     glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
+    
+    // Bind the mesh mask texture
+    glActiveTexture(GL_TEXTURE9);
+    glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
     
     // Painting a 3D model
     if(threeDimensionalMode){
@@ -508,22 +513,22 @@ void Painter::generateMirroredProjectedPaintingTexture(
     glm::vec2 textureRes = selectedTexture.getResolution();
 
     if(this->materialPainting && this->selectedMeshIndex < getModel()->meshes.size()){
-        if(!getModel()->meshes[this->selectedMeshIndex].albedo.ID)
+        if(getModel()->meshes[this->selectedMeshIndex].albedo.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
 
-        else if(!getModel()->meshes[this->selectedMeshIndex].roughness.ID)
+        else if(getModel()->meshes[this->selectedMeshIndex].roughness.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].roughness.getResolution();
 
-        else if(!getModel()->meshes[this->selectedMeshIndex].metallic.ID)
+        else if(getModel()->meshes[this->selectedMeshIndex].metallic.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].metallic.getResolution();
 
-        else if(!getModel()->meshes[this->selectedMeshIndex].normalMap.ID)
+        else if(getModel()->meshes[this->selectedMeshIndex].normalMap.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].normalMap.getResolution();
 
-        else if(!getModel()->meshes[this->selectedMeshIndex].heightMap.ID)
+        else if(getModel()->meshes[this->selectedMeshIndex].heightMap.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].heightMap.getResolution();
 
-        else if(!getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
+        else if(getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
             textureRes = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.getResolution();
     
         else

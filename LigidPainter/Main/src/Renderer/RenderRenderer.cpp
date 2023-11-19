@@ -308,6 +308,7 @@ void Renderer::set3DUniforms(){
     ShaderSystem::tdModelShader().setInt("ambientOcclusionTxtr",7);
     ShaderSystem::tdModelShader().setInt("paintingTexture",8);
     ShaderSystem::tdModelShader().setInt("selectedPrimitiveIDS", 11);
+    ShaderSystem::tdModelShader().setInt("meshMask", 12);
     ShaderSystem::tdModelShader().setVec3("viewPos", getScene()->camera.cameraPos);
     ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::tdModelShader().setMat4("projection", getScene()->projectionMatrix);
@@ -459,6 +460,9 @@ void Renderer::renderMainModel(){
             
             glActiveTexture(GL_TEXTURE11);
             glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
+        
+            glActiveTexture(GL_TEXTURE12);
+            glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
         }
         else{
             ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
@@ -467,7 +471,11 @@ void Renderer::renderMainModel(){
         
             glActiveTexture(GL_TEXTURE11);
             glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].selectedObjectPrimitivesTxtr.ID);
+        
+            glActiveTexture(GL_TEXTURE12);
+            glBindTexture(GL_TEXTURE_2D, Settings::appTextures().white.ID);
         }
+        
         
         ShaderSystem::tdModelShader().setInt("materialPainting", painter.materialPainting);
         ShaderSystem::tdModelShader().setInt("enableAlbedoChannel", painter.enableAlbedoChannel);
