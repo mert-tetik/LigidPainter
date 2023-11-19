@@ -55,6 +55,7 @@ public:
         //Show the created window
         getContext()->window.show();
        
+
         //Init GLAD
         if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
         {
@@ -63,6 +64,7 @@ public:
 
         Renderer renderer;
         renderer.initRenderer();
+        
         // Start the export thread
         std::thread projectUpdatingThreadX(projectUpdatingThread, std::ref(renderer.project));
 

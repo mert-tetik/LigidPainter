@@ -770,6 +770,13 @@ public:
     void setCursor(LigidCursor cursor);
 
     /*!
+        @brief Retrieve the screen size calculated considering the taskbar
+    
+        Values are written to the scaleX & scaleY parameters
+    */
+    void getMaximizedScreenSize(int& scaleX, int& scaleY);
+
+    /*!
         @brief Function to toggle cursor visibility
     */
     void setCursorVisibility(bool visible);

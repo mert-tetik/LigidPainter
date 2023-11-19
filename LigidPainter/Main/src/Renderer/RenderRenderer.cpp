@@ -37,6 +37,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 bool _ligid_renderer_render_first_frame = true;
 
 void Renderer::render(){
+
+
+    glm::ivec2 maxWindowSize;
+    getContext()->window.getMaximizedScreenSize(maxWindowSize.x, maxWindowSize.y);
+    *Settings::videoScale() = maxWindowSize; 
+
     //Handle user input and interact with the windowing system
     getContext()->window.pollEvents();
 

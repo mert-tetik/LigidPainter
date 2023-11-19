@@ -583,3 +583,27 @@ void LigidWindow::deleteContext(){
     // Release the device
     ReleaseDC(this->window, GetDC(this->window));
 }
+
+void LigidWindow::getMaximizedScreenSize(int& scaleX, int& scaleY) {
+    RECT windowRect, clientRect;
+    GetWindowRect(this->window, &windowRect);
+    GetClientRect(this->window, &clientRect);
+
+    // Calculate the non-client area (title bar, borders, etc.)
+    int titleBarHeight = GetSystemMetrics(SM_CYCAPTION); // Title bar height
+    int borderX = (windowRect.right - windowRect.left) - clientRect.right;
+    int borderY = (windowRect.bottom - windowRect.top) - clientRect.bottom - titleBarHeight; // Adjust for title bar
+
+    // Get the monitor info
+    HMONITOR hMonitor = MonitorFromWindow(this->window, MONITOR_DEFAULTTONEAREST);
+    MONITORINFO monitorInfo = { sizeof(MONITORINFO) };
+    GetMonitorInfo(hMonitor, &monitorInfo);
+
+    // Adjust for taskbar
+    RECT maximizedRect = monitorInfo.rcWork;
+    maximizedRect.right -= borderX;
+    maximizedRect.bottom -= borderY;
+
+    scaleX = maximizedRect.right - maximizedRect.left;
+    scaleY = maximizedRect.bottom - maximizedRect.top;
+}
