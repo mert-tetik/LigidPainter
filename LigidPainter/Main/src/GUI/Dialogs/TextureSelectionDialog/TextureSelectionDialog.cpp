@@ -48,6 +48,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
     
     // Assign the default values
     initTextureSelectionDialog(receivedTexture, twoDMode);
+
     
     // Rendering loop
     while (!getContext()->window.shouldClose())
@@ -55,6 +56,9 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         // Update window
         getContext()->window.pollEvents();
         
+        ShaderSystem::buttonShader().use();
+        ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, (float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f));
+   
         // Refreshing the framebuffer
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

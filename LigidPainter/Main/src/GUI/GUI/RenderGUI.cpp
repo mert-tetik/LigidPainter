@@ -526,7 +526,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, getModel()->objectIDs.ID);
+        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
 
         // Render the texture as it's pixels can be seen
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -823,7 +823,19 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     painter.faceSelection.editMode = meshSection.elements[2].checkBox.clickState1;
     painter.faceSelection.selectionModeIndex = meshSection.elements[3].comboBox.selectedIndex;
     painter.faceSelection.radius = meshSection.elements[4].rangeBar.value;
-    painter.faceSelection.hideUnselected = meshSection.elements[6].checkBox.clickState1;
+    if(meshSection.elements[6].button.clicked && painter.selectedMeshIndex < getModel()->meshes.size()){
+        glDeleteTextures(1, &painter.faceSelection.meshMask.ID);
+        painter.faceSelection.meshMask = meshSection.elements[6].button.texture.generateProceduralTexture(getModel()->meshes[painter.selectedMeshIndex], 1024); 
+    }
+    if(meshSection.elements[7].button.clicked){
+        glDeleteTextures(1, &painter.faceSelection.meshMask.ID);
+        painter.faceSelection.meshMask.ID = 0;
+        glDeleteTextures(1, &meshSection.elements[6].button.texture.ID);
+        meshSection.elements[6].button.texture.ID = 0;
+        meshSection.elements[6].button.texture.title = "";
+    }
+
+    painter.faceSelection.hideUnselected = meshSection.elements[8].checkBox.clickState1;
 
     if(painter.selectedMeshIndex < getModel()->meshes.size()){
         if(getModel()->newModelAdded || getModel()->meshes[painter.selectedMeshIndex].materialName != __faceSelectionActiveMesh){

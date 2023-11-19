@@ -27,6 +27,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //Fragment shader output
 out vec4 color;
 
+in vec2 TexCoords;
+
 uniform int usingMeshSelection = 0;
 uniform int hideUnselected = 0;
 uniform sampler2D selectedPrimitiveIDS;
