@@ -541,7 +541,7 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
         getModel()->meshes[i].Draw(faceSelectionMode);
     }
     
-    if(*Mouse::LPressed() && this->faceSelectionMode && !this->anyElementHover()){
+    if((*Mouse::LPressed() || Shortcuts::CTRL_A()) && this->faceSelectionMode && !this->anyElementHover()){
         glm::vec2 cursorPos = *Mouse::cursorPos();
         cursorPos -= glm::vec2(*Settings::videoScale() * glm::vec2(0.1f));    
         cursorPos *= glm::vec2(glm::vec2(1.25f));    

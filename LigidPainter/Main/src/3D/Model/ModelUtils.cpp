@@ -91,83 +91,97 @@ void Model::updateObjectIDsTexture(){
 
 void Model::selectObject(Panel objectsPanel){
     
-    Framebuffer FBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D);
-    FBO.bind();
+    int objI = -1;
+    int meshI = -1;
 
-    glm::vec2 pos = *Mouse::cursorPos();
-    pos.y = getContext()->windowScale.y - pos.y;
-
-    float* pxs = new float[2]; 
-    
-    glReadPixels(
-                    pos.x, 
-                    pos.y, 
-                    1, 
-                    1,
-                    GL_RG,
-                    GL_FLOAT,
-                    pxs
-                );
-
-    //Set back to default shader
-    ShaderSystem::buttonShader().use();
-
-    //Delete the capture framebuffer
-    FBO.deleteBuffers(false, true);
-
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-
-    int objI = pxs[0];
-    int meshI = pxs[1] - 1;
-
-    for (size_t secI = 0; secI < objectsPanel.sections.size(); secI++)
-    {
-        for (size_t elI = 0; elI < objectsPanel.sections[secI].elements.size(); elI++){
-            if(objectsPanel.sections[secI].elements[elI].button.hover){
-                meshI = secI;
-                objI = elI;
-            }
-        }
-    }
-    
-    delete[] pxs;
-
-    for (size_t i = 0; i < this->meshes.size(); i++){
-        if(!this->meshes[i].selectedObjectPrimitivesTxtr.ID){
-            glGenTextures(1, &this->meshes[i].selectedObjectPrimitivesTxtr.ID);
-        }
-        
-        if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-            if(*Mouse::LClick())
-                this->meshes[i].selectedObjectIndices.clear();
-            this->meshes[i].selectedObjectPrimitivesTxtr.update(nullptr, 1, 1);
-        }        
-    }
-
-    if(meshI < this->meshes.size() && meshI >= 0){
-        int match = -1;
-        for (size_t i = 0; i < this->meshes[meshI].selectedObjectIndices.size(); i++)
+    if(Shortcuts::CTRL_A()){
+        for (size_t meshI = 0; meshI < this->meshes.size(); meshI++)
         {
-            if(this->meshes[meshI].selectedObjectIndices[i] == objI)
-                match = i; 
+            for (size_t i = 0; i < this->meshes[meshI].objects.size(); i++)
+            {
+                this->meshes[meshI].selectedObjectIndices.push_back(i);
+            }
+        }
+    }
+    else{
+
+        Framebuffer FBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D);
+        FBO.bind();
+
+        glm::vec2 pos = *Mouse::cursorPos();
+        pos.y = getContext()->windowScale.y - pos.y;
+
+        float* pxs = new float[2]; 
+        
+        glReadPixels(
+                        pos.x, 
+                        pos.y, 
+                        1, 
+                        1,
+                        GL_RG,
+                        GL_FLOAT,
+                        pxs
+                    );
+
+        //Set back to default shader
+        ShaderSystem::buttonShader().use();
+
+        //Delete the capture framebuffer
+        FBO.deleteBuffers(false, true);
+
+        Settings::defaultFramebuffer()->FBO.bind();
+        Settings::defaultFramebuffer()->setViewport();
+
+        objI = pxs[0];
+        meshI = pxs[1] - 1;
+
+        for (size_t secI = 0; secI < objectsPanel.sections.size(); secI++)
+        {
+            for (size_t elI = 0; elI < objectsPanel.sections[secI].elements.size(); elI++){
+                if(objectsPanel.sections[secI].elements[elI].button.hover){
+                    meshI = secI;
+                    objI = elI;
+                }
+            }
         }
         
-        if(*Mouse::LClick()){
-            if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-                if(match == -1)
-                    this->meshes[meshI].selectedObjectIndices.push_back(objI);
+        delete[] pxs;
+
+        for (size_t i = 0; i < this->meshes.size(); i++){
+            if(!this->meshes[i].selectedObjectPrimitivesTxtr.ID){
+                glGenTextures(1, &this->meshes[i].selectedObjectPrimitivesTxtr.ID);
             }
-            else{
-                if(match != -1)
-                    this->meshes[meshI].selectedObjectIndices.erase(this->meshes[meshI].selectedObjectIndices.begin() + match);
-            }
+            
+            if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+                if(*Mouse::LClick())
+                    this->meshes[i].selectedObjectIndices.clear();
+                this->meshes[i].selectedObjectPrimitivesTxtr.update(nullptr, 1, 1);
+            }        
         }
 
-        Mouse::setCursor(*Mouse::pointerCursor());
+        if(meshI < this->meshes.size() && meshI >= 0){
+            int match = -1;
+            for (size_t i = 0; i < this->meshes[meshI].selectedObjectIndices.size(); i++)
+            {
+                if(this->meshes[meshI].selectedObjectIndices[i] == objI)
+                    match = i; 
+            }
+            
+            if(*Mouse::LClick()){
+                if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+                    if(match == -1)
+                        this->meshes[meshI].selectedObjectIndices.push_back(objI);
+                }
+                else{
+                    if(match != -1)
+                        this->meshes[meshI].selectedObjectIndices.erase(this->meshes[meshI].selectedObjectIndices.begin() + match);
+                }
+            }
+
+            Mouse::setCursor(*Mouse::pointerCursor());
+        }
     }
-
-
+    
     for (size_t mshI = 0; mshI < this->meshes.size(); mshI++)
     {
         std::vector<int> changedIndices;
@@ -198,4 +212,5 @@ void Model::selectObject(Panel objectsPanel){
 
         updatePrimitivesArrayTexture(this->meshes[mshI].selectedObjectPrimitivesTxtr, primitivesArray, primitivesArray, this->meshes[mshI], changedIndices, true);
     }
+
 }

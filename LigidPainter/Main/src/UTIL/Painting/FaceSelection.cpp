@@ -106,8 +106,22 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction, glm::
         lastMousePos = cursorPos;
     }
 
+
     bool changesMade = false;
-    if(mouseInteraction){
+    
+    if(Shortcuts::CTRL_A()){
+        std::fill(this->selectedPrimitiveIDs.begin(), this->selectedPrimitiveIDs.end(), 2);
+        
+        changedIndices.clear();
+        for (size_t i = 0; i < this->selectedPrimitiveIDs.size(); i++)
+        {
+            changedIndices.push_back(i);
+        }
+        
+        changesMade = true;
+    }
+
+    if(mouseInteraction && !Shortcuts::CTRL_A()){
         // Generate & bind the framebuffer object to render the model primitives into the modelPrimitives texture
         if(!this->FBO.ID)
             this->FBO = Framebuffer(this->modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, windowSize));

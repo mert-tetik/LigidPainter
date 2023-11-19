@@ -901,7 +901,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     if(
             (painter.selectedMeshIndex < getModel()->meshes.size() && 
-            ((*Mouse::LPressed() && painter.faceSelection.selectionModeIndex == 0) || (applyBoxSelection && painter.faceSelection.selectionModeIndex == 1)) && 
+            (((*Mouse::LPressed() || Shortcuts::CTRL_A()) && painter.faceSelection.selectionModeIndex == 0) || (applyBoxSelection && painter.faceSelection.selectionModeIndex == 1)) && 
             !anyPanelHover && 
             !anyDialogActive && 
             painter.faceSelection.editMode) ||
