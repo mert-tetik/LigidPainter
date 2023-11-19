@@ -89,7 +89,7 @@ void Model::updateObjectIDsTexture(){
     glDepthFunc(GL_LEQUAL);
 }
 
-void Model::selectObject(Panel objectsPanel){
+void Model::selectObject(Panel& objectsPanel){
     
     int objI = -1;
     int meshI = -1;
@@ -141,6 +141,7 @@ void Model::selectObject(Panel objectsPanel){
                 if(objectsPanel.sections[secI].elements[elI].button.hover){
                     meshI = secI;
                     objI = elI;
+                    objectsPanel.sections[secI].elements[elI].button.hover = false;
                 }
             }
         }

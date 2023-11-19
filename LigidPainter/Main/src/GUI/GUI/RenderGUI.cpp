@@ -589,6 +589,26 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             this->objectTexturingDialog.dialogControl.activate();
         }
 
+        for (size_t secI = 0; secI < objectsPanel.sections.size(); secI++)
+        {
+            for (size_t elI = 0; elI < objectsPanel.sections[secI].elements.size(); elI++){
+                bool match = false;
+                if(secI < getModel()->meshes.size()){
+                    for (size_t i = 0; i < getModel()->meshes[secI].selectedObjectIndices.size(); i++)
+                    {
+                        if(getModel()->meshes[secI].selectedObjectIndices[i] == elI)
+                            match = true;
+                    }
+                }
+
+                if(match)
+                    objectsPanel.sections[secI].elements[elI].button.color = ColorPalette::themeColor;
+                else
+                    objectsPanel.sections[secI].elements[elI].button.color = ColorPalette::secondColor;
+            }
+        }
+        
+
         this->objectsPanel.render(timer, !anyDialogActive);
 
         if(getModel()->newModelAdded){
