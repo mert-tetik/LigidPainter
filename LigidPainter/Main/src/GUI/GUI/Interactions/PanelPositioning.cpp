@@ -47,13 +47,11 @@ void UI::panelPositioning(
     windowPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
     libraryPanelLeft.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
     libraryPanelDisplayer.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanelDisplayer.scale.y; //Keep beneath the navigation bar
-    libraryPanelDisplayer.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
+    libraryPanelDisplayer.scale.y = 50 - navigationPanel.scale.y - selectedTextureDisplayer.scale.y;
     libraryPanelLeft.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanelDisplayer.scale.y; //Keep beneath the navigation bar
-    libraryPanelLeft.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
+    libraryPanelLeft.scale.y = 50 - navigationPanel.scale.y - selectedTextureDisplayer.scale.y;
     nodeEditorDisplayer.pos.x = paintingPanelModePanel.pos.x - paintingPanelModePanel.scale.x - nodeEditorDisplayer.scale.x; //Keep on the left side of the window panel 
     selectedTextureDisplayer.pos.x = libraryPanelDisplayer.pos.x - libraryPanelLeft.pos.x;
-    selectedTextureDisplayer.pos.y = nodeEditorDisplayer.pos.y;
-    selectedTextureDisplayer.scale.y = nodeEditorDisplayer.scale.y;
     selectedTextureDisplayer.scale.x = libraryPanelDisplayer.scale.x + libraryPanelLeft.scale.x;
     
     nodeEditorDisplayer.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (paintingPanelModePanel.scale.x+windowPanel.scale.x+paintingPanel.scale.x);
