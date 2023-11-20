@@ -58,7 +58,7 @@ public:
 
     Texture maskTexture;
 
-    void (*updateMaterialChannels)(Material &material, Mesh &mesh, int textureResolution, int curModI);
+    void updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI);
 
     //Constructors
     MaterialModifier();

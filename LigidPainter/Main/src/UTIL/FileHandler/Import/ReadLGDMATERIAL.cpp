@@ -42,15 +42,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
                                 return false; \
                             }
 
-bool readTextureModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier);
-bool readSolidModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier);
-bool readLiquidModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier);
-bool readMossModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier);
-bool readRustModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier);
-bool readSkinModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier);
-bool readWoodenModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier);
-bool readAsphaltModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier);
-bool readDustModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier);
+bool readTextureModifier(std::ifstream& rf, MaterialModifier& modifier, int version);
+bool readSolidModifier(std::ifstream& rf, MaterialModifier& modifier, int version);
+bool readLiquidModifier(std::ifstream& rf, MaterialModifier& modifier, int version);
+bool readMossModifier(std::ifstream& rf, MaterialModifier& modifier, int version);
+bool readRustModifier(std::ifstream& rf, MaterialModifier& modifier, int version);
+bool readSkinModifier(std::ifstream& rf, MaterialModifier& modifier, int version);
+bool readWoodenModifier(std::ifstream& rf, MaterialModifier& modifier, int version);
+bool readAsphaltModifier(std::ifstream& rf, MaterialModifier& modifier, int version);
+bool readDustModifier(std::ifstream& rf, MaterialModifier& modifier, int version);
 
 
 bool FileHandler::readLGDMATERIALFile(
@@ -94,12 +94,11 @@ bool FileHandler::readLGDMATERIALFile(
         }
 
         //Version number
-        // 0x000007D0 - 2000
         uint32_t versionNumber; 
         LGDMATERIAL_READBITS(versionNumber, uint32_t, "Version number");
 
-        if(versionNumber != 0x000007D0){
-            LGDLOG::start << "ERROR WHILE READING MATERIAL FILE! This version of the LigidPainter doesn't support this file's version." << LGDLOG::end;
+        if(versionNumber != 2000 && versionNumber != 2100){
+            LGDLOG::start << "ERROR WHILE READING MATERIAL FILE! This version of the LigidPainter doesn't support this material file's version." << LGDLOG::end;
             return false;
         }
 
@@ -147,55 +146,55 @@ bool FileHandler::readLGDMATERIALFile(
             modifier.maskTexture.readTextureData(rf, true);
 
             if(modifier.modifierIndex == TEXTURE_MATERIAL_MODIFIER){
-                if(!readTextureModifier_ver_2000(rf, modifier)){
+                if(!readTextureModifier(rf, modifier, versionNumber)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == SOLID_MATERIAL_MODIFIER){
-                if(!readSolidModifier_ver_2000(rf, modifier)){
+                if(!readSolidModifier(rf, modifier, versionNumber)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == LIQUID_MATERIAL_MODIFIER){
-               if(!readLiquidModifier_ver_2000(rf, modifier)){
+               if(!readLiquidModifier(rf, modifier, versionNumber)){
                     return false;
                }
             }
 
             else if (modifier.modifierIndex == MOSS_MATERIAL_MODIFIER){
-               if(!readMossModifier_ver_2000(rf, modifier)){
+               if(!readMossModifier(rf, modifier, versionNumber)){
                     return false;
                }
             }
 
             else if (modifier.modifierIndex == RUST_MATERIAL_MODIFIER){
-                if(!readRustModifier_ver_2000(rf, modifier)){
+                if(!readRustModifier(rf, modifier, versionNumber)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == SKIN_MATERIAL_MODIFIER){
-                if(!readSkinModifier_ver_2000(rf, modifier)){
+                if(!readSkinModifier(rf, modifier, versionNumber)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == WOODEN_MATERIAL_MODIFIER){
-                if(!readWoodenModifier_ver_2000(rf, modifier)){
+                if(!readWoodenModifier(rf, modifier, versionNumber)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == ASPHALT_MATERIAL_MODIFIER){
-                if(!readAsphaltModifier_ver_2000(rf, modifier)){
+                if(!readAsphaltModifier(rf, modifier, versionNumber)){
                     return false;
                 }
             }
 
             else if (modifier.modifierIndex == DUST_MATERIAL_MODIFIER){
-               if(!readDustModifier_ver_2000(rf, modifier)){
+               if(!readDustModifier(rf, modifier, versionNumber)){
                     return false;
                }
             }
@@ -214,7 +213,7 @@ bool FileHandler::readLGDMATERIALFile(
 }
 
 
-bool readTextureModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
+bool readTextureModifier(std::ifstream& rf, MaterialModifier& modifier, int version){
     // ---- Channel Textures ----
     // albedoTexture
     modifier.sections[0].elements[1].button.texture.readTextureData(rf, true);
@@ -246,6 +245,10 @@ bool readTextureModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier)
     // ---- Depth Masking & Depth Properties ----
     // depthValue
     LGDMATERIAL_READBITS(modifier.sections[2].elements[0].rangeBar.value, float, "Depth Value");
+    if(version == 2100){
+        //blurTheHeightMap
+        LGDMATERIAL_READBITS( modifier.sections[2].elements[1].checkBox.clickState1, int, "blurTheHeightMap");
+    }
     
     // ---- Filter ----
     // albedoFilter
@@ -256,7 +259,7 @@ bool readTextureModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier)
     return true;
 }
 
-bool readSolidModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
+bool readSolidModifier(std::ifstream& rf, MaterialModifier& modifier, int version){
     // ---- Channels ----
     // albedoColor;
     // albedoOpacity
@@ -298,7 +301,11 @@ bool readSolidModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     // ---- Depth Masking & Depth Properties ----
     // depthValue
     LGDMATERIAL_READBITS(modifier.sections[1].elements[0].rangeBar.value, float, "Depth Value");
-    
+    if(version == 2100){
+        //blurTheHeightMap
+        LGDMATERIAL_READBITS( modifier.sections[1].elements[1].checkBox.clickState1, int, "blurTheHeightMap");
+    }
+
     // ---- Filter ----
     // albedoFilter
     modifier.sections[2].elements[0].button.filter.readFilterData(rf);
@@ -308,7 +315,7 @@ bool readSolidModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     return true;
 }
 
-bool readLiquidModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
+bool readLiquidModifier(std::ifstream& rf, MaterialModifier& modifier, int version){
     // ---- Scaling ----
     //scaleVal
     LGDMATERIAL_READBITS( modifier.sections[0].elements[0].rangeBar.value, float, "scaleVal");
@@ -398,7 +405,7 @@ bool readLiquidModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     return true;
 }
 
-bool readMossModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
+bool readMossModifier(std::ifstream& rf, MaterialModifier& modifier, int version){
     // ---- Color ----
     //mossColorBack
     LGDMATERIAL_READBITS( modifier.sections[0].elements[0].button.color.r, float, "mossColorBack");
@@ -478,7 +485,7 @@ bool readMossModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     return true;
 }
 
-bool readRustModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
+bool readRustModifier(std::ifstream& rf, MaterialModifier& modifier, int version){
     // ---- Colors ----
     //color1
     LGDMATERIAL_READBITS( modifier.sections[0].elements[0].button.color.r, float, "color1");
@@ -562,7 +569,7 @@ bool readRustModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     return true;
 }
 
-bool readSkinModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
+bool readSkinModifier(std::ifstream& rf, MaterialModifier& modifier, int version){
     // ---- Droplets ----
     //dropletsCount
     LGDMATERIAL_READBITS( modifier.sections[0].elements[0].rangeBar.value, float, "dropletsCount");
@@ -640,7 +647,7 @@ bool readSkinModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
     return true;
 }
 
-bool readWoodenModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
+bool readWoodenModifier(std::ifstream& rf, MaterialModifier& modifier, int version){
     // ---- Colors ----
     //color1
     LGDMATERIAL_READBITS( modifier.sections[0].elements[0].button.color.r, float, "color1");
@@ -725,7 +732,7 @@ bool readWoodenModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
 
     return true;
 }
-bool readAsphaltModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
+bool readAsphaltModifier(std::ifstream& rf, MaterialModifier& modifier, int version){
     // ---- Colors ----
     //color1
     LGDMATERIAL_READBITS( modifier.sections[0].elements[0].button.color.r, float, "color1");
@@ -785,6 +792,10 @@ bool readAsphaltModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier)
     // ---- Depth Masking & Depth Properties ----
     //depthValue
     LGDMATERIAL_READBITS( modifier.sections[7].elements[0].rangeBar.value, float, "Depth Value");
+    if(version == 2100){
+        //blurTheHeightMap
+        LGDMATERIAL_READBITS( modifier.sections[7].elements[1].checkBox.clickState1, int, "blurTheHeightMap");
+    }
     
     // ---- Filter ----
     // albedoFilter
@@ -794,7 +805,7 @@ bool readAsphaltModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier)
 
     return true;
 }
-bool readDustModifier_ver_2000(std::ifstream& rf, MaterialModifier& modifier){
+bool readDustModifier(std::ifstream& rf, MaterialModifier& modifier, int version){
     // ---- Noise ----
     //size
     LGDMATERIAL_READBITS( modifier.sections[0].elements[0].rangeBar.value, float, "size");

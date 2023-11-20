@@ -75,7 +75,7 @@ bool FileHandler::writeLGDMATERIALFile(
         LGDMATERIAL_WRITEBITS(h3, uint64_t, "Description 3rd");
         
         //Version number
-        uint32_t versionNumber = 0x000007D0; //2000 
+        uint32_t versionNumber = 2100; 
         LGDMATERIAL_WRITEBITS(versionNumber, uint32_t, "Version number");
         
         //ID
@@ -129,6 +129,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Depth Masking & Depth Properties ----
                 float depthValue = material.materialModifiers[i].sections[2].elements[0].rangeBar.value;
                 LGDMATERIAL_WRITEBITS(depthValue, float, "Depth Value");
+                int blurTheHeightMap = material.materialModifiers[i].sections[2].elements[1].checkBox.clickState1;
+                LGDMATERIAL_WRITEBITS(blurTheHeightMap, int, "blurTheHeightMap");
                 
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[3].elements[0].button.filter;
@@ -180,6 +182,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Depth Masking & Depth Properties ----
                 float depthValue = material.materialModifiers[i].sections[1].elements[0].rangeBar.value;
                 LGDMATERIAL_WRITEBITS(depthValue, float, "Depth Value");
+                int blurTheHeightMap = material.materialModifiers[i].sections[1].elements[1].checkBox.clickState1;
+                LGDMATERIAL_WRITEBITS(blurTheHeightMap, int, "blurTheHeightMap");
                 
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[2].elements[0].button.filter;
@@ -662,6 +666,8 @@ bool FileHandler::writeLGDMATERIALFile(
                 // ---- Depth Masking & Depth Properties ----
                 float depthValue = material.materialModifiers[i].sections[7].elements[0].rangeBar.value;
                 LGDMATERIAL_WRITEBITS(depthValue, float, "Depth Value");
+                int blurTheHeightMap = material.materialModifiers[i].sections[7].elements[1].checkBox.clickState1;
+                LGDMATERIAL_WRITEBITS(blurTheHeightMap, int, "blurTheHeightMap");
                 
                 // ---- Filter ----
                 Filter albedoFilter = material.materialModifiers[i].sections[8].elements[0].button.filter;
