@@ -138,7 +138,10 @@ static void setUniforms(
                             Texture previousTexture,
                             Texture currentTexture,
                             Texture prevDepthTexture,
-                            unsigned int textureModifierSelectedTexture_procedural
+                            unsigned int textureModifierSelectedTexture_procedural,
+                            Mesh& mesh,
+                            Texture meshMask,
+                            Texture selectedObjectPrimitivesTxtr
                         )
 {
 
@@ -149,7 +152,11 @@ static void setUniforms(
     modifierShader.setInt( "depthTxtr" , 2); //Set the previous height map texture
     modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value);
     modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value);
-    
+    modifierShader.setInt("selectedPrimitiveIDS" , 3); //Set the previous height map texture
+    modifierShader.setInt("meshMask" , 4); //Set the previous height map texture
+    modifierShader.setInt("primitiveCount" , mesh.indices.size() / 3); //Set the previous height map texture
+    modifierShader.setInt("useMeshMask" , selectedObjectPrimitivesTxtr.ID != 0); //Set the previous height map texture
+
     // Bind the mask texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, maskTexture_procedural);
@@ -168,12 +175,17 @@ static void setUniforms(
     else
         glBindTexture(GL_TEXTURE_2D, 0);
 
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, selectedObjectPrimitivesTxtr.ID);
+    
+    glActiveTexture(GL_TEXTURE4);
+    glBindTexture(GL_TEXTURE_2D, meshMask.ID);
 
 
     if(material.materialModifiers[curModI].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
         /* Selected texture */
-        modifierShader.setInt("theTexture", 3); 
-        glActiveTexture(GL_TEXTURE3);
+        modifierShader.setInt("theTexture", 5); 
+        glActiveTexture(GL_TEXTURE5);
         glBindTexture(GL_TEXTURE_2D, textureModifierSelectedTexture_procedural);
     }
     else if(material.materialModifiers[curModI].modifierIndex == DUST_MATERIAL_MODIFIER){
@@ -233,7 +245,7 @@ static void setUniforms(
         modifierShader.setFloat("persistence", material.materialModifiers[curModI].sections[5].elements[2].rangeBar.value); 
     }
     else if(material.materialModifiers[curModI].modifierIndex == LIQUID_MATERIAL_MODIFIER){
-        /* Scaling */
+        /* Scaling */ 
         modifierShader.setFloat("scale", material.materialModifiers[curModI].sections[0].elements[0].rangeBar.value);
         modifierShader.setFloat("yScale", material.materialModifiers[curModI].sections[0].elements[1].rangeBar.value);
         /* Noise */
@@ -362,7 +374,7 @@ static void setUniforms(
     }
 }
 
-void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI){
+void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr){
     
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
@@ -428,7 +440,10 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                         previousTexture, 
                         currentTexture, 
                         prevDepthTexture,
-                        textureModifierSelectedTexture_procedural
+                        textureModifierSelectedTexture_procedural,
+                        mesh,
+                        meshMask,
+                        selectedObjectPrimitivesTxtr
                     );
     
         // Render the result to the framebuffer

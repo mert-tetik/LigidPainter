@@ -51,6 +51,10 @@ uniform sampler2D previousTxtr;
 uniform float opacity;
 uniform float depthValue;
 uniform sampler2D depthTxtr;
+uniform sampler2D selectedPrimitiveIDS;
+uniform sampler2D meshMask;
+uniform int primitiveCount;
+uniform int useMeshMask;
 
 /* Fragment Inputs */
 in vec2 TexCoords;
@@ -443,6 +447,15 @@ float getDroplets(vec3 uv){
 
 void main()
 {
+    if(useMeshMask == 1){
+        float prim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r;
+        bool selectedPrim = prim > 0.9 && texture(meshMask, TexCoords).r > 0.5;
+        if(!selectedPrim){
+            fragColor = vec4(0.);
+            return;
+        }
+    }
+
     vec3 aMossColorBack = mossColorBack;
     vec3 aMossColorFront = mossColorFront;
     vec3 aDirtColor = dirtColor;

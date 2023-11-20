@@ -27,6 +27,10 @@ uniform float opacity;
 uniform sampler2D theTexture;
 uniform float depthValue;
 uniform sampler2D depthTxtr;
+uniform sampler2D selectedPrimitiveIDS;
+uniform sampler2D meshMask;
+uniform int primitiveCount;
+uniform int useMeshMask;
 
 out vec4 fragColor;
 
@@ -35,7 +39,15 @@ void getImage(sampler2D txtr,out vec4 result){
 }
 
 void main(){
-    
+    if(useMeshMask == 1){
+        float prim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r;
+        bool selectedPrim = prim > 0.9 && texture(meshMask, TexCoords).r > 0.5;
+        if(!selectedPrim){
+            fragColor = vec4(0.);
+            return;
+        }
+    }
+
     fragColor = texture(theTexture, TexCoords);
     
     float alpha = opacity;

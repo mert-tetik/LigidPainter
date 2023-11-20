@@ -57,7 +57,7 @@ void Material::updateMaterialDisplayingTexture(
         //TODO : Material - update material function
         for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
         {
-            this->materialModifiers[i].updateMaterialChannels(*this, getSphereModel()->meshes[0], textureRes, i);
+            this->materialModifiers[i].updateMaterialChannels(*this, getSphereModel()->meshes[0], textureRes, i, Settings::appTextures().white, 0);
         }
     }
     

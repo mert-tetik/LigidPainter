@@ -215,8 +215,6 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     }
     
     if(dialogControl.firstFrameActivated || this->cancelMasks.clicked || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput && faceSelectionMode)){
-        this->updateMeshTextures();
-
         glDeleteTextures(1, &this->meshMask.ID);
         this->meshMask.ID = 0;
         this->meshMask.title = "";
@@ -257,6 +255,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                 }
             }
         }
+
+        this->updateMeshTextures();
     }
 
     // Update the scene texture
@@ -592,7 +592,8 @@ void ObjectTexturingDialog::updateMeshTextures(){
         
         for (int i = this->material.materialModifiers.size() - 1; i >= 0; --i)    
         {
-            this->material.materialModifiers[i].updateMaterialChannels(this->material, getModel()->meshes[meshI], 512, i);
+            if(meshI < this->faceSelection.size())
+                this->material.materialModifiers[i].updateMaterialChannels(this->material, getModel()->meshes[meshI], this->getResolution(), i, this->faceSelection[meshI].meshMask, this->faceSelection[meshI].selectedFaces);
         }
         
         getModel()->meshes[meshI].albedo = albedo; 
