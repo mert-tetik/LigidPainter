@@ -249,7 +249,7 @@ void BakingDialog::render(Timer timer, Skybox skybox){
     
 
     if(exportChannelsIntoLibraryPanel.sections[0].elements[exportChannelsIntoLibraryPanel.sections[0].elements.size()-1].button.clicked && selectMeshPanel.sections[0].elements[0].button.selectedMeshI < getModel()->meshes.size()){
-        NodeScene::updateNodeResults(Settings::properties()->textureRes, -1);
+        //NodeScene::updateNodeResults(Settings::properties()->textureRes, -1);
 
         //Update all the materials connected to the mesh output & export it's textures
             //For all the channels

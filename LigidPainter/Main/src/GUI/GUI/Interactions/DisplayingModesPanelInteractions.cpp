@@ -45,8 +45,6 @@ void displayingModesPanelInteraction(
             if(painter.selectedDisplayingModeIndex != i){
                 displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
                 painter.selectedDisplayingModeIndex = i;
-                if(painter.selectedDisplayingModeIndex == 0)
-                    NodeScene::updateNodeResults( Settings::properties()->textureRes, -1);
                 break;
             }
         }

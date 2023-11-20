@@ -217,7 +217,7 @@ static void exportMeshNode(Panel& propertiesPanel){
         return;
     }
     
-    NodeScene::updateNodeResults(resolution, -1);
+    //NodeScene::updateNodeResults(resolution, -1);
     
     //Update all the materials connected to the mesh output & export it's textures
     for (size_t i = 0; i < getModel()->meshes.size(); i++)

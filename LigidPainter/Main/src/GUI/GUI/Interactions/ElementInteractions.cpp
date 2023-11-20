@@ -35,7 +35,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int frameCounter);
 void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog,BakingDialog &bakingDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Panel& vectorPaintingModePropertyPanel, Panel& smearPaintingModePropertyPanel, Painter &painter, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, Button filterPaintingModeFilterBtn, Box twoDPaintingBox);
-void nodeInteraction();
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
 void UI::elementInteraction(
@@ -118,10 +117,6 @@ void UI::elementInteraction(
     displayingModesPanelInteraction(displayingModesPanel, painter);
     Debugger::block("GUI : Interactions : displayingModesPanelInteraction"); // End
 
-    Debugger::block("GUI : Interactions : nodeInteraction"); // Start
-    nodeInteraction();
-    Debugger::block("GUI : Interactions : nodeInteraction"); // End
-    
     Debugger::block("GUI : Interactions : panelPositioning"); // Start
     this->panelPositioning(screenGapPerc,painter);
     Debugger::block("GUI : Interactions : panelPositioning"); // End

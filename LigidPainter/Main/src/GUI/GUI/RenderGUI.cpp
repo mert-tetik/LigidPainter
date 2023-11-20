@@ -148,13 +148,6 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     //Render renaming textbox
     renderRenamingTextbox(timer, painter);
     
-    Debugger::block("GUI : Nodes"); // Start
-    
-    //Render the nodes
-    NodeScene::render(timer,nodeEditorDisplayer, nodePanel, !this->anyDialogActive);
-    
-    Debugger::block("GUI : Nodes"); // End
-    
     Debugger::block("GUI : Dialogs"); // Start
     
     //Render the dialogs

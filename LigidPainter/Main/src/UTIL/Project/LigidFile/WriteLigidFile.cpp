@@ -49,9 +49,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
                         }\
 
 
-//Forward declerations for the util functions
-bool writemeshNodeSceneData(std::ofstream &wf);
-
 bool Project::wrtLigidFile(std::string path){
     std::ofstream wf;
     
@@ -74,8 +71,9 @@ bool Project::wrtLigidFile(std::string path){
     uint32_t versionNumber2000 = 2000;  
     uint32_t versionNumber2100 = 2100;  
     uint32_t versionNumber2200 = 2200;
+    uint32_t versionNumber2300 = 2300;
 
-    WRITE_BITS(versionNumber2200, uint32_t, "");
+    WRITE_BITS(versionNumber2300, uint32_t, "");
 
     // ------------- Date ------------
     time_t currentDate = time(0);
@@ -93,10 +91,6 @@ bool Project::wrtLigidFile(std::string path){
         wf.write(reinterpret_cast<char*>(   &c     )    , sizeof(char));
     }
     
-    // ------------- Node scene ------------
-    if(!writemeshNodeSceneData(wf))
-        return false;
-
     // ------------- Settings ------------
     int textureRes = Settings::properties()->textureRes;
     WRITE_BITS(textureRes, int, "");
@@ -127,63 +121,3 @@ bool Project::writeLigidFile(std::string path){
 
 
 //------------ UTIL FUNCTIONS -------------
-
-
-bool writemeshNodeSceneData(std::ofstream &wf){
-    
-    //Write the node size
-    uint64_t nodeSize = NodeScene::getArraySize();
-    WRITE_BITS(nodeSize, uint64_t, "");
-    
-    //For each node
-    for (size_t i = 0; i < nodeSize; i++)
-    {
-        //Write the node index, (MATERIAL_NODE , MESH_NODE ..)
-        wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->nodeIndex    ), sizeof(int));
-
-        if(NodeScene::getNode(i)->nodeIndex == MATERIAL_MASK_NODE || NodeScene::getNode(i)->nodeIndex == MATERIAL_ID_NODE)
-            NodeScene::getNode(i)->nodePanel.sections[0].elements[0].button.texture.writeTextureData(wf);
-
-        if(NodeScene::getNode(i)->nodeIndex == MATERIAL_MASK_NODE)
-            wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->nodePanel.sections[0].elements[1].rangeBar.value    ), sizeof(int));
-        
-        //Write the material title
-        std::string destMaterialTitle = "Disappeared Material";
-        for (size_t matI = 0; matI < Library::getMaterialArraySize(); matI++)
-        {
-            if(Library::getMaterialObj(matI).uniqueID == NodeScene::getNode(i)->materialID){
-                if(destMaterialTitle != "Disappeared Material")
-                    LGDLOG::start << "WARNING! : Multiple materials with the same ID detected." << LGDLOG::end;
-                
-                destMaterialTitle = Library::getMaterialObj(matI).title;
-            }
-        }
-        
-        WRITE_STR(destMaterialTitle)
-        
-        //Write the node pos
-        wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->nodePanel.pos    ), sizeof(glm::vec3));
-
-        //Write the IO size
-        uint64_t IOSize = NodeScene::getNode(i)->IOs.size();
-        wf.write(reinterpret_cast<char*>(   &IOSize    )    , sizeof(uint64_t));
-        
-        //For each IO
-        for (size_t IOI = 0; IOI < IOSize; IOI++)
-        {   
-
-            //Write the connection size
-            uint64_t connectionSize = NodeScene::getNode(i)->IOs[IOI].connections.size();
-            wf.write(reinterpret_cast<char*>(   &connectionSize    )    , sizeof(uint64_t));
-            
-            //For each connection of the IO
-            for (size_t conI = 0; conI < connectionSize; conI++)
-            {
-                wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->IOs[IOI].connections[conI].inputIndex    )    , sizeof(int));
-                wf.write(reinterpret_cast<char*>(   &NodeScene::getNode(i)->IOs[IOI].connections[conI].nodeIndex     )    , sizeof(int));
-            }
-        }
-    }
-
-    return true;
-}
