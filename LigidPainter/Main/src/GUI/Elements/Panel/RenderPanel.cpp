@@ -437,6 +437,54 @@ void Panel::drawPanel(
                     
                     /* Render the text if rendering library displayer panel*/
                     if(isLibraryDisplayer){
+                        for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+                        {
+                            std::string channelName = "";
+                            unsigned int txtrID = sections[sI].elements[i].button.texture.ID;
+
+                            if(getModel()->meshes[meshI].albedo.ID == txtrID)
+                                channelName = "Albedo";
+                            if(getModel()->meshes[meshI].roughness.ID == txtrID)
+                                channelName = "Roughness";
+                            if(getModel()->meshes[meshI].metallic.ID == txtrID)
+                                channelName = "Metallic";
+                            if(getModel()->meshes[meshI].normalMap.ID == txtrID)
+                                channelName = "Normal Map";
+                            if(getModel()->meshes[meshI].heightMap.ID == txtrID)
+                                channelName = "Height Map";
+                            if(getModel()->meshes[meshI].ambientOcclusion.ID == txtrID)
+                                channelName = "Ambient Occlusion";
+                        
+                            if(channelName != ""){
+                                Button materialInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), getModel()->meshes[meshI].materialName, Texture(), 0.f, false);
+                                Button channelInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), channelName, Texture(), 0.f, false);
+
+                                materialInfo.color = ColorPalette::themeColor;
+                                channelInfo.color = ColorPalette::themeColor;
+                                
+                                materialInfo.outlineExtra = false;
+                                materialInfo.outline = false;
+
+                                channelInfo.outlineExtra = false;
+                                channelInfo.outline = false;
+
+                                if(materialInfo.scale.y < 0.5f){
+                                    materialInfo.text = "";
+                                    channelInfo.text = "";
+                                }
+
+                                materialInfo.pos = sections[sI].elements[i].button.pos;
+                                materialInfo.pos.y -= sections[sI].elements[i].button.scale.y - materialInfo.scale.y;
+                                materialInfo.pos.z += 0.1f;
+                                channelInfo.pos = materialInfo.pos;
+                                channelInfo.pos.y += channelInfo.scale.y + materialInfo.scale.y;
+                            
+                                materialInfo.render(timer, false);
+                                channelInfo.render(timer, false);
+                            }
+                        }
+                        
+
                         glm::vec4 textColor = glm::vec4(1) - sections[sI].elements[i].button.color;
                         textColor.a = 1.;
                         ShaderSystem::buttonShader().setVec4("properties.color"  ,    textColor      ); //Default button color
