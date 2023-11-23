@@ -150,7 +150,12 @@ static void setUniforms(
     modifierShader.setInt("mask", 0); //Set the mask texture slot
     modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
     modifierShader.setInt( "depthTxtr" , 2); //Set the previous height map texture
-    modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value);
+    
+    if(material.materialModifiers[curModI].modifierIndex != SOLID_MATERIAL_MODIFIER)
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value);
+    else
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[0].elements[channelI * 2 + 1].rangeBar.value);
+
     modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value);
     modifierShader.setInt("selectedPrimitiveIDS" , 3); //Set the previous height map texture
     modifierShader.setInt("meshMask" , 4); //Set the previous height map texture
