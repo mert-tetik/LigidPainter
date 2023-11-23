@@ -128,7 +128,7 @@ void main(){
 
     vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, screenPos, paintingOpacity, doDepthTest);
 
-    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r > 0.9 && texture(meshMask, TexCoords).r > 0.5;
+    bool selectedPrim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(ceil(sqrt(primitiveCount))), gl_PrimitiveID / int(ceil(sqrt(primitiveCount)))), 0).r > 0.9 && texture(meshMask, TexCoords).r > 0.5;
     if(!selectedPrim && usingMeshSelection == 1){
         brushTxtr = vec4(0.);
     }

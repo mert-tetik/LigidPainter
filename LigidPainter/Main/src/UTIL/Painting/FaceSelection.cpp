@@ -55,7 +55,7 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
             pxs[i] = primitivesArray[i] * 126;
         }
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, (int)sqrt(primitivesArray.size()), (int)sqrt(primitivesArray.size()), 0, GL_RED, GL_UNSIGNED_BYTE, pxs);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, std::ceil(sqrt(primitivesArray.size())), std::ceil(sqrt(primitivesArray.size())), 0, GL_RED, GL_UNSIGNED_BYTE, pxs);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         if(glGetError() == 1281){
@@ -70,7 +70,7 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
                     unsigned char pxs[1];
                     pxs[0] = (unsigned char)(primitivesArray[changedIndices[i]] * 126);
 
-                    glm::ivec2 offset = glm::ivec2(changedIndices[i] % int(sqrt(primitivesArray.size())), changedIndices[i] / int(sqrt(primitivesArray.size())));
+                    glm::ivec2 offset = glm::ivec2(changedIndices[i] % (int)std::ceil(sqrt(primitivesArray.size())), changedIndices[i] / (int)std::ceil(sqrt(primitivesArray.size())));
                     glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x - 1, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);
                 }
             }
@@ -217,7 +217,6 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction, glm::
             
             for (size_t i = 0; i < scale.x * scale.y; i++)
             {
-                
                 if(
                         true
                     )

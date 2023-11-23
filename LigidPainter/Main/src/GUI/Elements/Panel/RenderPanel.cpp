@@ -272,7 +272,6 @@ static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale, bool isL
 }
 
 static float calculateElementStartingPosition(bool vertical, std::vector<Section> sections, glm::vec3 pos, glm::vec2 scale){
-    
     float elementPos = 0.f;
     
     //Get the starting position

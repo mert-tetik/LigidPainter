@@ -11,7 +11,7 @@ uniform int primitiveCount;
 
 
 void main(){
-    float prim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(sqrt(primitiveCount)), gl_PrimitiveID / int(sqrt(primitiveCount))), 0).r;
+    float prim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(ceil(sqrt(primitiveCount))), gl_PrimitiveID / int(ceil(sqrt(primitiveCount)))), 0).r;
     bool selectedPrim = prim > 0.9 && texture(meshMask, TexCoords).r > 0.5;
 
     fragColor = vec4(0.);
