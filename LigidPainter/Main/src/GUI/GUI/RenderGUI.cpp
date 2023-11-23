@@ -776,7 +776,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         FBO.deleteBuffers(false, true);
     }
 
-    bool straightLinePaintingCondition = (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && *Mouse::LPressed(); 
+    bool straightLinePaintingCondition = painter.selectedDisplayingModeIndex != 0 && !anyDialogActive && (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && *Mouse::LPressed(); 
     if(straightLinePaintingCondition && !painter.faceSelection.editMode){
 
         if(!prevStraightLinePaintingCondition){
