@@ -48,11 +48,14 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
         {
         }
 
-        unsigned char* pxs = new unsigned char[primitivesArray.size()];
+        unsigned char* pxs = new unsigned char[std::ceil(sqrt(primitivesArray.size())) * std::ceil(sqrt(primitivesArray.size()))];
         
-        for (size_t i = 0; i < primitivesArray.size(); i++)
+        for (size_t i = 0; i < std::ceil(sqrt(primitivesArray.size())) * std::ceil(sqrt(primitivesArray.size())); i++)
         {
-            pxs[i] = primitivesArray[i] * 126;
+            if(i < primitivesArray.size())
+                pxs[i] = primitivesArray[i] * 126;
+            else
+                pxs[i] = 0;
         }
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, std::ceil(sqrt(primitivesArray.size())), std::ceil(sqrt(primitivesArray.size())), 0, GL_RED, GL_UNSIGNED_BYTE, pxs);

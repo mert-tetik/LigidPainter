@@ -181,6 +181,7 @@ void Model::selectObject(Panel& objectsPanel){
 
             Mouse::setCursor(*Mouse::pointerCursor());
         }
+    
     }
     
     for (size_t mshI = 0; mshI < this->meshes.size(); mshI++)
@@ -213,5 +214,6 @@ void Model::selectObject(Panel& objectsPanel){
 
         updatePrimitivesArrayTexture(this->meshes[mshI].selectedObjectPrimitivesTxtr, primitivesArray, primitivesArray, this->meshes[mshI], changedIndices, true);
     }
+
 
 }
