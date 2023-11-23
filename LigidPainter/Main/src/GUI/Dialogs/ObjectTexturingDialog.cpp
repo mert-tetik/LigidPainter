@@ -342,20 +342,43 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         {
             for (size_t channelI = 0; channelI < 6; channelI++)
             {
+                skipChannel:
+                
                 glDisable(GL_DEPTH_TEST);
                 Texture colorBuffer;
-                if(channelI == 0)
+                std::string colorBufferChannelTitle = ""; 
+                if(channelI == 0){
                     colorBuffer = getModel()->meshes[i].albedo.ID;
-                if(channelI == 1)
+                    colorBufferChannelTitle = "albedo";
+                }
+                if(channelI == 1){
                     colorBuffer = getModel()->meshes[i].roughness.ID;
-                if(channelI == 2)
+                    colorBufferChannelTitle = "roughness";
+                }
+                if(channelI == 2){
                     colorBuffer = getModel()->meshes[i].metallic.ID;
-                if(channelI == 3)
+                    colorBufferChannelTitle = "metallic";
+                }
+                if(channelI == 3){
                     colorBuffer = getModel()->meshes[i].normalMap.ID;
-                if(channelI == 4)
+                    colorBufferChannelTitle = "normalMap";
+                }
+                if(channelI == 4){
                     colorBuffer = getModel()->meshes[i].heightMap.ID;
-                if(channelI == 5)
+                    colorBufferChannelTitle = "heightMap";
+                }
+                if(channelI == 5){
                     colorBuffer = getModel()->meshes[i].ambientOcclusion.ID;
+                    colorBufferChannelTitle = "ambientOcclusion";
+                }
+
+                if(!colorBuffer.ID){
+                    LGDLOG::start << "WARNING! : Texture is missing for the " << colorBufferChannelTitle << " channel!" << LGDLOG::end;
+                    channelI++;
+                    if(channelI == 6)
+                        break;
+                    goto skipChannel;
+                }
 
                 glm::vec2 res = colorBuffer.getResolution();
 
