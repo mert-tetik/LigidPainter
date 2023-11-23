@@ -153,7 +153,7 @@ void Renderer::render(){
     Debugger::block("3D Model Object Selection"); // Start
 
     // Check if an object is selected after rendering the mesh
-    if(painter.selectedDisplayingModeIndex == 0 && (!userInterface.anyPanelHover || userInterface.objectsPanel.hover) && !userInterface.anyDialogActive && !*Mouse::RPressed()) 
+    if(painter.selectedDisplayingModeIndex == 0 && (!userInterface.anyPanelHover || userInterface.objectsPanel.hover) && !userInterface.anyDialogActive && !*Mouse::RPressed() && !*Mouse::MPressed()) 
         getModel()->selectObject(this->userInterface.objectsPanel);
 
     Debugger::block("3D Model Object Selection"); // End

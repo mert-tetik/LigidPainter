@@ -57,6 +57,7 @@ void Panel::render(Timer &timer, bool doMouseTracking){
         if(this->updateGraphicsFlag || LigidGL::getTime() - this->updateGraphicsTime < effectDuration){
             if(this->updateGraphicsFlag)
                 this->updateGraphicsTime = LigidGL::getTime();
+
             this->updateGraphics(timer);
             this->updateGraphicsFlag = false;
         }
