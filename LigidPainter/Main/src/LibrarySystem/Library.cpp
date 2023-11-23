@@ -159,6 +159,8 @@ void Library::addTexture(Texture texture){
     __textures.push_back(texture);
     
     Library::textureGiveUniqueId(__textures.size() - 1);
+
+    Library::nameControl();
 }
 
 void Library::addMaterial(Material material){
@@ -170,30 +172,40 @@ void Library::addMaterial(Material material){
 
     __materials.push_back(material);
     Library::materialGiveUniqueId(__materials.size() - 1);
+    
+    Library::nameControl();
 }
 
 void Library::addBrush(Brush brush){
     __changed = true;
     
     __brushes.push_back(brush);
+    
+    Library::nameControl();
 }
 
 void Library::addModel(Model model){
     __changed = true;
 
     __TDModels.push_back(model);
+    
+    Library::nameControl();
 }
 
 void Library::addFilter(Filter filter){
     __changed = true;
     
     __filters.push_back(filter);
+    
+    Library::nameControl();
 }
 
 void Library::addTexturePack(TexturePack texturePack){
     __changed = true;
     
     __texturePacks.push_back(texturePack);
+    
+    Library::nameControl();
 }
 
 void Library::eraseTexture   (int index){

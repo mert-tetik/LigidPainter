@@ -131,10 +131,6 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     
     //Calculate the screen gap in 0 - 100 range
     float screenGapPerc = screenGap / Settings::videoScale()->x * 100.f; 
-    
-    //Rename every library element if their name is doubled 
-    if(!this->renamingTextBox.active)
-        Library::nameControl();
 
     Debugger::block("GUI : Start"); // End
     
@@ -957,6 +953,8 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
                 else if(renamingIndices.x == 2 && renamingIndices.y < Library::getBrushArraySize())
                     Library::getBrush(renamingIndices.y)->title = lastTitleBeforeRenaming;
             }
+
+            Library::nameControl();
 
             //Update the library panel
             Library::setChanged(true);
