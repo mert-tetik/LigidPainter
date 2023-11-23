@@ -452,6 +452,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                 {
                     this->elementSelectionPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getMaterialObj(i).title, Library::getMaterialObj(i).displayingTexture, 0.f, false));
                 }
+                
+                this->elementSelectionPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(6, 2.f), "Default", Texture(), 0.f, false));
             }
             
             if(this->textureSelection){
