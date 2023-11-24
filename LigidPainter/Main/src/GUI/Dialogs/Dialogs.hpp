@@ -212,25 +212,22 @@ class BakingDialog
 {
 public:
    Panel bgPanel;
-   Panel exportChannelsIntoLibraryPanel;
-   Panel selectMeshPanel;
    CheckBox pbrResultCheckbox;
    CheckBox pbrUseLightingCheckbox;
    CheckBox pbrRayTracingCheckbox;
    CheckBox vertexPositionCheckbox;
    CheckBox vertexNormalsCheckbox;
    CheckBox reflectanceCheckbox;
+   Button bakingDialogText;
+   Button selectedMeshTitleText;
+   Button selectMeshText;
+   Button selectMeshButton;
+   Button bakingSettingsText;
    Button bakeButton;
    
-   Button meshSelectionText;
-   Button exportMaterialChannelsText;
-   Button bakingMaterialChannelsText;
-
    short selectedBakeMode = 0;  
 
-
    DialogControl dialogControl;
-   std::vector<Element> skyboxes;
 
    //Constructors
    BakingDialog();
