@@ -38,7 +38,6 @@ bool _ligid_renderer_render_first_frame = true;
 
 void Renderer::render(){
 
-
     glm::ivec2 maxWindowSize;
     getContext()->window.getMaximizedScreenSize(maxWindowSize.x, maxWindowSize.y);
     *Settings::videoScale() = maxWindowSize; 
@@ -63,6 +62,12 @@ void Renderer::render(){
 
     //Update OpenGL viewport every frame
         Settings::defaultFramebuffer()->setViewport();
+
+    Texture paintingTxtrObj = painter.paintingTexture;
+    glm::ivec2 resTest = paintingTxtrObj.getResolution();
+    if(resTest != glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier))
+        painter.refreshBuffers();
+
     //VSync
     if(Settings::properties()->VSync)
         LigidGL::setSwapInterval(1); //Enable VSync

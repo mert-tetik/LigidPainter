@@ -69,12 +69,10 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     if(paintingMode == 2){//If smearing 
         //(Use the 16-bit floating-point RGBA color format)
         paintingTexture = paintingTexture16f; //Bind the 16-bit floating-point RGBA color format to the framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture16f, 0);
     }
     else{
         //(Use the 8-bit RGBA color format)
         paintingTexture = paintingTexture8;   //Bind the 8-bit RGBA color format to the framebuffer
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture8, 0);
     }
 
     Texture paintingTxtrObj = paintingTexture;
@@ -82,6 +80,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     
     //Bind the painting texture to the painting framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture, 0);
     
     //Cover the whole monitor (since we are painting to the screen)
     glViewport(0, 0, paintingRes.x, paintingRes.y);
@@ -334,7 +333,7 @@ void Painter::projectThePaintingTexture(
     glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
     
     // Bind the mesh mask texture
-    glActiveTexture(GL_TEXTURE9);
+    glActiveTexture(GL_TEXTURE10);
     glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
     
     // Painting a 3D model

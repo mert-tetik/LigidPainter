@@ -307,7 +307,6 @@ void VectorStroke::draw(float edge, bool sceneState, std::vector<VectorStroke>& 
 }
 
 void Painter::refreshBuffers(){
-
     glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
     glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
 

@@ -58,6 +58,7 @@ void Painter::initPainter(){
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, paintingRes.x, paintingRes.y, 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
     glGenerateMipmap(GL_TEXTURE_2D);
 
+    this->paintingTexture = this->paintingTexture8;
 
 
     //--------- init paintingTexture16f --------- 
