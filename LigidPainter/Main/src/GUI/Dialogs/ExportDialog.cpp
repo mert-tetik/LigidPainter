@@ -46,7 +46,7 @@ ExportDialog::ExportDialog(){
                                     }
                                 )
                             },
-                            glm::vec2(30,25),
+                            glm::vec2(20,25),
                             glm::vec3(50.f,50.f,0.8f),
                             ColorPalette::mainColor,
                             ColorPalette::thirdColor,
