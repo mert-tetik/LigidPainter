@@ -179,7 +179,10 @@ void Model::selectObject(Panel& objectsPanel){
                 }
             }
 
-            Mouse::setCursor(*Mouse::pointerCursor());
+            if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
+                Mouse::setCursor(*Mouse::pointerCursor());
+            else
+                Mouse::setCursor(*Mouse::pointerXCursor());
         }
     
     }

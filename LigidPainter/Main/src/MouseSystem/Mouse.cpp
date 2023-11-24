@@ -61,6 +61,7 @@ LigidCursor __hSlideCursor;
 LigidCursor __vSlideCursor;
 LigidCursor __inkPenCursor;
 LigidCursor __dropperCursor;
+LigidCursor __pointerXCursor;
 LigidCursor __activeCursor; //updateCursor sets that cursor as the cursor
 int __cursorTypeGotSet = 0;
 
@@ -98,6 +99,10 @@ void Mouse::loadCursors(){
 	
 	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/DropperCursor.png", cursorScaleX, cursorScaleY, channel, 4, false); //rgba 0 
 	__dropperCursor.createCursor(cursorScaleX, cursorScaleY, 0, 25, pixels, -1);
+	//stbi_image_free(pixels);
+	
+	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/PointerXIcon.png", cursorScaleX, cursorScaleY, channel, 4, false); //rgba 0 
+	__pointerXCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels, -1);
 	//stbi_image_free(pixels);
 }
 
@@ -199,6 +204,9 @@ LigidCursor* Mouse::inkPenCursor(){
 }
 LigidCursor* Mouse::dropperCursor(){
 	return &__dropperCursor;
+}
+LigidCursor* Mouse::pointerXCursor(){
+	return &__pointerXCursor;
 }
 LigidCursor* Mouse::activeCursor(){
 	return &__activeCursor;

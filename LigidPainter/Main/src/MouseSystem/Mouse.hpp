@@ -58,6 +58,7 @@ namespace Mouse
     LigidCursor* vSlideCursor();
     LigidCursor* inkPenCursor();
     LigidCursor* dropperCursor();
+    LigidCursor* pointerXCursor();
     LigidCursor* activeCursor();
     int* cursorTypeGotSet();
 };
