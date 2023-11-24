@@ -404,7 +404,6 @@ public:
    Panel subPanel;
    Panel propertiesPanel;
 
-   Section meshNodeSection;
    Section libraryTexturesSection;
    Section libraryMaterialsSection;
 

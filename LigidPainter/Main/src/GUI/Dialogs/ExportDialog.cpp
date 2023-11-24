@@ -69,7 +69,6 @@ ExportDialog::ExportDialog(){
                                 Section(
                                     Element(Button()),
                                     {
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Mesh Node",Texture(),0.f, true)),
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Library Textures",Texture(),0.f, true)),
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Library Materials",Texture(),0.f, true))
                                     }
@@ -114,34 +113,6 @@ ExportDialog::ExportDialog(){
                             0.25f,
                             false
                         );
-
-    this->meshNodeSection = Section(
-                                    Element(Button()),
-                                    {
-                                        //Project settings
-                                        Element(TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Select A Path", 6.f, true)),
-                                        
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
-                                        {
-                                            "256",
-                                            "512",
-                                            "1024",
-                                            "2048",
-                                            "4096"
-                                        },"Texture Resolution", 4.f)),
-                                        
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
-                                        {
-                                            "PNG", 
-                                            "JPEG", 
-                                            "BMP", 
-                                            "TGA"
-                                        },"File Format", 4.f)),
-
-                                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),"Export",Texture(),5.f,false))
-                                    }
-    
-                                );
     
     this->libraryTexturesSection = Section(
                                     Element(Button()),
@@ -156,6 +127,8 @@ ExportDialog::ExportDialog(){
                                             "BMP", 
                                             "TGA"
                                         },"File Format", 4.f)),
+
+                                        CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Mesh Textures Only", 4.f),
 
                                         Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),"Export",Texture(),5.f,false))
                                     }
@@ -200,85 +173,20 @@ ExportDialog::ExportDialog(){
     //this->panel.sections[0].elements[0].button.outlineColor2 = ColorPalette::thirdColor;
 }
 
-static void exportMeshNode(Panel& propertiesPanel){
-    int resolution = std::stoi(propertiesPanel.sections[0].elements[1].comboBox.texts[propertiesPanel.sections[0].elements[1].comboBox.selectedIndex]);
-        
-    std::string destPath = propertiesPanel.sections[0].elements[0].textBox.text;
-
-    if(!std::filesystem::exists(destPath)){
-
-        showMessageBox(
-                        "Warning!", 
-                        "Error! Invalid exporting path.", 
-                        MESSAGEBOX_TYPE_WARNING, 
-                        MESSAGEBOX_BUTTON_OK
-                    );
-
-        return;
-    }
-    
-    //NodeScene::updateNodeResults(resolution, -1);
-    
-    //Update all the materials connected to the mesh output & export it's textures
-    for (size_t i = 0; i < getModel()->meshes.size(); i++)
-    {
-
-        std::string materialFolderPath = destPath + UTIL::folderDistinguisher() + getModel()->meshes[i].materialName;
-        
-        try
-        {
-            std::vector<std::string> filesInTheFolder;
-            for (const auto& entry : std::filesystem::directory_iterator(destPath)) {
-                filesInTheFolder.push_back(entry.path().string());
-            }            
-            
-            UTIL::uniqueName(materialFolderPath, filesInTheFolder);
-
-            if(!std::filesystem::create_directories(materialFolderPath)){
-                LGDLOG::start << "ERROR : Exporting mesh node material channels. Can't create folder in the location : " << materialFolderPath << LGDLOG::end;
-                return;
-            }
-        }
-        catch (const std::filesystem::filesystem_error& ex) {
-            LGDLOG::start << "ERROR : Filesystem : Location ID 772611 " << ex.what() << LGDLOG::end;
-        }
-        
-        //For all the channels
-        for (size_t channelI = 0; channelI < 6; channelI++)
-        {
-            Texture channelTxtr;
-            
-            if(channelI == 0){
-                channelTxtr = getModel()->meshes[i].albedo;
-                channelTxtr.title = "albedo";
-            }
-            if(channelI == 1){
-                channelTxtr = getModel()->meshes[i].roughness;
-                channelTxtr.title = "roughness";
-            }
-            if(channelI == 2){
-                channelTxtr = getModel()->meshes[i].metallic;
-                channelTxtr.title = "metallic";
-            }
-            if(channelI == 3){
-                channelTxtr = getModel()->meshes[i].normalMap;
-                channelTxtr.title = "normalMap";
-            }
-            if(channelI == 4){
-                channelTxtr = getModel()->meshes[i].heightMap;
-                channelTxtr.title = "heightMap";
-            }
-            if(channelI == 5){
-                channelTxtr = getModel()->meshes[i].ambientOcclusion;
-                channelTxtr.title = "ambientOcclusion";
-            }
-
-            channelTxtr.exportTexture(materialFolderPath, propertiesPanel.sections[0].elements[2].comboBox.texts[propertiesPanel.sections[0].elements[2].comboBox.selectedIndex]);
-        }
-    }
-}
+#define CREATE_DIR(destPath, folderName, res)std::string folderNameX = folderName; \
+                                        std::vector<std::string> names; \
+                                        for (const auto& entry : std::filesystem::directory_iterator(destPath)) { \
+                                            names.push_back(UTIL::getLastWordBySeparatingWithChar(entry.path().filename().string(), UTIL::folderDistinguisher())); \
+                                        } \
+                                        UTIL::uniqueName(folderNameX, names); \
+                                        res = destPath + UTIL::folderDistinguisher() + folderNameX; \
+                                        if(!std::filesystem::create_directories(res)){ \
+                                            LGDLOG::start << "ERROR : Exporting library materials. Can't create folder in the location : " << res << LGDLOG::end; \
+                                            return; \
+                                        } 
 
 static void exportLibraryMaterials(Panel& propertiesPanel){
+    
     int resolution = std::stoi(propertiesPanel.sections[0].elements[1].comboBox.texts[propertiesPanel.sections[0].elements[1].comboBox.selectedIndex]);
         
     std::string destPath = propertiesPanel.sections[0].elements[0].textBox.text;
@@ -298,24 +206,21 @@ static void exportLibraryMaterials(Panel& propertiesPanel){
     //Update all the materials connected to the mesh output & export it's textures
     for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
     {
-        std::string materialFolderPath = destPath + UTIL::folderDistinguisher() + Library::getMaterialObj(i).title;
+        std::string materialFolderPath = "";
+        
         try
         {
-            std::vector<std::string> filesInTheFolder;
-            for (const auto& entry : std::filesystem::directory_iterator(destPath)) {
-                filesInTheFolder.push_back(entry.path().string());
-            }            
-            
-            UTIL::uniqueName(materialFolderPath, filesInTheFolder);
-
-            if(!std::filesystem::create_directories(materialFolderPath)){
-                LGDLOG::start << "ERROR : Exporting library materials. Can't create folder in the location : " << materialFolderPath << LGDLOG::end;
-                return;
-            }
+            CREATE_DIR(destPath, Library::getMaterialObj(i).title, materialFolderPath)
         }
         catch (const std::filesystem::filesystem_error& ex) {
             LGDLOG::start << "ERROR : Filesystem : Location ID 772611 " << ex.what() << LGDLOG::end;
         }
+
+        if(materialFolderPath == ""){
+            LGDLOG::start << "ERROR : Unable to generate a location for the material folder!" << LGDLOG::end;
+            return;
+        }
+
         Vertex vert = Vertex();
 
         Mesh matMesh = Mesh(
@@ -390,28 +295,55 @@ static void exportLibraryTextures(Panel& propertiesPanel){
         return;
     }
 
-    std::string texturesFolderPath = destPath + UTIL::folderDistinguisher() + "LigidPainter-Library_Textures";
+    std::string texturesFolderPath;
 
-    if(!std::filesystem::create_directories(texturesFolderPath)){
-        LGDLOG::start << "ERROR : Exporting library textures. Can't create folder in the location : " << texturesFolderPath << LGDLOG::end;
+    CREATE_DIR(destPath, "LigidPainter-Library_Textures", texturesFolderPath)
+
+    if(texturesFolderPath == ""){
+        LGDLOG::start << "ERROR : Unable to generate a location for the textures folder!" << LGDLOG::end;
         return;
     }
 
+    bool markedOnly = propertiesPanel.sections[0].elements[2].checkBox.clickState1;
+    
     for (size_t i = 0; i < Library::getTextureArraySize(); i++)
     {
-        Library::getTextureObj(i).exportTexture(texturesFolderPath, propertiesPanel.sections[0].elements[2].comboBox.texts[propertiesPanel.sections[0].elements[2].comboBox.selectedIndex]);
+        std::string FORMAT = propertiesPanel.sections[0].elements[1].comboBox.texts[propertiesPanel.sections[0].elements[1].comboBox.selectedIndex];
+        
+        bool meshMatch = false;
+
+        for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+        {
+            if(
+                    getModel()->meshes[meshI].albedo.ID == Library::getTextureObj(i).ID ||
+                    getModel()->meshes[meshI].roughness.ID == Library::getTextureObj(i).ID ||
+                    getModel()->meshes[meshI].metallic.ID == Library::getTextureObj(i).ID ||
+                    getModel()->meshes[meshI].normalMap.ID == Library::getTextureObj(i).ID ||
+                    getModel()->meshes[meshI].heightMap.ID == Library::getTextureObj(i).ID ||
+                    getModel()->meshes[meshI].ambientOcclusion.ID == Library::getTextureObj(i).ID
+                )
+            {
+                meshMatch = true;
+            }
+        }   
+        
+        if(!(markedOnly && !meshMatch))
+            Library::getTextureObj(i).exportTexture(
+                                                        texturesFolderPath, 
+                                                        FORMAT
+                                                    );
     }
 }
+
+
 
 void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogActive, MaterialEditorDialog &materialEditorDialog){
     
     dialogControl.updateStart();
 
     if(this->activeSection == 0)
-        propertiesPanel.sections[0] = meshNodeSection;
-    if(this->activeSection == 1)
         propertiesPanel.sections[0] = libraryTexturesSection;
-    if(this->activeSection == 2)
+    if(this->activeSection == 1)
         propertiesPanel.sections[0] = libraryMaterialsSection;
     
     //Render the panels
@@ -420,10 +352,8 @@ void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogAct
     propertiesPanel.render(timer,true);
 
     if(this->activeSection == 0)
-         meshNodeSection = propertiesPanel.sections[0];
-    if(this->activeSection == 1)
          libraryTexturesSection = propertiesPanel.sections[0];
-    if(this->activeSection == 2)
+    if(this->activeSection == 1)
          libraryMaterialsSection = propertiesPanel.sections[0];
 
     for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++)
@@ -452,10 +382,8 @@ void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogAct
         project.projectProcessing = true;
 
         if(this->activeSection == 0)
-            exportMeshNode(this->propertiesPanel);
-        if(this->activeSection == 1)
             exportLibraryTextures(this->propertiesPanel);
-        if(this->activeSection == 2)
+        if(this->activeSection == 1)
             exportLibraryMaterials(this->propertiesPanel);
         
         project.projectProcessing = false;
