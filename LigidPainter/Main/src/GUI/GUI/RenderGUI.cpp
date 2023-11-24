@@ -659,7 +659,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         }
     }
 
-    if(painter.selectedPaintingModeIndex == 5){
+    if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0){
         if(!anyContextMenuActive && !anyDialogActive && !anyPanelHover && Mouse::activeCursor()->cursorType == Mouse::defaultCursor()->cursorType)
             Mouse::setCursor(*Mouse::inkPenCursor());
 
@@ -776,7 +776,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         FBO.deleteBuffers(false, true);
     }
 
-    bool straightLinePaintingCondition = painter.selectedDisplayingModeIndex != 0 && !anyDialogActive && (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && *Mouse::LPressed(); 
+    bool straightLinePaintingCondition = painter.selectedDisplayingModeIndex != 0 && painter.selectedPaintingModeIndex != 5 && !anyDialogActive && (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && *Mouse::LPressed(); 
     if(straightLinePaintingCondition && !painter.faceSelection.editMode){
 
         if(!prevStraightLinePaintingCondition){
