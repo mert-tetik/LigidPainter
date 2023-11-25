@@ -81,21 +81,21 @@ LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
         false
     );
 
-    this->logBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", Settings::appTextures().logButtonM, 0., false);
+    this->logBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "", Settings::appTextures().mascotCat_default, 0., false);
     this->logBtn.color = glm::vec4(0);
     this->logBtn.color2 = glm::vec4(0);
     this->logBtn.outlineColor = glm::vec4(0);
     this->logBtn.outlineColor2 = glm::vec4(0);
     this->logBtn.pos.z = 0.9f;
     
-    this->logBtnL = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.8f), "", Settings::appTextures().logButtonL, 0., false);
+    this->logBtnL = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", Settings::appTextures().mascotCat_pawL, 0., false);
     this->logBtnL.color = glm::vec4(0);
     this->logBtnL.color2 = glm::vec4(0);
     this->logBtnL.outlineColor = glm::vec4(0);
     this->logBtnL.outlineColor2 = glm::vec4(0);
     this->logBtnL.pos.z = 0.9f;
     
-    this->logBtnR = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.8f), "", Settings::appTextures().logButtonR, 0., false);
+    this->logBtnR = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", Settings::appTextures().mascotCat_pawR, 0., false);
     this->logBtnR.color = glm::vec4(0);
     this->logBtnR.color2 = glm::vec4(0);
     this->logBtnR.outlineColor = glm::vec4(0);
@@ -106,6 +106,8 @@ LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
 }
 
 void LogDialog::render(Timer timer){
+
+    ShaderSystem::buttonShader().use();
 
     rendering(
                 this->panel, this->logBtn, this->logBtnR, this->logBtnL, 
@@ -144,7 +146,7 @@ void LogDialog::render(Timer timer){
         for (size_t i = 0; i < messages.size(); i++)
         {
             logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), messages[i], Texture(), 0., false));
-            logSections[0].elements[logSections[0].elements.size() - 1].button.color = glm::vec4(0.56f, 0.37f, 0.11f, 1.f);
+            logSections[0].elements[logSections[0].elements.size() - 1].button.color = glm::vec4(glm::vec3(1.f), 0.8f);
         }
         
         this->panel.sections = logSections;
@@ -163,7 +165,7 @@ void LogDialog::render(Timer timer){
         for (size_t i = 0; i < __actions.size(); i++)
         {
             logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), __actions[i].title, Texture(), 0., false));
-            logSections[0].elements[logSections[0].elements.size() - 1].button.color = glm::vec4(0.11f, 0.55f, 0.38f, 1.f);
+            logSections[0].elements[logSections[0].elements.size() - 1].button.color = glm::vec4(glm::vec3(ColorPalette::themeColor), 0.8f);
         }
 
         if(this->panel.sections[0].elements.size()){

@@ -50,7 +50,8 @@ void Button::render(
                           ,pos.z); //Use the original depth value
 
     //Get the real scale value
-    resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
+    resultScale = UTIL::getPercent(*Settings::videoScale(), glm::abs(scale));
+    resultScale *= glm::sign(scale);
     
     //Get the real radius value
     float resultRadius = UTIL::getPercent(Settings::videoScale()->x,radius);

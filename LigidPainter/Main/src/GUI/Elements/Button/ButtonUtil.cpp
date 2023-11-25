@@ -35,7 +35,7 @@ glm::vec2 getTextureScale(Texture texture, glm::vec2 resultScale, float textureS
 
 /// @brief renders the button using buttonShader
 /// @param resultPos 
-/// @param resultScale 
+/// @param glm::abs(resultScale) 
 /// @param resultRadius 
 /// @param resultOutlineThickness 
 void Button::render(
@@ -47,7 +47,7 @@ void Button::render(
     
     //Set the transform data (used by vertex shader)
     ShaderSystem::buttonShader().setVec3("pos"    ,     resultPos );
-    ShaderSystem::buttonShader().setVec2("scale"  ,     resultScale);
+    ShaderSystem::buttonShader().setVec2("scale"  ,     glm::abs(resultScale));
     
     if(clickState1 && !this->colorSelection && !this->solidColor)//If button is pressed
         ShaderSystem::buttonShader().setVec4("properties.color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
@@ -101,7 +101,7 @@ void Button::render(
 
 /// @brief renders the texture of the button
 /// @param resultPos 
-/// @param resultScale 
+/// @param glm::abs(resultScale) 
 /// @param resultScaleText 
 /// @param videoScale 
 /// @param textRenderer 
@@ -123,7 +123,7 @@ bool Button::renderTheTexture(
     if(texture.ID != 0){
         
         //Get the scale value of the texture
-        glm::vec2 resultScaleTexture = getTextureScale(texture,resultScale,textureSizeScale);
+        glm::vec2 resultScaleTexture = getTextureScale(texture,glm::abs(resultScale),textureSizeScale);
         
         //Give the radius value (used to calculate the distance between text and the texture)
         textureRadius = resultScaleTexture.x;
@@ -133,7 +133,7 @@ bool Button::renderTheTexture(
         
         //Gets the texture on top of the button instead of the center if textureStickToTop button property bool variable set to true
         if(textureStickToTop)
-            resultPosTexture.y = resultPosTexture.y - resultScale.y + resultScaleTexture.y;
+            resultPosTexture.y = resultPosTexture.y - glm::abs(resultScale).y + resultScaleTexture.y;
 
         //Get the location of where the text is started (text renderer manipulates the position of the text for the alignment)
         glm::vec3 textStartPos = textRenderer.positionTheText();
@@ -145,11 +145,11 @@ bool Button::renderTheTexture(
         
         //If there is text get the texture left side of the button
         else{
-            resultPosTexture.x = resultPos.x - resultScale.x + resultScaleTexture.x * 2.f; 
+            resultPosTexture.x = resultPos.x - glm::abs(resultScale).x + resultScaleTexture.x * 2.f; 
         }
         
         //If the button is small enough get the texture into middle and don't render the text
-        if(textStartPos.x - resultScaleTexture.x * 3.f < resultPos.x - resultScale.x){
+        if(textStartPos.x - resultScaleTexture.x * 3.f < resultPos.x - glm::abs(resultScale).x){
             resultPosTexture.x = resultPos.x; //Button's position
             renderTheText = false;
         }
@@ -164,12 +164,12 @@ bool Button::renderTheTexture(
         if(this->stretchTexture){
             resultPosTexture.x = this->resultPos.x;
             resultPosTexture.y = this->resultPos.y;
-            resultScaleTexture = this->resultScale;
+            resultScaleTexture = glm::abs(this->resultScale);
         }
 
         //Set transform data of the texture
         ShaderSystem::buttonShader().setVec3("pos"    ,     resultPosTexture);
-        ShaderSystem::buttonShader().setVec2("scale"  ,     resultScaleTexture);
+        ShaderSystem::buttonShader().setVec2("scale"  ,     resultScaleTexture * glm::sign(resultScale));
         
         //Bind the texture to the slot 0
         glActiveTexture(GL_TEXTURE0);
@@ -194,7 +194,7 @@ void Button::manageMouseActivity(
                                 ){
     //Check if mouse on top of the button
     if(doMouseTracking && !locked)
-        hover = Mouse::isMouseHover(resultScale,glm::vec2(resultPos.x,resultPos.y));
+        hover = Mouse::isMouseHover(glm::abs(resultScale),glm::vec2(resultPos.x,resultPos.y));
     else
         hover = false;
 
@@ -241,11 +241,11 @@ void Button::renderTextAndTexture(
     if(textAlignLeft)
         textRenderer.loadTextData(  
                                     text,
-                                    glm::vec3(resultPos.x - resultScale.x,resultPos.y,resultPos.z),
+                                    glm::vec3(resultPos.x - glm::abs(resultScale).x,resultPos.y,resultPos.z),
                                     false,
                                     resultScaleText,
-                                    resultPos.x - resultScale.x,
-                                    resultPos.x + resultScale.x,
+                                    resultPos.x - glm::abs(resultScale).x,
+                                    resultPos.x + glm::abs(resultScale).x,
                                     TEXTRENDERER_ALIGNMENT_LEFT
                                   );
     else
@@ -254,14 +254,14 @@ void Button::renderTextAndTexture(
                                     glm::vec3(resultPos.x,resultPos.y,resultPos.z),
                                     false,
                                     resultScaleText,
-                                    resultPos.x - resultScale.x,
-                                    resultPos.x + resultScale.x,
+                                    resultPos.x - glm::abs(resultScale).x,
+                                    resultPos.x + glm::abs(resultScale).x,
                                     TEXTRENDERER_ALIGNMENT_MID
                                   );
     
     //Render the texture
     float textureRadius = 0.f;
-    bool renderTheText = renderTheTexture(resultPos,resultScale,resultScaleText,textureRadius);
+    bool renderTheText = renderTheTexture(resultPos, resultScale, resultScaleText,textureRadius);
     
     //Render the text
     if(renderTheText){
@@ -292,6 +292,6 @@ glm::vec2 getTextureScale(Texture texture, glm::vec2 resultScale, float textureS
         txtrResDivider.x = (float)texture.getResolution().y / (float)texture.getResolution().x;
     }
 
-    glm::vec2 resultScaleTexture = glm::vec2(std::min(resultScale.x,resultScale.y)) / glm::vec2(textureSizeScale);
+    glm::vec2 resultScaleTexture = glm::vec2(std::min(glm::abs(resultScale).x,glm::abs(resultScale).y)) / glm::vec2(textureSizeScale);
     return resultScaleTexture /= txtrResDivider;
 } 

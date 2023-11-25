@@ -79,12 +79,12 @@ static void rendering(
     logBtnL.pos.x = pos.x - logBtn.scale.x;
     if(messagesActive)
         logBtnL.pos.x -= panel.scale.x * 2.f;
-    logBtnL.pos.y = pos.y;
+    logBtnL.pos.y = pos.y + std::sin(LigidGL::getTime() * 2.f + 1.f) / 4.f;
 
     logBtnR.pos.x = pos.x + logBtn.scale.x;
     if(actionHistoryActive)
         logBtnR.pos.x += panel.scale.x * 2.f;
-    logBtnR.pos.y = pos.y;
+    logBtnR.pos.y = pos.y + std::sin(LigidGL::getTime() * 2.f) / 4.f;
 
     timer.transition(messagesActive || actionHistoryActive, panelXAxisMixVal, 0.1f);
     timer.transition(messagesActive || actionHistoryActive, panelYAxisMixVal, 0.4f);
@@ -100,7 +100,16 @@ static void rendering(
     panel.pos.y = pos.y + panel.scale.y - panelXAxisMixVal * 2.f;
 
     panel.render(timer, true);
+    ShaderSystem::buttonShader().setFloat("rotation", std::sin(LigidGL::getTime() * 2.f) * 10.f + (std::sin(logBtn.clickedMixVal) * 360.f));
     logBtn.render(timer, true);
+    ShaderSystem::buttonShader().setFloat("rotation", 0.f);
     logBtnL.render(timer, true);
     logBtnR.render(timer, true);
+
+    if(logBtn.hover && !logBtnL.hover && !logBtnR.hover)
+        logBtn.texture = Settings::appTextures().mascotCat_smile;
+    else if(messagesActive || actionHistoryActive)
+        logBtn.texture = Settings::appTextures().mascotCat_relaxed;
+    else
+        logBtn.texture = Settings::appTextures().mascotCat_default;
 }
