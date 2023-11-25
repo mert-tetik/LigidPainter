@@ -40,6 +40,9 @@ static void rendering(
                         Button& logBtn, 
                         Button& logBtnR, 
                         Button& logBtnL, 
+                        Button& messageInfoBtn, 
+                        float messageInfoBtnMixVal, 
+                        bool& messageInfoActive,
                         glm::vec2& pos, 
                         float& panelXAxisMixVal, 
                         float& panelYAxisMixVal, 
@@ -52,12 +55,12 @@ static void rendering(
 
 
     if(*Mouse::LClick()){
-        if(logBtnL.hover){
+        if(logBtnL.hover && !messageInfoActive){
             messagesActive = !messagesActive;
             actionHistoryActive = false;
         }
         
-        else if(logBtnR.hover){
+        else if(logBtnR.hover && !messageInfoActive){
             actionHistoryActive = !actionHistoryActive;
             messagesActive = false;
         }
@@ -78,12 +81,15 @@ static void rendering(
     
     logBtnL.pos.x = pos.x - logBtn.scale.x;
     if(messagesActive)
-        logBtnL.pos.x -= panel.scale.x * 2.f;
+        logBtnL.pos.x -= panel.scale.x * 1.85f;
+    else
+        logBtnL.pos.x -= messageInfoBtn.scale.x * 1.9f;
+    
     logBtnL.pos.y = pos.y + std::sin(LigidGL::getTime() * 2.f + 1.f) / 4.f;
 
     logBtnR.pos.x = pos.x + logBtn.scale.x;
     if(actionHistoryActive)
-        logBtnR.pos.x += panel.scale.x * 2.f;
+        logBtnR.pos.x += panel.scale.x * 1.85f;
     logBtnR.pos.y = pos.y + std::sin(LigidGL::getTime() * 2.f) / 4.f;
 
     timer.transition(messagesActive || actionHistoryActive, panelXAxisMixVal, 0.1f);
@@ -99,12 +105,17 @@ static void rendering(
 
     panel.pos.y = pos.y + panel.scale.y - panelXAxisMixVal * 2.f;
 
+    messageInfoBtn.scale.x = messageInfoBtnMixVal * 15.f;
+    messageInfoBtn.pos.x = pos.x - messageInfoBtn.scale.x;
+    messageInfoBtn.pos.y = pos.y;
+
     panel.render(timer, true);
     ShaderSystem::buttonShader().setFloat("rotation", std::sin(LigidGL::getTime() * 2.f) * 10.f + (std::sin(logBtn.clickedMixVal) * 360.f));
     logBtn.render(timer, true);
     ShaderSystem::buttonShader().setFloat("rotation", 0.f);
     logBtnL.render(timer, true);
     logBtnR.render(timer, true);
+    messageInfoBtn.render(timer, true);
 
     if(logBtn.hover && !logBtnL.hover && !logBtnR.hover)
         logBtn.texture = Settings::appTextures().mascotCat_smile;

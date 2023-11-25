@@ -101,39 +101,60 @@ LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
     this->logBtnR.outlineColor = glm::vec4(0);
     this->logBtnR.outlineColor2 = glm::vec4(0);
     this->logBtnR.pos.z = 0.9f;
+    
+    this->messageInfoBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", Texture(), 0., false);
+    this->messageInfoBtn.pos.z = 0.9f;
 
     this->panel.hasSlider = true;
 }
+
+size_t lastMessagesSize = 0;
 
 void LogDialog::render(Timer timer){
 
     ShaderSystem::buttonShader().use();
 
     rendering(
-                this->panel, this->logBtn, this->logBtnR, this->logBtnL, 
-                this->pos, this->panelXAxisMixVal, this->panelYAxisMixVal, 
+                this->panel, this->logBtn, this->logBtnR, this->logBtnL, this->messageInfoBtn,
+                this->messageInfoBtnMixVal,this->pos, this->panelXAxisMixVal, this->panelYAxisMixVal, 
                 this->messagesActive, this->actionHistoryActive, this->dialogControl, 
                 timer
             );
 
-    if(messagesActive){
-        std::vector<std::string> messages;
+    std::vector<std::string> messages;
 
-        std::string a;
-        LGDLOG::start >> a;
+    std::string a;
+    LGDLOG::start >> a;
 
-        for (size_t i = 0; i < a.size(); i++)
-        {
-            if(i < a.size()-1){
-                if(a[i] == '$' && a[i+1] == '#'){
-                    std::string res(a.begin(), a.begin() + i );
+    for (size_t i = 0; i < a.size(); i++)
+    {
+        if(i < a.size()-1){
+            if(a[i] == '$' && a[i+1] == '#'){
+                std::string res(a.begin(), a.begin() + i );
 
-                    a.erase(a.begin(), a.begin() + i + 2);
-                    i = 0;
-                    messages.push_back(res);
-                }
+                a.erase(a.begin(), a.begin() + i + 2);
+                i = 0;
+                messages.push_back(res);
             }
         }
+    }
+
+    if(lastMessagesSize != messages.size()){
+        messageInfoActive = true;
+        messageInfoBtnStartTime = timer.seconds;
+        if(messages.size())
+            messageInfoBtn.text = messages[messages.size()-1];
+    }
+
+    if(timer.seconds - messageInfoBtnStartTime >= 3)
+        messageInfoActive = false;
+
+    timer.transition(messageInfoActive, messageInfoBtnMixVal, 0.2f);
+
+    lastMessagesSize = messages.size();
+
+
+    if(messagesActive){
 
         std::vector<Section> logSections;
         logSections.push_back(Section(

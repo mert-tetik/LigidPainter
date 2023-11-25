@@ -746,7 +746,13 @@ class LogDialog
    Button logBtnR;
    Button logBtnL;
 
+   Button messageInfoBtn;
+   bool messageInfoActive = false;
+   float messageInfoBtnMixVal = 0.f;
+   size_t messageInfoBtnStartTime = 0.f;
+
    glm::vec2 pos = glm::vec2(54.531246, 4.722224);
+
 
    float panelXAxisMixVal = 0.f;
    float panelYAxisMixVal = 0.f;
