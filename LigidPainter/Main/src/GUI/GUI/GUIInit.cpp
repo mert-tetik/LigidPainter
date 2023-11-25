@@ -325,9 +325,9 @@ void UI::init
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Draw"          , Settings::appTextures().brushIcon,        0.f,true)),
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Soften"        , Settings::appTextures().softenIcon,       0.f,true)),
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Smear"         , Settings::appTextures().smearIcon,        0.f,true)),
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal"    , Settings::appTextures().normalMapIcon,    0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal"        , Settings::appTextures().normalMapIcon,    0.f,true)),
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Filter"        , Settings::appTextures().filterIcon,       0.f,true)),
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Vector (experimental)"        , Settings::appTextures().inkPenIcon,       0.f,true))
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Vector"        , Settings::appTextures().inkPenIcon,       0.f,true))
                                         }
                                     )
                                 },

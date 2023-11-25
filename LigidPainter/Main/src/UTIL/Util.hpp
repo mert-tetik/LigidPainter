@@ -638,6 +638,11 @@ struct VectorStroke{
     bool startPointClicked = false;
     bool offsetPointClicked = false;
     
+    float endPointHoverMixVal = 0.f;
+    float endPointClickedMixVal = 0.f;
+    float startPointHoverMixVal = 0.f;
+    float startPointClickedMixVal = 0.f;
+    
     bool endPointHover = false;
     bool startPointHover = false;
     bool offsetPointHover = false;
@@ -649,7 +654,7 @@ struct VectorStroke{
         this->offsetPos = offsetPos;
     }
     
-    void draw(float edge, bool sceneState, std::vector<VectorStroke>& strokes, int curI);
+    void draw(Timer& timer, float edge, bool sceneState, std::vector<VectorStroke>& strokes, int curI);
 };
 
 struct MirrorSide{

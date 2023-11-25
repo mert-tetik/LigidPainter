@@ -30,7 +30,6 @@ uniform vec2 startPos;
 uniform vec2 destPos;
 uniform vec2 direction; 
 
-uniform vec3 endPointColor; 
 uniform int lineCapturingMode;
 
 uniform float EDGE;
@@ -185,6 +184,8 @@ void main()
         //    B.x += 0.1;
 
         vec3 color = vec3(1.0,1.0,1.0);
+        float dist = 0.;
+		/*
         float dist = SDFCircle(percent, A);
         if (dist < EDGE + SMOOTH)
         {
@@ -211,6 +212,7 @@ void main()
             if(lineCapturingMode == 0)
                 color *= mix(vec3(1.0) - endPointColor ,vec3(1.0,1.0,1.0),dist);
         }    
+		*/
 
         dist = calculateDistanceToQuadraticBezier(percent, A, B, C);
         if(lineCapturingMode == 1){

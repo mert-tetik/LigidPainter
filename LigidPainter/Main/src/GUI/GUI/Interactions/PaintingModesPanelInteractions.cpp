@@ -73,7 +73,7 @@ void paintingModesPanelInteraction(
 
                 painter.vectorStrokes[i].endPos  = strokeCenter;
 
-                painter.vectorStrokes.insert(painter.vectorStrokes.begin() + i - 1, newStroke);
+                painter.vectorStrokes.insert(painter.vectorStrokes.begin() + i + 1, newStroke);
                 i++;
             }
         }
@@ -84,12 +84,24 @@ void paintingModesPanelInteraction(
     if(vectorPaintingModePropertyPanel.sections[0].elements[3].button.clicked){
         for (size_t i = 0; i < painter.vectorStrokes.size(); i++)
         {
-            if(i == 0 && painter.vectorStrokes[i].startPointClicked)
-                painter.vectorStrokes.erase(painter.vectorStrokes.begin() + i);
-            else if(painter.vectorStrokes[i].endPointClicked){
-                painter.vectorStrokes.erase(painter.vectorStrokes.begin() + i);
-                painter.vectorStrokes[i].startPos = painter.vectorStrokes[i - 1].endPos; 
-                i--;
+            if(i == 0){
+                if(painter.vectorStrokes[i].startPointClicked){
+                    painter.vectorStrokes.erase(painter.vectorStrokes.begin() + i);
+                    break;
+                }
+                else if(painter.vectorStrokes[i].endPointClicked && painter.vectorStrokes.size() > 1){
+                    painter.vectorStrokes[i].endPos = painter.vectorStrokes[i + 1].endPos; 
+                    painter.vectorStrokes.erase(painter.vectorStrokes.begin() + i + 1);
+                    break;
+                }
+            }
+            else{
+                if(painter.vectorStrokes[i].endPointClicked){
+                    painter.vectorStrokes.erase(painter.vectorStrokes.begin() + i);
+                    if(i - 1 < painter.vectorStrokes.size() && i < painter.vectorStrokes.size())
+                        painter.vectorStrokes[i].startPos = painter.vectorStrokes[i - 1].endPos; 
+                    break;
+                }
             }
         }
     }

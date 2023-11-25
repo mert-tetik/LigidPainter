@@ -665,13 +665,13 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
         for (int i = painter.vectorStrokes.size() - 1; i >= 0; i--)
         {
-            painter.vectorStrokes[i].draw(0.0005, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
+            painter.vectorStrokes[i].draw(timer, 0.0005f, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
 
             VectorStroke offsetStrokeEnd = VectorStroke(painter.vectorStrokes[i].endPos, painter.vectorStrokes[i].offsetPos, painter.vectorStrokes[i].offsetPos); 
             VectorStroke offsetStrokeStart = VectorStroke(painter.vectorStrokes[i].startPos, painter.vectorStrokes[i].offsetPos, painter.vectorStrokes[i].offsetPos); 
         
-            offsetStrokeEnd.draw(0.0001, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
-            offsetStrokeStart.draw(0.0001, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
+            offsetStrokeEnd.draw(timer, 0.0001f, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
+            offsetStrokeStart.draw(timer, 0.0001f, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
         }
 
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -811,8 +811,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         ShaderSystem::vectoralCurve().setInt("lineCapturingMode", 0);
         
         ShaderSystem::vectoralCurve().setFloat("EDGE", 0.0005f);
-
-        ShaderSystem::vectoralCurve().setVec3("endPointColor", glm::vec3(1.f,0.f,0.f));
 
         glDrawArrays(GL_TRIANGLES, 0 , 6);
         
