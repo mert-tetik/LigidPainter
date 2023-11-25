@@ -237,6 +237,14 @@ namespace Settings{
         Texture white;
         Texture black;
         Texture transparent;
+
+        //--MASCOT CAT SPRITES
+        Texture mascotCat_default;
+        Texture mascotCat_smile;
+        Texture mascotCat_rock;
+        Texture mascotCat_relaxed;
+        Texture mascotCat_pawL;
+        Texture mascotCat_pawR;
     };
 
     struct Properties{

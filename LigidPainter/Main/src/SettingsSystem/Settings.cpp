@@ -80,6 +80,13 @@ void Settings::loadAppTextures(){
     __appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.load("./LigidPainter/Resources/Images/NoMaterialModifierIsConnectedToMaterial.jpg");
     __appTextures.materialChannelMissingTexture.load("./LigidPainter/Resources/Images/MaterialChannelMissingTexture.jpg");
     
+    __appTextures.mascotCat_default.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/default.png");
+    __appTextures.mascotCat_smile.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/smiling.png");
+    __appTextures.mascotCat_rock.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/rock.png");
+    __appTextures.mascotCat_relaxed.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/relaxed.png");
+    __appTextures.mascotCat_pawL.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawL.png");
+    __appTextures.mascotCat_pawR.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawR.png");
+    
     char whitePxs[4] = {127,127,127,127};
     char blackPxs[4] = {0,0,0,127};
     __appTextures.white = Texture(whitePxs, 1, 1, GL_NEAREST);
