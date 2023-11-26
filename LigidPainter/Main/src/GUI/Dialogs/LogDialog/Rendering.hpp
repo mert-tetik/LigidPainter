@@ -36,16 +36,21 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include <filesystem>
 
 static void rendering(
-                        Panel& panel, 
+                        Panel& messagesPanel, 
+                        Panel& historyPanel, 
                         Button& logBtn, 
                         Button& logBtnR, 
                         Button& logBtnL, 
                         Button& messageInfoBtn, 
+                        Button& yesBtn,
+                        Button& noBtn,
                         float messageInfoBtnMixVal, 
                         bool& messageInfoActive,
                         glm::vec2& pos, 
-                        float& panelXAxisMixVal, 
-                        float& panelYAxisMixVal, 
+                        float& messagesPanelXAxisMixVal, 
+                        float& messagesPanelYAxisMixVal, 
+                        float& historyPanelXAxisMixVal, 
+                        float& historyPanelYAxisMixVal, 
                         bool& messagesActive, 
                         bool& actionHistoryActive, 
                         DialogControl& dialogControl,
@@ -81,7 +86,7 @@ static void rendering(
     
     logBtnL.pos.x = pos.x - logBtn.scale.x;
     if(messagesActive)
-        logBtnL.pos.x -= panel.scale.x * 1.85f;
+        logBtnL.pos.x -= messagesPanel.scale.x * 1.85f;
     else
         logBtnL.pos.x -= messageInfoBtn.scale.x * 1.9f;
     
@@ -89,35 +94,59 @@ static void rendering(
 
     logBtnR.pos.x = pos.x + logBtn.scale.x;
     if(actionHistoryActive)
-        logBtnR.pos.x += panel.scale.x * 1.85f;
+        logBtnR.pos.x += historyPanel.scale.x * 1.85f;
     logBtnR.pos.y = pos.y + std::sin(LigidGL::getTime() * 2.f) / 4.f;
 
-    timer.transition(messagesActive || actionHistoryActive, panelXAxisMixVal, 0.1f);
-    timer.transition(messagesActive || actionHistoryActive, panelYAxisMixVal, 0.4f);
+    timer.transition(messagesActive, messagesPanelXAxisMixVal, 0.1f);
+    timer.transition(messagesActive, messagesPanelYAxisMixVal, 0.4f);
     
-    panel.scale.x = panelXAxisMixVal * 10.f;
-    panel.scale.y = panelYAxisMixVal * 10.f;
+    timer.transition(actionHistoryActive, historyPanelXAxisMixVal, 0.1f);
+    timer.transition(actionHistoryActive, historyPanelYAxisMixVal, 0.4f);
     
-    if(messagesActive)
-        panel.pos.x = pos.x - panel.scale.x;
-    else
-        panel.pos.x = pos.x + panel.scale.x;
+    messagesPanel.scale.x = messagesPanelXAxisMixVal * 10.f;
+    messagesPanel.scale.y = messagesPanelYAxisMixVal * 10.f;
+    historyPanel.scale.x = historyPanelXAxisMixVal * 10.f;
+    historyPanel.scale.y = historyPanelYAxisMixVal * 10.f;
+    
+    messagesPanel.pos.x = pos.x - messagesPanel.scale.x;
+        
+    historyPanel.pos.x = pos.x + historyPanel.scale.x;
 
-    panel.pos.y = pos.y + panel.scale.y - panelXAxisMixVal * 2.f;
+    messagesPanel.pos.y = pos.y + messagesPanel.scale.y - messagesPanelXAxisMixVal * 2.f;
+    
+    historyPanel.pos.y = pos.y + historyPanel.scale.y - historyPanelXAxisMixVal * 2.f;
 
     messageInfoBtn.scale.x = messageInfoBtnMixVal * 15.f;
     messageInfoBtn.pos.x = pos.x - messageInfoBtn.scale.x;
     messageInfoBtn.pos.y = pos.y;
 
-    panel.render(timer, true);
+    if(getContext()->window.shouldClose()){
+        yesBtn.pos = messageInfoBtn.pos;
+        yesBtn.pos.y += messageInfoBtn.scale.y + yesBtn.scale.y;
+        yesBtn.scale.x = messageInfoBtn.scale.x / 4.f;
+       
+        noBtn.scale = yesBtn.scale;
+        noBtn.pos = yesBtn.pos;
+        
+        yesBtn.pos.x -= noBtn.scale.x;
+        noBtn.pos.x += yesBtn.scale.x;
+
+        yesBtn.render(timer, true);
+        noBtn.render(timer, true);
+    }
+
+    messagesPanel.render(timer, true);
+    historyPanel.render(timer, true);
     ShaderSystem::buttonShader().setFloat("rotation", std::sin(LigidGL::getTime() * 2.f) * 10.f + (std::sin(logBtn.clickedMixVal) * 360.f));
     logBtn.render(timer, true);
     ShaderSystem::buttonShader().setFloat("rotation", 0.f);
     logBtnL.render(timer, true);
     logBtnR.render(timer, true);
-    messageInfoBtn.render(timer, true);
+    messageInfoBtn.render(timer, false);
 
-    if(logBtn.hover && !logBtnL.hover && !logBtnR.hover)
+    if(messageInfoActive)
+        logBtn.texture = Settings::appTextures().mascotCat_rock;
+    else if(logBtn.hover && !logBtnL.hover && !logBtnR.hover)
         logBtn.texture = Settings::appTextures().mascotCat_smile;
     else if(messagesActive || actionHistoryActive)
         logBtn.texture = Settings::appTextures().mascotCat_relaxed;

@@ -367,6 +367,10 @@ bool LigidWindow::_get_WindowProcCloseWindow(){
 #endif
 }
 
+void LigidWindow::_set_WindowProcCloseWindow(bool val){
+    _WindowProcCloseWindow = val;
+}
+
 
 
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)

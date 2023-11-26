@@ -68,7 +68,7 @@ public:
         // Start the export thread
         std::thread projectUpdatingThreadX(projectUpdatingThread, std::ref(renderer.project));
 
-        while(!getContext()->window.shouldClose())
+        while(!renderer.userInterface.logDialog.windowShouldClose)
         {   
             renderer.render();
             

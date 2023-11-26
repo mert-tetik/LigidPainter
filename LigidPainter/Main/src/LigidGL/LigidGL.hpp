@@ -357,6 +357,11 @@ private:
     */
     bool _get_WindowProcCloseWindow();
     
+    /*!
+        @brief Sets window should close data from the window's proc callback function to the val param (located in the CreateWindow.cpp (interprets the global variables))
+    */
+    void _set_WindowProcCloseWindow(bool val);
+
 
     /*!
     *   @brief The mouse position callback function of the window set by the user.
@@ -462,6 +467,11 @@ public:
     *   @example while(!myWindow.shouldClose()) 
     */
     bool shouldClose();
+
+    /*!
+    *   @brief Sets the window closing flag to the val 
+    */
+    void setShouldClose(bool val);
 
     /*!
     *   @brief Translates and dispatches a message to the appropriate window procedure for processing.

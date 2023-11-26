@@ -60,6 +60,10 @@ bool LigidWindow::shouldClose(){
     return this->_get_WindowProcCloseWindow(); 
 }
 
+void LigidWindow::setShouldClose(bool val){
+    this->_set_WindowProcCloseWindow(val); 
+}
+
 
 void LigidWindow::pollEvents(){
 #if defined(_WIN32) || defined(_WIN64)

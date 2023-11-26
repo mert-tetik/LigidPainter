@@ -54,7 +54,7 @@ LogDialog::LogDialog(){
 }
 
 LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
-    this->panel = Panel(
+    this->messagesPanel = Panel(
         {
             {
                 Section(
@@ -80,6 +80,12 @@ LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
         0.25f,
         false
     );
+    this->messagesPanel.hasSlider = true;
+
+    this->historyPanel = this->messagesPanel;
+    
+    this->messagesPanel.color = glm::vec4(1.f);
+    this->historyPanel.color = glm::vec4(glm::vec3(ColorPalette::themeColor), 0.8f);
 
     this->logBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "", Settings::appTextures().mascotCat_default, 0., false);
     this->logBtn.color = glm::vec4(0);
@@ -104,20 +110,33 @@ LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
     
     this->messageInfoBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", Texture(), 0., false);
     this->messageInfoBtn.pos.z = 0.9f;
+    
+    this->yesBtn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.5f), "Yes", Texture(), 0., false);
+    this->noBtn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.5f), "No", Texture(), 0., false);
 
-    this->panel.hasSlider = true;
 }
 
-size_t lastMessagesSize = 0;
+std::string pickText(Timer &timer ,std::vector<std::string> texts){
+    for (size_t i = 0; i < texts.size(); i++)
+    {
+        if(timer.seconds % texts.size() == i)
+            return texts[i];
+    }
+    return "";
+}
+
+static size_t lastMessagesSize = 0;
+
+static std::string quitMSG = "";
 
 void LogDialog::render(Timer timer){
 
     ShaderSystem::buttonShader().use();
 
     rendering(
-                this->panel, this->logBtn, this->logBtnR, this->logBtnL, this->messageInfoBtn,
-                this->messageInfoBtnMixVal,this->pos, this->panelXAxisMixVal, this->panelYAxisMixVal, 
-                this->messagesActive, this->actionHistoryActive, this->dialogControl, 
+                this->messagesPanel, this->historyPanel, this->logBtn, this->logBtnR, this->logBtnL, this->messageInfoBtn, this->yesBtn, this->noBtn,
+                this->messageInfoBtnMixVal, this->messageInfoActive, this->pos, this->messagesPanelXAxisMixVal, this->messagesPanelYAxisMixVal, 
+                this->historyPanelXAxisMixVal, this->historyPanelYAxisMixVal, this->messagesActive, this->actionHistoryActive, this->dialogControl, 
                 timer
             );
 
@@ -139,15 +158,53 @@ void LogDialog::render(Timer timer){
         }
     }
 
-    if(lastMessagesSize != messages.size()){
+    // --------- INFO MESSAGE -----------
+    if(getContext()->window.shouldClose()){
+        messageInfoActive = true;
+        if(quitMSG == ""){
+            messageInfoBtnStartTime = timer.seconds;
+            quitMSG = pickText(timer, {
+                                                    "Are you sure you want to exit the LigidPainter?",
+                                                    "Do you really want to exit the LigidPainter?",
+                                                    "Are you DETERMINED to close the LigidPainter???",
+                                                    "Are you done with the LigidPainter?",
+                                                    "Do you really want to leave me???",
+                                                    "Closing the LigidPainter already??",
+                                                    "Are you absolutely, positively sure you want to close the app",
+                                                    "One last check: ready to exit and let the LigidPainter nap?"
+                                                });
+        }
+
+        messageInfoBtn.text = quitMSG;
+
+        if(noBtn.clicked){
+            messageInfoActive = false;
+            quitMSG = "";
+            getContext()->window.setShouldClose(false);
+        }
+        if(yesBtn.clicked){
+            this->windowShouldClose = true;
+        }
+    }
+    else if(lastMessagesSize != messages.size()){
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(messages.size())
             messageInfoBtn.text = messages[messages.size()-1];
     }
 
-    if(timer.seconds - messageInfoBtnStartTime >= 3)
-        messageInfoActive = false;
+    // --------- INFO CLOSE -----------
+    if(!getContext()->window.shouldClose()){
+        if(timer.seconds - messageInfoBtnStartTime >= 3)
+            messageInfoActive = false;
+    }
+    else{
+        if(timer.seconds - messageInfoBtnStartTime >= 10){
+            messageInfoActive = false;
+            quitMSG = "";
+            getContext()->window.setShouldClose(false);
+        }
+    }
 
     timer.transition(messageInfoActive, messageInfoBtnMixVal, 0.2f);
 
@@ -167,11 +224,9 @@ void LogDialog::render(Timer timer){
         for (size_t i = 0; i < messages.size(); i++)
         {
             logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), messages[i], Texture(), 0., false));
-            logSections[0].elements[logSections[0].elements.size() - 1].button.color = glm::vec4(glm::vec3(1.f), 0.8f);
         }
         
-        this->panel.sections = logSections;
-            
+        this->messagesPanel.sections = logSections;
     }
     else if(actionHistoryActive){
         std::vector<Section> logSections;
@@ -186,12 +241,11 @@ void LogDialog::render(Timer timer){
         for (size_t i = 0; i < __actions.size(); i++)
         {
             logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), __actions[i].title, Texture(), 0., false));
-            logSections[0].elements[logSections[0].elements.size() - 1].button.color = glm::vec4(glm::vec3(ColorPalette::themeColor), 0.8f);
         }
 
-        if(this->panel.sections[0].elements.size()){
-            if(this->panel.sections[0].elements[this->panel.sections[0].elements.size()-1].button.text == "Undo / CTRL+Z"){
-                logSections[0].elements.push_back(this->panel.sections[0].elements[this->panel.sections[0].elements.size()-1].button);
+        if(this->historyPanel.sections[0].elements.size()){
+            if(this->historyPanel.sections[0].elements[this->historyPanel.sections[0].elements.size()-1].button.text == "Undo / CTRL+Z"){
+                logSections[0].elements.push_back(this->historyPanel.sections[0].elements[this->historyPanel.sections[0].elements.size()-1].button);
             }
             else
                 logSections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo / CTRL+Z", Texture(), 0., false));
@@ -199,11 +253,11 @@ void LogDialog::render(Timer timer){
         else
             logSections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo / CTRL+Z", Texture(), 0., false));
         
-        this->panel.sections = logSections;
+        this->historyPanel.sections = logSections;
     }
 
     if(
-            actionHistoryActive && this->panel.sections.size() && this->panel.sections[0].elements.size() && this->panel.sections[0].elements[this->panel.sections[0].elements.size() - 1].button.clicked  ||
+            actionHistoryActive && this->historyPanel.sections.size() && this->historyPanel.sections[0].elements.size() && this->historyPanel.sections[0].elements[this->historyPanel.sections[0].elements.size() - 1].button.clicked  ||
             Shortcuts::CTRL_Z()
         )
     {
@@ -212,5 +266,5 @@ void LogDialog::render(Timer timer){
 }
 
 bool LogDialog::isHovered(){
-    return this->panel.hover || this->logBtn.hover || this->logBtnL.hover || this->logBtnR.hover;
+    return this->messagesPanel.hover || this->historyPanel.hover || this->logBtn.hover || this->logBtnL.hover || this->logBtnR.hover;
 }

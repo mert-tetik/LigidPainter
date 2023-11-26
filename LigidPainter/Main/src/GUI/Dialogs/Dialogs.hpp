@@ -741,10 +741,14 @@ class LogDialog
    AppMaterialModifiers appMaterialModifiers;
  
  public:
-   Panel panel;
+   Panel messagesPanel;
+   Panel historyPanel;
    Button logBtn;
    Button logBtnR;
    Button logBtnL;
+
+   Button yesBtn;
+   Button noBtn;
 
    Button messageInfoBtn;
    bool messageInfoActive = false;
@@ -753,12 +757,15 @@ class LogDialog
 
    glm::vec2 pos = glm::vec2(54.531246, 4.722224);
 
-
-   float panelXAxisMixVal = 0.f;
-   float panelYAxisMixVal = 0.f;
+   float messagesPanelXAxisMixVal = 0.f;
+   float messagesPanelYAxisMixVal = 0.f;
+   float historyPanelXAxisMixVal = 0.f;
+   float historyPanelYAxisMixVal = 0.f;
 
    bool messagesActive = false;
    bool actionHistoryActive = false;
+
+   bool windowShouldClose = false;
 
    DialogControl dialogControl;
 
