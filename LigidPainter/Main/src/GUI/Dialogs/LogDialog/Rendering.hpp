@@ -55,7 +55,8 @@ static void rendering(
                         bool& actionHistoryActive, 
                         DialogControl& dialogControl,
                         Timer& timer,
-                        Painter& painter
+                        Painter& painter,
+                        bool sleepingCat
                     )
 {
 
@@ -138,14 +139,16 @@ static void rendering(
 
     messagesPanel.render(timer, true);
     historyPanel.render(timer, true);
-    ShaderSystem::buttonShader().setFloat("rotation", std::sin(LigidGL::getTime() * 2.f) * 10.f + (std::sin(logBtn.clickedMixVal) * 360.f));
+    ShaderSystem::buttonShader().setFloat("rotation", std::sin(LigidGL::getTime() * 2.f) * 10.f * (float)!sleepingCat + (std::sin(logBtn.clickedMixVal) * 360.f));
     logBtn.render(timer, true);
     ShaderSystem::buttonShader().setFloat("rotation", 0.f);
     logBtnL.render(timer, true);
     logBtnR.render(timer, true);
     messageInfoBtn.render(timer, false);
 
-    if(messageInfoActive && !painter.refreshable)
+    if(sleepingCat)
+        logBtn.texture = Settings::appTextures().mascotCat_sleeping;
+    else if(messageInfoActive && !painter.refreshable)
         logBtn.texture = Settings::appTextures().mascotCat_rock;
     else if((logBtn.hover && !logBtnL.hover && !logBtnR.hover) || painter.refreshable)
         logBtn.texture = Settings::appTextures().mascotCat_smile;

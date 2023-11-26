@@ -243,6 +243,11 @@ namespace Settings{
         Texture mascotCat_smile;
         Texture mascotCat_rock;
         Texture mascotCat_relaxed;
+        Texture mascotCat_dizzy;
+        Texture mascotCat_thinking;
+        Texture mascotCat_bread;
+        Texture mascotCat_crying;
+        Texture mascotCat_sleeping;
         Texture mascotCat_pawL;
         Texture mascotCat_pawR;
     };

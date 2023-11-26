@@ -84,6 +84,11 @@ void Settings::loadAppTextures(){
     __appTextures.mascotCat_smile.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/smiling.png");
     __appTextures.mascotCat_rock.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/rock.png");
     __appTextures.mascotCat_relaxed.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/relaxed.png");
+    __appTextures.mascotCat_dizzy.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/dizzy.png");
+    __appTextures.mascotCat_thinking.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/thinking.png");
+    __appTextures.mascotCat_bread.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/bread.png");
+    __appTextures.mascotCat_crying.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/crying.png");
+    __appTextures.mascotCat_sleeping.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/sleeping.png");
     __appTextures.mascotCat_pawL.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawL.png");
     __appTextures.mascotCat_pawR.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawR.png");
     

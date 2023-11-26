@@ -43,7 +43,6 @@
 
 std::vector<Action> __actions;
 
-
 namespace LGDLOG{
     LogMsg start;
     std::string end = "$#";
@@ -130,6 +129,8 @@ static size_t lastMessagesSize = 0;
 static std::string quitMSG = "";
 static std::string catMSG = "";
 static float petPoints = 0.f; 
+static bool sleepingCat = false;
+static size_t sleepingCounter = 0;
 
 void LogDialog::render(
                             Timer timer, 
@@ -159,11 +160,16 @@ void LogDialog::render(
 
     ShaderSystem::buttonShader().use();
 
+    if(Mouse::mouseOffset()->x || Mouse::mouseOffset()->y)
+        sleepingCounter = timer.seconds;
+
+    sleepingCat = timer.seconds - sleepingCounter > 5; 
+
     rendering(
                 this->messagesPanel, this->historyPanel, this->logBtn, this->logBtnR, this->logBtnL, this->messageInfoBtn, this->yesBtn, this->noBtn,
                 this->messageInfoBtnMixVal, this->messageInfoActive, this->pos, this->messagesPanelXAxisMixVal, this->messagesPanelYAxisMixVal, 
                 this->historyPanelXAxisMixVal, this->historyPanelYAxisMixVal, this->messagesActive, this->actionHistoryActive, this->dialogControl, 
-                timer, painter
+                timer, painter, sleepingCat
             );
 
     if(this->logBtn.hover)
