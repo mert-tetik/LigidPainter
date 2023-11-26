@@ -57,7 +57,8 @@ static void rendering(
                         Timer& timer,
                         Painter& painter,
                         bool sleepingCat,
-                        Texture msgFace
+                        Texture msgFace,
+                        int dizzyCounter
                     )
 {
 
@@ -147,7 +148,9 @@ static void rendering(
     logBtnR.render(timer, true);
     messageInfoBtn.render(timer, false);
 
-    if(sleepingCat)
+    if(dizzyCounter)
+        logBtn.texture = Settings::appTextures().mascotCat_dizzy;
+    else if(sleepingCat)
         logBtn.texture = Settings::appTextures().mascotCat_sleeping;
     else if(messageInfoActive && !painter.refreshable)
         logBtn.texture = msgFace;

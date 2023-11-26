@@ -53,7 +53,9 @@ void Renderer::render(){
     Debugger::block("Complete rendering"); // Start
     
     //Update local timer data
+    timer.tick = false;
     if(timer.runTimer(1.f)){
+        timer.tick = true;
         std::cout << timer.FPS << std::endl;
     }
     

@@ -229,6 +229,8 @@ private:
 public:
     double lastTimeT = 0;
     int nbFramesT = 0;
+
+    bool tick = false;
     
     size_t seconds = 0; //How many seconds has passed since the program started
     double mostHighFPSValue = 1.;

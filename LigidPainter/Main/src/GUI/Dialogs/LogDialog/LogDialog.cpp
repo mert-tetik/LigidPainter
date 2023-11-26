@@ -143,6 +143,8 @@ static float petPoints = 0.f;
 static bool sleepingCat = false;
 static size_t sleepingCounter = 0;
 static Texture msgFace;
+static int flipCount = 0;
+static int dizzyCounter = 0;
 
 void LogDialog::render(
                             Timer timer, 
@@ -168,6 +170,7 @@ void LogDialog::render(
                         )
 {
 
+
     glClear(GL_DEPTH_BUFFER_BIT);
 
     ShaderSystem::buttonShader().use();
@@ -181,8 +184,22 @@ void LogDialog::render(
                 this->messagesPanel, this->historyPanel, this->logBtn, this->logBtnR, this->logBtnL, this->messageInfoBtn, this->yesBtn, this->noBtn,
                 this->messageInfoBtnMixVal, this->messageInfoActive, this->pos, this->messagesPanelXAxisMixVal, this->messagesPanelYAxisMixVal, 
                 this->historyPanelXAxisMixVal, this->historyPanelYAxisMixVal, this->messagesActive, this->actionHistoryActive, this->dialogControl, 
-                timer, painter, sleepingCat, msgFace
+                timer, painter, sleepingCat, msgFace, dizzyCounter
             );
+
+    if(this->logBtn.clicked){
+        flipCount++;
+    }
+
+    if(flipCount >= 4){
+        dizzyCounter = 3;
+    }
+
+    if(timer.tick){
+        if(dizzyCounter)
+            dizzyCounter--;
+        flipCount = 0;
+    }
 
     if(this->logBtn.hover)
         petPoints += std::abs(Mouse::mouseOffset()->x) + std::abs(Mouse::mouseOffset()->y);
