@@ -171,7 +171,7 @@ bool LigidWindow::makeContextCurrent(){
 
     // Make the created context current for the given device context
     if(!wglMakeCurrent(hdc, this->openGLContext)){
-        LGDLOG::start<< "Window OpenGL context - failed to make current" << LGDLOG::end;
+        std::cout << "Window OpenGL context - failed to make current" << std::endl;
         return false;
     }       
     

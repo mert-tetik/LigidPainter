@@ -1004,7 +1004,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
         materialEditorDialog.render(timer,textureSelectionDialog);
     
-    logDialog.render(timer);
+    logDialog.render(timer, painter);
 }
 
 static Color prevClr;

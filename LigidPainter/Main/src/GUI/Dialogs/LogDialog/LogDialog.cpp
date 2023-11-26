@@ -128,8 +128,11 @@ std::string pickText(Timer &timer ,std::vector<std::string> texts){
 static size_t lastMessagesSize = 0;
 
 static std::string quitMSG = "";
+static std::string catMSG = "";
 
-void LogDialog::render(Timer timer){
+void LogDialog::render(Timer timer, Painter& painter){
+
+    glClear(GL_DEPTH_BUFFER_BIT);
 
     ShaderSystem::buttonShader().use();
 
@@ -137,7 +140,7 @@ void LogDialog::render(Timer timer){
                 this->messagesPanel, this->historyPanel, this->logBtn, this->logBtnR, this->logBtnL, this->messageInfoBtn, this->yesBtn, this->noBtn,
                 this->messageInfoBtnMixVal, this->messageInfoActive, this->pos, this->messagesPanelXAxisMixVal, this->messagesPanelYAxisMixVal, 
                 this->historyPanelXAxisMixVal, this->historyPanelYAxisMixVal, this->messagesActive, this->actionHistoryActive, this->dialogControl, 
-                timer
+                timer, painter
             );
 
     std::vector<std::string> messages;
@@ -164,15 +167,15 @@ void LogDialog::render(Timer timer){
         if(quitMSG == ""){
             messageInfoBtnStartTime = timer.seconds;
             quitMSG = pickText(timer, {
-                                                    "Are you sure you want to exit the LigidPainter?",
-                                                    "Do you really want to exit the LigidPainter?",
-                                                    "Are you DETERMINED to close the LigidPainter???",
-                                                    "Are you done with the LigidPainter?",
-                                                    "Do you really want to leave me???",
-                                                    "Closing the LigidPainter already??",
-                                                    "Are you absolutely, positively sure you want to close the app",
-                                                    "One last check: ready to exit and let the LigidPainter nap?"
-                                                });
+                                        "Are you sure you want to exit the LigidPainter?",
+                                        "Do you really want to exit the LigidPainter?",
+                                        "Are you DETERMINED to close the LigidPainter???",
+                                        "Are you done with the LigidPainter?",
+                                        "Do you really want to leave me???",
+                                        "Closing the LigidPainter already??",
+                                        "Are you absolutely, positively sure you want to close the app",
+                                        "One last check: ready to exit and let the LigidPainter nap?"
+                                    });
         }
 
         messageInfoBtn.text = quitMSG;
@@ -186,6 +189,26 @@ void LogDialog::render(Timer timer){
             this->windowShouldClose = true;
         }
     }
+    else if(painter.refreshable){
+        messageInfoActive = true;
+        messageInfoBtnStartTime = timer.seconds;
+        if(catMSG == ""){
+            catMSG = pickText(timer, {
+                                        "Starting off with style! Keep those colors flowing!",
+                                        "Looking good! Don't stop now!",
+                                        "Purr-fect progress! You're on a roll!",
+                                        "Wow, that's coming together nicely! Keep it up!",
+                                        "Impressive strokes! This is shaping up beautifully!",
+                                        "Meow-velous! You're almost there!",
+                                        "Simply purr-fect! Your art is amazing!",
+                                        "Absolutely clawsome! Can't wait to see the final touches!",
+                                        "You're a true artist! Keep painting!",
+                                        "Looking meow-tastic! Keep those creative juices flowing!",
+                                        "Purr-fact strokes!"
+                                    });
+        }
+        messageInfoBtn.text = catMSG;
+    }
     else if(lastMessagesSize != messages.size()){
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
@@ -195,8 +218,10 @@ void LogDialog::render(Timer timer){
 
     // --------- INFO CLOSE -----------
     if(!getContext()->window.shouldClose()){
-        if(timer.seconds - messageInfoBtnStartTime >= 3)
+        if(timer.seconds - messageInfoBtnStartTime >= 3){
+            catMSG = "";
             messageInfoActive = false;
+        }
     }
     else{
         if(timer.seconds - messageInfoBtnStartTime >= 10){

@@ -54,7 +54,8 @@ static void rendering(
                         bool& messagesActive, 
                         bool& actionHistoryActive, 
                         DialogControl& dialogControl,
-                        Timer& timer
+                        Timer& timer,
+                        Painter& painter
                     )
 {
 
@@ -116,7 +117,7 @@ static void rendering(
     
     historyPanel.pos.y = pos.y + historyPanel.scale.y - historyPanelXAxisMixVal * 2.f;
 
-    messageInfoBtn.scale.x = messageInfoBtnMixVal * 15.f;
+    messageInfoBtn.scale.x = messageInfoBtnMixVal * (messageInfoBtn.text.size() / 5.f);
     messageInfoBtn.pos.x = pos.x - messageInfoBtn.scale.x;
     messageInfoBtn.pos.y = pos.y;
 
@@ -144,9 +145,9 @@ static void rendering(
     logBtnR.render(timer, true);
     messageInfoBtn.render(timer, false);
 
-    if(messageInfoActive)
+    if(messageInfoActive && !painter.refreshable)
         logBtn.texture = Settings::appTextures().mascotCat_rock;
-    else if(logBtn.hover && !logBtnL.hover && !logBtnR.hover)
+    else if((logBtn.hover && !logBtnL.hover && !logBtnR.hover) || painter.refreshable)
         logBtn.texture = Settings::appTextures().mascotCat_smile;
     else if(messagesActive || actionHistoryActive)
         logBtn.texture = Settings::appTextures().mascotCat_relaxed;

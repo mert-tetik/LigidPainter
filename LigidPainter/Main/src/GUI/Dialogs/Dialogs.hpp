@@ -774,7 +774,7 @@ class LogDialog
    LogDialog(AppMaterialModifiers& appMaterialModifiers);
 
    //Public member functions
-   void render(Timer timer);
+   void render(Timer timer, Painter& painter);
 
    bool isHovered();
 };

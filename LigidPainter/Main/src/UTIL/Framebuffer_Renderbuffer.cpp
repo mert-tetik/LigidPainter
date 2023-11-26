@@ -82,7 +82,7 @@ Framebuffer::Framebuffer(){
 #define TEST_FRAMEBUFFER \
 GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER); \
 if(status != GL_FRAMEBUFFER_COMPLETE){\
-    LGDLOG::start << "ERROR : Framebuffer is not valid. Error code: " << status << LGDLOG::end; \
+    std::cout << "ERROR : Framebuffer is not valid. Error code: " << status << std::endl; \
 }
 
 
