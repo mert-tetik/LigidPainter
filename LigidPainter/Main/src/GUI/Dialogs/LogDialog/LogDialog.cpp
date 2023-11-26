@@ -48,6 +48,17 @@ namespace LGDLOG{
     std::string end = "$#";
 }
 
+struct CatMSG{
+    std::string text;
+    Texture face;
+
+    CatMSG(){}
+    CatMSG(std::string text, Texture face){
+        this->text = text;
+        this->face = face;
+    }
+};
+
 LogDialog::LogDialog(){
 
 }
@@ -115,13 +126,13 @@ LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
 
 }
 
-std::string pickText(Timer &timer ,std::vector<std::string> texts){
+CatMSG pickText(Timer &timer ,std::vector<CatMSG> texts){
     for (size_t i = 0; i < texts.size(); i++)
     {
         if(timer.seconds % texts.size() == i)
             return texts[i];
     }
-    return "";
+    return CatMSG("", Texture());
 }
 
 static size_t lastMessagesSize = 0;
@@ -131,6 +142,7 @@ static std::string catMSG = "";
 static float petPoints = 0.f; 
 static bool sleepingCat = false;
 static size_t sleepingCounter = 0;
+static Texture msgFace;
 
 void LogDialog::render(
                             Timer timer, 
@@ -169,16 +181,13 @@ void LogDialog::render(
                 this->messagesPanel, this->historyPanel, this->logBtn, this->logBtnR, this->logBtnL, this->messageInfoBtn, this->yesBtn, this->noBtn,
                 this->messageInfoBtnMixVal, this->messageInfoActive, this->pos, this->messagesPanelXAxisMixVal, this->messagesPanelYAxisMixVal, 
                 this->historyPanelXAxisMixVal, this->historyPanelYAxisMixVal, this->messagesActive, this->actionHistoryActive, this->dialogControl, 
-                timer, painter, sleepingCat
+                timer, painter, sleepingCat, msgFace
             );
 
     if(this->logBtn.hover)
         petPoints += std::abs(Mouse::mouseOffset()->x) + std::abs(Mouse::mouseOffset()->y);
     else
         petPoints = 0.f;
-
-    //if(!std::abs(Mouse::mouseOffset()->x) && !std::abs(Mouse::mouseOffset()->y))
-    //    petPoints = 0.f;
 
     std::vector<std::string> messages;
 
@@ -203,16 +212,20 @@ void LogDialog::render(
         messageInfoActive = true;
         if(quitMSG == ""){
             messageInfoBtnStartTime = timer.seconds;
-            quitMSG = pickText(timer, {
-                                        "Are you sure you want to exit the LigidPainter?",
-                                        "Do you really want to exit the LigidPainter?",
-                                        "Are you DETERMINED to close the LigidPainter???",
-                                        "Are you done with the LigidPainter?",
-                                        "Do you really want to leave me???",
-                                        "Closing the LigidPainter already??",
-                                        "Are you absolutely, positively sure you want to close the app",
-                                        "One last check: ready to exit and let the LigidPainter nap?"
+            CatMSG msg = pickText(timer, {
+                                        CatMSG("Are you sure you want to exit the LigidPainter?", Settings::appTextures().mascotCat_rock),
+                                        CatMSG("Do you really want to exit the LigidPainter?", Settings::appTextures().mascotCat_rock),
+                                        CatMSG("Are you DETERMINED to close the LigidPainter???", Settings::appTextures().mascotCat_rock),
+                                        CatMSG("Are you done with the LigidPainter?", Settings::appTextures().mascotCat_rock),
+                                        CatMSG("Do you really want to leave me???", Settings::appTextures().mascotCat_crying),
+                                        CatMSG("Closing the LigidPainter already??", Settings::appTextures().mascotCat_thinking),
+                                        CatMSG("Are you absolutely, positively sure you want to close the app", Settings::appTextures().mascotCat_rock),
+                                        CatMSG("One last check: ready to exit and let the LigidPainter nap?", Settings::appTextures().mascotCat_rock),
+                                        CatMSG("Leaving so soon?", Settings::appTextures().mascotCat_crying),
                                     });
+
+            quitMSG = msg.text;
+            msgFace = msg.face;
         }
 
         messageInfoBtn.text = quitMSG;
@@ -226,17 +239,20 @@ void LogDialog::render(
             this->windowShouldClose = true;
         }
     }
-    else if(petPoints > 100.f){
+    else if(petPoints > 300.f){
         petPoints = 0.f;
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(catMSG == ""){
-            catMSG = pickText(timer, {
-                                        "Mrrrr :3   ",
-                                        "Purrr :3   ",
-                                        "Purrr <3   ",
-                                        "Meow :3   "
+            CatMSG msg = pickText(timer, {
+                                        CatMSG("Mrrrr :3   ", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Purrr :3   ", Settings::appTextures().mascotCat_relaxed),
+                                        CatMSG("Purrr <3   ", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Meow :3   ", Settings::appTextures().mascotCat_relaxed),
                                     });
+
+            catMSG = msg.text;
+            msgFace = msg.face;
         }
         
         messageInfoBtn.text = catMSG;
@@ -245,19 +261,22 @@ void LogDialog::render(
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(catMSG == ""){
-            catMSG = pickText(timer, {
-                                        "Starting off with style! Keep those colors flowing!",
-                                        "Looking good! Don't stop now!",
-                                        "Purr-fect progress! You're on a roll!",
-                                        "Wow, that's coming together nicely! Keep it up!",
-                                        "Impressive strokes! This is shaping up beautifully!",
-                                        "Meow-velous! You're almost there!",
-                                        "Simply purr-fect! Your art is amazing!",
-                                        "Absolutely clawsome! Can't wait to see the final touches!",
-                                        "You're a true artist! Keep painting!",
-                                        "Looking meow-tastic! Keep those creative juices flowing!",
-                                        "Purr-fact strokes!"
+            CatMSG msg = pickText(timer, {
+                                        CatMSG("Starting off with style! Keep those colors flowing!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Looking good! Don't stop now!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Purr-fect progress! You're on a roll!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Wow, that's coming together nicely! Keep it up!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Impressive strokes! This is shaping up beautifully!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Meow-velous! You're almost there!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Simply purr-fect! Your art is amazing!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Absolutely clawsome! Can't wait to see the final touches!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("You're a true artist! Keep painting!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Looking meow-tastic! Keep those creative juices flowing!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Purr-fact strokes!", Settings::appTextures().mascotCat_smile),
                                     });
+
+            catMSG = msg.text;
+            msgFace = msg.face;
         }
         messageInfoBtn.text = catMSG;
     }
@@ -265,21 +284,24 @@ void LogDialog::render(
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(catMSG == ""){
-            catMSG = pickText(timer, {
-                                        "Yikes! So technical",
-                                        "Gears!! shiver me timbers",
-                                        "Here we come gears!",
-                                        "Don't be scared! It's just a few buttons and switches.",
-                                        "Let's see what we can get into with these settings!!",
-                                        "Time to tinker with the cat-figurations!",
-                                        "Paws and reflect on these settings!",
-                                        "Meow-stering the art of customization!",
-                                        "Adjusting settings? Piece of catnip cake!",
-                                        "Ready to purr-sonalize your experience?",
-                                        "DON'T YOU DARE TURN ME OFF FROM THERE!!! >:3",
-                                        "You're not gonna turn me off are u??",
-                                        "Pweasee don't turn me off. It's so dark here :3"
+            CatMSG msg = pickText(timer, {
+                                        CatMSG("Yikes! So technical", Settings::appTextures().mascotCat_dizzy),
+                                        CatMSG("Gears!! shiver me timbers", Settings::appTextures().mascotCat_dizzy),
+                                        CatMSG("Here we come gears!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Don't be scared! It's just a few buttons and switches.", Settings::appTextures().mascotCat_thinking),
+                                        CatMSG("Let's see what we can get into with these settings!!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Time to tinker with the cat-figurations!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Paws and reflect on these settings!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Meow-stering the art of customization!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Adjusting settings? Piece of catnip cake!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Ready to purr-sonalize your experience?", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("DON'T YOU DARE TURN ME OFF FROM THERE!!! >:3", Settings::appTextures().mascotCat_rock),
+                                        CatMSG("You're not gonna turn me off are u??", Settings::appTextures().mascotCat_thinking),
+                                        CatMSG("Pweasee don't turn me off. It's so dark here :3", Settings::appTextures().mascotCat_crying),
                                     });
+
+            catMSG = msg.text;
+            msgFace = msg.face;
         }
         messageInfoBtn.text = catMSG;
     }
@@ -287,19 +309,22 @@ void LogDialog::render(
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(catMSG == ""){
-            catMSG = pickText(timer, {
-                                        "Bakey bakey!",
-                                        "Let's bake those textures!",
-                                        "Mixing pixels together for a mouthwatering result!",
-                                        "Turning up the heat to cook those textures to perfection!",
-                                        "Baking textures - the secret ingredient for a purr-fect render!",
-                                        "Just like baking cookies, but for your 3D masterpiece!",
-                                        "Baking those pixels like a baker layers cake!",
-                                        "Adding some flavor to your project with freshly baked textures!",
-                                        "Creating a baking recipe that'll make your project scrumptious!",
-                                        "Baking time!",
-                                        "The oven's preheated!"
+            CatMSG msg = pickText(timer, {
+                                        CatMSG("Bakey bakey!", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Let's bake those textures!", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Mixing pixels together for a mouthwatering result!", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Turning up the heat to cook those textures to perfection!", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Baking textures - the secret ingredient for a purr-fect render!", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Just like baking cookies, but for your 3D masterpiece!", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Baking those pixels like a baker layers cake!", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Adding some flavor to your project with freshly baked textures!", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Creating a baking recipe that'll make your project scrumptious!", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("Baking time!", Settings::appTextures().mascotCat_bread),
+                                        CatMSG("The oven's preheated!", Settings::appTextures().mascotCat_bread),
                                     });
+
+            catMSG = msg.text;
+            msgFace = msg.face;
         }
         messageInfoBtn.text = catMSG;
     }
@@ -307,15 +332,18 @@ void LogDialog::render(
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(catMSG == ""){
-            catMSG = pickText(timer, {
-                                        "Let's tailor that purr-fect skybox.",
-                                        "How about a sunrise, or perhaps a cozy sunset?",
-                                        "Adjust the sky to match my mood :3",
-                                        "Pawsitively purr-fect skies!!",
-                                        "Sunrise or sunset? Let's make your skybox a masterpiece of the heavens!",
-                                        "Ahh the soft, pure sky <3",
-                                        "OoOW!! Did you get bored of ur background??"
+            CatMSG msg = pickText(timer, {
+                                        CatMSG("Let's tailor that purr-fect skybox.", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("How about a sunrise, or perhaps a cozy sunset?", Settings::appTextures().mascotCat_relaxed),
+                                        CatMSG("Adjust the sky to match my mood :3", Settings::appTextures().mascotCat_relaxed),
+                                        CatMSG("Pawsitively purr-fect skies!!", Settings::appTextures().mascotCat_relaxed),
+                                        CatMSG("Sunrise or sunset? Let's make your skybox a masterpiece of the heavens!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Ahh the soft, pure sky <3", Settings::appTextures().mascotCat_relaxed),
+                                        CatMSG("OoOW!! Did you get bored of ur background??", Settings::appTextures().mascotCat_smile),
                                     });
+
+            catMSG = msg.text;
+            msgFace = msg.face;
         }
         messageInfoBtn.text = catMSG;
     }
@@ -323,13 +351,16 @@ void LogDialog::render(
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(catMSG == ""){
-            catMSG = pickText(timer, {
-                                        "You can access your textures via file explorer! No need to export!!",
-                                        "Time to package these textures!",
-                                        "Exporting textures with a sprinkle of whisker-dust!",
-                                        "Preparing your textures for a journey to your computer's catnip stash!",
-                                        "Sending your textures home!",
+            CatMSG msg = pickText(timer, {
+                                        CatMSG("You can access your textures via file explorer! No need to export!!", Settings::appTextures().mascotCat_thinking),
+                                        CatMSG("Time to package these textures!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Exporting textures with a sprinkle of whisker-dust!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Preparing your textures for a journey to your computer's catnip stash!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Sending your textures home!", Settings::appTextures().mascotCat_smile),
                                     });
+
+            catMSG = msg.text;
+            msgFace = msg.face;
         }
         messageInfoBtn.text = catMSG;
     }
@@ -337,13 +368,16 @@ void LogDialog::render(
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(catMSG == ""){
-            catMSG = pickText(timer, {
-                                        "Brand-new textures!!",
-                                        "New textures on the horizon! Let's unleash the artist within!",
-                                        "Paws to new textures!!",
-                                        "Don't forget to name your texture!!",
-                                        "Pick the best color possible :3"
+            CatMSG msg = pickText(timer, {
+                                        CatMSG("Brand-new textures!!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("New textures on the horizon! Let's unleash the artist within!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Paws to new textures!!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Don't forget to name your texture!!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Pick the best color possible :3", Settings::appTextures().mascotCat_relaxed),
                                     });
+
+            catMSG = msg.text;
+            msgFace = msg.face;
         }
         messageInfoBtn.text = catMSG;
     }
@@ -351,16 +385,19 @@ void LogDialog::render(
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(catMSG == ""){
-            catMSG = pickText(timer, {
-                                        "New project on the horizon! Let's unleash the artist within!",
-                                        "Don't forget to name your project!!",
-                                        "New project new adventure!!",
-                                        "A project is a folder that held inside of a folder. Meownd-blowing!",
-                                        "Time to embark on a new project, whiskers ready!",
-                                        "Starting a new project, let's paw-tner up for some creative fun!",
-                                        "Crafting a new project with the finesse and curiosity of a cat!",
-                                        "I had a friend named 'project' once. Hope he is doing well now :3"
+            CatMSG msg = pickText(timer, {
+                                        CatMSG("New project on the horizon! Let's unleash the artist within!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Don't forget to name your project!!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("New project new adventure!!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("A project is a folder that held inside of a folder. Meownd-blowing!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Time to embark on a new project, whiskers ready!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Starting a new project, let's paw-tner up for some creative fun!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Crafting a new project with the finesse and curiosity of a cat!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("I had a friend named 'project' once. Hope he is doing well now :3", Settings::appTextures().mascotCat_thinking),
                                     });
+
+            catMSG = msg.text;
+            msgFace = msg.face;
         }
         messageInfoBtn.text = catMSG;
     }
@@ -368,16 +405,19 @@ void LogDialog::render(
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(catMSG == ""){
-            catMSG = pickText(timer, {
-                                        "Time to give those pixels a cat-tastic makeover!",
-                                        "Meow-difying images!",
-                                        "Pawsitively purr-fect editing!",
-                                        "Whisking images into shape!",
-                                        "Catnip for your images! Let's create something paw-some :3",
-                                        "Tweaking pixels with whisker-precision!",
-                                        "Meow-gical image transformations!",
-                                        "Crafting pixel into purr-fection!"
+            CatMSG msg = pickText(timer, {
+                                        CatMSG("Time to give those pixels a cat-tastic makeover!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Meow-difying images!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Pawsitively purr-fect editing!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Whisking images into shape!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Catnip for your images! Let's create something paw-some :3", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Tweaking pixels with whisker-precision!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Meow-gical image transformations!", Settings::appTextures().mascotCat_smile),
+                                        CatMSG("Crafting pixel into purr-fection!", Settings::appTextures().mascotCat_smile)
                                     });
+
+            catMSG = msg.text;
+            msgFace = msg.face;
         }
         messageInfoBtn.text = catMSG;
     }
@@ -385,8 +425,10 @@ void LogDialog::render(
     else if(lastMessagesSize != messages.size()){
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
-        if(messages.size())
+        if(messages.size()){
             messageInfoBtn.text = messages[messages.size()-1];
+            msgFace = Settings::appTextures().mascotCat_rock;
+        }
     }
 
     // --------- INFO CLOSE -----------

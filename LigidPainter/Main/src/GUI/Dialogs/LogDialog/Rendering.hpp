@@ -56,7 +56,8 @@ static void rendering(
                         DialogControl& dialogControl,
                         Timer& timer,
                         Painter& painter,
-                        bool sleepingCat
+                        bool sleepingCat,
+                        Texture msgFace
                     )
 {
 
@@ -149,7 +150,7 @@ static void rendering(
     if(sleepingCat)
         logBtn.texture = Settings::appTextures().mascotCat_sleeping;
     else if(messageInfoActive && !painter.refreshable)
-        logBtn.texture = Settings::appTextures().mascotCat_rock;
+        logBtn.texture = msgFace;
     else if((logBtn.hover && !logBtnL.hover && !logBtnR.hover) || painter.refreshable)
         logBtn.texture = Settings::appTextures().mascotCat_smile;
     else if(messagesActive || actionHistoryActive)
