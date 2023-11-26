@@ -791,6 +791,8 @@ class LogDialog
    float messageInfoBtnMixVal = 0.f;
    size_t messageInfoBtnStartTime = 0.f;
 
+   int cryCounter = 0;
+
    glm::vec2 pos = glm::vec2(54.531246, 4.722224);
 
    float messagesPanelXAxisMixVal = 0.f;

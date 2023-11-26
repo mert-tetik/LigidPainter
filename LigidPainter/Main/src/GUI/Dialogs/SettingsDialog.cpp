@@ -165,6 +165,14 @@ SettingsDialog::SettingsDialog(){
                                         Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 0.f, false)  // Framerate data 
                                     }
                                 ),
+                                Section(
+                                    SectionHolder(sectionBtnClr, 0.5f, "Cat"),
+                                    {
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f), "Allow Comments"  , 0.5f)),
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f), "Verify The Exit"  , 0.5f)),
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f), "Hide that annoying cat >:("  , 0.5f))
+                                    }
+                                ),
             };
 }
 
@@ -208,6 +216,10 @@ void SettingsDialog::render(Timer timer, Painter &painter){
     systemSettings[1].elements[1].comboBox.selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->paintingResolutionDivier), systemSettings[1].elements[1].comboBox.texts);
     systemSettings[1].elements[2].comboBox.selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->paintingDepthTextureResolutionDivier), systemSettings[1].elements[2].comboBox.texts);
     systemSettings[1].elements[3].comboBox.selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->framebufferResolutionDivier), systemSettings[1].elements[3].comboBox.texts);
+    
+    systemSettings[3].elements[0].checkBox.clickState1 = Settings::properties()->cat_allowComments;
+    systemSettings[3].elements[1].checkBox.clickState1 = Settings::properties()->cat_verifyTheExit;
+    systemSettings[3].elements[2].checkBox.clickState1 = Settings::properties()->cat_hide;
 
     glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
     glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
@@ -301,6 +313,10 @@ void SettingsDialog::render(Timer timer, Painter &painter){
     Settings::properties()->paintingDepthTextureResolutionDivier = std::stof(systemSettings[1].elements[2].comboBox.texts[systemSettings[1].elements[2].comboBox.selectedIndex]);
     Settings::properties()->framebufferResolutionDivier = std::stof(systemSettings[1].elements[3].comboBox.texts[systemSettings[1].elements[3].comboBox.selectedIndex]);
     
+    Settings::properties()->cat_allowComments = systemSettings[3].elements[0].checkBox.clickState1;
+    Settings::properties()->cat_verifyTheExit = systemSettings[3].elements[1].checkBox.clickState1;
+    Settings::properties()->cat_hide = systemSettings[3].elements[2].checkBox.clickState1;
+
     if(TDRendererSettings[2].elements[0].checkBox.hover && *Mouse::LClick()){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {

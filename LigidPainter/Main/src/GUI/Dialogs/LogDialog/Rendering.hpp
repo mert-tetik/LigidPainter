@@ -58,7 +58,8 @@ static void rendering(
                         Painter& painter,
                         bool sleepingCat,
                         Texture msgFace,
-                        int dizzyCounter
+                        int dizzyCounter,
+                        int cryCounter
                     )
 {
 
@@ -150,6 +151,8 @@ static void rendering(
 
     if(dizzyCounter)
         logBtn.texture = Settings::appTextures().mascotCat_dizzy;
+    else if(cryCounter)
+        logBtn.texture = Settings::appTextures().mascotCat_crying;
     else if(sleepingCat)
         logBtn.texture = Settings::appTextures().mascotCat_sleeping;
     else if(messageInfoActive && !painter.refreshable)

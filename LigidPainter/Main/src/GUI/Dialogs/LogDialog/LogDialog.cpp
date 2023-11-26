@@ -184,7 +184,7 @@ void LogDialog::render(
                 this->messagesPanel, this->historyPanel, this->logBtn, this->logBtnR, this->logBtnL, this->messageInfoBtn, this->yesBtn, this->noBtn,
                 this->messageInfoBtnMixVal, this->messageInfoActive, this->pos, this->messagesPanelXAxisMixVal, this->messagesPanelYAxisMixVal, 
                 this->historyPanelXAxisMixVal, this->historyPanelYAxisMixVal, this->messagesActive, this->actionHistoryActive, this->dialogControl, 
-                timer, painter, sleepingCat, msgFace, dizzyCounter
+                timer, painter, sleepingCat, msgFace, dizzyCounter, this->cryCounter
             );
 
     if(this->logBtn.clicked){
@@ -198,6 +198,8 @@ void LogDialog::render(
     if(timer.tick){
         if(dizzyCounter)
             dizzyCounter--;
+        if(cryCounter)
+            cryCounter--;
         flipCount = 0;
     }
 
@@ -226,220 +228,227 @@ void LogDialog::render(
 
     // --------- INFO MESSAGE -----------
     if(getContext()->window.shouldClose()){
-        messageInfoActive = true;
-        if(quitMSG == ""){
-            messageInfoBtnStartTime = timer.seconds;
-            CatMSG msg = pickText(timer, {
-                                        CatMSG("Are you sure you want to exit the LigidPainter?", Settings::appTextures().mascotCat_rock),
-                                        CatMSG("Do you really want to exit the LigidPainter?", Settings::appTextures().mascotCat_rock),
-                                        CatMSG("Are you DETERMINED to close the LigidPainter???", Settings::appTextures().mascotCat_rock),
-                                        CatMSG("Are you done with the LigidPainter?", Settings::appTextures().mascotCat_rock),
-                                        CatMSG("Do you really want to leave me???", Settings::appTextures().mascotCat_crying),
-                                        CatMSG("Closing the LigidPainter already??", Settings::appTextures().mascotCat_thinking),
-                                        CatMSG("Are you absolutely, positively sure you want to close the app", Settings::appTextures().mascotCat_rock),
-                                        CatMSG("One last check: ready to exit and let the LigidPainter nap?", Settings::appTextures().mascotCat_rock),
-                                        CatMSG("Leaving so soon?", Settings::appTextures().mascotCat_crying),
-                                    });
+        if(Settings::properties()->cat_verifyTheExit){
+            messageInfoActive = true;
+            if(quitMSG == ""){
+                messageInfoBtnStartTime = timer.seconds;
+                CatMSG msg = pickText(timer, {
+                                            CatMSG("Are you sure you want to exit the LigidPainter?", Settings::appTextures().mascotCat_rock),
+                                            CatMSG("Do you really want to exit the LigidPainter?", Settings::appTextures().mascotCat_rock),
+                                            CatMSG("Are you DETERMINED to close the LigidPainter???", Settings::appTextures().mascotCat_rock),
+                                            CatMSG("Are you done with the LigidPainter?  ", Settings::appTextures().mascotCat_rock),
+                                            CatMSG("Do you really want to leave me???  ", Settings::appTextures().mascotCat_crying),
+                                            CatMSG("Closing the LigidPainter already??  ", Settings::appTextures().mascotCat_thinking),
+                                            CatMSG("Are you absolutely, positively sure you want to close the app", Settings::appTextures().mascotCat_rock),
+                                            CatMSG("One last check: ready to exit and let the LigidPainter nap?", Settings::appTextures().mascotCat_rock),
+                                            CatMSG("Leaving so soon?   ", Settings::appTextures().mascotCat_crying),
+                                        });
 
-            quitMSG = msg.text;
-            msgFace = msg.face;
+                quitMSG = msg.text;
+                msgFace = msg.face;
+            }
+
+            messageInfoBtn.text = quitMSG;
+
+            if(noBtn.clicked){
+                messageInfoActive = false;
+                quitMSG = "";
+                getContext()->window.setShouldClose(false);
+            }
+            if(yesBtn.clicked){
+                this->windowShouldClose = true;
+            }
         }
-
-        messageInfoBtn.text = quitMSG;
-
-        if(noBtn.clicked){
-            messageInfoActive = false;
-            quitMSG = "";
-            getContext()->window.setShouldClose(false);
-        }
-        if(yesBtn.clicked){
+        else{
             this->windowShouldClose = true;
         }
     }
-    else if(petPoints > 300.f){
-        petPoints = 0.f;
-        messageInfoActive = true;
-        messageInfoBtnStartTime = timer.seconds;
-        if(catMSG == ""){
-            CatMSG msg = pickText(timer, {
-                                        CatMSG("Mrrrr :3   ", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Purrr :3   ", Settings::appTextures().mascotCat_relaxed),
-                                        CatMSG("Purrr <3   ", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Meow :3   ", Settings::appTextures().mascotCat_relaxed),
-                                    });
+    else if(Settings::properties()->cat_allowComments){
+        if(petPoints > 300.f){
+            petPoints = 0.f;
+            messageInfoActive = true;
+            messageInfoBtnStartTime = timer.seconds;
+            if(catMSG == ""){
+                CatMSG msg = pickText(timer, {
+                                            CatMSG("Mrrrr :3   ", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Purrr :3   ", Settings::appTextures().mascotCat_relaxed),
+                                            CatMSG("Purrr <3   ", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Meow :3   ", Settings::appTextures().mascotCat_relaxed),
+                                        });
 
-            catMSG = msg.text;
-            msgFace = msg.face;
+                catMSG = msg.text;
+                msgFace = msg.face;
+            }
+            
+            messageInfoBtn.text = catMSG;
         }
-        
-        messageInfoBtn.text = catMSG;
-    }
-    else if(painter.refreshable){
-        messageInfoActive = true;
-        messageInfoBtnStartTime = timer.seconds;
-        if(catMSG == ""){
-            CatMSG msg = pickText(timer, {
-                                        CatMSG("Starting off with style! Keep those colors flowing!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Looking good! Don't stop now!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Purr-fect progress! You're on a roll!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Wow, that's coming together nicely! Keep it up!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Impressive strokes! This is shaping up beautifully!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Meow-velous! You're almost there!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Simply purr-fect! Your art is amazing!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Absolutely clawsome! Can't wait to see the final touches!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("You're a true artist! Keep painting!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Looking meow-tastic! Keep those creative juices flowing!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Purr-fact strokes!", Settings::appTextures().mascotCat_smile),
-                                    });
+        else if(painter.refreshable){
+            messageInfoActive = true;
+            messageInfoBtnStartTime = timer.seconds;
+            if(catMSG == ""){
+                CatMSG msg = pickText(timer, {
+                                            CatMSG("Starting off with style! Keep those colors flowing!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Looking good! Don't stop now!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Purr-fect progress! You're on a roll!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Wow, that's coming together nicely! Keep it up!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Impressive strokes! This is shaping up beautifully!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Meow-velous! You're almost there!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Simply purr-fect! Your art is amazing!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Absolutely clawsome! Can't wait to see the final touches!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("You're a true artist! Keep painting!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Looking meow-tastic! Keep those creative juices flowing!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Purr-fact strokes!", Settings::appTextures().mascotCat_smile),
+                                        });
 
-            catMSG = msg.text;
-            msgFace = msg.face;
+                catMSG = msg.text;
+                msgFace = msg.face;
+            }
+            messageInfoBtn.text = catMSG;
         }
-        messageInfoBtn.text = catMSG;
-    }
-    else if(settingsDialog.dialogControl.globalFirstFrameActivated){
-        messageInfoActive = true;
-        messageInfoBtnStartTime = timer.seconds;
-        if(catMSG == ""){
-            CatMSG msg = pickText(timer, {
-                                        CatMSG("Yikes! So technical", Settings::appTextures().mascotCat_dizzy),
-                                        CatMSG("Gears!! shiver me timbers", Settings::appTextures().mascotCat_dizzy),
-                                        CatMSG("Here we come gears!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Don't be scared! It's just a few buttons and switches.", Settings::appTextures().mascotCat_thinking),
-                                        CatMSG("Let's see what we can get into with these settings!!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Time to tinker with the cat-figurations!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Paws and reflect on these settings!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Meow-stering the art of customization!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Adjusting settings? Piece of catnip cake!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Ready to purr-sonalize your experience?", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("DON'T YOU DARE TURN ME OFF FROM THERE!!! >:3", Settings::appTextures().mascotCat_rock),
-                                        CatMSG("You're not gonna turn me off are u??", Settings::appTextures().mascotCat_thinking),
-                                        CatMSG("Pweasee don't turn me off. It's so dark here :3", Settings::appTextures().mascotCat_crying),
-                                    });
+        else if(settingsDialog.dialogControl.globalFirstFrameActivated){
+            messageInfoActive = true;
+            messageInfoBtnStartTime = timer.seconds;
+            if(catMSG == ""){
+                CatMSG msg = pickText(timer, {
+                                            CatMSG("Yikes! So technical", Settings::appTextures().mascotCat_dizzy),
+                                            CatMSG("Gears!! shiver me timbers", Settings::appTextures().mascotCat_dizzy),
+                                            CatMSG("Here we come gears!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Don't be scared! It's just a few buttons and switches.", Settings::appTextures().mascotCat_thinking),
+                                            CatMSG("Let's see what we can get into with these settings!!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Time to tinker with the cat-figurations!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Paws and reflect on these settings!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Meow-stering the art of customization!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Adjusting settings? Piece of catnip cake!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Ready to purr-sonalize your experience?", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("DON'T YOU DARE TURN ME OFF FROM THERE!!! >:3", Settings::appTextures().mascotCat_rock),
+                                            CatMSG("You're not gonna turn me off are u??", Settings::appTextures().mascotCat_thinking),
+                                            CatMSG("Pweasee don't turn me off. It's so dark here :3", Settings::appTextures().mascotCat_crying),
+                                        });
 
-            catMSG = msg.text;
-            msgFace = msg.face;
+                catMSG = msg.text;
+                msgFace = msg.face;
+            }
+            messageInfoBtn.text = catMSG;
         }
-        messageInfoBtn.text = catMSG;
-    }
-    else if(bakingDialog.dialogControl.globalFirstFrameActivated){
-        messageInfoActive = true;
-        messageInfoBtnStartTime = timer.seconds;
-        if(catMSG == ""){
-            CatMSG msg = pickText(timer, {
-                                        CatMSG("Bakey bakey!", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Let's bake those textures!", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Mixing pixels together for a mouthwatering result!", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Turning up the heat to cook those textures to perfection!", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Baking textures - the secret ingredient for a purr-fect render!", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Just like baking cookies, but for your 3D masterpiece!", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Baking those pixels like a baker layers cake!", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Adding some flavor to your project with freshly baked textures!", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Creating a baking recipe that'll make your project scrumptious!", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("Baking time!", Settings::appTextures().mascotCat_bread),
-                                        CatMSG("The oven's preheated!", Settings::appTextures().mascotCat_bread),
-                                    });
+        else if(bakingDialog.dialogControl.globalFirstFrameActivated){
+            messageInfoActive = true;
+            messageInfoBtnStartTime = timer.seconds;
+            if(catMSG == ""){
+                CatMSG msg = pickText(timer, {
+                                            CatMSG("Bakey bakey!", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Let's bake those textures!", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Mixing pixels together for a mouthwatering result!", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Turning up the heat to cook those textures to perfection!", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Baking textures - the secret ingredient for a purr-fect render!", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Just like baking cookies, but for your 3D masterpiece!", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Baking those pixels like a baker layers cake!", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Adding some flavor to your project with freshly baked textures!", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Creating a baking recipe that'll make your project scrumptious!", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("Baking time!", Settings::appTextures().mascotCat_bread),
+                                            CatMSG("The oven's preheated!", Settings::appTextures().mascotCat_bread),
+                                        });
 
-            catMSG = msg.text;
-            msgFace = msg.face;
+                catMSG = msg.text;
+                msgFace = msg.face;
+            }
+            messageInfoBtn.text = catMSG;
         }
-        messageInfoBtn.text = catMSG;
-    }
-    else if(displayerDialog.dialogControl.globalFirstFrameActivated){
-        messageInfoActive = true;
-        messageInfoBtnStartTime = timer.seconds;
-        if(catMSG == ""){
-            CatMSG msg = pickText(timer, {
-                                        CatMSG("Let's tailor that purr-fect skybox.", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("How about a sunrise, or perhaps a cozy sunset?", Settings::appTextures().mascotCat_relaxed),
-                                        CatMSG("Adjust the sky to match my mood :3", Settings::appTextures().mascotCat_relaxed),
-                                        CatMSG("Pawsitively purr-fect skies!!", Settings::appTextures().mascotCat_relaxed),
-                                        CatMSG("Sunrise or sunset? Let's make your skybox a masterpiece of the heavens!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Ahh the soft, pure sky <3", Settings::appTextures().mascotCat_relaxed),
-                                        CatMSG("OoOW!! Did you get bored of ur background??", Settings::appTextures().mascotCat_smile),
-                                    });
+        else if(displayerDialog.dialogControl.globalFirstFrameActivated){
+            messageInfoActive = true;
+            messageInfoBtnStartTime = timer.seconds;
+            if(catMSG == ""){
+                CatMSG msg = pickText(timer, {
+                                            CatMSG("Let's tailor that purr-fect skybox.", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("How about a sunrise, or perhaps a cozy sunset?", Settings::appTextures().mascotCat_relaxed),
+                                            CatMSG("Adjust the sky to match my mood :3", Settings::appTextures().mascotCat_relaxed),
+                                            CatMSG("Pawsitively purr-fect skies!!", Settings::appTextures().mascotCat_relaxed),
+                                            CatMSG("Sunrise or sunset? Let's make your skybox a masterpiece of the heavens!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Ahh the soft, pure sky <3", Settings::appTextures().mascotCat_relaxed),
+                                            CatMSG("OoOW!! Did you get bored of ur background??", Settings::appTextures().mascotCat_smile),
+                                        });
 
-            catMSG = msg.text;
-            msgFace = msg.face;
+                catMSG = msg.text;
+                msgFace = msg.face;
+            }
+            messageInfoBtn.text = catMSG;
         }
-        messageInfoBtn.text = catMSG;
-    }
-    else if(exportDialog.dialogControl.globalFirstFrameActivated){
-        messageInfoActive = true;
-        messageInfoBtnStartTime = timer.seconds;
-        if(catMSG == ""){
-            CatMSG msg = pickText(timer, {
-                                        CatMSG("You can access your textures via file explorer! No need to export!!", Settings::appTextures().mascotCat_thinking),
-                                        CatMSG("Time to package these textures!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Exporting textures with a sprinkle of whisker-dust!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Preparing your textures for a journey to your computer's catnip stash!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Sending your textures home!", Settings::appTextures().mascotCat_smile),
-                                    });
+        else if(exportDialog.dialogControl.globalFirstFrameActivated){
+            messageInfoActive = true;
+            messageInfoBtnStartTime = timer.seconds;
+            if(catMSG == ""){
+                CatMSG msg = pickText(timer, {
+                                            CatMSG("You can access your textures via file explorer! No need to export!!", Settings::appTextures().mascotCat_thinking),
+                                            CatMSG("Time to package these textures!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Exporting textures with a sprinkle of whisker-dust!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Preparing your textures for a journey to your computer's catnip stash!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Sending your textures home!", Settings::appTextures().mascotCat_smile),
+                                        });
 
-            catMSG = msg.text;
-            msgFace = msg.face;
+                catMSG = msg.text;
+                msgFace = msg.face;
+            }
+            messageInfoBtn.text = catMSG;
         }
-        messageInfoBtn.text = catMSG;
-    }
-    else if(newTextureDialog.dialogControl.globalFirstFrameActivated){
-        messageInfoActive = true;
-        messageInfoBtnStartTime = timer.seconds;
-        if(catMSG == ""){
-            CatMSG msg = pickText(timer, {
-                                        CatMSG("Brand-new textures!!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("New textures on the horizon! Let's unleash the artist within!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Paws to new textures!!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Don't forget to name your texture!!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Pick the best color possible :3", Settings::appTextures().mascotCat_relaxed),
-                                    });
+        else if(newTextureDialog.dialogControl.globalFirstFrameActivated){
+            messageInfoActive = true;
+            messageInfoBtnStartTime = timer.seconds;
+            if(catMSG == ""){
+                CatMSG msg = pickText(timer, {
+                                            CatMSG("Brand-new textures!!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("New textures on the horizon! Let's unleash the artist within!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Paws to new textures!!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Don't forget to name your texture!!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Pick the best color possible :3", Settings::appTextures().mascotCat_relaxed),
+                                        });
 
-            catMSG = msg.text;
-            msgFace = msg.face;
+                catMSG = msg.text;
+                msgFace = msg.face;
+            }
+            messageInfoBtn.text = catMSG;
         }
-        messageInfoBtn.text = catMSG;
-    }
-    else if(newProjectDialog.dialogControl.globalFirstFrameActivated){
-        messageInfoActive = true;
-        messageInfoBtnStartTime = timer.seconds;
-        if(catMSG == ""){
-            CatMSG msg = pickText(timer, {
-                                        CatMSG("New project on the horizon! Let's unleash the artist within!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Don't forget to name your project!!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("New project new adventure!!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("A project is a folder that held inside of a folder. Meownd-blowing!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Time to embark on a new project, whiskers ready!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Starting a new project, let's paw-tner up for some creative fun!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Crafting a new project with the finesse and curiosity of a cat!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("I had a friend named 'project' once. Hope he is doing well now :3", Settings::appTextures().mascotCat_thinking),
-                                    });
+        else if(newProjectDialog.dialogControl.globalFirstFrameActivated){
+            messageInfoActive = true;
+            messageInfoBtnStartTime = timer.seconds;
+            if(catMSG == ""){
+                CatMSG msg = pickText(timer, {
+                                            CatMSG("New project on the horizon! Let's unleash the artist within!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Don't forget to name your project!!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("New project new adventure!!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("A project is a folder that held inside of a folder. Meownd-blowing!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Time to embark on a new project, whiskers ready!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Starting a new project, let's paw-tner up for some creative fun!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Crafting a new project with the finesse and curiosity of a cat!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("I had a friend named 'project' once. Hope he is doing well now :3", Settings::appTextures().mascotCat_thinking),
+                                        });
 
-            catMSG = msg.text;
-            msgFace = msg.face;
+                catMSG = msg.text;
+                msgFace = msg.face;
+            }
+            messageInfoBtn.text = catMSG;
         }
-        messageInfoBtn.text = catMSG;
-    }
-    else if(textureEditorDialog.dialogControl.globalFirstFrameActivated){
-        messageInfoActive = true;
-        messageInfoBtnStartTime = timer.seconds;
-        if(catMSG == ""){
-            CatMSG msg = pickText(timer, {
-                                        CatMSG("Time to give those pixels a cat-tastic makeover!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Meow-difying images!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Pawsitively purr-fect editing!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Whisking images into shape!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Catnip for your images! Let's create something paw-some :3", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Tweaking pixels with whisker-precision!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Meow-gical image transformations!", Settings::appTextures().mascotCat_smile),
-                                        CatMSG("Crafting pixel into purr-fection!", Settings::appTextures().mascotCat_smile)
-                                    });
+        else if(textureEditorDialog.dialogControl.globalFirstFrameActivated){
+            messageInfoActive = true;
+            messageInfoBtnStartTime = timer.seconds;
+            if(catMSG == ""){
+                CatMSG msg = pickText(timer, {
+                                            CatMSG("Time to give those pixels a cat-tastic makeover!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Meow-difying images!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Pawsitively purr-fect editing!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Whisking images into shape!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Catnip for your images! Let's create something paw-some :3", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Tweaking pixels with whisker-precision!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Meow-gical image transformations!", Settings::appTextures().mascotCat_smile),
+                                            CatMSG("Crafting pixel into purr-fection!", Settings::appTextures().mascotCat_smile)
+                                        });
 
-            catMSG = msg.text;
-            msgFace = msg.face;
+                catMSG = msg.text;
+                msgFace = msg.face;
+            }
+            messageInfoBtn.text = catMSG;
         }
-        messageInfoBtn.text = catMSG;
     }
 
-    else if(lastMessagesSize != messages.size()){
+    if(lastMessagesSize != messages.size() && !getContext()->window.shouldClose()){
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(messages.size()){

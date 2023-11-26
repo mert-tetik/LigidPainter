@@ -267,6 +267,10 @@ namespace Settings{
 
         int useHeightMap;
         float heightMapStrength;
+
+        bool cat_allowComments = false;
+        bool cat_verifyTheExit = true;
+        bool cat_hide = false;
     };
 
     void loadAppTextures();
