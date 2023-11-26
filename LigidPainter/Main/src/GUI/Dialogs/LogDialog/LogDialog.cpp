@@ -129,6 +129,7 @@ static size_t lastMessagesSize = 0;
 
 static std::string quitMSG = "";
 static std::string catMSG = "";
+static float petPoints = 0.f; 
 
 void LogDialog::render(
                             Timer timer, 
@@ -164,6 +165,14 @@ void LogDialog::render(
                 this->historyPanelXAxisMixVal, this->historyPanelYAxisMixVal, this->messagesActive, this->actionHistoryActive, this->dialogControl, 
                 timer, painter
             );
+
+    if(this->logBtn.hover)
+        petPoints += std::abs(Mouse::mouseOffset()->x) + std::abs(Mouse::mouseOffset()->y);
+    else
+        petPoints = 0.f;
+
+    //if(!std::abs(Mouse::mouseOffset()->x) && !std::abs(Mouse::mouseOffset()->y))
+    //    petPoints = 0.f;
 
     std::vector<std::string> messages;
 
@@ -210,6 +219,21 @@ void LogDialog::render(
         if(yesBtn.clicked){
             this->windowShouldClose = true;
         }
+    }
+    else if(petPoints > 100.f){
+        petPoints = 0.f;
+        messageInfoActive = true;
+        messageInfoBtnStartTime = timer.seconds;
+        if(catMSG == ""){
+            catMSG = pickText(timer, {
+                                        "Mrrrr :3   ",
+                                        "Purrr :3   ",
+                                        "Purrr <3   ",
+                                        "Meow :3   "
+                                    });
+        }
+        
+        messageInfoBtn.text = catMSG;
     }
     else if(painter.refreshable){
         messageInfoActive = true;
