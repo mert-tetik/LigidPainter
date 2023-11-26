@@ -1004,7 +1004,12 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
         materialEditorDialog.render(timer,textureSelectionDialog);
     
-    logDialog.render(timer, painter);
+    logDialog.render(
+                        timer, painter, greetingDialog, newProjectDialog, exportDialog, materialDisplayerDialog, filterDisplayerDialog,
+                        loadProjectDialog, materialEditorDialog, textureSelectionDialog, bakingDialog, filterSelectionDialog, newTextureDialog, 
+                        paintingChannelsAutoCreateTexturesDialog, settingsDialog, displayerDialog, textureEditorDialog, texturePackEditorDialog, 
+                        projectRecoverDialog, objectTexturingDialog
+                    );
 }
 
 static Color prevClr;

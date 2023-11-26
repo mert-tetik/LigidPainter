@@ -117,7 +117,7 @@ static void rendering(
     
     historyPanel.pos.y = pos.y + historyPanel.scale.y - historyPanelXAxisMixVal * 2.f;
 
-    messageInfoBtn.scale.x = messageInfoBtnMixVal * (messageInfoBtn.text.size() / 5.f);
+    messageInfoBtn.scale.x = messageInfoBtnMixVal * (messageInfoBtn.text.size() / 4.5f);
     messageInfoBtn.pos.x = pos.x - messageInfoBtn.scale.x;
     messageInfoBtn.pos.y = pos.y;
 

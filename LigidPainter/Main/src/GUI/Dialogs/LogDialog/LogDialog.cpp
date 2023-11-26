@@ -130,7 +130,29 @@ static size_t lastMessagesSize = 0;
 static std::string quitMSG = "";
 static std::string catMSG = "";
 
-void LogDialog::render(Timer timer, Painter& painter){
+void LogDialog::render(
+                            Timer timer, 
+                            Painter& painter, 
+                            GreetingDialog& greetingDialog, 
+                            NewProjectDialog& newProjectDialog, 
+                            ExportDialog& exportDialog,
+                            MaterialDisplayerDialog& materialDisplayerDialog,
+                            FilterDisplayerDialog& filterDisplayerDialog,
+                            LoadProjectDialog& loadProjectDialog,
+                            MaterialEditorDialog& materialEditorDialog,
+                            TextureSelectionDialog& textureSelectionDialog,
+                            BakingDialog& bakingDialog,
+                            FilterSelectionDialog& filterSelectionDialog,
+                            NewTextureDialog& newTextureDialog,
+                            PaintingChannelsAutoCreateTexturesDialog& paintingChannelsAutoCreateTexturesDialog,
+                            SettingsDialog& settingsDialog,
+                            DisplayerDialog& displayerDialog,
+                            TextureEditorDialog& textureEditorDialog,
+                            TexturePackEditorDialog& texturePackEditorDialog,
+                            ProjectRecoverDialog& projectRecoverDialog,
+                            ObjectTexturingDialog& objectTexturingDialog
+                        )
+{
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -209,6 +231,127 @@ void LogDialog::render(Timer timer, Painter& painter){
         }
         messageInfoBtn.text = catMSG;
     }
+    else if(settingsDialog.dialogControl.globalFirstFrameActivated){
+        messageInfoActive = true;
+        messageInfoBtnStartTime = timer.seconds;
+        if(catMSG == ""){
+            catMSG = pickText(timer, {
+                                        "Yikes! So technical",
+                                        "Gears!! shiver me timbers",
+                                        "Here we come gears!",
+                                        "Don't be scared! It's just a few buttons and switches.",
+                                        "Let's see what we can get into with these settings!!",
+                                        "Time to tinker with the cat-figurations!",
+                                        "Paws and reflect on these settings!",
+                                        "Meow-stering the art of customization!",
+                                        "Adjusting settings? Piece of catnip cake!",
+                                        "Ready to purr-sonalize your experience?",
+                                        "DON'T YOU DARE TURN ME OFF FROM THERE!!! >:3",
+                                        "You're not gonna turn me off are u??",
+                                        "Pweasee don't turn me off. It's so dark here :3"
+                                    });
+        }
+        messageInfoBtn.text = catMSG;
+    }
+    else if(bakingDialog.dialogControl.globalFirstFrameActivated){
+        messageInfoActive = true;
+        messageInfoBtnStartTime = timer.seconds;
+        if(catMSG == ""){
+            catMSG = pickText(timer, {
+                                        "Bakey bakey!",
+                                        "Let's bake those textures!",
+                                        "Mixing pixels together for a mouthwatering result!",
+                                        "Turning up the heat to cook those textures to perfection!",
+                                        "Baking textures - the secret ingredient for a purr-fect render!",
+                                        "Just like baking cookies, but for your 3D masterpiece!",
+                                        "Baking those pixels like a baker layers cake!",
+                                        "Adding some flavor to your project with freshly baked textures!",
+                                        "Creating a baking recipe that'll make your project scrumptious!",
+                                        "Baking time!",
+                                        "The oven's preheated!"
+                                    });
+        }
+        messageInfoBtn.text = catMSG;
+    }
+    else if(displayerDialog.dialogControl.globalFirstFrameActivated){
+        messageInfoActive = true;
+        messageInfoBtnStartTime = timer.seconds;
+        if(catMSG == ""){
+            catMSG = pickText(timer, {
+                                        "Let's tailor that purr-fect skybox.",
+                                        "How about a sunrise, or perhaps a cozy sunset?",
+                                        "Adjust the sky to match my mood :3",
+                                        "Pawsitively purr-fect skies!!",
+                                        "Sunrise or sunset? Let's make your skybox a masterpiece of the heavens!",
+                                        "Ahh the soft, pure sky <3",
+                                        "OoOW!! Did you get bored of ur background??"
+                                    });
+        }
+        messageInfoBtn.text = catMSG;
+    }
+    else if(exportDialog.dialogControl.globalFirstFrameActivated){
+        messageInfoActive = true;
+        messageInfoBtnStartTime = timer.seconds;
+        if(catMSG == ""){
+            catMSG = pickText(timer, {
+                                        "You can access your textures via file explorer! No need to export!!",
+                                        "Time to package these textures!",
+                                        "Exporting textures with a sprinkle of whisker-dust!",
+                                        "Preparing your textures for a journey to your computer's catnip stash!",
+                                        "Sending your textures home!",
+                                    });
+        }
+        messageInfoBtn.text = catMSG;
+    }
+    else if(newTextureDialog.dialogControl.globalFirstFrameActivated){
+        messageInfoActive = true;
+        messageInfoBtnStartTime = timer.seconds;
+        if(catMSG == ""){
+            catMSG = pickText(timer, {
+                                        "Brand-new textures!!",
+                                        "New textures on the horizon! Let's unleash the artist within!",
+                                        "Paws to new textures!!",
+                                        "Don't forget to name your texture!!",
+                                        "Pick the best color possible :3"
+                                    });
+        }
+        messageInfoBtn.text = catMSG;
+    }
+    else if(newProjectDialog.dialogControl.globalFirstFrameActivated){
+        messageInfoActive = true;
+        messageInfoBtnStartTime = timer.seconds;
+        if(catMSG == ""){
+            catMSG = pickText(timer, {
+                                        "New project on the horizon! Let's unleash the artist within!",
+                                        "Don't forget to name your project!!",
+                                        "New project new adventure!!",
+                                        "A project is a folder that held inside of a folder. Meownd-blowing!",
+                                        "Time to embark on a new project, whiskers ready!",
+                                        "Starting a new project, let's paw-tner up for some creative fun!",
+                                        "Crafting a new project with the finesse and curiosity of a cat!",
+                                        "I had a friend named 'project' once. Hope he is doing well now :3"
+                                    });
+        }
+        messageInfoBtn.text = catMSG;
+    }
+    else if(textureEditorDialog.dialogControl.globalFirstFrameActivated){
+        messageInfoActive = true;
+        messageInfoBtnStartTime = timer.seconds;
+        if(catMSG == ""){
+            catMSG = pickText(timer, {
+                                        "Time to give those pixels a cat-tastic makeover!",
+                                        "Meow-difying images!",
+                                        "Pawsitively purr-fect editing!",
+                                        "Whisking images into shape!",
+                                        "Catnip for your images! Let's create something paw-some :3",
+                                        "Tweaking pixels with whisker-precision!",
+                                        "Meow-gical image transformations!",
+                                        "Crafting pixel into purr-fection!"
+                                    });
+        }
+        messageInfoBtn.text = catMSG;
+    }
+
     else if(lastMessagesSize != messages.size()){
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
@@ -288,6 +431,7 @@ void LogDialog::render(Timer timer, Painter& painter){
     {
         undo();
     }
+
 }
 
 bool LogDialog::isHovered(){

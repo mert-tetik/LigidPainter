@@ -38,11 +38,14 @@ DialogControl::DialogControl(bool active){
 
 void DialogControl::updateStart(){
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", mixVal);
+    globalFirstFrameActivated = false;
 }
 
 void DialogControl::updateEnd(Timer timer,float transitionDuration){
     
     timer.transition(active,mixVal,transitionDuration);
+    if(firstFrameActivated)
+        globalFirstFrameActivated = true;
     firstFrameActivated = false;
 
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.);

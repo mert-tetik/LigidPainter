@@ -45,6 +45,7 @@ public:
     bool active = false;
     float mixVal = 0.;
     bool firstFrameActivated = false;
+    bool globalFirstFrameActivated = false;
 
     DialogControl();
     DialogControl(bool active);
@@ -674,6 +675,41 @@ public:
     void render(Timer &timer);
 };
 
+//!------------------------------ PROJECT RECOVER ------------------------------
+
+void showProjectRecoverDialog(Project &project, AppMaterialModifiers appMaterialModifiers);
+
+class ProjectRecoverDialog
+{
+public:
+   Panel panel;
+
+   Panel projectPanel;
+   Panel project_texturesPanel;
+   Panel project_materialsPanel;
+   Panel project_brushesPanel;
+   Button projectPanelSelectBtn;
+   Button projectPanelExitBtn;
+   Button projectPanelFileExplorerBtn;
+
+   bool projectSelectionMode = false;
+
+   Button lpIconBtn;
+   Button recoverTitleBtn;
+   Button recoverInfoBtn;
+   Button recover1Btn;
+   Button recover2Btn;
+   Button recover3Btn;
+
+   DialogControl dialogControl;
+
+   //Constructors
+   ProjectRecoverDialog();
+
+   //Public member functions
+   void render(Timer timer, Project &project, AppMaterialModifiers appMaterialModifiers);
+};
+
 //!-------------------------------LOG DIALOG--------------------------------
 
 namespace LGDLOG {
@@ -774,42 +810,18 @@ class LogDialog
    LogDialog(AppMaterialModifiers& appMaterialModifiers);
 
    //Public member functions
-   void render(Timer timer, Painter& painter);
+   void render(
+               Timer timer, Painter& painter, GreetingDialog& greetingDialog, NewProjectDialog& newProjectDialog, 
+               ExportDialog& exportDialog, MaterialDisplayerDialog& materialDisplayerDialog, 
+               FilterDisplayerDialog& filterDisplayerDialog, LoadProjectDialog& loadProjectDialog, MaterialEditorDialog& materialEditorDialog, 
+               TextureSelectionDialog& textureSelectionDialog, BakingDialog& bakingDialog, FilterSelectionDialog& filterSelectionDialog, 
+               NewTextureDialog& newTextureDialog, PaintingChannelsAutoCreateTexturesDialog& paintingChannelsAutoCreateTexturesDialog, 
+               SettingsDialog& settingsDialog, DisplayerDialog& displayerDialog, TextureEditorDialog& textureEditorDialog, 
+               TexturePackEditorDialog& texturePackEditorDialog, ProjectRecoverDialog& projectRecoverDialog, 
+               ObjectTexturingDialog& objectTexturingDialog
+            );
 
    bool isHovered();
-};
-
-void showProjectRecoverDialog(Project &project, AppMaterialModifiers appMaterialModifiers);
-
-class ProjectRecoverDialog
-{
-public:
-   Panel panel;
-
-   Panel projectPanel;
-   Panel project_texturesPanel;
-   Panel project_materialsPanel;
-   Panel project_brushesPanel;
-   Button projectPanelSelectBtn;
-   Button projectPanelExitBtn;
-   Button projectPanelFileExplorerBtn;
-
-   bool projectSelectionMode = false;
-
-   Button lpIconBtn;
-   Button recoverTitleBtn;
-   Button recoverInfoBtn;
-   Button recover1Btn;
-   Button recover2Btn;
-   Button recover3Btn;
-
-   DialogControl dialogControl;
-
-   //Constructors
-   ProjectRecoverDialog();
-
-   //Public member functions
-   void render(Timer timer, Project &project, AppMaterialModifiers appMaterialModifiers);
 };
 
 #endif
