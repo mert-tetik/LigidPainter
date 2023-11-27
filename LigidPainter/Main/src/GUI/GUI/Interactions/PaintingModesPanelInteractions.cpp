@@ -60,6 +60,9 @@ void paintingModesPanelInteraction(
     }
 
     if(vectorPaintingModePropertyPanel.sections[0].elements[1].button.clicked){
+
+        registerVectorAction("New point between the selected points", painter.vectorStrokes);
+
         for (size_t i = 0; i < painter.vectorStrokes.size(); i++)
         {
             if(painter.vectorStrokes[i].endPointClicked && painter.vectorStrokes[i].startPointClicked){
@@ -79,9 +82,11 @@ void paintingModesPanelInteraction(
         }
     }
     if(vectorPaintingModePropertyPanel.sections[0].elements[2].button.clicked){
+        registerVectorAction("Vector strokes cleared", painter.vectorStrokes);
         painter.vectorStrokes.clear();
     }
     if(vectorPaintingModePropertyPanel.sections[0].elements[3].button.clicked){
+        registerVectorAction("Selected vector point deleted", painter.vectorStrokes);
         for (size_t i = 0; i < painter.vectorStrokes.size(); i++)
         {
             if(i == 0){

@@ -41,7 +41,13 @@
 #include "GUI/Dialogs/LogDialog/Rendering.hpp"
 #include "GUI/Dialogs/LogDialog/Undo.hpp"
 
-std::vector<Action> __actions;
+static std::vector<LibraryAction> actions_Library;
+static std::vector<PaintingAction> actions_Painting;
+static std::vector<VectorsAction> actions_Vectors;
+static std::vector<ObjectSelectionAction> actions_ObjectSelection;
+static std::vector<FaceSelectionAction> actions_FaceSelection;
+static std::vector<TextureFieldsAction> actions_TextureFields;
+static std::vector<MaterialEditorAction> actions_MaterialEditor;
 
 namespace LGDLOG{
     LogMsg start;
@@ -476,6 +482,18 @@ void LogDialog::render(
 
     lastMessagesSize = messages.size();
 
+    //if()
+    //    this->activeHistoryMode = HISTORY_LIBRARY_MODE;
+    if(painter.selectedDisplayingModeIndex != 0)
+        this->activeHistoryMode = HISTORY_PAINTING_MODE;
+    if(painter.selectedPaintingModeIndex == 5)
+        this->activeHistoryMode = HISTORY_VECTORS_MODE;
+    if(painter.selectedDisplayingModeIndex == 0)
+        this->activeHistoryMode = HISTORY_OBJECTSELECTION_MODE;
+    if(painter.faceSelection.editMode)
+        this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
+    if(painter.paintingoverTextureEditorMode)
+        this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE;
 
     if(messagesActive){
 
@@ -504,10 +522,50 @@ void LogDialog::render(
                                     )
                             );
         
-        for (size_t i = 0; i < __actions.size(); i++)
-        {
-            logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), __actions[i].title, Texture(), 0., false));
+
+        if(this->activeHistoryMode == HISTORY_LIBRARY_MODE){
+            for (size_t i = 0; i < actions_Library.size(); i++)
+            {
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), actions_Library[i].title, Texture(), 0., false));
+            }
         }
+        if(this->activeHistoryMode == HISTORY_PAINTING_MODE){
+            for (size_t i = 0; i < actions_Painting.size(); i++)
+            {
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), actions_Painting[i].title, Texture(), 0., false));
+            }
+        }
+        if(this->activeHistoryMode == HISTORY_VECTORS_MODE){
+            for (size_t i = 0; i < actions_Vectors.size(); i++)
+            {
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), actions_Vectors[i].title, Texture(), 0., false));
+            }
+        }
+        if(this->activeHistoryMode == HISTORY_OBJECTSELECTION_MODE){
+            for (size_t i = 0; i < actions_ObjectSelection.size(); i++)
+            {
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), actions_ObjectSelection[i].title, Texture(), 0., false));
+            }
+        }
+        if(this->activeHistoryMode == HISTORY_FACESELECTION_MODE){
+            for (size_t i = 0; i < actions_FaceSelection.size(); i++)
+            {
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), actions_FaceSelection[i].title, Texture(), 0., false));
+            }
+        }
+        if(this->activeHistoryMode == HISTORY_TEXTUREFIELDS_MODE){
+            for (size_t i = 0; i < actions_TextureFields.size(); i++)
+            {
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), actions_TextureFields[i].title, Texture(), 0., false));
+            }
+        }
+        if(this->activeHistoryMode == HISTORY_MATERIALEDITOR_MODE){
+            for (size_t i = 0; i < actions_MaterialEditor.size(); i++)
+            {
+                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), actions_MaterialEditor[i].title, Texture(), 0., false));
+            }
+        }
+
 
         if(this->historyPanel.sections[0].elements.size()){
             if(this->historyPanel.sections[0].elements[this->historyPanel.sections[0].elements.size()-1].button.text == "Undo / CTRL+Z"){
@@ -527,7 +585,7 @@ void LogDialog::render(
             Shortcuts::CTRL_Z()
         )
     {
-        undo();
+        undo(painter);
     }
 
 }

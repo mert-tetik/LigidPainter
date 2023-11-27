@@ -763,12 +763,27 @@ namespace LGDLOG {
 #define TEXTURE_ADDITION_ACTION 2
 #define NODE_ACTION 3
 #define BUTTON_ACTION 4
+#define VECTOR_ACTION 5
 
+#define HISTORY_LIBRARY_MODE 0
+#define HISTORY_PAINTING_MODE 1
+#define HISTORY_VECTORS_MODE 2
+#define HISTORY_OBJECTSELECTION_MODE 3
+#define HISTORY_FACESELECTION_MODE 4
+#define HISTORY_TEXTUREFIELDS_MODE 5
+#define HISTORY_MATERIALEDITOR_MODE 6 
+
+// -- Library --
 void registerTextureAction(const std::string title, const Texture icon, Texture texture);
 void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index);
 void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index);
-void registerNodeAction(const std::string title, const Texture icon);
+
+// -- Vector --
+void registerVectorAction(const std::string title, std::vector<VectorStroke> vectorStrokes);
+
+
 void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton);
+void registerNodeAction(const std::string title, const Texture icon);
 
 class LogDialog
 {
@@ -785,6 +800,8 @@ class LogDialog
 
    Button yesBtn;
    Button noBtn;
+   
+   int activeHistoryMode = 0;
 
    Button messageInfoBtn;
    bool messageInfoActive = false;
@@ -822,6 +839,8 @@ class LogDialog
                TexturePackEditorDialog& texturePackEditorDialog, ProjectRecoverDialog& projectRecoverDialog, 
                ObjectTexturingDialog& objectTexturingDialog
             );
+
+   void undo(Painter& painter);
 
    bool isHovered();
 };

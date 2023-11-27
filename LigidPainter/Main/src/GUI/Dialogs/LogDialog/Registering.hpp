@@ -50,73 +50,113 @@ struct BtnAction{
     }
 };
 
-struct Action{
+struct LibraryAction{
     std::string title;
     unsigned int ID;
     Texture icon;
     Texture texture;
     int textureIndex;
-    std::vector<Node> nodeScene;
-    BtnAction button;
 
-    Action(std::string title, unsigned int ID, Texture icon, Texture texture){
+    LibraryAction(std::string title, unsigned int ID, Texture icon, Texture texture){
         this->title = title;
         this->ID = ID;
         this->icon = icon;
         this->texture = texture;
     }
     
-    Action(std::string title, unsigned int ID, Texture icon, Texture texture, int textureIndex){
+    LibraryAction(std::string title, unsigned int ID, Texture icon, Texture texture, int textureIndex){
         this->title = title;
         this->ID = ID;
         this->icon = icon;
         this->texture = texture;
         this->textureIndex = textureIndex;
     }
-    
-    Action(std::string title, unsigned int ID, Texture icon, std::vector<Node> nodeScene){
-        this->title = title;
-        this->ID = ID;
-        this->icon = icon;
-        this->nodeScene = nodeScene;
-    }
+};
 
-    Action(std::string title, unsigned int ID, Texture icon, BtnAction btnAction){
+struct PaintingAction{
+    std::string title;
+    unsigned int ID;
+    Texture icon;
+    Texture texture;
+
+    PaintingAction(std::string title, unsigned int ID, Texture icon, Texture texture){
         this->title = title;
         this->ID = ID;
         this->icon = icon;
-        this->button = btnAction;
+        this->texture = texture;
     }
 };
 
-extern std::vector<Action> __actions;
+struct VectorsAction{
+    std::string title;
+    std::vector<VectorStroke> vectorStrokes;
+    unsigned int ID;
+
+    VectorsAction(){}
+
+    VectorsAction(std::string title, unsigned int ID, std::vector<VectorStroke> vectorStrokes){
+        this->title = title;
+        this->vectorStrokes = vectorStrokes;
+        this->ID = ID;
+    }
+};
+
+struct ObjectSelectionAction{
+    std::string title;
+};
+
+struct FaceSelectionAction{
+    std::string title;
+};
+
+struct TextureFieldsAction{
+    std::string title;
+};
+
+struct MaterialEditorAction{
+    std::string title;
+};
+
+extern std::vector<LibraryAction> actions_Library;
+extern std::vector<PaintingAction> actions_Painting;
+extern std::vector<VectorsAction> actions_Vectors;
+extern std::vector<ObjectSelectionAction> actions_ObjectSelection;
+extern std::vector<FaceSelectionAction> actions_FaceSelection;
+extern std::vector<TextureFieldsAction> actions_TextureFields;
+extern std::vector<MaterialEditorAction> actions_MaterialEditor;
 
 void registerTextureAction(const std::string title, const Texture icon, Texture texture){
-    texture.writeTMP("_history_" + std::to_string(__actions.size()) + "_" + std::to_string(texture.uniqueId));
+    texture.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(texture.uniqueId));
     
-    __actions.push_back(Action(title, TEXTURE_UPDATING_ACTION, icon, texture));
+    actions_Painting.push_back(PaintingAction(title, TEXTURE_UPDATING_ACTION, icon, texture));
 }
 
 void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index){
-    texture.writeTMP("_history_" + std::to_string(__actions.size()) + "_" + std::to_string(texture.uniqueId));
+    texture.writeTMP("_history_" + std::to_string(actions_Library.size()) + "_" + std::to_string(texture.uniqueId));
 
-    __actions.push_back(Action(title, TEXTURE_DELETION_ACTION, icon, texture, index));
+    actions_Library.push_back(LibraryAction(title, TEXTURE_DELETION_ACTION, icon, texture, index));
 }
 
 void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index){
-    __actions.push_back(Action(title, TEXTURE_ADDITION_ACTION, icon, texture, index));
+    actions_Library.push_back(LibraryAction(title, TEXTURE_ADDITION_ACTION, icon, texture, index));
 }
 
-void registerNodeAction(const std::string title, const Texture icon){
-    __actions.push_back(Action(title, NODE_ACTION, icon, *NodeScene::getNodeArrayPointer()));
+void registerVectorAction(const std::string title, std::vector<VectorStroke> vectorStrokes){
+    actions_Vectors.push_back(VectorsAction(title, VECTOR_ACTION, vectorStrokes));
 }
+
+
 
 void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton){
     Texture previousBtnTexture = previousButton.texture.duplicateTexture();
     previousBtnTexture.proceduralProps = previousButton.texture.proceduralProps;
     previousBtnTexture.title = previousButton.texture.title;
 
-    __actions.push_back(Action(title, BUTTON_ACTION, icon, BtnAction(button, previousButton, previousBtnTexture)));
+    //__actions.push_back(Action(title, BUTTON_ACTION, icon, BtnAction(button, previousButton, previousBtnTexture)));
+}
+
+void registerNodeAction(const std::string title, const Texture icon){
+    //__actions.push_back(Action(title, NODE_ACTION, icon, *NodeScene::getNodeArrayPointer()));
 }
 
 #endif // LOGDIALOG_REGISTERING_HPP

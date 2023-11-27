@@ -212,22 +212,25 @@ void VectorStroke::draw(Timer& timer, float edge, bool sceneState, std::vector<V
 
     if(*Mouse::LClick()){
         if(endPointHover){
-            if(this->startPos != this->endPos)
+            if(this->startPos != this->endPos){
                 this->endPointPressed = true;
+            }
             this->endPointClicked = !this->endPointClicked;
         }
         else if(!sceneState && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT))
             this->endPointClicked = false;
         if(startPointHover){
-            if(this->startPos != this->endPos)
+            if(this->startPos != this->endPos){
                 this->startPointPressed = true;
+            }
             this->startPointClicked = !this->startPointClicked;
         }
         else if(!sceneState && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT))
             this->startPointClicked = false;
         if(offsetPointHover){
-            if(this->startPos != this->endPos)
+            if(this->startPos != this->endPos){
                 this->offsetPointPressed = true;
+            }
             this->offsetPointClicked = !this->offsetPointClicked;
         }
         else if(!sceneState && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT))

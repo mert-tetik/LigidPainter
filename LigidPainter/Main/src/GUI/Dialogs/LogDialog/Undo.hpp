@@ -39,10 +39,15 @@ Official Web Page : https:ligidtools.com/ligidpainter
 
 #include "GUI/Dialogs/LogDialog/Registering.hpp"
 
-extern std::vector<Action> __actions;
 
-static void undo(){
-    if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION || __actions[__actions.size()-1].ID == TEXTURE_DELETION_ACTION){
+void LogDialog::undo(Painter& painter){
+    
+    if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
+        painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;
+        actions_Vectors.pop_back();
+    }
+    
+    if(actions_Library[actions_Library.size()-1].ID == TEXTURE_UPDATING_ACTION || actions_Library[actions_Library.size()-1].ID == TEXTURE_DELETION_ACTION){
         try
         {
             for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")) {
@@ -68,8 +73,8 @@ static void undo(){
                             projectUpdatingThreadElements.updateTextures = true;
                         */
 
-                        if(indexVal == __actions.size() - 1){
-                            if(__actions[__actions.size()-1].ID == TEXTURE_UPDATING_ACTION){
+                        if(indexVal == actions_Library.size() - 1){
+                            if(actions_Library[actions_Library.size()-1].ID == TEXTURE_UPDATING_ACTION){
                                 for (size_t i = 0; i < Library::getTextureArraySize(); i++)
                                 {   
                                     if(Library::getTexture(i)->uniqueId == IDVal){
@@ -77,11 +82,11 @@ static void undo(){
                                     }
                                 }
                             }
-                            else if(__actions[__actions.size()-1].ID == TEXTURE_DELETION_ACTION){
+                            else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_DELETION_ACTION){
                                 Texture regeneratedTxtr = Texture(nullptr, 1, 1); 
                                 regeneratedTxtr.readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
-                                regeneratedTxtr.title = __actions[__actions.size()-1].texture.title;
-                                Library::getTextureVectorPointer()->insert(Library::getTextureVectorPointer()->begin() + __actions[__actions.size()-1].textureIndex, regeneratedTxtr);
+                                regeneratedTxtr.title = actions_Library[actions_Library.size()-1].texture.title;
+                                Library::getTextureVectorPointer()->insert(Library::getTextureVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex, regeneratedTxtr);
                                 Library::setChanged(true);
                             }
                         }
@@ -94,20 +99,10 @@ static void undo(){
         }
     }
 
-    else if(__actions[__actions.size()-1].ID == TEXTURE_ADDITION_ACTION){
-        Library::getTextureVectorPointer()->erase(Library::getTextureVectorPointer()->begin() + __actions[__actions.size()-1].textureIndex);
+    else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_ADDITION_ACTION){
+        Library::getTextureVectorPointer()->erase(Library::getTextureVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex);
         Library::setChanged(true);
     }
 
-    else if(__actions[__actions.size()-1].ID == NODE_ACTION){
-        *NodeScene::getNodeArrayPointer() = __actions[__actions.size()-1].nodeScene;
-        //NodeScene::updateNodeResults();
-    }
-    else if(__actions[__actions.size()-1].ID == BUTTON_ACTION){
-        *__actions[__actions.size()-1].button.button = __actions[__actions.size()-1].button.previousBtn;
-        glDeleteTextures(1, &__actions[__actions.size()-1].button.button->texture.ID);
-        __actions[__actions.size()-1].button.button->texture = __actions[__actions.size()-1].button.previousBtnTexture;
-    }
-    
-    __actions.pop_back();
+    actions_Library.pop_back();
 }

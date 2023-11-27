@@ -67,17 +67,15 @@ static void rendering(
     if(*Mouse::LClick()){
         if(logBtnL.hover && !messageInfoActive){
             messagesActive = !messagesActive;
-            actionHistoryActive = false;
         }
         
         else if(logBtnR.hover && !messageInfoActive){
             actionHistoryActive = !actionHistoryActive;
-            messagesActive = false;
         }
-        
-        else{
-            messagesActive = false;
+
+        else if(logBtn.hover){
             actionHistoryActive = false;
+            messagesActive = false;
         }
     }
 

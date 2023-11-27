@@ -640,6 +640,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     if(*Mouse::LClick() && painter.selectedPaintingModeIndex == 5 && !anyVectorPointHover && !anyDialogActive && !anyContextMenuActive && !anyPanelHover){
         VectorStroke vecStroke;
         if(!painter.vectorStrokes.size()){
+            registerVectorAction("First point created", painter.vectorStrokes);
             vecStroke.startPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f; 
             vecStroke.endPos = vecStroke.startPos;
             vecStroke.offsetPos = vecStroke.startPos;
@@ -647,14 +648,33 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         }
         else{
             if(painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos == painter.vectorStrokes[painter.vectorStrokes.size() - 1].startPos){
+                registerVectorAction("New point", painter.vectorStrokes);
                 painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
                 painter.vectorStrokes[painter.vectorStrokes.size() - 1].offsetPos = painter.vectorStrokes[painter.vectorStrokes.size() - 1].startPos - (painter.vectorStrokes[painter.vectorStrokes.size() - 1].startPos - painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos) / 2.f;
             }
             else{
+                registerVectorAction("New point", painter.vectorStrokes);
                 vecStroke.startPos = painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos; 
                 vecStroke.endPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
                 vecStroke.offsetPos = vecStroke.startPos - (vecStroke.startPos - vecStroke.endPos) /2.f;
                 painter.vectorStrokes.push_back(vecStroke);
+            }
+        }
+    }
+    else{
+        for (size_t i = 0; i < painter.vectorStrokes.size(); i++)
+        {
+            if(painter.vectorStrokes[i].endPointHover && *Mouse::LClick()){
+                registerVectorAction("Point transformed", painter.vectorStrokes);
+                break;
+            }
+            else if(painter.vectorStrokes[i].startPointHover && *Mouse::LClick()){
+                registerVectorAction("Point transformed", painter.vectorStrokes);
+                break;
+            }
+            else if(painter.vectorStrokes[i].offsetPointHover && *Mouse::LClick()){
+                registerVectorAction("Offset transformed", painter.vectorStrokes);
+                break;
             }
         }
     }
