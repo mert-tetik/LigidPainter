@@ -774,12 +774,17 @@ namespace LGDLOG {
 #define HISTORY_MATERIALEDITOR_MODE 6 
 
 // -- Library --
-void registerTextureAction(const std::string title, const Texture icon, Texture texture);
 void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index);
 void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index);
 
+// -- Painting --
+void registerTextureAction(const std::string title, const Texture icon, Texture texture);
+
 // -- Vector --
 void registerVectorAction(const std::string title, std::vector<VectorStroke> vectorStrokes);
+
+// -- Object Selection --
+void registerObjectSelectionAction(const std::string title, int meshI, std::vector<int> selectedObjectIndices);
 
 
 void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton);
@@ -840,6 +845,7 @@ class LogDialog
                ObjectTexturingDialog& objectTexturingDialog
             );
 
+   bool unded = false;
    void undo(Painter& painter);
 
    bool isHovered();

@@ -103,6 +103,16 @@ struct VectorsAction{
 
 struct ObjectSelectionAction{
     std::string title;
+    std::vector<int> selectedObjectIndices;
+    int meshI;
+
+    ObjectSelectionAction(){}
+
+    ObjectSelectionAction(std::string title, int meshI, std::vector<int> selectedObjectIndices){
+        this->title = title;
+        this->meshI = meshI;
+        this->selectedObjectIndices = selectedObjectIndices;
+    }
 };
 
 struct FaceSelectionAction{
@@ -145,7 +155,9 @@ void registerVectorAction(const std::string title, std::vector<VectorStroke> vec
     actions_Vectors.push_back(VectorsAction(title, VECTOR_ACTION, vectorStrokes));
 }
 
-
+void registerObjectSelectionAction(const std::string title, int meshI, std::vector<int> selectedObjectIndices){
+    actions_ObjectSelection.push_back(ObjectSelectionAction(title, meshI, selectedObjectIndices));
+}
 
 void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton){
     Texture previousBtnTexture = previousButton.texture.duplicateTexture();

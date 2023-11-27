@@ -175,7 +175,7 @@ void LogDialog::render(
                             ObjectTexturingDialog& objectTexturingDialog
                         )
 {
-
+    this->unded = false;
 
     glClear(GL_DEPTH_BUFFER_BIT);
 

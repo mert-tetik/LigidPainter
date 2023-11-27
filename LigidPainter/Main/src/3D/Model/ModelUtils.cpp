@@ -33,6 +33,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 // Defined in Painter/faceSelection.cpp
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 
+
+
 void Model::updateObjectIDsTexture(){
     glDepthFunc(GL_LESS);
     
@@ -148,6 +150,10 @@ void Model::selectObject(Panel& objectsPanel){
         
         delete[] pxs;
 
+        if(meshI < this->meshes.size() && meshI >= 0 && *Mouse::LClick()){
+            registerObjectSelectionAction("Object selected", meshI, this->meshes[meshI].selectedObjectIndices);
+        }
+
         for (size_t i = 0; i < this->meshes.size(); i++){
             if(!this->meshes[i].selectedObjectPrimitivesTxtr.ID){
                 glGenTextures(1, &this->meshes[i].selectedObjectPrimitivesTxtr.ID);
@@ -184,7 +190,6 @@ void Model::selectObject(Panel& objectsPanel){
             else
                 Mouse::setCursor(*Mouse::pointerXCursor());
         }
-    
     }
     
     for (size_t mshI = 0; mshI < this->meshes.size(); mshI++)
@@ -217,6 +222,4 @@ void Model::selectObject(Panel& objectsPanel){
 
         updatePrimitivesArrayTexture(this->meshes[mshI].selectedObjectPrimitivesTxtr, primitivesArray, primitivesArray, this->meshes[mshI], changedIndices, true);
     }
-
-
 }

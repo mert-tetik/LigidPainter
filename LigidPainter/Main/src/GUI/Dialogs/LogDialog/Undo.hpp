@@ -45,9 +45,21 @@ void LogDialog::undo(Painter& painter){
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
         painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;
         actions_Vectors.pop_back();
+        unded = true;
+    }
+    if(this->activeHistoryMode == HISTORY_OBJECTSELECTION_MODE && actions_ObjectSelection.size()){
+        ObjectSelectionAction action = actions_ObjectSelection[actions_ObjectSelection.size() - 1];
+
+        if(action.meshI < getModel()->meshes.size())
+            getModel()->meshes[action.meshI].selectedObjectIndices = action.selectedObjectIndices;
+        else    
+            LGDLOG::start << "ERROR : Undo object selection failed - Invalid mesh index" << LGDLOG::end;
+
+        actions_ObjectSelection.pop_back();
+        unded = true;
     }
     
-    if(actions_Library[actions_Library.size()-1].ID == TEXTURE_UPDATING_ACTION || actions_Library[actions_Library.size()-1].ID == TEXTURE_DELETION_ACTION){
+    else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_UPDATING_ACTION || actions_Library[actions_Library.size()-1].ID == TEXTURE_DELETION_ACTION){
         try
         {
             for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")) {
@@ -103,6 +115,4 @@ void LogDialog::undo(Painter& painter){
         Library::getTextureVectorPointer()->erase(Library::getTextureVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex);
         Library::setChanged(true);
     }
-
-    actions_Library.pop_back();
 }
