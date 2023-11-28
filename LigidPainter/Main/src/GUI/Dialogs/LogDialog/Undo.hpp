@@ -100,6 +100,22 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
     }
     if(this->activeHistoryMode == HISTORY_TEXTUREFIELDS_MODE && actions_TextureFields.size()){
         TextureFieldsAction action = actions_TextureFields[actions_TextureFields.size() - 1];
+        
+        if(action.fields.size() == paintingOverTextureFields.size()){
+            for (size_t i = 0; i < action.fields.size(); i++)
+            {
+                if(action.fields[i].flippedH != paintingOverTextureFields[i].flippedH){
+                    action.fields[i].texture.flipTexture(true, false);
+                    Settings::defaultFramebuffer()->FBO.bind();
+                }
+                if(action.fields[i].flippedV != paintingOverTextureFields[i].flippedV){
+                    action.fields[i].texture.flipTexture(false, true);
+                    Settings::defaultFramebuffer()->FBO.bind();
+                }
+            }
+        }
+        
+        
         paintingOverTextureFields = action.fields;
 
         actions_TextureFields.pop_back();

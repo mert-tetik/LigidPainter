@@ -74,6 +74,9 @@ void Settings::loadAppTextures(){
     __appTextures.materialChannelsIcon.load("./LigidPainter/Resources/Icons/MaterialChannels.png");
     __appTextures.paintingOverIcon.load("./LigidPainter/Resources/Icons/PaintingOver.png");
     __appTextures.mirrorIcon.load("./LigidPainter/Resources/Icons/Mirror.png");
+    __appTextures.X.load("./LigidPainter/Resources/Icons/X.png");
+    __appTextures.flipH.load("./LigidPainter/Resources/Icons/FlipH.png");
+    __appTextures.flipV.load("./LigidPainter/Resources/Icons/FlipV.png");
     __appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
     __appTextures.filterDisplayerImage.load("./LigidPainter/Resources/Images/FilterDisplayerImage.jpg");
     __appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");

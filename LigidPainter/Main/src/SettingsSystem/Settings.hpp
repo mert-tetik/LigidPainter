@@ -225,6 +225,9 @@ namespace Settings{
         Texture materialChannelsIcon;
         Texture paintingOverIcon;
         Texture mirrorIcon;
+        Texture X;
+        Texture flipH;
+        Texture flipV;
         
         //--Textures
         Texture greetingDialogImage;  

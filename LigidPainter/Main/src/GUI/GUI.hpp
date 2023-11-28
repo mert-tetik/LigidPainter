@@ -57,13 +57,22 @@ public:
     float rotation = 0.f;
     bool rotating = false;
 
+    bool flippedH = false;
+    bool flippedV = false;
+
     Button topLeft_ResizeButton;
     Button bottomLeft_ResizeButton;
     Button topRight_ResizeButton;
     Button bottomRight_ResizeButton;
+    
+    Button rotateBtn;
 
     Button deleteButton;
     Button scaleToTextureResolutionButton;
+    Button flipHorizontalButton;
+    Button flipVerticalButton;
+    Button cancelRotationButton;
+    Button rotationAngleDisplayButton;
 
     bool active = false;
 
