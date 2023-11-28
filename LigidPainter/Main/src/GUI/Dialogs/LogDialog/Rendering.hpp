@@ -63,6 +63,11 @@ static void rendering(
                     )
 {
 
+    // Move to the center
+    if(getContext()->window.shouldClose()){
+        glm::vec2 center = glm::vec2(50.);
+        pos -= (pos - center) / 10.f;
+    }
 
     if(*Mouse::LClick()){
         if(logBtnL.hover && !messageInfoActive){

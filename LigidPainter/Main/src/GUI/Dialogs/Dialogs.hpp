@@ -37,6 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //Forward declarations
 class ContextMenu;
+class LogDialog;
 
 class DialogControl
 {
