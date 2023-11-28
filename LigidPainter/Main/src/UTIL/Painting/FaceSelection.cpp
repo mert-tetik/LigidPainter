@@ -52,8 +52,8 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
         
         for (size_t i = 0; i < std::ceil(sqrt(primitivesArray.size())) * std::ceil(sqrt(primitivesArray.size())); i++)
         {
-            if(i < primitivesArray.size())
-                pxs[i] = primitivesArray[i] * 126;
+            if(i + 1 < primitivesArray.size())
+                pxs[i] = primitivesArray[i + 1] * 126;
             else
                 pxs[i] = 0;
         }
@@ -78,12 +78,13 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
                 }
             }
         }
+        
         changedIndices.clear();
     }
     
     prevPrimArray = primitivesArray;
 }
-bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction, glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel){
+bool FaceSelection::interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel, bool registerHistory){
 
     // Scale of the window
     glm::vec2 windowSize = getContext()->windowScale;
@@ -113,6 +114,9 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction, glm::
     bool changesMade = false;
     
     if(Shortcuts::CTRL_A()){
+        if(registerHistory)
+            registerFaceSelectionAction("Select all the faces - Painting", selectedPrimitiveIDs, prevPrimArray, selectedMeshI);
+
         std::fill(this->selectedPrimitiveIDs.begin(), this->selectedPrimitiveIDs.end(), 2);
         
         changedIndices.clear();
@@ -125,6 +129,9 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction, glm::
     }
 
     if(mouseInteraction && !Shortcuts::CTRL_A()){
+        if(*Mouse::LClick() && registerHistory)
+            registerFaceSelectionAction("Face selection - Painting", selectedPrimitiveIDs, prevPrimArray, selectedMeshI);
+       
         // Generate & bind the framebuffer object to render the model primitives into the modelPrimitives texture
         if(!this->FBO.ID)
             this->FBO = Framebuffer(this->modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, windowSize));
@@ -260,7 +267,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh, bool mouseInteraction, glm::
                                         this->prevPrimArray, 
                                         selectedMesh, 
                                         changedIndices,
-                                        false
+                                        true
                                     );
     }
 

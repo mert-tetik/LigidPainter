@@ -704,10 +704,12 @@ public:
     /// @brief 3D model rendered with primitive ID renderin shader
     Texture modelPrimitives;
 
-    bool interaction(Mesh& selectedMesh, bool mouseInteraction, glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel);
+    bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, glm::mat4 viewMatrix, 
+                    glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel, 
+                    bool registerHistory);
 
-private:
     std::vector<byte> prevPrimArray;
+private:
     glm::vec2 lastMousePos;
 };
 

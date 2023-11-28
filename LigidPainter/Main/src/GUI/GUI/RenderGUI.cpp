@@ -936,7 +936,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
         )
     {
-        if(painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex], !anyPanelHover, getScene()->viewMatrix, getScene()->projectionMatrix, getScene()->transformMatrix, *Mouse::cursorPos(), false)){
+        if(painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex], painter.selectedMeshIndex, !anyPanelHover, getScene()->viewMatrix, getScene()->projectionMatrix, getScene()->transformMatrix, *Mouse::cursorPos(), false, true)){
             if(__faceSelectionActiveObjIndex == meshSection.elements[5].comboBox.selectedIndex)
                 meshSection.elements[5].comboBox.selectedIndex = 0;
         }
@@ -1019,7 +1019,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
         bakingDialog.render(timer, skybox);
     
     if(objectTexturingDialog.dialogControl.isActive() && !materialEditorDialog.dialogControl.active)
-        objectTexturingDialog.render(timer, this->projection, materialEditorDialog);
+        objectTexturingDialog.render(timer, this->projection, materialEditorDialog, logDialog);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
         materialEditorDialog.render(timer,textureSelectionDialog);

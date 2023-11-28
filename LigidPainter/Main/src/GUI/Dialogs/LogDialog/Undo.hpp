@@ -39,8 +39,10 @@ Official Web Page : https:ligidtools.com/ligidpainter
 
 #include "GUI/Dialogs/LogDialog/Registering.hpp"
 
+// Defined in Painter/faceSelection.cpp
+void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 
-void LogDialog::undo(Painter& painter){
+void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog){
     
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
         painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;
@@ -56,6 +58,44 @@ void LogDialog::undo(Painter& painter){
             LGDLOG::start << "ERROR : Undo object selection failed - Invalid mesh index" << LGDLOG::end;
 
         actions_ObjectSelection.pop_back();
+        unded = true;
+    }
+    if(this->activeHistoryMode == HISTORY_FACESELECTION_MODE && actions_FaceSelection.size()){
+        FaceSelectionAction action = actions_FaceSelection[actions_FaceSelection.size() - 1];
+
+        std::vector<int> changedIndices = {};
+        
+        if(action.ID == FACE_SELECTION_PAINTER_ACTION){
+            if(action.meshI < getModel()->meshes.size()){
+                if(painter.faceSelection.selectedPrimitiveIDs.size() == action.primitivesArray.size()){
+                    painter.faceSelection.prevPrimArray = action.prevPrimArray;
+                    painter.faceSelection.selectedPrimitiveIDs = action.primitivesArray;
+                    updatePrimitivesArrayTexture(painter.faceSelection.selectedFaces, action.primitivesArray, action.primitivesArray, getModel()->meshes[action.meshI], changedIndices, true);
+                }
+                else{
+                    LGDLOG::start << "ERROR : Undo face selection failed - Mesh data doesn't match" << LGDLOG::end;
+                }
+                
+            }
+            else    
+                LGDLOG::start << "ERROR : Undo face selection failed - Invalid mesh index" << LGDLOG::end;
+        }
+        else{
+            if(action.primitivesArray_M.size() == objectTexturingDialog.faceSelection.size() && action.primitivesArray_M.size() == getModel()->meshes.size()){
+                for (size_t i = 0; i < action.primitivesArray_M.size(); i++)
+                {
+                    objectTexturingDialog.faceSelection[i].prevPrimArray = action.primitivesArray_M[i];
+                    objectTexturingDialog.faceSelection[i].selectedPrimitiveIDs = action.prevPrimArray_M[i];
+                    updatePrimitivesArrayTexture(objectTexturingDialog.faceSelection[i].selectedFaces, action.primitivesArray_M[i], action.primitivesArray_M[i], getModel()->meshes[i], changedIndices, true);
+                }
+            }
+            else{
+                LGDLOG::start << "ERROR : Undo face selection failed - Mesh data doesn't match" << LGDLOG::end;
+            }
+        }
+
+
+        actions_FaceSelection.pop_back();
         unded = true;
     }
     

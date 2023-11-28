@@ -120,7 +120,7 @@ ObjectTexturingDialog::ObjectTexturingDialog(AppMaterialModifiers appMaterialMod
 
 static bool __materialEditBtn = false;
 
-void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog){
+void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog, LogDialog& logDialog){
     dialogControl.updateStart();
 
     if(this->material.title == "" || materialSelection){
@@ -260,7 +260,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     }
 
     // Update the scene texture
-    updateDisplayingTexture();
+    updateDisplayingTexture(logDialog);
 
     // Modifying the elements    
     this->panel.sections[0].elements[0].button.scale = this->panel.scale;
@@ -293,6 +293,11 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->editMaterialButton.pos.y += this->editMaterialButton.scale.y + this->materialDisplayerButton.scale.y;
     this->selectMaterialButton.pos = this->materialDisplayerButton.pos;
     this->selectMaterialButton.pos.x += this->selectMaterialButton.scale.x + this->materialDisplayerButton.scale.x;
+
+    if(faceSelectionMode)
+        maskViaFaceSelection.text = "Cancel face selection";
+    else
+        maskViaFaceSelection.text = "Mask via face selection";
 
     //Render the panel
     this->panel.render(timer, false);
@@ -430,10 +435,6 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     }
     else if(maskViaFaceSelection.clicked){
         faceSelectionMode = !faceSelectionMode;
-        if(faceSelectionMode)
-            maskViaFaceSelection.text = "Cancel face selection";
-        else
-            maskViaFaceSelection.text = "Mask via face selection";
     }
     else if(maskViaTexture.clicked){
         
@@ -458,7 +459,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     }
 
 
-    if(!this->panel.hover && *Mouse::LClick() || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput) && !this->materialSelection && !this->textureSelection){
+    if(!this->panel.hover && *Mouse::LClick() && !logDialog.isHovered() || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput) && !this->materialSelection && !this->textureSelection){
         if(!faceSelectionMode)
             this->dialogControl.unActivate();
         else
@@ -500,7 +501,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
 
 
 
-void ObjectTexturingDialog::updateDisplayingTexture(){
+void ObjectTexturingDialog::updateDisplayingTexture(LogDialog& logDialog){
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(this->sceneCam.cameraPos, 
                                  this->sceneCam.originPos, 
@@ -569,11 +570,23 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
     if((*Mouse::LPressed() || Shortcuts::CTRL_A()) && this->faceSelectionMode && !this->anyElementHover()){
         glm::vec2 cursorPos = *Mouse::cursorPos();
         cursorPos -= glm::vec2(*Settings::videoScale() * glm::vec2(0.1f));    
-        cursorPos *= glm::vec2(glm::vec2(1.25f));    
+        cursorPos *= glm::vec2(glm::vec2(1.25f));   
+        
+        if((*Mouse::LClick() && !logDialog.isHovered()) || Shortcuts::CTRL_A()){
+            std::vector<std::vector<byte>> primitivesArray, prevPrimArray;
+
+            for (size_t i = 0; i < faceSelection.size(); i++)
+            {
+                primitivesArray.push_back(faceSelection[i].selectedPrimitiveIDs);
+                prevPrimArray.push_back(faceSelection[i].prevPrimArray);
+            }
+            
+            registerFaceSelectionActionObjectTexturingDialog("Face selection - Object Texturing Dialog", primitivesArray, prevPrimArray);
+        } 
 
         for (size_t i = 0; i < this->faceSelection.size(); i++)
         {
-            this->faceSelection[i].interaction(getModel()->meshes[i], true, view, projectionMatrix, glm::mat4(1), cursorPos, true);
+            this->faceSelection[i].interaction(getModel()->meshes[i], i, true, view, projectionMatrix, glm::mat4(1), cursorPos, true, false);
         }
     }
 

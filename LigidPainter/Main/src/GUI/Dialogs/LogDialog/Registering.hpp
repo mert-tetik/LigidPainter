@@ -117,6 +117,29 @@ struct ObjectSelectionAction{
 
 struct FaceSelectionAction{
     std::string title;
+    std::vector<byte> primitivesArray;
+    std::vector<byte> prevPrimArray;
+    std::vector<std::vector<byte>> primitivesArray_M;
+    std::vector<std::vector<byte>> prevPrimArray_M;
+    int meshI;
+    unsigned int ID;
+
+    FaceSelectionAction(){}
+
+    FaceSelectionAction(std::string title, unsigned int ID, std::vector<byte> primitivesArray, std::vector<byte> prevPrimArray, int meshI){
+        this->title = title;
+        this->ID = ID;
+        this->primitivesArray = primitivesArray;
+        this->prevPrimArray = prevPrimArray;
+        this->meshI = meshI;
+    }
+    
+    FaceSelectionAction(std::string title, unsigned int ID, std::vector<std::vector<byte>> primitivesArray_M, std::vector<std::vector<byte>> prevPrimArray_M){
+        this->title = title;
+        this->ID = ID;
+        this->primitivesArray_M = primitivesArray_M;
+        this->prevPrimArray_M = prevPrimArray_M;
+    }
 };
 
 struct TextureFieldsAction{
@@ -158,6 +181,18 @@ void registerVectorAction(const std::string title, std::vector<VectorStroke> vec
 void registerObjectSelectionAction(const std::string title, int meshI, std::vector<int> selectedObjectIndices){
     actions_ObjectSelection.push_back(ObjectSelectionAction(title, meshI, selectedObjectIndices));
 }
+
+void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, std::vector<byte> prevPrimArray, int meshI){
+    actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_PAINTER_ACTION, primitivesArray, prevPrimArray, meshI));
+}
+
+void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray, std::vector<std::vector<byte>> prevPrimArray){
+    actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_OBJECTTEXTURING_ACTION, primitivesArray, prevPrimArray));
+}
+
+
+
+
 
 void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton){
     Texture previousBtnTexture = previousButton.texture.duplicateTexture();

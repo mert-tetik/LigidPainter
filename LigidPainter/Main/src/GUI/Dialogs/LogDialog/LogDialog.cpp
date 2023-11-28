@@ -490,7 +490,7 @@ void LogDialog::render(
         this->activeHistoryMode = HISTORY_VECTORS_MODE;
     if(painter.selectedDisplayingModeIndex == 0)
         this->activeHistoryMode = HISTORY_OBJECTSELECTION_MODE;
-    if(painter.faceSelection.editMode)
+    if(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode)
         this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
     if(painter.paintingoverTextureEditorMode)
         this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE;
@@ -585,7 +585,7 @@ void LogDialog::render(
             Shortcuts::CTRL_Z()
         )
     {
-        undo(painter);
+        undo(painter, objectTexturingDialog);
     }
 
 }

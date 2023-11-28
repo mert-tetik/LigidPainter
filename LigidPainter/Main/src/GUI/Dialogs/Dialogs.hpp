@@ -462,10 +462,10 @@ public:
    ObjectTexturingDialog(AppMaterialModifiers appMaterialModifiers);
     
    //Public member function
-   void render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog);
+   void render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog, LogDialog& logDialog);
    bool anyElementHover();
 
-   void updateDisplayingTexture();
+   void updateDisplayingTexture(LogDialog& logDialog);
    void updateMeshTextures();
    int getResolution();
  };
@@ -764,6 +764,8 @@ namespace LGDLOG {
 #define NODE_ACTION 3
 #define BUTTON_ACTION 4
 #define VECTOR_ACTION 5
+#define FACE_SELECTION_PAINTER_ACTION 6
+#define FACE_SELECTION_OBJECTTEXTURING_ACTION 7
 
 #define HISTORY_LIBRARY_MODE 0
 #define HISTORY_PAINTING_MODE 1
@@ -786,6 +788,9 @@ void registerVectorAction(const std::string title, std::vector<VectorStroke> vec
 // -- Object Selection --
 void registerObjectSelectionAction(const std::string title, int meshI, std::vector<int> selectedObjectIndices);
 
+// -- Face Selection -- 
+void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, std::vector<byte> prevPrimArray, int meshI);
+void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray, std::vector<std::vector<byte>> prevPrimArray);
 
 void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton);
 void registerNodeAction(const std::string title, const Texture icon);
@@ -846,7 +851,7 @@ class LogDialog
             );
 
    bool unded = false;
-   void undo(Painter& painter);
+   void undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog);
 
    bool isHovered();
 };
