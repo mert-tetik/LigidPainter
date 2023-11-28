@@ -74,7 +74,7 @@ static void rendering(
             messagesActive = !messagesActive;
         }
         
-        else if(logBtnR.hover && !messageInfoActive){
+        else if(logBtnR.hover){
             actionHistoryActive = !actionHistoryActive;
         }
 

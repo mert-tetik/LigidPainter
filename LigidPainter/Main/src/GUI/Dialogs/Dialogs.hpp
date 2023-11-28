@@ -38,6 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //Forward declarations
 class ContextMenu;
 class LogDialog;
+class TextureField;
 
 class DialogControl
 {
@@ -793,6 +794,9 @@ void registerObjectSelectionAction(const std::string title, int meshI, std::vect
 void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, std::vector<byte> prevPrimArray, int meshI);
 void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray, std::vector<std::vector<byte>> prevPrimArray);
 
+// -- Texture Field --
+void registerTextureFieldAction(const std::string title, std::vector<TextureField> fields);
+
 void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton);
 void registerNodeAction(const std::string title, const Texture icon);
 
@@ -848,11 +852,11 @@ class LogDialog
                NewTextureDialog& newTextureDialog, PaintingChannelsAutoCreateTexturesDialog& paintingChannelsAutoCreateTexturesDialog, 
                SettingsDialog& settingsDialog, DisplayerDialog& displayerDialog, TextureEditorDialog& textureEditorDialog, 
                TexturePackEditorDialog& texturePackEditorDialog, ProjectRecoverDialog& projectRecoverDialog, 
-               ObjectTexturingDialog& objectTexturingDialog
+               ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields
             );
 
    bool unded = false;
-   void undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog);
+   void undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields);
 
    bool isHovered();
 };

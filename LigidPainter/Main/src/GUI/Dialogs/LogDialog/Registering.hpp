@@ -144,6 +144,14 @@ struct FaceSelectionAction{
 
 struct TextureFieldsAction{
     std::string title;
+    std::vector<TextureField> fields;
+
+    TextureFieldsAction(){}
+
+    TextureFieldsAction(std::string title, std::vector<TextureField> fields){
+        this->title = title;
+        this->fields = fields;
+    }
 };
 
 struct MaterialEditorAction{
@@ -188,6 +196,10 @@ void registerFaceSelectionAction(const std::string title, std::vector<byte> prim
 
 void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray, std::vector<std::vector<byte>> prevPrimArray){
     actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_OBJECTTEXTURING_ACTION, primitivesArray, prevPrimArray));
+}
+
+void registerTextureFieldAction(const std::string title, std::vector<TextureField> fields){
+    actions_TextureFields.push_back(TextureFieldsAction(title, fields));
 }
 
 

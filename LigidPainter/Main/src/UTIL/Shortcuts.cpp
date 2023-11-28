@@ -31,51 +31,52 @@ Box.hpp : Is used to render a single 2D square.
 #define SHIFT LIGIDGL_KEY_LEFT_SHIFT
 
 #define IS_PRESSED(key) getContext()->window.isKeyPressed(key)  
+#define IS_CLICKED(key) getContext()->window.isKeyClicked(key)  
 
 bool Shortcuts::CTRL_Z(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_Z) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_Z) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_X(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_X) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_X) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_S(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_S) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_S) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_N(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_N) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_N) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_O(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_O) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_O) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_P(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_P) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_P) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_Y(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_Y) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_Y) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_C(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_C) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_C) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_V(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_V) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_V) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_A(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_A) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_A) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_F(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_F) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_F) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_G(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_G) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_G) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_W(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(LIGIDGL_KEY_W) && textRenderer.keyInput && !IS_PRESSED(SHIFT));
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_W) && !IS_PRESSED(SHIFT));
 }
 bool Shortcuts::CTRL_SHIFT_S(){
-    return (IS_PRESSED(CTRL) && IS_PRESSED(SHIFT) && IS_PRESSED(LIGIDGL_KEY_S) && textRenderer.keyInput);
+    return (IS_PRESSED(CTRL) && IS_PRESSED(SHIFT) && IS_CLICKED(LIGIDGL_KEY_S));
 }
 bool Shortcuts::F11(){
-    return (IS_PRESSED(LIGIDGL_KEY_F11) && textRenderer.keyInput);
+    return (IS_CLICKED(LIGIDGL_KEY_F11));
 }
 
 bool Shortcuts::anyShortCut(){

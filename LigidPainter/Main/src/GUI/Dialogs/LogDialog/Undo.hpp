@@ -42,7 +42,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 // Defined in Painter/faceSelection.cpp
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 
-void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog){
+void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields){
     
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
         painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;
@@ -96,6 +96,13 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
 
 
         actions_FaceSelection.pop_back();
+        unded = true;
+    }
+    if(this->activeHistoryMode == HISTORY_TEXTUREFIELDS_MODE && actions_TextureFields.size()){
+        TextureFieldsAction action = actions_TextureFields[actions_TextureFields.size() - 1];
+        paintingOverTextureFields = action.fields;
+
+        actions_TextureFields.pop_back();
         unded = true;
     }
     

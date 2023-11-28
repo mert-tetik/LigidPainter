@@ -709,8 +709,10 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         Texture texture;
         showTextureSelectionDialog(texture, 512, true);
         
-        if(texture.ID)
+        if(texture.ID){
+            registerTextureFieldAction("New texture field via texture selection dialog", this->paintingOverTextureFields);
             this->paintingOverTextureFields.push_back(TextureField(texture));
+        }
     }
     else if(this->paintingOverSection.elements[3].button.clicked){
         std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
@@ -718,6 +720,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         if(test.size()){
             Texture texture;
             texture.load(test.c_str());
+            registerTextureFieldAction("New texture field via path", this->paintingOverTextureFields);
             this->paintingOverTextureFields.push_back(TextureField(texture));
         }
 
@@ -1029,7 +1032,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
                             timer, painter, greetingDialog, newProjectDialog, exportDialog, materialDisplayerDialog, filterDisplayerDialog,
                             loadProjectDialog, materialEditorDialog, textureSelectionDialog, bakingDialog, filterSelectionDialog, newTextureDialog, 
                             paintingChannelsAutoCreateTexturesDialog, settingsDialog, displayerDialog, textureEditorDialog, texturePackEditorDialog, 
-                            projectRecoverDialog, objectTexturingDialog
+                            projectRecoverDialog, objectTexturingDialog, paintingOverTextureFields
                         );
     }
     else

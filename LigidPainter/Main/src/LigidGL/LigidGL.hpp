@@ -663,6 +663,12 @@ public:
     *    
     */
     bool isKeyPressed(int key);
+    
+    /*!
+    *    @brief learn if a key is clicked
+    *    @param key is LIGIDGL_KEY_<Desired key>
+    */
+    bool isKeyClicked(int key);
 
     /*!
     *    @brief learn if a mouse button is pressed

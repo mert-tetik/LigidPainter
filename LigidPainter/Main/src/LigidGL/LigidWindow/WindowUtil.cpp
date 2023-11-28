@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <GL/GL.h>
 #include <GL/GLU.h>
 #include <cstdint>
+#include <unordered_map>
 
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -64,8 +65,43 @@ void LigidWindow::setShouldClose(bool val){
     this->_set_WindowProcCloseWindow(val); 
 }
 
+static std::unordered_map<int, byte> keyStates;
+
+#define ASSERT_INTO_KEYSTATES(key)  if(this->isKeyPressed(key)){\
+                                        if(keyStates[key] == 0)keyStates[key] = 2;\
+                                        else if(keyStates[key] == 2)keyStates[key] = 1;\
+                                    }\
+                                    else{keyStates[key] = 0;}
 
 void LigidWindow::pollEvents(){
+
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_A)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_B)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_C)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_D)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_E)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_F)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_G)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_H)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_I)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_J)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_K)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_L)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_M)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_N)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_O)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_P)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_Q)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_R)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_S)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_T)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_U)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_V)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_W)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_X)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_Y)
+    ASSERT_INTO_KEYSTATES(LIGIDGL_KEY_Z)
+
 #if defined(_WIN32) || defined(_WIN64)
     
     //* User in windows environment
@@ -246,7 +282,16 @@ bool LigidWindow::isKeyPressed(int key){
     //* User in Linux environment
 
 #endif
+}
 
+
+bool LigidWindow::isKeyClicked(int key) {
+    if(!keyStates.count(key)){
+        LGDLOG::start << "ERROR : LigidWindow - Invalid key for the click check!" << LGDLOG::end;
+        return false;
+    }
+
+    return keyStates[key] == 2;
 }
 
 bool LigidWindow::isMouseButtonPressed(int button){

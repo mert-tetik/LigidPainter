@@ -172,7 +172,8 @@ void LogDialog::render(
                             TextureEditorDialog& textureEditorDialog,
                             TexturePackEditorDialog& texturePackEditorDialog,
                             ProjectRecoverDialog& projectRecoverDialog,
-                            ObjectTexturingDialog& objectTexturingDialog
+                            ObjectTexturingDialog& objectTexturingDialog,
+                            std::vector<TextureField>& paintingOverTextureFields
                         )
 {
     this->unded = false;
@@ -493,7 +494,7 @@ void LogDialog::render(
     if(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode)
         this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
     if(painter.paintingoverTextureEditorMode)
-        this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE;
+        this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE; // TODO Delete the textures 
 
     if(messagesActive){
 
@@ -585,7 +586,7 @@ void LogDialog::render(
             Shortcuts::CTRL_Z()
         )
     {
-        undo(painter, objectTexturingDialog);
+        undo(painter, objectTexturingDialog, paintingOverTextureFields);
     }
 
 }

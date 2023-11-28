@@ -243,7 +243,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
     //rotateSquareCorners(this->topLeft_ResizeButton.pos, this->bottomLeft_ResizeButton.pos, this->topRight_ResizeButton.pos, this->bottomRight_ResizeButton.pos, this->rotation);
     glm::vec2 crsPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
 
-	if(getContext()->window.isKeyPressed(LIGIDGL_KEY_R) && this->active){
+	if((getContext()->window.isKeyPressed(LIGIDGL_KEY_R) || getContext()->window.isKeyClicked(LIGIDGL_KEY_R)) && this->active){
         glm::vec2 direction = glm::normalize(crsPos - glm::vec2(orgPos));
         // Left side
         if(direction.x < -0.5 && direction.y > -0.85 && direction.y < 0.85){
@@ -262,7 +262,9 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             this->rotation += Mouse::mouseOffset()->x / 2.f;
         }
 
-
+        if(getContext()->window.isKeyClicked(LIGIDGL_KEY_R)){
+            registerTextureFieldAction("Texture field rotated", srcVector);
+        }
 	}
 
     if(rotation > 360)
@@ -299,6 +301,10 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
     if(*Mouse::LClick()){
+        if(this->textureDisplayingButton.hover && this->active){
+            registerTextureFieldAction("Texture field transformed", srcVector);
+        }
+
         this->active = this->isHover();
     }
 
@@ -317,6 +323,10 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
         this->scaleToTextureResolutionButton.render(timer, doMouseTracking);
     }
 
+    if(topLeft_ResizeButton.hover && *Mouse::LClick() || bottomLeft_ResizeButton.hover && *Mouse::LClick() || topRight_ResizeButton.hover && *Mouse::LClick() || bottomRight_ResizeButton.hover && *Mouse::LClick()){
+        registerTextureFieldAction("Texture field resized", srcVector);
+    }
+
     resizing(
                 this->pos, 
                 this->scale, 
@@ -328,11 +338,12 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             );
 
     if(this->deleteButton.clicked){
-        glDeleteTextures(1, &srcVector[i].texture.ID);
+        registerTextureFieldAction("Texture field deleted", srcVector);
         srcVector.erase(srcVector.begin() + i);
         i--;
     }
     else if(this->scaleToTextureResolutionButton.clicked){
+        registerTextureFieldAction("Texture field scaled to the texture resolution", srcVector);
         glm::vec2 prevScale = scale;
         scaleAccordingToTextureRes(scale, texture);
         pos.x -= prevScale.x -scale.x; 
