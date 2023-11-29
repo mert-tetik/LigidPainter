@@ -718,6 +718,9 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         ShaderSystem::tdModelShader().setVec3("viewPos",matCam.cameraPos);
         ShaderSystem::tdModelShader().setMat4("view",view);
         ShaderSystem::tdModelShader().setMat4("projection",projectionMatrix);
+        ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
+        ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
+        ShaderSystem::tdModelShader().setInt("hideUnselected", false);
 
         Model model;
         if(displayMode == 1)

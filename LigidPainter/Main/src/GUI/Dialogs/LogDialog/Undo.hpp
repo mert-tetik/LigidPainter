@@ -42,8 +42,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 // Defined in Painter/faceSelection.cpp
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 
-void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields){
-    
+void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields, MaterialEditorDialog& materialEditorDialog){
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
         painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;
         actions_Vectors.pop_back();
@@ -119,6 +118,22 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
         paintingOverTextureFields = action.fields;
 
         actions_TextureFields.pop_back();
+        unded = true;
+    }
+    if(this->activeHistoryMode == HISTORY_MATERIALEDITOR_MODE && actions_MaterialEditor.size()){
+        MaterialEditorAction action = actions_MaterialEditor[actions_MaterialEditor.size() - 1];
+        if(materialEditorDialog.material)
+            materialEditorDialog.material->deleteBuffers();
+
+        *materialEditorDialog.material = action.material;
+        materialEditorDialog.updateLayerPanel(*materialEditorDialog.material);
+        if(materialEditorDialog.selectedMaterialModifierIndex < action.material.materialModifiers.size())
+            materialEditorDialog.modifiersPanel.sections = action.material.materialModifiers[materialEditorDialog.selectedMaterialModifierIndex].sections;
+        materialEditorDialog.material->updateMaterialDisplayingTexture(512, false, materialEditorDialog.displayerCamera, 0);
+
+        Library::setChanged(true);
+
+        actions_MaterialEditor.pop_back();
         unded = true;
     }
     

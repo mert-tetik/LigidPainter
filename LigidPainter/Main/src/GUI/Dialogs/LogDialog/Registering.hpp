@@ -156,6 +156,14 @@ struct TextureFieldsAction{
 
 struct MaterialEditorAction{
     std::string title;
+    Material material;
+
+    MaterialEditorAction(){}
+
+    MaterialEditorAction(std::string title, Material material){
+        this->title = title;
+        this->material = material;
+    }
 };
 
 extern std::vector<LibraryAction> actions_Library;
@@ -202,6 +210,9 @@ void registerTextureFieldAction(const std::string title, std::vector<TextureFiel
     actions_TextureFields.push_back(TextureFieldsAction(title, fields));
 }
 
+void registerMaterialAction(const std::string title, Material material){
+    actions_MaterialEditor.push_back(MaterialEditorAction(title, material.duplicateMaterial()));
+}
 
 
 

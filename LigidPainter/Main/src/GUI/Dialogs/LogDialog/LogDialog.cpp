@@ -495,6 +495,8 @@ void LogDialog::render(
         this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
     if(painter.paintingoverTextureEditorMode)
         this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE; // TODO Delete the textures 
+    if(materialEditorDialog.dialogControl.isActive())
+        this->activeHistoryMode = HISTORY_MATERIALEDITOR_MODE; // TODO Delete the buffers 
 
     if(messagesActive){
 
@@ -586,7 +588,7 @@ void LogDialog::render(
             Shortcuts::CTRL_Z()
         )
     {
-        undo(painter, objectTexturingDialog, paintingOverTextureFields);
+        undo(painter, objectTexturingDialog, paintingOverTextureFields, materialEditorDialog);
     }
 
 }

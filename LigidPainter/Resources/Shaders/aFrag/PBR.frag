@@ -203,7 +203,7 @@ void main() {
         fragColor.rgb = mix(fragColor.rgb, vec3(0.18, 0.42, 0.64), 0.6);
     }
 
-    if(hoveredPrim)
+    if(hoveredPrim && meshSelectionEditing == 1)
         fragColor.rgb /= 1.25;
 
     float mirrorDisplayerLineThickness = 0.005;

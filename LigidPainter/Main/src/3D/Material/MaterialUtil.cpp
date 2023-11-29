@@ -60,3 +60,19 @@ Material Material::duplicateMaterial(){
 
     return duplicatedMat;
 }
+
+void Material::deleteBuffers(){
+    this->displayingFBO.deleteBuffers(true, true);
+    glDeleteTextures(1, &this->displayingTexture.ID);
+    
+    for (size_t i = 0; i < this->materialModifiers.size(); i++)
+    {
+        for (size_t seci = 0; seci < this->materialModifiers[i].sections.size(); seci++)
+        {
+            for (size_t eli = 0; eli < this->materialModifiers[i].sections[seci].elements.size(); eli++)
+            {
+                glDeleteTextures(1, &this->materialModifiers[i].sections[seci].elements[eli].button.texture.ID);
+            }
+        }
+    }
+}

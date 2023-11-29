@@ -473,6 +473,7 @@ void Renderer::renderMainModel(){
             else{
                 ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
                 ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
+                ShaderSystem::tdModelShader().setInt("hideUnselected", false);
             }
             
             glActiveTexture(GL_TEXTURE11);

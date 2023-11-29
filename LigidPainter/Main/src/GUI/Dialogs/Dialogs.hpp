@@ -312,16 +312,17 @@ class MaterialEditorDialog
 {
 private:
    //Private member functions
-   void updateLayerPanel(Material &material);
    void checkLayerPanel(Material &material);
    void checkModifiersPanel(Material &material, TextureSelectionDialog &textureSelectionDialog);
-   void updateLayerPanelElements(Material &material);
    void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material);
    void manageContextMenuActions( Material &material);
 
    bool updateTheMaterial = false;
    bool prevUpdateTheMaterial = false;
 public:
+   void updateLayerPanel(Material &material);
+   void updateLayerPanelElements(Material &material);
+   
    DialogControl dialogControl;
    glm::vec3 pos = glm::vec3(50.f,50.f,0.8f); ///Position of the dialog
    glm::vec2 scale = glm::vec2(40,40); ///Scale of the dialog
@@ -341,7 +342,7 @@ public:
 
    Camera displayerCamera;
     
-   Material* material;
+   Material* material = nullptr;
 
    //Constructors
    MaterialEditorDialog();
@@ -797,6 +798,10 @@ void registerFaceSelectionActionObjectTexturingDialog(const std::string title, s
 // -- Texture Field --
 void registerTextureFieldAction(const std::string title, std::vector<TextureField> fields);
 
+// -- Material Editor --
+void registerMaterialAction(const std::string title, Material material);
+
+
 void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton);
 void registerNodeAction(const std::string title, const Texture icon);
 
@@ -856,7 +861,7 @@ class LogDialog
             );
 
    bool unded = false;
-   void undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields);
+   void undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields, MaterialEditorDialog& materialEditorDialog);
 
    bool isHovered();
 };

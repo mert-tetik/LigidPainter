@@ -129,6 +129,9 @@ public:
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial();
+
+    /// @brief Deletes all the OpenGL buffer objects inside of the material
+    void deleteBuffers();
 };
 
 #endif 

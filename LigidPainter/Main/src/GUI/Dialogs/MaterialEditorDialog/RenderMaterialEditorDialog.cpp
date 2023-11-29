@@ -188,7 +188,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material){
     layerPanel.sections.push_back(layerPanelSection);
     
     //Update the material after updating layerPanel
-    material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true,this->displayerCamera, this->displayModeComboBox.selectedIndex);
+    material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
 }
 
 
@@ -267,6 +267,9 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                 //If button is clicked update the material
                 if(modifiersPanel.sections[secI].elements[elementI].state == 0)
                     if(modifiersPanel.sections[secI].elements[elementI].button.clicked){
+
+                        registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].button.text, material);
+
                         if(secI == modifiersPanel.sections.size()-1 && elementI == modifiersPanel.sections[secI].elements.size()-1){
                             modifiersPanel.sections[secI].elements[0].button.filter.shader.ID = 0;
                             glDeleteTextures(1, &modifiersPanel.sections[secI].elements[0].button.texture.ID);
@@ -366,6 +369,9 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                 //If range bar's value changed update the material
                 if(modifiersPanel.sections[secI].elements[elementI].state == 1)
                     if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true || modifiersPanel.sections[secI].elements[elementI].rangeBar.defaultPointBtnPressed || (modifiersPanel.sections[secI].elements[elementI].rangeBar.leftArrowHover && *Mouse::LClick()) || (modifiersPanel.sections[secI].elements[elementI].rangeBar.rightArrowHover && *Mouse::LClick())){
+                        if(modifiersPanel.sections[secI].elements[elementI].rangeBar.hover && *Mouse::LClick() || modifiersPanel.sections[secI].elements[elementI].rangeBar.defaultPointBtnPressed || (modifiersPanel.sections[secI].elements[elementI].rangeBar.leftArrowHover && *Mouse::LClick()) || (modifiersPanel.sections[secI].elements[elementI].rangeBar.rightArrowHover && *Mouse::LClick()))
+                            registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].rangeBar.text, material);
+                        
                         this->updateTheMaterial = true;
                         material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar = modifiersPanel.sections[secI].elements[elementI].rangeBar; 
                     }
@@ -373,6 +379,8 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                 //If checkbox clicked update the material
                 if(modifiersPanel.sections[secI].elements[elementI].state == 2)
                     if(modifiersPanel.sections[secI].elements[elementI].checkBox.hover && *Mouse::LClick() == true){
+                        registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].checkBox.text, material);
+
                         this->updateTheMaterial = true;
                         material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox = modifiersPanel.sections[secI].elements[elementI].checkBox; 
                     }
@@ -443,6 +451,8 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
     if(ContextMenus::materialModifier.dialogControl.isActive()){ //If material modifier context menu is active
         // Delete button pressed
         if(ContextMenus::materialModifier.contextPanel.sections[0].elements[0].button.clicked){
+            registerMaterialAction("Texture modifier deleted", material);
+
             // Deleting the mask texture
             glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture.ID); 
 
@@ -471,8 +481,10 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         //Move to top button pressed
         else if(ContextMenus::materialModifier.contextPanel.sections[0].elements[1].button.clicked){ 
-            
             if(ContextMenus::materialModifier.selectedElement != 0){
+                
+                registerMaterialAction("Modifier moved to top", material);
+                
                 MaterialModifier topModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement - 1];
                 MaterialModifier currentModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement];
 
@@ -487,6 +499,9 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         //Move to bottom button pressed
         else if(ContextMenus::materialModifier.contextPanel.sections[0].elements[2].button.clicked){ 
             if(ContextMenus::materialModifier.selectedElement != material.materialModifiers.size()-1){
+            
+                registerMaterialAction("Modifier moved to bottom", material);
+                
                 MaterialModifier bottomModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement + 1];
                 MaterialModifier currentModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement];
 
@@ -500,6 +515,9 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         //Change mask button pressed
         else if(ContextMenus::materialModifier.contextPanel.sections[0].elements[3].button.clicked){ 
+            
+            registerMaterialAction("Modifier change mask", material);
+            
             showTextureSelectionDialog(material.materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture, 512, false);
 
             dialogControl.firstFrameActivated = true;
@@ -512,6 +530,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         // Texture Modifier
         if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[0].button.clicked){
+            registerMaterialAction("Texture modifier added", material);
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.textureModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
@@ -522,6 +541,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         // Dust Modifier
         else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[1].button.clicked){
+            registerMaterialAction("Dust modifier added", material);
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.dustModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
@@ -532,6 +552,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         // Asphalt Modifier
         else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[2].button.clicked){
+            registerMaterialAction("Asphalt modifier added", material);
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.asphaltModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
@@ -542,6 +563,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         // Liquid Modifier
         else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[3].button.clicked){
+            registerMaterialAction("Liquid modifier added", material);
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.liquidModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
@@ -552,6 +574,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         // Moss Modifier
         else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[4].button.clicked){
+            registerMaterialAction("Moss modifier added", material);
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.mossModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
@@ -562,6 +585,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         // Rust Modifier
         else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[5].button.clicked){
+            registerMaterialAction("Rust modifier added", material);
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.rustModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
@@ -572,6 +596,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         // Skin Modifier
         else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[6].button.clicked){
+            registerMaterialAction("Skin modifier added", material);
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.skinModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
@@ -582,6 +607,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         // Solid Modifier
         else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[7].button.clicked){
+            registerMaterialAction("Solid modifier added", material);
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.solidModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
@@ -592,6 +618,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         // Wooden Modifier
         else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[8].button.clicked){
+            registerMaterialAction("Wooden modifier added", material);
             material.materialModifiers.insert(material.materialModifiers.begin(), appMaterialModifiers.woodenModifier);
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;

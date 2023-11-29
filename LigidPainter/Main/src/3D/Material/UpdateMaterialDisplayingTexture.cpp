@@ -83,6 +83,9 @@ void Material::updateMaterialDisplayingTexture(
     ShaderSystem::tdModelShader().setVec3("viewPos",matCam.cameraPos);
     ShaderSystem::tdModelShader().setMat4("view",view);
     ShaderSystem::tdModelShader().setMat4("projection",projectionMatrix);
+    ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
+    ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
+    ShaderSystem::tdModelShader().setInt("hideUnselected", false);
     
     //Bind the channels of the material
     if(!this->materialModifiers.size()){

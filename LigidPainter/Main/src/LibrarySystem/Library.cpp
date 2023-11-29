@@ -242,20 +242,7 @@ void Library::eraseMaterial  (int index){
     
     __changed = true;
 
-    __materials[index].displayingFBO.deleteBuffers(true, true);
-    glDeleteTextures(1, &__materials[index].displayingTexture.ID);
-
-    for (size_t i = 0; i < __materials[index].materialModifiers.size(); i++)
-    {
-        for (size_t seci = 0; seci < __materials[index].materialModifiers[i].sections.size(); seci++)
-        {
-            for (size_t eli = 0; eli < __materials[index].materialModifiers[i].sections[seci].elements.size(); eli++)
-            {
-                glDeleteTextures(1, &__materials[index].materialModifiers[i].sections[seci].elements[eli].button.texture.ID);
-            }
-        }
-    }
-    
+    __materials[index].deleteBuffers();
     
     __materials.erase(__materials.begin() + index);
 }
@@ -365,19 +352,7 @@ void Library::clearMaterials  (){
     
     for (size_t i = 0; i < __materials.size(); i++)
     {
-        __materials[i].displayingFBO.deleteBuffers(true, true);
-        glDeleteTextures(1, &__materials[i].displayingTexture.ID);
-    
-        for (size_t modI = 0; modI < __materials[i].materialModifiers.size(); modI++)
-        {
-            for (size_t seci = 0; seci < __materials[i].materialModifiers[modI].sections.size(); seci++)
-            {
-                for (size_t eli = 0; eli < __materials[i].materialModifiers[modI].sections[seci].elements.size(); eli++)
-                {
-                    glDeleteTextures(1, &__materials[i].materialModifiers[modI].sections[seci].elements[eli].button.texture.ID);
-                }
-            }
-        }
+        __materials[i].deleteBuffers();
     }
 
     __materials.clear();

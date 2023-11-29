@@ -146,19 +146,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
             materialSelection = false;
 
             // Delete the buffers of the material
-            this->material.displayingFBO.deleteBuffers(true, true);
-            glDeleteTextures(1, &this->material.displayingTexture.ID);
-
-            for (size_t i = 0; i < this->material.materialModifiers.size(); i++)
-            {
-                for (size_t seci = 0; seci < this->material.materialModifiers[i].sections.size(); seci++)
-                {
-                    for (size_t eli = 0; eli < this->material.materialModifiers[i].sections[seci].elements.size(); eli++)
-                    {
-                        glDeleteTextures(1, &this->material.materialModifiers[i].sections[seci].elements[eli].button.texture.ID);
-                    }
-                }
-            }
+            this->material.deleteBuffers();
 
             if(matI == -1){
                 this->material = Material("ObjectTexturingMaterial", 0);
