@@ -49,6 +49,8 @@ static std::vector<FaceSelectionAction> actions_FaceSelection;
 static std::vector<TextureFieldsAction> actions_TextureFields;
 static std::vector<MaterialEditorAction> actions_MaterialEditor;
 
+#define MAX_MATERIAL_HISTORY 8
+
 namespace LGDLOG{
     LogMsg start;
     std::string end = "$#";
@@ -498,6 +500,25 @@ void LogDialog::render(
     if(materialEditorDialog.dialogControl.isActive())
         this->activeHistoryMode = HISTORY_MATERIALEDITOR_MODE; // TODO Delete the buffers 
 
+    // Restrict history counts 
+    if(actions_MaterialEditor.size() > MAX_MATERIAL_HISTORY){
+        actions_MaterialEditor[0].material.deleteBuffers();
+        actions_MaterialEditor.erase(actions_MaterialEditor.begin());
+    }
+
+    // Delete the unrelated history data
+    if(this->activeHistoryMode != HISTORY_MATERIALEDITOR_MODE){
+        for (size_t i = 0; i < actions_MaterialEditor.size(); i++)
+        {
+            actions_MaterialEditor[i].material.deleteBuffers();
+        }
+        actions_MaterialEditor.clear();
+    }
+    
+    if(this->activeHistoryMode != HISTORY_FACESELECTION_MODE){
+        actions_FaceSelection.clear();
+    }
+
     if(messagesActive){
 
         std::vector<Section> logSections;
@@ -508,6 +529,7 @@ void LogDialog::render(
                                         }
                                     )
                             );
+
         for (size_t i = 0; i < messages.size(); i++)
         {
             logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), messages[i], Texture(), 0., false));
