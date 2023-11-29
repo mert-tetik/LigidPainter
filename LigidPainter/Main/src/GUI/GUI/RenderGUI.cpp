@@ -307,7 +307,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
 
     if(paintingChannelsTextureSelectionPanelActive){
-
         paintingChannelsTextureSelectionPanel.sections[0].elements.clear();
 
         for (size_t i = 0; i < Library::getTextureArraySize(); i++)
@@ -325,7 +324,16 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
                 for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
                 {
                     for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
+                        
+                        
                         if(paintingChannelsSection[secI].elements[elI].button.clickState1){
+                            for (size_t elICheck = 0; elICheck < paintingChannelsSection[secI].elements.size(); elICheck++){
+                                if(paintingChannelsSection[secI].elements[elICheck].button.texture.ID == Library::getTexture(i)->ID && elI != elICheck){
+                                    paintingChannelsSection[secI].elements[elICheck].button.texture = Texture();
+                                    LGDLOG::start << "WARNING! Same textures in a material. " << paintingChannelsSection[secI].elements[elICheck].button.text << " is replaced." << LGDLOG::end;
+                                }
+                            }
+
                             paintingChannelsSection[secI].elements[elI].button.texture = *Library::getTexture(i);
                             paintingChannelsSection[secI].elements[elI].button.clickState1 = false;
                         }
