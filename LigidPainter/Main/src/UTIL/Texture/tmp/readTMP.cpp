@@ -45,8 +45,6 @@ void Texture::readTMP(std::string tmpTitle){
         LGDLOG::start << "ERROR : Filesystem : Location ID 555546 " << ex.what() << LGDLOG::end;
     }
 
-    
-
     //Destination path of the tmp file (smt like ./LigidPainter/tmp/13_3.tmp)
     std::string tmpFilePath = UTIL::environmentSpecificAppDataFolderPath() + (std::string)"LigidPainter/tmp/" + tmpTitle + (std::string)".tmp"; 
 

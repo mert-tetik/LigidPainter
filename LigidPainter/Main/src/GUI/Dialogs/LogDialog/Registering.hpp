@@ -75,15 +75,33 @@ struct LibraryAction{
 
 struct PaintingAction{
     std::string title;
-    unsigned int ID;
     Texture icon;
-    Texture texture;
 
-    PaintingAction(std::string title, unsigned int ID, Texture icon, Texture texture){
+    Texture albedo; 
+    bool albedoPainted;
+    Texture roughness; 
+    bool roughnessPainted;
+    Texture metallic; 
+    bool metallicPainted;
+    Texture normal; 
+    bool normalPainted;
+    Texture height; 
+    bool heightPainted;
+    Texture ao; 
+    bool aoPainted;
+
+    PaintingAction(
+                        std::string title, Texture icon,
+                        Texture albedo, bool albedoPainted, 
+                        Texture roughness, bool roughnessPainted, 
+                        Texture metallic, bool metallicPainted,
+                        Texture normal, bool normalPainted, 
+                        Texture height, bool heightPainted, 
+                        Texture ao, bool aoPainted
+                    )
+{
         this->title = title;
-        this->ID = ID;
         this->icon = icon;
-        this->texture = texture;
     }
 };
 
@@ -174,11 +192,33 @@ extern std::vector<FaceSelectionAction> actions_FaceSelection;
 extern std::vector<TextureFieldsAction> actions_TextureFields;
 extern std::vector<MaterialEditorAction> actions_MaterialEditor;
 
-void registerTextureAction(const std::string title, const Texture icon, Texture texture){
-    texture.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(texture.uniqueId));
+void registerPaintingAction(
+                                const std::string title, const Texture icon, 
+                                Texture albedo, bool albedoPainted, 
+                                Texture roughness, bool roughnessPainted, 
+                                Texture metallic, bool metallicPainted,
+                                Texture normal, bool normalPainted, 
+                                Texture height, bool heightPainted, 
+                                Texture ao, bool aoPainted
+                            )
+{
+    if(albedoPainted)
+        albedo.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(albedo.ID));
+    if(roughnessPainted)
+        roughness.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(roughness.ID));
+    if(metallicPainted)
+        metallic.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(metallic.ID));
+    if(normalPainted)
+        normal.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(normal.ID));
+    if(heightPainted)
+        height.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(height.ID));
+    if(aoPainted)
+        ao.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(ao.ID));
     
-    actions_Painting.push_back(PaintingAction(title, TEXTURE_UPDATING_ACTION, icon, texture));
+    actions_Painting.push_back(PaintingAction(title, icon, albedo, albedoPainted, roughness, roughnessPainted, metallic, metallicPainted, normal, normalPainted, height, heightPainted, ao, aoPainted));
 }
+
+//void registerMultiMatChannelPaintingAction(const std::string)
 
 void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index){
     texture.writeTMP("_history_" + std::to_string(actions_Library.size()) + "_" + std::to_string(texture.uniqueId));

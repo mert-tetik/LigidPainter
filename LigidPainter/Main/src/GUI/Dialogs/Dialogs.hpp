@@ -783,7 +783,10 @@ void registerTextureDeletionAction(const std::string title, const Texture icon, 
 void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index);
 
 // -- Painting --
-void registerTextureAction(const std::string title, const Texture icon, Texture texture);
+void registerPaintingAction(const std::string title, const Texture icon, Texture albedo, bool albedoPainted, 
+                            Texture roughness, bool roughnessPainted, Texture metallic, bool metallicPainted,
+                            Texture normal, bool normalPainted, Texture height, bool heightPainted, Texture ao,
+                            bool aoPainted);
 
 // -- Vector --
 void registerVectorAction(const std::string title, std::vector<VectorStroke> vectorStrokes);

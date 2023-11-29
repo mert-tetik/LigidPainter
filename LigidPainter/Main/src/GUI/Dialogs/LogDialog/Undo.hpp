@@ -137,7 +137,7 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
         unded = true;
     }
     
-    else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_UPDATING_ACTION || actions_Library[actions_Library.size()-1].ID == TEXTURE_DELETION_ACTION){
+    if(this->activeHistoryMode == HISTORY_PAINTING_MODE && actions_Painting.size()){
         try
         {
             for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")) {
@@ -163,21 +163,12 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
                             projectUpdatingThreadElements.updateTextures = true;
                         */
 
-                        if(indexVal == actions_Library.size() - 1){
-                            if(actions_Library[actions_Library.size()-1].ID == TEXTURE_UPDATING_ACTION){
-                                for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-                                {   
-                                    if(Library::getTexture(i)->uniqueId == IDVal){
-                                        Library::getTexture(i)->readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
-                                    }
+                        if(indexVal == actions_Painting.size() - 1){
+                            for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+                            {   
+                                if(Library::getTexture(i)->ID == IDVal){
+                                    Library::getTexture(i)->readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
                                 }
-                            }
-                            else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_DELETION_ACTION){
-                                Texture regeneratedTxtr = Texture(nullptr, 1, 1); 
-                                regeneratedTxtr.readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
-                                regeneratedTxtr.title = actions_Library[actions_Library.size()-1].texture.title;
-                                Library::getTextureVectorPointer()->insert(Library::getTextureVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex, regeneratedTxtr);
-                                Library::setChanged(true);
                             }
                         }
                     }
@@ -187,6 +178,8 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
         catch (const std::filesystem::filesystem_error& ex) {
             LGDLOG::start << "ERROR : Filesystem : Location ID 337523 " << ex.what() << LGDLOG::end;
         }
+
+        actions_Painting.pop_back();
     }
 
     else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_ADDITION_ACTION){

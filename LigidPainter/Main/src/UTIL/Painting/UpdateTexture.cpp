@@ -163,24 +163,46 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
 }
 
 void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox){
-    
-    std::string actionTitle = "Unknown painting mode";
-    
-    if(paintingMode == 0)
-        actionTitle = "Painting a texture";
-    if(paintingMode == 1)
-        actionTitle = "Softening a texture";
-    if(paintingMode == 2)
-        actionTitle = "Smearing a texture";
-    if(paintingMode == 3)
-        actionTitle = "Normal painting a texture";
-    if(paintingMode == 4)
-        actionTitle = "Filter painting a texture";
         
     int txtrI = this->getSelectedTextureIndexInLibrary();
-    if(txtrI != -1){
-        // TODO : Same for the texture editor dialog
-        registerTextureAction(actionTitle, Texture(), selectedTexture);
+    
+    if(this->materialPainting){
+        registerPaintingAction(
+                                    "Multi-channel painting", 
+                                    Texture(), 
+                                    getModel()->meshes[this->selectedMeshIndex].albedo, this->enableAlbedoChannel, 
+                                    getModel()->meshes[this->selectedMeshIndex].roughness, this->enableRoughnessChannel,
+                                    getModel()->meshes[this->selectedMeshIndex].metallic, this->enableMetallicChannel,
+                                    getModel()->meshes[this->selectedMeshIndex].normalMap, this->enableNormalMapChannel,
+                                    getModel()->meshes[this->selectedMeshIndex].heightMap, this->enableHeightMapChannel,
+                                    getModel()->meshes[this->selectedMeshIndex].ambientOcclusion, this->enableAOChannel
+                                );
+    }
+    else if(txtrI != -1){
+        
+        std::string actionTitle = "Unknown painting mode";
+        
+        if(paintingMode == 0)
+            actionTitle = "Painting a texture";
+        if(paintingMode == 1)
+            actionTitle = "Softening a texture";
+        if(paintingMode == 2)
+            actionTitle = "Smearing a texture";
+        if(paintingMode == 3)
+            actionTitle = "Normal painting a texture";
+        if(paintingMode == 4)
+            actionTitle = "Filter painting a texture";
+
+        registerPaintingAction(
+                                    actionTitle, 
+                                    Texture(), 
+                                    this->selectedTexture, true, 
+                                    Texture(), false,
+                                    Texture(), false,
+                                    Texture(), false,
+                                    Texture(), false,
+                                    Texture(), false
+                                );
     }
 
     if(paintingMode == 4){
