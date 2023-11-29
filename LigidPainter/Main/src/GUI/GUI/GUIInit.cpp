@@ -621,9 +621,8 @@ void UI::init
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color3"  , Texture(), 1.f, true)),
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Dropper"  , Texture(), 1.f, false)),
 
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Material Painting"  , 1.f)),//6
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Albedo Channel"  , 1.f)),//6
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Roughness Channel"  , 1.f)),//6
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Albedo Channel"  , 2.f)),//6
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Roughness Channel"  , 2.f)),//6
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Roughness"  , Texture(), 1.f, 0.f, 1.f, 0.f)), //7
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Metallic Channel"  , 1.f)),//6
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Metallic"  , Texture(), 1.f, 0.f, 1.f, 1.f)), //7
