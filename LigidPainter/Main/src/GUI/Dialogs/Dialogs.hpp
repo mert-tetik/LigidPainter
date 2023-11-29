@@ -817,9 +817,14 @@ class LogDialog
  public:
    Panel messagesPanel;
    Panel historyPanel;
+   
    Button logBtn;
    Button logBtnR;
    Button logBtnL;
+
+   bool libraryHistoryMode = true;
+   Button libraryHistoryBtn;
+   Button otherHistoryBtn;
 
    Button yesBtn;
    Button noBtn;

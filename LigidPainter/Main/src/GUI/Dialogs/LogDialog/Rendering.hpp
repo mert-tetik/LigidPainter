@@ -59,7 +59,9 @@ static void rendering(
                         bool sleepingCat,
                         Texture msgFace,
                         int dizzyCounter,
-                        int cryCounter
+                        int cryCounter,
+                        Button& libraryHistoryBtn,
+                        Button& otherHistoryBtn
                     )
 {
 
@@ -141,6 +143,21 @@ static void rendering(
 
         yesBtn.render(timer, true);
         noBtn.render(timer, true);
+    }
+
+    libraryHistoryBtn.pos = historyPanel.pos;
+    libraryHistoryBtn.pos.y += historyPanel.scale.y + libraryHistoryBtn.scale.y;
+    libraryHistoryBtn.scale.x = historyPanel.scale.x / 2.1f;
+    
+    otherHistoryBtn.scale = libraryHistoryBtn.scale;
+    otherHistoryBtn.pos = libraryHistoryBtn.pos;
+    
+    libraryHistoryBtn.pos.x -= otherHistoryBtn.scale.x;
+    otherHistoryBtn.pos.x += libraryHistoryBtn.scale.x;
+
+    if(historyPanel.scale.x > 0.1f){
+        libraryHistoryBtn.render(timer, true);
+        otherHistoryBtn.render(timer, true);
     }
 
     messagesPanel.render(timer, true);

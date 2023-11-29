@@ -131,7 +131,13 @@ LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
     
     this->yesBtn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.5f), "Yes", Texture(), 0., false);
     this->noBtn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.5f), "No", Texture(), 0., false);
+    
+    this->libraryHistoryBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(1.5f), "Library History", Texture(), 0., true);
+    this->libraryHistoryBtn.textColor2 = ColorPalette::oppositeColor;
+    this->otherHistoryBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(1.5f), "Unknown History", Texture(), 0., true);
+    this->otherHistoryBtn.textColor2 = ColorPalette::oppositeColor;
 
+    this->libraryHistoryBtn.clickState1 = true;
 }
 
 CatMSG pickText(Timer &timer ,std::vector<CatMSG> texts){
@@ -193,8 +199,18 @@ void LogDialog::render(
                 this->messagesPanel, this->historyPanel, this->logBtn, this->logBtnR, this->logBtnL, this->messageInfoBtn, this->yesBtn, this->noBtn,
                 this->messageInfoBtnMixVal, this->messageInfoActive, this->pos, this->messagesPanelXAxisMixVal, this->messagesPanelYAxisMixVal, 
                 this->historyPanelXAxisMixVal, this->historyPanelYAxisMixVal, this->messagesActive, this->actionHistoryActive, this->dialogControl, 
-                timer, painter, sleepingCat, msgFace, dizzyCounter, this->cryCounter
+                timer, painter, sleepingCat, msgFace, dizzyCounter, this->cryCounter, this->libraryHistoryBtn, this->otherHistoryBtn
             );
+
+    if(libraryHistoryBtn.clickState1 && !libraryHistoryMode){
+        libraryHistoryMode = true;
+        otherHistoryBtn.clickState1 = false;
+    }
+    else if(otherHistoryBtn.clickState1 && libraryHistoryMode){
+        libraryHistoryMode = false;
+        libraryHistoryBtn.clickState1 = false;
+    }
+    
 
     if(this->logBtn.clicked){
         flipCount++;
@@ -485,20 +501,35 @@ void LogDialog::render(
 
     lastMessagesSize = messages.size();
 
-    //if()
-    //    this->activeHistoryMode = HISTORY_LIBRARY_MODE;
-    if(painter.selectedDisplayingModeIndex != 0)
-        this->activeHistoryMode = HISTORY_PAINTING_MODE;
-    if(painter.selectedPaintingModeIndex == 5)
-        this->activeHistoryMode = HISTORY_VECTORS_MODE;
-    if(painter.selectedDisplayingModeIndex == 0)
-        this->activeHistoryMode = HISTORY_OBJECTSELECTION_MODE;
-    if(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode)
-        this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
-    if(painter.paintingoverTextureEditorMode)
-        this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE; // TODO Delete the textures 
-    if(materialEditorDialog.dialogControl.isActive())
-        this->activeHistoryMode = HISTORY_MATERIALEDITOR_MODE; // TODO Delete the buffers 
+    if(this->libraryHistoryMode)
+        this->activeHistoryMode = HISTORY_LIBRARY_MODE;
+    else{
+        if(painter.selectedDisplayingModeIndex != 0){
+            this->activeHistoryMode = HISTORY_PAINTING_MODE;
+            otherHistoryBtn.text = "Painting History";
+        }
+        if(painter.selectedPaintingModeIndex == 5){
+            this->activeHistoryMode = HISTORY_VECTORS_MODE;
+            otherHistoryBtn.text = "Vectors History";
+        }
+        if(painter.selectedDisplayingModeIndex == 0){
+            this->activeHistoryMode = HISTORY_OBJECTSELECTION_MODE;
+            otherHistoryBtn.text = "Objectselection History";
+        }
+        if(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode){
+            this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
+            otherHistoryBtn.text = "Faceselection History";
+        }
+        if(painter.paintingoverTextureEditorMode){
+            this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE; // TODO Delete the textures 
+            otherHistoryBtn.text = "Texturefields History";
+        }
+        if(materialEditorDialog.dialogControl.isActive()){
+            this->activeHistoryMode = HISTORY_MATERIALEDITOR_MODE; // TODO Delete the buffers 
+            otherHistoryBtn.text = "Materialeditor History";
+        }
+    }
+        
 
     // Restrict history counts 
     if(actions_MaterialEditor.size() > MAX_MATERIAL_HISTORY){
