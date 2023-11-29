@@ -521,11 +521,11 @@ void LogDialog::render(
             otherHistoryBtn.text = "Faceselection History";
         }
         if(painter.paintingoverTextureEditorMode){
-            this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE; // TODO Delete the textures 
+            this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE;
             otherHistoryBtn.text = "Texturefields History";
         }
         if(materialEditorDialog.dialogControl.isActive()){
-            this->activeHistoryMode = HISTORY_MATERIALEDITOR_MODE; // TODO Delete the buffers 
+            this->activeHistoryMode = HISTORY_MATERIALEDITOR_MODE; 
             otherHistoryBtn.text = "Materialeditor History";
         }
     }
@@ -538,15 +538,36 @@ void LogDialog::render(
     }
 
     // Delete the unrelated history data
-    if(this->activeHistoryMode != HISTORY_MATERIALEDITOR_MODE){
+    if(!materialEditorDialog.dialogControl.isActive()){
         for (size_t i = 0; i < actions_MaterialEditor.size(); i++)
         {
             actions_MaterialEditor[i].material.deleteBuffers();
         }
         actions_MaterialEditor.clear();
     }
+
+    if(!painter.paintingoverTextureEditorMode){
+        for (size_t i = 0; i < actions_TextureFields.size(); i++)
+        {
+            for (size_t fieldI = 0; fieldI < actions_TextureFields[i].fields.size(); fieldI++)
+            {
+                bool match = false;
+
+                for (size_t cI = 0; cI < paintingOverTextureFields.size(); cI++)
+                {
+                    if(paintingOverTextureFields[cI].texture.ID == actions_TextureFields[i].fields[fieldI].texture.ID)
+                        match = true;
+                }
+                
+                if(!match)
+                    glDeleteTextures(1, &actions_TextureFields[i].fields[fieldI].texture.ID);
+            }
+        }
+
+        actions_TextureFields.clear();
+    }
     
-    if(this->activeHistoryMode != HISTORY_FACESELECTION_MODE){
+    if(!(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode)){
         actions_FaceSelection.clear();
     }
 
