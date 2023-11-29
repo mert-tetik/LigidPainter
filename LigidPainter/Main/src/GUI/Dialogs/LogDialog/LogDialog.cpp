@@ -160,6 +160,9 @@ static Texture msgFace;
 static int flipCount = 0;
 static int dizzyCounter = 0;
 
+static int prevpPainterDisplayIndex = 0;
+static unsigned int prevpPainterSelectedTxtr = 0;
+
 void LogDialog::render(
                             Timer timer, 
                             Painter& painter, 
@@ -501,34 +504,32 @@ void LogDialog::render(
 
     lastMessagesSize = messages.size();
 
+    if(painter.selectedDisplayingModeIndex != 0){
+        this->activeHistoryMode = HISTORY_PAINTING_MODE;
+        otherHistoryBtn.text = "Painting History";
+    }
+    if(painter.selectedPaintingModeIndex == 5){
+        this->activeHistoryMode = HISTORY_VECTORS_MODE;
+        otherHistoryBtn.text = "Vectors History";
+    }
+    if(painter.selectedDisplayingModeIndex == 0){
+        this->activeHistoryMode = HISTORY_OBJECTSELECTION_MODE;
+        otherHistoryBtn.text = "Object Selection History";
+    }
+    if(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode){
+        this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
+        otherHistoryBtn.text = "Face Selection History";
+    }
+    if(painter.paintingoverTextureEditorMode){
+        this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE;
+        otherHistoryBtn.text = "Texture Fields History";
+    }
+    if(materialEditorDialog.dialogControl.isActive()){
+        this->activeHistoryMode = HISTORY_MATERIALEDITOR_MODE; 
+        otherHistoryBtn.text = "Material History";
+    }
     if(this->libraryHistoryMode)
         this->activeHistoryMode = HISTORY_LIBRARY_MODE;
-    else{
-        if(painter.selectedDisplayingModeIndex != 0){
-            this->activeHistoryMode = HISTORY_PAINTING_MODE;
-            otherHistoryBtn.text = "Painting History";
-        }
-        if(painter.selectedPaintingModeIndex == 5){
-            this->activeHistoryMode = HISTORY_VECTORS_MODE;
-            otherHistoryBtn.text = "Vectors History";
-        }
-        if(painter.selectedDisplayingModeIndex == 0){
-            this->activeHistoryMode = HISTORY_OBJECTSELECTION_MODE;
-            otherHistoryBtn.text = "Objectselection History";
-        }
-        if(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode){
-            this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
-            otherHistoryBtn.text = "Faceselection History";
-        }
-        if(painter.paintingoverTextureEditorMode){
-            this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE;
-            otherHistoryBtn.text = "Texturefields History";
-        }
-        if(materialEditorDialog.dialogControl.isActive()){
-            this->activeHistoryMode = HISTORY_MATERIALEDITOR_MODE; 
-            otherHistoryBtn.text = "Materialeditor History";
-        }
-    }
         
 
     // Restrict history counts 
@@ -545,6 +546,34 @@ void LogDialog::render(
         }
         actions_MaterialEditor.clear();
     }
+
+    if( 
+        prevpPainterDisplayIndex != painter.selectedDisplayingModeIndex || 
+        (prevpPainterSelectedTxtr != painter.selectedTexture.ID && painter.selectedDisplayingModeIndex == 2)
+        )
+    {
+        try
+        {
+            for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")) {
+                if (entry.is_regular_file()) {
+                    std::string fileName = entry.path().filename().string();
+                    // Check if the file starts with "_history_"
+                    if (fileName.find("_history_") == 0) {
+                        if(!std::filesystem::remove(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + fileName))
+                            LGDLOG::start << "ERROR : Can't delete the unbinded history tmp file! : " << UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + fileName << LGDLOG::end;  
+                    }
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& ex) {
+            LGDLOG::start << "ERROR : While deleting the history tmp files!" << ex.what() << LGDLOG::end;
+        }
+
+        actions_Painting.clear();
+    }
+
+    prevpPainterDisplayIndex = painter.selectedDisplayingModeIndex;
+    prevpPainterSelectedTxtr = painter.selectedTexture.ID;
 
     if(!painter.paintingoverTextureEditorMode){
         for (size_t i = 0; i < actions_TextureFields.size(); i++)
