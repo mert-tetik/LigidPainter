@@ -219,6 +219,14 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
         else if(actions_Library[actions_Library.size()-1].ID == MATERIAL_DELETION_ACTION){
             Library::getMaterialVectorPointer()->insert(Library::getMaterialVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex, actions_Library[actions_Library.size()-1].material);
         }
+        else if(actions_Library[actions_Library.size()-1].ID == BRUSH_ADDITION_ACTION){
+            glDeleteTextures(1, &actions_Library[actions_Library.size()-1].brush.displayingTexture.ID);
+            glDeleteTextures(1, &actions_Library[actions_Library.size()-1].brush.texture.ID);
+            Library::getBrushVectorPointer()->erase(Library::getBrushVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex);
+        }
+        else if(actions_Library[actions_Library.size()-1].ID == BRUSH_DELETION_ACTION){
+            Library::getBrushVectorPointer()->insert(Library::getBrushVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex, actions_Library[actions_Library.size()-1].brush);
+        }
 
         Library::nameControl();
         Library::setChanged(true);

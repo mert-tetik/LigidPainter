@@ -773,6 +773,8 @@ namespace LGDLOG {
 #define LIBRARY_ELEMENT_RENAMING 9
 #define MATERIAL_DELETION_ACTION 10
 #define MATERIAL_ADDITION_ACTION 11
+#define BRUSH_DELETION_ACTION 12
+#define BRUSH_ADDITION_ACTION 13
 
 #define HISTORY_LIBRARY_MODE 0
 #define HISTORY_PAINTING_MODE 1
@@ -787,6 +789,8 @@ void registerTextureDeletionAction(const std::string title, const Texture icon, 
 void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index);
 void registerMaterialDeletionAction(const std::string title, const Texture icon, Material material, const int index);
 void registerMaterialAdditionAction(const std::string title, const Texture icon, Material material, const int index);
+void registerBrushDeletionAction(const std::string title, const Texture icon, Brush brush, const int index);
+void registerBrushAdditionAction(const std::string title, const Texture icon, Brush brush, const int index);
 void registerImageEditorAction(const std::string title, const Texture icon, Texture texture);
 void registerLibraryElementRenamingAction(const std::string title, const Texture icon, const int index, const std::string element, const std::string name);
 

@@ -58,6 +58,7 @@ struct LibraryAction{
     Texture alteredTexture;
     int textureIndex;
     Material material;
+    Brush brush;
     
     std::string element;
     std::string name;
@@ -99,6 +100,14 @@ struct LibraryAction{
         this->ID = ID;
         this->icon = icon;
         this->material = material;
+        this->textureIndex = textureIndex;
+    }
+
+    LibraryAction(std::string title, unsigned int ID, Texture icon, Brush brush, int textureIndex){
+        this->title = title;
+        this->ID = ID;
+        this->icon = icon;
+        this->brush = brush;
         this->textureIndex = textureIndex;
     }
 };
@@ -264,6 +273,14 @@ void registerMaterialDeletionAction(const std::string title, const Texture icon,
 
 void registerMaterialAdditionAction(const std::string title, const Texture icon, Material material, const int index){
     actions_Library.push_back(LibraryAction(title, MATERIAL_ADDITION_ACTION, icon, material, index));
+}
+
+void registerBrushDeletionAction(const std::string title, const Texture icon, Brush brush, const int index){
+    actions_Library.push_back(LibraryAction(title, BRUSH_DELETION_ACTION, icon, brush, index));
+}
+
+void registerBrushAdditionAction(const std::string title, const Texture icon, Brush brush, const int index){
+    actions_Library.push_back(LibraryAction(title, BRUSH_ADDITION_ACTION, icon, brush, index));
 }
 
 void registerImageEditorAction(const std::string title, const Texture icon, Texture texture){

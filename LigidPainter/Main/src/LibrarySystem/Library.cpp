@@ -180,6 +180,8 @@ void Library::addMaterial(Material material){
 
 void Library::addBrush(Brush brush){
     __changed = true;
+
+    registerBrushAdditionAction("Brush added", Texture(), brush, __brushes.size());
     
     __brushes.push_back(brush);
     
@@ -217,9 +219,9 @@ void Library::eraseTexture   (int index){
         return;
     }
 
-    registerTextureDeletionAction("Texture deleted", Texture(), __textures[index], index);
-
     __changed = true;
+
+    registerTextureDeletionAction("Texture deleted", Texture(), __textures[index], index);
     
     /*
     mainThreadUsingCopyContext = true;
@@ -258,11 +260,15 @@ void Library::eraseBrush     (int index){
         LGDLOG::start<< "ERROR! : Couldn't erase the brush : Requested brush index is out of boundaries." << LGDLOG::end;
         return;
     }
+
     __changed = true;
 
+    registerBrushDeletionAction("Brush deleted", Texture(), __brushes[index], index);
+
+    /*
     glDeleteTextures(1, &__brushes[index].displayingTexture.ID);
     glDeleteTextures(1, &__brushes[index].texture.ID);
-    
+    */
     __brushes.erase(__brushes.begin() + index);
 }
 
