@@ -182,8 +182,28 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
         actions_Painting.pop_back();
     }
 
-    else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_ADDITION_ACTION){
-        Library::getTextureVectorPointer()->erase(Library::getTextureVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex);
+    if(this->activeHistoryMode == HISTORY_LIBRARY_MODE && actions_Library.size()){
+        if(actions_Library[actions_Library.size()-1].ID == TEXTURE_ADDITION_ACTION){
+            glDeleteTextures(1, &actions_Library[actions_Library.size()-1].texture.ID);
+            Library::getTextureVectorPointer()->erase(Library::getTextureVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex);
+        }
+        else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_DELETION_ACTION){
+            Library::getTextureVectorPointer()->insert(Library::getTextureVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex, actions_Library[actions_Library.size()-1].texture.ID);
+        }
+        else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_IMAGE_EDITOR_ACTION){
+            glm::ivec2 res;
+            res = actions_Library[actions_Library.size()-1].alteredTexture.getResolution();
+            char* pxs = new char[res.x * res.y * 4];
+            actions_Library[actions_Library.size()-1].alteredTexture.getData(pxs);
+            
+            glDeleteTextures(1, &actions_Library[actions_Library.size()-1].alteredTexture.ID);
+
+            actions_Library[actions_Library.size()-1].texture.update(pxs, res.x, res.y);
+
+            delete[] pxs;
+        }
+
         Library::setChanged(true);
+        actions_Library.pop_back();
     }
 }

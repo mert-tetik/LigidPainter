@@ -55,6 +55,7 @@ struct LibraryAction{
     unsigned int ID;
     Texture icon;
     Texture texture;
+    Texture alteredTexture;
     int textureIndex;
 
     LibraryAction(std::string title, unsigned int ID, Texture icon, Texture texture){
@@ -62,6 +63,14 @@ struct LibraryAction{
         this->ID = ID;
         this->icon = icon;
         this->texture = texture;
+    }
+
+    LibraryAction(std::string title, unsigned int ID, Texture icon, Texture texture, Texture alteredTexture){
+        this->title = title;
+        this->ID = ID;
+        this->icon = icon;
+        this->texture = texture;
+        this->alteredTexture = alteredTexture;
     }
     
     LibraryAction(std::string title, unsigned int ID, Texture icon, Texture texture, int textureIndex){
@@ -228,6 +237,10 @@ void registerTextureDeletionAction(const std::string title, const Texture icon, 
 
 void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index){
     actions_Library.push_back(LibraryAction(title, TEXTURE_ADDITION_ACTION, icon, texture, index));
+}
+
+void registerImageEditorAction(const std::string title, const Texture icon, Texture texture){
+    actions_Library.push_back(LibraryAction(title, TEXTURE_IMAGE_EDITOR_ACTION, icon, texture, Texture(texture.duplicateTexture())));
 }
 
 void registerVectorAction(const std::string title, std::vector<VectorStroke> vectorStrokes){
