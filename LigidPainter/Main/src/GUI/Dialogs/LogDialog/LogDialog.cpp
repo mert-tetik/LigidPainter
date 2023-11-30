@@ -50,6 +50,7 @@ static std::vector<TextureFieldsAction> actions_TextureFields;
 static std::vector<MaterialEditorAction> actions_MaterialEditor;
 
 #define MAX_MATERIAL_HISTORY 8
+#define MAX_PAINTING_HISTORY 25
 
 namespace LGDLOG{
     LogMsg start;
@@ -549,6 +550,67 @@ void LogDialog::render(
     if(actions_MaterialEditor.size() > MAX_MATERIAL_HISTORY){
         actions_MaterialEditor[0].material.deleteBuffers();
         actions_MaterialEditor.erase(actions_MaterialEditor.begin());
+    }
+
+    if(actions_Painting.size() > MAX_PAINTING_HISTORY){
+        try
+        {
+            for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")) {
+                if (entry.is_regular_file()) {
+                    std::string fileName = entry.path().filename().string();
+                    // Check if the file starts with "_history_"
+                    if (fileName.find("_history_") == 0) {
+                        std::istringstream iss(fileName);
+                        std::string part;
+                        std::getline(iss, part, '_'); // Skip the first part "_history_"
+                        std::getline(iss, part, '_'); // Read the first integer value
+                        std::getline(iss, part, '_'); // Read the first integer value
+                        int indexVal = std::stoi(part);
+
+                        if(indexVal == 0){
+                            if(!std::filesystem::remove(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + fileName))
+                                LGDLOG::start << "ERROR : Can't delete the unbinded history tmp file! : " << UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + fileName << LGDLOG::end;  
+                        }
+                    }
+                }
+            }
+
+            for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")) {
+                if (entry.is_regular_file()) {
+                    std::string fileName = entry.path().filename().string();
+
+                    // Check if the file starts with "_history_"
+                    if (fileName.find("_history_") == 0) {
+                        // Use string stream to split the filename into parts
+                        std::istringstream iss(fileName);
+                        std::string part;
+                        std::getline(iss, part, '_'); // Skip the first part "_history_"
+                        std::getline(iss, part, '_'); // Read the first integer value
+                        std::getline(iss, part, '_'); // Read the first integer value
+                        int indexVal = std::stoi(part);
+
+                        std::getline(iss, part, '_'); // Read the second integer value
+                        int IDVal = std::stoi(part);
+                        
+                        /*
+                            TODO
+                            Library::getTexture(i)->copyDataToTheCopyContext();
+                            projectUpdatingThreadElements.updateTextures = true;
+                        */
+
+                        std::filesystem::rename(
+                                                    UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + "_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal) + ".tmp",
+                                                    UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + "_history_" + std::to_string(indexVal - 1) + "_" + std::to_string(IDVal) + ".tmp"
+                                                );
+                    }
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& ex) {
+            LGDLOG::start << "ERROR : While deleting the outdated history tmp files!" << ex.what() << LGDLOG::end;
+        }
+
+        actions_Painting.erase(actions_Painting.begin());
     }
 
     // Delete the unrelated history data
