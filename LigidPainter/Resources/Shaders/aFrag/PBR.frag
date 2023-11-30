@@ -88,6 +88,8 @@ uniform float ambientOcclusionVal;
 
 uniform int primitiveCount;
 
+uniform sampler2D paintingOverTexture;
+uniform int paintingOverWrap;
 
 void main() {
 
@@ -194,6 +196,9 @@ void main() {
                         pbrResult, 
                         opacity
                     );
+    
+    if(paintingOverWrap == 1)
+        fragColor.rgb = mix(fragColor.rgb, texture(paintingOverTexture, screenPos.xy).rgb, texture(paintingOverTexture, screenPos.xy).a / 1.2);
 
     if(!selectedPrim && usingMeshSelection == 1 && meshSelectionEditing == 0){
         fragColor.rgb = mix(fragColor.rgb, vec3(1.), 0.6);

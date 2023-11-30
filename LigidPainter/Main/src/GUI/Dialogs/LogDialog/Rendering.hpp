@@ -160,8 +160,10 @@ static void rendering(
         otherHistoryBtn.render(timer, true);
     }
 
-    messagesPanel.render(timer, true);
-    historyPanel.render(timer, true);
+    if(messagesActive)
+        messagesPanel.render(timer, true);
+    if(actionHistoryActive)
+        historyPanel.render(timer, true);
     ShaderSystem::buttonShader().setFloat("rotation", std::sin(LigidGL::getTime() * 2.f) * 10.f * (float)!sleepingCat + (std::sin(logBtn.clickedMixVal) * 360.f));
     logBtn.render(timer, true);
     ShaderSystem::buttonShader().setFloat("rotation", 0.f);

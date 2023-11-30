@@ -759,7 +759,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
                 }
             }
 
-            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyDialogActive && !anyHover && !painter.faceSelection.editMode, false, this->paintingOverTextureFields, i);
+            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyDialogActive && !anyHover && !painter.faceSelection.editMode, false, this->paintingOverTextureFields, i, !painter.paintingOverWraping);
         }    
     }
 
@@ -796,7 +796,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         // Rendering all the painting over texture fields
         for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
         {
-            this->paintingOverTextureFields[i].render(timer, false, true, this->paintingOverTextureFields, i);
+            this->paintingOverTextureFields[i].render(timer, false, true, this->paintingOverTextureFields, i, true);
         }    
 
         // Finish

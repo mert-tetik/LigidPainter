@@ -86,6 +86,7 @@ void Material::updateMaterialDisplayingTexture(
     ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
     ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
     ShaderSystem::tdModelShader().setInt("hideUnselected", false);
+    ShaderSystem::tdModelShader().setInt("paintingOverWrap", false);
     
     //Bind the channels of the material
     if(!this->materialModifiers.size()){

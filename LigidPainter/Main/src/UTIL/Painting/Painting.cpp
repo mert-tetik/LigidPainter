@@ -312,7 +312,6 @@ void Painter::projectThePaintingTexture(
     ShaderSystem::projectingPaintedTextureShader().setInt("selectedPaintingModeIndex", selectedPaintingModeIndex);
     
     ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverTexture", 9);
-    ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverWraping", this->paintingOverWraping);
     ShaderSystem::projectingPaintedTextureShader().setInt("usePaintingOver", this->usePaintingOver);
     ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
     ShaderSystem::projectingPaintedTextureShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());

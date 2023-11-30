@@ -82,7 +82,7 @@ public:
     TextureField(){}
     TextureField(Texture texture);
 
-    void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i);
+    void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture);
     
     bool isHover();
 

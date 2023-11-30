@@ -513,6 +513,11 @@ void Renderer::renderMainModel(){
 
         ShaderSystem::tdModelShader().setInt("paintingMode", painter.refreshable);
         
+        ShaderSystem::tdModelShader().setInt("paintingOverWrap", painter.paintingOverWraping);
+        ShaderSystem::tdModelShader().setInt("paintingOverTexture", 13);
+        glActiveTexture(GL_TEXTURE13);
+        glBindTexture(GL_TEXTURE_2D, painter.paintingOverTexture);
+        
         if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);
             getModel()->meshes[i].Draw(painter.faceSelection.editMode && i == painter.selectedMeshIndex && painter.selectedDisplayingModeIndex != 0);

@@ -233,7 +233,7 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
 
 // TODO Refresh texturefields after loading a new project
 
-void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i){
+void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture){
     
     glm::vec3 orgPos = this->pos;
     glm::vec2 orgScale = this->scale;
@@ -321,16 +321,20 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
     textureDisplayingButton.scale = orgScale;
     textureDisplayingButtonIOutline.scale = orgScale + glm::vec2(0.2f,0.2f * (Settings::videoScale()->x / Settings::videoScale()->y));
     
-    // Rendering the GUI elements
-    if(!generatingTextureMode)
-        ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 0.4f);
+        // Rendering the GUI elements
+        if(!generatingTextureMode){
+            if(renderTheTexture)
+                ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 0.4f);
+            else
+                ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 0.f);
+        }
 
-    ShaderSystem::buttonShader().setFloat("rotation", this->rotation);
-    
-    this->textureDisplayingButton.render(timer, doMouseTracking); 
-    
-    ShaderSystem::buttonShader().setFloat("rotation", 0.f);
-    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
+        ShaderSystem::buttonShader().setFloat("rotation", this->rotation);
+        
+        this->textureDisplayingButton.render(timer, doMouseTracking); 
+        
+        ShaderSystem::buttonShader().setFloat("rotation", 0.f);
+        ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
     if(*Mouse::LClick()){
         if(this->textureDisplayingButton.hover && this->active && !this->rotateBtn.hover){
@@ -341,11 +345,13 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
     }
 
     if(this->active && !generatingTextureMode){
-        glDepthFunc(GL_LESS);
-        ShaderSystem::buttonShader().setFloat("rotation", this->rotation);
-        this->textureDisplayingButtonIOutline.render(timer, false);
-        ShaderSystem::buttonShader().setFloat("rotation", 0.f);
-        glDepthFunc(GL_LEQUAL);
+        if(renderTheTexture){
+            glDepthFunc(GL_LESS);
+            ShaderSystem::buttonShader().setFloat("rotation", this->rotation);
+            this->textureDisplayingButtonIOutline.render(timer, false);
+            ShaderSystem::buttonShader().setFloat("rotation", 0.f);
+            glDepthFunc(GL_LEQUAL);
+        }
 
         glDepthFunc(GL_ALWAYS);
         this->topLeft_ResizeButton.render(timer, doMouseTracking);

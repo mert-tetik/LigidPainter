@@ -34,7 +34,6 @@ uniform sampler2D depthTexture;
 
 // Painting over
 uniform sampler2D paintingOverTexture;
-uniform int paintingOverWraping;
 uniform int usePaintingOver;
 uniform int paintingOverGrayScale;
 
@@ -95,8 +94,6 @@ vec4 getBrushValue(
     if(selectedPaintingModeIndex == 0){
         // Painting over
         vec2 paintOverUV = modelCoords.xy;
-        if(paintingOverWraping == 1)
-            paintOverUV = TexCoords;
         vec4 paintingOverTxtrVal = texture(paintingOverTexture, paintOverUV);
 
         // Calculate color val
