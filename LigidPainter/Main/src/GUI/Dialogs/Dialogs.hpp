@@ -753,6 +753,10 @@ namespace LGDLOG {
          return buffer.str();
       }
 
+      void clear(){
+         buffer = std::ostringstream(""); 
+      }
+
    private:
       std::ostringstream buffer;
    };

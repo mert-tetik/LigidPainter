@@ -68,6 +68,8 @@ public:
         // Start the export thread
         std::thread projectUpdatingThreadX(projectUpdatingThread, std::ref(renderer.project));
 
+        LGDLOG::start.clear();
+
         while((!renderer.userInterface.logDialog.windowShouldClose && !Settings::properties()->cat_hide) || (!getContext()->window.shouldClose() && Settings::properties()->cat_hide))
         {   
             renderer.render();

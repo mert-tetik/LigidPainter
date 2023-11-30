@@ -102,9 +102,6 @@ LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
 
     this->historyPanel = this->messagesPanel;
     
-    this->messagesPanel.color = glm::vec4(1.f);
-    this->historyPanel.color = glm::vec4(glm::vec3(ColorPalette::themeColor), 0.8f);
-
     this->logBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "", Settings::appTextures().mascotCat_default, 0., false);
     this->logBtn.color = glm::vec4(0);
     this->logBtn.color2 = glm::vec4(0);
@@ -214,7 +211,6 @@ void LogDialog::render(
         libraryHistoryBtn.clickState1 = false;
     }
     
-
     if(this->logBtn.clicked){
         flipCount++;
     }
@@ -265,7 +261,7 @@ void LogDialog::render(
                                             CatMSG("Do you really want to exit the LigidPainter?", Settings::appTextures().mascotCat_rock),
                                             CatMSG("Are you DETERMINED to close the LigidPainter???", Settings::appTextures().mascotCat_rock),
                                             CatMSG("Are you done with the LigidPainter?  ", Settings::appTextures().mascotCat_rock),
-                                            CatMSG("Do you really want to leave me???  ", Settings::appTextures().mascotCat_crying),
+                                            CatMSG("Do you REALLY want to leave me???  ", Settings::appTextures().mascotCat_crying),
                                             CatMSG("Closing the LigidPainter already??  ", Settings::appTextures().mascotCat_thinking),
                                             CatMSG("Are you absolutely, positively sure you want to close the app", Settings::appTextures().mascotCat_rock),
                                             CatMSG("One last check: ready to exit and let the LigidPainter nap?", Settings::appTextures().mascotCat_rock),
@@ -475,7 +471,7 @@ void LogDialog::render(
             messageInfoBtn.text = catMSG;
         }
     }
-
+    //94316
     if(lastMessagesSize != messages.size() && !getContext()->window.shouldClose()){
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
@@ -483,8 +479,12 @@ void LogDialog::render(
             messageInfoBtn.text = messages[messages.size()-1];
             msgFace = Settings::appTextures().mascotCat_rock;
         }
+        
     }
-
+    
+    if(messagesPanelYAxisMixVal != 1.f)
+        messagesPanel.slideVal = 1000.f;
+    
     // --------- INFO CLOSE -----------
     if(!getContext()->window.shouldClose()){
         if(timer.seconds - messageInfoBtnStartTime >= 3){

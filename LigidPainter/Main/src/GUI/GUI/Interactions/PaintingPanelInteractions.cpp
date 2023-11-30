@@ -66,9 +66,7 @@ void UI::paintingPanelInteraction(
                 painter.selectedColorIndex = i; //Select the clicked color button
                 break; 
             }
-        
         }
-
     }
 
     //Keep the selected color button pressed
