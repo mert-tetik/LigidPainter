@@ -231,6 +231,9 @@ extern std::vector<FaceSelectionAction> actions_FaceSelection;
 extern std::vector<TextureFieldsAction> actions_TextureFields;
 extern std::vector<MaterialEditorAction> actions_MaterialEditor;
 
+extern bool newLibraryAction;
+extern bool newOtherAction;
+
 void registerPaintingAction(
                                 const std::string title, const Texture icon, 
                                 Texture albedo, bool albedoPainted, 
@@ -255,68 +258,85 @@ void registerPaintingAction(
         ao.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(ao.ID));
     
     actions_Painting.push_back(PaintingAction(title, icon, albedo, albedoPainted, roughness, roughnessPainted, metallic, metallicPainted, normal, normalPainted, height, heightPainted, ao, aoPainted));
+
+    newOtherAction = true;
 }
 
 //void registerMultiMatChannelPaintingAction(const std::string)
 
 void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index){
     actions_Library.push_back(LibraryAction(title, TEXTURE_DELETION_ACTION, icon, texture, index));
+    newLibraryAction = true;
 }
 
 void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index){
     actions_Library.push_back(LibraryAction(title, TEXTURE_ADDITION_ACTION, icon, texture, index));
+    newLibraryAction = true;
 }
 
 void registerMaterialDeletionAction(const std::string title, const Texture icon, Material material, const int index){
     actions_Library.push_back(LibraryAction(title, MATERIAL_DELETION_ACTION, icon, material, index));
+    newLibraryAction = true;
 }
 
 void registerMaterialAdditionAction(const std::string title, const Texture icon, Material material, const int index){
     actions_Library.push_back(LibraryAction(title, MATERIAL_ADDITION_ACTION, icon, material, index));
+    newLibraryAction = true;
 }
 
 void registerBrushDeletionAction(const std::string title, const Texture icon, Brush brush, const int index){
     actions_Library.push_back(LibraryAction(title, BRUSH_DELETION_ACTION, icon, brush, index));
+    newLibraryAction = true;
 }
 
 void registerBrushAdditionAction(const std::string title, const Texture icon, Brush brush, const int index){
     actions_Library.push_back(LibraryAction(title, BRUSH_ADDITION_ACTION, icon, brush, index));
+    newLibraryAction = true;
 }
 
 void registerBrushChangedAction(const std::string title, const Texture icon, Brush brush, const int index){
     actions_Library.push_back(LibraryAction(title, BRUSH_CHANGED_ACTION, icon, brush, index));
+    newLibraryAction = true;
 }
 
 void registerImageEditorAction(const std::string title, const Texture icon, Texture texture){
     actions_Library.push_back(LibraryAction(title, TEXTURE_IMAGE_EDITOR_ACTION, icon, texture, Texture(texture.duplicateTexture())));
+    newLibraryAction = true;
 }
 
 void registerLibraryElementRenamingAction(const std::string title, const Texture icon, const int index, const std::string element, const std::string name){
     actions_Library.push_back(LibraryAction(title, LIBRARY_ELEMENT_RENAMING, icon, index, element, name));
+    newLibraryAction = true;
 }
 
 void registerVectorAction(const std::string title, std::vector<VectorStroke> vectorStrokes){
     actions_Vectors.push_back(VectorsAction(title, VECTOR_ACTION, vectorStrokes));
+    newOtherAction = true;
 }
 
 void registerObjectSelectionAction(const std::string title, int meshI, std::vector<int> selectedObjectIndices){
     actions_ObjectSelection.push_back(ObjectSelectionAction(title, meshI, selectedObjectIndices));
+    newOtherAction = true;
 }
 
 void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, std::vector<byte> prevPrimArray, int meshI){
     actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_PAINTER_ACTION, primitivesArray, prevPrimArray, meshI));
+    newOtherAction = true;
 }
 
 void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray, std::vector<std::vector<byte>> prevPrimArray){
     actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_OBJECTTEXTURING_ACTION, primitivesArray, prevPrimArray));
+    newOtherAction = true;
 }
 
 void registerTextureFieldAction(const std::string title, std::vector<TextureField> fields){
     actions_TextureFields.push_back(TextureFieldsAction(title, fields));
+    newOtherAction = true;
 }
 
 void registerMaterialAction(const std::string title, Material material){
     actions_MaterialEditor.push_back(MaterialEditorAction(title, material.duplicateMaterial()));
+    newOtherAction = true;
 }
 
 

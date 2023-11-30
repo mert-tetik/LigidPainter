@@ -146,6 +146,9 @@ CatMSG pickText(Timer &timer ,std::vector<CatMSG> texts){
     return CatMSG("", Texture());
 }
 
+bool newLibraryAction = false;
+bool newOtherAction = false;
+
 static size_t lastMessagesSize = 0;
 
 static std::string quitMSG = "";
@@ -471,7 +474,7 @@ void LogDialog::render(
             messageInfoBtn.text = catMSG;
         }
     }
-    //94316
+    
     if(lastMessagesSize != messages.size() && !getContext()->window.shouldClose()){
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
@@ -479,7 +482,6 @@ void LogDialog::render(
             messageInfoBtn.text = messages[messages.size()-1];
             msgFace = Settings::appTextures().mascotCat_rock;
         }
-        
     }
     
     if(messagesPanelYAxisMixVal != 1.f)
@@ -531,6 +533,17 @@ void LogDialog::render(
     if(this->libraryHistoryMode)
         this->activeHistoryMode = HISTORY_LIBRARY_MODE;
         
+
+    if(newLibraryAction){
+        this->libraryHistoryMode = true;
+        this->libraryHistoryBtn.clickState1 = true;
+        this->otherHistoryBtn.clickState1 = false;
+    }
+    if(newOtherAction){
+        this->libraryHistoryMode = false;
+        this->libraryHistoryBtn.clickState1 = false;
+        this->otherHistoryBtn.clickState1 = true;
+    }
 
     // Restrict history counts 
     if(actions_MaterialEditor.size() > MAX_MATERIAL_HISTORY){
@@ -694,6 +707,8 @@ void LogDialog::render(
         undo(painter, objectTexturingDialog, paintingOverTextureFields, materialEditorDialog);
     }
 
+    newLibraryAction = false;
+    newOtherAction = false;
 }
 
 bool LogDialog::isHovered(){
