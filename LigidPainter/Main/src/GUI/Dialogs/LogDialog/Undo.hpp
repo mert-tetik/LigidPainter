@@ -188,7 +188,7 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
             Library::getTextureVectorPointer()->erase(Library::getTextureVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex);
         }
         else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_DELETION_ACTION){
-            Library::getTextureVectorPointer()->insert(Library::getTextureVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex, actions_Library[actions_Library.size()-1].texture.ID);
+            Library::getTextureVectorPointer()->insert(Library::getTextureVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex, actions_Library[actions_Library.size()-1].texture);
         }
         else if(actions_Library[actions_Library.size()-1].ID == TEXTURE_IMAGE_EDITOR_ACTION){
             glm::ivec2 res;
@@ -202,7 +202,25 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
 
             delete[] pxs;
         }
+        else if(actions_Library[actions_Library.size()-1].ID == LIBRARY_ELEMENT_RENAMING){
+            if(actions_Library[actions_Library.size()-1].element == "TEXTURE" && actions_Library[actions_Library.size()-1].textureIndex < Library::getTextureArraySize())
+                Library::getTexture(actions_Library[actions_Library.size()-1].textureIndex)->title = actions_Library[actions_Library.size()-1].name;
+            
+            if(actions_Library[actions_Library.size()-1].element == "MATERIAL" && actions_Library[actions_Library.size()-1].textureIndex < Library::getMaterialArraySize())
+                Library::getMaterial(actions_Library[actions_Library.size()-1].textureIndex)->title = actions_Library[actions_Library.size()-1].name;
+            
+            if(actions_Library[actions_Library.size()-1].element == "BRUSH" && actions_Library[actions_Library.size()-1].textureIndex < Library::getBrushArraySize())
+                Library::getBrush(actions_Library[actions_Library.size()-1].textureIndex)->title = actions_Library[actions_Library.size()-1].name;
+        }
+        else if(actions_Library[actions_Library.size()-1].ID == MATERIAL_ADDITION_ACTION){
+            actions_Library[actions_Library.size()-1].material.deleteBuffers();
+            Library::getMaterialVectorPointer()->erase(Library::getMaterialVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex);
+        }
+        else if(actions_Library[actions_Library.size()-1].ID == MATERIAL_DELETION_ACTION){
+            Library::getMaterialVectorPointer()->insert(Library::getMaterialVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex, actions_Library[actions_Library.size()-1].material);
+        }
 
+        Library::nameControl();
         Library::setChanged(true);
         actions_Library.pop_back();
     }

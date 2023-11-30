@@ -165,6 +165,8 @@ void Library::addTexture(Texture texture){
 
 void Library::addMaterial(Material material){
     __changed = true;
+
+    registerMaterialAdditionAction("Material added", Texture(), material, __materials.size());
     
     material.uniqueID = 0; 
 
@@ -215,7 +217,7 @@ void Library::eraseTexture   (int index){
         return;
     }
 
-    registerTextureDeletionAction("Texture Deletion", Texture(), __textures[index], index);
+    registerTextureDeletionAction("Texture deleted", Texture(), __textures[index], index);
 
     __changed = true;
     
@@ -243,7 +245,9 @@ void Library::eraseMaterial  (int index){
     
     __changed = true;
 
-    __materials[index].deleteBuffers();
+    registerMaterialDeletionAction("Material deleted", Texture(), __materials[index], index);
+
+    //__materials[index].deleteBuffers();
     
     __materials.erase(__materials.begin() + index);
 }
@@ -592,6 +596,12 @@ void Library::materialGiveUniqueId(int index){
 
 std::vector<Texture>* Library::getTextureVectorPointer(){
     return &__textures;
+}
+std::vector<Material>* Library::getMaterialVectorPointer(){
+    return &__materials;
+}
+std::vector<Brush>* Library::getBrushVectorPointer(){
+    return &__brushes;
 }
 
 void Library::loadSourceLibTextures(){

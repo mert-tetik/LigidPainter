@@ -770,6 +770,9 @@ namespace LGDLOG {
 #define FACE_SELECTION_PAINTER_ACTION 6
 #define FACE_SELECTION_OBJECTTEXTURING_ACTION 7
 #define TEXTURE_IMAGE_EDITOR_ACTION 8
+#define LIBRARY_ELEMENT_RENAMING 9
+#define MATERIAL_DELETION_ACTION 10
+#define MATERIAL_ADDITION_ACTION 11
 
 #define HISTORY_LIBRARY_MODE 0
 #define HISTORY_PAINTING_MODE 1
@@ -782,7 +785,10 @@ namespace LGDLOG {
 // -- Library --
 void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index);
 void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index);
+void registerMaterialDeletionAction(const std::string title, const Texture icon, Material material, const int index);
+void registerMaterialAdditionAction(const std::string title, const Texture icon, Material material, const int index);
 void registerImageEditorAction(const std::string title, const Texture icon, Texture texture);
+void registerLibraryElementRenamingAction(const std::string title, const Texture icon, const int index, const std::string element, const std::string name);
 
 // -- Painting --
 void registerPaintingAction(const std::string title, const Texture icon, Texture albedo, bool albedoPainted, 

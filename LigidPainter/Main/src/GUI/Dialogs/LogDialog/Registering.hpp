@@ -57,7 +57,20 @@ struct LibraryAction{
     Texture texture;
     Texture alteredTexture;
     int textureIndex;
+    Material material;
+    
+    std::string element;
+    std::string name;
 
+    LibraryAction(std::string title, unsigned int ID, Texture icon, int index, std::string element, std::string name){
+        this->title = title;
+        this->ID = ID;
+        this->icon = icon;
+        this->textureIndex = index;
+        this->element = element;
+        this->name = name;
+    }
+    
     LibraryAction(std::string title, unsigned int ID, Texture icon, Texture texture){
         this->title = title;
         this->ID = ID;
@@ -78,6 +91,14 @@ struct LibraryAction{
         this->ID = ID;
         this->icon = icon;
         this->texture = texture;
+        this->textureIndex = textureIndex;
+    }
+    
+    LibraryAction(std::string title, unsigned int ID, Texture icon, Material material, int textureIndex){
+        this->title = title;
+        this->ID = ID;
+        this->icon = icon;
+        this->material = material;
         this->textureIndex = textureIndex;
     }
 };
@@ -230,8 +251,6 @@ void registerPaintingAction(
 //void registerMultiMatChannelPaintingAction(const std::string)
 
 void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index){
-    texture.writeTMP("_history_" + std::to_string(actions_Library.size()) + "_" + std::to_string(texture.uniqueId));
-
     actions_Library.push_back(LibraryAction(title, TEXTURE_DELETION_ACTION, icon, texture, index));
 }
 
@@ -239,8 +258,20 @@ void registerTextureAdditionAction(const std::string title, const Texture icon, 
     actions_Library.push_back(LibraryAction(title, TEXTURE_ADDITION_ACTION, icon, texture, index));
 }
 
+void registerMaterialDeletionAction(const std::string title, const Texture icon, Material material, const int index){
+    actions_Library.push_back(LibraryAction(title, MATERIAL_DELETION_ACTION, icon, material, index));
+}
+
+void registerMaterialAdditionAction(const std::string title, const Texture icon, Material material, const int index){
+    actions_Library.push_back(LibraryAction(title, MATERIAL_ADDITION_ACTION, icon, material, index));
+}
+
 void registerImageEditorAction(const std::string title, const Texture icon, Texture texture){
     actions_Library.push_back(LibraryAction(title, TEXTURE_IMAGE_EDITOR_ACTION, icon, texture, Texture(texture.duplicateTexture())));
+}
+
+void registerLibraryElementRenamingAction(const std::string title, const Texture icon, const int index, const std::string element, const std::string name){
+    actions_Library.push_back(LibraryAction(title, LIBRARY_ELEMENT_RENAMING, icon, index, element, name));
 }
 
 void registerVectorAction(const std::string title, std::vector<VectorStroke> vectorStrokes){

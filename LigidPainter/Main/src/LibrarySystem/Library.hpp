@@ -125,8 +125,9 @@ namespace Library{
     void clearTexturePacks();
 
     //----------- Vector Pointers -------------
-    //TODO Remove this function
     std::vector<Texture>* getTextureVectorPointer();
+    std::vector<Material>* getMaterialVectorPointer();
+    std::vector<Brush>* getBrushVectorPointer();
 
     //----------- Selected Library Element -------------
     /*

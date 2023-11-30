@@ -967,12 +967,18 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
         //The first frame renamingTextBox is closed 
         if(!renamingTextBoxClosed){
             if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_RELEASE || *Mouse::mouseScroll()){
-                if(renamingIndices.x == 0 && renamingIndices.y < Library::getTextureArraySize())
+                if(renamingIndices.x == 0 && renamingIndices.y < Library::getTextureArraySize()){
+                    registerLibraryElementRenamingAction("Texture renamed", Texture(), renamingIndices.y, "TEXTURE", lastTitleBeforeRenaming);
                     Library::getTexture(renamingIndices.y)->title = renamingTextBox.text;
-                else if(renamingIndices.x == 1 && renamingIndices.y < Library::getMaterialArraySize())
+                }
+                else if(renamingIndices.x == 1 && renamingIndices.y < Library::getMaterialArraySize()){
+                    registerLibraryElementRenamingAction("Material renamed", Texture(), renamingIndices.y, "MATERIAL", lastTitleBeforeRenaming);
                     Library::getMaterial(renamingIndices.y)->title = renamingTextBox.text;
-                else if(renamingIndices.x == 2 && renamingIndices.y < Library::getBrushArraySize())
+                }
+                else if(renamingIndices.x == 2 && renamingIndices.y < Library::getBrushArraySize()){
+                    registerLibraryElementRenamingAction("Brush renamed", Texture(), renamingIndices.y, "BRUSH", lastTitleBeforeRenaming);
                     Library::getBrush(renamingIndices.y)->title = renamingTextBox.text;
+                }
             }
             else{
                 if(renamingIndices.x == 0 && renamingIndices.y < Library::getTextureArraySize())
