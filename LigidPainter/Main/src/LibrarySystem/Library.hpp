@@ -50,11 +50,11 @@ namespace Library{
 
     //----------- Add elements -----------
     /// @brief Pushes the element parameter back to the Textures array & generates unique ID for the texture
-    void addTexture     (Texture texture);
+    void addTexture     (Texture texture, const std::string actionTitle);
     /// @brief Pushes the element parameter back to the Materials array & generates unique ID for the material
-    void addMaterial    (Material material);
+    void addMaterial    (Material material, const std::string actionTitle);
     /// @brief Pushes the element parameter back to the Brushes array 
-    void addBrush       (Brush brush);
+    void addBrush       (Brush brush, const std::string actionTitle);
     /// @brief Pushes the element parameter back to the Models array 
     void addModel       (Model model);
     /// @brief Pushes the element parameter back to the Filters array 

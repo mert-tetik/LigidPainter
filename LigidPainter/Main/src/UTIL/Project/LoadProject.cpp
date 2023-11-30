@@ -61,7 +61,7 @@ bool Project::loadLibraryElements(std::string folderPath, AppMaterialModifiers& 
                     }
 
                     
-                    Library::addTexture(texture);
+                    Library::addTexture(texture, "");
                 }
             }
         }
@@ -81,7 +81,7 @@ bool Project::loadLibraryElements(std::string folderPath, AppMaterialModifiers& 
 
                 Material material("", 0);
                 if(FileHandler::readLGDMATERIALFile(materialPath, material, appMaterialModifiers))
-                    Library::addMaterial(material);
+                    Library::addMaterial(material, "");
             
             }
         }
@@ -141,7 +141,7 @@ bool Project::loadLibraryElements(std::string folderPath, AppMaterialModifiers& 
 
                 Brush brush;
                 if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
-                    Library::addBrush(brush);
+                    Library::addBrush(brush, "");
                 }
             }
         }

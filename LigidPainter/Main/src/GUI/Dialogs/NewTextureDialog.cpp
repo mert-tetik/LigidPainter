@@ -109,7 +109,7 @@ void NewTextureDialog::render(Timer timer){
             panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
             panel.sections[0].elements[1].textBox.text = "NewTexture";
             dialogControl.unActivate();
-            Library::addTexture(txtr);
+            Library::addTexture(txtr, "New texture via texture selection dialog");
         }
     }
     
@@ -149,7 +149,7 @@ void NewTextureDialog::render(Timer timer){
         glGenerateMipmap(GL_TEXTURE_2D);
         
         //Send the created texture to the library
-        Library::addTexture(txtr);
+        Library::addTexture(txtr, "New texture via generation");
     }
 
     //End the dialog

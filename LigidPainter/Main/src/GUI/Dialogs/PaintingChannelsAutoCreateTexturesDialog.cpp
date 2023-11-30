@@ -114,7 +114,7 @@ void PaintingChannelsAutoCreateTexturesDialog::render(Timer timer, std::vector<S
                         
                         paintingChannelsSection[meshI+1].elements[channelI].button.texture = texture;
 
-                        Library::addTexture(texture);
+                        Library::addTexture(texture, "");
                     }
                 }
             }

@@ -145,10 +145,11 @@ void Library::nameControl(){
     }
 }
 
-void Library::addTexture(Texture texture){
+void Library::addTexture(Texture texture, const std::string actionTitle){
     __changed = true;
     
-    registerTextureAdditionAction("Texture added", Texture(), texture, __textures.size());
+    if(actionTitle != "")
+        registerTextureAdditionAction(actionTitle, Texture(), texture, __textures.size());
 
     texture.uniqueId = 0; 
 
@@ -163,10 +164,11 @@ void Library::addTexture(Texture texture){
     Library::nameControl();
 }
 
-void Library::addMaterial(Material material){
+void Library::addMaterial(Material material, const std::string actionTitle){
     __changed = true;
 
-    registerMaterialAdditionAction("Material added", Texture(), material, __materials.size());
+    if(actionTitle != "")
+        registerMaterialAdditionAction(actionTitle, Texture(), material, __materials.size());
     
     material.uniqueID = 0; 
 
@@ -178,10 +180,11 @@ void Library::addMaterial(Material material){
     Library::nameControl();
 }
 
-void Library::addBrush(Brush brush){
+void Library::addBrush(Brush brush, const std::string actionTitle){
     __changed = true;
 
-    registerBrushAdditionAction("Brush added", Texture(), brush, __brushes.size());
+    if(actionTitle != "")
+        registerBrushAdditionAction(actionTitle, Texture(), brush, __brushes.size());
     
     __brushes.push_back(brush);
     

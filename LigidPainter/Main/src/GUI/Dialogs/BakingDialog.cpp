@@ -280,7 +280,7 @@ void BakingDialog::render(Timer timer, Skybox skybox){
         glDeleteFramebuffers(1, &FBO);
         glDeleteRenderbuffers(1, &RBO);
 
-        Library::addTexture(txtr);
+        Library::addTexture(txtr, "New texture via baking");
     }
     
     //End the dialog

@@ -717,7 +717,7 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
         Texture newTxtr;
         newTxtr = Texture(nullptr, receivedTexture.getResolution().x, receivedTexture.getResolution().y);
         this->updateDisplayingTexture(receivedTexture, newTxtr.ID);
-        Library::addTexture(newTxtr);
+        Library::addTexture(newTxtr, "New texture via image editor");
         
         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
             this->dialogControl.unActivate();

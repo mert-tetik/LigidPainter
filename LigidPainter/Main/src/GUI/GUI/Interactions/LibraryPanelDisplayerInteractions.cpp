@@ -118,7 +118,7 @@ void UI::libraryPanelDisplayerInteraction(
         if(Library::getSelectedElementIndex() == 1){ //Materials
             //Add new material to the library & not the panel
             //Will be displayed right after library panel is updated
-            Library::addMaterial(Material("NewMaterial", 0));
+            Library::addMaterial(Material("NewMaterial", 0), "New blank material");
         }
         if(Library::getSelectedElementIndex() == 2){ //Brushes
             Texture whiteProceduralTxtr;
@@ -143,7 +143,8 @@ void UI::libraryPanelDisplayerInteraction(
                                                 false,
                                                 "NewBrush",
                                                 whiteProceduralTxtr
-                                            )
+                                            ),
+                                            "New brush"
                                     );
             
         }
@@ -190,7 +191,7 @@ void UI::libraryPanelDisplayerInteraction(
             if(test.size()){
                 Texture importedTxtr;
                 importedTxtr.load(test.c_str());
-                Library::addTexture(importedTxtr);
+                Library::addTexture(importedTxtr, "New texture via import");
             }
         }
         if(Library::getSelectedElementIndex() == 1){ //Materials
@@ -200,7 +201,7 @@ void UI::libraryPanelDisplayerInteraction(
             if(test.size()){
                 Material importedMaterial("", 0);
                 if(FileHandler::readLGDMATERIALFile(test, importedMaterial, appMaterialModifiers))
-                    Library::addMaterial(importedMaterial);
+                    Library::addMaterial(importedMaterial, "New material via importing");
             }
         }
         if(Library::getSelectedElementIndex() == 2){ //Brushes
@@ -210,7 +211,7 @@ void UI::libraryPanelDisplayerInteraction(
             if(test.size()){
                 Brush importedBrush;
                 if(FileHandler::readLGDBRUSHFile(test,importedBrush)){
-                    Library::addBrush(importedBrush);
+                    Library::addBrush(importedBrush, "New brush via import");
                 }
             }
             

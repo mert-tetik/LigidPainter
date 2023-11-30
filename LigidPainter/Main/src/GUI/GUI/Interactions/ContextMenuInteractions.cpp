@@ -66,7 +66,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             Texture duplicatedTexture = *Library::getTexture(ContextMenus::texture.selectedElement);
             duplicatedTexture.ID = Library::getTexture(ContextMenus::texture.selectedElement)->duplicateTexture();
             duplicatedTexture.title += "_duplicated";
-            Library::addTexture(duplicatedTexture);
+            Library::addTexture(duplicatedTexture, "New texture via duplication");
         }
         else if(ContextMenus::texture.contextPanel.sections[0].elements[2].button.clicked){//Clicked to copy path button
             LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + Library::getTexture(ContextMenus::texture.selectedElement)->title + ".png");
@@ -110,7 +110,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         }
         else if(ContextMenus::material.contextPanel.sections[0].elements[3].button.clicked){//Clicked to duplicate button
             Material duplicatedMaterial = Library::getMaterial(ContextMenus::material.selectedElement)->duplicateMaterial();
-            Library::addMaterial(duplicatedMaterial);
+            Library::addMaterial(duplicatedMaterial, "New material via duplication");
         }
         else if(ContextMenus::material.contextPanel.sections[0].elements[4].button.clicked){//Clicked to coppy path button
             LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(ContextMenus::material.selectedElement)->title + ".lgdmaterial");
@@ -192,7 +192,8 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
                                         selectedBrush.sinWavePattern,
                                         selectedBrush.title + "_duplicated",
                                         selectedBrush.texture
-                                    )
+                                    ),
+                                    "New brush via duplication"
                             );
         }
         else if(ContextMenus::brush.contextPanel.sections[0].elements[4].button.clicked){//Clicked to copy path button

@@ -301,7 +301,7 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
         }
 
         if(this->subPanel.sections[0].elements[5].button.clicked){
-            Library::addTexture(receivedTexturePack.generateSpriteTexture());
+            Library::addTexture(receivedTexturePack.generateSpriteTexture(), "New texture via texture pack");
             ShaderSystem::buttonShader().use();
         }
 

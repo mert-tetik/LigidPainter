@@ -117,7 +117,7 @@ void UI::paintingPanelInteraction(
                             painter.brushProperties.brushTexture
                         );
 
-        Library::addBrush(newBrush);
+        Library::addBrush(newBrush, "New brush via painting panel");
     }
     
     if(brushSection.elements[16].button.hover && *Mouse::LClick()){ //If pressed to export brush file button
