@@ -283,6 +283,10 @@ void registerBrushAdditionAction(const std::string title, const Texture icon, Br
     actions_Library.push_back(LibraryAction(title, BRUSH_ADDITION_ACTION, icon, brush, index));
 }
 
+void registerBrushChangedAction(const std::string title, const Texture icon, Brush brush, const int index){
+    actions_Library.push_back(LibraryAction(title, BRUSH_CHANGED_ACTION, icon, brush, index));
+}
+
 void registerImageEditorAction(const std::string title, const Texture icon, Texture texture){
     actions_Library.push_back(LibraryAction(title, TEXTURE_IMAGE_EDITOR_ACTION, icon, texture, Texture(texture.duplicateTexture())));
 }

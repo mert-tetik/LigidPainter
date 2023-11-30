@@ -158,10 +158,9 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
                                             );
 
         }
-        else if(ContextMenus::brush.contextPanel.sections[0].elements[1].button.clicked){//Clicked to apply brush settings
-
+        else if(ContextMenus::brush.contextPanel.sections[0].elements[1].button.clicked){//Clicked to apply to brush button
+            registerBrushChangedAction("Applied to brush", Texture(), *Library::getBrush(ContextMenus::brush.selectedElement), ContextMenus::brush.selectedElement);
             Library::getBrush(ContextMenus::brush.selectedElement)->applyToBrush(brushSection);
-
         }
         else if(ContextMenus::brush.contextPanel.sections[0].elements[2].button.clicked){//Clicked to rename button
             renamingTextBox.active = true;

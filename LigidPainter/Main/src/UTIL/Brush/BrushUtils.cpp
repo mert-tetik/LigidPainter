@@ -60,6 +60,5 @@ void Brush::applyToBrush(Section &brushSection){
     this->sinWavePattern     =   brushSection.elements[7].checkBox.clickState1;    
     this->texture.proceduralProps = brushSection.elements[9].button.texture.proceduralProps;
     this->texture.generateProceduralDisplayingTexture(512, false);
-
     updateDisplayTexture(0.1);
 }
