@@ -67,7 +67,7 @@ BakingDialog::BakingDialog(){
         false
     );
    
-    this->selectMeshButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 15.f), "", Texture(), 6.f, false);
+    this->selectMeshButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(7.f, 12.f), "", Texture(), 6.f, false);
     this->selectMeshButton.meshSelection = true;
     this->selectMeshButton.textureSizeScale = 1.f;
 
@@ -75,25 +75,23 @@ BakingDialog::BakingDialog(){
     this->selectMeshText.color = glm::vec4(0.);
     this->selectMeshText.outline = false;
     this->selectMeshText.outlineExtra = false;
-    this->selectMeshText.textScale = 1.2f;
+    this->selectMeshText.textScale = 0.8f;
     
     this->bakingDialogText = Button(ELEMENT_STYLE_BASIC, glm::vec2(bgPanel.scale.x - selectMeshButton.scale.x - 1.f, 3.f), "Baking Dialog", Texture(), 6.f, false);
     this->bakingDialogText.color = glm::vec4(0.);
     this->bakingDialogText.outline = false;
     this->bakingDialogText.outlineExtra = false;
-    this->bakingDialogText.textScale = 1.4f;
+    this->bakingDialogText.textScale = 1.f;
     
     this->bakingSettingsText = Button(ELEMENT_STYLE_BASIC, glm::vec2(bgPanel.scale.x - selectMeshButton.scale.x - 1.f, 3.f), "Baking Settings", Texture(), 6.f, false);
     this->bakingSettingsText.color = glm::vec4(0.);
     this->bakingSettingsText.outline = false;
     this->bakingSettingsText.outlineExtra = false;
-    this->bakingSettingsText.textScale = 1.2f;
     
     this->selectedMeshTitleText = Button(ELEMENT_STYLE_BASIC, glm::vec2(bgPanel.scale.x - selectMeshButton.scale.x - 1.f, 2.f), "", Texture(), 6.f, false);
     this->selectedMeshTitleText.color = glm::vec4(0.);
     this->selectedMeshTitleText.outline = false;
     this->selectedMeshTitleText.outlineExtra = false;
-    this->selectedMeshTitleText.textScale = 0.7f;
     
     pbrResultCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(5.f,2.f), "Pbr Result", 0.f);
     pbrUseLightingCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(5.f,2.f), "Pbr Use Lighting", 0.f);
@@ -124,8 +122,8 @@ void BakingDialog::render(Timer timer, Skybox skybox, LogDialog& logDialog){
     this->bakingDialogText.render(timer, false);
     
     this->selectMeshButton.pos = this->bgPanel.pos;
-    this->selectMeshButton.pos.x += this->bgPanel.scale.x - this->selectMeshButton.scale.x - 2.f;
-    this->selectMeshButton.pos.y -= 10.f;
+    this->selectMeshButton.pos.x += this->bgPanel.scale.x - this->selectMeshButton.scale.x - 5.f;
+    this->selectMeshButton.pos.y -= 8.f;
     this->selectMeshButton.pos.z += 0.001f;
     
     this->selectMeshText.pos = selectMeshButton.pos;
