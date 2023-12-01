@@ -150,9 +150,9 @@ void Mesh::generateDisplayingTexture(){
 }
 
 void Mesh::generateUVMask(){
-    const int resolution = 1024;
+    const int resolution = 2024;
     
-    this->uvMask = Texture(nullptr, resolution, resolution, GL_NEAREST);
+    this->uvMask = Texture(nullptr, resolution, resolution, GL_LINEAR);
 
     Framebuffer FBO = Framebuffer(this->uvMask, GL_TEXTURE_2D);
     glViewport(0, 0, resolution, resolution);

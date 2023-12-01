@@ -149,9 +149,10 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
         glDrawArrays(GL_TRIANGLES, 0 ,6);
     }
     
-    if(this->threeDimensionalMode)
+    if(this->threeDimensionalMode){
         if(selectedMeshIndex < getModel()->meshes.size())
-            txtr.removeSeams(getModel()->meshes[selectedMeshIndex], destScale);
+            captureTexture.removeSeams(getModel()->meshes[selectedMeshIndex], destScale);
+    }
 
     //Delete the capture framebuffer
     captureFBO.deleteBuffers(false, false);
