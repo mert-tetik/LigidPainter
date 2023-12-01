@@ -553,62 +553,76 @@ void Painter::generateMirroredProjectedPaintingTexture(
         projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, format, internalFormat);
     }
 
-    // Generate and bind the capturing framebuffer
-    Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D);
-    captureFBO.bind();
-    
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0,0,textureRes.x,textureRes.y);
+    if(selectedPaintingModeIndex != 6){
 
-    ShaderSystem::projectedPaintingTextureMixerShader().use();
+        // Generate and bind the capturing framebuffer
+        Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D);
+        captureFBO.bind();
+        
+        glClearColor(0, 0, 0, 0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glViewport(0,0,textureRes.x,textureRes.y);
 
-    ShaderSystem::projectedPaintingTextureMixerShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
-    ShaderSystem::projectedPaintingTextureMixerShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
-    ShaderSystem::projectedPaintingTextureMixerShader().setVec2("scale", glm::vec2(0.5f));
+        ShaderSystem::projectedPaintingTextureMixerShader().use();
 
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("redChannel", false);
-    
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr1", 1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, oSide.projectedPaintingTexture.ID);
-    
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr2Active", oXSide.active);
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr2", 2);
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, oXSide.projectedPaintingTexture.ID);
+        ShaderSystem::projectedPaintingTextureMixerShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
+        ShaderSystem::projectedPaintingTextureMixerShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
+        ShaderSystem::projectedPaintingTextureMixerShader().setVec2("scale", glm::vec2(0.5f));
 
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr3Active", oYSide.active);
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr3", 3);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, oYSide.projectedPaintingTexture.ID);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("redChannel", false);
+        
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr1", 1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, oSide.projectedPaintingTexture.ID);
+        
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr2Active", oXSide.active);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr2", 2);
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, oXSide.projectedPaintingTexture.ID);
 
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr4Active", oXYSide.active);
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr4", 4);
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, oXYSide.projectedPaintingTexture.ID);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr3Active", oYSide.active);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr3", 3);
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, oYSide.projectedPaintingTexture.ID);
 
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr5Active", oZSide.active);
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr5", 5);
-    glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, oZSide.projectedPaintingTexture.ID);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr4Active", oXYSide.active);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr4", 4);
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, oXYSide.projectedPaintingTexture.ID);
 
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr6Active", oXZSide.active);
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr6", 6);
-    glActiveTexture(GL_TEXTURE6);
-    glBindTexture(GL_TEXTURE_2D, oXZSide.projectedPaintingTexture.ID);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr5Active", oZSide.active);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr5", 5);
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, oZSide.projectedPaintingTexture.ID);
 
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr7Active", oYZSide.active);
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr7", 7);
-    glActiveTexture(GL_TEXTURE7);
-    glBindTexture(GL_TEXTURE_2D, oYZSide.projectedPaintingTexture.ID);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr6Active", oXZSide.active);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr6", 6);
+        glActiveTexture(GL_TEXTURE6);
+        glBindTexture(GL_TEXTURE_2D, oXZSide.projectedPaintingTexture.ID);
 
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8Active", oXYZSide.active);
-    ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8", 8);
-    glActiveTexture(GL_TEXTURE8);
-    glBindTexture(GL_TEXTURE_2D, oXYZSide.projectedPaintingTexture.ID);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr7Active", oYZSide.active);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr7", 7);
+        glActiveTexture(GL_TEXTURE7);
+        glBindTexture(GL_TEXTURE_2D, oYZSide.projectedPaintingTexture.ID);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8Active", oXYZSide.active);
+        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8", 8);
+        glActiveTexture(GL_TEXTURE8);
+        glBindTexture(GL_TEXTURE_2D, oXYZSide.projectedPaintingTexture.ID);
 
-    captureFBO.deleteBuffers(false, false);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        captureFBO.deleteBuffers(false, false);
+    }
+    else{
+        char whitePx[4] = {
+                            this->getSelectedColor().getRGB_normalized().r * 127,
+                            this->getSelectedColor().getRGB_normalized().g * 127,
+                            this->getSelectedColor().getRGB_normalized().b * 127,
+                            this->brushProperties.opacity * 127
+                        };
+
+        projectedPaintingTexture.update(whitePx, 1, 1, GL_NEAREST);
+    }
+
 }

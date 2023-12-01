@@ -327,12 +327,13 @@ void UI::init
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Smear"         , Settings::appTextures().smearIcon,        0.f,true)),
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal"        , Settings::appTextures().normalMapIcon,    0.f,true)),
                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Filter"        , Settings::appTextures().filterIcon,       0.f,true)),
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Vector"        , Settings::appTextures().inkPenIcon,       0.f,true))
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Vector"        , Settings::appTextures().inkPenIcon,       0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Bucket"        , Settings::appTextures().bucketIcon,       0.f,true))
                                         }
                                     )
                                 },
                                 
-                                glm::vec2(5, 6.f), //Initial scale value
+                                glm::vec2(5, 7.f), //Initial scale value
                                 glm::vec3(50 ,50 ,0.1f),  //Initial position value
                                 ColorPalette::mainColor, //Color of the panel
                                 ColorPalette::thirdColor, //Color of the panel

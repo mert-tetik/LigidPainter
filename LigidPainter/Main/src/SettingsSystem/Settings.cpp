@@ -69,6 +69,7 @@ void Settings::loadAppTextures(){
     __appTextures.normalMapIcon.load("./LigidPainter/Resources/Icons/NormalMap.png");
     __appTextures.packageIcon.load("./LigidPainter/Resources/Icons/Package.png");
     __appTextures.inkPenIcon.load("./LigidPainter/Resources/Icons/InkPen.png");
+    __appTextures.bucketIcon.load("./LigidPainter/Resources/Icons/bucket.png");
     __appTextures.bakingIcon.load("./LigidPainter/Resources/Icons/Baking.png");
     __appTextures.trashIcon.load("./LigidPainter/Resources/Icons/Trash.png");
     __appTextures.materialChannelsIcon.load("./LigidPainter/Resources/Icons/MaterialChannels.png");

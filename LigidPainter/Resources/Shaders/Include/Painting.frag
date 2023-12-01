@@ -312,7 +312,7 @@ vec3 getBrushedTexture (
                         )
 {
     //Apply painting with color
-    if(brushModeState == 0)
+    if(brushModeState == 0 || brushModeState == 6)
         return getPaintedTexture(txtr, brushTxtr, TexCoords, modelCoord, multiChannelsPaintingMod, channelI, channelStrength, paintingOverActive);
 
     //Apply painting with softening

@@ -220,6 +220,7 @@ namespace Settings{
         Texture normalMapIcon;
         Texture packageIcon;
         Texture inkPenIcon;
+        Texture bucketIcon;
         Texture bakingIcon;
         Texture trashIcon;
         Texture materialChannelsIcon;

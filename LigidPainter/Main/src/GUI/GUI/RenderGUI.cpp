@@ -174,7 +174,7 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
             !this->anyPanelHover && 
             !this->anyDialogActive && 
             !this->anyContextMenuActive && 
-            (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 &&
+            (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 && painter.selectedPaintingModeIndex != 6 &&
             !painter.paintingoverTextureEditorMode &&
             !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
