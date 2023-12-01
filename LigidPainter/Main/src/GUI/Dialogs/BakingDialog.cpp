@@ -104,7 +104,7 @@ BakingDialog::BakingDialog(){
     bakeButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(7.f,2), "Bake", Texture(), 1.f, false);
 }
 
-void BakingDialog::render(Timer timer, Skybox skybox){
+void BakingDialog::render(Timer timer, Skybox skybox, LogDialog& logDialog){
     
     dialogControl.updateStart();
 
@@ -284,7 +284,7 @@ void BakingDialog::render(Timer timer, Skybox skybox){
     }
     
     //End the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && *Mouse::LClick())){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !logDialog.isHovered() && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
             dialogControl.unActivate();
         }

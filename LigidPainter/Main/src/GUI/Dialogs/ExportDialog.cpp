@@ -337,7 +337,7 @@ static void exportLibraryTextures(Panel& propertiesPanel){
 
 
 
-void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogActive, MaterialEditorDialog &materialEditorDialog){
+void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogActive, MaterialEditorDialog &materialEditorDialog, LogDialog& logDialog){
     
     dialogControl.updateStart();
 
@@ -390,7 +390,7 @@ void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogAct
     }
     
     //Close the dialog (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !logDialog.isHovered() && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated)
             this->dialogControl.unActivate();
     }

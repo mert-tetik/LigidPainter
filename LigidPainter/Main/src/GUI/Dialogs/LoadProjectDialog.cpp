@@ -133,8 +133,7 @@ LoadProjectDialog::LoadProjectDialog(AppMaterialModifiers& appMaterialModifiers)
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::render(Timer timer,
-                                Project &project,bool &greetingDialogActive,bool &startScreen){
+void LoadProjectDialog::render(Timer timer, Project &project,bool &greetingDialogActive,bool &startScreen, LogDialog& logDialog){
     
     dialogControl.updateStart();
 
@@ -263,7 +262,7 @@ void LoadProjectDialog::render(Timer timer,
     }
     
     //Close the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || bgPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !logDialog.isHovered() && *Mouse::LClick()) || bgPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
         
         if(startScreen)
             greetingDialogActive = true;

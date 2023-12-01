@@ -149,7 +149,7 @@ NewProjectDialog::NewProjectDialog(AppMaterialModifiers& appMaterialModifiers){
                                                                             },"Texture Resolution",4.f);
 }
 
-void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen){
+void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen, LogDialog& logDialog){
     
     dialogControl.updateStart();
 
@@ -284,7 +284,7 @@ void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialo
     }
     
     //Close the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->panel.hover && !logDialog.isHovered() && *Mouse::LClick()) || panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
         if(startScreen)
             greetingDialogActive = true;
         

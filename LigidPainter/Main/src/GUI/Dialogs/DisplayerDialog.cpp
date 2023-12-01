@@ -111,8 +111,7 @@ DisplayerDialog::DisplayerDialog(){
     }
 }
 
-void DisplayerDialog::render(Timer timer,
-            Skybox &skybox){
+void DisplayerDialog::render(Timer timer, Skybox &skybox, LogDialog& logDialog){
     
     dialogControl.updateStart();
 
@@ -205,7 +204,7 @@ void DisplayerDialog::render(Timer timer,
     skybox.opacity = panel.sections[0].elements[3].rangeBar.value/100.f;
     
     //End the dialog
-    if((panel.sections[0].elements[2].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
+    if((panel.sections[0].elements[2].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !logDialog.isHovered() && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
             panel.sections[0].elements[0].button.clickState1 = false;
             dialogControl.unActivate();

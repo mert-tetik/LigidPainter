@@ -1000,22 +1000,22 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
 
 void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter& painter){
     if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);
+        newProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen, logDialog);
     
     if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen);    
+        loadProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen, logDialog);    
 
     if(greetingDialog.dialogControl.isActive())
         greetingDialog.render(timer,newProjectDialog,loadProjectDialog);
 
     if(displayerDialog.dialogControl.isActive())
-        displayerDialog.render(timer,skybox);
+        displayerDialog.render(timer,skybox, logDialog);
     
     if(textureEditorDialog.dialogControl.isActive())
-        textureEditorDialog.render(timer,skybox,this->projection, this->textureEditorSelectedTxtr);
+        textureEditorDialog.render(timer,skybox,this->projection, this->textureEditorSelectedTxtr, logDialog);
     
     if(exportDialog.dialogControl.isActive())
-        exportDialog.render(timer,project,greetingDialog.dialogControl.active,materialEditorDialog);
+        exportDialog.render(timer,project,greetingDialog.dialogControl.active,materialEditorDialog, logDialog);
     
     if(newTextureDialog.dialogControl.isActive())
         newTextureDialog.render(timer);
@@ -1024,7 +1024,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
         paintingChannelsAutoCreateTexturesDialog.render(timer, this->paintingChannelsSection);
     
     if(settingsDialog.dialogControl.isActive())
-        settingsDialog.render(timer, painter);
+        settingsDialog.render(timer, painter, logDialog);
     
     if(materialDisplayerDialog.dialogControl.isActive())
         materialDisplayerDialog.render(timer);
@@ -1033,13 +1033,13 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
         filterDisplayerDialog.render(timer, projection);
     
     if(bakingDialog.dialogControl.isActive())
-        bakingDialog.render(timer, skybox);
+        bakingDialog.render(timer, skybox, logDialog);
     
     if(objectTexturingDialog.dialogControl.isActive() && !materialEditorDialog.dialogControl.active)
         objectTexturingDialog.render(timer, this->projection, materialEditorDialog, logDialog);
     
     if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
-        materialEditorDialog.render(timer,textureSelectionDialog);
+        materialEditorDialog.render(timer, textureSelectionDialog, logDialog);
     
     if(!Settings::properties()->cat_hide){
         logDialog.render(

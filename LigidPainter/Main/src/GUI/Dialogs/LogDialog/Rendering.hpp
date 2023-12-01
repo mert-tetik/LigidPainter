@@ -72,7 +72,12 @@ static void rendering(
     }
 
     if(*Mouse::LClick()){
-        if(logBtnL.hover && !messageInfoActive){
+        if(logBtn.hover){
+            actionHistoryActive = false;
+            messagesActive = false;
+        }
+        
+        else if(logBtnL.hover && !messageInfoActive){
             messagesActive = !messagesActive;
         }
         
@@ -80,10 +85,6 @@ static void rendering(
             actionHistoryActive = !actionHistoryActive;
         }
 
-        else if(logBtn.hover){
-            actionHistoryActive = false;
-            messagesActive = false;
-        }
     }
 
     if(logBtn.clickState1){ 
@@ -94,7 +95,7 @@ static void rendering(
     logBtn.pos.x = pos.x;
     logBtn.pos.y = pos.y;
     
-    logBtnL.pos.x = pos.x - logBtn.scale.x;
+    logBtnL.pos.x = pos.x - logBtn.scale.x - logBtnL.scale.x / 4.f;
     if(messagesActive)
         logBtnL.pos.x -= messagesPanel.scale.x * 1.85f;
     else
@@ -102,7 +103,7 @@ static void rendering(
     
     logBtnL.pos.y = pos.y + std::sin(LigidGL::getTime() * 2.f + 1.f) / 4.f;
 
-    logBtnR.pos.x = pos.x + logBtn.scale.x;
+    logBtnR.pos.x = pos.x + logBtn.scale.x + logBtnR.scale.x / 4.f;
     if(actionHistoryActive)
         logBtnR.pos.x += historyPanel.scale.x * 1.85f;
     logBtnR.pos.y = pos.y + std::sin(LigidGL::getTime() * 2.f) / 4.f;
@@ -179,7 +180,7 @@ static void rendering(
         logBtn.texture = Settings::appTextures().mascotCat_sleeping;
     else if(messageInfoActive && !painter.refreshable)
         logBtn.texture = msgFace;
-    else if((logBtn.hover && !logBtnL.hover && !logBtnR.hover) || painter.refreshable)
+    else if((logBtn.hover) || painter.refreshable)
         logBtn.texture = Settings::appTextures().mascotCat_smile;
     else if(messagesActive || actionHistoryActive)
         logBtn.texture = Settings::appTextures().mascotCat_relaxed;

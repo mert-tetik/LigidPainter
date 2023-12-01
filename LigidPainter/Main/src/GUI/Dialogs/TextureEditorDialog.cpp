@@ -424,7 +424,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     Settings::defaultFramebuffer()->setViewport();
 }
 
-void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture){
+void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture, LogDialog& logDialog){
     
     dialogControl.updateStart();
 
@@ -724,7 +724,7 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
     }
 
     //End the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && *Mouse::LClick())){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !logDialog.isHovered() && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
             dialogControl.unActivate();
         }

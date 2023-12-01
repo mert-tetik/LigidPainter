@@ -176,7 +176,7 @@ SettingsDialog::SettingsDialog(){
             };
 }
 
-void SettingsDialog::render(Timer timer, Painter &painter){
+void SettingsDialog::render(Timer timer, Painter &painter, LogDialog& logDialog){
     
     dialogControl.updateStart();   
 
@@ -331,7 +331,7 @@ void SettingsDialog::render(Timer timer, Painter &painter){
     //End the dialog
     if  (
             getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Escape key pressed 
-            ((!bgPanel.hover && *Mouse::LClick())) && !dialogControl.firstFrameActivated //Mouse Lclick out of the panel
+            ((!bgPanel.hover && *Mouse::LClick() && !logDialog.isHovered())) && !dialogControl.firstFrameActivated //Mouse Lclick out of the panel
         )
     {
         painter.refreshBuffers();

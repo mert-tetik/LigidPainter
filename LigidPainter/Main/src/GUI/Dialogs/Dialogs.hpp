@@ -117,7 +117,7 @@ public:
    SettingsDialog();
 
    //Public member functions    
-   void render(Timer timer, Painter& painter);
+   void render(Timer timer, Painter& painter, LogDialog& logDialog);
 };
 
 
@@ -183,8 +183,7 @@ public:
    LoadProjectDialog(AppMaterialModifiers& appMaterialModifiers);
    
    //Public member functions
-   void render(Timer timer,
-               Project &project,bool &greetingDialogActive,bool &startScreen);
+   void render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen, LogDialog& logDialog);
  };
 
 
@@ -203,8 +202,7 @@ class DisplayerDialog
     DisplayerDialog();
     
     //Public member functions
-    void render(Timer timer,
-                Skybox &skybox);
+    void render(Timer timer, Skybox &skybox, LogDialog& logDialog);
  };
 
 
@@ -236,7 +234,7 @@ public:
    BakingDialog();
    
    //Public member functions
-   void render(Timer timer, Skybox skybox);
+   void render(Timer timer, Skybox skybox, LogDialog& logDialog);
 };
 
 
@@ -275,7 +273,7 @@ class TextureEditorDialog
    TextureEditorDialog();
    
    //Public member functions
-   void render(Timer timer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture);
+   void render(Timer timer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture, LogDialog& logDialog);
 
    void updateDisplayingTexture(Texture& receivedTexture, unsigned int destTxtr);
  };
@@ -348,7 +346,7 @@ public:
    MaterialEditorDialog();
 
    //Public member functions
-   void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog);
+   void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog, LogDialog& logDialog);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
 };
@@ -391,8 +389,7 @@ public:
    NewProjectDialog(AppMaterialModifiers& appMaterialModifiers);
 
    //Public member functions
-   void render(Timer timer,
-               Project &project,bool &greetingDialogActive,bool &startScreen);
+   void render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen, LogDialog& logDialog);
  };
 
 
@@ -416,7 +413,7 @@ public:
    ExportDialog();
 
    //Public member functions
-   void render(Timer timer,Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog);
+   void render(Timer timer,Project &project,bool &greetingDialogActive,MaterialEditorDialog &materialEditorDialog, LogDialog& logDialog);
  };
 
 //!------------------------------OBJECT TEXTURING DIALOG------------------------------

@@ -49,7 +49,8 @@ bool __lastDisplayModeComboBoxPressed = false;
 void MaterialEditorDialog::render
                                 (
                                     Timer &timer,
-                                    TextureSelectionDialog &textureSelectionDialog
+                                    TextureSelectionDialog &textureSelectionDialog,
+                                    LogDialog& logDialog
                                 )
 {
     
@@ -127,7 +128,7 @@ void MaterialEditorDialog::render
     } 
 
     //Close the dialog
-    if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
+    if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover && !logDialog.isHovered()) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
         if(!wasTextureSelectionDialogActive() && !ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
             this->displayModeComboBox.selectedIndex = 0;
             material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
