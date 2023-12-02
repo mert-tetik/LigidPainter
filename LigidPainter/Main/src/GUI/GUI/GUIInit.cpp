@@ -481,6 +481,27 @@ void UI::init
                             false
                         );
 
+    colorUseCustomMatSelectionPanel = Panel(
+                            {
+                                Section()
+                            },
+                            
+                            glm::vec2(10.f ,15.f), //Initial scale value
+                            glm::vec3(50 ,50 ,0.1f),  //Initial position value
+                            ColorPalette::mainColor, //Color of the panel
+                            ColorPalette::thirdColor, //Color of the panel
+                            true,
+                            true,
+                            true,
+                            true,
+                            true,
+                            1.f,
+                            1,
+                            {},
+                            20.f,
+                            false
+                        );
+
     //Init dialogs
     greetingDialog              = GreetingDialog();
     newTextureDialog            = NewTextureDialog();

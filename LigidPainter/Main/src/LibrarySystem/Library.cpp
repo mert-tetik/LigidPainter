@@ -635,3 +635,12 @@ int Library::getgetSrcLibTxtrsArraySize(){
     return __sourceLibTextures.size();
 }
 
+Material Library::findMaterialViaUniqueID(int uniqueID){
+    for (size_t i = 0; i < __materials.size(); i++)
+    {
+        if(__materials[i].uniqueID == uniqueID)
+            return __materials[i];
+    }
+
+    return Material();
+}

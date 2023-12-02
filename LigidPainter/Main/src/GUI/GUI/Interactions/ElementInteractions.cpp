@@ -65,6 +65,7 @@ void UI::elementInteraction(
                     objectTexturingDialog.dialogControl.isActive() ||
                     paintingChannelsAutoCreateTexturesDialog.dialogControl.isActive() ||
                     paintingChannelsTextureSelectionPanelActive ||
+                    colorUseCustomMatSelectionPanelActive ||
                     texturePackEditorDialog.dialogControl.isActive();
 
     this->anyPanelHover = 

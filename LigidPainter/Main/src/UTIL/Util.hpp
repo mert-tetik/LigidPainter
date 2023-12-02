@@ -389,6 +389,9 @@ public:
     void generateProceduralDisplayingTexture(int displayingTextureRes, int displayMode);
 
     void flipTexture(bool horizontal, bool vertical);
+
+    void mix(Texture txtr2, Texture mask);
+
 };
 
 class Brush
@@ -760,6 +763,7 @@ public:
     float ambientOcclusionVal = 0.f;
 
     bool useCustomMaterial = false;
+    int customMaterialID = 0;
 
     // Used to create the displaying texture for the brush section in the paintingPanel
     Brush displayingBrush;

@@ -33,6 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+static Mesh customMatMesh;
 
 static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 textureRes, unsigned int &selectedTextureID){
     //Bind the capture texture
@@ -167,6 +168,24 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
         
     int txtrI = this->getSelectedTextureIndexInLibrary();
     
+    if(this->useCustomMaterial && this->selectedMeshIndex < getModel()->meshes.size()){
+        customMatMesh.EBO = getModel()->meshes[this->selectedMeshIndex].EBO;
+        customMatMesh.VBO = getModel()->meshes[this->selectedMeshIndex].VBO;
+        customMatMesh.VAO = getModel()->meshes[this->selectedMeshIndex].VAO;
+        customMatMesh.indices = getModel()->meshes[this->selectedMeshIndex].indices;
+        customMatMesh.albedo = Texture(nullptr, 1024, 1024);
+        customMatMesh.roughness = Texture(nullptr, 1024, 1024);
+        customMatMesh.metallic = Texture(nullptr, 1024, 1024);
+        customMatMesh.normalMap = Texture(nullptr, 1024, 1024);
+        customMatMesh.heightMap = Texture(nullptr, 1024, 1024);
+        customMatMesh.ambientOcclusion = Texture(nullptr, 1024, 1024);
+
+        for (int i = Library::findMaterialViaUniqueID(this->customMaterialID).materialModifiers.size() - 1; i >= 0; --i)    
+        {
+            Library::findMaterialViaUniqueID(this->customMaterialID).materialModifiers[i].updateMaterialChannels(Library::findMaterialViaUniqueID(this->customMaterialID), customMatMesh, 1024, i, Settings::appTextures().white, 0);
+        }
+    }
+
     if(this->materialPainting){
         registerPaintingAction(
                                     "Multi-channel painting", 
@@ -216,39 +235,53 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
                 glm::vec3 clr;
                 bool enableChannel;
                 Texture txtr;
+                Texture customMatTxtr;
                 if(i == 0){
                     clr = this->getSelectedColor().getRGB_normalized();
                     enableChannel = this->enableAlbedoChannel;
                     txtr = getModel()->meshes[this->selectedMeshIndex].albedo;
+                    customMatTxtr = customMatMesh.albedo;
                 }
                 if(i == 1){
                     clr = glm::vec3(this->roughnessVal);
                     enableChannel = this->enableRoughnessChannel;
                     txtr = getModel()->meshes[this->selectedMeshIndex].roughness;
+                    customMatTxtr = customMatMesh.roughness;
                 }
                 if(i == 2){
                     clr = glm::vec3(this->metallicVal);
                     enableChannel = this->enableMetallicChannel;
                     txtr = getModel()->meshes[this->selectedMeshIndex].metallic;
+                    customMatTxtr = customMatMesh.metallic;
                 }
                 if(i == 3){
                     clr = glm::vec3(this->normalMapStrengthVal);
                     enableChannel = this->enableNormalMapChannel;
                     txtr = getModel()->meshes[this->selectedMeshIndex].normalMap;
+                    customMatTxtr = customMatMesh.normalMap;
                 }
                 if(i == 4){
                     clr = glm::vec3(this->heightMapVal);
                     enableChannel = this->enableHeightMapChannel;
                     txtr = getModel()->meshes[this->selectedMeshIndex].heightMap;
+                    customMatTxtr = customMatMesh.heightMap;
                 }
                 if(i == 5){
                     clr = glm::vec3(this->ambientOcclusionVal);
                     enableChannel = this->enableAOChannel;
                     txtr = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion;
+                    customMatTxtr = customMatMesh.ambientOcclusion;
                 }
 
-                if(enableChannel)
-                    updateTheTexture(txtr, twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, clr, i, clr.r);
+                if(enableChannel){
+                    if(!this->useCustomMaterial)
+                        updateTheTexture(txtr, twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, clr, i, clr.r);
+                    else{
+                        txtr.mix(customMatTxtr, projectedPaintingTexture);
+                        if(selectedMeshIndex < getModel()->meshes.size())
+                            txtr.removeSeams(getModel()->meshes[selectedMeshIndex], txtr.getResolution());
+                    }
+                }
             }
         }
         else{

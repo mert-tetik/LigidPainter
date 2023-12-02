@@ -1051,3 +1051,49 @@ void Texture::copyDataToTheCopyContext(){
     mainThreadUsingCopyContext = false;
     delete[] pxs;
 }
+
+void Texture::mix(Texture txtr2, Texture mask){
+    
+    glm::vec2 resolution = this->getResolution();
+    
+    Framebuffer FBO = Framebuffer(*this, GL_TEXTURE_2D);
+    FBO.bind();
+    glViewport(0,0,resolution.x,resolution.y);
+    
+    glm::mat4 projection = glm::ortho(0.f, 1.f, 1.f, 0.f);
+    glm::vec3 pos = glm::vec3(1.f / 2.f, 1.f / 2.f, 0.9f);
+    glm::vec2 scale = glm::vec2(1.f / 2.f, 1.f / 2.f);
+
+    ShaderSystem::grayScaleIDMaskingShader().use();
+    ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", projection);
+    ShaderSystem::grayScaleIDMaskingShader().setVec3("pos", pos);
+    ShaderSystem::grayScaleIDMaskingShader().setVec2("scale", scale);
+    
+    ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
+    
+    ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 1);
+    ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f);
+    
+    Texture copiedTxtr = this->duplicateTexture();
+    FBO.bind();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mask.ID);
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, copiedTxtr.ID);
+    
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, txtr2.ID);
+    
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    //Finish
+    Settings::defaultFramebuffer()->FBO.bind();
+    ShaderSystem::buttonShader().use();
+    FBO.deleteBuffers(false, false);
+    glDeleteTextures(1, &copiedTxtr.ID);
+    Settings::defaultFramebuffer()->setViewport();
+}

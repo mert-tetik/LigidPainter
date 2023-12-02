@@ -19,7 +19,7 @@ void main(){
         mask = mix(1., mask, 1. - (offset*2. - 1.));
 
     if(maskAlpha == 1)
-        fragColor = vec4(mix(texture(texture_black, TexCoords), texture(texture_white, TexCoords), mask * texture(texture_white, TexCoords).a));
+        fragColor = vec4(mix(texture(texture_black, TexCoords), texture(texture_white, TexCoords), texture(maskTexture, TexCoords).a));
     else
         fragColor = vec4(mix(texture(texture_black, TexCoords), texture(texture_white, TexCoords), mask));
 }

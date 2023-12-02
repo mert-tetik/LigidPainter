@@ -140,6 +140,8 @@ public:
     int selectedPaintingPanelMode = 0;
     Panel paintingChannelsTextureSelectionPanel;
     bool paintingChannelsTextureSelectionPanelActive = false;
+    Panel colorUseCustomMatSelectionPanel;
+    bool colorUseCustomMatSelectionPanelActive = false;
     Material paintingSectionDisplayMat;
 
     bool anyPanelHover = false;

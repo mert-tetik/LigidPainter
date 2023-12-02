@@ -71,6 +71,7 @@ void UI::paintingPanelInteraction(
                 paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[8].button.color = glm::vec4(glm::vec3(painter.heightMapVal), 1.f);
                 paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[10].button.color = glm::vec4(glm::vec3(painter.ambientOcclusionVal), 1.f);
             }
+            
             paintingSectionDisplayMat.updateMaterialDisplayingTexture(512, true, cam, 0);
             
             break;
@@ -79,8 +80,12 @@ void UI::paintingPanelInteraction(
 
     prevSelectedClr = painter.getSelectedColor().getRGB_normalized();
 
-    this->colorSection.elements[0].button.texture = paintingSectionDisplayMat.displayingTexture;
-    
+    if(!painter.useCustomMaterial)
+        this->colorSection.elements[0].button.texture = paintingSectionDisplayMat.displayingTexture;
+    else{
+        this->colorSection.elements[0].button.texture = Library::findMaterialViaUniqueID(painter.customMaterialID).displayingTexture;
+    }
+
     for (size_t i = 0; i < this->colorSection.elements.size(); i++)
     {
         if(painter.selectedDisplayingModeIndex == 1){
@@ -110,6 +115,12 @@ void UI::paintingPanelInteraction(
                 this->colorSection.elements[i].scale.y = 2.f;
             }
         }
+    }
+
+    if(this->colorSection.elements[17].button.clicked){
+        this->colorUseCustomMatSelectionPanelActive = true;
+        this->colorUseCustomMatSelectionPanel.pos = paintingPanelModePanel.pos;
+        this->colorUseCustomMatSelectionPanel.pos.x -= paintingPanelModePanel.scale.x + this->colorUseCustomMatSelectionPanel.scale.x;
     }
 
     if(colorSection.elements[2].button.hover && *Mouse::LDoubleClick()){//Pressed to first color button element

@@ -165,6 +165,8 @@ namespace Library{
 
     /// @brief Returns the size of the Source Lib Textures array
     int getgetSrcLibTxtrsArraySize();
+
+    Material findMaterialViaUniqueID(int uniqueID);
 };
 
 #endif
