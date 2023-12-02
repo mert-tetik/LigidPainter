@@ -169,20 +169,33 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
     int txtrI = this->getSelectedTextureIndexInLibrary();
     
     if(this->useCustomMaterial && this->selectedMeshIndex < getModel()->meshes.size()){
+        glm::vec2 res = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
+
         customMatMesh.EBO = getModel()->meshes[this->selectedMeshIndex].EBO;
         customMatMesh.VBO = getModel()->meshes[this->selectedMeshIndex].VBO;
         customMatMesh.VAO = getModel()->meshes[this->selectedMeshIndex].VAO;
         customMatMesh.indices = getModel()->meshes[this->selectedMeshIndex].indices;
-        customMatMesh.albedo = Texture(nullptr, 1024, 1024);
-        customMatMesh.roughness = Texture(nullptr, 1024, 1024);
-        customMatMesh.metallic = Texture(nullptr, 1024, 1024);
-        customMatMesh.normalMap = Texture(nullptr, 1024, 1024);
-        customMatMesh.heightMap = Texture(nullptr, 1024, 1024);
-        customMatMesh.ambientOcclusion = Texture(nullptr, 1024, 1024);
+        
+        if(!customMatMesh.albedo.ID){
+            customMatMesh.albedo = Texture(nullptr, res.x, res.y);
+            customMatMesh.roughness = Texture(nullptr, res.x, res.y);
+            customMatMesh.metallic = Texture(nullptr, res.x, res.y);
+            customMatMesh.normalMap = Texture(nullptr, res.x, res.y);
+            customMatMesh.heightMap = Texture(nullptr, res.x, res.y);
+            customMatMesh.ambientOcclusion = Texture(nullptr, res.x, res.y);
+        }
+        else{
+            customMatMesh.albedo.update(nullptr, res.x, res.y);
+            customMatMesh.roughness.update(nullptr, res.x, res.y);
+            customMatMesh.metallic.update(nullptr, res.x, res.y);
+            customMatMesh.normalMap.update(nullptr, res.x, res.y);
+            customMatMesh.heightMap.update(nullptr, res.x, res.y);
+            customMatMesh.ambientOcclusion.update(nullptr, res.x, res.y);
+        }
 
         for (int i = Library::findMaterialViaUniqueID(this->customMaterialID).materialModifiers.size() - 1; i >= 0; --i)    
         {
-            Library::findMaterialViaUniqueID(this->customMaterialID).materialModifiers[i].updateMaterialChannels(Library::findMaterialViaUniqueID(this->customMaterialID), customMatMesh, 1024, i, Settings::appTextures().white, 0);
+            Library::findMaterialViaUniqueID(this->customMaterialID).materialModifiers[i].updateMaterialChannels(Library::findMaterialViaUniqueID(this->customMaterialID), customMatMesh, res.x, i, Settings::appTextures().white, 0);
         }
     }
 
