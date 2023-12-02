@@ -489,7 +489,6 @@ void UI::init
     textureEditorDialog         = TextureEditorDialog();
     texturePackEditorDialog     = TexturePackEditorDialog();
     materialEditorDialog        = MaterialEditorDialog();
-    textureSelectionDialog      = TextureSelectionDialog();
     bakingDialog                = BakingDialog();
     filterSelectionDialog       = FilterSelectionDialog();
     loadProjectDialog           = LoadProjectDialog(materialEditorDialog.appMaterialModifiers);
@@ -613,26 +612,34 @@ void UI::init
                                     }
                                 );
 
-
     this->colorSection =        Section(
                                     Element(),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color1"  , Texture(), 7.f, true)),
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color2"  , Texture(), 1.f, true)),
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color3"  , Texture(), 1.f, true)),
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Dropper"  , Texture(), 1.f, false)),
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,4), ""  , Texture(), 7.f, true)), // 0
+                                        
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Albedo Channel"  , 1.f)), //1
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color1"  , Texture(), 1.f, true)), // 2
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color2"  , Texture(), 1.f, true)), // 3
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color3"  , Texture(), 1.f, true)), // 4
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Dropper"  , Texture(), 1.f, false)), // 5
+ 
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Roughness Channel"  , 2.5f)),//6
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Roughness"  , Texture(), 0.2f, 0.f, 1.f, 0.f)), //7
+                                        
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Metallic Channel"  , 2.5f)),//8
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Metallic"  , Texture(), 0.2f, 0.f, 1.f, 1.f)), //9
 
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Albedo Channel"  , 2.f)),//6
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Roughness Channel"  , 2.f)),//6
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Roughness"  , Texture(), 1.f, 0.f, 1.f, 0.f)), //7
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Metallic Channel"  , 1.f)),//6
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Metallic"  , Texture(), 1.f, 0.f, 1.f, 1.f)), //7
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Normal Map Channel"  , 1.f)),//6
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Normal Map Strength"  , Texture(), 1.f, 0.f, 1.f, 1.f)), //7
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Height Map Channel"  , 1.f)),//6
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Height Map"  , Texture(), 1.f, 0.f, 1.f, 0.5f)), //7
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable AO Channel"  , 1.f)),//6
-                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Ambient Occlusion"  , Texture(), 1.f, 0.f, 1.f, 0.5f)), //7
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Normal Map Channel"  , 2.5f)),//10
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Normal Map Strength"  , Texture(), 0.2f, 0.f, 1.f, 1.f)), //11
+
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Height Map Channel"  , 2.5f)),//12
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Height Map"  , Texture(), 0.2f, 0.f, 1.f, 0.5f)), //13
+
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable AO Channel"  , 2.5f)),//14
+                                        Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Ambient Occlusion"  , Texture(), 0.2f, 0.f, 1.f, 0.5f)), //15
+
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Custom Material"  , 2.5f)),//16
+                                        Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2,2), "Select A Material"  , Texture(), 0.2f, false)), // 17
                                     }
                                 );
 
@@ -659,8 +666,15 @@ void UI::init
     meshSection.elements[0].button.meshSelection = true;
     meshSection.elements[6].button.textureSelection3D = true;
 
+    colorSection.elements[1].checkBox.clickState1 = true;
+    colorSection.elements[6].checkBox.clickState1 = true;
+    colorSection.elements[8].checkBox.clickState1 = true;
+    colorSection.elements[10].checkBox.clickState1 = true;
+    colorSection.elements[12].checkBox.clickState1 = true;
+    colorSection.elements[14].checkBox.clickState1 = true;
+
     //Change the properties of the color elements in the painting panel (color section)
-    for (size_t i = 0; i < 3; i++)
+    for (size_t i = 2; i < 5; i++)
     {
         colorSection //Color section
                                  .elements[i] //Color button

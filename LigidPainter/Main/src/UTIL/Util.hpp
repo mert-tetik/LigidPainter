@@ -759,6 +759,8 @@ public:
     bool enableAOChannel = false;
     float ambientOcclusionVal = 0.f;
 
+    bool useCustomMaterial = false;
+
     // Used to create the displaying texture for the brush section in the paintingPanel
     Brush displayingBrush;
 

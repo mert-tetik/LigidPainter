@@ -148,6 +148,7 @@ void Panel::updateUpdateGraphicsFlag(){
                             prevSections[secI].elements[eI].button.clicked || sections[secI].elements[eI].button.clicked ||
                             prevSections[secI].elements[eI].button.color != sections[secI].elements[eI].button.color ||
                             prevSections[secI].elements[eI].button.texture.ID != sections[secI].elements[eI].button.texture.ID ||
+                            prevSections[secI].elements[eI].button.scale != sections[secI].elements[eI].button.scale ||
                             prevSections[secI].elements[eI].rangeBar.value != sections[secI].elements[eI].rangeBar.value ||
                             prevSections[secI].elements[eI].rangeBar.hoverMixVal != sections[secI].elements[eI].rangeBar.hoverMixVal ||
                             prevSections[secI].elements[eI].rangeBar.clickedMixVal != sections[secI].elements[eI].rangeBar.clickedMixVal ||
@@ -419,10 +420,13 @@ void Panel::drawPanel(
             for (int i = 0; i < sections[sI].elements.size(); i++) //
             {
                 //Prepare the transform data of the button    
-                if(vertical)
-                    prepDrawBtnVertically(sections[sI].elements[i],sections[sI].elements[std::max(i-1,0)],elementPos,btnCounter);
-                else
-                    prepDrawBtnHorizontally(sections[sI].elements[i],sections[sI].elements[std::max(i-1,0)],elementPos,btnCounter);
+                if(sections[sI].elements[i].scale.x && sections[sI].elements[i].scale.y){
+                    if(vertical)
+                        prepDrawBtnVertically(sections[sI].elements[i],sections[sI].elements[std::max(i-1,0)],elementPos,btnCounter);
+                    else
+                        prepDrawBtnHorizontally(sections[sI].elements[i],sections[sI].elements[std::max(i-1,0)],elementPos,btnCounter);
+
+                }
                 if(isLibraryDisplayer){
                     sections[sI].elements[i].button.textureStickToTop = true;
                     sections[sI].elements[i].button.textureSizeScale = 1.5f;
@@ -433,7 +437,8 @@ void Panel::drawPanel(
                 //Don't render the unshown elements
                 if(this->sections[sI].elements[i].pos.y - this->sections[sI].elements[i].scale.y < (this->pos.y + this->additionalPos.y + this->scale.y) && this->sections[sI].elements[i].pos.y + this->sections[sI].elements[i].scale.y > (this->pos.y + this->additionalPos.y - this->scale.y)){
                     
-                    sections[sI].elements[i].render(timer,doMouseTracking && !sliderButton.hover);
+                    if(sections[sI].elements[i].scale.x && sections[sI].elements[i].scale.y)
+                        sections[sI].elements[i].render(timer,doMouseTracking && !sliderButton.hover);
                     
                     /* Render the text if rendering library displayer panel*/
                     if(isLibraryDisplayer){

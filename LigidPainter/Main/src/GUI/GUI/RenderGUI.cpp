@@ -1077,7 +1077,7 @@ void UI::renderDropper(Painter &painter){
         if(painter.selectedColorIndex == 2)
             prevClr = painter.color3;
     
-        if(!colorSection.elements[3].button.clicked){
+        if(!colorSection.elements[5].button.clicked){
             dropper.active = false;
         }
     }

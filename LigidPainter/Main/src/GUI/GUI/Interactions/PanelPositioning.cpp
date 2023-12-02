@@ -39,6 +39,9 @@ void UI::panelPositioning(
                         )
 {
     //!Positioning the panels
+
+    windowPanel.scale.y = 50.f - navigationPanel.scale.y;
+
     paintingPanel.pos.x = windowPanel.pos.x - windowPanel.scale.x - paintingPanel.scale.x; //Keep on the left side of the window panel 
     windowPanel.pos.x = 100.f - windowPanel.scale.x - screenGapPerc; //Keep on the right side
     libraryPanelDisplayer.pos.x = libraryPanelLeft.pos.x + libraryPanelLeft.scale.x + libraryPanelDisplayer.scale.x; //Keep on the left side of the window panel 
