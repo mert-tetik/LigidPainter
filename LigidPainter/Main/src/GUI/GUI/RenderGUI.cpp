@@ -248,17 +248,17 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             this->panelPositioning(screenGapPerc, painter);
     }
 
-    Section* paintingPanelActiveSection;
+    Section* paintingPanelActiveSection = nullptr;
 
-    if(selectedPaintingPanelMode == 0)
+    if(selectedPaintingPanelMode == 0 && painter.selectedDisplayingModeIndex != 0)
         paintingPanelActiveSection = &this->colorSection;
     if(selectedPaintingPanelMode == 2)
         paintingPanelActiveSection = &this->brushSection;
-    if(selectedPaintingPanelMode == 3)
+    if(selectedPaintingPanelMode == 3 && painter.selectedDisplayingModeIndex != 0)
         paintingPanelActiveSection = &this->meshSection;
-    if(selectedPaintingPanelMode == 4)
+    if(selectedPaintingPanelMode == 4 && painter.selectedDisplayingModeIndex != 0)
         paintingPanelActiveSection = &this->mirrorSection;
-    if(selectedPaintingPanelMode == 5)
+    if(selectedPaintingPanelMode == 5 && painter.selectedDisplayingModeIndex != 0)
         paintingPanelActiveSection = &this->paintingOverSection;
     
     if(selectedPaintingPanelMode == 1)
@@ -266,8 +266,11 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     else{
         if(paintingPanel.sections.size() > 1)
             paintingPanel.sections.erase(paintingPanel.sections.begin()+1, paintingPanel.sections.end());
-           
-        paintingPanel.sections[0] = *paintingPanelActiveSection;
+        
+        if(paintingPanelActiveSection != nullptr)
+            paintingPanel.sections[0] = *paintingPanelActiveSection;
+        else
+            paintingPanel.sections[0] = this->cantBeDisplayedSection;
     }
     
     paintingPanel.render(timer,!anyDialogActive);
@@ -277,7 +280,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
     if(selectedPaintingPanelMode == 1)
         this->paintingChannelsSection = paintingPanel.sections; 
-    else
+    else if(paintingPanelActiveSection != nullptr)
         *paintingPanelActiveSection = paintingPanel.sections[0];
     
     paintingPanelModeDisplayer.text = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.text; 

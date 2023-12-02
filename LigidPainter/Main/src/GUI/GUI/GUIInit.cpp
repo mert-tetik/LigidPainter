@@ -635,6 +635,18 @@ void UI::init
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Ambient Occlusion"  , Texture(), 1.f, 0.f, 1.f, 0.5f)), //7
                                     }
                                 );
+
+    this->cantBeDisplayedSection =        Section(
+                                    Element(),
+                                    {   
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Can't be displayed in the current displaying mode"  , Texture(), 7.f, false)),
+                                    }
+                                );
+
+    this->cantBeDisplayedSection.elements[0].button.color = glm::vec4(0.);
+    this->cantBeDisplayedSection.elements[0].button.color2 = glm::vec4(0.);
+    this->cantBeDisplayedSection.elements[0].button.outline = false;;
+    this->cantBeDisplayedSection.elements[0].button.outlineExtra = false;;
     
     char whitePixel[] = { 127, 127, 127, 127 };
     brushSection.elements[9].button.textureSelection2D = true;

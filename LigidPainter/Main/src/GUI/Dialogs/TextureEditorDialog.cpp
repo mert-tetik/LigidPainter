@@ -41,7 +41,6 @@ TextureEditorDialog::TextureEditorDialog(){
 
     //Create the panel
     this->bgPanel = Panel(
-        
         {
             {
                 Section(
@@ -51,7 +50,7 @@ TextureEditorDialog::TextureEditorDialog(){
                 )
             }
         },
-        glm::vec2(34.f, 34.f),
+        glm::vec2(34.f, 35.f),
         glm::vec3(50.f,50.f,0.8f),
         ColorPalette::mainColor,
         ColorPalette::thirdColor,

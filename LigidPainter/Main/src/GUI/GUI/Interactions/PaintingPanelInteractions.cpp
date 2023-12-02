@@ -43,6 +43,16 @@ void UI::paintingPanelInteraction(
     //Get the brush data from GUI to the painter class
     painter.setBrushProperties(brushSection);
 
+    if(painter.selectedDisplayingModeIndex == 0){
+        this->paintingOverSection.elements[0].checkBox.clickState1 = false;
+        this->paintingOverSection.elements[1].checkBox.clickState1 = false;
+        this->meshSection.elements[1].checkBox.clickState1 = false;
+        this->meshSection.elements[2].checkBox.clickState1 = false;
+        this->mirrorSection.elements[0].checkBox.clickState1 = false;
+        this->mirrorSection.elements[2].checkBox.clickState1 = false;
+        this->mirrorSection.elements[4].checkBox.clickState1 = false;
+    }
+
     if(colorSection.elements[0].button.hover && *Mouse::LDoubleClick()){//Pressed to first color button element
         painter.loadColor1();
     }

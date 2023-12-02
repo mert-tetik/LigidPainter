@@ -129,16 +129,17 @@ public:
     
     Panel paintingPanel;
     Panel paintingPanelModePanel;
-    Button paintingPanelModeDisplayer;
-    int selectedPaintingPanelMode = 0;
     Section colorSection; 
     Section brushSection; 
     Section meshSection; 
-    std::vector<Section> paintingChannelsSection; 
-    Panel paintingChannelsTextureSelectionPanel;
-    bool paintingChannelsTextureSelectionPanelActive = false;
     Section mirrorSection; 
     Section paintingOverSection; 
+    std::vector<Section> paintingChannelsSection;
+    Section cantBeDisplayedSection; 
+    Button paintingPanelModeDisplayer;
+    int selectedPaintingPanelMode = 0;
+    Panel paintingChannelsTextureSelectionPanel;
+    bool paintingChannelsTextureSelectionPanelActive = false;
 
     bool anyPanelHover = false;
 
