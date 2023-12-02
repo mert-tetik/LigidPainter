@@ -40,7 +40,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void UI::init
             (  
-                Websites websites
+                Websites websites,
+                Painter& painter
             ){
     
     //Take params to the class member variables
@@ -666,6 +667,8 @@ void UI::init
     meshSection.elements[0].button.meshSelection = true;
     meshSection.elements[6].button.textureSelection3D = true;
 
+    colorSection.elements[0].button.textureSizeScale = 1.f;
+    colorSection.elements[0].button.color2 = colorSection.elements[0].button.color;
     colorSection.elements[1].checkBox.clickState1 = true;
     colorSection.elements[6].checkBox.clickState1 = true;
     colorSection.elements[8].checkBox.clickState1 = true;
@@ -705,4 +708,7 @@ void UI::init
     {
         brushSection.elements[i].rangeBar.defaultPointMode = false;
     }
+
+    paintingSectionDisplayMat = Material("Painting section display", 0);
+    paintingSectionDisplayMat.materialModifiers.push_back(materialEditorDialog.appMaterialModifiers.solidModifier);
 }   

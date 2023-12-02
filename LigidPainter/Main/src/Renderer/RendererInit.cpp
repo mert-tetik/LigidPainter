@@ -138,7 +138,7 @@ void Renderer::initRenderer(){
     websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
 
     //Init the userinterface
-    userInterface.init(websites);
+    userInterface.init(websites, painter);
 
     //Load the cursors of the LigidPainter
     Mouse::loadCursors();

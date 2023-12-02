@@ -35,6 +35,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
+static glm::vec3 prevSelectedClr;
+static bool painterColorDisplayMatInit = false;
+
 void UI::paintingPanelInteraction(
                                 Painter &painter 
                             )
@@ -53,6 +56,31 @@ void UI::paintingPanelInteraction(
         this->mirrorSection.elements[4].checkBox.clickState1 = false;
     }
 
+    for (size_t i = 0; i < this->colorSection.elements.size(); i++){
+        if(this->colorSection.elements[i].rangeBar.valueDoneChanging || prevSelectedClr != painter.getSelectedColor().getRGB_normalized() || !painterColorDisplayMatInit){
+            painterColorDisplayMatInit = true;
+            
+            Camera cam;
+            cam.cameraPos = glm::vec3(0,0,3.5f);
+            cam.radius = -3.5f;
+            if(paintingSectionDisplayMat.materialModifiers.size()){
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[0].button.color = glm::vec4(glm::vec3(painter.getSelectedColor().getRGB_normalized()), 1.f);
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[2].button.color = glm::vec4(glm::vec3(painter.roughnessVal), 1.f);
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[4].button.color = glm::vec4(glm::vec3(painter.metallicVal), 1.f);
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[6].button.color = glm::vec4(glm::vec3(0.5f,0.5f,1.f), 1.f);
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[8].button.color = glm::vec4(glm::vec3(painter.heightMapVal), 1.f);
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[10].button.color = glm::vec4(glm::vec3(painter.ambientOcclusionVal), 1.f);
+            }
+            paintingSectionDisplayMat.updateMaterialDisplayingTexture(512, true, cam, 0);
+            
+            break;
+        }
+    }
+
+    prevSelectedClr = painter.getSelectedColor().getRGB_normalized();
+
+    this->colorSection.elements[0].button.texture = paintingSectionDisplayMat.displayingTexture;
+    
     for (size_t i = 0; i < this->colorSection.elements.size(); i++)
     {
         if(painter.selectedDisplayingModeIndex == 1){
@@ -69,7 +97,6 @@ void UI::paintingPanelInteraction(
                         this->colorSection.elements[i].scale.y = 1.f;
                     if(i == 0)
                         this->colorSection.elements[i].scale.y = 4.f;
-
                 }
             }
         }

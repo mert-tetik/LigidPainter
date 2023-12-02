@@ -140,6 +140,7 @@ public:
     int selectedPaintingPanelMode = 0;
     Panel paintingChannelsTextureSelectionPanel;
     bool paintingChannelsTextureSelectionPanelActive = false;
+    Material paintingSectionDisplayMat;
 
     bool anyPanelHover = false;
 
@@ -192,7 +193,7 @@ public:
     UI();
 
     /*! @brief Initializes all the GUI elements. Creates the panels & stuff. And takes the parameters to the member variables. */
-    void init(Websites websites);
+    void init(Websites websites, Painter& painter);
     
     /*! @brief Renders all the GUI */
     void render(Timer &timer,Project &project, Painter &painter, Skybox &skybox);

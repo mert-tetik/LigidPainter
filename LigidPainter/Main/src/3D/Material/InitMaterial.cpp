@@ -45,6 +45,7 @@ Material::Material(std::string title, int ID){
     
     //Init displaying texture
     this->displayingTexture = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
+    this->displayingTexture.title = "MaterialDisplay";
 
     //Capturing framebuffer
     this->displayingFBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)));
