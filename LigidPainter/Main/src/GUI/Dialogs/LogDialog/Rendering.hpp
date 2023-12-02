@@ -145,6 +145,10 @@ static void rendering(
         yesBtn.render(timer, true);
         noBtn.render(timer, true);
     }
+    else{
+        yesBtn.hover = false;
+        noBtn.hover = false;
+    }
 
     libraryHistoryBtn.pos = historyPanel.pos;
     libraryHistoryBtn.pos.y += historyPanel.scale.y + libraryHistoryBtn.scale.y;

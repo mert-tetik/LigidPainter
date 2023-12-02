@@ -774,5 +774,13 @@ void LogDialog::render(
 }
 
 bool LogDialog::isHovered(){
-    return this->messagesPanel.hover || this->historyPanel.hover || this->logBtn.hover || this->logBtnL.hover || this->logBtnR.hover || this->libraryHistoryBtn.hover || this->otherHistoryBtn.hover;
+    return this->messagesPanel.hover || 
+    this->historyPanel.hover || 
+    this->logBtn.hover || 
+    this->logBtnL.hover || 
+    this->logBtnR.hover || 
+    this->libraryHistoryBtn.hover || 
+    this->otherHistoryBtn.hover ||
+    this->noBtn.hover ||
+    this->yesBtn.hover;
 }
