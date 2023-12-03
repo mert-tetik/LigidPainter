@@ -33,6 +33,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+// Defined in the RenderPanel.cpp
+extern bool updateThePreRenderedPanels;
+
 static Mesh customMatMesh;
 
 static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 textureRes, unsigned int &selectedTextureID){
@@ -334,6 +337,8 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
         Library::getTexture(txtrI)->copyDataToTheCopyContext();
         projectUpdatingThreadElements.updateTextures = true;
     }
+
+    updateThePreRenderedPanels = true;
 }
 
 //Clear the painting texture

@@ -36,6 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 bool _ligid_renderer_render_first_frame = true;
 
+
 void Renderer::render(){
 
     glm::ivec2 maxWindowSize;
@@ -261,10 +262,6 @@ void Renderer::render(){
     //Than changes the active cursor as default cursor
     Mouse::updateCursor();  
 
-
-
-
-
     // ------- Rendering the framebuffer result ------- 
     if(true){
 
@@ -294,7 +291,6 @@ void Renderer::render(){
 
         Debugger::block("Low resolution framebuffer result"); // End
     }
-
 
 
 

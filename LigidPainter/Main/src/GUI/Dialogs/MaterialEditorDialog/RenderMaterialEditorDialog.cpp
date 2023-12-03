@@ -30,6 +30,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+// Defined in the RenderPanel.cpp
+extern bool updateThePreRenderedPanels;
 
 void updateMaterialDisplayerButton(Button &materialDisplayer, Material &material, Panel &bgPanel, Panel &modifiersPanel, Panel &layerPanel){
     //Update material displayer button
@@ -132,6 +134,8 @@ void MaterialEditorDialog::render
         if(!wasTextureSelectionDialogActive() && !ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
             this->displayModeComboBox.selectedIndex = 0;
             material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, Camera(), 0, false);
+
+            updateThePreRenderedPanels = true;
 
             this->deactivate(textureSelectionDialog);
         }

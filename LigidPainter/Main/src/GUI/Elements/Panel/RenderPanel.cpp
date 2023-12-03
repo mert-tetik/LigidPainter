@@ -31,6 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+bool updateThePreRenderedPanels = false;
     
 void Panel::render(Timer &timer, bool doMouseTracking){
     
@@ -146,6 +147,7 @@ void Panel::updateUpdateGraphicsFlag(){
                             prevSections[secI].elements[eI].button.hoverMixVal != sections[secI].elements[eI].button.hoverMixVal ||
                             prevSections[secI].elements[eI].button.clickedMixVal != sections[secI].elements[eI].button.clickedMixVal ||
                             prevSections[secI].elements[eI].button.clicked || sections[secI].elements[eI].button.clicked ||
+                            updateThePreRenderedPanels ||
                             prevSections[secI].elements[eI].button.color != sections[secI].elements[eI].button.color ||
                             prevSections[secI].elements[eI].button.texture.ID != sections[secI].elements[eI].button.texture.ID ||
                             prevSections[secI].elements[eI].rangeBar.value != sections[secI].elements[eI].rangeBar.value ||

@@ -471,7 +471,13 @@ void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection)
     selectedTextureCustomMeshDisplayingMode.pos.x = selectedTextureMaterialBallDisplayingMode.pos.x + selectedTextureMaterialBallDisplayingMode.scale.x + selectedTextureCustomMeshDisplayingMode.scale.x;
     selectedTextureCustomMeshDisplayingMode.pos.y = selectedTextureMaterialBallDisplayingMode.pos.y;
     selectedTextureCustomMeshDisplayingMode.pos.z = selectedTextureMaterialBallDisplayingMode.pos.z;
-    
+
+    if(!selectedTextureSolidDisplayingModeBtn.texture.ID){
+        selectedTextureSolidDisplayingModeBtn.texture = Settings::appTextures().solidPaintingDisplayingMode;
+        selectedTextureMaterialBallDisplayingMode.texture = Settings::appTextures().ligidPainterIcon;
+        selectedTextureCustomMeshDisplayingMode.texture = Settings::appTextures().TDModelIcon;
+    }
+
     selectedTextureSolidDisplayingModeBtn.render(timer, true);
     selectedTextureMaterialBallDisplayingMode.render(timer, true);
     selectedTextureCustomMeshDisplayingMode.render(timer, true);

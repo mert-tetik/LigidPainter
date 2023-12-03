@@ -32,6 +32,9 @@
 
 #include "tinyfiledialogs.h"
 
+// Defined in the RenderPanel.cpp
+extern bool updateThePreRenderedPanels;
+
 NewTextureDialog::NewTextureDialog(){
     //Create the panel
     this->panel = Panel(
@@ -109,6 +112,7 @@ void NewTextureDialog::render(Timer timer){
             panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
             panel.sections[0].elements[1].textBox.text = "NewTexture";
             dialogControl.unActivate();
+            updateThePreRenderedPanels = true;
             Library::addTexture(txtr, "New texture via texture selection dialog");
         }
     }
@@ -159,6 +163,7 @@ void NewTextureDialog::render(Timer timer){
                 panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
                 panel.sections[0].elements[1].textBox.text = "NewTexture";
                 dialogControl.unActivate();
+                updateThePreRenderedPanels = true;
             }
         }
     }

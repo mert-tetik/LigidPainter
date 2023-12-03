@@ -388,5 +388,4 @@ TextureSelectionDialog::TextureSelectionDialog(){
     this->selectedTextureMaterialBallDisplayingMode.textColor2 = glm::vec4(1.);
     this->selectedTextureCustomMeshDisplayingMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1),"Custom Mesh", Settings::appTextures().TDModelIcon, 1.f,false);
     this->selectedTextureCustomMeshDisplayingMode.textColor2 = glm::vec4(1.);
-
 }

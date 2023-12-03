@@ -35,6 +35,9 @@
 #include <iostream>
 #include <vector>
 
+// Defined in the RenderPanel.cpp
+extern bool updateThePreRenderedPanels;
+
 TextureEditorDialog::TextureEditorDialog(){
 
     this->displayingTexture = Texture(nullptr, 512, 512, GL_LINEAR);
@@ -710,6 +713,8 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
     
         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
             this->dialogControl.unActivate();
+     
+        updateThePreRenderedPanels = true;
     }
 
     if(this->saveAsButton.clicked){
@@ -720,6 +725,8 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
         
         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
             this->dialogControl.unActivate();
+
+        updateThePreRenderedPanels = true;
     }
 
     //End the dialog

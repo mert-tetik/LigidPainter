@@ -42,6 +42,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
+// Defined in the RenderPanel.cpp
+extern bool updateThePreRenderedPanels;
+
 TextureSelectionDialog __texture_selection_dialog;
 FilterSelectionDialog __filter_selection_dialog;
 MeshSelectionDialog __mesh_selection_dialog;
@@ -138,6 +141,8 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
 
     //Render the panels
     renderPanels(timer, painter, screenGapPerc);
+
+    updateThePreRenderedPanels = false;
 
     Debugger::block("GUI : Complete Panels"); // End
 
