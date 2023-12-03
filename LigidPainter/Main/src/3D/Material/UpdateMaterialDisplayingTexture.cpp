@@ -57,7 +57,7 @@ void Material::updateMaterialDisplayingTexture(
         //TODO : Material - update material function
         for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
         {
-            this->materialModifiers[i].updateMaterialChannels(*this, getSphereModel()->meshes[0], textureRes, i, Settings::appTextures().white, 0);
+            this->materialModifiers[i].updateMaterialChannels(*this, getMaterialDisplayerModel()->meshes[0], textureRes, i, Settings::appTextures().white, 0);
         }
     }
     
@@ -105,21 +105,21 @@ void Material::updateMaterialDisplayingTexture(
     }
     else{
         glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].albedo.ID);
+        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].albedo.ID);
         glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].roughness.ID);
+        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].roughness.ID);
         glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].metallic.ID);
+        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].metallic.ID);
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].normalMap.ID);
+        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].normalMap.ID);
         glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].heightMap.ID);
+        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].heightMap.ID);
         glActiveTexture(GL_TEXTURE7);
-        glBindTexture(GL_TEXTURE_2D, getSphereModel()->meshes[0].ambientOcclusion.ID);
+        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].ambientOcclusion.ID);
     }
     
     //Draw the sphere
-    getSphereModel()->Draw();
+    getMaterialDisplayerModel()->Draw();
     
     ShaderSystem::tdModelShader().setInt("displayingMode", 0);
     

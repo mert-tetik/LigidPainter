@@ -1084,7 +1084,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     if(objectTexturingDialog.dialogControl.isActive() && !materialEditorDialog.dialogControl.active)
         objectTexturingDialog.render(timer, this->projection, materialEditorDialog, logDialog);
     
-    if(materialEditorDialog.dialogControl.isActive() && Library::getMaterialArraySize())
+    if(materialEditorDialog.dialogControl.isActive())
         materialEditorDialog.render(timer, textureSelectionDialog, logDialog);
     
     if(!Settings::properties()->cat_hide){
