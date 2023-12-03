@@ -390,7 +390,7 @@ public:
 
     void flipTexture(bool horizontal, bool vertical);
 
-    void mix(Texture txtr2, Texture mask);
+    void mix(Texture txtr2, Texture mask, bool maskAlpha);
 
 };
 

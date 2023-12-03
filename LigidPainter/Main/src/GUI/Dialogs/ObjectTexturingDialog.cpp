@@ -93,6 +93,9 @@ ObjectTexturingDialog::ObjectTexturingDialog(AppMaterialModifiers appMaterialMod
     this->maskViaTexture = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Mask via texture", Texture(), 1.f, false);
     this->cancelMasks = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Cancel masks", Texture(), 1.f, false);
     
+    this->maskMaterialBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Material mask", Texture(), 1.f, false);
+    this->maskMaterialBtn.textureSelection3D = true;
+
     this->ctrlInfoBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(7, 4.f), "CTRL - Unselect the selected faces", Texture(), 1.f, false);
     this->shiftInfoBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(7, 4.f), "SHIFT - Add to selected faces", Texture(), 1.f, false);
     this->ctrlInfoBtn.color = glm::vec4(0.);
@@ -263,6 +266,9 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->maskViaTexture.pos.y += this->maskViaTexture.scale.y + this->maskViaFaceSelection.scale.y;
     this->cancelMasks.pos = this->maskViaTexture.pos;
     this->cancelMasks.pos.y += this->cancelMasks.scale.y + this->maskViaTexture.scale.y;
+    
+    this->maskMaterialBtn.pos = cancelMasks.pos;
+    this->maskMaterialBtn.pos.y += this->maskMaterialBtn.scale.y + cancelMasks.scale.y * 2.f;
 
     this->ctrlInfoBtn.pos = this->panel.pos;
     this->ctrlInfoBtn.pos.y += this->panel.scale.y - this->ctrlInfoBtn.scale.y;
@@ -271,8 +277,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->shiftInfoBtn.pos.y += this->panel.scale.y - this->ctrlInfoBtn.scale.y;
     this->shiftInfoBtn.pos.x += this->shiftInfoBtn.scale.x + 2;
 
-    this->assignRelatedTexturesButton.pos = cancelMasks.pos;
-    this->assignRelatedTexturesButton.pos.y += assignRelatedTexturesButton.scale.y + cancelMasks.scale.y * 2.f;
+    this->assignRelatedTexturesButton.pos = maskMaterialBtn.pos;
+    this->assignRelatedTexturesButton.pos.y += assignRelatedTexturesButton.scale.y + maskMaterialBtn.scale.y * 2.f;
 
     this->materialDisplayerButton.pos = this->panel.pos;
     this->materialDisplayerButton.pos.x += this->panel.scale.x - this->materialDisplayerButton.scale.x - 6.f;
@@ -304,10 +310,15 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
 
     ShaderSystem::buttonShader().use();
 
+    if(this->maskMaterialBtn.clicked){
+        this->updateMeshTextures();
+    }
+
     // Render the elements
     this->maskViaFaceSelection.render(timer, !this->materialSelection && !this->textureSelection);
     this->maskViaTexture.render(timer, !this->materialSelection && !this->textureSelection);
     this->cancelMasks.render(timer, !this->materialSelection && !this->textureSelection);
+    this->maskMaterialBtn.render(timer, !this->materialSelection && !this->textureSelection);
     this->assignRelatedTexturesButton.render(timer, !this->materialSelection && !this->textureSelection);
     this->materialDisplayerButton.render(timer, false);
     this->editMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
@@ -623,12 +634,23 @@ void ObjectTexturingDialog::updateMeshTextures(){
                 this->material.materialModifiers[i].updateMaterialChannels(this->material, getModel()->meshes[meshI], this->getResolution(), i, this->faceSelection[meshI].meshMask, this->faceSelection[meshI].selectedFaces);
         }
         
+        unsigned int maskMat = maskMaterialBtn.texture.generateProceduralTexture(getModel()->meshes[meshI], this->getResolution());
+
+        getModel()->meshes[meshI].albedo.mix(albedo, maskMat, false); 
+        getModel()->meshes[meshI].roughness.mix(roughness, maskMat, false); 
+        getModel()->meshes[meshI].metallic.mix(metallic, maskMat, false); 
+        getModel()->meshes[meshI].normalMap.mix(normalMap, maskMat, false); 
+        getModel()->meshes[meshI].heightMap.mix(heightMap, maskMat, false); 
+        getModel()->meshes[meshI].ambientOcclusion.mix(ambientOcclusion, maskMat, false);
+
         getModel()->meshes[meshI].albedo = albedo; 
         getModel()->meshes[meshI].roughness = roughness; 
         getModel()->meshes[meshI].metallic = metallic; 
         getModel()->meshes[meshI].normalMap = normalMap; 
         getModel()->meshes[meshI].heightMap = heightMap; 
         getModel()->meshes[meshI].ambientOcclusion = ambientOcclusion; 
+
+        glDeleteTextures(1, &maskMat);
     }
 }
 

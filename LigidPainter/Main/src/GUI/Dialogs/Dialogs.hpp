@@ -429,6 +429,8 @@ public:
    Button maskViaFaceSelection;
    Button maskViaTexture;
    Button cancelMasks;
+
+   Button maskMaterialBtn;
    
    Button ctrlInfoBtn;
    Button shiftInfoBtn;
