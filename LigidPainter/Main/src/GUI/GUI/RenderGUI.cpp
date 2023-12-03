@@ -460,8 +460,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     //
 
 
-    if(!painter.threeDimensionalMode){
-        
+    if(!painter.threeDimensionalMode && painter.selectedDisplayingModeIndex == 2){
         glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
         glm::vec2 prevScale = destScale * this->twoDPaintingSceneScroll;
         float scrVal = *Mouse::mouseScroll() / Settings::videoScale()->y * 4.f;
@@ -503,6 +502,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
 
         //Render the 2D painting panel
+        twoDPaintingPanel.sections[0].elements[0].button.text = "";
         twoDPaintingPanel.render(timer,false);
         if(twoDPaintingPanel.resizingDone){
             for (size_t i = 0; i < 5; i++)
@@ -586,6 +586,15 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         getBox()->bindBuffers();
 
         ShaderSystem::buttonShader().use();
+    }
+    else if(!painter.threeDimensionalMode){
+        //Render the 2D painting panel
+        twoDPaintingPanel.sections[0].elements[0].button.text = "2D Painting can't be displayed in the current displaying mode";
+        twoDPaintingPanel.render(timer, false);
+        if(twoDPaintingPanel.resizingDone){
+            for (size_t i = 0; i < 5; i++)
+                this->panelPositioning(screenGapPerc, painter);
+        }
     }
 
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -1073,7 +1082,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
                             timer, painter, greetingDialog, newProjectDialog, exportDialog, materialDisplayerDialog, filterDisplayerDialog,
                             loadProjectDialog, materialEditorDialog, textureSelectionDialog, bakingDialog, filterSelectionDialog, newTextureDialog, 
                             paintingChannelsAutoCreateTexturesDialog, settingsDialog, displayerDialog, textureEditorDialog, texturePackEditorDialog, 
-                            projectRecoverDialog, objectTexturingDialog, paintingOverTextureFields
+                            projectRecoverDialog, objectTexturingDialog, paintingOverTextureFields, project
                         );
     }
     else

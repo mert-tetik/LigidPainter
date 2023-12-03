@@ -880,7 +880,7 @@ class LogDialog
                NewTextureDialog& newTextureDialog, PaintingChannelsAutoCreateTexturesDialog& paintingChannelsAutoCreateTexturesDialog, 
                SettingsDialog& settingsDialog, DisplayerDialog& displayerDialog, TextureEditorDialog& textureEditorDialog, 
                TexturePackEditorDialog& texturePackEditorDialog, ProjectRecoverDialog& projectRecoverDialog, 
-               ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields
+               ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields, Project &project
             );
 
    bool unded = false;

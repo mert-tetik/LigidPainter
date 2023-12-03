@@ -163,6 +163,7 @@ static int dizzyCounter = 0;
 
 static int prevpPainterDisplayIndex = 0;
 static unsigned int prevpPainterSelectedTxtr = 0;
+static std::string lastProjectPath;
 
 void LogDialog::render(
                             Timer timer, 
@@ -185,7 +186,8 @@ void LogDialog::render(
                             TexturePackEditorDialog& texturePackEditorDialog,
                             ProjectRecoverDialog& projectRecoverDialog,
                             ObjectTexturingDialog& objectTexturingDialog,
-                            std::vector<TextureField>& paintingOverTextureFields
+                            std::vector<TextureField>& paintingOverTextureFields,
+                            Project &project
                         )
 {
     this->unded = false;
@@ -614,7 +616,7 @@ void LogDialog::render(
     }
 
     // Delete the unrelated history data
-    if(!materialEditorDialog.dialogControl.isActive()){
+    if(!materialEditorDialog.dialogControl.isActive() || project.folderPath != lastProjectPath){
         for (size_t i = 0; i < actions_MaterialEditor.size(); i++)
         {
             actions_MaterialEditor[i].material.deleteBuffers();
@@ -623,8 +625,9 @@ void LogDialog::render(
     }
 
     if( 
-        prevpPainterDisplayIndex != painter.selectedDisplayingModeIndex || 
-        (prevpPainterSelectedTxtr != painter.selectedTexture.ID && painter.selectedDisplayingModeIndex == 2)
+            prevpPainterDisplayIndex != painter.selectedDisplayingModeIndex || 
+            (prevpPainterSelectedTxtr != painter.selectedTexture.ID && painter.selectedDisplayingModeIndex == 2) ||
+            project.folderPath != lastProjectPath
         )
     {
         try
@@ -650,7 +653,7 @@ void LogDialog::render(
     prevpPainterDisplayIndex = painter.selectedDisplayingModeIndex;
     prevpPainterSelectedTxtr = painter.selectedTexture.ID;
 
-    if(!painter.paintingoverTextureEditorMode){
+    if(!painter.paintingoverTextureEditorMode || project.folderPath != lastProjectPath){
         for (size_t i = 0; i < actions_TextureFields.size(); i++)
         {
             for (size_t fieldI = 0; fieldI < actions_TextureFields[i].fields.size(); fieldI++)
@@ -671,8 +674,20 @@ void LogDialog::render(
         actions_TextureFields.clear();
     }
     
-    if(!(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode)){
+    if(!(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode) || project.folderPath != lastProjectPath){
         actions_FaceSelection.clear();
+    }
+
+    if(project.folderPath != lastProjectPath){
+        /*
+        for (size_t i = 0; i < actions_Library.size(); i++)
+        {
+            glDeleteTextures(1, &actions_Library[i].texture.ID);
+            glDeleteTextures(1, &actions_Library[i].alteredTexture.ID);
+        }
+        */
+
+        actions_Library.clear();
     }
 
     if(messagesActive){
@@ -771,6 +786,7 @@ void LogDialog::render(
 
     newLibraryAction = false;
     newOtherAction = false;
+    lastProjectPath = project.folderPath;
 }
 
 bool LogDialog::isHovered(){

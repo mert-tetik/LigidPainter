@@ -289,13 +289,11 @@ void UI::init
 
     //Init the 2D painting panel
     twoDPaintingPanel  = Panel(
-                            
-                            
                             {
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5.5f),""        , Texture(), 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5.5f), "Can't display 2D painting in the current displaying mode", Texture(), 0.f,false)),
                                     }
                                 )
                             },
@@ -668,7 +666,7 @@ void UI::init
     this->cantBeDisplayedSection =        Section(
                                     Element(),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Can't be displayed in the current displaying mode"  , Texture(), 7.f, false)),
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2), ""  , Texture(), 7.f, false)),
                                     }
                                 );
 
