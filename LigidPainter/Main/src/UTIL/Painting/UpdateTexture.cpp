@@ -165,7 +165,34 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
 }
 
 void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox){
-        
+    
+    if(this->threeDimensionalMode && this->selectedDisplayingModeIndex != 2){
+        LGDLOG::start << "ERROR : Painting : Invalid displaying mode for the 2D painting" << LGDLOG::end;
+        return;
+    }
+
+    if(this->selectedMeshIndex >= getModel()->meshes.size()){
+        LGDLOG::start << "ERROR : Painting : Invalid selected mesh" << LGDLOG::end;
+        return;
+    }
+    
+    if(this->selectedDisplayingModeIndex == 2 && (!this->selectedTexture.ID || glIsTexture(this->selectedTexture.ID) == GL_FALSE)){
+        LGDLOG::start << "ERROR : Painting : Selected texture is invalid" << LGDLOG::end;
+        return;
+    }
+
+    if(
+            !getModel()->meshes[this->selectedMeshIndex].albedo.ID ||
+            !getModel()->meshes[this->selectedMeshIndex].roughness.ID ||
+            !getModel()->meshes[this->selectedMeshIndex].metallic.ID ||
+            !getModel()->meshes[this->selectedMeshIndex].normalMap.ID ||
+            !getModel()->meshes[this->selectedMeshIndex].heightMap.ID ||
+            !getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID
+        )
+    {
+        LGDLOG::start << "WARNING : Painting : Missing texture detected!" << LGDLOG::end;
+    }
+
     int txtrI = this->getSelectedTextureIndexInLibrary();
     
     if(this->useCustomMaterial && this->selectedMeshIndex < getModel()->meshes.size()){
