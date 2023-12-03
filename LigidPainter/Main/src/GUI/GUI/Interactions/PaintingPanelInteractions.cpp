@@ -108,7 +108,7 @@ void UI::paintingPanelInteraction(
         else{
             colorSection.elements[16].checkBox.clickState1 = false;
 
-            if(i != 2 && i != 3 && i != 4){
+            if(i != 2 && i != 3 && i != 4 && i != 5){
                 this->colorSection.elements[i].scale.y = 0.f;
             }
             else{
@@ -162,7 +162,7 @@ void UI::paintingPanelInteraction(
     
 
     //If clicked to the dropper button activate the dropper
-    if(colorSection.elements[5].button.hover && *Mouse::LClick()){
+    if(colorSection.elements[5].button.clicked){
         dropper.active = true;
     }
 

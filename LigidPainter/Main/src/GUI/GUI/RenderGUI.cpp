@@ -178,7 +178,8 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
             !painter.paintingoverTextureEditorMode &&
             !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
-            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
+            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) && 
+            !dropper.active
         )
     {
         renderBrushCursor(painter.brushProperties.radius, this->projection);
