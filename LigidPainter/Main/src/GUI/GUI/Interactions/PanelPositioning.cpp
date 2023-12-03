@@ -63,7 +63,7 @@ void UI::panelPositioning(
     nodeEditorDisplayer.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (paintingPanelModePanel.scale.x+windowPanel.scale.x+paintingPanel.scale.x);
     
     twoDPaintingPanel.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (paintingPanelModePanel.scale.x+windowPanel.scale.x+paintingPanel.scale.x);
-    twoDPaintingPanel.scale.y = 50 - navigationPanel.scale.y - nodeEditorDisplayer.scale.y;
+    twoDPaintingPanel.scale.y = 50 - navigationPanel.scale.y;
     twoDPaintingPanel.pos.x = paintingPanelModePanel.pos.x - paintingPanelModePanel.scale.x - twoDPaintingPanel.scale.x; //Keep on the left side of the window panel 
     twoDPaintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + twoDPaintingPanel.scale.y; //Keep beneath the navigation bar
     paintingModesPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + paintingModesPanel.scale.x + 1;
