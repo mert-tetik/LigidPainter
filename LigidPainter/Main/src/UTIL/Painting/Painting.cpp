@@ -446,8 +446,10 @@ void Painter::generateMirroredProjectedPaintingTexture(
 
         glm::vec3 cam = glm::abs(glm::normalize(getScene()->camera.cameraPos));
 
+        std::cout << glm::to_string(cam) << std::endl;
+
         //In the X axis
-        if(cam.x > 0.75 && cam.y < 0.75 && cam.z < 0.75){
+        if(cam.x > 0.5){
             float invertVal = 1.f;
             if(
                 mirrorSides[i].effectAxis == oXSide.effectAxis || 
@@ -458,26 +460,12 @@ void Painter::generateMirroredProjectedPaintingTexture(
                 invertVal = -1.f;
             
             horizontal = std::max(mirrorSides[i].effectAxis.z * invertVal, 0.f);
-            vertical = std::max(mirrorSides[i].effectAxis.y * invertVal, 0.f);
-        }
-        
-        //In the Y axis
-        else if(cam.x < 0.75 && cam.y > 0.75 && cam.z < 0.75){
-            float invertVal = 1.f;
-            if(
-                mirrorSides[i].effectAxis == oYSide.effectAxis || 
-                mirrorSides[i].effectAxis == oXYSide.effectAxis || 
-                mirrorSides[i].effectAxis == oYZSide.effectAxis || 
-                mirrorSides[i].effectAxis == oXYZSide.effectAxis
-            )
-                invertVal = -1.f;
-            
-            horizontal = std::max(mirrorSides[i].effectAxis.z * invertVal, 0.f);
             vertical = std::max(mirrorSides[i].effectAxis.y, 0.f);
         }
         
+        
         //In the Z axis
-        else if(cam.x < 0.75 && cam.y < 0.75 && cam.z > 0.75){
+        else{
             float invertVal = 1.f;
             if(
                 mirrorSides[i].effectAxis == oZSide.effectAxis || 
