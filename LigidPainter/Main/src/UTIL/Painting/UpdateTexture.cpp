@@ -182,12 +182,13 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
     }
 
     if(
-            !getModel()->meshes[this->selectedMeshIndex].albedo.ID ||
+            this->selectedDisplayingModeIndex == 1 &&
+            (!getModel()->meshes[this->selectedMeshIndex].albedo.ID ||
             !getModel()->meshes[this->selectedMeshIndex].roughness.ID ||
             !getModel()->meshes[this->selectedMeshIndex].metallic.ID ||
             !getModel()->meshes[this->selectedMeshIndex].normalMap.ID ||
             !getModel()->meshes[this->selectedMeshIndex].heightMap.ID ||
-            !getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID
+            !getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
         )
     {
         LGDLOG::start << "WARNING : Painting : Missing texture detected!" << LGDLOG::end;

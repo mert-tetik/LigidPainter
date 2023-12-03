@@ -619,6 +619,16 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         this->textureSelectedObjectsButton.render(timer, !anyDialogActive);
 
         if(this->textureSelectedObjectsButton.clicked){
+            bool anyObjSelected = false;
+            for (size_t i = 0; i < getModel()->meshes.size(); i++)
+            {
+                if(getModel()->meshes[i].selectedObjectIndices.size())
+                    anyObjSelected = true;
+            }
+            
+            if(!anyObjSelected)
+                LGDLOG::start << "WARNING! No object was selected" << LGDLOG::end;
+
             this->objectTexturingDialog.dialogControl.activate();
         }
 
