@@ -33,9 +33,15 @@ void Material::updateMaterialDisplayingTexture(
                                                 float textureRes,
                                                 bool updateMaterial,
                                                 Camera matCam,
-                                                int displayingMode
+                                                int displayingMode,
+                                                bool useCustomCam
                                             )
 { 
+
+    if(!useCustomCam){
+        matCam.cameraPos = glm::vec3(0,0,3.5f);
+        matCam.radius = -3.5f;
+    }
 
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(matCam.cameraPos, 

@@ -159,10 +159,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                 this->material = Library::getMaterialObj(matI).duplicateMaterial();
             }
 
-            Camera cam;
-            cam.cameraPos = glm::vec3(0,0,-4.f);
-            cam.radius = 4.f;                            
-            this->material.updateMaterialDisplayingTexture(256, true, cam, 0);
+            this->material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
             this->material.displayingTexture.title = "ObjectTexturingMaterial_DisplayingTexture";
             
             if(!dialogControl.firstFrameActivated)

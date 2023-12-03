@@ -81,7 +81,7 @@ void MaterialDisplayerDialog::render(Timer timer){
             this->dialogControl.unActivate();
     }
 
-    this->material.updateMaterialDisplayingTexture(512, false, this->displayingCam, 0);
+    this->material.updateMaterialDisplayingTexture(512, false, this->displayingCam, 0, true);
     
     dialogControl.updateEnd(timer,0.15f);
 }

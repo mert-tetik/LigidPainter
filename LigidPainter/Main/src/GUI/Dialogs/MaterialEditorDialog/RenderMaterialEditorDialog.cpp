@@ -111,7 +111,7 @@ void MaterialEditorDialog::render
     dialogControl.updateEnd(timer,0.15f);
 
     if(!this->updateTheMaterial && this->prevUpdateTheMaterial){
-        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true);
     }
     
     this->prevUpdateTheMaterial = this->updateTheMaterial;
@@ -131,7 +131,7 @@ void MaterialEditorDialog::render
     if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover && !logDialog.isHovered()) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
         if(!wasTextureSelectionDialogActive() && !ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
             this->displayModeComboBox.selectedIndex = 0;
-            material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+            material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, Camera(), 0, false);
 
             this->deactivate(textureSelectionDialog);
         }
@@ -141,7 +141,7 @@ void MaterialEditorDialog::render
     __materialEditorDialogESCFirstFramePressed = false; 
 
     if((!ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive() && getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) || __lastDisplayModeComboBoxPressed)
-        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true);
 
     __lastDisplayModeComboBoxPressed = this->displayModeComboBox.pressed;
 }
@@ -189,7 +189,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material){
     layerPanel.sections.push_back(layerPanelSection);
     
     //Update the material after updating layerPanel
-    material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+    material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true);
 }
 
 
@@ -442,7 +442,7 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
             textureSelectionDialog.dialogControl.unActivate();
             
             //Update the material after a selection is made
-            material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex);
+            material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true);
         }
     }
 }

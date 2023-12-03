@@ -60,9 +60,6 @@ void UI::paintingPanelInteraction(
         if(this->colorSection.elements[i].rangeBar.valueDoneChanging || prevSelectedClr != painter.getSelectedColor().getRGB_normalized() || !painterColorDisplayMatInit){
             painterColorDisplayMatInit = true;
             
-            Camera cam;
-            cam.cameraPos = glm::vec3(0,0,3.5f);
-            cam.radius = -3.5f;
             if(paintingSectionDisplayMat.materialModifiers.size()){
                 paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[0].button.color = glm::vec4(glm::vec3(painter.getSelectedColor().getRGB_normalized()), 1.f);
                 paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[2].button.color = glm::vec4(glm::vec3(painter.roughnessVal), 1.f);
@@ -72,7 +69,7 @@ void UI::paintingPanelInteraction(
                 paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[10].button.color = glm::vec4(glm::vec3(painter.ambientOcclusionVal), 1.f);
             }
             
-            paintingSectionDisplayMat.updateMaterialDisplayingTexture(512, true, cam, 0);
+            paintingSectionDisplayMat.updateMaterialDisplayingTexture(512, true, Camera(), 0, false);
             
             break;
         }
