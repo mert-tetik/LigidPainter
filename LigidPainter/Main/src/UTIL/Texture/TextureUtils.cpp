@@ -931,9 +931,19 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode){
     LGDMATERIAL_READBITS(textureSelectionDialog_selectedTextureIndex, int, "Property texture - textureSelectionDialog_selectedTextureIndex");
     LGDMATERIAL_READBITS(textureSelectionDialog_selectedMode, int, "Property texture - textureSelectionDialog_selectedMode");
 
+    // --------- Recalculate procedural ID ---------
+    int MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE = 66;
+    int MAX_PROCEDURAL_NOISE_TEXTURE_SIZE = 50;
+    int MAX_PROCEDURAL_SMART_TEXTURE_SIZE = 7;
+
+    if(textureSelectionDialog_selectedMode == 1)
+        proceduralID = textureSelectionDialog_selectedTextureIndex;
+    else if(textureSelectionDialog_selectedMode == 2)
+        proceduralID = textureSelectionDialog_selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE;
+    else if(textureSelectionDialog_selectedMode == 4)
+        proceduralID = textureSelectionDialog_selectedTextureIndex + MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE + MAX_PROCEDURAL_NOISE_TEXTURE_SIZE;
+
     // --------- Read texture data ---------
-     
-    
     std::string txtrTitle = "";
     int txtrTitleSize;
     LGDMATERIAL_READBITS(txtrTitleSize, int, "Property texture - Texture title size");
