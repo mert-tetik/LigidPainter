@@ -50,6 +50,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
                             str.push_back(c); \
                         }
 
+bool readMatChannel(std::ifstream& rf, Texture& matChannel){
+    std::string title;
+    READ_STR(title);
+
+    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+    {
+        if(Library::getTextureObj(i).title == title){
+            matChannel = Library::getTextureObj(i);
+        }
+    }
+    
+    return true;
+}
+
 //Returns true if path is a ligid file
 bool Project::readLigidFile(
                                 std::string path,
@@ -89,13 +103,14 @@ bool Project::readLigidFile(
         uint32_t versionNumber2100 = 2100;   
         uint32_t versionNumber2200 = 2200;   
         uint32_t versionNumber2300 = 2300;   
+        uint32_t versionNumber2400 = 2400;   
         
-        uint32_t versionNumber; //2300  
+        uint32_t versionNumber; //2400  
         READ_BITS(versionNumber, uint32_t, "Version number");
         
         std::cout << "File Version : " << versionNumber << std::endl;
         
-        if(versionNumber != versionNumber2300){
+        if(versionNumber != versionNumber2400){
             LGDLOG::start<< "ERROR : Reading ligid file : Invalid version : " << versionNumber << LGDLOG::end; 
             return false;
         }
@@ -124,6 +139,24 @@ bool Project::readLigidFile(
         // ---------- Settings ------------
         READ_BITS(Settings::properties()->textureRes, int, "Texture resolution");
         
+        // ------------- Material Channels ------------
+        int32_t meshCount;
+        READ_BITS(meshCount, int32_t, "");
+        for (size_t meshI = 0; meshI < meshCount; meshI++)
+        {
+            if(meshI >=  getModel()->meshes.size())
+                break;
+
+            readMatChannel(rf, getModel()->meshes[meshI].albedo);   
+            readMatChannel(rf, getModel()->meshes[meshI].roughness);   
+            readMatChannel(rf, getModel()->meshes[meshI].metallic);   
+            readMatChannel(rf, getModel()->meshes[meshI].normalMap);   
+            readMatChannel(rf, getModel()->meshes[meshI].heightMap);   
+            readMatChannel(rf, getModel()->meshes[meshI].ambientOcclusion);   
+        }
+
+        getModel()->newModelAdded = true;
+
         return true;
     }
 }

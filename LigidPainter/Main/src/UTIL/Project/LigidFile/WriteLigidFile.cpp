@@ -40,14 +40,42 @@ Official Web Page : https://ligidtools.com/ligidpainter
                                                     return false; \
                                                 }
 
-#define WRITE_STR(str)  int strSize = str.size(); \
-                        WRITE_BITS(strSize, int, "String size"); \
-                        for (size_t i = 0; i < strSize; i++) \
-                        {\
-                            char c = str[i]; \
-                            WRITE_BITS(c, char, "String character");\
-                        }\
+bool writeStr(std::ofstream& wf, std::string str){
+    int strSize = str.size(); 
+    WRITE_BITS(strSize, int, "String size"); 
+    for (size_t i = 0; i < strSize; i++) 
+    {
+        char c = str[i]; 
+        WRITE_BITS(c, char, "String character");
+    }
+}  
 
+int findIndexInLibrary(Texture txtr){
+    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+    {
+        if(txtr.ID == Library::getTextureObj(i).ID){
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+bool writeMatChannel(std::ofstream& wf, Texture matChannel){
+    int i = findIndexInLibrary(matChannel);
+
+    if(i != -1){
+        if(!writeStr(wf, Library::getTextureObj(i).title))
+            return false;
+    }
+    else{
+        std::string empty = "";
+        if(!writeStr(wf, empty))
+            return false;
+    }
+
+    return true;
+}
 
 bool Project::wrtLigidFile(std::string path){
     std::ofstream wf;
@@ -72,8 +100,9 @@ bool Project::wrtLigidFile(std::string path){
     uint32_t versionNumber2100 = 2100;  
     uint32_t versionNumber2200 = 2200;
     uint32_t versionNumber2300 = 2300;
+    uint32_t versionNumber2400 = 2400;
 
-    WRITE_BITS(versionNumber2300, uint32_t, "");
+    WRITE_BITS(versionNumber2400, uint32_t, "");
 
     // ------------- Date ------------
     time_t currentDate = time(0);
@@ -83,17 +112,25 @@ bool Project::wrtLigidFile(std::string path){
     WRITE_BITS(lastOpenedDate, time_t, "");
 
     // ------------- Current model data ------------
-    uint32_t modelTitleSize = getModel()->title.size();
-    wf.write(reinterpret_cast<char*>(   &modelTitleSize    )    , sizeof(uint32_t));
-    for (size_t i = 0; i < modelTitleSize; i++)
-    {
-        char c = getModel()->title[i];
-        wf.write(reinterpret_cast<char*>(   &c     )    , sizeof(char));
-    }
-    
+    if(!writeStr(wf, getModel()->title))
+        return false;
+
     // ------------- Settings ------------
     int textureRes = Settings::properties()->textureRes;
     WRITE_BITS(textureRes, int, "");
+
+    // ------------- Material Channels ------------
+    int32_t meshCount = getModel()->meshes.size();
+    WRITE_BITS(meshCount, int32_t, "");
+    for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+    {
+        writeMatChannel(wf, getModel()->meshes[meshI].albedo);   
+        writeMatChannel(wf, getModel()->meshes[meshI].roughness);   
+        writeMatChannel(wf, getModel()->meshes[meshI].metallic);   
+        writeMatChannel(wf, getModel()->meshes[meshI].normalMap);   
+        writeMatChannel(wf, getModel()->meshes[meshI].heightMap);   
+        writeMatChannel(wf, getModel()->meshes[meshI].ambientOcclusion);   
+    }
 
     return true;
 }

@@ -355,12 +355,12 @@ void UI::paintingPanelInteraction(
                                                 Section(
                                                     SectionHolder(ColorPalette::secondColor, 2.f, getModel()->meshes[i].materialName),
                                                     {
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Albedo Texture"  , Texture(), 1.f, true)),//4
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Roughness Texture"  , Texture(), 1.f, true)),//4
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Metallic Texture"  , Texture(), 1.f, true)),//4
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Normal Map Texture"  , Texture(), 1.f, true)),//4
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Height Map Texture"  , Texture(), 1.f, true)),//4
-                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Ambient Occlusion Texture"  , Texture(), 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Albedo Texture"  , getModel()->meshes[i].albedo, 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Roughness Texture"  , getModel()->meshes[i].roughness, 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Metallic Texture"  , getModel()->meshes[i].metallic, 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Normal Map Texture"  , getModel()->meshes[i].normalMap, 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Height Map Texture"  , getModel()->meshes[i].heightMap, 1.f, true)),//4
+                                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2, 2),"Ambient Occlusion Texture"  , getModel()->meshes[i].ambientOcclusion, 1.f, true)),//4
                                                     }
                                                 )
                                             );
@@ -388,7 +388,7 @@ void UI::paintingPanelInteraction(
     if(!objectTexturingDialog.dialogControl.isActive()){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {
-            if(i >= paintingChannelsSection.size())
+            if(i + 1 >= paintingChannelsSection.size())
                 break;
                 
             getModel()->meshes[i].albedo = paintingChannelsSection[i + 1].elements[0].button.texture;
