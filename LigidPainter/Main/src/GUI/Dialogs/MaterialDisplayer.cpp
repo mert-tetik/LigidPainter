@@ -65,6 +65,8 @@ MaterialDisplayerDialog::MaterialDisplayerDialog(){
 
     this->displayingCam.cameraPos = glm::vec3(0,0,-3.5f);
     this->displayingCam.radius = 3.5f;
+    
+    this->panel.sections[0].elements[1].button.color2 = this->panel.sections[0].elements[1].button.color;
 }
 
 void MaterialDisplayerDialog::render(Timer timer){
@@ -81,7 +83,7 @@ void MaterialDisplayerDialog::render(Timer timer){
             this->dialogControl.unActivate();
     }
 
-    this->material.updateMaterialDisplayingTexture(512, false, this->displayingCam, 0, true);
+    this->material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, this->displayingCam, 0, true);
     
     dialogControl.updateEnd(timer,0.15f);
 }
