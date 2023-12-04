@@ -54,9 +54,11 @@ bool readMatChannel(std::ifstream& rf, Texture& matChannel){
     std::string title;
     READ_STR(title);
 
+    matChannel.ID = 0;
+
     for (size_t i = 0; i < Library::getTextureArraySize(); i++)
     {
-        if(Library::getTextureObj(i).title == title){
+        if(Library::getTextureObj(i).title == title && title != ""){
             matChannel = Library::getTextureObj(i);
         }
     }

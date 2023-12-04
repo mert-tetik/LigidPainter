@@ -395,42 +395,42 @@ void Renderer::renderMainModel(){
     {   
         /* Albedo */
         glActiveTexture(GL_TEXTURE2);
-        if(getModel()->meshes[i].albedo.ID)
+        if(getModel()->meshes[i].albedo.ID && glIsTexture(getModel()->meshes[i].albedo.ID) == GL_TRUE)
             glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].albedo.ID);
         else
             glBindTexture(GL_TEXTURE_2D, Settings::appTextures().materialChannelMissingTexture.ID);
 
         /* Roughness */
         glActiveTexture(GL_TEXTURE3);
-        if(getModel()->meshes[i].roughness.ID)
+        if(getModel()->meshes[i].roughness.ID && glIsTexture(getModel()->meshes[i].roughness.ID) == GL_TRUE)
             glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].roughness.ID);
         else
             glBindTexture(GL_TEXTURE_2D, Settings::appTextures().materialChannelMissingTexture.ID);
 
         /* Metallic*/
         glActiveTexture(GL_TEXTURE4);
-        if(getModel()->meshes[i].metallic.ID)
+        if(getModel()->meshes[i].metallic.ID && glIsTexture(getModel()->meshes[i].metallic.ID) == GL_TRUE)
             glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].metallic.ID);
         else
             glBindTexture(GL_TEXTURE_2D, Settings::appTextures().materialChannelMissingTexture.ID);
 
         /* Normal Map*/
         glActiveTexture(GL_TEXTURE5);
-        if(getModel()->meshes[i].normalMap.ID)
+        if(getModel()->meshes[i].normalMap.ID && glIsTexture(getModel()->meshes[i].normalMap.ID) == GL_TRUE)
             glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].normalMap.ID);
         else
             glBindTexture(GL_TEXTURE_2D, Settings::appTextures().materialChannelMissingTexture.ID);
 
         /* Height Map*/
         glActiveTexture(GL_TEXTURE6);
-        if(getModel()->meshes[i].heightMap.ID)
+        if(getModel()->meshes[i].heightMap.ID && glIsTexture(getModel()->meshes[i].heightMap.ID) == GL_TRUE)
             glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].heightMap.ID);
         else
             glBindTexture(GL_TEXTURE_2D, Settings::appTextures().materialChannelMissingTexture.ID);
 
         /* Ambient Occlusion*/
         glActiveTexture(GL_TEXTURE7);
-        if(getModel()->meshes[i].ambientOcclusion.ID)
+        if(getModel()->meshes[i].ambientOcclusion.ID && glIsTexture(getModel()->meshes[i].ambientOcclusion.ID) == GL_TRUE)
             glBindTexture(GL_TEXTURE_2D, getModel()->meshes[i].ambientOcclusion.ID);
         else
             glBindTexture(GL_TEXTURE_2D, Settings::appTextures().materialChannelMissingTexture.ID);
