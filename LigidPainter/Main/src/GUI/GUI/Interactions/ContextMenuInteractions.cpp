@@ -86,16 +86,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             materialEditorDialog.material = Library::getMaterial(ContextMenus::material.selectedElement);
             materialEditorDialog.activate();
         }
-        else if(ContextMenus::material.contextPanel.sections[0].elements[1].button.clicked){//Clicked to add to scene button
-            //Create the node of the materail an add to the node scene
-            Node materialNode = Node(
-                                        MATERIAL_NODE, 
-                                        Library::getMaterial(ContextMenus::material.selectedElement)->uniqueID
-                                    );
-            materialNode.barButton.text = Library::getMaterial(ContextMenus::material.selectedElement)->title;
-            NodeScene::addNode(materialNode); //Add material node
-        }
-        else if(ContextMenus::material.contextPanel.sections[0].elements[2].button.clicked){//Clicked to rename button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[1].button.clicked){//Clicked to rename button
             renamingTextBox.active = true;
             Library::setChanged(true);
             renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[ContextMenus::material.selectedElement].button.pos;
@@ -108,14 +99,14 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             renamingIndices.x = 1;
             renamingIndices.y = ContextMenus::material.selectedElement;
         }
-        else if(ContextMenus::material.contextPanel.sections[0].elements[3].button.clicked){//Clicked to duplicate button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[2].button.clicked){//Clicked to duplicate button
             Material duplicatedMaterial = Library::getMaterial(ContextMenus::material.selectedElement)->duplicateMaterial();
             Library::addMaterial(duplicatedMaterial, "New material via duplication");
         }
-        else if(ContextMenus::material.contextPanel.sections[0].elements[4].button.clicked){//Clicked to coppy path button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[3].button.clicked){//Clicked to coppy path button
             LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(ContextMenus::material.selectedElement)->title + ".lgdmaterial");
         }
-        else if(ContextMenus::material.contextPanel.sections[0].elements[5].button.clicked){//Clicked to delete button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[4].button.clicked){//Clicked to delete button
             
             //Delete the nodes using same material
             for (int nodeI = 0; nodeI < NodeScene::getArraySize(); nodeI++)
@@ -129,7 +120,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             //Delete the material
             Library::eraseMaterial(ContextMenus::material.selectedElement);
         }
-        else if(ContextMenus::material.contextPanel.sections[0].elements[6].button.clicked){//Clicked to export button
+        else if(ContextMenus::material.contextPanel.sections[0].elements[5].button.clicked){//Clicked to export button
             std::string exportingPath = showFileSystemObjectSelectionDialog("Export the lgdmaterial file", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false,FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE);
             if(exportingPath.size())
                 FileHandler::writeLGDMATERIALFile(exportingPath, *Library::getMaterial(ContextMenus::material.selectedElement));

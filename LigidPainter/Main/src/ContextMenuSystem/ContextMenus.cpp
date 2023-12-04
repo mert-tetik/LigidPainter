@@ -17,7 +17,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 
 namespace ContextMenus{
     ContextMenu texture = ContextMenu({"Rename", "Duplicate", "Copy Path", "Edit", "Delete"}); 
-    ContextMenu material = ContextMenu({"Edit", "Add To Scene", "Rename", "Duplicate", "Copy Path", "Delete", "Export"});    
+    ContextMenu material = ContextMenu({"Edit", "Rename", "Duplicate", "Copy Path", "Delete", "Export"});    
     ContextMenu brush = ContextMenu({"Use", "Apply To Brush", "Rename", "Duplicate", "Copy Path","Delete"});    
     ContextMenu menuBarProject = ContextMenu({"Save / CTRL+S", "Save as / CTRL+SHIFT+S", "Create new", "Load new", "Copy Path", "File Explorer", "Recover"}); 
     ContextMenu menuBarHelp = ContextMenu({"Website", "YouTube"}); 

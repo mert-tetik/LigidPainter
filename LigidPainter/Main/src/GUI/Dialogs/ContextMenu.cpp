@@ -40,7 +40,7 @@ ContextMenu::ContextMenu(std::vector<std::string> elements){
         glm::vec2(5.f,5.f), //Scale
         glm::vec3(50.f,50.f,0.95f), //Pos
         ColorPalette::mainColor,
-        ColorPalette::secondColor,
+        glm::vec4(0.f),
         true,
         true,
         true,
@@ -53,11 +53,17 @@ ContextMenu::ContextMenu(std::vector<std::string> elements){
         false
     );
 
+    contextPanel.solidStyle = true;
+
     //Push the elements taken from parameter into the context panel
     Section section;
     for (size_t i = 0; i < elements.size(); i++)
     {
-        section.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1), elements[i], Texture(), 0.f, false)));
+        Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1), elements[i], Texture(), 0.f, false));
+        btn.button.color = ColorPalette::themeColor;
+        btn.button.color.a /= 2.f;
+        btn.button.color2 = glm::vec4(0.f);
+        section.elements.push_back(btn);
     }
     
     contextPanel.sections.push_back(section);
