@@ -260,6 +260,11 @@ namespace LigidGL{
     *   @brief Forces your app to close
     */
     void forceClose();
+
+    /*!
+    *   @brief Retrieve the memory usage of the application
+    */
+    size_t getRamUsage();  
 };
 
 

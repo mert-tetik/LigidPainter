@@ -26,15 +26,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-#define LIGIDPAINTER_DEBUGGING_MODE false
+#define LIGIDPAINTER_DEBUGGING_MODE true
 #define LIGIDPAINTER_DEBUGGING_TEST_MODE false
 
 struct DebugObject{
     double time = 0.;
+    size_t memoryUsage = 0;
     std::string name = "";
     DebugObject(){}
-    DebugObject(double time, std::string name){
+    DebugObject(double time, size_t memoryUsage, std::string name){
         this->name = name;
+        this->memoryUsage = memoryUsage;
         this->time = time;
     }
 };
@@ -50,10 +52,10 @@ void Debugger::block(std::string name){
             if(objects[i].name == name){
                 if(LIGIDPAINTER_DEBUGGING_TEST_MODE){
                     if(name == "TEST")
-                        std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << std::endl; 
+                        std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << ", Registered Memory : " << LigidGL::getRamUsage() - objects[i].memoryUsage << std::endl; 
                 }
                 else
-                    std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << std::endl; 
+                    std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << ", Registered Memory : " << LigidGL::getRamUsage() - objects[i].memoryUsage << std::endl; 
                 
                 matched = true;
 
@@ -62,7 +64,7 @@ void Debugger::block(std::string name){
         }
         
         if(!matched){
-            objects.push_back(DebugObject(LigidGL::getTime(), name));
+            objects.push_back(DebugObject(LigidGL::getTime(), LigidGL::getRamUsage(), name));
         }
     }
 }
