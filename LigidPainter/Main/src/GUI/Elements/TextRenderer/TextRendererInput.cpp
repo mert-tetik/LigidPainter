@@ -39,7 +39,7 @@ void updateInsertionPointCursor(Timer &timer);
 void deletion(int& activeChar, int& activeChar2, std::string &text);
 void leftArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
 void rightArrow(int mods, int &activeChar, int &activeChar2, std::string &text);
-void charInput(int &key, bool &caps, std::string& text, int& activeChar, int& activeChar2);
+void charInput(int &key, std::string& text, int& activeChar, int& activeChar2);
 void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text);
 
 
@@ -49,13 +49,11 @@ void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text)
 void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activeChar2, int &textPosCharIndex){
 	//If pressed to a key
     if(keyInput){
-
-
         //Show the insertion point cursor in case if invisible
         updateInsertionPointCursor(timer);
 		
 		//Delete
-		if(key == LIGIDGL_KEY_BACKSPACE){
+		if(key == LIGIDGL_KEY_BACKSPACE && mods == 0){
             deletion(activeChar,activeChar2,text);
 		}
 
@@ -68,22 +66,10 @@ void TextRenderer::processTextInput(std::string &text,int &activeChar,int &activ
 		else if(key == LIGIDGL_KEY_RIGHT){
             rightArrow(mods,activeChar,activeChar2,text);
 		}
-
-        //Caps lock
-		else if(key == LIGIDGL_KEY_CAPS_LOCK){
-			this->caps = !this->caps;
-		}
-
-        //Basic char input
-		else if(mods == 0){ //If shift, control & alt keys are released
-            
-            if(activeChar2 != activeChar)
-                deletion(activeChar,activeChar2,text);
-            
-            charInput(key,caps,text,activeChar,activeChar2);
+        
+        charInput(key,text,activeChar,activeChar2);
 		
-        }
-        else if(mods == 2){ //Control pressed
+        if(mods == 2){ //Control pressed
             modsControl(key, activeChar, activeChar2, text);
         }
 	}
@@ -102,17 +88,16 @@ void updateInsertionPointCursor(Timer &timer){
 }
 
 void deletion(int& activeChar, int& activeChar2, std::string &text){
-    
     //If selected multiple characters
     if(activeChar2 != activeChar){
         
         //If selected thru right delete the selected chars between activeChar & activeChar2
         if(activeChar < activeChar2)
-            text.erase(text.begin() + activeChar + 1,text.begin()+activeChar2 + 1);
+            text.erase(activeChar + 1, activeChar2 + 1);
         
         //If selected thru left delete the selected chars between activeChar & activeChar2
         else
-            text.erase(text.begin() + activeChar2 + 1,text.begin()+activeChar + 1);
+            text.erase(activeChar2 + 1, activeChar + 1);
 
         if(activeChar < -1)
             activeChar = -1;
@@ -124,33 +109,27 @@ void deletion(int& activeChar, int& activeChar2, std::string &text){
     }
 
     //If selected a single character
-    else if (activeChar != -1){ 
-        text.erase(text.begin() + activeChar);
+    else if (activeChar != -1 && text.size()){ 
+        text.erase(activeChar);
         activeChar--;
         activeChar2 = activeChar;
     }
 }
 
 
-void charInput(int &key, bool &caps, std::string& text, int& activeChar, int& activeChar2){
-    //If char is a letter & capslock is false lowercase the char
-    if(key < 127)
-        if(!caps && isalpha(key))
-            key+=32;
-
-    if(key >= 320 && key <=329){
-		//Numpad Optimization
-		key -= 272;
-	}
-    
-    if(std::isalpha(key) || std::isdigit(key)){
+void charInput(int &key, std::string& text, int& activeChar, int& activeChar2){
+    if(std::isalpha(key) || key == ' ' || key == '_' || key == '-' || std::isdigit(key)){
+        if(activeChar2 != activeChar)
+            deletion(activeChar,activeChar2,text);
+        
         if((activeChar + 1) >= text.size())
             text.push_back(key);
         else
             text.insert(text.begin() + (activeChar + 1), key);
+        
+        activeChar++;
+        activeChar2 = activeChar;
     }
-    activeChar++;
-    activeChar2 = activeChar;
 }
 
 //direction 0 is left and 1 is right
@@ -277,6 +256,5 @@ void modsControl(int &key, int &activeChar, int &activeChar2, std::string &text)
         }
 
         LigidGL::setClipboardText(clipText.c_str());
-
     }
 }

@@ -266,7 +266,6 @@ private:
 public:
     Font font;
 	bool keyInput = false;
-	bool caps = false;
 	int key = 0;
 	int mods = 0;
     int action = 0;

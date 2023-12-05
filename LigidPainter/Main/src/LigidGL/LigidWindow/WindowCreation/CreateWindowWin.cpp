@@ -485,8 +485,15 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         case WM_KEYUP:
         {
 
-            // The key code
-            int keyCode = static_cast<int>(wParam);
+            int scanCode = (lParam >> 16) & 0xFF; // Extract scan code
+            int virtualKey = MapVirtualKey(scanCode, MAPVK_VSC_TO_VK_EX); // Convert to virtual key
+
+            // Buffer for the character
+            WCHAR buffer[10];
+            buffer[0] = '\0';
+            
+            BYTE keyState[256]; // Create a byte array for key state
+            GetKeyboardState(keyState); // Get the current key state
 
             // The action
             const int action = (HIWORD(lParam) & KF_UP) ? LIGIDGL_RELEASE : LIGIDGL_PRESS;
@@ -505,15 +512,63 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 mods = LIGIDGL_MOD_CONTROL_SHIFT;
             else if(_procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) == LIGIDGL_PRESS && _procLigidWindow.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) == LIGIDGL_PRESS)
                 mods = LIGIDGL_MOD_CONTROL_ALT_SHIFT;
+            
 
+            // Check if the key is a numpad key
+            bool isNumpadKey = (wParam >= VK_NUMPAD0 && wParam <= VK_NUMPAD9);
 
-            // Call the key callback function set by the user using message data
-            _procKeyCallback(
-                                    _procLigidWindow,
-                                    keyCode, //Received mouse x pos  
-                                    action,  //Received mouse y pos
-                                    mods
-                                );
+            // Check if the key is an arrow key
+            bool isArrowKey = (wParam == VK_LEFT || wParam == VK_RIGHT || wParam == VK_UP || wParam == VK_DOWN);
+
+            if (isArrowKey) {
+                int key = 0;
+                if (wParam == VK_LEFT) {
+                    key = LIGIDGL_KEY_LEFT; // Left arrow
+                } 
+                else if (wParam == VK_RIGHT) {
+                    key = LIGIDGL_KEY_RIGHT; // Right arrow
+                } 
+                else if (wParam == VK_UP) {
+                    key = LIGIDGL_KEY_UP; // Up arrow
+                } 
+                else if (wParam == VK_DOWN) {
+                    key = LIGIDGL_KEY_DOWN; // Down arrow
+                }
+                
+                _procKeyCallback(
+                        _procLigidWindow, //window
+                        key, //key  
+                        action,  //action
+                        mods //mods
+                    );
+            }
+
+            else if(isNumpadKey) {
+                // Handle numpad keys here
+                // For example, map VK_NUMPAD0 to '0', VK_NUMPAD1 to '1', etc.
+                wchar_t numpadChar = L'0' + (wParam - VK_NUMPAD0);
+                
+                _procKeyCallback(
+                                        _procLigidWindow, //window
+                                        numpadChar, //key  
+                                        action,  //action
+                                        mods //mods
+                                    );
+            }
+            else if (ToUnicode(virtualKey, scanCode, keyState, reinterpret_cast<LPWSTR>(buffer), 10, 0) > 0) {
+                std::wstring str = std::wstring(buffer);
+                if(str.size()){
+                    if((str[0] >= 0 && str[0] <= 127)){
+                        // Call the key callback function set by the user using message data
+                        _procKeyCallback(
+                                                _procLigidWindow, //window
+                                                str[0], //key  
+                                                action,  //action
+                                                mods //mods
+                                            );
+                    }
+                }
+            }
 
             break;
         }
