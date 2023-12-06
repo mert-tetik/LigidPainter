@@ -37,6 +37,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll){
 
+    glm::ivec2 prevRes = primitivesArrayTexture.getResolution();
+
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, primitivesArrayTexture.ID);
 
@@ -58,12 +60,19 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
                 pxs[i] = 0;
         }
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, std::ceil(sqrt(primitivesArray.size())), std::ceil(sqrt(primitivesArray.size())), 0, GL_RED, GL_UNSIGNED_BYTE, pxs);
+        //!LEAK
+        if(prevRes.x == std::ceil(sqrt(primitivesArray.size())) && prevRes.y == std::ceil(sqrt(primitivesArray.size())))
+            glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0, std::ceil(sqrt(primitivesArray.size())), std::ceil(sqrt(primitivesArray.size())), GL_RED, GL_UNSIGNED_BYTE, pxs);
+        else 
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, std::ceil(sqrt(primitivesArray.size())), std::ceil(sqrt(primitivesArray.size())), 0, GL_RED, GL_UNSIGNED_BYTE, pxs);
+        
         glGenerateMipmap(GL_TEXTURE_2D);
 
         if(glGetError() == 1281){
             LGDLOG::start << "ERROR : Face selection : This mesh's vertex data is too high to apply a face selection." << LGDLOG::end;
         }
+
+        delete[] pxs;
     }
     else{
         for (size_t i = 0; i < changedIndices.size(); i++)

@@ -287,6 +287,7 @@ void Painter::projectThePaintingTexture(
             internalFormat = GL_RGBA8;
         }
 
+        //!LEAK
         projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, format, internalFormat);
     }
 

@@ -649,17 +649,8 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
 
     const int displayRes = displayingTextureRes;
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, this->ID);
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes, displayRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    //!LEAK
+    this->update(nullptr, displayRes, displayRes);
     
     /* Capturing FBO */
     unsigned int FBO; 
@@ -681,9 +672,6 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glDepthFunc(GL_LEQUAL);
-
-
-
 
     // Generate the texture pack texture
     if(this->proceduralProps.textureSelectionDialog_selectedMode == 3){
@@ -769,8 +757,6 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
 
             glDeleteTextures(1, &proc);
         }
-        
-
 
         //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
         ShaderSystem::buttonShader().use();
@@ -1060,18 +1046,10 @@ void Texture::copyDataToTheCopyContext(){
     if(this->copyContextID == 0)
         glGenTextures(1,&this->copyContextID);
 
-    glBindTexture(GL_TEXTURE_2D, this->copyContextID);
+    //!LEAK
+    Texture copyContextIDOBJ = Texture(copyContextID);
+    copyContextIDOBJ.update(pxs, res.x, res.y);
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, res.x, res.y, 0, GL_RGBA, GL_BYTE, pxs);
-	
-    glGenerateMipmap(GL_TEXTURE_2D);
-
     getContext()->window.makeContextCurrent();
     mainThreadUsingCopyContext = false;
     delete[] pxs;

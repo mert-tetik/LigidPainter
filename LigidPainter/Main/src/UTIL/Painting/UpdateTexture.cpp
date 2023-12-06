@@ -41,25 +41,15 @@ static Mesh customMatMesh;
 static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 textureRes, unsigned int &selectedTextureID){
     //Bind the capture texture
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,captureTexture);
+    glBindTexture(GL_TEXTURE_2D, captureTexture);
     
     //Get the pixels of the capture texture
     char* pixels = new char[textureRes.x * textureRes.y * 4];
     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
     
-    //Bind the source texture (painted texture)
-    glBindTexture(GL_TEXTURE_2D,selectedTextureID);
-    
-    //Texture params
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-
-    //Insert capture texture's pixels to the source texture
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes.x, textureRes.y, 0, GL_RGBA, GL_BYTE, pixels);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    //!LEAK
+    Texture selectedTextureOBJ = Texture(selectedTextureID);
+    selectedTextureOBJ.update(pixels, textureRes.x, textureRes.y);
 
     delete[] pixels; //Remove the capture texture's pixels out of the memory
     glDeleteTextures(1, &captureTexture);

@@ -199,6 +199,7 @@ void Panel::updateGraphics(Timer &timer){
     if(!this->graphics.ID){
         glGenTextures(1, &this->graphics.ID);
     }
+
     this->graphics.update(nullptr, displayRes.x, displayRes.y, GL_NEAREST);
 
     Framebuffer captureGraphicsFBO = Framebuffer(this->graphics, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)));

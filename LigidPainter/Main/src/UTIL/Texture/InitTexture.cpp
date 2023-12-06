@@ -112,67 +112,39 @@ Texture::Texture(char* pixels, int w, int h, unsigned int filterParam, unsigned 
 
 
 void Texture::update(char* pixels, int w, int h){
-    glActiveTexture(GL_TEXTURE0);
-    
-    glBindTexture(GL_TEXTURE_2D, ID);
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_BYTE, pixels);
-	
-    glGenerateMipmap(GL_TEXTURE_2D);
+    this->update(pixels, w, h, GL_LINEAR, GL_RGBA, GL_RGBA8);
 }
 
 void Texture::update(char* pixels, int w, int h, unsigned int filterParam){
-    glActiveTexture(GL_TEXTURE0);
-    
-    glBindTexture(GL_TEXTURE_2D, ID);
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_BYTE, pixels);
-	
-    glGenerateMipmap(GL_TEXTURE_2D);
+    this->update(pixels, w, h, filterParam, GL_RGBA, GL_RGBA8);
 }
 
 void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format){
-    glActiveTexture(GL_TEXTURE0);
-    
-    glBindTexture(GL_TEXTURE_2D, ID);
-
-    unsigned int internalFormat = 0;
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, format, w, h, 0, format, GL_BYTE, pixels);
-	
-    glGenerateMipmap(GL_TEXTURE_2D);
+    this->update(pixels, w, h, filterParam, format, format);
 }
 
 void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat){
+    this->update(pixels, w, h, filterParam, format, internalFormat, GL_MIRRORED_REPEAT);
+}
+
+void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat, unsigned int wrap){
+    glm::ivec2 res = this->getResolution();
+    
     glActiveTexture(GL_TEXTURE0);
     
     glBindTexture(GL_TEXTURE_2D, ID);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap);
+
+    if(res.x == w && res.y == h) //!LEAK check the internal format & format
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, format, GL_BYTE, pixels);
+    else{
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);
+    }
     
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);
-	
     glGenerateMipmap(GL_TEXTURE_2D);
 }

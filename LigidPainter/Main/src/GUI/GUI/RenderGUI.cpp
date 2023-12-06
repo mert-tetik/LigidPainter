@@ -284,10 +284,14 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+
     if(selectedPaintingPanelMode == 1)
         this->paintingChannelsSection = paintingPanel.sections; 
     else if(paintingPanelActiveSection != nullptr)
         *paintingPanelActiveSection = paintingPanel.sections[0];
+    else if(paintingPanelActiveSection == nullptr)
+        this->cantBeDisplayedSection = paintingPanel.sections[0];
+
     
     paintingPanelModeDisplayer.text = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.text; 
     paintingPanelModeDisplayer.texture = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.texture; 
@@ -337,6 +341,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             this->colorUseCustomMatSelectionPanelActive = false;
         }
     }
+    
     
     if(paintingChannelsTextureSelectionPanelActive){
         paintingChannelsTextureSelectionPanel.sections[0].elements.clear();
@@ -1050,6 +1055,7 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
 }
 
 void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter& painter){
+    
     if(newProjectDialog.dialogControl.isActive())
         newProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen, logDialog);
     
@@ -1092,6 +1098,8 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     if(materialEditorDialog.dialogControl.isActive())
         materialEditorDialog.render(timer, textureSelectionDialog, logDialog);
     
+
+
     if(!Settings::properties()->cat_hide){
         logDialog.render(
                             timer, painter, greetingDialog, newProjectDialog, exportDialog, materialDisplayerDialog, filterDisplayerDialog,
@@ -1102,6 +1110,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     }
     else
         logDialog.cryCounter = 5;
+    
 }
 
 static Color prevClr;

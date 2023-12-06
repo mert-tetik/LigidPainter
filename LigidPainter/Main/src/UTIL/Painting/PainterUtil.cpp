@@ -350,31 +350,15 @@ void Painter::refreshBuffers(){
     glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
     glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
 
-    //--------- init paintingTexture8 --------- 
-    glBindTexture(GL_TEXTURE_2D,this->paintingTexture8);
+    //--------- update paintingTexture8 --------- 
+    Texture paintingTexture8OBJ = Texture(this->paintingTexture8);
+    paintingTexture8OBJ.update(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR, GL_RGBA, GL_RGBA8, GL_CLAMP_TO_BORDER);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+    //--------- update paintingTexture16f --------- 
+    Texture paintingTexture16fOBJ = Texture(this->paintingTexture16f);
+    paintingTexture16fOBJ.update(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F, GL_CLAMP_TO_BORDER);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, paintingRes.x, paintingRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    //--------- init paintingTexture16f --------- 
-    glBindTexture(GL_TEXTURE_2D,this->paintingTexture16f);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, paintingRes.x, paintingRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    //--------- init depthTextures --------- 
+    //--------- update depthTextures --------- 
     this->oSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
     
     this->oXSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
@@ -391,23 +375,15 @@ void Painter::refreshBuffers(){
     
     this->oXYZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
 
-    //--------- init paintingOverTexture --------- 
-    glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
- 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+    //--------- update paintingOverTexture --------- 
+    Texture paintingOverTextureOBJ = Texture(this->paintingOverTexture);
+    paintingOverTextureOBJ.update(nullptr, paintingRes.x, paintingRes.y);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, paintingRes.x, paintingRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    //--------- init paintingFBO --------- 
+    //--------- update paintingFBO --------- 
     glBindFramebuffer(GL_FRAMEBUFFER, this->paintingFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture8, 0);
     
-    //--------- init depthRBO --------- 
+    //--------- update depthRBO --------- 
     glBindRenderbuffer(GL_RENDERBUFFER, depthRBO);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32F, depthRes.x, depthRes.y);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);

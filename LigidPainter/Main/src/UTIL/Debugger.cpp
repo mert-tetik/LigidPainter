@@ -26,8 +26,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-#define LIGIDPAINTER_DEBUGGING_MODE true
+#define LIGIDPAINTER_DEBUGGING_MODE false
 #define LIGIDPAINTER_DEBUGGING_TEST_MODE false
+#define LIGIDPAINTER_DEBUGGING_MEMORY_ONLY false
 
 struct DebugObject{
     double time = 0.;
@@ -51,11 +52,14 @@ void Debugger::block(std::string name){
         {
             if(objects[i].name == name){
                 if(LIGIDPAINTER_DEBUGGING_TEST_MODE){
-                    if(name == "TEST")
-                        std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << ", Registered Memory : " << LigidGL::getRamUsage() - objects[i].memoryUsage << std::endl; 
+                    if(name == "TEST"){
+                        if((LIGIDPAINTER_DEBUGGING_MEMORY_ONLY && (int)LigidGL::getRamUsage() - (int)objects[i].memoryUsage != 0) || !LIGIDPAINTER_DEBUGGING_MEMORY_ONLY)
+                            std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << ", Registered Memory : " << (int)LigidGL::getRamUsage() - (int)objects[i].memoryUsage << std::endl; 
+                    }
                 }
                 else
-                    std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << ", Registered Memory : " << LigidGL::getRamUsage() - objects[i].memoryUsage << std::endl; 
+                    if((LIGIDPAINTER_DEBUGGING_MEMORY_ONLY && (int)LigidGL::getRamUsage() - (int)objects[i].memoryUsage != 0) || !LIGIDPAINTER_DEBUGGING_MEMORY_ONLY)
+                        std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << ", Registered Memory : " << (int)LigidGL::getRamUsage() - (int)objects[i].memoryUsage << std::endl; 
                 
                 matched = true;
 

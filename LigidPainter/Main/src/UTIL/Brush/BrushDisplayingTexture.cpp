@@ -135,10 +135,6 @@ void Brush::updateDisplayTexture(float radius){
     glBlendFunc(GL_ONE,GL_ONE);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
-    glm::ivec2 txtrRes = this->texture.getResolution();
-    char* txtrPxs = new char[txtrRes.x * txtrRes.y * 4];
-    this->texture.getData(txtrPxs);
-
     captureFBO.bind();
 
     for (int i = 0; i < wave.size() / strokeSize; i++)
@@ -164,10 +160,6 @@ void Brush::updateDisplayTexture(float radius){
         GLfloat borderColor[] = { 0.f, 0.f, 0.f, 1.f };  // Replace r, g, b, a with the desired color values
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
         
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, txtrRes.x, txtrRes.y, 0, GL_RGBA, GL_BYTE, txtrPxs);
-
-        glGenerateMipmap(GL_TEXTURE_2D);
-
         //Stroke positions
         std::vector<glm::vec2> strokes;
         strokes.assign(wave.begin() + i * strokeSize, wave.begin() + i * strokeSize + strokeSize);
@@ -190,10 +182,7 @@ void Brush::updateDisplayTexture(float radius){
         getBox()->bindBuffers();
 
         glDeleteTextures(1, &bgTxtr.ID);
-        
     }
-
-    delete[] txtrPxs;
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
