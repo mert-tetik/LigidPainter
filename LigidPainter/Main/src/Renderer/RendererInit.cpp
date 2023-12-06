@@ -105,30 +105,49 @@ void Renderer::initRenderer(){
     getScene()->updateTransformMatrix();
     getScene()->updateProjectionMatrix();
     
+    Debugger::block("LOAD : App Textures"); //Start 160567296 153.13 MB
+
     //--Load the app textures
     Settings::loadAppTextures();
 
-    //Load shaders
-    ShaderSystem::initShaderSystem();
+    Debugger::block("LOAD : App Textures"); //End
 
-    //Load the 3D models
+    Debugger::block("LOAD : Shaders"); //Start 12300288
+    
+    //Load shaders 
+    ShaderSystem::initShaderSystem();
+    
+    Debugger::block("LOAD : Shaders"); //End
+
+    Debugger::block("LOAD : Models"); //Start
+    
+    //Load the 3D models 345235456
     getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
     getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
     getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj",true);
-
-    //Init the skybox    
-    skybox.init();
+    
+    Debugger::block("LOAD : Models"); //End
 
     //Create 2D square vertex buffers
     getBox()->init();
     
+    Debugger::block("LOAD : Skybox"); //Start 305233920 291.12 MB
+    
+    //Init the skybox    
+    skybox.init();
     //Load the default skybox
     skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox's itself
     skybox.createPrefilterMap(); //Create prefiltered skybox
     skybox.createDisplayingTxtr(); //Create displaying texture
     
+    Debugger::block("LOAD : Skybox"); //End 
+    
+    Debugger::block("LOAD : Font"); //Start 2654208
+    
     //Load the fonts
     fonts.Arial.loadFont("./LigidPainter/Resources/Fonts/Arial.ttf");
+    
+    Debugger::block("LOAD : Font"); //End
 
     //Init the text renderer
     textRenderer = TextRenderer(fonts.Arial);
@@ -137,8 +156,12 @@ void Renderer::initRenderer(){
     websites.ligidTools     =   Website("https://ligidtools.com/");
     websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
 
+    Debugger::block("LOAD : GUI"); //Start 143695872 137 MB
+    
     //Init the userinterface
     userInterface.init(websites, painter);
+    
+    Debugger::block("LOAD : GUI"); //End
 
     //Load the cursors of the LigidPainter
     Mouse::loadCursors();
@@ -186,7 +209,11 @@ void Renderer::initRenderer(){
 
     Settings::defaultFramebuffer()->init(*Settings::videoScale());
 
+    Debugger::block("LOAD : SOURCE LIB TEXTURES"); //Start 16916480
+
     // Load the source library textures
     Library::loadSourceLibTextures();
+    
+    Debugger::block("LOAD : SOURCE LIB TEXTURES"); //End
 
 }

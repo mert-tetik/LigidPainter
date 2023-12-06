@@ -60,7 +60,6 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
                 pxs[i] = 0;
         }
 
-        //!LEAK
         if(prevRes.x == std::ceil(sqrt(primitivesArray.size())) && prevRes.y == std::ceil(sqrt(primitivesArray.size())))
             glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0, std::ceil(sqrt(primitivesArray.size())), std::ceil(sqrt(primitivesArray.size())), GL_RED, GL_UNSIGNED_BYTE, pxs);
         else 

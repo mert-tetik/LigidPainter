@@ -123,15 +123,14 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
     this->update(pixels, w, h, filterParam, format, format);
 }
 
-void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat){
+void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat){
     this->update(pixels, w, h, filterParam, format, internalFormat, GL_MIRRORED_REPEAT);
 }
 
-void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat, unsigned int wrap){
+void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap){
     glm::ivec2 res = this->getResolution();
     
     glActiveTexture(GL_TEXTURE0);
-    
     glBindTexture(GL_TEXTURE_2D, ID);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
@@ -140,7 +139,7 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap);
 
-    if(res.x == w && res.y == h) //!LEAK check the internal format & format
+    if(res.x == w && res.y == h) 
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, format, GL_BYTE, pixels);
     else{
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);

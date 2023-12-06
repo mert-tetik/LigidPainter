@@ -47,7 +47,6 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
     char* pixels = new char[textureRes.x * textureRes.y * 4];
     glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
     
-    //!LEAK
     Texture selectedTextureOBJ = Texture(selectedTextureID);
     selectedTextureOBJ.update(pixels, textureRes.x, textureRes.y);
 
