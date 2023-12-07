@@ -38,7 +38,7 @@ Material::Material(){}
 
 Material::Material(std::string title, int ID){
     //Resolution of the material displaying texture
-    const int displayRes = 1024;
+    const int displayRes = 128;
     
     this->title = title;
     this->uniqueID = ID;

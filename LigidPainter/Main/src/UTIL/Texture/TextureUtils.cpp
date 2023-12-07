@@ -336,10 +336,13 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
     glDeleteTextures(1, &textureCopy);
 }
 
-unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
-    // The result texture
-    unsigned int proceduralTxtr;
+unsigned int Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textureRes){
     
+    glm::ivec2 destTxtrRes = destTxtr.getResolution();
+
+    if(destTxtrRes.x != textureRes)
+        destTxtr.update(nullptr, textureRes, textureRes);
+
     // ------- Edge Wear ------- 
     if(this->proceduralProps.proceduralID == 121){
         Texture normalMapTxtr = Texture(nullptr, textureRes, textureRes);
@@ -347,19 +350,6 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         Texture noiseTxtr;
         noiseTxtr.proceduralProps.proceduralID = 74;
         noiseTxtr = noiseTxtr.generateProceduralTexture(mesh, textureRes);
-
-        glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1,&proceduralTxtr);
-        glBindTexture(GL_TEXTURE_2D,proceduralTxtr);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
 
         unsigned int FBO;
         glGenFramebuffers(1,&FBO);

@@ -81,15 +81,16 @@ void Button::render(
         if(this->textureSelection3D){
             registerButtonAction(this->text + "button texture changed", Texture(), this, *this);
 
-            showTextureSelectionDialog(this->texture, 512, false);
+            showTextureSelectionDialog(this->texture, selectionDialogTxtrRes, false);
         }
         if(this->textureSelection2D){
             registerButtonAction(this->text + "button texture changed", Texture(), this, *this);
             
-            showTextureSelectionDialog(this->texture, 512, true);
+            showTextureSelectionDialog(this->texture, selectionDialogTxtrRes, true);
         }
         if(this->filterSelection){
-            showFilterSelectionDialog(this->filter, 512);
+            showFilterSelectionDialog(this->filter, selectionDialogTxtrRes);
+            
             this->texture.ID = this->filter.displayingTxtr.ID;
         }
         if(this->colorSelection){

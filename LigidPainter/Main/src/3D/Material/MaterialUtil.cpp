@@ -69,6 +69,8 @@ void Material::deleteBuffers(){
     
     for (size_t i = 0; i < this->materialModifiers.size(); i++)
     {
+        glDeleteTextures(1, &this->materialModifiers[i].maskTexture.ID);
+        
         for (size_t seci = 0; seci < this->materialModifiers[i].sections.size(); seci++)
         {
             for (size_t eli = 0; eli < this->materialModifiers[i].sections[seci].elements.size(); eli++)

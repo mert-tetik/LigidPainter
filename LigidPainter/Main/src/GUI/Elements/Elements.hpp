@@ -117,6 +117,8 @@ public:
     bool colorSelection = false;
     /// @brief Displays mesh selection dialog using 
     bool meshSelection = false;
+
+    int selectionDialogTxtrRes = 512;
     
     glm::vec3 outlineColor;
     glm::vec3 outlineColor2;

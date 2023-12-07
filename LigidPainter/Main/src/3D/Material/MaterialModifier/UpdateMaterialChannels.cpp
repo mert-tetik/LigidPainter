@@ -386,8 +386,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
     //Set the orthographic projection to render the uvs
     glm::mat4 projection = glm::ortho(0.f, 1.f, 0.f, 1.f);
 
-    //TODO Don't create the shader in the modifier function
-
     Texture prevDepthTexture;
     prevDepthTexture = mesh.heightMap.duplicateTexture();
     //Disable the depth test (just in case)

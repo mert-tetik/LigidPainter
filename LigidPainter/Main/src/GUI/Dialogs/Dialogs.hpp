@@ -338,6 +338,8 @@ public:
    AppMaterialModifiers appMaterialModifiers;
    int selectedMaterialModifierIndex = 0;
 
+   Framebuffer displayingFBO;
+
    Camera displayerCamera;
     
    Material* material = nullptr;
@@ -482,7 +484,7 @@ class MaterialDisplayerDialog
    DialogControl dialogControl;
    
    Material material;
-
+   Framebuffer displayingFBO;
    Camera displayingCam;
 
    //Constructors

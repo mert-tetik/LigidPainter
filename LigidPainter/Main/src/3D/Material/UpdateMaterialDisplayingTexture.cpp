@@ -36,7 +36,22 @@ void Material::updateMaterialDisplayingTexture(
                                                 int displayingMode,
                                                 bool useCustomCam
                                             )
+{
+    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, this->displayingFBO);
+}
+
+void Material::updateMaterialDisplayingTexture(
+                                                float textureRes,
+                                                bool updateMaterial,
+                                                Camera matCam,
+                                                int displayingMode,
+                                                bool useCustomCam,
+                                                Framebuffer customFBO
+                                            )
 { 
+
+    //Resolution of the material displaying texture
+    const int displayRes = customFBO.colorBuffer.getResolution().x;
 
     if(!useCustomCam){
         matCam.cameraPos = glm::vec3(0,0,3.5f);
@@ -68,11 +83,7 @@ void Material::updateMaterialDisplayingTexture(
     }
     
     //!Update the material displaying texture
-    
-    this->displayingFBO.bind();
-    
-    //Resolution of the material displaying texture
-    const int displayRes = 1024;
+    customFBO.bind();
 
     //Set the OpenGL viewport to the resolution of the material displaying texture
     glViewport(0,0,displayRes,displayRes);
