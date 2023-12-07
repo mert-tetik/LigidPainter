@@ -64,6 +64,15 @@ Shader __projectedPaintingTextureMixerShader;
 Shader __primitiveIDShader;
 Shader __modelObjectID;
 Shader __objectTexturingAssign;
+Shader __textureModifierShader;
+Shader __dustModifierShader;
+Shader __asphaltModifierShader;
+Shader __liquidModifierShader;
+Shader __mossModifierShader;
+Shader __rustModifierShader;
+Shader __skinModifierShader;
+Shader __solidModifierShader;
+Shader __woodenModifierShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -108,6 +117,15 @@ void ShaderSystem::initShaderSystem(){
     __projectedPaintingTextureMixerShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/ProjectedPaintingTextureMixer.frag");
     __modelObjectID.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/ModelObjectID.frag");
     __objectTexturingAssign.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert" , "LigidPainter/Resources/Shaders/aFrag/ObjectTexturingAssign.frag");
+    __textureModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag");
+    __dustModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag");
+    __asphaltModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/AsphaltModifier.frag");
+    __liquidModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/LiquidModifier.frag");
+    __mossModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MossModifier.frag");
+    __rustModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/RustModifier.frag");
+    __skinModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SkinModifier.frag");
+    __solidModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SolidModifier.frag");
+    __woodenModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/WoodenModifier.frag");
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -235,4 +253,32 @@ Shader ShaderSystem::modelObjectID(){
 }
 Shader ShaderSystem::objectTexturingAssign(){
     return __objectTexturingAssign;
+}
+
+Shader ShaderSystem::textureModifierShader(){
+    return __textureModifierShader;
+}
+Shader ShaderSystem::dustModifierShader(){
+    return __dustModifierShader;
+}
+Shader ShaderSystem::asphaltModifierShader(){
+    return __asphaltModifierShader;
+}
+Shader ShaderSystem::liquidModifierShader(){
+    return __liquidModifierShader;
+}
+Shader ShaderSystem::mossModifierShader(){
+    return __mossModifierShader;
+}
+Shader ShaderSystem::rustModifierShader(){
+    return __rustModifierShader;
+}
+Shader ShaderSystem::skinModifierShader(){
+    return __skinModifierShader;
+}
+Shader ShaderSystem::solidModifierShader(){
+    return __solidModifierShader;
+}
+Shader ShaderSystem::woodenModifierShader(){
+    return __woodenModifierShader;
 }

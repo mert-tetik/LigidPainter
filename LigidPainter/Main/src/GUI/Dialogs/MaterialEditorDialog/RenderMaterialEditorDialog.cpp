@@ -266,7 +266,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
     //Update the material if interacted with modifier's panel
     for (size_t secI = 0; secI < modifiersPanel.sections.size(); secI++)
     {
-        if(modifiersPanel.sections[secI].header.button.clickState1){
+        if(true){
             for (size_t elementI = 0; elementI < modifiersPanel.sections[secI].elements.size(); elementI++)
             {
                 //If button is clicked update the material

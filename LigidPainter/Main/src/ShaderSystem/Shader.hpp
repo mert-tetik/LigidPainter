@@ -127,6 +127,17 @@ namespace ShaderSystem{
     Shader modelObjectID();
     Shader objectTexturingAssign();
 
+    
+    Shader textureModifierShader();
+    Shader dustModifierShader();
+    Shader asphaltModifierShader();
+    Shader liquidModifierShader();
+    Shader mossModifierShader();
+    Shader rustModifierShader();
+    Shader skinModifierShader();
+    Shader solidModifierShader();
+    Shader woodenModifierShader();
+
     void initShaderSystem();
 };
 
