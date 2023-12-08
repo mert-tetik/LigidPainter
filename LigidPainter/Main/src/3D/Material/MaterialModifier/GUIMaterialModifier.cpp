@@ -808,7 +808,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Element Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Wetness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 1.f), 
-                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 0.f), 
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Height",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 1.f), 
             }
         ),
