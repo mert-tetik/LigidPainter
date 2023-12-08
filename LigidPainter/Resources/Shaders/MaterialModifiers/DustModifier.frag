@@ -32,7 +32,7 @@ uniform float size = 2.0; //best 1.0
 uniform float offsetIntensity = 5.0; //best 5.0
 uniform float rotation = 360.0; //best 360.0
 uniform float brightness = 1.0;
-int concreteSamples = 6;
+int concreteSamples = 3;
 
 /* Blur */
 uniform float blurIntensity = 0.;
@@ -359,14 +359,13 @@ void main()
           f.rgb += colorValues[i] * maskValue;
           uv = rotate(uv, vec3(0,1,0), radians(rotation * noiseAngleOffsets[i]));
     }
-    
 
     uv = rotate(uv, vec3(0,1,0), radians(rotation * noiseAngleOffsets[0]));
     float maskValue = noiseWeights[0] * mainNoise(noiseParams[0] * uv).r; 
     
-    f.rgb += getDroplets(uv);
+    //f.rgb += getDroplets(uv);
 
-    f.rgb += getScratches(uv);
+    //f.rgb += getScratches(uv);
 
     f.rgba *= vec4(maskValue - 0.3);
     f.rgba *= 8.;
