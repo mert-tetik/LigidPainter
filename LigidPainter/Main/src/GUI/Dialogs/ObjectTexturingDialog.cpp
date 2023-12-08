@@ -440,8 +440,10 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
             for (size_t i = 0; i < getModel()->meshes.size(); i++)
             {
                 if(i < this->faceSelection.size()){
-                    glDeleteTextures(1, &this->faceSelection[i].meshMask.ID);
-                    this->faceSelection[i].meshMask = this->meshMask.generateProceduralTexture(getModel()->meshes[i], this->getResolution());
+                    if(!this->faceSelection[i].meshMask.ID)
+                        this->faceSelection[i].meshMask = Texture(nullptr, this->getResolution(), this->getResolution());
+                    this->faceSelection[i].meshMask.update(nullptr, this->getResolution(), this->getResolution());
+                    this->meshMask.generateProceduralTexture(getModel()->meshes[i], this->faceSelection[i].meshMask, this->getResolution());
                 }
             }
         }
@@ -631,7 +633,7 @@ void ObjectTexturingDialog::updateMeshTextures(){
                 this->material.materialModifiers[i].updateMaterialChannels(this->material, getModel()->meshes[meshI], this->getResolution(), i, this->faceSelection[meshI].meshMask, this->faceSelection[meshI].selectedFaces);
         }
         
-        unsigned int maskMat = maskMaterialBtn.texture.generateProceduralTexture(getModel()->meshes[meshI], this->getResolution());
+        Texture maskMat = maskMaterialBtn.texture.generateProceduralTexture(getModel()->meshes[meshI], this->getResolution());
 
         getModel()->meshes[meshI].albedo.mix(albedo, maskMat, false); 
         getModel()->meshes[meshI].roughness.mix(roughness, maskMat, false); 
@@ -646,8 +648,6 @@ void ObjectTexturingDialog::updateMeshTextures(){
         getModel()->meshes[meshI].normalMap = normalMap; 
         getModel()->meshes[meshI].heightMap = heightMap; 
         getModel()->meshes[meshI].ambientOcclusion = ambientOcclusion; 
-
-        glDeleteTextures(1, &maskMat);
     }
 }
 

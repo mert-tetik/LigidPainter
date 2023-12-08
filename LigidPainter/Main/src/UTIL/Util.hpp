@@ -347,8 +347,8 @@ public:
     /// @brief creates a copy of the texture and returns the OpenGL texture buffer object ID of the duplicated texture.
     ///         Use like that : Texture newTexture(duplicatedTexture.duplicateTexture());
     unsigned int duplicateTexture();
-    
     void duplicateTexture(Texture &txtr);
+    void duplicateTextureSub(Texture &txtr);
     
     /// @brief Write the tmp file of the texture from the tmp folder
     void writeTMP(std::string tmpTitle);
@@ -383,7 +383,8 @@ public:
     void applyNormalMap(float proceduralNormalStrength, bool proceduralNormalGrayScale, bool alphaMode);
     
     /// @brief Generates procedural texture result using the mesh param
-    unsigned int generateProceduralTexture(Mesh &mesh, int textureRes);
+    Texture generateProceduralTexture(Mesh &mesh, int textureRes);
+    void generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textureRes);
 
     /// @brief Generates 2D displaying texture using the proceduralProps & writes the texture into the this->ID
     /// @param displayMode 0 : solid 2D, 1 : Material ball PBR, 2 : Custom mesh PBR

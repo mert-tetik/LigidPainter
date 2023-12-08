@@ -917,10 +917,15 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     painter.faceSelection.editMode = meshSection.elements[2].checkBox.clickState1;
     painter.faceSelection.selectionModeIndex = meshSection.elements[3].comboBox.selectedIndex;
     painter.faceSelection.radius = meshSection.elements[4].rangeBar.value;
+    
     if(meshSection.elements[6].button.clicked && painter.selectedMeshIndex < getModel()->meshes.size()){
-        glDeleteTextures(1, &painter.faceSelection.meshMask.ID);
-        painter.faceSelection.meshMask = meshSection.elements[6].button.texture.generateProceduralTexture(getModel()->meshes[painter.selectedMeshIndex], 1024); 
+        if(!painter.faceSelection.meshMask.ID)
+            painter.faceSelection.meshMask = Texture(nullptr, 1024, 1024);
+            
+        painter.faceSelection.meshMask.update(nullptr, 1024, 1024);
+        meshSection.elements[6].button.texture.generateProceduralTexture(getModel()->meshes[painter.selectedMeshIndex], painter.faceSelection.meshMask, 1024); 
     }
+    
     if(meshSection.elements[7].button.clicked){
         glDeleteTextures(1, &painter.faceSelection.meshMask.ID);
         painter.faceSelection.meshMask.ID = 0;

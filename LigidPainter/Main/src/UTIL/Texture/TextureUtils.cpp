@@ -159,6 +159,42 @@ void Texture::duplicateTexture(Texture& txtr){
     glDeleteFramebuffers(1,&FBO);
 }
 
+void Texture::duplicateTextureSub(Texture& txtr){
+    
+    //Get the resolution data of the texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, ID);
+    
+    GLint wrapParam_S;
+    GLint wrapParam_T;
+    GLint wrapParam_R;
+    glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &wrapParam_S);
+    glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, &wrapParam_T);
+    glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, &wrapParam_R);
+    
+    GLint width, height, internalFormat;
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalFormat);
+    
+    //Create the duplicated texture
+    glBindTexture(GL_TEXTURE_2D, txtr.ID);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParam_S);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam_T);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam_R);
+    
+    //Copy the texture
+    unsigned int FBO;
+    glGenFramebuffers(1,&FBO);
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ID, 0);
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, internalFormat, 0, 0, width, height, 0);
+    
+    Settings::defaultFramebuffer()->FBO.bind();
+    glDeleteFramebuffers(1,&FBO);
+}
+
 
 std::vector<glm::vec3> Texture::getMaterialIDPalette(){
     /*
@@ -259,8 +295,7 @@ std::vector<glm::vec3> Texture::getMaterialIDPalette(){
 void Texture::removeSeams(Mesh& mesh, int textureResolution){
     
     /*! Binds another framebuffer !*/
-    Texture textureObject = Texture(this->ID);
-    unsigned int textureCopy = textureObject.duplicateTexture();
+    unsigned int textureCopy = this->duplicateTexture();
     
     unsigned int FBO;
     glGenFramebuffers(1,&FBO);
@@ -336,26 +371,46 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
     glDeleteTextures(1, &textureCopy);
 }
 
-unsigned int Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textureRes){
+static Texture normalMapTxtr;
+static Texture normalMapTxtrBlurred;
+static Texture noiseTxtr;
+static Texture destTxtrCopy;
+static Texture procTxtr;
+
+Texture Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
+    if(!procTxtr.ID){
+        glGenTextures(1, &procTxtr.ID);
+    }
+    
+    procTxtr.update(nullptr, textureRes, textureRes);
+    
+    generateProceduralTexture(mesh, procTxtr, textureRes);
+    
+    return procTxtr;
+}
+
+void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textureRes){
     
     glm::ivec2 destTxtrRes = destTxtr.getResolution();
 
-    if(destTxtrRes.x != textureRes)
-        destTxtr.update(nullptr, textureRes, textureRes);
-
     // ------- Edge Wear ------- 
     if(this->proceduralProps.proceduralID == 121){
-        Texture normalMapTxtr = Texture(nullptr, textureRes, textureRes);
-        Texture normalMapTxtrBlurred = Texture(nullptr, textureRes, textureRes);
-        Texture noiseTxtr;
+        
+        if(!normalMapTxtr.ID){
+            normalMapTxtr = Texture(nullptr, 1024, 1024);
+            normalMapTxtrBlurred = Texture(nullptr, 1024, 1024);
+            noiseTxtr = Texture(nullptr, 1024, 1024);
+            destTxtrCopy = Texture(nullptr, textureRes, textureRes);
+        }
+        
         noiseTxtr.proceduralProps.proceduralID = 74;
-        noiseTxtr = noiseTxtr.generateProceduralTexture(mesh, textureRes);
+        noiseTxtr.generateProceduralTexture(mesh, noiseTxtr, 1024);
 
         unsigned int FBO;
         glGenFramebuffers(1,&FBO);
         glBindFramebuffer(GL_FRAMEBUFFER,FBO);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMapTxtr.ID, 0);
-        glViewport(0, 0, textureRes, textureRes);
+        glViewport(0, 0, 1024, 1024);
         
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -369,6 +424,8 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, i
 
         // Blured normal vector txtr
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMapTxtrBlurred.ID, 0);
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //TODO : Remove the box
         getBox()->bindBuffers();
@@ -392,7 +449,9 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, i
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
         //
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, proceduralTxtr, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, destTxtr.ID, 0);
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         ShaderSystem::edgeWearShader().use();
         ShaderSystem::edgeWearShader().setInt("normalVectorTxtr", 0);
@@ -415,7 +474,6 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, i
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
 
-
         //Bluring the result        
         ShaderSystem::bluringShader().use();
         ShaderSystem::bluringShader().setInt("txtr", 0);
@@ -427,12 +485,11 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, i
         ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureRes / 2.f));
         ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->proceduralProps.smartProperties.z);
         
-        Texture procObject = proceduralTxtr;
-        Texture procCopy = procObject.duplicateTexture();
+        destTxtr.duplicateTexture(destTxtrCopy);
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, procCopy.ID);
+        glBindTexture(GL_TEXTURE_2D, destTxtrCopy.ID);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
 
@@ -440,10 +497,6 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, i
 
         Settings::defaultFramebuffer()->FBO.bind();
         glDeleteFramebuffers(1, &FBO);
-        glDeleteTextures(1, &normalMapTxtr.ID);
-        glDeleteTextures(1, &normalMapTxtrBlurred.ID);
-        glDeleteTextures(1, &procCopy.ID);
-        glDeleteTextures(1, &noiseTxtr.ID);
     }
 
     // ------- Regular Procedural Texture -------
@@ -474,23 +527,10 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, i
         else
             glBindTexture(GL_TEXTURE_2D, this->proceduralProps.proceduralTextureID);
 
-        glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1,&proceduralTxtr);
-        glBindTexture(GL_TEXTURE_2D,proceduralTxtr);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
-
         unsigned int FBO;
         glGenFramebuffers(1,&FBO);
         glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, proceduralTxtr, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, destTxtr.ID, 0);
         glViewport(0, 0, textureRes, textureRes);
         
         glClearColor(0,0,0,0);
@@ -504,20 +544,17 @@ unsigned int Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, i
 
     // ------- Generating Normal Map -------
     if(this->proceduralProps.proceduralNormalMap){
-        Texture txtrObject = Texture(proceduralTxtr);
-
+        /*
         Texture normalMapRes = Texture(nullptr, textureRes, textureRes, GL_LINEAR);
 
-        txtrObject.generateNormalMap(normalMapRes.ID, textureRes, this->proceduralProps.proceduralNormalStrength, this->proceduralProps.proceduralNormalGrayScale); 
+        destTxtr.generateNormalMap(normalMapRes.ID, textureRes, this->proceduralProps.proceduralNormalStrength, this->proceduralProps.proceduralNormalGrayScale); 
 
         glDeleteTextures(1,&proceduralTxtr);
         proceduralTxtr = normalMapRes.ID;
+        */
     }
 
-    Texture txtrObject = Texture(proceduralTxtr);
-    txtrObject.removeSeams(mesh, textureRes);
-
-    return proceduralTxtr;
+    destTxtr.removeSeams(mesh, textureRes);
 }
 
 void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale){
@@ -724,28 +761,27 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
 
         for (size_t i = 0; i < model.meshes.size(); i++)
         {
-            unsigned int proc = this->generateProceduralTexture(model.meshes[i], 416);
+            Texture proc = this->generateProceduralTexture(model.meshes[i], 416);
+            
             glViewport(0, 0, displayRes, displayRes);
             glBindFramebuffer(GL_FRAMEBUFFER, FBO);
             ShaderSystem::tdModelShader().use();
 
             //Bind the channels of the material
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, proc);
+            glBindTexture(GL_TEXTURE_2D, proc.ID);
             glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, proc);
+            glBindTexture(GL_TEXTURE_2D, proc.ID);
             glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, proc);
+            glBindTexture(GL_TEXTURE_2D, proc.ID);
             glActiveTexture(GL_TEXTURE5);
-            glBindTexture(GL_TEXTURE_2D, proc);
+            glBindTexture(GL_TEXTURE_2D, proc.ID);
             glActiveTexture(GL_TEXTURE6);
-            glBindTexture(GL_TEXTURE_2D, proc);
+            glBindTexture(GL_TEXTURE_2D, proc.ID);
             glActiveTexture(GL_TEXTURE7);        
-            glBindTexture(GL_TEXTURE_2D, proc);
+            glBindTexture(GL_TEXTURE_2D, proc.ID);
 
             model.meshes[i].Draw(false);
-
-            glDeleteTextures(1, &proc);
         }
 
         //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 

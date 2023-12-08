@@ -42,7 +42,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //4 = height map
 //5 = ambient Occlusion
 
-static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, Framebuffer& FBO, Texture& currentTexture, Texture& previousTexture, Texture& prevDepth){
+static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, Framebuffer& FBO, Texture& currentTexture, Texture& previousTexture){
     glDisable(GL_DEPTH_TEST);
 
     //Get the channel's texture from material
@@ -66,10 +66,15 @@ static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, 
         currentTexture = mesh.ambientOcclusion;
     }
 
-    prevDepth = mesh.heightMap.duplicateTexture();
+    glm::ivec2 prevCurrentTextureRes = currentTexture.getResolution();
 
     /* ! Binds another framebuffer ! */
-    previousTexture = currentTexture.duplicateTexture();
+    if(!previousTexture.ID)
+        previousTexture = Texture(nullptr, prevCurrentTextureRes.x, prevCurrentTextureRes.y);
+    else
+        previousTexture.update(nullptr, prevCurrentTextureRes.x, prevCurrentTextureRes.y);
+    
+    currentTexture.duplicateTextureSub(previousTexture);
 
     currentTexture.update(nullptr, textureResolution, textureResolution);    
     
@@ -80,10 +85,16 @@ static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, 
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
+Texture textureCopy_bluring;
 static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution){
-    
     Texture textureObject = Texture(txtr);
-    unsigned int textureCopy = textureObject.duplicateTexture();
+    
+    if(!textureCopy_bluring.ID)
+        textureCopy_bluring = Texture(nullptr, textureResolution, textureResolution);
+    
+    textureCopy_bluring.update(nullptr, textureResolution, textureResolution);
+    
+    textureObject.duplicateTextureSub(textureCopy_bluring);
 
     Framebuffer FBO = Framebuffer(txtr, GL_TEXTURE_2D);
     glViewport(0, 0, textureResolution, textureResolution);
@@ -105,7 +116,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     ShaderSystem::bluringShader().setFloat("blurVal"     ,     1.f);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureCopy);
+    glBindTexture(GL_TEXTURE_2D, textureCopy_bluring.ID);
     
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
@@ -115,7 +126,6 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     Settings::defaultFramebuffer()->FBO.bind();
     
     FBO.deleteBuffers(false, false);
-    glDeleteTextures(1, &textureCopy);
 }
 
 static glm::vec2 getDirectionVector(float rotation) {
@@ -379,6 +389,12 @@ static void setUniforms(
     }
 }
 
+
+static Texture textureModifierSelectedTexture_procedural;
+static Texture albedoFilterMaskTexture_procedural;
+static Texture previousTexture;
+static Texture prevDepthTexture;
+
 void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr){
     
     Shader modifierShader = material.materialModifiers[curModI].shader;
@@ -386,12 +402,16 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
     //Set the orthographic projection to render the uvs
     glm::mat4 projection = glm::ortho(0.f, 1.f, 0.f, 1.f);
 
-    Texture prevDepthTexture;
-    prevDepthTexture = mesh.heightMap.duplicateTexture();
-    //Disable the depth test (just in case)
+    glm::ivec2 prevPrevDepthTextureRes = mesh.heightMap.getResolution(); 
+
+    if(!prevDepthTexture.ID)
+        prevDepthTexture = Texture(nullptr, prevPrevDepthTextureRes.x, prevPrevDepthTextureRes.y);
+    else
+        prevDepthTexture.update(nullptr, prevPrevDepthTextureRes.x, prevPrevDepthTextureRes.y);
+
+    mesh.heightMap.duplicateTextureSub(prevDepthTexture);
     
-    unsigned int maskTexture_procedural;
-    maskTexture_procedural = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
+    Texture maskTexture_procedural = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
         //Set the OpenGL viewport to the texture resolution
@@ -399,7 +419,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
     
         Framebuffer FBO;
         Texture currentTexture;
-        Texture previousTexture;
         // Create the FBO & set the current texture and previous texture
         channelPrep(
                         material, 
@@ -411,14 +430,19 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                         channelI, 
                         FBO, 
                         currentTexture, 
-                        previousTexture, 
-                        prevDepthTexture
+                        previousTexture
                     );
         
-        unsigned int textureModifierSelectedTexture_procedural = 0;
         // Generate the procedural texture of the selected texture for the texture modifier
         if(material.materialModifiers[curModI].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
-            textureModifierSelectedTexture_procedural = material.materialModifiers[curModI].sections[0].elements[channelI + 1].button.texture.generateProceduralTexture(mesh, textureResolution);
+            if(textureModifierSelectedTexture_procedural.ID == 0)
+                textureModifierSelectedTexture_procedural = Texture(nullptr, textureResolution, textureResolution);
+            
+            textureModifierSelectedTexture_procedural.update(nullptr, textureResolution, textureResolution);
+
+            Texture txtr = material.materialModifiers[curModI].sections[0].elements[channelI + 1].button.texture;
+            txtr.generateProceduralTexture(mesh, textureModifierSelectedTexture_procedural, textureResolution);
+            
             modifierShader.use();
         }
 
@@ -439,11 +463,11 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                         material, 
                         channelI, 
                         curModI, 
-                        maskTexture_procedural, 
+                        maskTexture_procedural.ID, 
                         previousTexture, 
                         currentTexture, 
                         prevDepthTexture,
-                        textureModifierSelectedTexture_procedural,
+                        textureModifierSelectedTexture_procedural.ID,
                         mesh,
                         meshMask,
                         selectedObjectPrimitivesTxtr
@@ -479,30 +503,23 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
             glActiveTexture(GL_TEXTURE0);
 
             // Generate the mask texture
-            unsigned int proceduralAlbedoFilterMaskTexture = 0;
-            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.ID)
-                proceduralAlbedoFilterMaskTexture = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture.generateProceduralTexture(mesh, textureResolution);
+            Texture maskTxtr = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture; 
             
+            if(albedoFilterMaskTexture_procedural.ID == 0)
+                albedoFilterMaskTexture_procedural = Texture(nullptr, textureResolution, textureResolution);
+            
+            albedoFilterMaskTexture_procedural.update(nullptr, textureResolution, textureResolution);
+
+            if(maskTxtr.ID){
+                maskTxtr.generateProceduralTexture(mesh, albedoFilterMaskTexture_procedural, textureResolution);
+            }
+
+
+            Filter filter = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter;
+
             // Apply the filter 
             getBox()->bindBuffers();
-            material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.applyFilter(currentTexture.ID, proceduralAlbedoFilterMaskTexture, maskTexture_procedural);
-            
-            // Delete the generated procedural texture (if generated)
-            if(proceduralAlbedoFilterMaskTexture)
-                glDeleteTextures(1, &proceduralAlbedoFilterMaskTexture);
+            filter.applyFilter(currentTexture.ID, albedoFilterMaskTexture_procedural, maskTexture_procedural);
         }
-
-        // Delete the duplicated previous texture
-        glDeleteTextures(1, &previousTexture.ID);
-        
-        // Delete the generated selected procedural texture for the texture modifier (if generated (if texture modifier))
-        if(textureModifierSelectedTexture_procedural)
-            glDeleteTextures(1, &textureModifierSelectedTexture_procedural);
     }
-    
-    // Delete the duplicated previous height map texture 
-    glDeleteTextures(1, &prevDepthTexture.ID);
-    
-    // Delete the generated mask texture 
-    glDeleteTextures(1, &maskTexture_procedural);
 }
