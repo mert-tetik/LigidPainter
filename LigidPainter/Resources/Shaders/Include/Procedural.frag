@@ -2171,7 +2171,7 @@ float wallNoise2(vec3 uv){
 
 //19
 float wallNoise3(vec3 uv){
-    return innerGetWall(uv, 2);
+    return innerGetWall(vec3(uv.x, uv.y / 4., uv.z), 2);
 }
 
 //20

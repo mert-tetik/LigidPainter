@@ -16,10 +16,7 @@ uniform float proceduralBrightness;
 uniform float displayOpacity;
 
 void main(){
-    if(proceduralID > 28)
-        fragColor = vec4(getProcedural(vec3(TexCoords.x, TexCoords.y, TexCoords.y), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted, vec4(0.), vec2(1000), proceduralGrayScale, proceduralBrightness));
-    else
-        fragColor = vec4(getProcedural(vec3(TexCoords.x, 0., TexCoords.y), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted, vec4(0.), vec2(1000), proceduralGrayScale, proceduralBrightness));
+    fragColor = vec4(getProcedural(vec3(TexCoords.x, TexCoords.y, 0.), proceduralID, proceduralTexture, TexCoords, proceduralScale, proceduralInverted, vec4(0.), vec2(1000), proceduralGrayScale, proceduralBrightness));
 
     fragColor.a *= displayOpacity;
 } 
