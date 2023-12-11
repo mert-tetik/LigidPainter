@@ -135,6 +135,9 @@ static bool __materialSelectBtn = false;
 void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog, LogDialog& logDialog, MaterialSelectionDialog& materialSelectionDialog){
     dialogControl.updateStart();
 
+    if(dialogControl.firstFrameActivated)
+        this->material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
+    
     if(getModel()->meshes.size() != texturesMesh.size()){
         for (size_t i = 0; i < texturesMesh.size(); i++)
         {
