@@ -27,6 +27,7 @@
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <iostream>
@@ -37,7 +38,7 @@
 extern std::map<std::string, std::vector<Material>> matSelection_materials;
 
 void MaterialSelectionDialog::updateMaterialTypes(){
-    std::vector<std::string> titles;
+    std::vector<std::string> titles = {"Custom"};
     try
     {
         for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Materials")) {
@@ -66,6 +67,13 @@ void MaterialSelectionDialog::updateMaterialTypes(){
     {
         this->matModePanel.sections[0].elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), titles[i], Texture(), 0.f, true)));
     }
+
+    matSelection_materials["Custom"].clear();
+    for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
+    {
+        matSelection_materials["Custom"].push_back(Library::getMaterialObj(i));
+    }
+    
 }
 
 bool MaterialSelectionDialog::renderMatDisplayer(Timer& timer){

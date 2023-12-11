@@ -43,6 +43,7 @@ void MaterialSelectionDialog::render(Timer timer, AppMaterialModifiers &appMater
     if(dialogControl.firstFrameActivated || !this->matModePanel.sections[0].elements.size()){
         this->updateMaterialTypes();   
     }
+    
     if(dialogControl.firstFrameActivated){
         selectedMatMode = 0;
         selectedMatIndex = -1;

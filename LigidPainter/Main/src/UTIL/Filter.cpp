@@ -39,7 +39,6 @@ int Filter::load(std::string path){
         return 0;
     }
 
-
     std::ifstream rf(path);
 
     if (!rf.is_open()) {
