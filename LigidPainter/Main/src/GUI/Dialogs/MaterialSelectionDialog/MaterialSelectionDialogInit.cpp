@@ -116,8 +116,8 @@ MaterialSelectionDialog::MaterialSelectionDialog(){
                                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(20.f), "", Texture(), 5.f, false)), 
                                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(10, 2), "Unselected", Texture(), 0.f, false)), 
                                         Element(CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(10, 2), "Quick Displaying", 4.f)), 
-                                        Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(10, 2), "Edit Selected", Texture(), 10.f, false)), 
-                                        Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(10, 2), "Select The Selected", Texture(), 2.f, false)), 
+                                        Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(10, 2), "Edit The Active Material", Texture(), 10.f, false)), 
+                                        Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(10, 2), "Select The Active Material", Texture(), 2.f, false)), 
                                     }
                                 )
                             },

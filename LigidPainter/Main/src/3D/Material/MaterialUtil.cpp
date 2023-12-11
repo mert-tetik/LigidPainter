@@ -60,6 +60,8 @@ Material Material::duplicateMaterial(){
         duplicatedMat.materialModifiers[i].maskTexture.proceduralProps = this->materialModifiers[i].maskTexture.proceduralProps;
     }
 
+    duplicatedMat.updateMaterialDisplayingTexture(128, true, Camera(), 0, false);
+
     return duplicatedMat;
 }
 

@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //Forward declarations for the interaction functions defined in the Interactions directory 
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int frameCounter);
 void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog,BakingDialog &bakingDialog);
-void paintingModesPanelInteraction(Panel &paintingModesPanel, Panel& vectorPaintingModePropertyPanel, Panel& smearPaintingModePropertyPanel, Painter &painter, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, Button filterPaintingModeFilterBtn, Box twoDPaintingBox);
+void paintingModesPanelInteraction(Panel &paintingModesPanel, Panel& vectorPaintingModePropertyPanel, Panel& smearPaintingModePropertyPanel, Painter &painter, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, Button filterPaintingModeFilterBtn, Box twoDPaintingBox, Material& paintingCustomMat);
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
 void UI::elementInteraction(
@@ -66,7 +66,6 @@ void UI::elementInteraction(
                     materialSelectionDialog.dialogControl.isActive() ||
                     paintingChannelsAutoCreateTexturesDialog.dialogControl.isActive() ||
                     paintingChannelsTextureSelectionPanelActive ||
-                    colorUseCustomMatSelectionPanelActive ||
                     texturePackEditorDialog.dialogControl.isActive();
 
     this->anyPanelHover = 
@@ -112,7 +111,7 @@ void UI::elementInteraction(
     Debugger::block("GUI : Interactions : windowPanelInteraction"); // End
 
     Debugger::block("GUI : Interactions : paintingModesPanelInteraction"); // Start
-    paintingModesPanelInteraction(this->paintingModesPanel, this->vectorPaintingModePropertyPanel, this->smearPaintingModePropertyPanel, painter, twoDPaintingPanel, this->projection, this->twoDPaintingSceneScroll, this->twoDPaintingScenePos, this->filterPaintingModeFilterBtn, this->twoDPaintingBox);
+    paintingModesPanelInteraction(this->paintingModesPanel, this->vectorPaintingModePropertyPanel, this->smearPaintingModePropertyPanel, painter, twoDPaintingPanel, this->projection, this->twoDPaintingSceneScroll, this->twoDPaintingScenePos, this->filterPaintingModeFilterBtn, this->twoDPaintingBox, this->paintingCustomMat);
     Debugger::block("GUI : Interactions : paintingModesPanelInteraction"); // End
 
     Debugger::block("GUI : Interactions : displayingModesPanelInteraction"); // Start

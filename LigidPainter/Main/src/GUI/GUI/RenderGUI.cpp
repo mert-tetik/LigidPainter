@@ -318,29 +318,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    if(this->colorUseCustomMatSelectionPanelActive){
-        colorUseCustomMatSelectionPanel.sections[0].elements.clear();
-
-        for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
-        {
-            Button btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getMaterialObj(i).title, Library::getMaterialObj(i).displayingTexture, 0.f, false);
-            btn.textureSizeScale = 1.2f;
-            colorUseCustomMatSelectionPanel.sections[0].elements.push_back(btn);
-        }  
-
-        this->colorUseCustomMatSelectionPanel.render(timer, true);
-
-        for (size_t i = 0; i < colorUseCustomMatSelectionPanel.sections[0].elements.size(); i++)
-        {
-            if(colorUseCustomMatSelectionPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
-                painter.customMaterialID = Library::getMaterialObj(i).uniqueID;
-            }
-        }
-
-        if(!paintingChannelsTextureSelectionPanel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)){
-            this->colorUseCustomMatSelectionPanelActive = false;
-        }
-    }
     
     
     if(paintingChannelsTextureSelectionPanelActive){
@@ -906,7 +883,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     else if(prevStraightLinePaintingCondition && !painter.faceSelection.editMode){
         std::vector<VectorStroke> strokeArray;
         strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
-        painter.applyVectorStrokes(strokeArray, this->twoDPaintingPanel, this->projection, painter.selectedPaintingModeIndex, this->filterPaintingModeFilterBtn.filter, this->twoDPaintingBox);
+        painter.applyVectorStrokes(strokeArray, this->twoDPaintingPanel, this->projection, painter.selectedPaintingModeIndex, this->filterPaintingModeFilterBtn.filter, this->twoDPaintingBox, paintingCustomMat);
     }
     
     prevStraightLinePaintingCondition = straightLinePaintingCondition;

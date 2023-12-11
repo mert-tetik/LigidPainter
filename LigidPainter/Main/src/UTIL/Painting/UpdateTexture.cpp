@@ -156,9 +156,9 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
 
 }
 
-void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox){
+void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat){
     
-    if(this->threeDimensionalMode && this->selectedDisplayingModeIndex != 2){
+    if(!this->threeDimensionalMode && this->selectedDisplayingModeIndex != 2){
         LGDLOG::start << "ERROR : Painting : Invalid displaying mode for the 2D painting" << LGDLOG::end;
         return;
     }
@@ -213,9 +213,9 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
             customMatMesh.ambientOcclusion.update(nullptr, res.x, res.y);
         }
 
-        for (int i = Library::findMaterialViaUniqueID(this->customMaterialID).materialModifiers.size() - 1; i >= 0; --i)    
+        for (int i = paintingCustomMat.materialModifiers.size() - 1; i >= 0; --i)    
         {
-            Library::findMaterialViaUniqueID(this->customMaterialID).materialModifiers[i].updateMaterialChannels(Library::findMaterialViaUniqueID(this->customMaterialID), customMatMesh, res.x, i, Settings::appTextures().white, 0);
+            paintingCustomMat.materialModifiers[i].updateMaterialChannels(paintingCustomMat, customMatMesh, res.x, i, Settings::appTextures().white, 0);
         }
     }
 

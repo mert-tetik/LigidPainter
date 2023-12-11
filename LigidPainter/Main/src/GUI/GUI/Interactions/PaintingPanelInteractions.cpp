@@ -80,7 +80,7 @@ void UI::paintingPanelInteraction(
     if(!painter.useCustomMaterial)
         this->colorSection.elements[0].button.texture = paintingSectionDisplayMat.displayingTexture;
     else{
-        this->colorSection.elements[0].button.texture = Library::findMaterialViaUniqueID(painter.customMaterialID).displayingTexture;
+        this->colorSection.elements[0].button.texture = this->paintingCustomMat.displayingTexture;
     }
 
     for (size_t i = 0; i < this->colorSection.elements.size(); i++)
@@ -115,9 +115,8 @@ void UI::paintingPanelInteraction(
     }
 
     if(this->colorSection.elements[17].button.clicked){
-        this->colorUseCustomMatSelectionPanelActive = true;
-        this->colorUseCustomMatSelectionPanel.pos = paintingPanelModePanel.pos;
-        this->colorUseCustomMatSelectionPanel.pos.x -= paintingPanelModePanel.scale.x + this->colorUseCustomMatSelectionPanel.scale.x;
+        this->materialSelectionDialog.dialogControl.activate();
+        this->materialSelectionDialog.material = &this->paintingCustomMat;
     }
 
     if(colorSection.elements[2].button.hover && *Mouse::LDoubleClick()){//Pressed to first color button element

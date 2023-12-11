@@ -38,7 +38,7 @@
 extern std::map<std::string, std::vector<Material>> matSelection_materials;
 
 void MaterialSelectionDialog::updateMaterialTypes(){
-    std::vector<std::string> titles = {"Custom"};
+    std::vector<std::string> titles;
     try
     {
         for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Materials")) {
@@ -60,6 +60,8 @@ void MaterialSelectionDialog::updateMaterialTypes(){
     catch (const std::filesystem::filesystem_error& ex) {
         LGDLOG::start << "ERROR : Filesystem : Updating the material modes panel" << ex.what() << LGDLOG::end;
     }
+
+    titles.push_back("Custom");
 
     this->matModePanel.sections[0].elements.clear();
 
