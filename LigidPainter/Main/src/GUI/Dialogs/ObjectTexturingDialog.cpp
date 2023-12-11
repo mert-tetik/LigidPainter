@@ -119,53 +119,21 @@ ObjectTexturingDialog::ObjectTexturingDialog(AppMaterialModifiers appMaterialMod
     this->sceneCam.radius = 3.5f;
 
     appMatMods = appMaterialModifiers;
+    
+    this->material = Material("ObjectTexturingMaterial", 0);
+    this->material.materialModifiers.push_back(appMaterialModifiers.solidModifier);
+    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+    material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+    material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
+    this->material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
+    this->material.displayingTexture.title = "ObjectTexturingMaterial_DisplayingTexture";
 }
 
 static bool __materialEditBtn = false;
+static bool __materialSelectBtn = false;
 
-void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog, LogDialog& logDialog){
+void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog, LogDialog& logDialog, MaterialSelectionDialog& materialSelectionDialog){
     dialogControl.updateStart();
-
-    if(this->material.title == "" || materialSelection){
-
-        int matI = -1;
-        bool elementClicked = false;
-
-        if(materialSelection && elementSelectionPanel.sections.size()){
-            for (size_t i = 0; i < elementSelectionPanel.sections[0].elements.size(); i++)
-            {
-                if(elementSelectionPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
-                    matI = i;
-                    elementClicked = true;
-                }
-            }
-        }
-
-        if(matI >= Library::getMaterialArraySize())
-            matI = -1;        
-
-        if(materialSelection && elementClicked || this->material.title == ""){
-
-            materialSelection = false;
-
-            // Delete the buffers of the material
-            this->material.deleteBuffers();
-
-            if(matI == -1){
-                this->material = Material("ObjectTexturingMaterial", 0);
-                this->material.materialModifiers.push_back(appMatMods.solidModifier);
-            }
-            else{
-                this->material = Library::getMaterialObj(matI).duplicateMaterial();
-            }
-
-            this->material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
-            this->material.displayingTexture.title = "ObjectTexturingMaterial_DisplayingTexture";
-            
-            if(!dialogControl.firstFrameActivated)
-                this->updateMeshTextures();
-        }
-    }
 
     if(getModel()->meshes.size() != texturesMesh.size()){
         for (size_t i = 0; i < texturesMesh.size(); i++)
@@ -327,7 +295,9 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
 
     // Element interactions
     if(this->selectMaterialButton.clicked){
-        this->materialSelection = true;
+        materialSelectionDialog.dialogControl.activate();
+        materialSelectionDialog.material = &this->material;
+        __materialSelectBtn = true;
 
         this->faceSelectionMode = false;
     }
@@ -455,7 +425,10 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         this->updateMeshTextures();
         __materialEditBtn = false;
     }
-
+    if(!this->selectMaterialButton.clicked && __materialSelectBtn){
+        this->updateMeshTextures();
+        __materialSelectBtn = false;
+    }
 
     if(!this->panel.hover && *Mouse::LClick() && !logDialog.isHovered() || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput) && !this->materialSelection && !this->textureSelection){
         if(!faceSelectionMode)

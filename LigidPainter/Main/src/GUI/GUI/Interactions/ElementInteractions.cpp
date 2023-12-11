@@ -63,6 +63,7 @@ void UI::elementInteraction(
                     displayerDialog.dialogControl.isActive() ||
                     textureEditorDialog.dialogControl.isActive() ||
                     objectTexturingDialog.dialogControl.isActive() ||
+                    materialSelectionDialog.dialogControl.isActive() ||
                     paintingChannelsAutoCreateTexturesDialog.dialogControl.isActive() ||
                     paintingChannelsTextureSelectionPanelActive ||
                     colorUseCustomMatSelectionPanelActive ||

@@ -1097,13 +1097,15 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     if(bakingDialog.dialogControl.isActive())
         bakingDialog.render(timer, skybox, logDialog);
     
-    if(objectTexturingDialog.dialogControl.isActive() && !materialEditorDialog.dialogControl.active)
-        objectTexturingDialog.render(timer, this->projection, materialEditorDialog, logDialog);
+    if(objectTexturingDialog.dialogControl.isActive() && !materialEditorDialog.dialogControl.active && !materialSelectionDialog.dialogControl.active)
+        objectTexturingDialog.render(timer, this->projection, materialEditorDialog, logDialog, materialSelectionDialog);
+    
+    if(materialSelectionDialog.dialogControl.isActive() && !materialEditorDialog.dialogControl.active)
+        materialSelectionDialog.render(timer, materialEditorDialog.appMaterialModifiers, materialEditorDialog);
     
     if(materialEditorDialog.dialogControl.isActive())
         materialEditorDialog.render(timer, textureSelectionDialog, logDialog);
     
-
 
     if(!Settings::properties()->cat_hide){
         logDialog.render(

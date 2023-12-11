@@ -171,6 +171,7 @@ public:
     TexturePackEditorDialog texturePackEditorDialog;
     ProjectRecoverDialog projectRecoverDialog;
     ObjectTexturingDialog objectTexturingDialog;
+    MaterialSelectionDialog materialSelectionDialog;
 
     float twoDPaintingSceneScroll = 2.f;
     glm::vec2 twoDPaintingScenePos = glm::vec2(0.f);

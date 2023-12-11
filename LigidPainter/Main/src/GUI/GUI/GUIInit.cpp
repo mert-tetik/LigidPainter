@@ -503,12 +503,12 @@ void UI::init
     //Init dialogs
     greetingDialog              = GreetingDialog();
     newTextureDialog            = NewTextureDialog();
-    logDialog                   = LogDialog(materialEditorDialog.appMaterialModifiers);
-    objectTexturingDialog       = ObjectTexturingDialog(materialEditorDialog.appMaterialModifiers);
     displayerDialog             = DisplayerDialog();
     textureEditorDialog         = TextureEditorDialog();
     texturePackEditorDialog     = TexturePackEditorDialog();
     materialEditorDialog        = MaterialEditorDialog();
+    logDialog                   = LogDialog(materialEditorDialog.appMaterialModifiers);
+    objectTexturingDialog       = ObjectTexturingDialog(materialEditorDialog.appMaterialModifiers);
     bakingDialog                = BakingDialog();
     filterSelectionDialog       = FilterSelectionDialog();
     loadProjectDialog           = LoadProjectDialog(materialEditorDialog.appMaterialModifiers);

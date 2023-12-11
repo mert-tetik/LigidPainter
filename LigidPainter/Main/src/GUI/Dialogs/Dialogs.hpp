@@ -39,6 +39,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class ContextMenu;
 class LogDialog;
 class TextureField;
+class MaterialSelectionDialog;
 
 class DialogControl
 {
@@ -466,7 +467,7 @@ public:
    ObjectTexturingDialog(AppMaterialModifiers appMaterialModifiers);
     
    //Public member function
-   void render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog, LogDialog& logDialog);
+   void render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog, LogDialog& logDialog, MaterialSelectionDialog &materialSelectionDialog);
    bool anyElementHover();
 
    void updateDisplayingTexture(LogDialog& logDialog);
@@ -493,6 +494,39 @@ class MaterialDisplayerDialog
    //Public member functions
    void render(Timer timer);
  };
+
+//!------------------------------ MATERIAL SELECTION DIALOG ------------------------------
+
+class MaterialSelectionDialog
+{
+public:
+   Panel bgPanel;
+   Panel matModePanel;
+   Panel matDisplayerPanel;
+   Panel selectedMatPanel;
+   
+   DialogControl dialogControl;
+   
+   Material* material;
+   Framebuffer displayingFBO;
+   Camera displayingCam;
+
+   int selectedMatMode = 0;
+   int selectedMatIndex = -1;
+
+   //Constructors
+   MaterialSelectionDialog();
+
+   //Public member functions
+   void render(Timer timer, AppMaterialModifiers &appMaterialModifiers, MaterialEditorDialog &materialEditorDialog);
+
+private:
+   void updateMaterialTypes();
+   bool renderMatDisplayer(Timer& timer);
+   void assignMaterialsToMap(AppMaterialModifiers &appMaterialModifiers);
+   void updateSelectedMaterialInPanel();
+
+};
 
 
 //!------------------------------MATERIAL DISPLAYER------------------------------

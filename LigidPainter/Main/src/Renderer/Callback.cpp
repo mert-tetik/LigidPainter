@@ -253,6 +253,7 @@ void Renderer::cursorPositionCallback(
                 ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || //If there is no active dialog (don't move the camera if a dialog is active)
                 this->userInterface.materialEditorDialog.dialogControl.isActive() ||
                 this->userInterface.objectTexturingDialog.dialogControl.isActive() ||
+                this->userInterface.materialSelectionDialog.dialogControl.isActive() ||
                 this->userInterface.materialDisplayerDialog.dialogControl.isActive()) &&
                 !this->userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel
             ) 
@@ -270,6 +271,8 @@ void Renderer::cursorPositionCallback(
             cam = &this->userInterface.materialEditorDialog.displayerCamera;
         else if(this->userInterface.materialDisplayerDialog.dialogControl.isActive())
             cam = &this->userInterface.materialDisplayerDialog.displayingCam;
+        else if(this->userInterface.materialSelectionDialog.dialogControl.isActive())
+            cam = &this->userInterface.materialSelectionDialog.displayingCam;
 
         cam->yaw += mouseOffset.x * sensitivity;
         cam->pitch -= mouseOffset.y * sensitivity;
