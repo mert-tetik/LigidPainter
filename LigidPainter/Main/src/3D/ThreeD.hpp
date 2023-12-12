@@ -152,6 +152,8 @@ public:
     Texture normalMap;
     Texture heightMap;
     Texture ambientOcclusion;
+    Texture materialIDTxtr;
+    std::vector<glm::vec3> materialIDColors;
 
     Texture uvMask;
 

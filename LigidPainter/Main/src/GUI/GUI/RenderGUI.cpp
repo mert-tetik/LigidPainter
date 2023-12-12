@@ -338,8 +338,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
                 for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
                 {
                     for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
-                        
-                        
                         if(paintingChannelsSection[secI].elements[elI].button.clickState1){
                             for (size_t elICheck = 0; elICheck < paintingChannelsSection[secI].elements.size(); elICheck++){
                                 if(paintingChannelsSection[secI].elements[elICheck].button.texture.ID == Library::getTexture(i)->ID && elI != elICheck){
