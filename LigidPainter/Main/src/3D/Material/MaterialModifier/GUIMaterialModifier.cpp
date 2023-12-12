@@ -156,12 +156,15 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
     };
 
     sections[0].elements[0].button.colorSelection = true;
+    sections[0].elements[0].button.color = glm::vec4(0.f,0.f,0.f,1.f);
     sections[0].elements[2].button.colorSelection = true;
     sections[0].elements[4].button.colorSelection = true;
     sections[0].elements[6].button.colorSelection = true;
     sections[0].elements[6].button.color = glm::vec4(0.5f,0.5f,1.f,1.f);
     sections[0].elements[8].button.colorSelection = true;
+    sections[0].elements[8].button.color = glm::vec4(0.5f,0.5f,0.5f,1.f);
     sections[0].elements[10].button.colorSelection = true;
+    sections[0].elements[10].button.color = glm::vec4(1.f,1.f,1.f,1.f);
 
     sections[sections.size() - 1].elements[0].button.filterSelection = true;
     sections[sections.size() - 1].elements[0].button.selectionDialogTxtrRes = 128;
