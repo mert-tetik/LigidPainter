@@ -96,9 +96,19 @@ bool MaterialSelectionDialog::renderMatDisplayer(Timer& timer){
         }
     }
 
+    bool hasElements = matDisplayerPanel.sections[0].elements.size();
+
+    if(!matDisplayerPanel.sections[0].elements.size()){
+        matDisplayerPanel.rowCount = 1;
+        matDisplayerPanel.sections[0].elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(matDisplayerPanel.scale.y), "No material detected! Please check the other material sections.", Texture(), 0.f, true)));
+    }
+    else
+        matDisplayerPanel.rowCount = 5;
+
+
     bool anyPressed = false;
 
-    this->matDisplayerPanel.render(timer,true);
+    this->matDisplayerPanel.render(timer, hasElements);
     for (size_t i = 0; i < matDisplayerPanel.sections[0].elements.size(); i++)
     {
         if(matDisplayerPanel.sections[0].elements[i].button.hover){
