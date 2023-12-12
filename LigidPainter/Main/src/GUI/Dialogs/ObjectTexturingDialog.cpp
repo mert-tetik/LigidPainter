@@ -108,8 +108,9 @@ ObjectTexturingDialog::ObjectTexturingDialog(AppMaterialModifiers appMaterialMod
     this->assignRelatedTexturesButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Assign to related textures", Texture(), 1.f, false);
 
     this->materialDisplayerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(6, 4.f), "", Texture(), 1.f, false);
-    this->editMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Edit material", Texture(), 1.f, false);
+    this->editMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 3.f), "Edit material", Texture(), 1.f, false);
     this->selectMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f, 4.f), "", Settings::appTextures().arrowB, 1.f, false);
+    this->defaultMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f, 3.f), "", Settings::appTextures().X, 1.f, false);
     
     this->albedoChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Albedo", 0.f);
     this->albedoChannelCheckBox.clickState1 = true;
@@ -270,6 +271,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->editMaterialButton.pos.y += this->editMaterialButton.scale.y + this->materialDisplayerButton.scale.y;
     this->selectMaterialButton.pos = this->materialDisplayerButton.pos;
     this->selectMaterialButton.pos.x += this->selectMaterialButton.scale.x + this->materialDisplayerButton.scale.x;
+    this->defaultMaterialButton.pos = this->selectMaterialButton.pos;
+    this->defaultMaterialButton.pos.y += this->selectMaterialButton.scale.y + this->defaultMaterialButton.scale.y;
 
     this->albedoChannelCheckBox.pos = this->editMaterialButton.pos;
     this->albedoChannelCheckBox.pos.y += this->albedoChannelCheckBox.scale.y + this->editMaterialButton.scale.y * 2.f;
@@ -320,6 +323,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->materialDisplayerButton.render(timer, false);
     this->editMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
     this->selectMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
+    this->defaultMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
     if(this->faceSelectionMode){
         this->ctrlInfoBtn.render(timer, false);
         this->shiftInfoBtn.render(timer, false);
@@ -343,6 +347,18 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         materialSelectionDialog.dialogControl.activate();
         materialSelectionDialog.material = &this->material;
         __materialSelectBtn = true;
+
+        this->faceSelectionMode = false;
+    }
+    else if(this->defaultMaterialButton.clicked){
+        this->material.deleteBuffers();
+        this->material = Material("ObjectTexturingMaterial", 0);
+        this->material.materialModifiers.push_back(appMatMods.solidModifier);
+        char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+        material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
+        material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
+        this->material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
+        this->material.displayingTexture.title = "ObjectTexturingMaterial_DisplayingTexture";
 
         this->faceSelectionMode = false;
     }

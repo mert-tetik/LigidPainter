@@ -443,6 +443,7 @@ public:
    Button materialDisplayerButton;
    Button editMaterialButton;
    Button selectMaterialButton;
+   Button defaultMaterialButton;
    CheckBox albedoChannelCheckBox;
    CheckBox roughnessChannelCheckBox;
    CheckBox metallicChannelCheckBox;
