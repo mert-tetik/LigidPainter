@@ -310,7 +310,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
                     if(!this->useCustomMaterial)
                         updateTheTexture(txtr, twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, clr, i, clr.r);
                     else{
-                        txtr.mix(customMatTxtr, projectedPaintingTexture, true);
+                        txtr.mix(customMatTxtr, projectedPaintingTexture, true, false, false);
                         if(selectedMeshIndex < getModel()->meshes.size())
                             txtr.removeSeams(getModel()->meshes[selectedMeshIndex], txtr.getResolution());
                     }

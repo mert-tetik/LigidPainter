@@ -399,6 +399,8 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1);
     ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
     ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 0);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("normalMapMode", 0);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("invert", 0);
     ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f);
     
     Texture destTxtrObj = destTxtr;

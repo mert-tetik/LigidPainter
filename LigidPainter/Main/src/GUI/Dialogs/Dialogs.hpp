@@ -443,6 +443,15 @@ public:
    Button materialDisplayerButton;
    Button editMaterialButton;
    Button selectMaterialButton;
+   CheckBox albedoChannelCheckBox;
+   CheckBox roughnessChannelCheckBox;
+   CheckBox metallicChannelCheckBox;
+   CheckBox normalMapChannelCheckBox;
+   CheckBox heightMapChannelCheckBox;
+   CheckBox aoChannelCheckBox;
+   ComboBox mixOptionsComboBox;
+   
+   ComboBox displayingOptionsComboBox;
 
    Panel elementSelectionPanel;
 

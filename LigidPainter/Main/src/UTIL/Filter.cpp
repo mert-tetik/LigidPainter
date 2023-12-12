@@ -172,6 +172,8 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
         ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
         ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f); 
         ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 0);
+        ShaderSystem::grayScaleIDMaskingShader().setInt("normalMapMode", 0);
+        ShaderSystem::grayScaleIDMaskingShader().setInt("invert", 0);
         
         Texture destTxtrObj = txtr;
         Texture copiedDestTxtr = destTxtrObj.duplicateTexture();

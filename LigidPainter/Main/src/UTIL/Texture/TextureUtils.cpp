@@ -1082,7 +1082,7 @@ void Texture::copyDataToTheCopyContext(){
     delete[] pxs;
 }
 
-void Texture::mix(Texture txtr2, Texture mask, bool maskAlpha){
+void Texture::mix(Texture txtr2, Texture mask, bool maskAlpha, bool normalMapMode, bool invert){
     
     glm::vec2 resolution = this->getResolution();
     
@@ -1104,6 +1104,8 @@ void Texture::mix(Texture txtr2, Texture mask, bool maskAlpha){
     ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
     
     ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", maskAlpha);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("normalMapMode", normalMapMode);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("invert", invert);
     ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f);
     
     Texture copiedTxtr = this->duplicateTexture();
