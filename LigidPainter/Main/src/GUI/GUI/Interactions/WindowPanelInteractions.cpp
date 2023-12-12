@@ -37,7 +37,8 @@ void windowPanelInteraction(
                                 SettingsDialog &settingsDialog, 
                                 DisplayerDialog &displayerDialog,
                                 ExportDialog &exportDialog,
-                                BakingDialog &bakingDialog
+                                BakingDialog &bakingDialog,
+                                MaterialSelectionDialog &materialSelectionDialog
                             )
 {
     //!WINDOW PANEL BUTTONS
@@ -58,5 +59,9 @@ void windowPanelInteraction(
     }
     else if(windowPanel.sections[0].elements[5].button.clicked){//Pressed to the settings button of the window panel
         bakingDialog.dialogControl.activate();
+    }
+    else if(windowPanel.sections[0].elements[6].button.clicked){//Pressed to the materials button of the window panel
+        materialSelectionDialog.material = nullptr;
+        materialSelectionDialog.dialogControl.activate();
     }
 }

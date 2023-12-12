@@ -151,6 +151,7 @@ public:
 
     /* -- DIALOGS -- */
 
+    MaterialEditorDialog materialEditorDialog;
     LogDialog logDialog;
     GreetingDialog greetingDialog;
     NewProjectDialog newProjectDialog;
@@ -158,7 +159,6 @@ public:
     MaterialDisplayerDialog materialDisplayerDialog;
     FilterDisplayerDialog filterDisplayerDialog;
     LoadProjectDialog loadProjectDialog;
-    MaterialEditorDialog materialEditorDialog;
     TextureSelectionDialog textureSelectionDialog;
     BakingDialog bakingDialog;
     FilterSelectionDialog filterSelectionDialog;

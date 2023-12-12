@@ -78,10 +78,9 @@ void UI::init
                             false
                         );
 
+
     //Init the window panel
     windowPanel = Panel(
-                            
-                            
                             {
                                 Section(
                                     Element(Button()),
@@ -91,7 +90,8 @@ void UI::init
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Export"              , Settings::appTextures().exportIcon, 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Displayer"           , Settings::appTextures().environmentIcon, 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Settings"            , Settings::appTextures().gearIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Baking"              , Settings::appTextures().bakingIcon, 0.f,false))
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Baking"              , Settings::appTextures().bakingIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Materials"           , Settings::appTextures().materialIcon, 0.f,false))
                                     }
                                 )
                             },
@@ -481,25 +481,12 @@ void UI::init
 
 
     //Init dialogs
-    greetingDialog              = GreetingDialog();
-    newTextureDialog            = NewTextureDialog();
-    displayerDialog             = DisplayerDialog();
-    textureEditorDialog         = TextureEditorDialog();
-    texturePackEditorDialog     = TexturePackEditorDialog();
-    materialEditorDialog        = MaterialEditorDialog();
-    logDialog                   = LogDialog(materialEditorDialog.appMaterialModifiers);
-    objectTexturingDialog       = ObjectTexturingDialog(materialEditorDialog.appMaterialModifiers);
-    bakingDialog                = BakingDialog();
-    filterSelectionDialog       = FilterSelectionDialog();
-    loadProjectDialog           = LoadProjectDialog(materialEditorDialog.appMaterialModifiers);
-    newProjectDialog            = NewProjectDialog(materialEditorDialog.appMaterialModifiers);
-    settingsDialog              = SettingsDialog();
-    exportDialog                = ExportDialog();
-    materialDisplayerDialog     = MaterialDisplayerDialog();
-    filterDisplayerDialog       = FilterDisplayerDialog();
-    projectRecoverDialog       = ProjectRecoverDialog();
+    materialEditorDialog = MaterialEditorDialog();
+    logDialog = LogDialog(materialEditorDialog.appMaterialModifiers);
+    objectTexturingDialog = ObjectTexturingDialog(materialEditorDialog.appMaterialModifiers);
+    loadProjectDialog = LoadProjectDialog(materialEditorDialog.appMaterialModifiers);
+    newProjectDialog = NewProjectDialog(materialEditorDialog.appMaterialModifiers);
 
-    
     //Init renaming textbox
     libraryPanelDisplayer.isLibraryDisplayer = true;
     renamingTextBox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "", 4.f, false);

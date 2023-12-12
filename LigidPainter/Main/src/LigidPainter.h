@@ -62,6 +62,13 @@ public:
             LGDLOG::start<< "Failed to initialize GLAD" << LGDLOG::end;
         }    
 
+        Debugger::block("LOAD : App Textures"); //Start 160567296 153.13 MB
+
+        //--Load the app textures
+        Settings::loadAppTextures();
+
+        Debugger::block("LOAD : App Textures"); //End
+
         Renderer renderer;
         renderer.initRenderer();
         

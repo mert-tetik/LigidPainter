@@ -68,6 +68,12 @@ void MaterialSelectionDialog::render(Timer timer, AppMaterialModifiers &appMater
                 this->selectedMatPanel.sections[0].elements[1].button.text = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].title;
         }
     }
+
+    if(this->material == nullptr)
+        this->selectedMatPanel.sections[0].elements[4].scale.y = 0.f;
+    else
+        this->selectedMatPanel.sections[0].elements[4].scale.y = 2.f;
+    
     this->selectedMatPanel.render(timer,true);
     this->matModePanel.render(timer, true);
 
@@ -76,8 +82,10 @@ void MaterialSelectionDialog::render(Timer timer, AppMaterialModifiers &appMater
         materialEditorDialog.material = &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex];
     }
     else if(this->selectedMatPanel.sections[0].elements[4].button.clicked){
-        this->material->deleteBuffers();
-        *this->material = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].duplicateMaterial();
+        if(this->material != nullptr){
+            this->material->deleteBuffers();
+            *this->material = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].duplicateMaterial();
+        }
         this->dialogControl.unActivate();
     }
     

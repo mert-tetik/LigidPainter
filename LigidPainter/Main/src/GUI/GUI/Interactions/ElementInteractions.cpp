@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //Forward declarations for the interaction functions defined in the Interactions directory 
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int frameCounter);
-void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog,BakingDialog &bakingDialog);
+void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog,BakingDialog &bakingDialog, MaterialSelectionDialog &materialSelectionDialog);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Panel& vectorPaintingModePropertyPanel, Panel& smearPaintingModePropertyPanel, Painter &painter, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, Button filterPaintingModeFilterBtn, Box twoDPaintingBox, Material& paintingCustomMat);
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
@@ -107,7 +107,7 @@ void UI::elementInteraction(
     Debugger::block("GUI : Interactions : paintingPanelInteraction"); // End
     
     Debugger::block("GUI : Interactions : windowPanelInteraction"); // Start
-    windowPanelInteraction(windowPanel, painter, this->settingsDialog, this->displayerDialog, this->exportDialog, this->bakingDialog);
+    windowPanelInteraction(windowPanel, painter, this->settingsDialog, this->displayerDialog, this->exportDialog, this->bakingDialog, this->materialSelectionDialog);
     Debugger::block("GUI : Interactions : windowPanelInteraction"); // End
 
     Debugger::block("GUI : Interactions : paintingModesPanelInteraction"); // Start

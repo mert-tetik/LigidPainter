@@ -516,7 +516,7 @@ public:
    
    DialogControl dialogControl;
    
-   Material* material;
+   Material* material = nullptr;
    Framebuffer displayingFBO;
    Camera displayingCam;
 

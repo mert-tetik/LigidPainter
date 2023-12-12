@@ -222,6 +222,7 @@ namespace Settings{
         Texture inkPenIcon;
         Texture bucketIcon;
         Texture bakingIcon;
+        Texture materialIcon;
         Texture trashIcon;
         Texture materialChannelsIcon;
         Texture paintingOverIcon;
