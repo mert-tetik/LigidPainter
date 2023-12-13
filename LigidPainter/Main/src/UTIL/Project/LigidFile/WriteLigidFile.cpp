@@ -119,7 +119,7 @@ bool Project::wrtLigidFile(std::string path){
     int textureRes = Settings::properties()->textureRes;
     WRITE_BITS(textureRes, int, "");
 
-    // ------------- Material Channels ------------
+    // ------------- Material Channels & Material ID TEXTURE ------------
     int32_t meshCount = getModel()->meshes.size();
     WRITE_BITS(meshCount, int32_t, "");
     for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
@@ -129,7 +129,10 @@ bool Project::wrtLigidFile(std::string path){
         writeMatChannel(wf, getModel()->meshes[meshI].metallic);   
         writeMatChannel(wf, getModel()->meshes[meshI].normalMap);   
         writeMatChannel(wf, getModel()->meshes[meshI].heightMap);   
-        writeMatChannel(wf, getModel()->meshes[meshI].ambientOcclusion);   
+        writeMatChannel(wf, getModel()->meshes[meshI].ambientOcclusion);
+
+        // Material ID Texture
+        writeStr(wf, getModel()->meshes[meshI].materialIDTxtrPath);
     }
 
     return true;

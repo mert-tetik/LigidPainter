@@ -141,7 +141,7 @@ bool Project::readLigidFile(
         // ---------- Settings ------------
         READ_BITS(Settings::properties()->textureRes, int, "Texture resolution");
         
-        // ------------- Material Channels ------------
+        // ------------- Material Channels & Material ID TEXTURE ------------
         int32_t meshCount;
         READ_BITS(meshCount, int32_t, "");
         for (size_t meshI = 0; meshI < meshCount; meshI++)
@@ -155,7 +155,15 @@ bool Project::readLigidFile(
             readMatChannel(rf, getModel()->meshes[meshI].normalMap);   
             readMatChannel(rf, getModel()->meshes[meshI].heightMap);   
             readMatChannel(rf, getModel()->meshes[meshI].ambientOcclusion);   
+            
+            getModel()->meshes[meshI].materialIDTxtrPath.clear();
+            READ_STR(getModel()->meshes[meshI].materialIDTxtrPath);
+            if(getModel()->meshes[meshI].materialIDTxtrPath.size() && std::filesystem::exists(getModel()->meshes[meshI].materialIDTxtrPath)){
+                getModel()->meshes[meshI].materialIDTxtr.load(getModel()->meshes[meshI].materialIDTxtrPath.c_str());
+                getModel()->meshes[meshI].materialIDColors = getModel()->meshes[meshI].materialIDTxtr.getMaterialIDPalette();
+            }
         }
+
 
         getModel()->newModelAdded = true;
 

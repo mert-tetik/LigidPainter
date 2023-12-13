@@ -154,6 +154,7 @@ public:
     Texture ambientOcclusion;
     Texture materialIDTxtr;
     std::vector<glm::vec3> materialIDColors;
+    std::string materialIDTxtrPath;
 
     Texture uvMask;
 

@@ -386,26 +386,12 @@ void UI::paintingPanelInteraction(
         }
 
         if(paintingChannelsSection[secI].elements[6].button.clicked){
-            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+            std::string test = showFileSystemObjectSelectionDialog("Select a material id texture.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
     
             if(test.size()){
                 paintingChannelsSection[secI].elements[6].button.texture.load(test.c_str());
                 getModel()->meshes[secI-1].materialIDColors = paintingChannelsSection[secI].elements[6].button.texture.getMaterialIDPalette();
-                
-                paintingChannelsSection[secI].elements.erase(paintingChannelsSection[secI].elements.begin() + 8, paintingChannelsSection[secI].elements.end());
-
-                for (size_t i = 0; i < getModel()->meshes[secI-1].materialIDColors.size(); i++)
-                {
-                    float btnOffset = 0.f;
-                    if(i == 0)
-                        btnOffset = 1.f;
-
-                    Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.3f),"", Texture(), btnOffset, false);
-                    btn.color = glm::vec4(getModel()->meshes[secI-1].materialIDColors[i], 1.f);
-                    btn.color2 = btn.color;
-                    btn.outline = false;
-                    paintingChannelsSection[secI].elements.push_back(btn); 
-                }
+                getModel()->meshes[secI-1].materialIDTxtrPath = test;
             }
         }
         if(paintingChannelsSection[secI].elements[7].button.clicked){
@@ -413,6 +399,21 @@ void UI::paintingPanelInteraction(
             paintingChannelsSection[secI].elements.erase(paintingChannelsSection[secI].elements.begin() + 8, paintingChannelsSection[secI].elements.end());
             glDeleteTextures(1, &paintingChannelsSection[secI].elements[6].button.texture.ID);
             paintingChannelsSection[secI].elements[6].button.texture.ID = 0;
+        }
+
+        paintingChannelsSection[secI].elements.erase(paintingChannelsSection[secI].elements.begin() + 8, paintingChannelsSection[secI].elements.end());
+
+        for (size_t i = 0; i < getModel()->meshes[secI-1].materialIDColors.size(); i++)
+        {
+            float btnOffset = 0.f;
+            if(i == 0)
+                btnOffset = 1.f;
+
+            Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.3f),"", Texture(), btnOffset, false);
+            btn.color = glm::vec4(getModel()->meshes[secI-1].materialIDColors[i], 1.f);
+            btn.color2 = btn.color;
+            btn.outline = false;
+            paintingChannelsSection[secI].elements.push_back(btn); 
         }
     }
 
