@@ -142,6 +142,8 @@ public:
     bool textAlignLeft = false;
     bool clicked = false;
     bool solidColor = false;
+    std::string infoText = "";
+    size_t hoverDuration = 0; 
     
     bool stretchTexture = false;
 

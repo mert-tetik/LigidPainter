@@ -129,4 +129,19 @@ void Button::render(
 
     //Render the text and the texture
     renderTextAndTexture(resultScaleText);
+
+    if(!this->hover)
+        hoverDuration = 0;
+    else{
+        if(timer.tick){
+            hoverDuration++;
+        }
+    }
+
+    if(hoverDuration > 2 && this->infoText.size()){
+        Button infoBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f, 1.3f), this->infoText, Texture(), 0.f, false);
+        infoBtn.pos = this->pos;
+        infoBtn.pos.z += 0.03f;
+        infoBtn.render(timer, false);
+    }
 }
