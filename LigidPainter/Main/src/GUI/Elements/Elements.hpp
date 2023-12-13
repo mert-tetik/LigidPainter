@@ -344,6 +344,9 @@ public:
     bool hover = false;
     float hoverMixVal = 0.f;
     float clickedMixVal = 0.f;
+    
+    std::string infoText;
+    size_t hoverDuration;
 
     //Constructors 
     CheckBox();

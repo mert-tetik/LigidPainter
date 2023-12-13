@@ -116,16 +116,22 @@ ObjectTexturingDialog::ObjectTexturingDialog(AppMaterialModifiers appMaterialMod
     
     this->albedoChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Albedo", 0.f);
     this->albedoChannelCheckBox.clickState1 = true;
+    this->albedoChannelCheckBox.infoText = "Enable / Disable modifying the Albedo channel";
     this->roughnessChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Roughness", 0.f);
     this->roughnessChannelCheckBox.clickState1 = true;
+    this->roughnessChannelCheckBox.infoText = "Enable / Disable modifying the Roughness channel";
     this->metallicChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Metallic", 0.f);
     this->metallicChannelCheckBox.clickState1 = true;
+    this->metallicChannelCheckBox.infoText = "Enable / Disable modifying the Metallic channel";
     this->normalMapChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Normal Map", 0.f);
     this->normalMapChannelCheckBox.clickState1 = true;
+    this->normalMapChannelCheckBox.infoText = "Enable / Disable modifying the Normal Map channel";
     this->heightMapChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Height Map", 0.f);
     this->heightMapChannelCheckBox.clickState1 = true;
+    this->heightMapChannelCheckBox.infoText = "Enable / Disable modifying the Height Map channel";
     this->aoChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Ambient Occlusion", 0.f);
     this->aoChannelCheckBox.clickState1 = true;
+    this->aoChannelCheckBox.infoText = "Enable / Disable modifying the Ambient Occlusion channel";
     this->mixOptionsComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 1.5f), {"Opaque", "Black Only", "White Only", "Roughness Mask", "Metallic Mask", "AO Mask", "Height Map Mask", "Normal Map Mask", "Normal Map Mask Inverted"}, "Mix",  1.f);
     this->displayingOptionsComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Heigth Map", "Ambient Occlusion"}, "Displaying",  1.f);
 
