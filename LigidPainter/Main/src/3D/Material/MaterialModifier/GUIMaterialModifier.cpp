@@ -33,6 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 //0 = albedo
 //1 = roughness
@@ -49,7 +50,7 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Channels",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Channels"),
             {
                 Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 2.f),"Auto Fill",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Albedo",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false)),
@@ -61,7 +62,7 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Channel Opacities"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
@@ -72,7 +73,7 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Depth Masking & Depth Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
@@ -117,7 +118,7 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Channels",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Channels"),
             {
                 Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Albedo",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
@@ -139,7 +140,7 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Depth Masking & Depth Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
@@ -180,14 +181,14 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1,2.f),"Scaling",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Scaling"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Scale", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 50.f, 6.f), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Scale Y axis", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f)
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Noise"),
             {
                 RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1,1.5f),"Octaves",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 12, 8),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f),"Fbm X Offset",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 0.f),
@@ -201,14 +202,14 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f), "General", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "General"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Noise Influence", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 6.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Position Influence", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.8f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f), "Colors", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Colors"),
             {
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Color1", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Color2", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
@@ -217,7 +218,7 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f), "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Element Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Wetness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.6f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), "Metallic", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.f),
@@ -226,7 +227,7 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Channel Opacities"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
@@ -237,7 +238,7 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Depth Masking & Depth Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
@@ -276,7 +277,7 @@ std::vector<Section> MaterialModifier::createMossModifier(){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Color", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Color"),
             {
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Moss Color Back", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Moss Color Front", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
@@ -284,7 +285,7 @@ std::vector<Section> MaterialModifier::createMossModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Droplets", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Droplets"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Droplets Count", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Droplets Opacity Jitter", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
@@ -292,33 +293,33 @@ std::vector<Section> MaterialModifier::createMossModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Front Layer", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Front Layer"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Front Layer Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Front Layer Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 0.015f), 
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Lighting", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Lighting"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Light Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.8f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Darkening Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.7f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Noise"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.3f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Moss Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Moss Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 40.f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Element Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.4f), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.f), 
@@ -326,7 +327,7 @@ std::vector<Section> MaterialModifier::createMossModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Channel Opacities"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
@@ -337,7 +338,7 @@ std::vector<Section> MaterialModifier::createMossModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Depth Masking & Depth Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
@@ -376,7 +377,7 @@ std::vector<Section> MaterialModifier::createRustModifier(){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Colors", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Colors"),
             {
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Color 1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Color 2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
@@ -385,13 +386,13 @@ std::vector<Section> MaterialModifier::createRustModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 30.f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Perlin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Perlin Properties"),
             {
                 RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), "First Octave", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 3 ), 
                 RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), "Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 ), 
@@ -399,27 +400,27 @@ std::vector<Section> MaterialModifier::createRustModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "FBM Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "FBM Properties"),
             {
                 RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), "FBM Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 16, 16 ), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "FBM Roughness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.5f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Rust Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Rust Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Rust Radius", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Battering Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Noise Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Noise Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Element Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Wetness", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Metallic", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.f),
@@ -427,7 +428,7 @@ std::vector<Section> MaterialModifier::createRustModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Channel Opacities"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
@@ -438,7 +439,7 @@ std::vector<Section> MaterialModifier::createRustModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Depth Masking & Depth Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
@@ -479,7 +480,7 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Droplets", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Droplets"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Droplets Count", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 21.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Droplets Opacity Jitter", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.5f),
@@ -487,33 +488,33 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Veins", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Veins"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Veins Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.24f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Veins Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.68f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Blushing", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Blushing"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Blushing Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 3.f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Skin Prints", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Skin Prints"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Skin Prints Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 100.f, 10.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Skin Prints Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Noise", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Noise"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 4.f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Skin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Skin Properties"),
             {
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Skin Color", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Vein Color", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
@@ -525,7 +526,7 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Channel Opacities"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
@@ -536,7 +537,7 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Depth Masking & Depth Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
@@ -572,7 +573,7 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Colors", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Colors"),
             {
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Color 1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Color 2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
@@ -580,7 +581,7 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Scale", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Noise Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
@@ -588,14 +589,14 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Perlin Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Perlin Properties"),
             {
                 RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(1, 1.5f), "Max Octaves", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 ), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Persistance", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.5f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Musgrave Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Musgrave Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Musgrave Lacunarity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.5f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Musgrave Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 0.75f),
@@ -603,20 +604,20 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Base", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Base"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Noise Strength", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 4.6f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Color Saturation", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "FBM Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "FBM Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "FBM Frequency", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Element Properties", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Element Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Wood Gamma", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 0.6f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Shininess", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 0.5f),
@@ -625,7 +626,7 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Channel Opacities"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
@@ -636,7 +637,7 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Depth Masking & Depth Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
@@ -675,34 +676,34 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Color",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Color"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Color1",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Color2",              Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Dirt",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Dirt"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 10.f,4.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,2.f,1.f), 
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"2nd Color",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "2nd Color"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Noise Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,10.f,5.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Noise Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,2.f,1.f), 
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Noise"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Strength",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,2.f,1.f), 
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Element Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Element Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Wetness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,1.f,1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,1.f,0.f), 
@@ -710,7 +711,7 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Perlin Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Perlin Properties"),
             {
                 RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),"First Octave",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 3 ),
                 RangeBar(ELEMENT_STYLE_STYLIZED,glm::vec2(1,1.5f),"Octaves",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0, 8, 8 ), 
@@ -718,7 +719,7 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Channel Opacities"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
@@ -729,7 +730,7 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Depth Masking & Depth Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)
@@ -764,7 +765,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
     std::vector<Section> sections =  
     {
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Noise",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Noise"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Size",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 5.f, 1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Offset Intensity",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 5.f, 5.f), 
@@ -774,7 +775,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
         ),
         
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Blur",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Blur"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Intensity",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 0.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Direction",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f,360.f,0.f), 
@@ -782,7 +783,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
         ),
         
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Scratches",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Scratches"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Wavyness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 0.1f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Scale",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 40.f, 20.f), 
@@ -792,7 +793,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
         ),
 
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Droplets",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Droplets"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Count",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 0.1f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"OpacityJitter",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 1.f), 
@@ -800,7 +801,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Colors",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Colors"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Color1", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Color2", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,false),
@@ -808,7 +809,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Element Properties",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Element Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Wetness",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Metallic",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,0.f, 1.f, 1.f), 
@@ -816,7 +817,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1, 2.f), "Channel Opacities", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Channel Opacities"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
@@ -827,7 +828,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
             }
         ),
         Section(
-            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Masking & Depth Properties",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, true)),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Depth Masking & Depth Properties"),
             {
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1.f, 2.f), "Depth Value",  Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Blur the Height Map", MATERIAL_MODIFIERS_ELEMENT_OFFSET)

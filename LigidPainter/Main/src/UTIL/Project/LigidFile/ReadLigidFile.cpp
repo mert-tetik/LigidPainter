@@ -156,6 +156,7 @@ bool Project::readLigidFile(
             readMatChannel(rf, getModel()->meshes[meshI].heightMap);   
             readMatChannel(rf, getModel()->meshes[meshI].ambientOcclusion);   
             
+            // Material ID Texture
             getModel()->meshes[meshI].materialIDTxtrPath.clear();
             READ_STR(getModel()->meshes[meshI].materialIDTxtrPath);
             if(getModel()->meshes[meshI].materialIDTxtrPath.size() && std::filesystem::exists(getModel()->meshes[meshI].materialIDTxtrPath)){
