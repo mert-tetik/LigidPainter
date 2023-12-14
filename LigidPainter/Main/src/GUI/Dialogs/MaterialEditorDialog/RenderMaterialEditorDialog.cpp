@@ -33,16 +33,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 // Defined in the RenderPanel.cpp
 extern bool updateThePreRenderedPanels;
 
-void updateMaterialDisplayerButton(Button &materialDisplayer, Texture &displayingTxtr, Panel &bgPanel, Panel &modifiersPanel, Panel &layerPanel){
-    //Update material displayer button
-    materialDisplayer.texture = displayingTxtr;
-    materialDisplayer.pos = bgPanel.pos + bgPanel.additionalPos;
-    materialDisplayer.scale = glm::vec2(35.f); 
-    materialDisplayer.scale.x = (modifiersPanel.pos.x + modifiersPanel.additionalPos.x - modifiersPanel.scale.x) - (layerPanel.pos.x + layerPanel.additionalPos.x + layerPanel.scale.x); 
-    materialDisplayer.scale.x /= 2.f;
-    materialDisplayer.pos.x = modifiersPanel.pos.x + modifiersPanel.additionalPos.x - modifiersPanel.scale.x - materialDisplayer.scale.x;
-}
-
 bool __materialEditorDialogESCPressed = false;
 bool __materialEditorDialogESCFirstFramePressed = false;
 
@@ -57,22 +47,33 @@ void MaterialEditorDialog::render
 {
     dialogControl.updateStart();
 
+    //Update the texture, scale & position of the panels
+    navPanel.scale.x = bgPanel.scale.x - shortcutPanel.scale.x - layerPanel.scale.x - modifiersPanel.scale.x;
+    navPanel.pos = shortcutPanel.pos;
+    navPanel.pos.x += shortcutPanel.scale.x + navPanel.scale.x;
+    navPanel.pos.y = bgPanel.pos.y - bgPanel.scale.y + navPanel.scale.y;
+
+    this->materialDisplayer.texture = this->displayingFBO.colorBuffer;
+    this->materialDisplayer.pos = navPanel.pos;
+    materialDisplayer.scale.y = bgPanel.scale.y - navPanel.scale.y;
+    materialDisplayer.scale.x = navPanel.scale.x;
+    this->materialDisplayer.pos.y += navPanel.scale.y + materialDisplayer.scale.y;
+
+    bool mouseTrackingFlag = !(textureSelectionDialog.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive());
     //Render the panels & material displayer button
-    bgPanel.render(timer,        !(textureSelectionDialog.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive()));
-    layerPanel.render(timer,     !(textureSelectionDialog.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive()));
-    modifiersPanel.render(timer, !(textureSelectionDialog.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive()));
-    barButton.render(timer,      !(textureSelectionDialog.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive()));
+    bgPanel.render(timer, mouseTrackingFlag);
+    layerPanel.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - layerPanel.scale.x; 
+    layerPanel.render(timer, mouseTrackingFlag);
+    modifiersPanel.render(timer, mouseTrackingFlag);
+    barButton.render(timer, mouseTrackingFlag);
+    shortcutPanel.render(timer, mouseTrackingFlag);
+    navPanel.render(timer, mouseTrackingFlag);
+    materialDisplayer.render(timer, false);
 
-    barButton.pos.x = bgPanel.pos.x + bgPanel.additionalPos.x;
-    barButton.pos.y = bgPanel.pos.y + bgPanel.additionalPos.y - bgPanel.scale.y - barButton.scale.y;
+    barButton.pos.x = bgPanel.pos.x;
+    barButton.pos.y = bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y;
 
-    bgPanel.additionalPos = -glm::vec3((*Settings::videoScale() - glm::vec2(getContext()->windowScale)) / *Settings::videoScale() * 50.f ,0);
-    layerPanel.additionalPos = -glm::vec3((*Settings::videoScale() - glm::vec2(getContext()->windowScale)) / *Settings::videoScale() * 50.f ,0);
-    modifiersPanel.additionalPos = -glm::vec3((*Settings::videoScale() - glm::vec2(getContext()->windowScale)) / *Settings::videoScale() * 50.f ,0);
 
-    //Update the texture, scale & position of the material displayer button
-    updateMaterialDisplayerButton(materialDisplayer, this->displayingFBO.colorBuffer, bgPanel, modifiersPanel, layerPanel);
-    
     //If texture selection dialog is not active reset the index values used to navigate textures
     if(textureSelectionDialog.dialogControl.isActive() == false){
         textureModifierTextureSelectingButtonIndex = 1000;
@@ -101,12 +102,8 @@ void MaterialEditorDialog::render
     //If texture selection done
     checkTextureSelectionDialog(textureSelectionDialog, *material);
 
-    //Render the material displayer
-    materialDisplayer.render(timer,false);
-
-    this->displayModeComboBox.pos = layerPanel.pos + layerPanel.additionalPos;
-    this->displayModeComboBox.pos.y -= materialDisplayer.scale.y + this->displayModeComboBox.scale.y;
-    this->displayModeComboBox.pos.x += layerPanel.scale.x + materialDisplayer.scale.x;
+    this->displayModeComboBox.pos = navPanel.pos;
+    this->displayModeComboBox.pos.x -= navPanel.scale.x - displayModeComboBox.scale.x;
     this->displayModeComboBox.render(timer, true);
     
     dialogControl.updateEnd(timer,0.15f);
@@ -258,7 +255,6 @@ void MaterialEditorDialog::checkLayerPanel(Material &material){
             modMoved = false;
         }
     }
-
 }
 
 

@@ -38,7 +38,7 @@ MaterialEditorDialog::MaterialEditorDialog()
     this->displayerCamera.cameraPos = glm::vec3(0,0,-3.5f);
     this->displayerCamera.radius = 3.5f;
 
-    this->displayModeComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(7.f,2.f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Height", "Ambient Occlusion"}, "Displaying Mode", 0.f);
+    this->displayModeComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(7.f,1.8f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Height", "Ambient Occlusion"}, "Displaying Mode", 0.f);
     
     //Back side of the dialog
     bgPanel = Panel
@@ -62,7 +62,7 @@ MaterialEditorDialog::MaterialEditorDialog()
     );
 
     //That panel where you add the modifiers (on the left side)
-    layerPanel = Panel({},scaleLayer,posLayer,ColorPalette::mainColor,ColorPalette::thirdColor,true,true,false,true,true,1.f,1.f,                                
+    layerPanel = Panel({},scaleLayer,posLayer,ColorPalette::mainColor,ColorPalette::thirdColor,true,false,true,true,true,1.f,1.f,                                
                             {
                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Add"        , Texture(), 0.f, false)
                             },
@@ -72,6 +72,21 @@ MaterialEditorDialog::MaterialEditorDialog()
     
     //That panel where you can display the properties of the modifier (on the right side)
     modifiersPanel = Panel( {}, scaleModifier, posModifier, ColorPalette::mainColor,ColorPalette::thirdColor , true, false, true, true, true, 1.f, 1.f,                                
+                            {
+                            
+                            },
+                            10.f,
+                            true
+                      );
+
+    shortcutPanel = Panel( {}, scaleModifier, posLayer, ColorPalette::mainColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f,                                
+                            {
+                             
+                            },
+                            10.f,
+                            true
+                      );
+    navPanel = Panel( {}, glm::vec2(scale.x, 2.f), posModifier, ColorPalette::mainColor,ColorPalette::thirdColor , true, true, true, false, true, 1.f, 1.f,                                
                             {
                             
                             },
@@ -115,4 +130,10 @@ MaterialEditorDialog::MaterialEditorDialog()
     barButton.pos = glm::vec3(bgPanel.pos.x, bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y, bgPanel.pos.z);
 
     this->displayingFBO = Framebuffer(Texture(nullptr, 1024, 1024, GL_LINEAR), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)));
+
+    bgPanel.solidStyle = true;
+    layerPanel.solidStyle = true;
+    modifiersPanel.solidStyle = true;
+    shortcutPanel.solidStyle = true;
+    navPanel.solidStyle = true;
 }
