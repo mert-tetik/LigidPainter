@@ -43,7 +43,8 @@ void MaterialEditorDialog::render
                                 (
                                     Timer &timer,
                                     TextureSelectionDialog &textureSelectionDialog,
-                                    LogDialog& logDialog
+                                    LogDialog& logDialog,
+                                    glm::mat4 projection
                                 )
 {
     dialogControl.updateStart();
@@ -80,20 +81,22 @@ void MaterialEditorDialog::render
     overallResultMode.scale.y = navPanel.scale.y - 0.1;
 
     matDisplayerBallModeBtn.pos = navPanel.pos;
-    matDisplayerBallModeBtn.pos.x += displayModeComboBox.scale.x - splitMode.scale.x * 9.f;
+    matDisplayerBallModeBtn.pos.x += displayModeComboBox.scale.x - splitMode.scale.x * 3.f;
     twoDModelModeBtn.pos = matDisplayerBallModeBtn.pos; 
     twoDModelModeBtn.pos.x -= matDisplayerBallModeBtn.scale.x + twoDModelModeBtn.scale.x; 
     customModelModeBtn.pos = matDisplayerBallModeBtn.pos; 
     customModelModeBtn.pos.x += matDisplayerBallModeBtn.scale.x + customModelModeBtn.scale.x; 
 
     splitMode.pos = navPanel.pos;
-    splitMode.pos.x += navPanel.scale.x - splitMode.scale.x * 1.5f;
+    splitMode.pos.x += navPanel.scale.x - splitMode.scale.x * 4.f;
     selectedModifierResultMode.pos = splitMode.pos; 
     selectedModifierResultMode.pos.x -= splitMode.scale.x + selectedModifierResultMode.scale.x; 
     overallResultMode.pos = selectedModifierResultMode.pos; 
     overallResultMode.pos.x -= selectedModifierResultMode.scale.x + overallResultMode.scale.x; 
 
     // ------- Rendering the panels -------
+
+
     bgPanel.render(timer, mouseTrackingFlag);
     layerPanel.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - layerPanel.scale.x; 
     layerPanel.render(timer, mouseTrackingFlag);
@@ -101,6 +104,22 @@ void MaterialEditorDialog::render
     barButton.render(timer, mouseTrackingFlag);
     shortcutPanel.render(timer, mouseTrackingFlag);
     navPanel.render(timer, mouseTrackingFlag);
+    
+    ShaderSystem::textureRenderingShader().use();
+    ShaderSystem::textureRenderingShader().setMat4("projection", projection);
+    ShaderSystem::textureRenderingShader().setVec2("scale", this->materialDisplayer.resultScale);
+    ShaderSystem::textureRenderingShader().setVec3("pos", this->materialDisplayer.resultPos);
+    ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+    ShaderSystem::textureRenderingShader().setFloat("opacity", this->dialogControl.mixVal);
+    ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, this->skyboxFBO.colorBuffer.ID);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    ShaderSystem::buttonShader().use();
+    
     materialDisplayer.render(timer, false);
 
     twoDModelModeBtn.render(timer, mouseTrackingFlag);
@@ -109,6 +128,10 @@ void MaterialEditorDialog::render
     overallResultMode.render(timer, mouseTrackingFlag);
     selectedModifierResultMode.render(timer, mouseTrackingFlag);
     splitMode.render(timer, mouseTrackingFlag);
+
+    if(*Mouse::RPressed()){
+        this->updateSkyboxTxtr();
+    }
     
     if(this->selectedMaterialModifierIndex < material->materialModifiers.size())
         material->materialModifiers[this->selectedMaterialModifierIndex].sections = modifiersPanel.sections;

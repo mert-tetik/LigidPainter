@@ -345,6 +345,8 @@ public:
    int selectedResultModeIndex = 0;
 
    Framebuffer displayingFBO;
+   Skybox skybox;
+   Framebuffer skyboxFBO;
 
    Camera displayerCamera;
     
@@ -354,11 +356,13 @@ public:
    MaterialEditorDialog();
 
    //Public member functions
-   void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog, LogDialog& logDialog);
+   void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog, LogDialog& logDialog, glm::mat4 projection);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
    void moveModifierToTop(int index, Material& material);
    void moveModifierToBottom(int index, Material& material);
+   void updateSkyboxTxtr();
+
 };
 
 

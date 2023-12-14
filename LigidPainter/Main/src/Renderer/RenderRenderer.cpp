@@ -367,6 +367,9 @@ void Renderer::renderSkyBox(){
     ShaderSystem::skyboxShader().setFloat("opacity",skybox.opacity);
     ShaderSystem::skyboxShader().setInt("skybox",0);
     
+    ShaderSystem::skyboxShader().setInt("gradient", 0);
+    ShaderSystem::skyboxShader().setFloat("gradientOffset", 0.f);
+    
     //Render the skybox
     skybox.draw(true);
 

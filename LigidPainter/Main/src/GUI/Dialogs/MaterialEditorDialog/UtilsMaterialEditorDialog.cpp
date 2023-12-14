@@ -37,3 +37,46 @@ void MaterialEditorDialog::deactivate(TextureSelectionDialog &textureSelectionDi
     dialogControl.unActivate();
     textureSelectionDialog.dialogControl.unActivate();
 }
+
+void MaterialEditorDialog::updateSkyboxTxtr(){
+    
+    //Move the camera to the side
+    glm::mat4 view = glm::lookAt(this->displayerCamera.cameraPos, 
+                                 glm::vec3(0), 
+                                 glm::vec3(0.0, 1.0, 0.0));
+    
+    //The perspective projection matrix    
+    glm::mat4 projectionMatrix = glm::perspective(
+                                                    glm::radians(35.f), //Fov  
+                                                    1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
+                                                    0.1f,    //Near
+                                                    100.f  //Far (the material is pretty close to the camera actually  ) 
+                                                );
+
+    glm::mat4 modelMatrix = glm::mat4(1.f);
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(10.f));
+
+
+    //Skybox shader
+    ShaderSystem::skyboxModelShader().use();
+    ShaderSystem::skyboxModelShader().setMat4("view", view);
+    ShaderSystem::skyboxModelShader().setMat4("projection", projectionMatrix);
+    ShaderSystem::skyboxModelShader().setMat4("modelMatrix", modelMatrix);
+    ShaderSystem::skyboxModelShader().setFloat("lod", 0);
+    ShaderSystem::skyboxModelShader().setInt("gradient", 1);
+    ShaderSystem::skyboxModelShader().setFloat("gradientOffset", 0.8f);
+
+    glm::ivec2 res = this->skyboxFBO.colorBuffer.getResolution();
+
+    this->skyboxFBO.bind();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0,0,res.x,res.y);
+
+    //Render the skybox
+    getSphereModel()->Draw();
+
+    ShaderSystem::buttonShader().use();
+    getBox()->bindBuffers();
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
+}

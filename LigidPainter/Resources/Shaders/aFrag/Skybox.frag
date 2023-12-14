@@ -39,17 +39,29 @@ uniform float opacity;
 //Fragment shader output
 out vec4 color;
 
+// ---- gradient ----
+uniform int gradient;
+uniform float gradientOffset;
+
 void main(){
-    color = vec4(
-                    textureLod(skybox, Pos * - 1, lod).rgb, //Sybox value 
-                    1 //Full opacity
-                );
-    
-    
-    //Mix the skybox color value with the bg color value using the opacity uniform variable
-    color.rgb = mix(
-                        bgColor,
-                        color.rgb,
-                        opacity //Opacity = 1 : Just the background color
+    if(gradient == 0){
+        color = vec4(
+                        textureLod(skybox, Pos * - 1, lod).rgb, //Sybox value 
+                        1 //Full opacity
                     );
+        
+        
+        //Mix the skybox color value with the bg color value using the opacity uniform variable
+        color.rgb = mix(
+                            bgColor,
+                            color.rgb,
+                            opacity //Opacity = 1 : Just the background color
+                        );
+    }
+    else if(gradient == 1){
+        float grad;
+        grad = ((Pos.y * gradientOffset) + 1.) / 2.;
+        color.rgb = vec3(grad);
+        color.a = 1.f;
+    }
 }

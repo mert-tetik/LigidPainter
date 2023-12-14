@@ -86,6 +86,7 @@ private:
 namespace ShaderSystem{
     Shader tdModelShader();
     Shader skyboxShader();
+    Shader skyboxModelShader();
     Shader skyboxBall();
     Shader buttonShader();
     Shader prefilteringShader();

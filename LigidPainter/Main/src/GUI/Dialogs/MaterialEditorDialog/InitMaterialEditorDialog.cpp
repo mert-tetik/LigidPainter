@@ -80,7 +80,7 @@ MaterialEditorDialog::MaterialEditorDialog()
                             10.f,
                             true
                       );
-                      
+
     navPanel = Panel( {}, glm::vec2(bgPanel.scale.x, 1.6f), glm::vec3(85.f,50.f,0.8f), ColorPalette::secondColor, ColorPalette::thirdColor , true, true, true, false, true, 1.f, 1.f,                                
                             {
                             
@@ -105,12 +105,15 @@ MaterialEditorDialog::MaterialEditorDialog()
 
     //Material display is a button (is taking the material's display texture as a texture) (right in the middle)
     materialDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(45,45), "Material", Texture(), 0.f, false);
+    materialDisplayer.color.a = 0.5f;
     
     //Bar button
     this->barButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(bgPanel.scale.x, bgPanel.scale.y / 20), "Material Editor", Texture(), 0.f, false);
     barButton.pos = glm::vec3(bgPanel.pos.x, bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y, bgPanel.pos.z);
 
     this->displayingFBO = Framebuffer(Texture(nullptr, 1024, 1024, GL_LINEAR), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)));
+    this->skybox.init();
+    this->skyboxFBO = Framebuffer(Texture(nullptr, 1024, 1024, GL_LINEAR), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)));
     
     
     twoDModelModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().solidPaintingDisplayingMode, 1.f,false);
@@ -118,32 +121,38 @@ MaterialEditorDialog::MaterialEditorDialog()
     twoDModelModeBtn.outline = false;
     twoDModelModeBtn.outlineExtra = false;
     twoDModelModeBtn.infoText = "2D Displaying Mode";
+    twoDModelModeBtn.textureSizeScale = 1.4f;
     matDisplayerBallModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().ligidPainterIcon, 1.f,false);
     matDisplayerBallModeBtn.textScale = 0.6f;
     matDisplayerBallModeBtn.outline = false;
     matDisplayerBallModeBtn.outlineExtra = false;
     matDisplayerBallModeBtn.infoText = "Material Displaying Ball Model Mode";
+    matDisplayerBallModeBtn.textureSizeScale = 1.4f;
     customModelModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().TDModelIcon, 1.f,false);
     customModelModeBtn.textScale = 0.6f;
     customModelModeBtn.outline = false;
     customModelModeBtn.outlineExtra = false;
     customModelModeBtn.infoText = "Active 3D Model Displaying Mode";
+    customModelModeBtn.textureSizeScale = 1.4f;
     
     overallResultMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().materialIcon, 1.f,false);
     overallResultMode.textScale = 0.6f;
     overallResultMode.outline = false;
     overallResultMode.outlineExtra = false;
     overallResultMode.infoText = "Overall displaying mode";
+    overallResultMode.textureSizeScale = 1.4f;
     selectedModifierResultMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().materialChannelsIcon, 1.f,false);
     selectedModifierResultMode.textScale = 0.6f;
     selectedModifierResultMode.outline = false;
     selectedModifierResultMode.outlineExtra = false;
     selectedModifierResultMode.infoText = "Selected modifier displaying mode";
+    selectedModifierResultMode.textureSizeScale = 1.4f;
     splitMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().mirrorIcon, 1.f,false);
     splitMode.textScale = 0.6f;
     splitMode.outline = false;
     splitMode.outlineExtra = false;
     splitMode.infoText = "Split displaying mode";
+    splitMode.textureSizeScale = 1.4f;
     
     appMaterialModifiers.textureModifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);
     appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;

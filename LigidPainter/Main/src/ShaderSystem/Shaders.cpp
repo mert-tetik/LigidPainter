@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
     
 Shader __tdModelShader;
 Shader __skyboxShader;
+Shader __skyboxModelShader;
 Shader __skyboxBall;
 Shader __buttonShader;
 Shader __prefilteringShader;
@@ -82,6 +83,7 @@ void ShaderSystem::initShaderSystem(){
     __bakingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/Baking.frag");
     __textureUpdatingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag");
     __skyboxShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert", "LigidPainter/Resources/Shaders/aFrag/Skybox.frag");
+    __skyboxModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/Skybox.frag");
     __prefilteringShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert", "LigidPainter/Resources/Shaders/aFrag/PrefilterSkybox.frag");
     __buttonShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Button.frag");
     __vectoralCurve.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/VectoralCurve.frag");
@@ -133,6 +135,9 @@ Shader ShaderSystem::tdModelShader(){
 }
 Shader ShaderSystem::skyboxShader(){
     return __skyboxShader;
+}
+Shader ShaderSystem::skyboxModelShader(){
+    return __skyboxModelShader;
 }
 Shader ShaderSystem::skyboxBall(){
     return __skyboxBall;

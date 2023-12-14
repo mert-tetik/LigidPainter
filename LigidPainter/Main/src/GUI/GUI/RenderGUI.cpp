@@ -1079,7 +1079,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
         materialSelectionDialog.render(timer, materialEditorDialog.appMaterialModifiers, materialEditorDialog);
     
     if(materialEditorDialog.dialogControl.isActive())
-        materialEditorDialog.render(timer, textureSelectionDialog, logDialog);
+        materialEditorDialog.render(timer, textureSelectionDialog, logDialog, this->projection);
     
 
     if(!Settings::properties()->cat_hide){

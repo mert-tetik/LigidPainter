@@ -314,6 +314,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     ShaderSystem::textureRenderingShader().setVec3("pos", this->panel.resultPos);
     ShaderSystem::textureRenderingShader().setInt("txtr", 0);
     ShaderSystem::textureRenderingShader().setFloat("opacity", this->dialogControl.mixVal);
+    ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->displayingTexture.ID);
