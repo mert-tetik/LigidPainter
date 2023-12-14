@@ -168,8 +168,6 @@ void MaterialEditorDialog::render
 
 
 // -------------------- UTILITY FUNCTIONS --------------------
-
-
 void MaterialEditorDialog::updateLayerPanel(Material &material){
     //Clear the elements of the layerPanel
     layerPanel.sections.clear();
@@ -183,7 +181,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material){
     //Push the elements one by one from the materialModifiers of the material
     for (size_t i = 0; i < material.materialModifiers.size(); i++)
     {
-        Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), material.materialModifiers[i].title , material.materialModifiers[i].maskTexture, 0.f, true));
+        Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), material.materialModifiers[i].title , material.materialModifiers[i].maskTexture, 0.f, false));
         layerPanelSection.elements.push_back(btn);
     }
 
@@ -194,27 +192,70 @@ void MaterialEditorDialog::updateLayerPanel(Material &material){
     material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO);
 }
 
+static bool modMoved = false; 
 
 void MaterialEditorDialog::checkLayerPanel(Material &material){
     //Update the selected material modifier index (pressed to a modifier)
     if(layerPanel.sections.size()){
+        bool anyPressed = false;
         for (size_t i = 0; i < layerPanel.sections[0].elements.size(); i++)
         {
-            if(layerPanel.sections[0].elements[i].button.clickState1){ //If a modifier button is clicked 
-                if(selectedMaterialModifierIndex != i){ //If the clicked button is not selected 
-                    layerPanel.sections[0].elements[selectedMaterialModifierIndex].button.clickState1 = false; //Unselect the selected one
-                    selectedMaterialModifierIndex = i; //Select the clicked button
-                    if(material.materialModifiers.size()){
-                        modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
-                    }
-                    break; 
-                }
-            }
+            if(layerPanel.sections[0].elements[i].button.clicked){
+                selectedMaterialModifierIndex = i; //Select the clicked button
+                if(material.materialModifiers.size())
+                    modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
+            } 
 
-            //Keep the selected material modifier as selected
-            if(i == selectedMaterialModifierIndex){
-                layerPanel.sections[0].elements[i].button.clickState1 = true;
+            if(layerPanel.sections[0].elements[i].button.clickState1){ //If a modifier button is clicked 
+
+                anyPressed = true;
+
+                layerPanel.sections[0].elements[i].button.color.a = 0.0f;
+                layerPanel.sections[0].elements[i].button.color2.a = 0.0f;
+                layerPanel.sections[0].elements[i].button.textColor.a = 0.0f;
+                layerPanel.sections[0].elements[i].button.textColor2.a = 0.0f;
+
+                // Check from bottom to top                
+                for (int checkI = layerPanel.sections[0].elements.size() - 1; checkI >= 0; checkI--){
+                    float btnPosY = layerPanel.sections[0].elements[checkI].button.resultPos.y - layerPanel.sections[0].elements[checkI].button.resultScale.y;
+                    float cursorPosY = Mouse::cursorPos()->y;
+
+                    if(cursorPosY > btnPosY){        
+                        if(i < material.materialModifiers.size() && checkI < material.materialModifiers.size()){
+                            if(i != checkI){
+                                registerMaterialAction("Modifier moved", material);
+                            }
+
+                            modMoved = true;
+
+                            MaterialModifier topModifier = material.materialModifiers[checkI];
+                            MaterialModifier currentModifier = material.materialModifiers[i];
+
+                            material.materialModifiers[i] = topModifier;
+                            material.materialModifiers[checkI] = currentModifier;
+
+                            Element btn = layerPanel.sections[0].elements[i];
+                            layerPanel.sections[0].elements.erase(layerPanel.sections[0].elements.begin() + i);
+                            layerPanel.sections[0].elements.insert(layerPanel.sections[0].elements.begin() + checkI, btn);
+                        }
+
+                        break;
+                    }
+                }
+
+                break;
             }
+            else{
+                layerPanel.sections[0].elements[i].button.color.a = 1.0f;
+                layerPanel.sections[0].elements[i].button.color2.a = 1.0f;
+                layerPanel.sections[0].elements[i].button.textColor.a = 1.0f;
+                layerPanel.sections[0].elements[i].button.textColor2.a = 1.0f;
+            }
+        }
+
+        if(!anyPressed && modMoved){
+            this->dialogControl.firstFrameActivated = true;
+            modMoved = false;
         }
     }
 
@@ -449,6 +490,34 @@ void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &t
     }
 }
 
+void MaterialEditorDialog::moveModifierToTop(int index, Material &material){
+    if(index != 0){
+        registerMaterialAction("Modifier moved to top", material);
+        
+        MaterialModifier topModifier = material.materialModifiers[index - 1];
+        MaterialModifier currentModifier = material.materialModifiers[index];
+
+        material.materialModifiers[index] = topModifier;
+        material.materialModifiers[index - 1] = currentModifier;
+
+        selectedMaterialModifierIndex--;
+    }
+}
+
+void MaterialEditorDialog::moveModifierToBottom(int index, Material &material){
+    if(ContextMenus::materialModifier.selectedElement != material.materialModifiers.size()-1){
+        registerMaterialAction("Modifier moved to bottom", material);
+        
+        MaterialModifier bottomModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement + 1];
+        MaterialModifier currentModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement];
+
+        material.materialModifiers[ContextMenus::materialModifier.selectedElement] = bottomModifier;
+        material.materialModifiers[ContextMenus::materialModifier.selectedElement + 1] = currentModifier;
+
+        selectedMaterialModifierIndex++;
+    }
+}
+
 void MaterialEditorDialog::manageContextMenuActions( Material &material)
 {
     if(ContextMenus::materialModifier.dialogControl.isActive()){ //If material modifier context menu is active
@@ -484,36 +553,15 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         //Move to top button pressed
         else if(ContextMenus::materialModifier.contextPanel.sections[0].elements[1].button.clicked){ 
-            if(ContextMenus::materialModifier.selectedElement != 0){
-                
-                registerMaterialAction("Modifier moved to top", material);
-                
-                MaterialModifier topModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement - 1];
-                MaterialModifier currentModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement];
+            this->moveModifierToTop(ContextMenus::materialModifier.selectedElement, material);
+            dialogControl.firstFrameActivated = true;
 
-                material.materialModifiers[ContextMenus::materialModifier.selectedElement] = topModifier;
-                material.materialModifiers[ContextMenus::materialModifier.selectedElement - 1] = currentModifier;
-
-                dialogControl.firstFrameActivated = true;
-                selectedMaterialModifierIndex--;
-            }
         }
 
         //Move to bottom button pressed
         else if(ContextMenus::materialModifier.contextPanel.sections[0].elements[2].button.clicked){ 
-            if(ContextMenus::materialModifier.selectedElement != material.materialModifiers.size()-1){
-            
-                registerMaterialAction("Modifier moved to bottom", material);
-                
-                MaterialModifier bottomModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement + 1];
-                MaterialModifier currentModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement];
-
-                material.materialModifiers[ContextMenus::materialModifier.selectedElement] = bottomModifier;
-                material.materialModifiers[ContextMenus::materialModifier.selectedElement + 1] = currentModifier;
-
-                dialogControl.firstFrameActivated = true;
-                selectedMaterialModifierIndex++;
-            }
+            this->moveModifierToBottom(ContextMenus::materialModifier.selectedElement, material);
+            dialogControl.firstFrameActivated = true;
         }
         
         //Change mask button pressed

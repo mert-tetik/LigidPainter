@@ -352,6 +352,8 @@ public:
    void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog, LogDialog& logDialog);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
+   void moveModifierToTop(int index, Material& material);
+   void moveModifierToBottom(int index, Material& material);
 };
 
 
