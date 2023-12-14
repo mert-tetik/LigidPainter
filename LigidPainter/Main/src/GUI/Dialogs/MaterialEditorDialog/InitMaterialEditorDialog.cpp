@@ -34,19 +34,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 MaterialEditorDialog::MaterialEditorDialog()
 {
-
-    this->displayerCamera.cameraPos = glm::vec3(0,0,-3.5f);
-    this->displayerCamera.radius = 3.5f;
-
-    this->displayModeComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(7.f,1.8f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Height", "Ambient Occlusion"}, "Displaying Mode", 0.f);
-    
     //Back side of the dialog
     bgPanel = Panel
     (
         {
         },
-        scale,
-        pos,
+        glm::vec2(45.f, 42.f),
+        glm::vec3(50.f, 50.f, 0.8f),
         ColorPalette::mainColor,
         ColorPalette::thirdColor,
         true,
@@ -62,7 +56,7 @@ MaterialEditorDialog::MaterialEditorDialog()
     );
 
     //That panel where you add the modifiers (on the left side)
-    layerPanel = Panel({},scaleLayer,posLayer,ColorPalette::mainColor,ColorPalette::thirdColor,true,false,true,true,true,1.f,1.f,                                
+    layerPanel = Panel({}, glm::vec2(10, bgPanel.scale.y), glm::vec3(15.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor,true,false,true,true,true,1.f,1.f,                                
                             {
                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Add"        , Texture(), 0.f, false)
                             },
@@ -71,7 +65,7 @@ MaterialEditorDialog::MaterialEditorDialog()
                       );
     
     //That panel where you can display the properties of the modifier (on the right side)
-    modifiersPanel = Panel( {}, scaleModifier, posModifier, ColorPalette::mainColor,ColorPalette::thirdColor , true, false, true, true, true, 1.f, 1.f,                                
+    modifiersPanel = Panel( {}, glm::vec2(10, bgPanel.scale.y), glm::vec3(85.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor , true, false, true, true, true, 1.f, 1.f,                                
                             {
                             
                             },
@@ -79,61 +73,50 @@ MaterialEditorDialog::MaterialEditorDialog()
                             true
                       );
 
-    shortcutPanel = Panel( {}, scaleModifier, posLayer, ColorPalette::mainColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f,                                
+    shortcutPanel = Panel( {}, glm::vec2(10, bgPanel.scale.y), glm::vec3(15.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f,                                
                             {
                              
                             },
                             10.f,
                             true
                       );
-    navPanel = Panel( {}, glm::vec2(scale.x, 2.f), posModifier, ColorPalette::mainColor,ColorPalette::thirdColor , true, true, true, false, true, 1.f, 1.f,                                
+    navPanel = Panel( {}, glm::vec2(bgPanel.scale.x, 2.f), glm::vec3(85.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor , true, true, true, false, true, 1.f, 1.f,                                
                             {
                             
                             },
                             10.f,
                             true
                       );
+    
+    bgPanel.solidStyle = true;
+    layerPanel.solidStyle = true;
+    modifiersPanel.solidStyle = true;
+    shortcutPanel.solidStyle = true;
+    navPanel.solidStyle = true;
+
+    this->displayerCamera.cameraPos = glm::vec3(0,0,-3.5f);
+    this->displayerCamera.radius = 3.5f;
+
+    this->displayModeComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(7.f,1.8f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Height", "Ambient Occlusion"}, "Displaying Mode", 0.f);
 
     //Material display is a button (is taking the material's display texture as a texture) (right in the middle)
     materialDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(45,45), "Material", Texture(), 0.f, false);
-    
-    //Init the texture modifier
-    appMaterialModifiers.textureModifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);
-    appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
-
-    //Init the dust modifier
-    appMaterialModifiers.dustModifier = MaterialModifier(DUST_MATERIAL_MODIFIER);
-    
-    //Init the asphalt modifier
-    appMaterialModifiers.asphaltModifier = MaterialModifier(ASPHALT_MATERIAL_MODIFIER);
-    
-    //Init the liquid modifier
-    appMaterialModifiers.liquidModifier = MaterialModifier(LIQUID_MATERIAL_MODIFIER);
-    
-    //Init the moss modifier
-    appMaterialModifiers.mossModifier= MaterialModifier(MOSS_MATERIAL_MODIFIER);
-    
-    //Init the rust modifier
-    appMaterialModifiers.rustModifier = MaterialModifier(RUST_MATERIAL_MODIFIER);
-    
-    //Init the skin modifier
-    appMaterialModifiers.skinModifier = MaterialModifier(SKIN_MATERIAL_MODIFIER);
-    
-    //Init the solid modifier
-    appMaterialModifiers.solidModifier = MaterialModifier(SOLID_MATERIAL_MODIFIER);
-    
-    //Init the wooden modifier
-    appMaterialModifiers.woodenModifier = MaterialModifier(WOODEN_MATERIAL_MODIFIER);
     
     //Bar button
     this->barButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(bgPanel.scale.x, bgPanel.scale.y / 20), "Material Editor", Texture(), 0.f, false);
     barButton.pos = glm::vec3(bgPanel.pos.x, bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y, bgPanel.pos.z);
 
     this->displayingFBO = Framebuffer(Texture(nullptr, 1024, 1024, GL_LINEAR), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)));
-
-    bgPanel.solidStyle = true;
-    layerPanel.solidStyle = true;
-    modifiersPanel.solidStyle = true;
-    shortcutPanel.solidStyle = true;
-    navPanel.solidStyle = true;
+    
+    appMaterialModifiers.textureModifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);
+    appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
+    appMaterialModifiers.dustModifier = MaterialModifier(DUST_MATERIAL_MODIFIER);
+    appMaterialModifiers.asphaltModifier = MaterialModifier(ASPHALT_MATERIAL_MODIFIER);
+    appMaterialModifiers.liquidModifier = MaterialModifier(LIQUID_MATERIAL_MODIFIER);
+    appMaterialModifiers.mossModifier= MaterialModifier(MOSS_MATERIAL_MODIFIER);
+    appMaterialModifiers.rustModifier = MaterialModifier(RUST_MATERIAL_MODIFIER);
+    appMaterialModifiers.skinModifier = MaterialModifier(SKIN_MATERIAL_MODIFIER);
+    appMaterialModifiers.solidModifier = MaterialModifier(SOLID_MATERIAL_MODIFIER);
+    appMaterialModifiers.woodenModifier = MaterialModifier(WOODEN_MATERIAL_MODIFIER);
+    
 }

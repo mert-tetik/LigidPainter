@@ -47,7 +47,7 @@ void MaterialEditorDialog::render
 {
     dialogControl.updateStart();
 
-    //Update the texture, scale & position of the panels
+    // ------- Positioning & Prepearing the panels to rendering -------
     navPanel.scale.x = bgPanel.scale.x - shortcutPanel.scale.x - layerPanel.scale.x - modifiersPanel.scale.x;
     navPanel.pos = shortcutPanel.pos;
     navPanel.pos.x += shortcutPanel.scale.x + navPanel.scale.x;
@@ -59,8 +59,12 @@ void MaterialEditorDialog::render
     materialDisplayer.scale.x = navPanel.scale.x;
     this->materialDisplayer.pos.y += navPanel.scale.y + materialDisplayer.scale.y;
 
+    barButton.pos.x = bgPanel.pos.x;
+    barButton.pos.y = bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y;
+    
     bool mouseTrackingFlag = !(textureSelectionDialog.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive());
-    //Render the panels & material displayer button
+    
+    // ------- Rendering the panels -------
     bgPanel.render(timer, mouseTrackingFlag);
     layerPanel.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - layerPanel.scale.x; 
     layerPanel.render(timer, mouseTrackingFlag);
@@ -69,9 +73,6 @@ void MaterialEditorDialog::render
     shortcutPanel.render(timer, mouseTrackingFlag);
     navPanel.render(timer, mouseTrackingFlag);
     materialDisplayer.render(timer, false);
-
-    barButton.pos.x = bgPanel.pos.x;
-    barButton.pos.y = bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y;
 
 
     //If texture selection dialog is not active reset the index values used to navigate textures
@@ -96,8 +97,8 @@ void MaterialEditorDialog::render
     //Manage actions of the context menus 
     this->manageContextMenuActions(*material);
 
-    //Update the layer panel recreate all the modifiers using material->materialModifiers vector & add a new modifier if add is pressed to that vector
-    updateLayerPanelElements(*material);
+    if(dialogControl.firstFrameActivated)
+        updateLayerPanel(*material);
     
     //If texture selection done
     checkTextureSelectionDialog(textureSelectionDialog, *material);
@@ -134,7 +135,6 @@ void MaterialEditorDialog::render
 
             this->deactivate(textureSelectionDialog);
         }
-
     }
 
     __materialEditorDialogESCFirstFramePressed = false; 
@@ -221,9 +221,8 @@ void MaterialEditorDialog::checkLayerPanel(Material &material){
                         if(i < material.materialModifiers.size() && checkI < material.materialModifiers.size()){
                             if(i != checkI){
                                 registerMaterialAction("Modifier moved", material);
+                                modMoved = true;
                             }
-
-                            modMoved = true;
 
                             MaterialModifier topModifier = material.materialModifiers[checkI];
                             MaterialModifier currentModifier = material.materialModifiers[i];
@@ -445,21 +444,6 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
         }
     }
     */
-}
-
-void MaterialEditorDialog::updateLayerPanelElements(Material &material){
-    //Update layer panal elements
-    if  (
-            dialogControl.firstFrameActivated // Or in the first frame this dialog is activated
-        )
-    { 
-        
-        ////If clicked to add modifier button show the modifier selection context menu
-        ////material.materialModifiers.insert(material.materialModifiers.begin(),appMaterialModifiers.dustModifier);
-        
-        //Creates layer panel elements from scratch using material.materialModifiers
-        updateLayerPanel(material);
-    }
 }
 
 void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material){
