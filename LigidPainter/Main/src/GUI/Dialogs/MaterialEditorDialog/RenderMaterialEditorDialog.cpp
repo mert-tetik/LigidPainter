@@ -70,6 +70,29 @@ void MaterialEditorDialog::render
     else
         modifiersPanel.sections.clear();
     
+
+    displayModeComboBox.scale.y = navPanel.scale.y - 0.1;
+    matDisplayerBallModeBtn.scale.y = navPanel.scale.y - 0.1;
+    twoDModelModeBtn.scale.y = navPanel.scale.y - 0.1;
+    customModelModeBtn.scale.y = navPanel.scale.y - 0.1;
+    splitMode.scale.y = navPanel.scale.y - 0.1;
+    selectedModifierResultMode.scale.y = navPanel.scale.y - 0.1;
+    overallResultMode.scale.y = navPanel.scale.y - 0.1;
+
+    matDisplayerBallModeBtn.pos = navPanel.pos;
+    matDisplayerBallModeBtn.pos.x += displayModeComboBox.scale.x - splitMode.scale.x * 9.f;
+    twoDModelModeBtn.pos = matDisplayerBallModeBtn.pos; 
+    twoDModelModeBtn.pos.x -= matDisplayerBallModeBtn.scale.x + twoDModelModeBtn.scale.x; 
+    customModelModeBtn.pos = matDisplayerBallModeBtn.pos; 
+    customModelModeBtn.pos.x += matDisplayerBallModeBtn.scale.x + customModelModeBtn.scale.x; 
+
+    splitMode.pos = navPanel.pos;
+    splitMode.pos.x += navPanel.scale.x - splitMode.scale.x * 1.5f;
+    selectedModifierResultMode.pos = splitMode.pos; 
+    selectedModifierResultMode.pos.x -= splitMode.scale.x + selectedModifierResultMode.scale.x; 
+    overallResultMode.pos = selectedModifierResultMode.pos; 
+    overallResultMode.pos.x -= selectedModifierResultMode.scale.x + overallResultMode.scale.x; 
+
     // ------- Rendering the panels -------
     bgPanel.render(timer, mouseTrackingFlag);
     layerPanel.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - layerPanel.scale.x; 
@@ -79,11 +102,60 @@ void MaterialEditorDialog::render
     shortcutPanel.render(timer, mouseTrackingFlag);
     navPanel.render(timer, mouseTrackingFlag);
     materialDisplayer.render(timer, false);
+
+    twoDModelModeBtn.render(timer, mouseTrackingFlag);
+    matDisplayerBallModeBtn.render(timer, mouseTrackingFlag);
+    customModelModeBtn.render(timer, mouseTrackingFlag);
+    overallResultMode.render(timer, mouseTrackingFlag);
+    selectedModifierResultMode.render(timer, mouseTrackingFlag);
+    splitMode.render(timer, mouseTrackingFlag);
     
     if(this->selectedMaterialModifierIndex < material->materialModifiers.size())
         material->materialModifiers[this->selectedMaterialModifierIndex].sections = modifiersPanel.sections;
     else
         modifiersPanel.sections.clear();
+
+    if(twoDModelModeBtn.clicked)
+        this->selectedModelModeIndex = 0;
+    if(this->selectedModelModeIndex == 0)
+        twoDModelModeBtn.color = ColorPalette::thirdColor;
+    else
+        twoDModelModeBtn.color = ColorPalette::secondColor;
+
+    if(matDisplayerBallModeBtn.clicked)
+        this->selectedModelModeIndex = 1;
+    if(this->selectedModelModeIndex == 1)
+        matDisplayerBallModeBtn.color = ColorPalette::thirdColor;
+    else
+        matDisplayerBallModeBtn.color = ColorPalette::secondColor;
+
+    if(customModelModeBtn.clicked)
+        this->selectedModelModeIndex = 2;
+    if(this->selectedModelModeIndex == 2)
+        customModelModeBtn.color = ColorPalette::thirdColor;
+    else
+        customModelModeBtn.color = ColorPalette::secondColor;
+
+    if(overallResultMode.clicked)
+        this->selectedResultModeIndex = 0;
+    if(this->selectedResultModeIndex == 0)
+        overallResultMode.color = ColorPalette::thirdColor;
+    else
+        overallResultMode.color = ColorPalette::secondColor;
+
+    if(selectedModifierResultMode.clicked)
+        this->selectedResultModeIndex = 1;
+    if(this->selectedResultModeIndex == 1)
+        selectedModifierResultMode.color = ColorPalette::thirdColor;
+    else
+        selectedModifierResultMode.color = ColorPalette::secondColor;
+
+    if(splitMode.clicked)
+        this->selectedResultModeIndex = 2;
+    if(this->selectedResultModeIndex == 2)
+        splitMode.color = ColorPalette::thirdColor;
+    else
+        splitMode.color = ColorPalette::secondColor;
 
 
     //If texture selection dialog is not active reset the index values used to navigate textures
@@ -115,7 +187,7 @@ void MaterialEditorDialog::render
     checkTextureSelectionDialog(textureSelectionDialog, *material);
 
     this->displayModeComboBox.pos = navPanel.pos;
-    this->displayModeComboBox.pos.x -= navPanel.scale.x - displayModeComboBox.scale.x;
+    this->displayModeComboBox.pos.x -= navPanel.scale.x - displayModeComboBox.scale.x * 1.5f;
     this->displayModeComboBox.render(timer, true);
     
     dialogControl.updateEnd(timer,0.15f);

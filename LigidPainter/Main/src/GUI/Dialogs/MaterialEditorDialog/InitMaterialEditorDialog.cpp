@@ -73,14 +73,15 @@ MaterialEditorDialog::MaterialEditorDialog()
                             true
                       );
 
-    shortcutPanel = Panel( {}, glm::vec2(10, bgPanel.scale.y), glm::vec3(15.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f,                                
+    shortcutPanel = Panel( {}, glm::vec2(10, bgPanel.scale.y), glm::vec3(15.f,50.f,0.8f), ColorPalette::secondColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f,                                
                             {
                              
                             },
                             10.f,
                             true
                       );
-    navPanel = Panel( {}, glm::vec2(bgPanel.scale.x, 2.f), glm::vec3(85.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor , true, true, true, false, true, 1.f, 1.f,                                
+                      
+    navPanel = Panel( {}, glm::vec2(bgPanel.scale.x, 1.6f), glm::vec3(85.f,50.f,0.8f), ColorPalette::secondColor, ColorPalette::thirdColor , true, true, true, false, true, 1.f, 1.f,                                
                             {
                             
                             },
@@ -88,16 +89,19 @@ MaterialEditorDialog::MaterialEditorDialog()
                             true
                       );
     
+    navPanel.color.a = 1.f;
+    
     bgPanel.solidStyle = true;
     layerPanel.solidStyle = true;
     modifiersPanel.solidStyle = true;
     shortcutPanel.solidStyle = true;
     navPanel.solidStyle = true;
 
+
     this->displayerCamera.cameraPos = glm::vec3(0,0,-3.5f);
     this->displayerCamera.radius = 3.5f;
 
-    this->displayModeComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(7.f,1.8f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Height", "Ambient Occlusion"}, "Displaying Mode", 0.f);
+    this->displayModeComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(5.5f,1.8f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Height", "Ambient Occlusion"}, "Displaying Mode", 0.f);
 
     //Material display is a button (is taking the material's display texture as a texture) (right in the middle)
     materialDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(45,45), "Material", Texture(), 0.f, false);
@@ -107,6 +111,39 @@ MaterialEditorDialog::MaterialEditorDialog()
     barButton.pos = glm::vec3(bgPanel.pos.x, bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y, bgPanel.pos.z);
 
     this->displayingFBO = Framebuffer(Texture(nullptr, 1024, 1024, GL_LINEAR), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)));
+    
+    
+    twoDModelModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().solidPaintingDisplayingMode, 1.f,false);
+    twoDModelModeBtn.textScale = 0.6f;
+    twoDModelModeBtn.outline = false;
+    twoDModelModeBtn.outlineExtra = false;
+    twoDModelModeBtn.infoText = "2D Displaying Mode";
+    matDisplayerBallModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().ligidPainterIcon, 1.f,false);
+    matDisplayerBallModeBtn.textScale = 0.6f;
+    matDisplayerBallModeBtn.outline = false;
+    matDisplayerBallModeBtn.outlineExtra = false;
+    matDisplayerBallModeBtn.infoText = "Material Displaying Ball Model Mode";
+    customModelModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().TDModelIcon, 1.f,false);
+    customModelModeBtn.textScale = 0.6f;
+    customModelModeBtn.outline = false;
+    customModelModeBtn.outlineExtra = false;
+    customModelModeBtn.infoText = "Active 3D Model Displaying Mode";
+    
+    overallResultMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().materialIcon, 1.f,false);
+    overallResultMode.textScale = 0.6f;
+    overallResultMode.outline = false;
+    overallResultMode.outlineExtra = false;
+    overallResultMode.infoText = "Overall displaying mode";
+    selectedModifierResultMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().materialChannelsIcon, 1.f,false);
+    selectedModifierResultMode.textScale = 0.6f;
+    selectedModifierResultMode.outline = false;
+    selectedModifierResultMode.outlineExtra = false;
+    selectedModifierResultMode.infoText = "Selected modifier displaying mode";
+    splitMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().mirrorIcon, 1.f,false);
+    splitMode.textScale = 0.6f;
+    splitMode.outline = false;
+    splitMode.outlineExtra = false;
+    splitMode.infoText = "Split displaying mode";
     
     appMaterialModifiers.textureModifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);
     appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
