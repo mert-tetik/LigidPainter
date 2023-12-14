@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "NodeSystem/Node/Node.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -64,6 +65,11 @@ void MaterialEditorDialog::render
     
     bool mouseTrackingFlag = !(textureSelectionDialog.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive());
     
+    if(this->selectedMaterialModifierIndex < material->materialModifiers.size())
+        modifiersPanel.sections = material->materialModifiers[this->selectedMaterialModifierIndex].sections;
+    else
+        modifiersPanel.sections.clear();
+    
     // ------- Rendering the panels -------
     bgPanel.render(timer, mouseTrackingFlag);
     layerPanel.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - layerPanel.scale.x; 
@@ -73,6 +79,11 @@ void MaterialEditorDialog::render
     shortcutPanel.render(timer, mouseTrackingFlag);
     navPanel.render(timer, mouseTrackingFlag);
     materialDisplayer.render(timer, false);
+    
+    if(this->selectedMaterialModifierIndex < material->materialModifiers.size())
+        material->materialModifiers[this->selectedMaterialModifierIndex].sections = modifiersPanel.sections;
+    else
+        modifiersPanel.sections.clear();
 
 
     //If texture selection dialog is not active reset the index values used to navigate textures
@@ -199,9 +210,18 @@ void MaterialEditorDialog::checkLayerPanel(Material &material){
         {
             if(layerPanel.sections[0].elements[i].button.clicked){
                 selectedMaterialModifierIndex = i; //Select the clicked button
-                if(material.materialModifiers.size())
+                if(selectedMaterialModifierIndex < material.materialModifiers.size() && selectedMaterialModifierIndex >= 0)
                     modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
             } 
+
+            if(i == selectedMaterialModifierIndex){
+                layerPanel.sections[0].elements[i].button.color = layerPanel.sections[0].elements[i].button.color2;
+                layerPanel.sections[0].elements[i].button.textColor = ColorPalette::secondColor;
+            }
+            else{
+                layerPanel.sections[0].elements[i].button.color = ColorPalette::secondColor;
+                layerPanel.sections[0].elements[i].button.textColor = ColorPalette::oppositeColor;
+            }
 
             if(layerPanel.sections[0].elements[i].button.clickState1){ //If a modifier button is clicked 
 
@@ -223,6 +243,8 @@ void MaterialEditorDialog::checkLayerPanel(Material &material){
                                 registerMaterialAction("Modifier moved", material);
                                 modMoved = true;
                             }
+
+                            selectedMaterialModifierIndex = checkI; //Select the clicked button
 
                             MaterialModifier topModifier = material.materialModifiers[checkI];
                             MaterialModifier currentModifier = material.materialModifiers[i];
@@ -286,14 +308,6 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                 }
             }
         }
-        
-        if(!material.materialModifiers.size())
-            modifiersPanel.sections.clear();
-        else 
-            modifiersPanel.sections = material.materialModifiers[0].sections;
-        
-        this->selectedMaterialModifierIndex = 0;
-
     }
     
     
@@ -402,7 +416,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                         }
 
                         this->updateTheMaterial = true;
-                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button = modifiersPanel.sections[secI].elements[elementI].button; 
+                        //material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button = modifiersPanel.sections[secI].elements[elementI].button; 
                     }
 
                 //If range bar's value changed update the material
@@ -412,7 +426,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                             registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].rangeBar.text, material);
                         
                         this->updateTheMaterial = true;
-                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar = modifiersPanel.sections[secI].elements[elementI].rangeBar; 
+                        //material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar = modifiersPanel.sections[secI].elements[elementI].rangeBar; 
                     }
 
                 //If checkbox clicked update the material
@@ -421,7 +435,7 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
                         registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].checkBox.text, material);
 
                         this->updateTheMaterial = true;
-                        material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox = modifiersPanel.sections[secI].elements[elementI].checkBox; 
+                        //material.materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox = modifiersPanel.sections[secI].elements[elementI].checkBox; 
                     }
             }
 
@@ -524,11 +538,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             material.materialModifiers.erase(material.materialModifiers.begin() + ContextMenus::materialModifier.selectedElement);
             dialogControl.firstFrameActivated = true;
             selectedMaterialModifierIndex = 0;
-            
-            if(material.materialModifiers.size())
-                modifiersPanel.sections = material.materialModifiers[0].sections;
-            else
-                modifiersPanel.sections.clear();
         }
         
         //Move to top button pressed
@@ -566,7 +575,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
-            modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
         
@@ -577,7 +585,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
-            modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
         
@@ -588,7 +595,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
-            modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
         
@@ -599,7 +605,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
-            modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
         
@@ -610,7 +615,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
-            modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
         
@@ -621,7 +625,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
-            modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
         
@@ -632,7 +635,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
-            modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
         
@@ -643,7 +645,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
-            modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
         
@@ -654,7 +655,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
             material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
             updateLayerPanel(material);
-            modifiersPanel.sections = material.materialModifiers[0].sections;
             selectedMaterialModifierIndex = 0;
         }
     }

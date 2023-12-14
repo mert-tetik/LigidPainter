@@ -320,7 +320,6 @@ private:
    bool prevUpdateTheMaterial = false;
 public:
    void updateLayerPanel(Material &material);
-   void updateLayerPanelElements(Material &material);
    
    DialogControl dialogControl;
    Button materialDisplayer; //That buttons displays the material with a texture
@@ -334,6 +333,16 @@ public:
    int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting TODO REMOVE THAT
    AppMaterialModifiers appMaterialModifiers;
    int selectedMaterialModifierIndex = 0;
+
+   Button twoDModelModeBtn;
+   Button matDisplayerBallModeBtn;
+   Button customModelModeBtn;
+   int selectedModelModeIndex = 0;
+   
+   Button overallResultMode;
+   Button selectedModifierResultMode;
+   Button splitMode;
+   int selectedResultModeIndex = 0;
 
    Framebuffer displayingFBO;
 
