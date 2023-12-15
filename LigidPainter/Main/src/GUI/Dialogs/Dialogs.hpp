@@ -315,6 +315,8 @@ private:
    void checkModifiersPanel(Material &material, TextureSelectionDialog &textureSelectionDialog);
    void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material);
    void manageContextMenuActions( Material &material);
+   Model* MaterialEditorDialog::getDisplayModel();
+
 
    bool updateTheMaterial = false;
    bool prevUpdateTheMaterial = false;

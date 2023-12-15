@@ -83,12 +83,12 @@ void MaterialDisplayerDialog::render(Timer timer){
     if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){
         if(!dialogControl.firstFrameActivated){
             this->dialogControl.unActivate();
-            this->material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, Camera(), 0, false, this->displayingFBO);
+            this->material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, Camera(), 0, false, this->displayingFBO, *getMaterialDisplayerModel());
         }
     }
     
     if(this->dialogControl.active)
-        this->material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, this->displayingCam, 0, true, this->displayingFBO);
+        this->material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, this->displayingCam, 0, true, this->displayingFBO, *getMaterialDisplayerModel());
     
     dialogControl.updateEnd(timer,0.15f);
 }

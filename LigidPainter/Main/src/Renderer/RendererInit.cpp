@@ -117,6 +117,7 @@ void Renderer::initRenderer(){
     //Load the 3D models 345235456
     getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
     getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
+    getPlaneModel()->loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true);
     getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj",true);
     
     Debugger::block("LOAD : Models"); //End

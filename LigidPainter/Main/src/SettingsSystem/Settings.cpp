@@ -30,6 +30,7 @@ Context __copyContext;
 Scene __scene; //3D Scene structure
 Model __model;
 Model __sphereModel;
+Model __planeModel;
 Model __materialDisplayerModel;
 Box __box;
 Settings::DefaultFramebuffer __defaultFramebuffer;
@@ -118,6 +119,9 @@ Model* getModel(){
 }
 Model* getSphereModel(){
     return &__sphereModel;
+}
+Model* getPlaneModel(){
+    return &__planeModel;
 }
 Model* getMaterialDisplayerModel(){
     return &__materialDisplayerModel;

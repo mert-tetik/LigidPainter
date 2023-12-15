@@ -37,7 +37,7 @@ void Material::updateMaterialDisplayingTexture(
                                                 bool useCustomCam
                                             )
 {
-    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, this->displayingFBO);
+    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, this->displayingFBO, *getMaterialDisplayerModel());
 }
 
 void Material::updateMaterialDisplayingTexture(
@@ -46,7 +46,8 @@ void Material::updateMaterialDisplayingTexture(
                                                 Camera matCam,
                                                 int displayingMode,
                                                 bool useCustomCam,
-                                                Framebuffer customFBO
+                                                Framebuffer customFBO,
+                                                Model& displayModel
                                             )
 { 
 
@@ -76,9 +77,12 @@ void Material::updateMaterialDisplayingTexture(
     {
         //For every modifier the material has (Output every modifier the material has)
         //TODO : Material - update material function
-        for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
+        for (size_t meshI = 0; meshI < displayModel.meshes.size(); meshI++)
         {
-            this->materialModifiers[i].updateMaterialChannels(*this, getMaterialDisplayerModel()->meshes[0], textureRes, i, Settings::appTextures().white, 0);
+            for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
+            {
+                this->materialModifiers[i].updateMaterialChannels(*this, displayModel.meshes[meshI], textureRes, i, Settings::appTextures().white, 0);
+            }
         }
     }
     
@@ -105,38 +109,43 @@ void Material::updateMaterialDisplayingTexture(
     ShaderSystem::tdModelShader().setInt("hideUnselected", false);
     ShaderSystem::tdModelShader().setInt("paintingOverWrap", false);
     
-    //Bind the channels of the material
-    if(!this->materialModifiers.size()){
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-        glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-        glActiveTexture(GL_TEXTURE7);
-        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-    }
-    else{
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].albedo.ID);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].roughness.ID);
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].metallic.ID);
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].normalMap.ID);
-        glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].heightMap.ID);
-        glActiveTexture(GL_TEXTURE7);
-        glBindTexture(GL_TEXTURE_2D, getMaterialDisplayerModel()->meshes[0].ambientOcclusion.ID);
+    for (size_t i = 0; i < displayModel.meshes.size(); i++)
+    {
+        //Bind the channels of the material
+        if(!this->materialModifiers.size()){
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+            glActiveTexture(GL_TEXTURE7);
+            glBindTexture(GL_TEXTURE_2D, Settings::appTextures().noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+        }
+        else{
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].albedo.ID);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].roughness.ID);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].metallic.ID);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].normalMap.ID);
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].heightMap.ID);
+            glActiveTexture(GL_TEXTURE7);
+            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].ambientOcclusion.ID);
+        }
+        
+        //Draw the sphere
+        displayModel.meshes[i].Draw(false);
     }
     
-    //Draw the sphere
-    getMaterialDisplayerModel()->Draw();
+
     
     ShaderSystem::tdModelShader().setInt("displayingMode", 0);
     

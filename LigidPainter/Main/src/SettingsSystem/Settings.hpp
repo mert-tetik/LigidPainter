@@ -162,6 +162,7 @@ struct Scene{
 Scene* getScene();
 Model* getModel();
 Model* getSphereModel();
+Model* getPlaneModel();
 Model* getMaterialDisplayerModel();
 Box* getBox();
 

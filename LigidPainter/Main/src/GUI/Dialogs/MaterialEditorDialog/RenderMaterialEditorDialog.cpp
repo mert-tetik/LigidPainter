@@ -138,43 +138,55 @@ void MaterialEditorDialog::render
     else
         modifiersPanel.sections.clear();
 
-    if(twoDModelModeBtn.clicked)
+    if(twoDModelModeBtn.clicked){
         this->selectedModelModeIndex = 0;
+        this->updateTheMaterial = true;
+    }
     if(this->selectedModelModeIndex == 0)
         twoDModelModeBtn.color = ColorPalette::thirdColor;
     else
         twoDModelModeBtn.color = ColorPalette::secondColor;
 
-    if(matDisplayerBallModeBtn.clicked)
+    if(matDisplayerBallModeBtn.clicked){
         this->selectedModelModeIndex = 1;
+        this->updateTheMaterial = true;
+    }
     if(this->selectedModelModeIndex == 1)
         matDisplayerBallModeBtn.color = ColorPalette::thirdColor;
     else
         matDisplayerBallModeBtn.color = ColorPalette::secondColor;
 
-    if(customModelModeBtn.clicked)
+    if(customModelModeBtn.clicked){
         this->selectedModelModeIndex = 2;
+        this->updateTheMaterial = true;
+    }
     if(this->selectedModelModeIndex == 2)
         customModelModeBtn.color = ColorPalette::thirdColor;
     else
         customModelModeBtn.color = ColorPalette::secondColor;
 
-    if(overallResultMode.clicked)
+    if(overallResultMode.clicked){
         this->selectedResultModeIndex = 0;
+        this->updateTheMaterial = true;
+    }
     if(this->selectedResultModeIndex == 0)
         overallResultMode.color = ColorPalette::thirdColor;
     else
         overallResultMode.color = ColorPalette::secondColor;
 
-    if(selectedModifierResultMode.clicked)
+    if(selectedModifierResultMode.clicked){
         this->selectedResultModeIndex = 1;
+        this->updateTheMaterial = true;
+    }
     if(this->selectedResultModeIndex == 1)
         selectedModifierResultMode.color = ColorPalette::thirdColor;
     else
         selectedModifierResultMode.color = ColorPalette::secondColor;
 
-    if(splitMode.clicked)
+    if(splitMode.clicked){
         this->selectedResultModeIndex = 2;
+        this->updateTheMaterial = true;
+    }
     if(this->selectedResultModeIndex == 2)
         splitMode.color = ColorPalette::thirdColor;
     else
@@ -206,9 +218,6 @@ void MaterialEditorDialog::render
     if(dialogControl.firstFrameActivated)
         updateLayerPanel(*material);
     
-    //If texture selection done
-    checkTextureSelectionDialog(textureSelectionDialog, *material);
-
     this->displayModeComboBox.pos = navPanel.pos;
     this->displayModeComboBox.pos.x -= navPanel.scale.x - displayModeComboBox.scale.x * 1.5f;
     this->displayModeComboBox.render(timer, true);
@@ -216,7 +225,8 @@ void MaterialEditorDialog::render
     dialogControl.updateEnd(timer,0.15f);
 
     if(!this->updateTheMaterial && this->prevUpdateTheMaterial){
-        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO);
+        // Updating the material textures
+        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel());
     }
     
     this->prevUpdateTheMaterial = this->updateTheMaterial;
@@ -235,6 +245,7 @@ void MaterialEditorDialog::render
     if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover && !logDialog.isHovered()) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
         if(!wasTextureSelectionDialogActive() && !ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
             this->displayModeComboBox.selectedIndex = 0;
+            // Update the material displaying texture one more time before closing the dialog
             material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, Camera(), 0, false);
 
             updateThePreRenderedPanels = true;
@@ -245,8 +256,8 @@ void MaterialEditorDialog::render
 
     __materialEditorDialogESCFirstFramePressed = false; 
 
-    if((!ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive() && getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS) || __lastDisplayModeComboBoxPressed)
-        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO);
+    // Update the displaying texture
+    material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel());
 
     __lastDisplayModeComboBoxPressed = this->displayModeComboBox.pressed;
 }
@@ -292,7 +303,7 @@ void MaterialEditorDialog::updateLayerPanel(Material &material){
     layerPanel.sections.push_back(layerPanelSection);
     
     //Update the material after updating layerPanel
-    material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO);
+    this->updateTheMaterial = true;
 }
 
 static bool modMoved = false; 
@@ -536,48 +547,8 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
 
         }
     }
-    /*
-
-
-    //If pressed to any of the texture modifier's channel button show the texture selection panel    
-    if(modifiersPanel.sections.size() && material.materialModifiers.size()){
-        if(material.materialModifiers[selectedMaterialModifierIndex].modifierIndex == TEXTURE_MATERIAL_MODIFIER) { //If is a texture modifier
-            for (size_t i = 0; i < modifiersPanel.sections[0].elements.size(); i++) //For each channel
-            {
-                if(modifiersPanel.sections[0].elements[i].button.clickedMixVal){ //If clicked to any channel button in the texture modifier's panel
-                    //Show the texture selection dialog
-                    textureModifierTextureSelectingButtonIndex = i;
-                    textureSelectionDialog.dialogControl.activate();
-                }
-            }
-        }
-    }
-    */
 }
 
-void MaterialEditorDialog::checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material){
-    //If the texture selection dialog is active and indexing number indicates a channel button 
-    if(textureSelectionDialog.dialogControl.isActive() && textureModifierTextureSelectingButtonIndex != 1000){
-        if(textureSelectionDialog.selectedTextureIndex != 1000){// If a texture is selected in the texture selection dialog
-            
-            //Change the texture of the channel button
-            //if(library.textures.size())
-            //    modifiersPanel.sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
-            
-            //Change the texture of the source modifier's texture 
-            //if(library.textures.size())
-            //    material.materialModifiers[selectedMaterialModifierIndex].sections[0].elements[textureModifierTextureSelectingButtonIndex].button.texture = library.textures[textureSelectionDialog.selectedTextureIndex];
-            
-            //Return to default after a texture is selected
-            textureModifierTextureSelectingButtonIndex = 1000;
-            textureSelectionDialog.selectedTextureIndex = 1000;
-            textureSelectionDialog.dialogControl.unActivate();
-            
-            //Update the material after a selection is made
-            material.updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO);
-        }
-    }
-}
 
 void MaterialEditorDialog::moveModifierToTop(int index, Material &material){
     if(index != 0){

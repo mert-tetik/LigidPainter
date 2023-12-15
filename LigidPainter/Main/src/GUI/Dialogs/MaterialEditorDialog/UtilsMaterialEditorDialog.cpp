@@ -39,7 +39,6 @@ void MaterialEditorDialog::deactivate(TextureSelectionDialog &textureSelectionDi
 }
 
 void MaterialEditorDialog::updateSkyboxTxtr(){
-    
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(this->displayerCamera.cameraPos, 
                                  glm::vec3(0), 
@@ -79,4 +78,26 @@ void MaterialEditorDialog::updateSkyboxTxtr(){
     getBox()->bindBuffers();
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
+}
+
+static Model customModel;
+
+Model* MaterialEditorDialog::getDisplayModel(){
+    if(this->selectedModelModeIndex == 0)
+        return getPlaneModel();
+    if(this->selectedModelModeIndex == 1)
+        return getMaterialDisplayerModel();
+    if(this->selectedModelModeIndex == 2){
+        if(getModel()->meshes.size() != customModel.meshes.size()){
+            customModel.meshes.clear();
+
+            for (size_t i = 0; i < getModel()->meshes.size(); i++){
+                customModel.meshes.push_back(Mesh(getModel()->meshes[i].vertices, getModel()->meshes[i].indices, ""));
+            }
+        }
+
+        return &customModel;
+    }
+
+    return getMaterialDisplayerModel();
 }
