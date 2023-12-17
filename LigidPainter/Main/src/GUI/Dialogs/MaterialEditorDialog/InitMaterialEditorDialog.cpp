@@ -152,17 +152,6 @@ MaterialEditorDialog::MaterialEditorDialog()
     splitMode.infoText = "Split displaying mode";
     splitMode.textureSizeScale = 1.4f;
 
-    appMaterialModifiers.textureModifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);
-    appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
-    appMaterialModifiers.dustModifier = MaterialModifier(DUST_MATERIAL_MODIFIER);
-    appMaterialModifiers.asphaltModifier = MaterialModifier(ASPHALT_MATERIAL_MODIFIER);
-    appMaterialModifiers.liquidModifier = MaterialModifier(LIQUID_MATERIAL_MODIFIER);
-    appMaterialModifiers.mossModifier= MaterialModifier(MOSS_MATERIAL_MODIFIER);
-    appMaterialModifiers.rustModifier = MaterialModifier(RUST_MATERIAL_MODIFIER);
-    appMaterialModifiers.skinModifier = MaterialModifier(SKIN_MATERIAL_MODIFIER);
-    appMaterialModifiers.solidModifier = MaterialModifier(SOLID_MATERIAL_MODIFIER);
-    appMaterialModifiers.woodenModifier = MaterialModifier(WOODEN_MATERIAL_MODIFIER);
-
     shortcutPanel.sections[0].elements.clear();
     shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Quick Modification Panel", Texture(), 0.f, false));
     shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "To Add shortcuts : CTRL + SHIFT + W + R-CLICK Modifier Element ", Texture(), 0.f, false));

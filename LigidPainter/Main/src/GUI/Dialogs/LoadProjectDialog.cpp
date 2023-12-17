@@ -34,14 +34,7 @@
 #include <fstream>
 #include <sstream>
 
-LoadProjectDialog::LoadProjectDialog(){}
-
-LoadProjectDialog::LoadProjectDialog(AppMaterialModifiers& appMaterialModifiers){
-    
-    //Take the parameters to the class member variables 
-    
-    this->appMaterialModifiers = appMaterialModifiers;
-
+LoadProjectDialog::LoadProjectDialog(){
     //Create the bg panel
     this->bgPanel = Panel(
                             
@@ -156,7 +149,7 @@ void LoadProjectDialog::render(Timer timer, Project &project,bool &greetingDialo
         if(test.size()){
             
             //Load the project
-            if(project.loadProject(test, appMaterialModifiers)){
+            if(project.loadProject(test)){
                 
                 startScreen = false;
                 
@@ -233,7 +226,7 @@ void LoadProjectDialog::render(Timer timer, Project &project,bool &greetingDialo
                 project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text, ligidFilePath);
                 
                 //Load the project
-                if(project.loadProject(ligidFilePath, appMaterialModifiers)){                
+                if(project.loadProject(ligidFilePath)){                
                     startScreen = false;
                     
                     this->dialogControl.unActivate();

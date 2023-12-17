@@ -41,8 +41,7 @@ void UI::elementInteraction(
                                 Painter &painter,
                                 Timer &timer, 
                                 float screenGapPerc,
-                                Project& project,
-                                AppMaterialModifiers& appMaterialModifiers
+                                Project& project
                             )
 {
     //!Dialog & panel state
@@ -87,7 +86,7 @@ void UI::elementInteraction(
                     vectorPaintingModePropertyPanel.hover;
 
     Debugger::block("GUI : Interactions : contextMenuInteraction"); // Start
-    this->contextMenuInteraction(timer, project, painter, appMaterialModifiers);
+    this->contextMenuInteraction(timer, project, painter);
     Debugger::block("GUI : Interactions : contextMenuInteraction"); // End
     
     Debugger::block("GUI : Interactions : updateLibraryPanelDisplayerElements"); // Start
@@ -95,7 +94,7 @@ void UI::elementInteraction(
     Debugger::block("GUI : Interactions : updateLibraryPanelDisplayerElements"); // End
     
     Debugger::block("GUI : Interactions : libraryPanelDisplayerInteraction"); // Start
-    this->libraryPanelDisplayerInteraction(painter, appMaterialModifiers, timer, project);
+    this->libraryPanelDisplayerInteraction(painter, timer, project);
     Debugger::block("GUI : Interactions : libraryPanelDisplayerInteraction"); // End
     
     Debugger::block("GUI : Interactions : libraryPanelLeftInteraction"); // Start

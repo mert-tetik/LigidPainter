@@ -35,10 +35,7 @@
 
 #define DISPLAY_RESOLUTION glm::vec2(this->panel.scale * 30.f)
 
-static AppMaterialModifiers appMatMods;
-
-ObjectTexturingDialog::ObjectTexturingDialog(){}
-ObjectTexturingDialog::ObjectTexturingDialog(AppMaterialModifiers appMaterialModifiers){
+ObjectTexturingDialog::ObjectTexturingDialog(){
     //Create the panel
     this->panel = Panel(
         {
@@ -142,10 +139,8 @@ ObjectTexturingDialog::ObjectTexturingDialog(AppMaterialModifiers appMaterialMod
     this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
     this->sceneCam.radius = 3.5f;
 
-    appMatMods = appMaterialModifiers;
-    
     this->material = Material("ObjectTexturingMaterial", 0);
-    this->material.materialModifiers.push_back(appMaterialModifiers.solidModifier);
+    this->material.materialModifiers.push_back(MaterialModifier(SOLID_MATERIAL_MODIFIER));
     char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
     material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
     material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
@@ -362,7 +357,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     else if(this->defaultMaterialButton.clicked){
         this->material.deleteBuffers();
         this->material = Material("ObjectTexturingMaterial", 0);
-        this->material.materialModifiers.push_back(appMatMods.solidModifier);
+        this->material.materialModifiers.push_back(MaterialModifier(SOLID_MATERIAL_MODIFIER));
         char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
         material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
         material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;

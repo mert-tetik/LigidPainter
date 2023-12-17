@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-bool Project::loadLibraryElements(std::string folderPath, AppMaterialModifiers& appMaterialModifiers, std::string ligidFilePath){
+bool Project::loadLibraryElements(std::string folderPath, std::string ligidFilePath){
     try
     {
         //Load the textures
@@ -80,7 +80,7 @@ bool Project::loadLibraryElements(std::string folderPath, AppMaterialModifiers& 
                 std::string materialPath = entry.path().string();
 
                 Material material("", 0);
-                if(FileHandler::readLGDMATERIALFile(materialPath, material, appMaterialModifiers))
+                if(FileHandler::readLGDMATERIALFile(materialPath, material))
                     Library::addMaterial(material, "");
             
             }
@@ -190,7 +190,7 @@ bool Project::loadLibraryElements(std::string folderPath, AppMaterialModifiers& 
     return true;
 }
 
-bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMaterialModifiers){
+bool Project::loadProject(std::string ligidFilePath){
     
     while(true){
         if(!this->projectProcessing)
@@ -218,7 +218,7 @@ bool Project::loadProject(std::string ligidFilePath, AppMaterialModifiers& appMa
 
     //writeLigidFile(meshNodeScene);
     
-    this->loadLibraryElements(this->folderPath, appMaterialModifiers, ligidFilePath);
+    this->loadLibraryElements(this->folderPath, ligidFilePath);
 
     projectUpdatingThreadElements.updateTextures = false;
     this->projectProcessing = false;

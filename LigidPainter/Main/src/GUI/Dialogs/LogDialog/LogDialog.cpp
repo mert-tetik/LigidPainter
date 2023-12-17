@@ -69,10 +69,6 @@ struct CatMSG{
 };
 
 LogDialog::LogDialog(){
-
-}
-
-LogDialog::LogDialog(AppMaterialModifiers& appMaterialModifiers){
     this->messagesPanel = Panel(
         {
             {

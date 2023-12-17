@@ -479,13 +479,6 @@ void UI::init
                             false
                         );
 
-
-    //Init dialogs
-    logDialog = LogDialog(materialEditorDialog.appMaterialModifiers);
-    objectTexturingDialog = ObjectTexturingDialog(materialEditorDialog.appMaterialModifiers);
-    loadProjectDialog = LoadProjectDialog(materialEditorDialog.appMaterialModifiers);
-    newProjectDialog = NewProjectDialog(materialEditorDialog.appMaterialModifiers);
-
     //Init renaming textbox
     libraryPanelDisplayer.isLibraryDisplayer = true;
     renamingTextBox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "", 4.f, false);
@@ -695,5 +688,5 @@ void UI::init
     }
 
     paintingSectionDisplayMat = Material("Painting section display", 0);
-    paintingSectionDisplayMat.materialModifiers.push_back(materialEditorDialog.appMaterialModifiers.solidModifier);
+    paintingSectionDisplayMat.materialModifiers.push_back(MaterialModifier(SOLID_MATERIAL_MODIFIER));
 }   

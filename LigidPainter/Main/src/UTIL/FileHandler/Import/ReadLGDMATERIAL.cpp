@@ -55,8 +55,7 @@ bool readDustModifier(std::ifstream& rf, MaterialModifier& modifier, int version
 
 bool FileHandler::readLGDMATERIALFile(
                                         std::string path, 
-                                        Material& material, 
-                                        AppMaterialModifiers appMaterialModifiers
+                                        Material& material 
                                     )
 {
     if(!std::filesystem::is_regular_file(path)){
@@ -121,23 +120,23 @@ bool FileHandler::readLGDMATERIALFile(
             
             MaterialModifier modifier;
             if(modifierIndex == 0)
-                modifier = appMaterialModifiers.textureModifier;
+                modifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);
             else if(modifierIndex == 1)
-                modifier = appMaterialModifiers.dustModifier;
+                modifier = MaterialModifier(DUST_MATERIAL_MODIFIER);
             else if(modifierIndex == 2)
-                modifier = appMaterialModifiers.asphaltModifier;
+                modifier = MaterialModifier(ASPHALT_MATERIAL_MODIFIER);
             else if(modifierIndex == 3)
-                modifier = appMaterialModifiers.liquidModifier;
+                modifier = MaterialModifier(LIQUID_MATERIAL_MODIFIER);
             else if(modifierIndex == 4)
-                modifier = appMaterialModifiers.mossModifier;
+                modifier = MaterialModifier(MOSS_MATERIAL_MODIFIER);
             else if(modifierIndex == 5)
-                modifier = appMaterialModifiers.rustModifier;
+                modifier = MaterialModifier(RUST_MATERIAL_MODIFIER);
             else if(modifierIndex == 6)
-                modifier = appMaterialModifiers.skinModifier;
+                modifier = MaterialModifier(SKIN_MATERIAL_MODIFIER);
             else if(modifierIndex == 7)
-                modifier = appMaterialModifiers.solidModifier;
+                modifier = MaterialModifier(SOLID_MATERIAL_MODIFIER);
             else if(modifierIndex == 8)
-                modifier = appMaterialModifiers.woodenModifier;
+                modifier = MaterialModifier(WOODEN_MATERIAL_MODIFIER);
             else{
                 LGDLOG::start<< "ERROR : Reading material file : Unknown modifier index." << LGDLOG::end;
                 return false;

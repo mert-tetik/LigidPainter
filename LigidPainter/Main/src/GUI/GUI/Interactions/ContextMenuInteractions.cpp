@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter, AppMaterialModifiers& appMaterialModifiers){
+void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter){
 
     anyContextMenuActive = ContextMenus::texture.dialogControl.isActive() ||
                            ContextMenus::material.dialogControl.isActive() ||
@@ -228,7 +228,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
 
     //Recover
     else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[6].button.clicked){
-        showProjectRecoverDialog(project, appMaterialModifiers);
+        showProjectRecoverDialog(project);
     }
     
     if(ContextMenus::menuBarHelp.dialogControl.isActive()){ //If help context menu is active

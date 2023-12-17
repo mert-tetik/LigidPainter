@@ -53,8 +53,6 @@ struct Scene;
 class Panel;
 /// @brief forward declared Mesh class
 class Mesh;
-/// @brief forward declared AppMaterialModifiers struct
-struct AppMaterialModifiers;
 /// @brief forward declared Context struct
 struct Context;
 /// @brief forward declared Box class
@@ -565,9 +563,9 @@ public:
     /// @brief load an existing project using ligid file path
     /// @param ligidFilePath path to the ligid file
     /// @return 
-    bool loadProject(std::string ligidFilePath, AppMaterialModifiers& appMaterialModifiers);
+    bool loadProject(std::string ligidFilePath);
 
-    bool loadLibraryElements(std::string folderPath, AppMaterialModifiers& appMaterialModifiers, std::string ligidFilePath);
+    bool loadLibraryElements(std::string folderPath, std::string ligidFilePath);
 
     /// @brief Used to save as
     /// @param dstPath where to duplicate
@@ -1044,7 +1042,7 @@ namespace FileHandler{
     Model readFBXFile(std::string path);
     
     bool writeLGDMATERIALFile(std::string path, Material material);
-    bool readLGDMATERIALFile(std::string path, Material& material, AppMaterialModifiers appMaterialModifiers);
+    bool readLGDMATERIALFile(std::string path, Material& material);
     
     bool writeLGDBRUSHFile(std::string path, Brush brush);
     bool readLGDBRUSHFile(std::string path, Brush& brush);

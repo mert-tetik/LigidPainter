@@ -39,7 +39,6 @@ int __libraryPanelDisplayerInteractionFocusedElementIndex = 0;
 
 void UI::libraryPanelDisplayerInteraction(
                                         Painter &painter, 
-                                        AppMaterialModifiers &appMaterialModifiers,
                                         Timer& timer,
                                         Project& project
                                     )
@@ -200,7 +199,7 @@ void UI::libraryPanelDisplayerInteraction(
 
             if(test.size()){
                 Material importedMaterial("", 0);
-                if(FileHandler::readLGDMATERIALFile(test, importedMaterial, appMaterialModifiers))
+                if(FileHandler::readLGDMATERIALFile(test, importedMaterial))
                     Library::addMaterial(importedMaterial, "New material via importing");
             }
         }

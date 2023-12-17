@@ -36,7 +36,7 @@
 
 std::map<std::string, std::vector<Material>> matSelection_materials;
 
-void MaterialSelectionDialog::render(Timer timer, AppMaterialModifiers &appMaterialModifiers, MaterialEditorDialog& materialEditorDialog){
+void MaterialSelectionDialog::render(Timer timer, MaterialEditorDialog& materialEditorDialog){
     
     dialogControl.updateStart();
 
@@ -93,7 +93,7 @@ void MaterialSelectionDialog::render(Timer timer, AppMaterialModifiers &appMater
 
     if(selectedMatMode < matModePanel.sections[0].elements.size()){
         if(!matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size()){
-            assignMaterialsToMap(appMaterialModifiers);
+            assignMaterialsToMap();
         }
         if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
             if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1)

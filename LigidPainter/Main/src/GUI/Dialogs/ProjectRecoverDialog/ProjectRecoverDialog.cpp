@@ -213,7 +213,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
 
 static int slot = 1;
 
-void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModifiers appMaterialModifiers){
+void ProjectRecoverDialog::render(Timer timer, Project &project){
     
 
     this->dialogControl.activate();
@@ -323,7 +323,7 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
 
                         if(std::filesystem::is_regular_file(path)){
                             Material mat = Material("", 0);
-                            FileHandler::readLGDMATERIALFile(path, mat, appMaterialModifiers);
+                            FileHandler::readLGDMATERIALFile(path, mat);
 
                             std::string title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
                             project_materialsPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 3.f), title, mat.displayingTexture, 0.f, false));
@@ -409,13 +409,13 @@ void ProjectRecoverDialog::render(Timer timer, Project &project, AppMaterialModi
                     std::string lgdPath; 
                     if(project.locateLigidFileInFolder(project.recoverSlotPath(slot), lgdPath)){
                         std::string projectPath = project.folderPath; 
-                        project.loadProject(lgdPath, appMaterialModifiers);
+                        project.loadProject(lgdPath);
                         project.folderPath = projectPath; 
                     }
                     else{
                         LGDLOG::start << "WARNING! No ligid file detected. Only the library elements will be updated." << LGDLOG::end;
 
-                        project.loadLibraryElements(project.recoverSlotPath(slot),  appMaterialModifiers, "");
+                        project.loadLibraryElements(project.recoverSlotPath(slot), "");
                     }
                 }
             }

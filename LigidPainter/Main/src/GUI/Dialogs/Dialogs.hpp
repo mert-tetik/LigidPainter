@@ -176,12 +176,10 @@ public:
    Button textBtn3;
    Button textBtn4;
    
-   AppMaterialModifiers appMaterialModifiers;
    DialogControl dialogControl;
 
    //Constructors
    LoadProjectDialog();
-   LoadProjectDialog(AppMaterialModifiers& appMaterialModifiers);
    
    //Public member functions
    void render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen, LogDialog& logDialog);
@@ -335,7 +333,6 @@ public:
    TextBox shortcutRenamingTextbox;
    int shortcutRenamingIndex = -1;
    int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting TODO REMOVE THAT
-   AppMaterialModifiers appMaterialModifiers;
    int selectedMaterialModifierIndex = 0;
 
    Button twoDModelModeBtn;
@@ -375,8 +372,6 @@ public:
 
 class NewProjectDialog
 {
-private:
-   AppMaterialModifiers appMaterialModifiers;
 public:
    Panel panel;
 
@@ -404,7 +399,6 @@ public:
 
    //Constructors
    NewProjectDialog();
-   NewProjectDialog(AppMaterialModifiers& appMaterialModifiers);
 
    //Public member functions
    void render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen, LogDialog& logDialog);
@@ -489,7 +483,6 @@ public:
 
    //Constructor
    ObjectTexturingDialog();
-   ObjectTexturingDialog(AppMaterialModifiers appMaterialModifiers);
     
    //Public member function
    void render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog, LogDialog& logDialog, MaterialSelectionDialog &materialSelectionDialog);
@@ -543,12 +536,12 @@ public:
    MaterialSelectionDialog();
 
    //Public member functions
-   void render(Timer timer, AppMaterialModifiers &appMaterialModifiers, MaterialEditorDialog &materialEditorDialog);
+   void render(Timer timer, MaterialEditorDialog &materialEditorDialog);
 
 private:
    void updateMaterialTypes();
    bool renderMatDisplayer(Timer& timer);
-   void assignMaterialsToMap(AppMaterialModifiers &appMaterialModifiers);
+   void assignMaterialsToMap();
    void updateSelectedMaterialInPanel();
 
 };
@@ -740,7 +733,7 @@ public:
 
 //!------------------------------ PROJECT RECOVER ------------------------------
 
-void showProjectRecoverDialog(Project &project, AppMaterialModifiers appMaterialModifiers);
+void showProjectRecoverDialog(Project &project);
 
 class ProjectRecoverDialog
 {
@@ -770,7 +763,7 @@ public:
    ProjectRecoverDialog();
 
    //Public member functions
-   void render(Timer timer, Project &project, AppMaterialModifiers appMaterialModifiers);
+   void render(Timer timer, Project &project);
 };
 
 //!-------------------------------LOG DIALOG--------------------------------
@@ -888,11 +881,7 @@ void registerNodeAction(const std::string title, const Texture icon);
 
 class LogDialog
 {
- private:
-   
-   AppMaterialModifiers appMaterialModifiers;
- 
- public:
+public:
    Panel messagesPanel;
    Panel historyPanel;
    
@@ -932,7 +921,6 @@ class LogDialog
 
    //Constructors
    LogDialog();
-   LogDialog(AppMaterialModifiers& appMaterialModifiers);
 
    //Public member functions
    void render(

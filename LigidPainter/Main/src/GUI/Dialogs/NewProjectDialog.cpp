@@ -34,14 +34,7 @@
 #include <iostream>
 #include <vector>
 
-NewProjectDialog::NewProjectDialog(){}
-
-NewProjectDialog::NewProjectDialog(AppMaterialModifiers& appMaterialModifiers){
-    
-    //Take the parameters to the class member variables 
-    
-    this->appMaterialModifiers = appMaterialModifiers;
-    
+NewProjectDialog::NewProjectDialog(){
     //Create the panel
     this->panel = Panel(  
                             {
@@ -272,7 +265,7 @@ void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialo
                                     std::stoi(resolutionCombobox.texts[resolutionCombobox.selectedIndex])
                                  ))
         {
-            project.loadProject(project.ligidFilePath(), appMaterialModifiers);
+            project.loadProject(project.ligidFilePath());
 
             Settings::properties()->textureRes = std::stoi(resolutionCombobox.texts[resolutionCombobox.selectedIndex]);
             

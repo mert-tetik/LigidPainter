@@ -124,7 +124,7 @@ bool MaterialSelectionDialog::renderMatDisplayer(Timer& timer){
     return anyPressed;
 }
 
-void MaterialSelectionDialog::assignMaterialsToMap(AppMaterialModifiers &appMaterialModifiers){
+void MaterialSelectionDialog::assignMaterialsToMap(){
     try
     {
         for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Materials")) {
@@ -134,7 +134,7 @@ void MaterialSelectionDialog::assignMaterialsToMap(AppMaterialModifiers &appMate
 
             if(title == matModePanel.sections[0].elements[selectedMatMode].button.text){
                 Material mat = Material(UTIL::getLastWordBySeparatingWithChar(entry.path().string(), UTIL::folderDistinguisher()), 0);
-                FileHandler::readLGDMATERIALFile(entry.path().string(), mat, appMaterialModifiers);
+                FileHandler::readLGDMATERIALFile(entry.path().string(), mat);
                 matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].push_back(mat);
             }    
         }            

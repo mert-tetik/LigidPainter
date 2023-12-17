@@ -79,8 +79,8 @@ void showTexturePackEditorDialog(TexturePack& texturePack){
     Settings::defaultFramebuffer()->setViewport();
 }
 
-void showProjectRecoverDialog(Project &project, AppMaterialModifiers appMaterialModifiers){
-    __project_recover_dialog.render(__timer, project, appMaterialModifiers);
+void showProjectRecoverDialog(Project &project){
+    __project_recover_dialog.render(__timer, project);
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }
@@ -158,7 +158,7 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
 
     Debugger::block("GUI : Element Interaction"); // Start
     //Interactions of the UI elements
-    elementInteraction(painter, timer, screenGapPerc, project, this->materialEditorDialog.appMaterialModifiers);
+    elementInteraction(painter, timer, screenGapPerc, project);
 
     Debugger::block("GUI : Element Interaction"); // End
 
@@ -1076,7 +1076,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
         objectTexturingDialog.render(timer, this->projection, materialEditorDialog, logDialog, materialSelectionDialog);
     
     if(materialSelectionDialog.dialogControl.isActive() && !materialEditorDialog.dialogControl.active)
-        materialSelectionDialog.render(timer, materialEditorDialog.appMaterialModifiers, materialEditorDialog);
+        materialSelectionDialog.render(timer, materialEditorDialog);
     
     if(materialEditorDialog.dialogControl.isActive())
         materialEditorDialog.render(timer, textureSelectionDialog, logDialog, this->projection);

@@ -202,7 +202,7 @@ public:
 
 private: 
     void elementInteraction(Painter &painter,Timer &timer, float screenGapPerc,
-                            Project& project, AppMaterialModifiers& appMaterialModifiers);
+                            Project& project);
 
     void renderPanels(Timer &timer, Painter &painter, float screenGapPerc);
 
@@ -212,11 +212,11 @@ private:
 
     void renderDropper(Painter &painter);
 
-    void contextMenuInteraction(Timer &timer, Project& project, Painter &painter, AppMaterialModifiers& appMaterialModifiers);
+    void contextMenuInteraction(Timer &timer, Project& project, Painter &painter);
 
     void libraryPanelLeftInteraction(Panel &libraryPanelLeft);
     void paintingPanelInteraction(Painter &painter);
-    void libraryPanelDisplayerInteraction(Painter &painter, AppMaterialModifiers& appMaterialModifiers, Timer& timer, Project& project);
+    void libraryPanelDisplayerInteraction(Painter &painter, Timer& timer, Project& project);
 
 
     void panelPositioning(float &screenGapPerc,  Painter &painter);

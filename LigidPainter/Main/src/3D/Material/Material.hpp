@@ -82,23 +82,6 @@ public:
 };
 
 
-/// @brief Used by the material editor dialog
-/// Holds the material modifiers used by the app
-/// When needed material editor uses these material modifiers to attach to the material's material modifiers
-struct AppMaterialModifiers{
-    MaterialModifier textureModifier;
-    MaterialModifier dustModifier;
-    MaterialModifier asphaltModifier;
-    MaterialModifier liquidModifier;
-    MaterialModifier mossModifier;
-    MaterialModifier rustModifier;
-    MaterialModifier skinModifier;
-    MaterialModifier solidModifier;
-    MaterialModifier woodenModifier;
-};
-
-
-
 //-------------- MATERIAL ------------
 
 struct MaterialShortcut{
