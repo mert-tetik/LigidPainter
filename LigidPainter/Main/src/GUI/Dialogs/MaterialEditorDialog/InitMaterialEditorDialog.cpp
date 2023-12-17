@@ -56,7 +56,7 @@ MaterialEditorDialog::MaterialEditorDialog()
     );
 
     //That panel where you add the modifiers (on the left side)
-    layerPanel = Panel({}, glm::vec2(10, bgPanel.scale.y), glm::vec3(15.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor,true,false,true,true,true,1.f,1.f,                                
+    layerPanel = Panel({}, glm::vec2(7.f, bgPanel.scale.y), glm::vec3(12.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor,true,false,true,true,true,1.f,1.f,                                
                             {
                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Add"        , Texture(), 0.f, false)
                             },
@@ -65,7 +65,7 @@ MaterialEditorDialog::MaterialEditorDialog()
                       );
     
     //That panel where you can display the properties of the modifier (on the right side)
-    modifiersPanel = Panel( {}, glm::vec2(10, bgPanel.scale.y), glm::vec3(85.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor , true, false, true, true, true, 1.f, 1.f,                                
+    modifiersPanel = Panel( {}, glm::vec2(7.f, bgPanel.scale.y), glm::vec3(88.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor , true, false, true, true, true, 1.f, 1.f,                                
                             {
                             
                             },
@@ -78,7 +78,7 @@ MaterialEditorDialog::MaterialEditorDialog()
                                 Section(),
                                 Section()
                             }, 
-                            glm::vec2(10, bgPanel.scale.y), glm::vec3(15.f,50.f,0.8f), ColorPalette::secondColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f, {}, 10.f, true);
+                            glm::vec2(6.f, bgPanel.scale.y), glm::vec3(11.f,50.f,0.8f), ColorPalette::secondColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f, {}, 10.f, true);
 
     navPanel = Panel( {}, glm::vec2(bgPanel.scale.x, 1.6f), glm::vec3(85.f,50.f,0.8f), ColorPalette::secondColor, ColorPalette::thirdColor , true, true, true, false, true, 1.f, 1.f,                                
                             {
@@ -165,7 +165,7 @@ MaterialEditorDialog::MaterialEditorDialog()
 
     shortcutPanel.sections[0].elements.clear();
     shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Quick Modification Panel", Texture(), 0.f, false));
-    shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "To Add shortcuts : CTRL + SHIFT + W + R-CLICK Modifier Element ", Texture(), 0.f, false));
+    shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "CTRL + SHIFT + W + R-CLICK : Add shortcuts", Texture(), 0.f, false));
 
     shortcutRenamingTextbox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f), "", 0.f, false);
     shortcutRenamingTextbox.outlineColor = glm::vec4(0.f);

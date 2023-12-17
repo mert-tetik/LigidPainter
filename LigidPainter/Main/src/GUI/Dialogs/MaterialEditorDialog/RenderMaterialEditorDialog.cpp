@@ -107,7 +107,7 @@ void MaterialEditorDialog::render
                 bool ctrlShiftWCondition = getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && getContext()->window.isKeyPressed(LIGIDGL_KEY_W);
                 if((material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button.hover || material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar.hover || material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox.hover) && *Mouse::RClick() && ctrlShiftWCondition){
                     registerMaterialAction("New material shortcut", *this->material);
-                    this->material->materialShortcuts.push_back(MaterialShortcut("MYShortcut", &material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI]));
+                    this->material->materialShortcuts.push_back(MaterialShortcut("New_Shortcut", &material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI]));
                 }
             }
         }
@@ -224,7 +224,7 @@ void MaterialEditorDialog::render
     selectedModifierResultMode.render(timer, mouseTrackingFlag);
     splitMode.render(timer, mouseTrackingFlag);
 
-    if(*Mouse::RPressed()){
+    if(*Mouse::RPressed() || dialogControl.firstFrameActivated){
         this->updateSkyboxTxtr();
     }
     
