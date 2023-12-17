@@ -141,7 +141,7 @@ void MaterialEditorDialog::render
     
     shortcutPanel.render(timer, mouseTrackingFlag);
     
-    if(shortcutRenamingIndex != -1){
+    if(shortcutRenamingIndex != -1 && shortcutRenamingIndex + 1 < shortcutPanel.sections.size() && shortcutRenamingIndex < this->material->materialShortcuts.size()){
         shortcutRenamingTextbox.active = true;
         shortcutRenamingTextbox.pos = shortcutPanel.sections[shortcutRenamingIndex + 1].header.pos;
         shortcutRenamingTextbox.scale = shortcutPanel.sections[shortcutRenamingIndex + 1].header.scale;
