@@ -406,7 +406,7 @@ void Panel::drawPanel(
                 }
                 
                 Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4,2), "", Texture(), 0.f, true);
-                btn.color = ColorPalette::secondColor;
+                btn.color = sections[sI].header.sectionHolder.containerColor;
                 btn.color.a /= 2.;
                 btn.outline = false;
                 btn.outlineExtra = false;

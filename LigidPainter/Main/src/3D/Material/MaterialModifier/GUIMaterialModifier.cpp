@@ -45,7 +45,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define MATERIAL_MODIFIERS_ELEMENT_OFFSET 2.5f
 
 std::vector<Section> MaterialModifier::createTextureModifier(){
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+    unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
         
     std::vector<Section> sections =  
     {
@@ -113,7 +113,7 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
 }
 
 std::vector<Section> MaterialModifier::createSolidModifier(){
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+    unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
         
     std::vector<Section> sections =  
     {
@@ -176,7 +176,7 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
 }
 
 std::vector<Section> MaterialModifier::createLiquidModifier(){
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+    unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
     
     std::vector<Section> sections =  
     {
@@ -272,7 +272,7 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
 } 
 
 std::vector<Section> MaterialModifier::createMossModifier(){
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+    unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
     
     std::vector<Section> sections =  
     {
@@ -372,7 +372,7 @@ std::vector<Section> MaterialModifier::createMossModifier(){
 }
 
 std::vector<Section> MaterialModifier::createRustModifier(){
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+    unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
 
     std::vector<Section> sections =  
     {
@@ -475,7 +475,7 @@ std::vector<Section> MaterialModifier::createRustModifier(){
 }
 
 std::vector<Section> MaterialModifier::createSkinModifier(){
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+    unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
 
     std::vector<Section> sections =  
     {
@@ -568,7 +568,7 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
 }
 
 std::vector<Section> MaterialModifier::createWoodenModifier(){
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+    unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
 
     std::vector<Section> sections =  
     {
@@ -671,7 +671,7 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
 }
 
 std::vector<Section> MaterialModifier::createAsphaltModifier(){
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+    unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
 
     std::vector<Section> sections =  
     {
@@ -760,7 +760,7 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
 }
 
 std::vector<Section> MaterialModifier::createDustModifier(){
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
+    unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
 
     std::vector<Section> sections =  
     {
@@ -843,6 +843,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
             }
         )
     };
+
 
     sections[4].elements[0].button.colorSelection = true;
     sections[4].elements[1].button.colorSelection = true;

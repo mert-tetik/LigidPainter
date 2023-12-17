@@ -332,6 +332,8 @@ public:
    Panel navPanel; //
    ComboBox displayModeComboBox;
    Button barButton; //
+   TextBox shortcutRenamingTextbox;
+   int shortcutRenamingIndex = -1;
    int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting TODO REMOVE THAT
    AppMaterialModifiers appMaterialModifiers;
    int selectedMaterialModifierIndex = 0;

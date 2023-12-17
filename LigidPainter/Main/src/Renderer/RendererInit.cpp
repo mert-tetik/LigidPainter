@@ -152,6 +152,8 @@ void Renderer::initRenderer(){
 
     Debugger::block("LOAD : GUI"); //Start 143695872 137 MB
     
+    userInterface.materialEditorDialog = MaterialEditorDialog(0);
+
     //Init the userinterface
     userInterface.init(websites, painter);
     

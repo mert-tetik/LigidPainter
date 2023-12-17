@@ -39,6 +39,7 @@ bool __materialEditorDialogESCFirstFramePressed = false;
 
 bool __lastDisplayModeComboBoxPressed = false;
 
+
 void MaterialEditorDialog::render
                                 (
                                     Timer &timer,
@@ -48,7 +49,6 @@ void MaterialEditorDialog::render
                                 )
 {
     dialogControl.updateStart();
-
     // ------- Positioning & Prepearing the panels to rendering -------
     navPanel.scale.x = bgPanel.scale.x - shortcutPanel.scale.x - layerPanel.scale.x - modifiersPanel.scale.x;
     navPanel.pos = shortcutPanel.pos;
@@ -95,15 +95,79 @@ void MaterialEditorDialog::render
     overallResultMode.pos.x -= selectedModifierResultMode.scale.x + overallResultMode.scale.x; 
 
     // ------- Rendering the panels -------
-
-
     bgPanel.render(timer, mouseTrackingFlag);
     layerPanel.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - layerPanel.scale.x; 
     layerPanel.render(timer, mouseTrackingFlag);
     modifiersPanel.render(timer, mouseTrackingFlag);
     barButton.render(timer, mouseTrackingFlag);
-    shortcutPanel.render(timer, mouseTrackingFlag);
     navPanel.render(timer, mouseTrackingFlag);
+
+    if(this->selectedMaterialModifierIndex < material->materialModifiers.size()){
+        for (size_t secI = 0; secI < material->materialModifiers[this->selectedMaterialModifierIndex].sections.size(); secI++){
+            for (size_t elementI = 0; elementI < material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements.size(); elementI++){
+                bool ctrlShiftWCondition = getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && getContext()->window.isKeyPressed(LIGIDGL_KEY_W);
+                if((material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button.hover || material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar.hover || material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox.hover) && *Mouse::RClick() && ctrlShiftWCondition){
+                    registerMaterialAction("New material shortcut", *this->material);
+                    this->material->materialShortcuts.push_back(MaterialShortcut("MYShortcut", &material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI]));
+                }
+            }
+        }
+    }
+
+    shortcutPanel.sections.erase(shortcutPanel.sections.begin() + 1, shortcutPanel.sections.end());  
+
+    for (size_t i = 0; i < this->material->materialShortcuts.size(); i++)
+    {
+        Section section = Section(
+                                    SectionHolder(ColorPalette::secondColor, ColorPalette::thirdColor, 3.f, this->material->materialShortcuts[i].title),
+                                    {
+                                        *this->material->materialShortcuts[i].element,
+                                        Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Rename", Texture(), 2.f, false),
+                                        Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Delete", Texture(), 1.f, false),
+                                    }
+                                );
+
+        section.elements[0].panelOffset = 1.f;
+        section.elements[2].button.color = glm::vec4(1.f, 0.f, 0.f, 0.5f);
+        section.header.sectionHolder.sectionColor.a = 1.f;
+        section.header.sectionHolder.active = true;
+        section.header.sectionHolder.fullActive = true;
+
+        shortcutPanel.sections.push_back(section);    
+    }
+    
+    shortcutPanel.render(timer, mouseTrackingFlag);
+    
+    if(shortcutRenamingIndex != -1){
+        shortcutRenamingTextbox.active = true;
+        shortcutRenamingTextbox.pos = shortcutPanel.sections[shortcutRenamingIndex + 1].header.pos;
+        shortcutRenamingTextbox.scale = shortcutPanel.sections[shortcutRenamingIndex + 1].header.scale;
+        shortcutRenamingTextbox.scale.y += 0.2f;
+        shortcutRenamingTextbox.render(timer, false);
+
+        shortcutPanel.sections[shortcutRenamingIndex + 1].header.sectionHolder.textColor = ColorPalette::secondColor;
+        this->material->materialShortcuts[shortcutRenamingIndex].title = shortcutRenamingTextbox.text; 
+
+        if(*Mouse::LClick() && !shortcutRenamingTextbox.hover || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER)){
+            shortcutPanel.sections[shortcutRenamingIndex + 1].header.sectionHolder.textColor = ColorPalette::oppositeColor;
+            shortcutRenamingIndex = -1;
+        }
+    }
+
+    for (size_t i = 0; i < this->material->materialShortcuts.size(); i++){
+        
+        if(shortcutPanel.sections[i + 1].elements[1].button.hover && *Mouse::LClick()){
+            this->shortcutRenamingIndex = i;
+            shortcutRenamingTextbox.text = this->material->materialShortcuts[i].title; 
+        }
+        if(shortcutPanel.sections[i + 1].elements[2].button.hover && *Mouse::LClick()){
+            registerMaterialAction("Material shortcut removed", *this->material);
+            this->material->materialShortcuts.erase(this->material->materialShortcuts.begin() + i);    
+            break;
+        }
+
+        *this->material->materialShortcuts[i].element = shortcutPanel.sections[i + 1].elements[0];
+    }
     
     ShaderSystem::textureRenderingShader().use();
     ShaderSystem::textureRenderingShader().setMat4("projection", projection);
@@ -133,10 +197,8 @@ void MaterialEditorDialog::render
         this->updateSkyboxTxtr();
     }
     
-    if(this->selectedMaterialModifierIndex < material->materialModifiers.size())
+    if(this->selectedMaterialModifierIndex < material->materialModifiers.size() && !shortcutPanel.hover)
         material->materialModifiers[this->selectedMaterialModifierIndex].sections = modifiersPanel.sections;
-    else
-        modifiersPanel.sections.clear();
 
     if(twoDModelModeBtn.clicked){
         this->selectedModelModeIndex = 0;
@@ -255,6 +317,7 @@ void MaterialEditorDialog::render
     }
 
     __materialEditorDialogESCFirstFramePressed = false; 
+
 
     // Update the displaying texture
     material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel());
@@ -554,6 +617,8 @@ void MaterialEditorDialog::moveModifierToTop(int index, Material &material){
     if(index != 0){
         registerMaterialAction("Modifier moved to top", material);
         
+        material.materialShortcuts.clear();
+        
         MaterialModifier topModifier = material.materialModifiers[index - 1];
         MaterialModifier currentModifier = material.materialModifiers[index];
 
@@ -567,6 +632,8 @@ void MaterialEditorDialog::moveModifierToTop(int index, Material &material){
 void MaterialEditorDialog::moveModifierToBottom(int index, Material &material){
     if(ContextMenus::materialModifier.selectedElement != material.materialModifiers.size()-1){
         registerMaterialAction("Modifier moved to bottom", material);
+        
+        material.materialShortcuts.clear();
         
         MaterialModifier bottomModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement + 1];
         MaterialModifier currentModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement];
@@ -582,8 +649,10 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
 {
     if(ContextMenus::materialModifier.dialogControl.isActive()){ //If material modifier context menu is active
         // Delete button pressed
-        if(ContextMenus::materialModifier.contextPanel.sections[0].elements[0].button.clicked){
+        if(ContextMenus::materialModifier.contextPanel.sections[0].elements[0].button.clicked){            
             registerMaterialAction("Texture modifier deleted", material);
+            
+            material.materialShortcuts.clear();
 
             // Deleting the mask texture
             glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture.ID); 
@@ -601,6 +670,7 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
                 glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[6].button.texture.ID); 
             }
 
+            material.materialShortcuts.clear();
             material.materialModifiers.erase(material.materialModifiers.begin() + ContextMenus::materialModifier.selectedElement);
             dialogControl.firstFrameActivated = true;
             selectedMaterialModifierIndex = 0;
@@ -621,7 +691,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
         
         //Change mask button pressed
         else if(ContextMenus::materialModifier.contextPanel.sections[0].elements[3].button.clicked){ 
-            
             registerMaterialAction("Modifier change mask", material);
             
             showTextureSelectionDialog(material.materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture, 128, false);

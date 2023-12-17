@@ -62,6 +62,8 @@ public:
             LGDLOG::start<< "Failed to initialize GLAD" << LGDLOG::end;
         }    
 
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
         Debugger::block("LOAD : App Textures"); //Start 160567296 153.13 MB
 
         //--Load the app textures

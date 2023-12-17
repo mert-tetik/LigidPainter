@@ -37,6 +37,7 @@ Material Material::duplicateMaterial(){
     Material duplicatedMat(this->title + "_duplicated", 0);
 
     duplicatedMat.materialModifiers = this->materialModifiers;
+    duplicatedMat.materialShortcuts = this->materialShortcuts;
 
     for (size_t modI = 0; modI < duplicatedMat.materialModifiers.size(); modI++)
     {

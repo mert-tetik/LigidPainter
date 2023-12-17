@@ -19,9 +19,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include <iostream>
 
 /// @brief Forward decleration for the @ref Section structure
 struct Section;
+
+/// @brief Forward decleration for the @ref Element structure
+struct Element;
 
 /// @brief Forward decleration for the @ref Camera structure
 struct Camera;
@@ -97,6 +101,18 @@ struct AppMaterialModifiers{
 
 //-------------- MATERIAL ------------
 
+struct MaterialShortcut{
+    std::string title;
+    Element* element;
+    float hover = 0.f;
+    float hoverMixVal = 0.f;
+
+    MaterialShortcut(std::string title, Element* element){
+        this->title = title;
+        this->element = element;
+    }
+};
+
 class Material 
 {
 public:
@@ -133,6 +149,8 @@ public:
 
     /// @brief Deletes all the OpenGL buffer objects inside of the material
     void deleteBuffers();
+
+    std::vector<MaterialShortcut> materialShortcuts;
 };
 
 #endif 

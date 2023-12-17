@@ -171,6 +171,8 @@ void Element::render(Timer &timer,bool doMouseTracking){
             arrowTxtr = Settings::appTextures().arrowB;
 
         Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4,2), this->sectionHolder.text, arrowTxtr, 0.f, true);
+        btn.textColor = sectionHolder.textColor;
+        btn.textColor2 = sectionHolder.textColor;
         btn.solidColor = true;
         btn.color = sectionHolder.sectionColor;
         btn.color2 = sectionHolder.sectionColor;
@@ -186,7 +188,10 @@ void Element::render(Timer &timer,bool doMouseTracking){
         btn.doMouseTracking = doMouseTracking;
         btn.render(timer,doMouseTracking);
 
-        sectionHolder.active = btn.clickState1;
+        if(!sectionHolder.fullActive)
+            sectionHolder.active = btn.clickState1;
+        else 
+            sectionHolder.active = true;
     }
 }
 

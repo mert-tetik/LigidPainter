@@ -425,6 +425,8 @@ public:
 class SectionHolder{
 public:
     glm::vec4 sectionColor;
+    glm::vec4 containerColor;
+    glm::vec4 textColor;
     float panelOffset = 0.f;
     std::string text;
 
@@ -433,15 +435,25 @@ public:
     //Button button;
 
     bool active = false;
+    bool fullActive = false;
     float activeMixVal = 0.f;
 
     SectionHolder(){}
 
     SectionHolder(glm::vec4 sectionColor, float panelOffset, std::string text){
         this->sectionColor = sectionColor; 
+        this->containerColor = glm::vec4(0.16, 0.16, 0.16, 1.f / 1.2f); 
+        this->textColor = glm::vec4(1.f); 
         this->panelOffset = panelOffset;
         this->text = text;
-
+    }
+    
+    SectionHolder(glm::vec4 sectionColor, glm::vec4 containerColor, float panelOffset, std::string text){
+        this->sectionColor = sectionColor; 
+        this->containerColor = containerColor; 
+        this->textColor = glm::vec4(1.f); 
+        this->panelOffset = panelOffset;
+        this->text = text;
     }
 };
 

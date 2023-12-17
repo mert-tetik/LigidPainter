@@ -309,8 +309,8 @@ public:
     /// @param h height
     Texture(char* pixels, int w, int h);
     Texture(char* pixels, int w, int h, unsigned int filterParam);
-    Texture(char* pixels, int w, int h, unsigned int filterParam, int proceduralID);
     Texture(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat);
+    Texture(unsigned char* pixels, int w, int h, unsigned int filterParam, int proceduralID);
 
     void update(char* pixels, int w, int h);
     void update(char* pixels, int w, int h, unsigned int filterParam);

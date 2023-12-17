@@ -73,13 +73,12 @@ MaterialEditorDialog::MaterialEditorDialog()
                             true
                       );
 
-    shortcutPanel = Panel( {}, glm::vec2(10, bgPanel.scale.y), glm::vec3(15.f,50.f,0.8f), ColorPalette::secondColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f,                                
+    shortcutPanel = Panel(   
                             {
-                             
-                            },
-                            10.f,
-                            true
-                      );
+                                Section(),
+                                Section()
+                            }, 
+                            glm::vec2(10, bgPanel.scale.y), glm::vec3(15.f,50.f,0.8f), ColorPalette::secondColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f, {}, 10.f, true);
 
     navPanel = Panel( {}, glm::vec2(bgPanel.scale.x, 1.6f), glm::vec3(85.f,50.f,0.8f), ColorPalette::secondColor, ColorPalette::thirdColor , true, true, true, false, true, 1.f, 1.f,                                
                             {
@@ -112,10 +111,9 @@ MaterialEditorDialog::MaterialEditorDialog()
     barButton.pos = glm::vec3(bgPanel.pos.x, bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y, bgPanel.pos.z);
 
     this->displayingFBO = Framebuffer(Texture(nullptr, 1024, 1024, GL_LINEAR), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)));
-    this->skybox.init();
     this->skyboxFBO = Framebuffer(Texture(nullptr, 1024, 1024, GL_LINEAR), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)));
     
-    
+
     twoDModelModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().solidPaintingDisplayingMode, 1.f,false);
     twoDModelModeBtn.textScale = 0.6f;
     twoDModelModeBtn.outline = false;
@@ -153,7 +151,7 @@ MaterialEditorDialog::MaterialEditorDialog()
     splitMode.outlineExtra = false;
     splitMode.infoText = "Split displaying mode";
     splitMode.textureSizeScale = 1.4f;
-    
+
     appMaterialModifiers.textureModifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);
     appMaterialModifiers.textureModifier.sections[0].header.button.clickState1 = true;
     appMaterialModifiers.dustModifier = MaterialModifier(DUST_MATERIAL_MODIFIER);
@@ -164,5 +162,12 @@ MaterialEditorDialog::MaterialEditorDialog()
     appMaterialModifiers.skinModifier = MaterialModifier(SKIN_MATERIAL_MODIFIER);
     appMaterialModifiers.solidModifier = MaterialModifier(SOLID_MATERIAL_MODIFIER);
     appMaterialModifiers.woodenModifier = MaterialModifier(WOODEN_MATERIAL_MODIFIER);
-    
+
+    shortcutPanel.sections[0].elements.clear();
+    shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Quick Modification Panel", Texture(), 0.f, false));
+    shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "To Add shortcuts : CTRL + SHIFT + W + R-CLICK Modifier Element ", Texture(), 0.f, false));
+
+    shortcutRenamingTextbox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f), "", 0.f, false);
+    shortcutRenamingTextbox.outlineColor = glm::vec4(0.f);
+    shortcutRenamingTextbox.outlineColor2 = glm::vec4(0.f);
 }

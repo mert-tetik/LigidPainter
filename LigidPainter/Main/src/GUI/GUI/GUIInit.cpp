@@ -481,7 +481,6 @@ void UI::init
 
 
     //Init dialogs
-    materialEditorDialog = MaterialEditorDialog();
     logDialog = LogDialog(materialEditorDialog.appMaterialModifiers);
     objectTexturingDialog = ObjectTexturingDialog(materialEditorDialog.appMaterialModifiers);
     loadProjectDialog = LoadProjectDialog(materialEditorDialog.appMaterialModifiers);

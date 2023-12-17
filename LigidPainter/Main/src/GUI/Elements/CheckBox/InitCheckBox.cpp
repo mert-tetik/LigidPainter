@@ -48,6 +48,7 @@ CheckBox::CheckBox(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4
 
 //Style constructor
 CheckBox::CheckBox(int style,glm::vec2 scale,std::string text,float panelOffset){
+    
     this->text = text;
     this->scale = scale;
     this->panelOffset = panelOffset;

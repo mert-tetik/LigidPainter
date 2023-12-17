@@ -106,7 +106,6 @@ Button::Button(
                     float panelOffset,
                     bool keepPressingState
                 ){
-
     this->text = text;
     this->scale = scale;
     this->texture = texture;
