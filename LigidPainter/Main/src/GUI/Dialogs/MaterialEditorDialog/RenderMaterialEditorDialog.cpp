@@ -129,6 +129,10 @@ void MaterialEditorDialog::render
 
         section.elements[0].panelOffset = 1.f;
         section.elements[2].button.color = glm::vec4(1.f, 0.f, 0.f, 0.5f);
+        if(shortcutRenamingIndex == i){
+            section.header.sectionHolder.textColor = ColorPalette::secondColor;
+            section.header.sectionHolder.textColor.a = 1.f;
+        }
         section.header.sectionHolder.sectionColor.a = 1.f;
         section.header.sectionHolder.active = true;
         section.header.sectionHolder.fullActive = true;
@@ -145,11 +149,9 @@ void MaterialEditorDialog::render
         shortcutRenamingTextbox.scale.y += 0.2f;
         shortcutRenamingTextbox.render(timer, false);
 
-        shortcutPanel.sections[shortcutRenamingIndex + 1].header.sectionHolder.textColor = ColorPalette::secondColor;
         this->material->materialShortcuts[shortcutRenamingIndex].title = shortcutRenamingTextbox.text; 
 
         if(*Mouse::LClick() && !shortcutRenamingTextbox.hover || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER)){
-            shortcutPanel.sections[shortcutRenamingIndex + 1].header.sectionHolder.textColor = ColorPalette::oppositeColor;
             shortcutRenamingIndex = -1;
         }
     }
@@ -157,8 +159,11 @@ void MaterialEditorDialog::render
     for (size_t i = 0; i < this->material->materialShortcuts.size(); i++){
         
         if(shortcutPanel.sections[i + 1].elements[1].button.hover && *Mouse::LClick()){
+            registerMaterialAction("Material shortcut renamed", *this->material);
             this->shortcutRenamingIndex = i;
             shortcutRenamingTextbox.text = this->material->materialShortcuts[i].title; 
+            shortcutRenamingTextbox.activeChar = shortcutRenamingTextbox.text.size()-1; 
+            shortcutRenamingTextbox.activeChar2 = shortcutRenamingTextbox.text.size()-1;
         }
         if(shortcutPanel.sections[i + 1].elements[2].button.hover && *Mouse::LClick()){
             registerMaterialAction("Material shortcut removed", *this->material);
