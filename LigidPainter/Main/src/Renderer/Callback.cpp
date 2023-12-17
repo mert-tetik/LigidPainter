@@ -116,7 +116,11 @@ void Renderer::scrollCallback(
                             )
 {
     Camera* cam = &getScene()->camera;
-    if(this->userInterface.objectTexturingDialog.dialogControl.isActive())
+
+    if(this->userInterface.materialEditorDialog.dialogControl.isActive())
+        cam = &this->userInterface.materialEditorDialog.displayerCamera;
+    
+    else if(this->userInterface.objectTexturingDialog.dialogControl.isActive())
         cam = &this->userInterface.objectTexturingDialog.sceneCam;
 
     if(glm::distance(cam->cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
@@ -132,7 +136,7 @@ void Renderer::scrollCallback(
     //Update the scroll value of the mouse class
     *Mouse::mouseScroll() = yoffset;
     
-    if((!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode) || this->userInterface.objectTexturingDialog.dialogControl.isActive())
+    if((!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode) || this->userInterface.objectTexturingDialog.dialogControl.isActive() || this->userInterface.materialEditorDialog.dialogControl.isActive())
     {
         //The distance between the camera & center 
         float originCameraDistance = glm::distance(cam->originPos,cam->cameraPos)/10;
@@ -154,7 +158,6 @@ void Renderer::scrollCallback(
         getScene()->updateViewMatrix();
         getScene()->updateTransformMatrix();
         getScene()->updateProjectionMatrix();
-
 
         //Since the 3D model's position in the screen is changed update the painter's depth texture
         this->painter.updateTheDepthTexture = true;

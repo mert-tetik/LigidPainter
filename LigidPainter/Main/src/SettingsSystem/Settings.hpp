@@ -53,6 +53,18 @@ struct Camera{
                                        (this->cameraPos.x - this->originPos.x) / (this->radius * cos(glm::radians(this->pitch)))));
     }
 
+    void setCameraRadius(float radius){
+        this->radius = radius;
+        
+        //The distance between the camera & center 
+        float originCameraDistance = glm::distance(this->originPos,this->cameraPos)/10;
+
+        //Zoom in-out
+        this->cameraPos.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch)) * this->radius + this->originPos.x;
+        this->cameraPos.y = sin(glm::radians(this->pitch)) * -this->radius + this->originPos.y;
+        this->cameraPos.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch)) * this->radius + this->originPos.z;
+    }
+
     void transition(glm::vec3 direction){
         glm::vec3 camPos;
         camPos = this->cameraPos;

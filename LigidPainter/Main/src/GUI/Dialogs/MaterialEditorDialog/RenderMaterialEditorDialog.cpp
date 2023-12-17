@@ -101,7 +101,6 @@ void MaterialEditorDialog::render
     modifiersPanel.render(timer, mouseTrackingFlag);
     barButton.render(timer, mouseTrackingFlag);
     navPanel.render(timer, mouseTrackingFlag);
-
     if(this->selectedMaterialModifierIndex < material->materialModifiers.size()){
         for (size_t secI = 0; secI < material->materialModifiers[this->selectedMaterialModifierIndex].sections.size(); secI++){
             for (size_t elementI = 0; elementI < material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements.size(); elementI++){
@@ -157,7 +156,6 @@ void MaterialEditorDialog::render
     }
 
     for (size_t i = 0; i < this->material->materialShortcuts.size(); i++){
-        
         if(shortcutPanel.sections[i + 1].elements[1].button.hover && *Mouse::LClick()){
             registerMaterialAction("Material shortcut renamed", *this->material);
             this->shortcutRenamingIndex = i;
@@ -190,6 +188,34 @@ void MaterialEditorDialog::render
     ShaderSystem::buttonShader().use();
     
     materialDisplayer.render(timer, false);
+    
+    if(this->displayerCamera.radius > 3.5f)
+        this->displayerCamera.setCameraRadius(3.5f);
+    if(this->displayerCamera.radius < 0.f)
+        this->displayerCamera.setCameraRadius(0.f);
+
+    bool displayZoomPanel = this->displayerCamera.radius != 3.5f;
+    timer.transition(displayZoomPanel, this->zoomPanelMixVal, 0.2f);
+
+    if(this->zoomPanelMixVal){
+        zoomPanel.sections[0].elements[0].button.text = std::to_string(this->displayerCamera.radius);
+        if(zoomPanel.sections[0].elements[0].button.text.size() > 3)
+            zoomPanel.sections[0].elements[0].button.text.erase(zoomPanel.sections[0].elements[0].button.text.begin() + 3, zoomPanel.sections[0].elements[0].button.text.end());
+        zoomPanel.sections[0].elements[0].button.text += " z";
+        zoomPanel.pos = shortcutPanel.pos;
+        zoomPanel.pos.y = navPanel.pos.y;
+        
+        zoomPanel.scale.x = this->zoomPanelMixVal * 6.f;
+        zoomPanel.sections[0].elements[0].scale.x = this->zoomPanelMixVal * 2.f;
+        zoomPanel.sections[0].elements[1].scale.x = this->zoomPanelMixVal * 4.f;
+        
+        zoomPanel.pos.y += navPanel.scale.y + zoomPanel.scale.y;
+        zoomPanel.pos.x += shortcutPanel.scale.x + zoomPanel.scale.x;
+        zoomPanel.render(timer, mouseTrackingFlag);
+    
+        if(zoomPanel.sections[0].elements[1].button.clicked)
+            this->displayerCamera.setCameraRadius(3.5f);
+    }
 
     twoDModelModeBtn.render(timer, mouseTrackingFlag);
     matDisplayerBallModeBtn.render(timer, mouseTrackingFlag);

@@ -334,6 +334,8 @@ public:
    int shortcutRenamingIndex = -1;
    int textureModifierTextureSelectingButtonIndex = 1000; //1000 if none of them is selecting TODO REMOVE THAT
    int selectedMaterialModifierIndex = 0;
+   Panel zoomPanel;
+   float zoomPanelMixVal = 0.f;
 
    Button twoDModelModeBtn;
    Button matDisplayerBallModeBtn;

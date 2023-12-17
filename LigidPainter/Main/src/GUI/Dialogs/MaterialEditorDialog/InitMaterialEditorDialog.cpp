@@ -88,6 +88,18 @@ MaterialEditorDialog::MaterialEditorDialog()
                             true
                       );
     
+    zoomPanel = Panel(   
+                            {
+                                Section(
+                                            Element(),
+                                            {
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "100", Texture(), 0.f, false),
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(4.f), "Reset", Texture(), 0.f, false)
+                                            }
+                                        )
+                            }, 
+                            glm::vec2(0.f, 2.f), glm::vec3(15.f,50.f,0.8f), ColorPalette::secondColor,ColorPalette::thirdColor , false, true, false, true, true, 1.f, 1.f, {}, 10.f, true);
+    
     navPanel.color.a = 1.f;
     
     bgPanel.solidStyle = true;
@@ -95,7 +107,6 @@ MaterialEditorDialog::MaterialEditorDialog()
     modifiersPanel.solidStyle = true;
     shortcutPanel.solidStyle = true;
     navPanel.solidStyle = true;
-
 
     this->displayerCamera.cameraPos = glm::vec3(0,0,-3.5f);
     this->displayerCamera.radius = 3.5f;
