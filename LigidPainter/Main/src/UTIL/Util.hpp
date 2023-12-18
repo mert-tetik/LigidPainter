@@ -902,7 +902,7 @@ public:
     void changeColor(Color &color);
 
 private:
-    void Painter::projectThePaintingTexture(Texture& selectedTexture,  Texture& projectedPaintingTexture,  unsigned int paintingTexture,  unsigned int depthTexture, 
+    void projectThePaintingTexture(Texture& selectedTexture,  Texture& projectedPaintingTexture,  unsigned int paintingTexture,  unsigned int depthTexture, 
                                             int selectedPaintingModeIndex, float brushPropertiesOpacity, bool threeDimensionalMode,glm::mat4 windowOrtho,int selectedMeshIndex,
                                             Box twoDPaintingBox,glm::mat4 viewMat,bool faceSelectionActive,Texture selectedPrimitives);
 

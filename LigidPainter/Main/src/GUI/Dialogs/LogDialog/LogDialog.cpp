@@ -204,6 +204,7 @@ void LogDialog::render(
                 timer, painter, sleepingCat, msgFace, dizzyCounter, this->cryCounter, this->libraryHistoryBtn, this->otherHistoryBtn
             );
 
+
     if(libraryHistoryBtn.clickState1 && !libraryHistoryMode){
         libraryHistoryMode = true;
         otherHistoryBtn.clickState1 = false;
@@ -251,6 +252,7 @@ void LogDialog::render(
             }
         }
     }
+
 
     // --------- INFO MESSAGE -----------
     if(getContext()->window.shouldClose()){

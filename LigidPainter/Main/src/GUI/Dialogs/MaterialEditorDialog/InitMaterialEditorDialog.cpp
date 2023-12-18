@@ -98,7 +98,7 @@ MaterialEditorDialog::MaterialEditorDialog()
                                             }
                                         )
                             }, 
-                            glm::vec2(0.f, 2.f), glm::vec3(15.f,50.f,0.8f), ColorPalette::secondColor,ColorPalette::thirdColor , false, true, false, true, true, 1.f, 1.f, {}, 10.f, true);
+                            glm::vec2(0.f, 2.f), glm::vec3(15.f,50.f,0.9f), ColorPalette::secondColor,ColorPalette::thirdColor , false, true, false, true, true, 1.f, 1.f, {}, 10.f, true);
     
     navPanel.color.a = 1.f;
     
@@ -125,13 +125,13 @@ MaterialEditorDialog::MaterialEditorDialog()
     this->skyboxFBO = Framebuffer(Texture(nullptr, 1024, 1024, GL_LINEAR), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)));
     
 
-    twoDModelModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().solidPaintingDisplayingMode, 1.f,false);
+    twoDModelModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().twoDIcon, 1.f,false);
     twoDModelModeBtn.textScale = 0.6f;
     twoDModelModeBtn.outline = false;
     twoDModelModeBtn.outlineExtra = false;
     twoDModelModeBtn.infoText = "2D Displaying Mode";
     twoDModelModeBtn.textureSizeScale = 1.4f;
-    matDisplayerBallModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().ligidPainterIcon, 1.f,false);
+    matDisplayerBallModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().materialIcon, 1.f,false);
     matDisplayerBallModeBtn.textScale = 0.6f;
     matDisplayerBallModeBtn.outline = false;
     matDisplayerBallModeBtn.outlineExtra = false;
@@ -144,13 +144,13 @@ MaterialEditorDialog::MaterialEditorDialog()
     customModelModeBtn.infoText = "Active 3D Model Displaying Mode";
     customModelModeBtn.textureSizeScale = 1.4f;
     
-    overallResultMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().materialIcon, 1.f,false);
+    overallResultMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().stripes1Icon, 1.f,false);
     overallResultMode.textScale = 0.6f;
     overallResultMode.outline = false;
     overallResultMode.outlineExtra = false;
     overallResultMode.infoText = "Overall displaying mode";
     overallResultMode.textureSizeScale = 1.4f;
-    selectedModifierResultMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().materialChannelsIcon, 1.f,false);
+    selectedModifierResultMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().stripes2Icon, 1.f,false);
     selectedModifierResultMode.textScale = 0.6f;
     selectedModifierResultMode.outline = false;
     selectedModifierResultMode.outlineExtra = false;

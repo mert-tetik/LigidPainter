@@ -237,6 +237,10 @@ namespace Settings{
         Texture bakingIcon;
         Texture materialIcon;
         Texture trashIcon;
+        Texture eyeClosedIcon;
+        Texture eyeOpenedIcon;
+        Texture stripes1Icon;
+        Texture stripes2Icon;
         Texture materialChannelsIcon;
         Texture paintingOverIcon;
         Texture mirrorIcon;

@@ -533,6 +533,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     }
 
     dialogControl.updateEnd(timer,0.15f);
+
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 

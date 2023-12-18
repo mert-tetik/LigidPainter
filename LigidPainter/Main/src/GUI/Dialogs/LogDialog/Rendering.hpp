@@ -35,7 +35,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-static void rendering(
+void rendering(
                         Panel& messagesPanel, 
                         Panel& historyPanel, 
                         Button& logBtn, 
@@ -64,7 +64,6 @@ static void rendering(
                         Button& otherHistoryBtn
                     )
 {
-
     // Move to the center
     if(getContext()->window.shouldClose()){
         glm::vec2 center = glm::vec2(50.);
@@ -187,8 +186,8 @@ static void rendering(
 
     if(dizzyCounter)
         logBtn.texture = Settings::appTextures().mascotCat_dizzy;
-    else if(cryCounter)
-        logBtn.texture = Settings::appTextures().mascotCat_crying;
+    //else if(cryCounter)
+    //    logBtn.texture = Settings::appTextures().mascotCat_crying;
     else if(sleepingCat)
         logBtn.texture = Settings::appTextures().mascotCat_sleeping;
     else if(messageInfoActive && !painter.refreshable)

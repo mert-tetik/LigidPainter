@@ -201,6 +201,9 @@ void MaterialEditorDialog::render
         zoomPanel.sections[0].elements[0].button.text = std::to_string(this->displayerCamera.radius);
         if(zoomPanel.sections[0].elements[0].button.text.size() > 3)
             zoomPanel.sections[0].elements[0].button.text.erase(zoomPanel.sections[0].elements[0].button.text.begin() + 3, zoomPanel.sections[0].elements[0].button.text.end());
+        
+        glClear(GL_DEPTH_BUFFER_BIT);
+
         zoomPanel.sections[0].elements[0].button.text += " z";
         zoomPanel.pos = shortcutPanel.pos;
         zoomPanel.pos.y = navPanel.pos.y;
@@ -354,6 +357,8 @@ void MaterialEditorDialog::render
     material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel());
 
     __lastDisplayModeComboBoxPressed = this->displayModeComboBox.pressed;
+
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 

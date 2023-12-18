@@ -1035,7 +1035,6 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
 }
 
 void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter& painter){
-    
     if(newProjectDialog.dialogControl.isActive())
         newProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen, logDialog);
     
