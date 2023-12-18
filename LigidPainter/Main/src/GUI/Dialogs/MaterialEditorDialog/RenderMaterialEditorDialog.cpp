@@ -132,8 +132,10 @@ void MaterialEditorDialog::render
 
                 eyeBtn.render(timer, true);
 
-                if(eyeBtn.hover && *Mouse::LClick())
+                if(eyeBtn.hover && *Mouse::LClick()){
+                    this->updateTheMaterial = true;
                     material->materialModifiers[i].hide = !material->materialModifiers[i].hide;
+                }
             }
         }
     }

@@ -397,6 +397,9 @@ static Texture prevDepthTexture;
 
 void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr){
     
+    if(this->hide)
+        return;
+
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
     //Set the orthographic projection to render the uvs
