@@ -78,7 +78,7 @@ void Settings::loadAppTextures(){
     __appTextures.paintingOverIcon.load("./LigidPainter/Resources/Icons/PaintingOver.png");
     __appTextures.mirrorIcon.load("./LigidPainter/Resources/Icons/Mirror.png");
     __appTextures.eyeClosedIcon.load("./LigidPainter/Resources/Icons/Eye_Closed.png");
-    __appTextures.eyeOpenedIcon.load("./LigidPainter/Resources/Icons/Eye_Opened.png");
+    __appTextures.eyeOpenedIcon.load("./LigidPainter/Resources/Icons/Eye_Open.png");
     __appTextures.stripes1Icon.load("./LigidPainter/Resources/Icons/Stripes1.png");
     __appTextures.stripes2Icon.load("./LigidPainter/Resources/Icons/Stripes2.png");
     __appTextures.X.load("./LigidPainter/Resources/Icons/X.png");

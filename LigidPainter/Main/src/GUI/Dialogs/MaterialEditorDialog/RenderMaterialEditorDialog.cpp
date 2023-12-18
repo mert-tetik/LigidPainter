@@ -39,6 +39,7 @@ bool __materialEditorDialogESCFirstFramePressed = false;
 
 bool __lastDisplayModeComboBoxPressed = false;
 
+bool anyEyeHover = false;
 
 void MaterialEditorDialog::render
                                 (
@@ -97,7 +98,46 @@ void MaterialEditorDialog::render
     // ------- Rendering the panels -------
     bgPanel.render(timer, mouseTrackingFlag);
     layerPanel.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - layerPanel.scale.x; 
-    layerPanel.render(timer, mouseTrackingFlag);
+    layerPanel.render(timer, mouseTrackingFlag && !anyEyeHover);
+
+    anyEyeHover = false;
+
+    if(layerPanel.sections.size()){
+        for (size_t i = 0; i < layerPanel.sections[0].elements.size(); i++)
+        {
+            Button btn = layerPanel.sections[0].elements[i].button;
+            Button eyeBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.6f), "", Settings::appTextures().eyeOpenedIcon, 0.f, false);
+            eyeBtn.color.a = 0.f; 
+            eyeBtn.outline = false; 
+            eyeBtn.scale.y = btn.scale.y;
+            eyeBtn.pos = btn.pos;
+            eyeBtn.pos.x += btn.scale.x - eyeBtn.scale.x * 2.f;
+        
+            glm::vec3 resultPos = glm::vec3( 
+                        UTIL::getPercent(*Settings::videoScale(), glm::vec2(eyeBtn.pos.x,eyeBtn.pos.y))
+                        ,eyeBtn.pos.z); 
+
+    
+            glm::vec2 resultScale = UTIL::getPercent(*Settings::videoScale(), eyeBtn.scale);
+
+            if(Mouse::isMouseHover(resultScale, resultPos)){
+                anyEyeHover = true;
+                eyeBtn.pos.y -= 0.2f;    
+                eyeBtn.scale += 0.05f;    
+            }
+
+            if(i < material->materialModifiers.size() && btn.scale.x > 3.f){
+                if(material->materialModifiers[i].hide)
+                    eyeBtn.texture = Settings::appTextures().eyeClosedIcon;
+
+                eyeBtn.render(timer, true);
+
+                if(eyeBtn.hover && *Mouse::LClick())
+                    material->materialModifiers[i].hide = !material->materialModifiers[i].hide;
+            }
+        }
+    }
+
     modifiersPanel.render(timer, mouseTrackingFlag);
     barButton.render(timer, mouseTrackingFlag);
     navPanel.render(timer, mouseTrackingFlag);

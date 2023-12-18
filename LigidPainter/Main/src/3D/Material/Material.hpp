@@ -60,6 +60,8 @@ public:
     std::vector<Section> sections;   
     std::string title;
 
+    bool hide = false;
+
     Texture maskTexture;
 
     void updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr);

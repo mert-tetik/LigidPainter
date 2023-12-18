@@ -188,8 +188,8 @@ void rendering(
         logBtn.texture = Settings::appTextures().mascotCat_dizzy;
     //else if(cryCounter)
     //    logBtn.texture = Settings::appTextures().mascotCat_crying;
-    else if(sleepingCat)
-        logBtn.texture = Settings::appTextures().mascotCat_sleeping;
+    //else if(sleepingCat)
+    //    logBtn.texture = Settings::appTextures().mascotCat_sleeping;
     else if(messageInfoActive && !painter.refreshable)
         logBtn.texture = msgFace;
     else if((logBtn.hover) || painter.refreshable)
