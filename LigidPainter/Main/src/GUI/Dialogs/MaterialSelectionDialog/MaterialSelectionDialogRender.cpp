@@ -97,7 +97,7 @@ void MaterialSelectionDialog::render(Timer timer, MaterialEditorDialog& material
         }
         if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
             if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1)
-                matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, anyMatClicked, this->displayingCam, 0, true, this->displayingFBO, *getMaterialDisplayerModel());
+                matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, anyMatClicked, this->displayingCam, 0, true, this->displayingFBO, *getMaterialDisplayerModel(), -1);
         }
     }    
 

@@ -677,7 +677,7 @@ void ObjectTexturingDialog::updateMeshTextures(){
         for (int i = this->material.materialModifiers.size() - 1; i >= 0; --i)    
         {
             if(meshI < this->faceSelection.size())
-                this->material.materialModifiers[i].updateMaterialChannels(this->material, getModel()->meshes[meshI], this->getResolution(), i, this->faceSelection[meshI].meshMask, this->faceSelection[meshI].selectedFaces);
+                this->material.materialModifiers[i].updateMaterialChannels(this->material, getModel()->meshes[meshI], this->getResolution(), i, this->faceSelection[meshI].meshMask, this->faceSelection[meshI].selectedFaces, false);
         }
         
         Texture maskMat = maskMaterialBtn.texture.generateProceduralTexture(getModel()->meshes[meshI], this->getResolution());

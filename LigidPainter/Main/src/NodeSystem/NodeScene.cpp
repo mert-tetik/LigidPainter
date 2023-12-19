@@ -424,7 +424,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh, int textureRes){
         
         for (int i = material.materialModifiers.size() - 1; i >= 0; --i)    
         {
-            material.materialModifiers[i].updateMaterialChannels(material, msh, textureRes, i, Settings::appTextures().white, 0);
+            material.materialModifiers[i].updateMaterialChannels(material, msh, textureRes, i, Settings::appTextures().white, 0, false);
         }
 
         //Return mesh by creating using material modifiers

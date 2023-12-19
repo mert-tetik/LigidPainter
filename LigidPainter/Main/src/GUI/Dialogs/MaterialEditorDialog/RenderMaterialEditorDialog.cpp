@@ -77,21 +77,18 @@ void MaterialEditorDialog::render
     matDisplayerBallModeBtn.scale.y = navPanel.scale.y - 0.1;
     twoDModelModeBtn.scale.y = navPanel.scale.y - 0.1;
     customModelModeBtn.scale.y = navPanel.scale.y - 0.1;
-    splitMode.scale.y = navPanel.scale.y - 0.1;
     selectedModifierResultMode.scale.y = navPanel.scale.y - 0.1;
     overallResultMode.scale.y = navPanel.scale.y - 0.1;
 
     matDisplayerBallModeBtn.pos = navPanel.pos;
-    matDisplayerBallModeBtn.pos.x += displayModeComboBox.scale.x - splitMode.scale.x * 3.f;
+    matDisplayerBallModeBtn.pos.x += displayModeComboBox.scale.x - selectedModifierResultMode.scale.x * 3.f;
     twoDModelModeBtn.pos = matDisplayerBallModeBtn.pos; 
     twoDModelModeBtn.pos.x -= matDisplayerBallModeBtn.scale.x + twoDModelModeBtn.scale.x; 
     customModelModeBtn.pos = matDisplayerBallModeBtn.pos; 
     customModelModeBtn.pos.x += matDisplayerBallModeBtn.scale.x + customModelModeBtn.scale.x; 
 
-    splitMode.pos = navPanel.pos;
-    splitMode.pos.x += navPanel.scale.x - splitMode.scale.x * 4.f;
-    selectedModifierResultMode.pos = splitMode.pos; 
-    selectedModifierResultMode.pos.x -= splitMode.scale.x + selectedModifierResultMode.scale.x; 
+    selectedModifierResultMode.pos = navPanel.pos;
+    selectedModifierResultMode.pos.x += navPanel.scale.x - selectedModifierResultMode.scale.x * 4.f;
     overallResultMode.pos = selectedModifierResultMode.pos; 
     overallResultMode.pos.x -= selectedModifierResultMode.scale.x + overallResultMode.scale.x; 
 
@@ -267,7 +264,6 @@ void MaterialEditorDialog::render
     customModelModeBtn.render(timer, mouseTrackingFlag);
     overallResultMode.render(timer, mouseTrackingFlag);
     selectedModifierResultMode.render(timer, mouseTrackingFlag);
-    splitMode.render(timer, mouseTrackingFlag);
 
     if(*Mouse::RPressed() || dialogControl.firstFrameActivated){
         this->updateSkyboxTxtr();
@@ -321,15 +317,6 @@ void MaterialEditorDialog::render
     else
         selectedModifierResultMode.color = ColorPalette::secondColor;
 
-    if(splitMode.clicked){
-        this->selectedResultModeIndex = 2;
-        this->updateTheMaterial = true;
-    }
-    if(this->selectedResultModeIndex == 2)
-        splitMode.color = ColorPalette::thirdColor;
-    else
-        splitMode.color = ColorPalette::secondColor;
-
 
     //If texture selection dialog is not active reset the index values used to navigate textures
     if(textureSelectionDialog.dialogControl.isActive() == false){
@@ -353,8 +340,10 @@ void MaterialEditorDialog::render
     //Manage actions of the context menus 
     this->manageContextMenuActions(*material);
 
-    if(dialogControl.firstFrameActivated)
+    if(dialogControl.firstFrameActivated){
+        this->selectedResultModeIndex = 0;
         updateLayerPanel(*material);
+    }
     
     this->displayModeComboBox.pos = navPanel.pos;
     this->displayModeComboBox.pos.x -= navPanel.scale.x - displayModeComboBox.scale.x * 1.5f;
@@ -364,7 +353,10 @@ void MaterialEditorDialog::render
 
     if(!this->updateTheMaterial && this->prevUpdateTheMaterial){
         // Updating the material textures
-        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel());
+        int specificUpdateI = -1;
+        if(this->selectedResultModeIndex == 1)
+            specificUpdateI = this->selectedMaterialModifierIndex;
+        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), specificUpdateI);
     }
     
     this->prevUpdateTheMaterial = this->updateTheMaterial;
@@ -396,7 +388,7 @@ void MaterialEditorDialog::render
 
 
     // Update the displaying texture
-    material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel());
+    material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), -1);
 
     __lastDisplayModeComboBoxPressed = this->displayModeComboBox.pressed;
 
@@ -457,6 +449,9 @@ void MaterialEditorDialog::checkLayerPanel(Material &material){
         {
             if(layerPanel.sections[0].elements[i].button.clicked){
                 selectedMaterialModifierIndex = i; //Select the clicked button
+                if(this->selectedResultModeIndex == 1)
+                    this->updateTheMaterial = true;
+                    
                 if(selectedMaterialModifierIndex < material.materialModifiers.size() && selectedMaterialModifierIndex >= 0)
                     modifiersPanel.sections = material.materialModifiers[selectedMaterialModifierIndex].sections;
             } 

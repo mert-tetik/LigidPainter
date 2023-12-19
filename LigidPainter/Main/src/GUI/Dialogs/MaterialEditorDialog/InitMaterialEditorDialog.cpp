@@ -78,7 +78,7 @@ MaterialEditorDialog::MaterialEditorDialog()
                                 Section(),
                                 Section()
                             }, 
-                            glm::vec2(6.f, bgPanel.scale.y), glm::vec3(11.f,50.f,0.8f), ColorPalette::secondColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f, {}, 10.f, true);
+                            glm::vec2(7.f, bgPanel.scale.y), glm::vec3(12.f,50.f,0.8f), ColorPalette::secondColor,ColorPalette::thirdColor , true, true, false, true, true, 1.f, 1.f, {}, 10.f, true);
 
     navPanel = Panel( {}, glm::vec2(bgPanel.scale.x, 1.6f), glm::vec3(85.f,50.f,0.8f), ColorPalette::secondColor, ColorPalette::thirdColor , true, true, true, false, true, 1.f, 1.f,                                
                             {
@@ -156,12 +156,6 @@ MaterialEditorDialog::MaterialEditorDialog()
     selectedModifierResultMode.outlineExtra = false;
     selectedModifierResultMode.infoText = "Selected modifier displaying mode";
     selectedModifierResultMode.textureSizeScale = 1.4f;
-    splitMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", Settings::appTextures().mirrorIcon, 1.f,false);
-    splitMode.textScale = 0.6f;
-    splitMode.outline = false;
-    splitMode.outlineExtra = false;
-    splitMode.infoText = "Split displaying mode";
-    splitMode.textureSizeScale = 1.4f;
 
     shortcutPanel.sections[0].elements.clear();
     shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Quick Modification Panel", Texture(), 0.f, false));

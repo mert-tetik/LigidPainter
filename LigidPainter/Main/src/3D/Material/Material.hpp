@@ -64,7 +64,7 @@ public:
 
     Texture maskTexture;
 
-    void updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr);
+    void updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr, bool noPrevTxtrMode);
 
     //Constructors
     MaterialModifier();
@@ -127,7 +127,7 @@ public:
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
     void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam);
-    void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam, Framebuffer customFBO, Model &displayModel);
+    void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam, Framebuffer customFBO, Model &displayModel, int specificUpdateI);
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial();

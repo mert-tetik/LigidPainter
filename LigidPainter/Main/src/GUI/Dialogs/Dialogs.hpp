@@ -340,11 +340,10 @@ public:
    Button twoDModelModeBtn;
    Button matDisplayerBallModeBtn;
    Button customModelModeBtn;
-   int selectedModelModeIndex = 0;
+   int selectedModelModeIndex = 1;
    
    Button overallResultMode;
    Button selectedModifierResultMode;
-   Button splitMode;
    int selectedResultModeIndex = 0;
 
    Framebuffer displayingFBO;

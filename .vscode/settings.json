@@ -94,7 +94,8 @@
         "hash_set": "cpp",
         "slist": "cpp",
         "cfenv": "cpp",
-        "hashtable": "cpp"
+        "hashtable": "cpp",
+        "format": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

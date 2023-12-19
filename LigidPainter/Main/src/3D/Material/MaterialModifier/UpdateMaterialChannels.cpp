@@ -151,7 +151,8 @@ static void setUniforms(
                             unsigned int textureModifierSelectedTexture_procedural,
                             Mesh& mesh,
                             Texture meshMask,
-                            Texture selectedObjectPrimitivesTxtr
+                            Texture selectedObjectPrimitivesTxtr,
+                            bool noPrevTxtrMode
                         )
 {
 
@@ -178,17 +179,17 @@ static void setUniforms(
 
     //Bind the previous texture
     glActiveTexture(GL_TEXTURE1);
-    if(curModI != material.materialModifiers.size()-1)
+    if(curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode)
         glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
     else
-        glBindTexture(GL_TEXTURE_2D, currentTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().black.ID);
     
     //Bind the previous height map texture
     glActiveTexture(GL_TEXTURE2);
     if(curModI != material.materialModifiers.size()-1)
         glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
     else
-        glBindTexture(GL_TEXTURE_2D, 0);
+        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().black.ID);
 
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, selectedObjectPrimitivesTxtr.ID);
@@ -395,7 +396,7 @@ static Texture albedoFilterMaskTexture_procedural;
 static Texture previousTexture;
 static Texture prevDepthTexture;
 
-void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr){
+void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr, bool noPrevTxtrMode){
     
     if(this->hide)
         return;
@@ -473,7 +474,8 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                         textureModifierSelectedTexture_procedural.ID,
                         mesh,
                         meshMask,
-                        selectedObjectPrimitivesTxtr
+                        selectedObjectPrimitivesTxtr,
+                        noPrevTxtrMode
                     );
     
         // Render the result to the framebuffer
