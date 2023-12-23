@@ -13,7 +13,6 @@ $files = Get-ChildItem -Path $folderPath -Recurse -Include $fileExtensions | Sor
 # If the files array is empty
 if ($files.Count -eq 0) {
     Write-Host "No files found in the specified directory."
-    # Additional actions or error handling for empty directory
 }    
 
 # Loop through all the files in the Texture Library
