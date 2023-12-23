@@ -106,9 +106,9 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
 
     this->materialDisplayerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(6, 4.f), "", Texture(), 1.f, false);
     this->editMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 3.f), "Edit material", Texture(), 1.f, false);
-    this->selectMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f, 4.f), "", Settings::appTextures().arrowB, 1.f, false);
+    this->selectMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f, 4.f), "", appTextures.arrowB, 1.f, false);
     this->selectMaterialButton.infoText = "Select a custom material from the library";
-    this->defaultMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f, 3.f), "", Settings::appTextures().X, 1.f, false);
+    this->defaultMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f, 3.f), "", appTextures.X, 1.f, false);
     this->defaultMaterialButton.infoText = "Switch to default (solid) material";
     
     this->albedoChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Albedo", 0.f);
@@ -210,7 +210,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         {
             faceSelection.push_back(FaceSelection());
             faceSelection[faceSelection.size()-1].selectedFaces = getModel()->meshes[meshI].selectedObjectPrimitivesTxtr.duplicateTexture();
-            faceSelection[faceSelection.size()-1].meshMask = Settings::appTextures().white.duplicateTexture();
+            faceSelection[faceSelection.size()-1].meshMask = appTextures.white.duplicateTexture();
         
             faceSelection[faceSelection.size()-1].selectedPrimitiveIDs.resize(getModel()->meshes[meshI].indices.size() / 3);
             for (size_t oI = 0; oI < getModel()->meshes[meshI].objects.size(); oI++)
@@ -743,17 +743,17 @@ void ObjectTexturingDialog::updateMeshTextures(){
         }
 
         if(!albedoChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].albedo.mix(albedo, Settings::appTextures().white, false, false, false);
+            getModel()->meshes[meshI].albedo.mix(albedo, appTextures.white, false, false, false);
         if(!roughnessChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].roughness.mix(roughness, Settings::appTextures().white, false, false, false);
+            getModel()->meshes[meshI].roughness.mix(roughness, appTextures.white, false, false, false);
         if(!metallicChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].metallic.mix(metallic, Settings::appTextures().white, false, false, false);
+            getModel()->meshes[meshI].metallic.mix(metallic, appTextures.white, false, false, false);
         if(!normalMapChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].normalMap.mix(normalMap, Settings::appTextures().white, false, false, false);
+            getModel()->meshes[meshI].normalMap.mix(normalMap, appTextures.white, false, false, false);
         if(!heightMapChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].heightMap.mix(heightMap, Settings::appTextures().white, false, false, false);
+            getModel()->meshes[meshI].heightMap.mix(heightMap, appTextures.white, false, false, false);
         if(!aoChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].ambientOcclusion.mix(ambientOcclusion, Settings::appTextures().white, false, false, false);
+            getModel()->meshes[meshI].ambientOcclusion.mix(ambientOcclusion, appTextures.white, false, false, false);
 
         getModel()->meshes[meshI].albedo = albedo; 
         getModel()->meshes[meshI].roughness = roughness; 

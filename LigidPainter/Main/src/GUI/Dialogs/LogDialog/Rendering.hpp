@@ -185,17 +185,17 @@ void rendering(
     messageInfoBtn.render(timer, false);
 
     if(dizzyCounter)
-        logBtn.texture = Settings::appTextures().mascotCat_dizzy;
+        logBtn.texture = appTextures.mascotCat_dizzy;
     //else if(cryCounter)
-    //    logBtn.texture = Settings::appTextures().mascotCat_crying;
+    //    logBtn.texture = appTextures.mascotCat_crying;
     //else if(sleepingCat)
-    //    logBtn.texture = Settings::appTextures().mascotCat_sleeping;
+    //    logBtn.texture = appTextures.mascotCat_sleeping;
     else if(messageInfoActive && !painter.refreshable)
         logBtn.texture = msgFace;
     else if((logBtn.hover) || painter.refreshable)
-        logBtn.texture = Settings::appTextures().mascotCat_smile;
+        logBtn.texture = appTextures.mascotCat_smile;
     else if(messagesActive || actionHistoryActive)
-        logBtn.texture = Settings::appTextures().mascotCat_relaxed;
+        logBtn.texture = appTextures.mascotCat_relaxed;
     else
-        logBtn.texture = Settings::appTextures().mascotCat_default;
+        logBtn.texture = appTextures.mascotCat_default;
 }

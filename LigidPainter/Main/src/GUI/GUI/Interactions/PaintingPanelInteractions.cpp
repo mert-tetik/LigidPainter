@@ -361,7 +361,7 @@ void UI::paintingPanelInteraction(
                                                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2, 2),"Height Map Texture"  , getModel()->meshes[i].heightMap, 1.f, true)),//4
                                                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2, 2),"Ambient Occlusion Texture"  , getModel()->meshes[i].ambientOcclusion, 1.f, true)),//4
                                                         Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2, 2), "Material ID Texture"  , getModel()->meshes[i].materialIDTxtr, 2.f, false)),//4
-                                                        Element(Button(ELEMENT_STYLE_BASIC, glm::vec2(2, 2), "Remove Material ID Texture"  , Settings::appTextures().X, 1.f, false))//4
+                                                        Element(Button(ELEMENT_STYLE_BASIC, glm::vec2(2, 2), "Remove Material ID Texture"  , appTextures.X, 1.f, false))//4
                                                     }
                                                 )
                                             );

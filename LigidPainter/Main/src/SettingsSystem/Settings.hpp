@@ -178,6 +178,83 @@ Model* getPlaneModel();
 Model* getMaterialDisplayerModel();
 Box* getBox();
 
+struct AppTextures{ 
+    //--Icons
+    Texture TDModelIcon; 
+    Texture softenIcon;  
+    Texture smearIcon;
+    Texture modifierIcon;
+    Texture environmentIcon;
+    Texture dropperIcon;
+    Texture colorIcon;
+    Texture brushIcon;
+    Texture arrowR;
+    Texture arrowL;
+    Texture arrowB;
+    Texture arrowT;
+    Texture threeDIcon;
+    Texture twoDIcon;
+    Texture exportIcon;
+    Texture areaPaintingIcon;
+    Texture gearIcon;
+    Texture ligidPainterIcon;
+    Texture nodeDisplayingMode;
+    Texture paintingDisplayingMode;
+    Texture solidPaintingDisplayingMode;
+    Texture logButtonL;
+    Texture logButtonR;
+    Texture logButtonM;
+    Texture colorGearIcon;
+    Texture filterIcon;
+    Texture resizingIcon;
+    Texture blurIcon;
+    Texture distortionIcon;
+    Texture normalMapIcon;
+    Texture packageIcon;
+    Texture inkPenIcon;
+    Texture bucketIcon;
+    Texture bakingIcon;
+    Texture materialIcon;
+    Texture trashIcon;
+    Texture eyeClosedIcon;
+    Texture eyeOpenedIcon;
+    Texture stripes1Icon;
+    Texture stripes2Icon;
+    Texture materialChannelsIcon;
+    Texture paintingOverIcon;
+    Texture mirrorIcon;
+    Texture X;
+    Texture flipH;
+    Texture flipV;
+    
+    //--Textures
+    Texture greetingDialogImage;  
+    Texture filterDisplayerImage;  
+    Texture noMaterialConnectedToTheMeshWarningImage;  
+    Texture noMaterialModifierIsConnectedToMaterialWarningImage;
+    Texture materialChannelMissingTexture;
+    
+    //--SYSTEM
+    Texture white;
+    Texture black;
+    Texture transparent;
+
+    //--MASCOT CAT SPRITES
+    Texture mascotCat_default;
+    Texture mascotCat_smile;
+    Texture mascotCat_rock;
+    Texture mascotCat_relaxed;
+    Texture mascotCat_dizzy;
+    Texture mascotCat_thinking;
+    Texture mascotCat_bread;
+    Texture mascotCat_crying;
+    Texture mascotCat_sleeping;
+    Texture mascotCat_pawL;
+    Texture mascotCat_pawR;
+};
+
+extern AppTextures appTextures;
+
 namespace Settings{
 
     struct DefaultFramebuffer{
@@ -199,80 +276,6 @@ namespace Settings{
         unsigned int orgID;
     };
 
-    struct AppTextures{ 
-        //--Icons
-        Texture TDModelIcon; 
-        Texture softenIcon;  
-        Texture smearIcon;
-        Texture modifierIcon;
-        Texture environmentIcon;
-        Texture dropperIcon;
-        Texture colorIcon;
-        Texture brushIcon;
-        Texture arrowR;
-        Texture arrowL;
-        Texture arrowB;
-        Texture arrowT;
-        Texture threeDIcon;
-        Texture twoDIcon;
-        Texture exportIcon;
-        Texture areaPaintingIcon;
-        Texture gearIcon;
-        Texture ligidPainterIcon;
-        Texture nodeDisplayingMode;
-        Texture paintingDisplayingMode;
-        Texture solidPaintingDisplayingMode;
-        Texture logButtonL;
-        Texture logButtonR;
-        Texture logButtonM;
-        Texture colorGearIcon;
-        Texture filterIcon;
-        Texture resizingIcon;
-        Texture blurIcon;
-        Texture distortionIcon;
-        Texture normalMapIcon;
-        Texture packageIcon;
-        Texture inkPenIcon;
-        Texture bucketIcon;
-        Texture bakingIcon;
-        Texture materialIcon;
-        Texture trashIcon;
-        Texture eyeClosedIcon;
-        Texture eyeOpenedIcon;
-        Texture stripes1Icon;
-        Texture stripes2Icon;
-        Texture materialChannelsIcon;
-        Texture paintingOverIcon;
-        Texture mirrorIcon;
-        Texture X;
-        Texture flipH;
-        Texture flipV;
-        
-        //--Textures
-        Texture greetingDialogImage;  
-        Texture filterDisplayerImage;  
-        Texture noMaterialConnectedToTheMeshWarningImage;  
-        Texture noMaterialModifierIsConnectedToMaterialWarningImage;
-        Texture materialChannelMissingTexture;
-        
-        //--SYSTEM
-        Texture white;
-        Texture black;
-        Texture transparent;
-
-        //--MASCOT CAT SPRITES
-        Texture mascotCat_default;
-        Texture mascotCat_smile;
-        Texture mascotCat_rock;
-        Texture mascotCat_relaxed;
-        Texture mascotCat_dizzy;
-        Texture mascotCat_thinking;
-        Texture mascotCat_bread;
-        Texture mascotCat_crying;
-        Texture mascotCat_sleeping;
-        Texture mascotCat_pawL;
-        Texture mascotCat_pawR;
-    };
 
     struct Properties{
         /*! @brief Set swapInterval(1) if true */
@@ -296,8 +299,6 @@ namespace Settings{
     };
 
     void loadAppTextures();
-
-    AppTextures appTextures();
 
     Properties* properties();
 

@@ -32,8 +32,8 @@
 #include <vector>
 
 SettingsDialog::SettingsDialog(){
-    this->systemSettingsBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "System", Settings::appTextures().gearIcon, 0.f, true); 
-    this->TDRendererSettingsBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "3D Renderer", Settings::appTextures().TDModelIcon, 0.f, true); 
+    this->systemSettingsBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "System", appTextures.gearIcon, 0.f, true); 
+    this->TDRendererSettingsBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "3D Renderer", appTextures.TDModelIcon, 0.f, true); 
     
     //Create the background panel
     this->bgPanel = Panel({

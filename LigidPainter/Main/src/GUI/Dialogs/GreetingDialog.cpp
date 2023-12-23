@@ -59,7 +59,7 @@ GreetingDialog::GreetingDialog(){
     this->createProjectButton.textColor = glm::vec4(1);
     
     //Decoration texture displayer button
-    this->textureDisplayerButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(30,30), "", Settings::appTextures().greetingDialogImage, 0.f, false);
+    this->textureDisplayerButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(30,30), "", appTextures.greetingDialogImage, 0.f, false);
     this->textureDisplayerButton.radius = 0.35;
     this->textureDisplayerButton.pos.x = 50;
     this->textureDisplayerButton.pos.y = 50;

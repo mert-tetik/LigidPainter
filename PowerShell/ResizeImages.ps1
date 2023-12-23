@@ -19,7 +19,6 @@ if(!(Test-Path $destinationFolder)){
     throw "Invalid destination folder path"
 }
 
-
 # Get files, filter by multiple extensions, and sort them alphabetically by name
 $files = Get-ChildItem -Path $textureFolder -Recurse -Include $fileExtensions | Sort-Object -Property Name
 

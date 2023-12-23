@@ -86,7 +86,7 @@ void FilterDisplayerDialog::render(Timer timer, glm::mat4 projection){
     ShaderSystem::splitTexturesShader().setInt("texture2", 1);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, Settings::appTextures().filterDisplayerImage.ID);
+    glBindTexture(GL_TEXTURE_2D, appTextures.filterDisplayerImage.ID);
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, filter.displayingTxtr.ID);

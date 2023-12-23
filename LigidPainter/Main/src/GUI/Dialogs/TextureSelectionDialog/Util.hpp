@@ -51,6 +51,8 @@ void TextureSelectionDialog::initTextureSelectionDialog(
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Gray_Scale_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralGrayScale;
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Brightness_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralBrightness;   
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Scale_INDEX].rangeBar.value = receivedTexture.proceduralProps.txtrPackScale;   
+        subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Stretch_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralStretch;   
+        subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_MirroredRepeat_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralMirroredRepeat;
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Count_INDEX].rangeBar.value = receivedTexture.proceduralProps.txtrPackCount;   
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Rotation_Jitter_INDEX].rangeBar.value = receivedTexture.proceduralProps.txtrPackRotation_Jitter;   
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Size_Jitter_INDEX].rangeBar.value = receivedTexture.proceduralProps.txtrPackSize_Jitter;   
@@ -96,6 +98,8 @@ void TextureSelectionDialog::initTextureSelectionDialog(
     else{
         subPanel.sections[0].elements[subPanel_Invert_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralnverted;
         subPanel.sections[0].elements[subPanel_Scale_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralScale * 10.f;  
+        subPanel.sections[0].elements[subPanel_Stretch_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralStretch;  
+        subPanel.sections[0].elements[subPanel_MirroredRepeat_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralMirroredRepeat;
         subPanel.sections[0].elements[subPanel_Normal_Map_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralNormalMap;
         subPanel.sections[0].elements[subPanel_Normal_Gray_Scale_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralNormalGrayScale;
         subPanel.sections[0].elements[subPanel_Normal_Strength_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralNormalStrength;
@@ -246,9 +250,9 @@ void TextureSelectionDialog::updateProceduralDisplayingTexturesArray(bool twoDMo
 void TextureSelectionDialog::updateTextureModesPanel(bool twoDMode){
     
     if(twoDMode)
-        textureModesPanel.sections[0].elements[0].button.texture = Settings::appTextures().twoDIcon;
+        textureModesPanel.sections[0].elements[0].button.texture = appTextures.twoDIcon;
     else
-        textureModesPanel.sections[0].elements[0].button.texture = Settings::appTextures().threeDIcon;
+        textureModesPanel.sections[0].elements[0].button.texture = appTextures.threeDIcon;
     
     for (size_t i = 1; i < 8; i++)
     {
@@ -327,6 +331,8 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
         receivedTexture.proceduralProps.proceduralBrightness = this->subPanel.sections[0].elements[subPanelTxtrPack_Brightness_INDEX].rangeBar.value;
         
         receivedTexture.proceduralProps.txtrPackScale = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Scale_INDEX].rangeBar.value;
+        receivedTexture.proceduralProps.proceduralStretch = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Stretch_INDEX].rangeBar.value;
+        receivedTexture.proceduralProps.proceduralMirroredRepeat = this->subPanel.sections[0].elements[subPanelTxtrPack_MirroredRepeat_INDEX].checkBox.clickState1;
         receivedTexture.proceduralProps.txtrPackCount = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Count_INDEX].rangeBar.value;
         receivedTexture.proceduralProps.txtrPackRotation_Jitter = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Rotation_Jitter_INDEX].rangeBar.value;
         receivedTexture.proceduralProps.txtrPackSize_Jitter = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Size_Jitter_INDEX].rangeBar.value;
@@ -374,6 +380,8 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     // Other
     else{
         receivedTexture.proceduralProps.proceduralScale = this->subPanel.sections[0].elements[subPanel_Scale_INDEX].rangeBar.value / 10.f;
+        receivedTexture.proceduralProps.proceduralStretch = this->subPanel.sections[0].elements[subPanel_Stretch_INDEX].rangeBar.value;
+        receivedTexture.proceduralProps.proceduralMirroredRepeat = this->subPanel.sections[0].elements[subPanel_MirroredRepeat_INDEX].checkBox.clickState1;
         receivedTexture.proceduralProps.proceduralnverted = this->subPanel.sections[0].elements[subPanel_Invert_INDEX].checkBox.clickState1;
         receivedTexture.proceduralProps.proceduralNormalMap = this->subPanel.sections[0].elements[subPanel_Normal_Map_INDEX].checkBox.clickState1;
         receivedTexture.proceduralProps.proceduralNormalGrayScale = this->subPanel.sections[0].elements[subPanel_Normal_Gray_Scale_INDEX].checkBox.clickState1;
@@ -473,9 +481,9 @@ void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection)
     selectedTextureCustomMeshDisplayingMode.pos.z = selectedTextureMaterialBallDisplayingMode.pos.z;
 
     if(!selectedTextureSolidDisplayingModeBtn.texture.ID){
-        selectedTextureSolidDisplayingModeBtn.texture = Settings::appTextures().solidPaintingDisplayingMode;
-        selectedTextureMaterialBallDisplayingMode.texture = Settings::appTextures().ligidPainterIcon;
-        selectedTextureCustomMeshDisplayingMode.texture = Settings::appTextures().TDModelIcon;
+        selectedTextureSolidDisplayingModeBtn.texture = appTextures.solidPaintingDisplayingMode;
+        selectedTextureMaterialBallDisplayingMode.texture = appTextures.ligidPainterIcon;
+        selectedTextureCustomMeshDisplayingMode.texture = appTextures.TDModelIcon;
     }
 
     selectedTextureSolidDisplayingModeBtn.render(timer, true);

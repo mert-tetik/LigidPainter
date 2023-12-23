@@ -82,7 +82,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
                             false
                         );
 
-    lpIconBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(5.f), "", Settings::appTextures().ligidPainterIcon, 0.f, false);
+    lpIconBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(5.f), "", appTextures.ligidPainterIcon, 0.f, false);
     lpIconBtn.color = glm::vec4(0.);
     lpIconBtn.outlineColor = glm::vec4(0.);
 

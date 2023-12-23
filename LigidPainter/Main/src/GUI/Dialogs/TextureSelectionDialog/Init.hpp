@@ -41,7 +41,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define subPanel_Normal_Gray_Scale_INDEX 5
 #define subPanel_Normal_Strength_INDEX 6
 #define subPanel_Use_Texture_Coordinates_INDEX 7
-#define subPanel_Select_INDEX 8
+#define subPanel_MirroredRepeat_INDEX 8
+#define subPanel_Stretch_INDEX 9
+#define subPanel_Select_INDEX 10
 
 #define subPanelSmartTextures_Invert_INDEX 0
 #define subPanelSmartTextures_Brightness_INDEX 1
@@ -63,7 +65,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define subPanelTxtrPack_Opacity_Jitter_INDEX 10
 #define subPanelTxtrPack_Scatter_INDEX 11
 #define subPanelTxtrPack_Use_Texture_Coordinates_INDEX 12 
-#define subPanelTxtrPack_Select_INDEX 13
+#define subPanelTxtrPack_MirroredRepeat_INDEX 13
+#define subPanelTxtrPack_Stretch_INDEX 14
+#define subPanelTxtrPack_Select_INDEX 15
 
 
 TextureSelectionDialog::TextureSelectionDialog(){
@@ -171,7 +175,9 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 0.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 0.f, 0.f, 100.f, 10.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 4.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 6.f, false)
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f), "Mirrored Repeat", 2.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Stretch", Texture(), 0.5f, 0.f, 10.f, 1.f),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false),
                                         }
                                     )
                                 },
@@ -241,7 +247,9 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Opacity Jitter", Texture(), 0.5f, 0.f, 1.f, 0.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scatter", Texture(), 0.5f, 0.f, 1.f, 1.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 4.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 3.f, false)
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f), "Mirrored Repeat", 2.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Stretch", Texture(), 0.5f, 0.f, 10.f, 1.f),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 1.f, false),
                                         }
                                     )
                                 },
@@ -382,10 +390,10 @@ TextureSelectionDialog::TextureSelectionDialog(){
         this->textureModesPanel.sections[0].elements[i].button.color = glm::vec4(0);
     }
 
-    this->selectedTextureSolidDisplayingModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Solid", Settings::appTextures().twoDIcon, 1.f,false);
+    this->selectedTextureSolidDisplayingModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Solid", appTextures.twoDIcon, 1.f,false);
     this->selectedTextureSolidDisplayingModeBtn.textColor2 = glm::vec4(1.);
-    this->selectedTextureMaterialBallDisplayingMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1),"Material Ball", Settings::appTextures().materialIcon, 1.f,false);
+    this->selectedTextureMaterialBallDisplayingMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1),"Material Ball", appTextures.materialIcon, 1.f,false);
     this->selectedTextureMaterialBallDisplayingMode.textColor2 = glm::vec4(1.);
-    this->selectedTextureCustomMeshDisplayingMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1),"Custom Mesh", Settings::appTextures().TDModelIcon, 1.f,false);
+    this->selectedTextureCustomMeshDisplayingMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1),"Custom Mesh", appTextures.TDModelIcon, 1.f,false);
     this->selectedTextureCustomMeshDisplayingMode.textColor2 = glm::vec4(1.);
 }

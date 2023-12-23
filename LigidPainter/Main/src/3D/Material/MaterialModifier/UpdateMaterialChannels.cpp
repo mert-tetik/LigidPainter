@@ -182,14 +182,14 @@ static void setUniforms(
     if(curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode)
         glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
     else
-        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().black.ID);
+        glBindTexture(GL_TEXTURE_2D, appTextures.black.ID);
     
     //Bind the previous height map texture
     glActiveTexture(GL_TEXTURE2);
     if(curModI != material.materialModifiers.size()-1)
         glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
     else
-        glBindTexture(GL_TEXTURE_2D, Settings::appTextures().black.ID);
+        glBindTexture(GL_TEXTURE_2D, appTextures.black.ID);
 
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(GL_TEXTURE_2D, selectedObjectPrimitivesTxtr.ID);

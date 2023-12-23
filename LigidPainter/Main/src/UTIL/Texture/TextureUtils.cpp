@@ -510,6 +510,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
             ShaderSystem::to2DProcedural().setInt("proceduralID", this->proceduralProps.proceduralID);
         
         ShaderSystem::to2DProcedural().setFloat("proceduralScale", this->proceduralProps.proceduralScale);
+        ShaderSystem::to2DProcedural().setFloat("proceduralStretch", this->proceduralProps.proceduralStretch);
         ShaderSystem::to2DProcedural().setInt("proceduralInverted", this->proceduralProps.proceduralnverted);
         ShaderSystem::to2DProcedural().setInt("proceduralGrayScale", this->proceduralProps.proceduralGrayScale);
         ShaderSystem::to2DProcedural().setFloat("proceduralBrightness", this->proceduralProps.proceduralBrightness);
@@ -527,6 +528,15 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
             glBindTexture(GL_TEXTURE_2D, this->ID);
         else
             glBindTexture(GL_TEXTURE_2D, this->proceduralProps.proceduralTextureID);
+
+        unsigned int wrapParam = GL_REPEAT; 
+
+        if(this->proceduralProps.proceduralMirroredRepeat)
+            wrapParam = GL_MIRRORED_REPEAT; 
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParam);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam);
 
         unsigned int FBO;
         glGenFramebuffers(1,&FBO);
@@ -804,6 +814,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", this->proceduralProps.proceduralID);                
         ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->proceduralProps.proceduralScale);
+        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralStretch", this->proceduralProps.proceduralStretch);
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", this->proceduralProps.proceduralnverted);
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", this->proceduralProps.proceduralGrayScale);
         ShaderSystem::proceduralDisplayerShader().setFloat("proceduralBrightness", this->proceduralProps.proceduralBrightness);
@@ -812,6 +823,15 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->proceduralProps.proceduralTextureID);
+
+        unsigned int wrapParam = GL_REPEAT; 
+
+        if(this->proceduralProps.proceduralMirroredRepeat)
+            wrapParam = GL_MIRRORED_REPEAT; 
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParam);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam);
         
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }

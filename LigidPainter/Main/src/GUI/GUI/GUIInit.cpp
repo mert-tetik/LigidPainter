@@ -56,7 +56,7 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),""    ,Settings::appTextures().ligidPainterIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),""    ,appTextures.ligidPainterIcon, 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Project"    ,Texture(), 0.f,false)),
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Help"    ,Texture(), 0.f,false)),
                                     }
@@ -85,13 +85,13 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"3D Painting"         , Settings::appTextures().threeDIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"2D Painting"         , Settings::appTextures().twoDIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Export"              , Settings::appTextures().exportIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Displayer"           , Settings::appTextures().environmentIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Settings"            , Settings::appTextures().gearIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Baking"              , Settings::appTextures().bakingIcon, 0.f,false)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Materials"           , Settings::appTextures().materialIcon, 0.f,false))
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"3D Painting"         , appTextures.threeDIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"2D Painting"         , appTextures.twoDIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Export"              , appTextures.exportIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Displayer"           , appTextures.environmentIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Settings"            , appTextures.gearIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Baking"              , appTextures.bakingIcon, 0.f,false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,5),"Materials"           , appTextures.materialIcon, 0.f,false))
                                     }
                                 )
                             },
@@ -145,12 +145,12 @@ void UI::init
                                 Section(
                                     Element(),
                                     {
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Color"  , Settings::appTextures().colorIcon, 4.f, true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Channels"  , Settings::appTextures().materialChannelsIcon, 1.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Brush"  , Settings::appTextures().brushIcon, 1.f, true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Mesh"  , Settings::appTextures().TDModelIcon, 1.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f), "Mirror"  , Settings::appTextures().mirrorIcon, 1.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Paint Over"  , Settings::appTextures().paintingOverIcon, 1.f,true))
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Color"  , appTextures.colorIcon, 4.f, true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Channels"  , appTextures.materialChannelsIcon, 1.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Brush"  , appTextures.brushIcon, 1.f, true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Mesh"  , appTextures.TDModelIcon, 1.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f), "Mirror"  , appTextures.mirrorIcon, 1.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Paint Over"  , appTextures.paintingOverIcon, 1.f,true))
                                     }
                                 )
                             },
@@ -321,13 +321,13 @@ void UI::init
                                     Section(
                                         Element(Button()),
                                         {   
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Draw"          , Settings::appTextures().brushIcon,        0.f,true)),
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Soften"        , Settings::appTextures().softenIcon,       0.f,true)),
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Smear"         , Settings::appTextures().smearIcon,        0.f,true)),
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal"        , Settings::appTextures().normalMapIcon,    0.f,true)),
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Filter"        , Settings::appTextures().filterIcon,       0.f,true)),
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Vector"        , Settings::appTextures().inkPenIcon,       0.f,true)),
-                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Bucket"        , Settings::appTextures().bucketIcon,       0.f,true))
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Draw"          , appTextures.brushIcon,        0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Soften"        , appTextures.softenIcon,       0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Smear"         , appTextures.smearIcon,        0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal"        , appTextures.normalMapIcon,    0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Filter"        , appTextures.filterIcon,       0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Vector"        , appTextures.inkPenIcon,       0.f,true)),
+                                            Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Bucket"        , appTextures.bucketIcon,       0.f,true))
                                         }
                                     )
                                 },
@@ -415,9 +415,9 @@ void UI::init
                                 Section(
                                     Element(Button()),
                                     {   
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Nodes"           , Settings::appTextures().nodeDisplayingMode,        0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Painting"        , Settings::appTextures().paintingDisplayingMode,       0.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Solid Painting"  , Settings::appTextures().solidPaintingDisplayingMode,       0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Nodes"           , appTextures.nodeDisplayingMode,        0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Painting"        , appTextures.paintingDisplayingMode,       0.f,true)),
+                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(1,2.f),"Solid Painting"  , appTextures.solidPaintingDisplayingMode,       0.f,true)),
                                     }
                                 )
                             },

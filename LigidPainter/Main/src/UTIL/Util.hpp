@@ -247,6 +247,8 @@ struct ProceduralProperties{
     ///         1000 : Using the ID (Smart texture selected)
     int proceduralID = -1;
     float proceduralScale = 1.f;
+    float proceduralStretch = 1.f;
+    bool proceduralMirroredRepeat = false;
     int proceduralnverted = 0;
     bool proceduralNormalMap = false;
     bool proceduralNormalGrayScale = false;

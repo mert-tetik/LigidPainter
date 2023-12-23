@@ -22,7 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <string>
 
-Settings::AppTextures __appTextures;
+AppTextures appTextures;
 Settings::Properties __settingsProperties;
 
 Context __context; 
@@ -38,75 +38,75 @@ Settings::DefaultFramebuffer __defaultFramebuffer;
 glm::vec2 __videoScale;
 
 void Settings::loadAppTextures(){
-    __appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/TDModel.png");
-    __appTextures.softenIcon.load("./LigidPainter/Resources/Icons/Soften.png");
-    __appTextures.smearIcon.load("./LigidPainter/Resources/Icons/Smear.png");
-    __appTextures.modifierIcon.load("./LigidPainter/Resources/Icons/Modifier.png");
-    __appTextures.environmentIcon.load("./LigidPainter/Resources/Icons/Environment.png");
-    __appTextures.dropperIcon.load("./LigidPainter/Resources/Icons/Dropper.png");
-    __appTextures.colorIcon.load("./LigidPainter/Resources/Icons/Color.png");
-    __appTextures.brushIcon.load("./LigidPainter/Resources/Icons/Brush.png");
-    __appTextures.arrowR.load("./LigidPainter/Resources/Icons/ArrowR.png");
-    __appTextures.arrowL.load("./LigidPainter/Resources/Icons/ArrowL.png");
-    __appTextures.arrowB.load("./LigidPainter/Resources/Icons/ArrowB.png");
-    __appTextures.arrowT.load("./LigidPainter/Resources/Icons/ArrowT.png");
-    __appTextures.threeDIcon.load("./LigidPainter/Resources/Icons/3D.png");
-    __appTextures.twoDIcon.load("./LigidPainter/Resources/Icons/2D.png");
-    __appTextures.exportIcon.load("./LigidPainter/Resources/Icons/Export.png");
-    __appTextures.areaPaintingIcon.load("./LigidPainter/Resources/Icons/Area.png");
-    __appTextures.gearIcon.load("./LigidPainter/Resources/Icons/Gear.png");
-    __appTextures.nodeDisplayingMode.load("./LigidPainter/Resources/Icons/NodeDisplayingMode.png");
-    __appTextures.paintingDisplayingMode.load("./LigidPainter/Resources/Icons/PaintingDisplayingMode.png");
-    __appTextures.solidPaintingDisplayingMode.load("./LigidPainter/Resources/Icons/SolidPaintingDisplayingMode.png");
-    __appTextures.ligidPainterIcon.load("./LigidPainter/Resources/Icons/LigidPainter.png");
-    __appTextures.logButtonL.load("./LigidPainter/Resources/Icons/LogButtonL.png");
-    __appTextures.logButtonR.load("./LigidPainter/Resources/Icons/LogButtonR.png");
-    __appTextures.logButtonM.load("./LigidPainter/Resources/Icons/LogButtonM.png");
-    __appTextures.colorGearIcon.load("./LigidPainter/Resources/Icons/ColorGear.png");
-    __appTextures.filterIcon.load("./LigidPainter/Resources/Icons/Filter.png");
-    __appTextures.resizingIcon.load("./LigidPainter/Resources/Icons/Resizing.png");
-    __appTextures.blurIcon.load("./LigidPainter/Resources/Icons/Blur.png");
-    __appTextures.distortionIcon.load("./LigidPainter/Resources/Icons/Distortion.png");
-    __appTextures.normalMapIcon.load("./LigidPainter/Resources/Icons/NormalMap.png");
-    __appTextures.packageIcon.load("./LigidPainter/Resources/Icons/Package.png");
-    __appTextures.inkPenIcon.load("./LigidPainter/Resources/Icons/InkPen.png");
-    __appTextures.bucketIcon.load("./LigidPainter/Resources/Icons/bucket.png");
-    __appTextures.bakingIcon.load("./LigidPainter/Resources/Icons/Baking.png");
-    __appTextures.materialIcon.load("./LigidPainter/Resources/Icons/Material.png");
-    __appTextures.trashIcon.load("./LigidPainter/Resources/Icons/Trash.png");
-    __appTextures.materialChannelsIcon.load("./LigidPainter/Resources/Icons/MaterialChannels.png");
-    __appTextures.paintingOverIcon.load("./LigidPainter/Resources/Icons/PaintingOver.png");
-    __appTextures.mirrorIcon.load("./LigidPainter/Resources/Icons/Mirror.png");
-    __appTextures.eyeClosedIcon.load("./LigidPainter/Resources/Icons/Eye_Closed.png");
-    __appTextures.eyeOpenedIcon.load("./LigidPainter/Resources/Icons/Eye_Open.png");
-    __appTextures.stripes1Icon.load("./LigidPainter/Resources/Icons/Stripes1.png");
-    __appTextures.stripes2Icon.load("./LigidPainter/Resources/Icons/Stripes2.png");
-    __appTextures.X.load("./LigidPainter/Resources/Icons/X.png");
-    __appTextures.flipH.load("./LigidPainter/Resources/Icons/FlipH.png");
-    __appTextures.flipV.load("./LigidPainter/Resources/Icons/FlipV.png");
-    __appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
-    __appTextures.filterDisplayerImage.load("./LigidPainter/Resources/Images/FilterDisplayerImage.jpg");
-    __appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
-    __appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.load("./LigidPainter/Resources/Images/NoMaterialModifierIsConnectedToMaterial.jpg");
-    __appTextures.materialChannelMissingTexture.load("./LigidPainter/Resources/Images/MaterialChannelMissingTexture.jpg");
+    appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/TDModel.png");
+    appTextures.softenIcon.load("./LigidPainter/Resources/Icons/Soften.png");
+    appTextures.smearIcon.load("./LigidPainter/Resources/Icons/Smear.png");
+    appTextures.modifierIcon.load("./LigidPainter/Resources/Icons/Modifier.png");
+    appTextures.environmentIcon.load("./LigidPainter/Resources/Icons/Environment.png");
+    appTextures.dropperIcon.load("./LigidPainter/Resources/Icons/Dropper.png");
+    appTextures.colorIcon.load("./LigidPainter/Resources/Icons/Color.png");
+    appTextures.brushIcon.load("./LigidPainter/Resources/Icons/Brush.png");
+    appTextures.arrowR.load("./LigidPainter/Resources/Icons/ArrowR.png");
+    appTextures.arrowL.load("./LigidPainter/Resources/Icons/ArrowL.png");
+    appTextures.arrowB.load("./LigidPainter/Resources/Icons/ArrowB.png");
+    appTextures.arrowT.load("./LigidPainter/Resources/Icons/ArrowT.png");
+    appTextures.threeDIcon.load("./LigidPainter/Resources/Icons/3D.png");
+    appTextures.twoDIcon.load("./LigidPainter/Resources/Icons/2D.png");
+    appTextures.exportIcon.load("./LigidPainter/Resources/Icons/Export.png");
+    appTextures.areaPaintingIcon.load("./LigidPainter/Resources/Icons/Area.png");
+    appTextures.gearIcon.load("./LigidPainter/Resources/Icons/Gear.png");
+    appTextures.nodeDisplayingMode.load("./LigidPainter/Resources/Icons/NodeDisplayingMode.png");
+    appTextures.paintingDisplayingMode.load("./LigidPainter/Resources/Icons/PaintingDisplayingMode.png");
+    appTextures.solidPaintingDisplayingMode.load("./LigidPainter/Resources/Icons/SolidPaintingDisplayingMode.png");
+    appTextures.ligidPainterIcon.load("./LigidPainter/Resources/Icons/LigidPainter.png");
+    appTextures.logButtonL.load("./LigidPainter/Resources/Icons/LogButtonL.png");
+    appTextures.logButtonR.load("./LigidPainter/Resources/Icons/LogButtonR.png");
+    appTextures.logButtonM.load("./LigidPainter/Resources/Icons/LogButtonM.png");
+    appTextures.colorGearIcon.load("./LigidPainter/Resources/Icons/ColorGear.png");
+    appTextures.filterIcon.load("./LigidPainter/Resources/Icons/Filter.png");
+    appTextures.resizingIcon.load("./LigidPainter/Resources/Icons/Resizing.png");
+    appTextures.blurIcon.load("./LigidPainter/Resources/Icons/Blur.png");
+    appTextures.distortionIcon.load("./LigidPainter/Resources/Icons/Distortion.png");
+    appTextures.normalMapIcon.load("./LigidPainter/Resources/Icons/NormalMap.png");
+    appTextures.packageIcon.load("./LigidPainter/Resources/Icons/Package.png");
+    appTextures.inkPenIcon.load("./LigidPainter/Resources/Icons/InkPen.png");
+    appTextures.bucketIcon.load("./LigidPainter/Resources/Icons/bucket.png");
+    appTextures.bakingIcon.load("./LigidPainter/Resources/Icons/Baking.png");
+    appTextures.materialIcon.load("./LigidPainter/Resources/Icons/Material.png");
+    appTextures.trashIcon.load("./LigidPainter/Resources/Icons/Trash.png");
+    appTextures.materialChannelsIcon.load("./LigidPainter/Resources/Icons/MaterialChannels.png");
+    appTextures.paintingOverIcon.load("./LigidPainter/Resources/Icons/PaintingOver.png");
+    appTextures.mirrorIcon.load("./LigidPainter/Resources/Icons/Mirror.png");
+    appTextures.eyeClosedIcon.load("./LigidPainter/Resources/Icons/Eye_Closed.png");
+    appTextures.eyeOpenedIcon.load("./LigidPainter/Resources/Icons/Eye_Open.png");
+    appTextures.stripes1Icon.load("./LigidPainter/Resources/Icons/Stripes1.png");
+    appTextures.stripes2Icon.load("./LigidPainter/Resources/Icons/Stripes2.png");
+    appTextures.X.load("./LigidPainter/Resources/Icons/X.png");
+    appTextures.flipH.load("./LigidPainter/Resources/Icons/FlipH.png");
+    appTextures.flipV.load("./LigidPainter/Resources/Icons/FlipV.png");
+    appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
+    appTextures.filterDisplayerImage.load("./LigidPainter/Resources/Images/FilterDisplayerImage.jpg");
+    appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
+    appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.load("./LigidPainter/Resources/Images/NoMaterialModifierIsConnectedToMaterial.jpg");
+    appTextures.materialChannelMissingTexture.load("./LigidPainter/Resources/Images/MaterialChannelMissingTexture.jpg");
     
-    __appTextures.mascotCat_default.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/default.png");
-    __appTextures.mascotCat_smile.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/smiling.png");
-    __appTextures.mascotCat_rock.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/rock.png");
-    __appTextures.mascotCat_relaxed.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/relaxed.png");
-    __appTextures.mascotCat_dizzy.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/dizzy.png");
-    __appTextures.mascotCat_thinking.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/thinking.png");
-    __appTextures.mascotCat_bread.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/bread.png");
-    __appTextures.mascotCat_crying.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/crying.png");
-    __appTextures.mascotCat_sleeping.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/sleeping.png");
-    __appTextures.mascotCat_pawL.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawL.png");
-    __appTextures.mascotCat_pawR.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawR.png");
+    appTextures.mascotCat_default.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/default.png");
+    appTextures.mascotCat_smile.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/smiling.png");
+    appTextures.mascotCat_rock.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/rock.png");
+    appTextures.mascotCat_relaxed.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/relaxed.png");
+    appTextures.mascotCat_dizzy.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/dizzy.png");
+    appTextures.mascotCat_thinking.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/thinking.png");
+    appTextures.mascotCat_bread.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/bread.png");
+    appTextures.mascotCat_crying.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/crying.png");
+    appTextures.mascotCat_sleeping.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/sleeping.png");
+    appTextures.mascotCat_pawL.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawL.png");
+    appTextures.mascotCat_pawR.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawR.png");
     
     char whitePxs[4] = {127,127,127,127};
     char blackPxs[4] = {0,0,0,127};
-    __appTextures.white = Texture(whitePxs, 1, 1, GL_NEAREST);
-    __appTextures.black = Texture(blackPxs, 1, 1, GL_NEAREST);
-    __appTextures.transparent = Texture(nullptr, 1, 1, GL_NEAREST);
+    appTextures.white = Texture(whitePxs, 1, 1, GL_NEAREST);
+    appTextures.black = Texture(blackPxs, 1, 1, GL_NEAREST);
+    appTextures.transparent = Texture(nullptr, 1, 1, GL_NEAREST);
 }
 
 Context* getContext(){
@@ -137,10 +137,6 @@ Box* getBox(){
 std::atomic<bool> mainThreadUsingCopyContext = false;
 
 namespace Settings{
-    AppTextures appTextures(){
-        return __appTextures;
-    }
-
     Properties* properties(){
         return &__settingsProperties;
     }

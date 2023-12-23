@@ -2171,7 +2171,7 @@ float wallNoise2(vec3 uv){
 
 //19
 float wallNoise3(vec3 uv){
-    return innerGetWall(vec3(uv.x, uv.y / 4., uv.z), 2);
+    return innerGetWall(uv, 2);
 }
 
 //20
@@ -2825,10 +2825,10 @@ float musgraveHighDimensionalNoiseA_deep(vec3 uv){
     return innerMusgrave(uv, 8., 1. ,2.5, true);
 }
 
-float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, vec2 uv, vec4 smartProperties, vec2 txtrRes){
+float getProceduralVal(vec3 pos, int proceduralID, float scale, float stretch, int inverted, vec2 uv, vec4 smartProperties, vec2 txtrRes){
     
-    pos *= scale;
-    uv *= scale;
+    pos *= scale * vec3(1., stretch, 1.);
+    uv *= scale * vec2(1., stretch);
     
     float res = 0.;
 
@@ -3100,12 +3100,12 @@ float getProceduralVal(vec3 pos, int proceduralID, float scale, int inverted, ve
     return res;
 }
 
-vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, float scale, int inverted, vec4 smartProperties, vec2 txtrRes, int proceduralGrayScale, float proceduralBrightness){
+vec4 getProcedural(vec3 pos, int proceduralID, sampler2D txtr, vec2 texCoord, float scale, float stretch, int inverted, vec4 smartProperties, vec2 txtrRes, int proceduralGrayScale, float proceduralBrightness){
     vec4 res = vec4(0.);
     if(proceduralID != -1)
-        res = vec4(vec3(getProceduralVal(pos, proceduralID, scale, inverted, texCoord, smartProperties, txtrRes)), 1);
+        res = vec4(vec3(getProceduralVal(pos, proceduralID, scale, stretch, inverted, texCoord, smartProperties, txtrRes)), 1);
     else{
-        res = texture(txtr, texCoord * scale);
+        res = texture(txtr, texCoord * scale * vec2(1., stretch));
     }
     
     if(proceduralGrayScale == 1)

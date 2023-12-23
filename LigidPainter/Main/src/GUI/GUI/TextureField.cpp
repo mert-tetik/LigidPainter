@@ -126,15 +126,15 @@ TextureField::TextureField(Texture texture){
     rotateBtn = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(1.f, Settings::videoScale()->x / Settings::videoScale()->y) / 1.5f,"", Texture(), 1.f, false);
     rotateBtn.color.a /= 2.f;
 
-    deleteButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"Delete", Settings::appTextures().trashIcon, 1.f,false);
+    deleteButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"Delete", appTextures.trashIcon, 1.f,false);
     deleteButton.textColor2 = glm::vec4(1.f);
-    scaleToTextureResolutionButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Scale to texture resolution", Settings::appTextures().resizingIcon, 1.f,false);
+    scaleToTextureResolutionButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Scale to texture resolution", appTextures.resizingIcon, 1.f,false);
     scaleToTextureResolutionButton.textColor2 = glm::vec4(1.f);
-    flipHorizontalButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Flip horizontal", Settings::appTextures().flipH, 1.f,false);
+    flipHorizontalButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Flip horizontal", appTextures.flipH, 1.f,false);
     flipHorizontalButton.textColor2 = glm::vec4(1.f);
-    flipVerticalButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Flip vertical", Settings::appTextures().flipV, 1.f,false);
+    flipVerticalButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Flip vertical", appTextures.flipV, 1.f,false);
     flipVerticalButton.textColor2 = glm::vec4(1.f);
-    cancelRotationButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Cancel rotation", Settings::appTextures().X, 1.f,false);
+    cancelRotationButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "Cancel rotation", appTextures.X, 1.f,false);
     cancelRotationButton.textColor2 = glm::vec4(1.f);
     rotationAngleDisplayButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1), "90.0", Texture(), 1.f,false);
     rotationAngleDisplayButton.textColor2 = glm::vec4(1.f);

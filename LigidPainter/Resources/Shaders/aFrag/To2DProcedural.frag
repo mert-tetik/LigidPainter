@@ -10,6 +10,7 @@ in vec3 Bitangent;
 
 uniform int proceduralID; 
 uniform float proceduralScale; 
+uniform float proceduralStretch; 
 uniform int proceduralInverted;
 uniform sampler2D proceduralTexture;
 uniform int proceduralUseTexCoords;
@@ -39,6 +40,6 @@ void main(){
         vPos.z = 0.;
     }
 
-    vec4 procedural = getProcedural(vPos, proceduralID, proceduralTexture, uv, proceduralScale, proceduralInverted, smartProperties, txtrRes, proceduralGrayScale, proceduralBrightness);
+    vec4 procedural = getProcedural(vPos, proceduralID, proceduralTexture, uv, proceduralScale, proceduralStretch, proceduralInverted, smartProperties, txtrRes, proceduralGrayScale, proceduralBrightness);
     fragColor = vec4(procedural);
 }

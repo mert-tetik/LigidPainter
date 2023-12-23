@@ -76,13 +76,13 @@ TextureEditorDialog::TextureEditorDialog(){
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Resize", Settings::appTextures().resizingIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Blur", Settings::appTextures().blurIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Coloring", Settings::appTextures().colorGearIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Normal Map", Settings::appTextures().normalMapIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Distortion", Settings::appTextures().distortionIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Filters", Settings::appTextures().filterIcon, 1.f,true)),
-                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Images", Settings::appTextures().solidPaintingDisplayingMode, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Resize", appTextures.resizingIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Blur", appTextures.blurIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Coloring", appTextures.colorGearIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Normal Map", appTextures.normalMapIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Distortion", appTextures.distortionIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Filters", appTextures.filterIcon, 1.f,true)),
+                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Images", appTextures.solidPaintingDisplayingMode, 1.f,true)),
                     }
                 )
             }

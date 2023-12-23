@@ -95,7 +95,9 @@
         "slist": "cpp",
         "cfenv": "cpp",
         "hashtable": "cpp",
-        "format": "cpp"
+        "format": "cpp",
+        "charconv": "cpp",
+        "stop_token": "cpp"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

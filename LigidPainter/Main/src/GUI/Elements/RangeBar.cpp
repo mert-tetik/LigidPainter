@@ -255,7 +255,7 @@ void RangeBar::render(
     //Render the left arrow
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, Settings::appTextures().arrowL.ID);
+    glBindTexture(GL_TEXTURE_2D, appTextures.arrowL.ID);
     render(
             glm::vec3(resultPos.x - resultScale.x + (arrowBtnScale.x), resultPos.y, resultPos.z), 
             arrowBtnScale * (0.6f + (leftArrowMixVal + leftArrowClickedMixVal) / 10.f),
@@ -282,7 +282,7 @@ void RangeBar::render(
     
     //Render the right arrow
     
-    glBindTexture(GL_TEXTURE_2D, Settings::appTextures().arrowR.ID);
+    glBindTexture(GL_TEXTURE_2D, appTextures.arrowR.ID);
     render(
             glm::vec3(resultPos.x + resultScale.x - (arrowBtnScale.x), resultPos.y, resultPos.z), 
             arrowBtnScale * (0.6f + (rightArrowMixVal + rightArrowClickedMixVal) / 10.f),

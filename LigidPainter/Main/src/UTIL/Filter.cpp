@@ -78,7 +78,7 @@ int Filter::load(std::string path){
 void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
     
     // This texture will be displayed
-    Texture sampleTxtr = Settings::appTextures().filterDisplayerImage;
+    Texture sampleTxtr = appTextures.filterDisplayerImage;
     // Resolution of the sample texture
     glm::vec2 txtrRes = sampleTxtr.getResolution();
 

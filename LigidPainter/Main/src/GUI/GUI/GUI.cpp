@@ -166,9 +166,9 @@ void Element::render(Timer &timer,bool doMouseTracking){
         textBox.render(timer,doMouseTracking);
     }
     if(state == 5){ //Render the sectionHolder
-        Texture arrowTxtr = Settings::appTextures().arrowR;
+        Texture arrowTxtr = appTextures.arrowR;
         if(sectionHolder.active)
-            arrowTxtr = Settings::appTextures().arrowB;
+            arrowTxtr = appTextures.arrowB;
 
         Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4,2), this->sectionHolder.text, arrowTxtr, 0.f, true);
         btn.textColor = sectionHolder.textColor;

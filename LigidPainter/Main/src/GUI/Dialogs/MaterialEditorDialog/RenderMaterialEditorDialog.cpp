@@ -103,7 +103,7 @@ void MaterialEditorDialog::render
         for (size_t i = 0; i < layerPanel.sections[0].elements.size(); i++)
         {
             Button btn = layerPanel.sections[0].elements[i].button;
-            Button eyeBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.6f), "", Settings::appTextures().eyeOpenedIcon, 0.f, false);
+            Button eyeBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.6f), "", appTextures.eyeOpenedIcon, 0.f, false);
             eyeBtn.color.a = 0.f; 
             eyeBtn.outline = false; 
             eyeBtn.scale.y = btn.scale.y;
@@ -125,7 +125,7 @@ void MaterialEditorDialog::render
 
             if(i < material->materialModifiers.size() && btn.scale.x > 3.f){
                 if(material->materialModifiers[i].hide)
-                    eyeBtn.texture = Settings::appTextures().eyeClosedIcon;
+                    eyeBtn.texture = appTextures.eyeClosedIcon;
 
                 eyeBtn.render(timer, true);
 
