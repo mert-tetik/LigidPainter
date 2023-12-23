@@ -146,7 +146,7 @@ void MaterialEditorDialog::render
                 bool ctrlShiftWCondition = getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && getContext()->window.isKeyPressed(LIGIDGL_KEY_W);
                 if((material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button.hover || material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar.hover || material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox.hover) && *Mouse::RClick() && ctrlShiftWCondition){
                     registerMaterialAction("New material shortcut", *this->material);
-                    this->material->materialShortcuts.push_back(MaterialShortcut("New_Shortcut", &material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI]));
+                    this->material->materialShortcuts.push_back(MaterialShortcut("New_Shortcut", &material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI], this->selectedMaterialModifierIndex, secI, elementI));
                 }
             }
         }
@@ -209,6 +209,8 @@ void MaterialEditorDialog::render
         }
 
         *this->material->materialShortcuts[i].element = shortcutPanel.sections[i + 1].elements[0];
+        if(shortcutPanel.sections[i + 1].elements[0].isInteracted())
+            this->updateTheMaterial = true;
     }
     
     ShaderSystem::textureRenderingShader().use();
@@ -497,6 +499,17 @@ void MaterialEditorDialog::checkLayerPanel(Material &material){
                             Element btn = layerPanel.sections[0].elements[i];
                             layerPanel.sections[0].elements.erase(layerPanel.sections[0].elements.begin() + i);
                             layerPanel.sections[0].elements.insert(layerPanel.sections[0].elements.begin() + checkI, btn);
+ 
+                            if(i != checkI){
+                                // Update the material shortcuts
+                                for (size_t ii = 0; ii < material.materialShortcuts.size(); ii++)
+                                {
+                                    if(material.materialShortcuts[ii].modI == checkI)
+                                        material.materialShortcuts[ii].updateElement(material, i);
+                                    else if(material.materialShortcuts[ii].modI == i)
+                                        material.materialShortcuts[ii].updateElement(material, checkI);
+                                }
+                            }
                         }
 
                         break;
@@ -689,14 +702,21 @@ void MaterialEditorDialog::checkModifiersPanel(Material &material, TextureSelect
 void MaterialEditorDialog::moveModifierToTop(int index, Material &material){
     if(index != 0){
         registerMaterialAction("Modifier moved to top", material);
-        
-        material.materialShortcuts.clear();
-        
+
         MaterialModifier topModifier = material.materialModifiers[index - 1];
         MaterialModifier currentModifier = material.materialModifiers[index];
 
         material.materialModifiers[index] = topModifier;
         material.materialModifiers[index - 1] = currentModifier;
+        
+        // Update the material shortcuts
+        for (size_t i = 0; i < material.materialShortcuts.size(); i++)
+        {
+            if(material.materialShortcuts[i].modI == index)
+                material.materialShortcuts[i].updateElement(material, index - 1);
+            else if(material.materialShortcuts[i].modI == index - 1)
+                material.materialShortcuts[i].updateElement(material, index);
+        }
 
         selectedMaterialModifierIndex--;
     }
@@ -706,13 +726,20 @@ void MaterialEditorDialog::moveModifierToBottom(int index, Material &material){
     if(ContextMenus::materialModifier.selectedElement != material.materialModifiers.size()-1){
         registerMaterialAction("Modifier moved to bottom", material);
         
-        material.materialShortcuts.clear();
-        
-        MaterialModifier bottomModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement + 1];
-        MaterialModifier currentModifier = material.materialModifiers[ContextMenus::materialModifier.selectedElement];
+        MaterialModifier bottomModifier = material.materialModifiers[index + 1];
+        MaterialModifier currentModifier = material.materialModifiers[index];
 
-        material.materialModifiers[ContextMenus::materialModifier.selectedElement] = bottomModifier;
-        material.materialModifiers[ContextMenus::materialModifier.selectedElement + 1] = currentModifier;
+        material.materialModifiers[index] = bottomModifier;
+        material.materialModifiers[index + 1] = currentModifier;
+
+        // Update the material shortcuts
+        for (size_t i = 0; i < material.materialShortcuts.size(); i++)
+        {
+            if(material.materialShortcuts[i].modI == index)
+                material.materialShortcuts[i].updateElement(material, index + 1);
+            else if(material.materialShortcuts[i].modI == index + 1)
+                material.materialShortcuts[i].updateElement(material, index);
+        }
 
         selectedMaterialModifierIndex++;
     }
@@ -723,10 +750,14 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
     if(ContextMenus::materialModifier.dialogControl.isActive()){ //If material modifier context menu is active
         // Delete button pressed
         if(ContextMenus::materialModifier.contextPanel.sections[0].elements[0].button.clicked){            
-            registerMaterialAction("Texture modifier deleted", material);
-            
-            material.materialShortcuts.clear();
+            registerMaterialAction("Modifier deleted", material);
 
+            for (size_t i = 0; i < material.materialShortcuts.size(); i++)
+            {
+                if(material.materialShortcuts[i].modI == ContextMenus::materialModifier.selectedElement)
+                    material.materialShortcuts.erase(material.materialShortcuts.begin() + i);
+            }
+            
             // Deleting the mask texture
             glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture.ID); 
 
@@ -743,7 +774,6 @@ void MaterialEditorDialog::manageContextMenuActions( Material &material)
                 glDeleteTextures(1, &material.materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[6].button.texture.ID); 
             }
 
-            material.materialShortcuts.clear();
             material.materialModifiers.erase(material.materialModifiers.begin() + ContextMenus::materialModifier.selectedElement);
             dialogControl.firstFrameActivated = true;
             selectedMaterialModifierIndex = 0;

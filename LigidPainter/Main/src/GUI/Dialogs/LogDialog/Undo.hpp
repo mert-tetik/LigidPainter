@@ -131,6 +131,11 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
             materialEditorDialog.modifiersPanel.sections = action.material.materialModifiers[materialEditorDialog.selectedMaterialModifierIndex].sections;
         materialEditorDialog.material->updateMaterialDisplayingTexture(512, false, materialEditorDialog.displayerCamera, materialEditorDialog.displayModeComboBox.selectedIndex, true);
 
+        for (size_t i = 0; i < materialEditorDialog.material->materialShortcuts.size(); i++)
+        {
+            materialEditorDialog.material->materialShortcuts[i].updateElement(*materialEditorDialog.material, materialEditorDialog.material->materialShortcuts[i].modI);
+        }
+
         Library::setChanged(true);
 
         actions_MaterialEditor.pop_back();

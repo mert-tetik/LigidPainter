@@ -38,6 +38,11 @@ Material Material::duplicateMaterial(){
 
     duplicatedMat.materialModifiers = this->materialModifiers;
     duplicatedMat.materialShortcuts = this->materialShortcuts;
+    for (size_t i = 0; i < duplicatedMat.materialShortcuts.size(); i++)
+    {
+        duplicatedMat.materialShortcuts[i].updateElement(duplicatedMat, duplicatedMat.materialShortcuts[i].modI);
+    }
+    
 
     for (size_t modI = 0; modI < duplicatedMat.materialModifiers.size(); modI++)
     {
@@ -82,4 +87,23 @@ void Material::deleteBuffers(){
             }
         }
     }
+}
+
+void MaterialShortcut::updateElement(Material &material, int newModI){
+    if(newModI >= material.materialModifiers.size()){
+        std::cout << "ERROR : Update shortcut element : Invalid modifier index" << std::endl;
+        return;    
+    }
+    
+    if(this->secI >= material.materialModifiers[newModI].sections.size()){
+        std::cout << "ERROR : Update shortcut element : Invalid section index" << std::endl;
+        return;    
+    }
+    
+    if(this->elementI >= material.materialModifiers[newModI].sections[secI].elements.size()){
+        std::cout << "ERROR : Update shortcut element : Invalid element index" << std::endl;
+        return;    
+    }
+
+    this->element = &material.materialModifiers[newModI].sections[this->secI].elements[this->elementI];
 }

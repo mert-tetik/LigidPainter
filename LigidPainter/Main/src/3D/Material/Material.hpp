@@ -33,6 +33,9 @@ struct Camera;
 /// @brief Forward decleration for the @ref Mesh class
 class Mesh;
 
+/// @brief Forward decleration for the @ref Material class
+class Material;
+
 //-------------- MATERIAL MODIFIER ------------
 
 #define TEXTURE_MATERIAL_MODIFIER 0
@@ -89,13 +92,19 @@ public:
 struct MaterialShortcut{
     std::string title;
     Element* element;
-    float hover = 0.f;
-    float hoverMixVal = 0.f;
+    int modI = 0;
+    int secI = 0;
+    int elementI = 0;
 
-    MaterialShortcut(std::string title, Element* element){
+    MaterialShortcut(std::string title, Element* element, int modI, int secI, int elementI){
         this->title = title;
         this->element = element;
+        this->modI = modI;
+        this->secI = secI;
+        this->elementI = elementI;
     }
+
+    void updateElement(Material &material, int newModI);
 };
 
 class Material 
