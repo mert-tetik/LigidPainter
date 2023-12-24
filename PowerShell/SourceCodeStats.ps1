@@ -91,6 +91,10 @@ $STORAGE_txtSize = (Get-ChildItem -Path $overallFolder -Recurse -Include *.txt, 
 
 # ----------------------------- PRINT THE DATA ----------------------------- 
 
+Write-Host ""
+Write-Host "--------------------------- START -----------------------------------------"
+Write-Host ""
+
 Write-Host "SRC C++ | File count : $cpp_FileCount_src | Line count : $cpp_LineCount_src"
 Write-Host "SRC C | File count : $c_FileCount_src | Line count : $c_LineCount_src"
 Write-Host "SRC H++ | File count : $hpp_FileCount_src | Line count : $hpp_LineCount_src"
@@ -143,5 +147,5 @@ Write-Host "OTHER | MEGA-BYTES : $($STORAGE_totalSize - $STORAGE_textureSize - $
 Write-Host "TOTAL STORAGE | MEGA-BYTES : $STORAGE_totalSize"
 
 Write-Host ""
-Write-Host "--------------------------------------------------------------------------"
+Write-Host "---------------------------- END -----------------------------------------"
 Write-Host ""
