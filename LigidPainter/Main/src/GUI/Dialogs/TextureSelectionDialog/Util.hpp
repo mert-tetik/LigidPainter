@@ -321,7 +321,7 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     else if(this->selectedTextureMode == 5){
         receivedTexture.proceduralProps.proceduralID = -1;
         if(selectedTextureIndex < Library::getgetSrcLibTxtrsArraySize()){
-            if(receivedTexture.ID == this->displayingTexture.ID)
+            if(receivedTexture.ID == this->displayingTexture.ID || displayingTextureRes <= 512)
                 receivedTexture.proceduralProps.proceduralTextureID = Library::getSrcLibTxtr(selectedTextureIndex).displayingTexture.ID;
             else{
                 receivedTexture.proceduralProps.proceduralTextureID = Library::getSrcLibTxtr(selectedTextureIndex).getTexture().ID;
