@@ -1,3 +1,8 @@
+# This PowerShell script shall grant you the statistics of the LigidPainter's source (Source code & resources).
+# Change PowerShell script execution policy : Set-ExecutionPolicy RemoteSigned 
+
+# ----------------------------- GET THE DATA ----------------------------- 
+
 function GetFolderData {
     param (
         [array]$files,
@@ -12,11 +17,13 @@ function GetFolderData {
     }
 }
 
+# LigidPainter Directories
 $srcFolder = "..\LigidPainter\Main\src"
 $thirdpartyFolder = "..\LigidPainter\Main\thirdparty"
 $shadersFolder = "..\LigidPainter\Resources\Shaders"
 $overallFolder = "..\LigidPainter"
 
+# Get the files
 $cpp_Files_src = Get-ChildItem -Path $srcFolder -Filter *.cpp -File -Recurse
 $c_Files_src = Get-ChildItem -Path $srcFolder -Filter *.c -File -Recurse
 $hpp_Files_src = Get-ChildItem -Path $srcFolder -Filter *.hpp -File -Recurse
@@ -32,6 +39,7 @@ $glsl_Files = Get-ChildItem -Path $shadersFolder -Recurse -Include *.frag, *.ver
 $image_Files = Get-ChildItem -Path $overallFolder -Recurse -Include *.jpg, *.jpeg, *.png, *.ico | Sort-Object -Property Name
 $all_Files = Get-ChildItem -Path $overallFolder -Recurse | Sort-Object -Property Name
 
+# Variables & getting the data
 $cpp_FileCount_src = 0
 $cpp_LineCount_src = 0
 $cpp_FileCount_third = 0
@@ -75,15 +83,13 @@ $srcTotalLineCount = $cpp_LineCount_src + $c_LineCount_src + $hpp_LineCount_src 
 $thirdTotalFileCount = $cpp_FileCount_third + $c_FileCount_third + $hpp_FileCount_third + $h_FileCount_third
 $thirdTotalLineCount = $cpp_LineCount_third + $c_LineCount_third + $hpp_LineCount_third + $h_LineCount_third
 
-# Get the total size of the folder
 $STORAGE_totalSize = (Get-ChildItem -Path $overallFolder -Recurse | Measure-Object -Property Length -Sum).Sum / 1MB
 
-# Get the size of texture files (change the extensions as needed)
 $STORAGE_textureSize = (Get-ChildItem -Path $overallFolder -Recurse -Include *.jpg, *.jpeg, *.png | Measure-Object -Property Length -Sum).Sum / 1MB
 
-# Get the size of .txt files
 $STORAGE_txtSize = (Get-ChildItem -Path $overallFolder -Recurse -Include *.txt, *.cpp, *.hpp, *.c, *.h, *.glsl, *.frag, *.vert, *.frag, *.json, *.md, *.LICENSE | Measure-Object -Property Length -Sum).Sum / 1MB
 
+# ----------------------------- PRINT THE DATA ----------------------------- 
 
 Write-Host "SRC C++ | File count : $cpp_FileCount_src | Line count : $cpp_LineCount_src"
 Write-Host "SRC C | File count : $c_FileCount_src | Line count : $c_LineCount_src"
