@@ -142,7 +142,8 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Texture Packs", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Smart Textures", Texture(), 2.f, true),
                                             Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Source Textures", Texture(), 2.f, true),
-                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Mesh UV Textures", Texture(), 2.f, true)
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Mesh UV Textures", Texture(), 2.f, true),
+                                            Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2.f),"Material IDs", Texture(), 2.f, true)
                                         }
                                     )
                                 },
@@ -385,7 +386,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
     this->textureModesPanel.sections[0].elements[0].button.color2 = glm::vec4(0);
     this->textureModesPanel.sections[0].elements[0].button.textColor2 = ColorPalette::oppositeColor;
     
-    for (size_t i = 1; i < 8; i++)
+    for (size_t i = 1; i < 9; i++)
     {
         this->textureModesPanel.sections[0].elements[i].button.color = glm::vec4(0);
     }

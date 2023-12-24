@@ -58,7 +58,6 @@ void Node::render(
             std::vector<NodeIO> inputs;
             std::vector<NodeIO> outputs;
             std::vector<glm::vec3> palette;
-            palette = nodePanel.sections[0].elements[0].button.texture.getMaterialIDPalette();
 
             inputs.push_back(NodeIO("Texture", nodePanel.sections[0].elements[0].button, ColorPalette::mainColor,1));
 

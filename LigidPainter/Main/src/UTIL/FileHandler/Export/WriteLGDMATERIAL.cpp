@@ -75,7 +75,7 @@ bool FileHandler::writeLGDMATERIALFile(
         LGDMATERIAL_WRITEBITS(h3, uint64_t, "Description 3rd");
         
         //Version number
-        uint32_t versionNumber = 2100; 
+        uint32_t versionNumber = 2200; 
         LGDMATERIAL_WRITEBITS(versionNumber, uint32_t, "Version number");
         
         //ID

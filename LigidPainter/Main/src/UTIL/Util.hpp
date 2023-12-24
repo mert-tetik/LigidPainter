@@ -59,6 +59,8 @@ struct Context;
 class Box;
 /// @brief forward declared Section struct
 struct Section;
+/// @brief forward declared MaterialIDColor struct
+struct MaterialIDColor;
 
 
 
@@ -270,8 +272,6 @@ struct ProceduralProperties{
     int textureSelectionDialog_selectedMode = 0;
 };
 
-
-
 class Texture
 {
 private:
@@ -356,11 +356,11 @@ public:
     /// @brief Read the tmp file of the texture from the tmp folder and delete the readen file
     void readTMP(std::string tmpTitle);
 
-    std::vector<glm::vec3> getMaterialIDPalette();
+    std::vector<MaterialIDColor> getMaterialIDPalette();
 
     bool writeTextureData(std::ofstream& wf);
     
-    bool readTextureData(std::ifstream& rf, bool threeDMode);
+    bool readTextureData(std::ifstream& rf, bool threeDMode, unsigned int versionCode);
 
     void copyDataToTheCopyContext();
 

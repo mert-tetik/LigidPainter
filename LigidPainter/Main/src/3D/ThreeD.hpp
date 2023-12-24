@@ -135,6 +135,11 @@ struct MeshObject{
     }
 };
 
+struct MaterialIDColor{
+    glm::vec3 color;
+    Texture grayScaleTxtr;
+};
+
 class Mesh {
 public:
     
@@ -153,7 +158,7 @@ public:
     Texture heightMap;
     Texture ambientOcclusion;
     Texture materialIDTxtr;
-    std::vector<glm::vec3> materialIDColors;
+    std::vector<MaterialIDColor> materialIDColors;
     std::string materialIDTxtrPath;
 
     Texture uvMask;

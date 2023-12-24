@@ -196,7 +196,7 @@ void Texture::duplicateTextureSub(Texture& txtr){
 }
 
 
-std::vector<glm::vec3> Texture::getMaterialIDPalette(){
+std::vector<MaterialIDColor> Texture::getMaterialIDPalette(){
     /*
         Valid colors : White, Red, Green, Blue, Pink, Yellow, Orange, Cyan, Black
     */
@@ -288,8 +288,47 @@ std::vector<glm::vec3> Texture::getMaterialIDPalette(){
     if(detectedBlack > (txtrWidth * txtrHeight) / 100.f * 0.5f)
         res.push_back(glm::vec3(0.f,0.f,0.f));
 
-    return res;
-    
+    std::vector<MaterialIDColor> materialIDColors;
+
+    for (size_t i = 0; i < res.size(); i++)
+    {
+        MaterialIDColor materialIDColor;
+        materialIDColor.color = res[i];
+        materialIDColor.grayScaleTxtr = Texture(nullptr, 512, 512);
+
+        Framebuffer FBO = Framebuffer(materialIDColor.grayScaleTxtr, GL_TEXTURE_2D);
+        FBO.bind();
+        getBox()->bindBuffers();
+
+        glViewport(0,0,512,512);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        ShaderSystem::colorIDMaskingShader().use();
+        
+        ShaderSystem::colorIDMaskingShader().setMat4("projection", glm::ortho(0.f,1.f,1.f,0.f));
+        ShaderSystem::colorIDMaskingShader().setMat4("projectedPosProjection", glm::ortho(0.f,1.f,1.f,0.f));
+        ShaderSystem::colorIDMaskingShader().setVec3("pos", glm::vec3(0.5f));
+        ShaderSystem::colorIDMaskingShader().setVec2("scale", glm::vec2(0.5f));
+
+        ShaderSystem::colorIDMaskingShader().setInt("IDTexture", 0);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, this->ID);
+
+        ShaderSystem::colorIDMaskingShader().setVec3("wbr", glm::vec3(res[i] == glm::vec3(1.f,1.f,1.f), res[i] == glm::vec3(0.f,0.f,0.f), res[i] == glm::vec3(1.f,0.f,0.f)));
+        ShaderSystem::colorIDMaskingShader().setVec3("pbc", glm::vec3(res[i] == glm::vec3(1.f,0.f,1.f), res[i] == glm::vec3(0.f,0.f,1.f), res[i] == glm::vec3(0.f,1.f,1.f)));
+        ShaderSystem::colorIDMaskingShader().setVec3("gyo", glm::vec3(res[i] == glm::vec3(0.f,1.f,0.f), res[i] == glm::vec3(1.f,1.f,0.f), res[i] == glm::vec3(1.f,0.5f,0.f)));
+
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+
+        Settings::defaultFramebuffer()->FBO.bind();
+        Settings::defaultFramebuffer()->setViewport();
+        FBO.deleteBuffers(false, false);
+        ShaderSystem::buttonShader().use();
+
+        materialIDColors.push_back(materialIDColor);
+    }
+
+    return materialIDColors;
 }
 
 void Texture::removeSeams(Mesh& mesh, int textureResolution){
@@ -886,7 +925,8 @@ bool Texture::writeTextureData(std::ofstream& wf){
     LGDTEXTURE_WRITEBITS(this->proceduralProps.txtrPackScatter, float, "Property texture - txtrPackScatter");
     LGDTEXTURE_WRITEBITS(this->proceduralProps.textureSelectionDialog_selectedTextureIndex, int, "Property texture - textureSelectionDialog_selectedTextureIndex");
     LGDTEXTURE_WRITEBITS(this->proceduralProps.textureSelectionDialog_selectedMode, int, "Property texture - textureSelectionDialog_selectedMode");
-
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralMirroredRepeat, bool, "Property texture - proceduralMirroredRepeat");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralStretch, float, "Property texture - proceduralStretch");
 
     // -------- Procedural Texture Data --------
     std::string txtrTitle = "";
@@ -916,7 +956,7 @@ bool Texture::writeTextureData(std::ofstream& wf){
                                 return false; \
                             }
 
-bool Texture::readTextureData(std::ifstream& rf, bool threeDMode){
+bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int versionCode){
 
     // --------- Read procedural data ---------
 
@@ -941,6 +981,8 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode){
     float txtrPackScatter;
     int textureSelectionDialog_selectedTextureIndex;
     int textureSelectionDialog_selectedMode;
+    bool proceduralMirroredRepeat;
+    float proceduralStretch;
     
     LGDMATERIAL_READBITS(proceduralID, int, "Property texture - procedural ID");
     LGDMATERIAL_READBITS(proceduralScale, float, "Property texture - procedural Scale");
@@ -963,6 +1005,15 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode){
     LGDMATERIAL_READBITS(txtrPackScatter, float, "Property texture - txtrPackScatter");
     LGDMATERIAL_READBITS(textureSelectionDialog_selectedTextureIndex, int, "Property texture - textureSelectionDialog_selectedTextureIndex");
     LGDMATERIAL_READBITS(textureSelectionDialog_selectedMode, int, "Property texture - textureSelectionDialog_selectedMode");
+    
+    if(versionCode == 1){
+        LGDMATERIAL_READBITS(proceduralMirroredRepeat, bool, "Property texture - proceduralMirroredRepeat");
+        LGDMATERIAL_READBITS(proceduralStretch, float, "Property texture - proceduralStretch");
+    }
+    else{
+        proceduralMirroredRepeat = true;
+        proceduralStretch = 1.f;
+    }
 
     // --------- Recalculate procedural ID ---------
     int MAX_PROCEDURAL_PATTERN_TEXTURE_SIZE = 66;
@@ -1029,6 +1080,8 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode){
     this->proceduralProps.txtrPackScatter = txtrPackScatter;
     this->proceduralProps.textureSelectionDialog_selectedTextureIndex = textureSelectionDialog_selectedTextureIndex;
     this->proceduralProps.textureSelectionDialog_selectedMode = textureSelectionDialog_selectedMode;
+    this->proceduralProps.proceduralMirroredRepeat = proceduralMirroredRepeat;
+    this->proceduralProps.proceduralStretch = proceduralStretch;
 
     glGenTextures(1, &this->ID);
 

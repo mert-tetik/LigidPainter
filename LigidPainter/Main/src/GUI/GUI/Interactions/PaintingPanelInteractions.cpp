@@ -395,6 +395,11 @@ void UI::paintingPanelInteraction(
             }
         }
         if(paintingChannelsSection[secI].elements[7].button.clicked){
+            for (size_t i = 0; i < getModel()->meshes[secI-1].materialIDColors.size(); i++)
+            {
+                glDeleteTextures(1, &getModel()->meshes[secI-1].materialIDColors[i].grayScaleTxtr.ID);
+            }
+            
             getModel()->meshes[secI-1].materialIDColors.clear();
             paintingChannelsSection[secI].elements.erase(paintingChannelsSection[secI].elements.begin() + 8, paintingChannelsSection[secI].elements.end());
             glDeleteTextures(1, &paintingChannelsSection[secI].elements[6].button.texture.ID);
@@ -410,7 +415,7 @@ void UI::paintingPanelInteraction(
                 btnOffset = 1.f;
 
             Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.3f),"", Texture(), btnOffset, false);
-            btn.color = glm::vec4(getModel()->meshes[secI-1].materialIDColors[i], 1.f);
+            btn.color = glm::vec4(getModel()->meshes[secI-1].materialIDColors[i].color, 1.f);
             btn.color2 = btn.color;
             btn.outline = false;
             paintingChannelsSection[secI].elements.push_back(btn); 

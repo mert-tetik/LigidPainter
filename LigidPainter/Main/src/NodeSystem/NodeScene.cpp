@@ -181,22 +181,22 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh, int textureRes){
             }
         }
 
-        ShaderSystem::colorIDMaskingShader().use();
-        ShaderSystem::colorIDMaskingShader().setMat4("projection", glm::ortho(0.f,1.f,1.f,0.f));
-        ShaderSystem::colorIDMaskingShader().setMat4("projectedPosProjection", glm::ortho(0.f,1.f,1.f,0.f));
-        ShaderSystem::colorIDMaskingShader().setVec3("pos", glm::vec3(0.5f));
-        ShaderSystem::colorIDMaskingShader().setVec2("scale", glm::vec2(0.5f));
+        // ShaderSystem::colorIDMaskingShader().use();
+        // ShaderSystem::colorIDMaskingShader().setMat4("projection", glm::ortho(0.f,1.f,1.f,0.f));
+        // ShaderSystem::colorIDMaskingShader().setMat4("projectedPosProjection", glm::ortho(0.f,1.f,1.f,0.f));
+        // ShaderSystem::colorIDMaskingShader().setVec3("pos", glm::vec3(0.5f));
+        // ShaderSystem::colorIDMaskingShader().setVec2("scale", glm::vec2(0.5f));
 
-        ShaderSystem::colorIDMaskingShader().setInt("IDTexture", 0);
-        ShaderSystem::colorIDMaskingShader().setInt("texture_black", 1);
-        ShaderSystem::colorIDMaskingShader().setInt("texture_white", 2);
-        ShaderSystem::colorIDMaskingShader().setInt("texture_red", 3);
-        ShaderSystem::colorIDMaskingShader().setInt("texture_green", 4);
-        ShaderSystem::colorIDMaskingShader().setInt("texture_blue", 5);
-        ShaderSystem::colorIDMaskingShader().setInt("texture_yellow", 6);
-        ShaderSystem::colorIDMaskingShader().setInt("texture_orange", 7);
-        ShaderSystem::colorIDMaskingShader().setInt("texture_cyan", 8);
-        ShaderSystem::colorIDMaskingShader().setInt("texture_pink", 9);
+        // ShaderSystem::colorIDMaskingShader().setInt("IDTexture", 0);
+        // ShaderSystem::colorIDMaskingShader().setInt("texture_black", 1);
+        // ShaderSystem::colorIDMaskingShader().setInt("texture_white", 2);
+        // ShaderSystem::colorIDMaskingShader().setInt("texture_red", 3);
+        // ShaderSystem::colorIDMaskingShader().setInt("texture_green", 4);
+        // ShaderSystem::colorIDMaskingShader().setInt("texture_blue", 5);
+        // ShaderSystem::colorIDMaskingShader().setInt("texture_yellow", 6);
+        // ShaderSystem::colorIDMaskingShader().setInt("texture_orange", 7);
+        // ShaderSystem::colorIDMaskingShader().setInt("texture_cyan", 8);
+        // ShaderSystem::colorIDMaskingShader().setInt("texture_pink", 9);
 
         unsigned int proceduralTxtr = 0;
         

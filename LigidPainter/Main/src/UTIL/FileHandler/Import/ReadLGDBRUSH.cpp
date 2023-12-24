@@ -79,7 +79,7 @@ struct LGDBRUSHProp{
     Texture texture;
 };
 
-static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties);
+static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties, uint32_t versionNumber);
 static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, Brush& brush);
 
 bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
@@ -115,15 +115,16 @@ bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     }
     
     //Version number
-    uint32_t versionNumber; //2000 
+    uint32_t versionNumber; //2100 
     LGDBRUSH_READBITS(versionNumber, uint32_t, "Version number");
 
-    if(versionNumber != 0x000007D0){
-        LGDLOG::start<< "WARNING! : Brush version number was : " << versionNumber << ". Results might be unexpected." << LGDLOG::end; 
+    if(versionNumber != 2000 && versionNumber != 2100){
+        LGDLOG::start<< "ERROR : Invalid brush version : " << versionNumber << LGDLOG::end; 
+        return false;
     }
 
     std::vector<LGDBRUSHProp> properties;
-    if(!readProperties(rf, properties))
+    if(!readProperties(rf, properties, versionNumber))
         return false;
 
     if(!parseLGDBRUSHProperties(properties, brush))
@@ -261,7 +262,7 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
     return true;
 }
 
-static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties){
+static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties, uint32_t versionNumber){
     //!Brush Data
     uint32_t propSize;
     LGDBRUSH_READBITS(propSize, uint32_t, "propSize");
@@ -289,7 +290,11 @@ static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& propert
             LGDBRUSH_READBITS(prop.boolVal, bool, "scatter");
         }
         else if(prop.valueType == 't'){
-            prop.texture.readTextureData(rf, false);
+            unsigned int versionCode = 0;
+            if(versionNumber == 2100)
+                versionCode = 1;
+
+            prop.texture.readTextureData(rf, false, versionCode);
         }
         else{
             LGDLOG::start<< "ERROR! Reading lgdbrush file. Unknown property value type!" << LGDLOG::end;

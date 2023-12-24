@@ -8,15 +8,9 @@ in vec2 TexCoords;
 out vec4 fragColor;
 
 uniform sampler2D IDTexture;
-uniform sampler2D texture_black;
-uniform sampler2D texture_white;
-uniform sampler2D texture_red;
-uniform sampler2D texture_green;
-uniform sampler2D texture_blue;
-uniform sampler2D texture_yellow;
-uniform sampler2D texture_orange;
-uniform sampler2D texture_cyan;
-uniform sampler2D texture_pink;
+uniform vec3 wbr;
+uniform vec3 pbc;
+uniform vec3 gyo;
 
 
 void main(){
@@ -58,26 +52,26 @@ void main(){
             maskOrange = idHSV.b / 100.;
     } 
 
-    vec3 blackVal = texture(texture_black, TexCoords).rgb; 
-    vec3 whiteVal = texture(texture_white, TexCoords).rgb; 
-    vec3 redVal = texture(texture_red, TexCoords).rgb; 
-    vec3 greenVal = texture(texture_green, TexCoords).rgb; 
-    vec3 blueVal = texture(texture_blue, TexCoords).rgb; 
-    vec3 yellowVal = texture(texture_yellow, TexCoords).rgb; 
-    vec3 orangeVal = texture(texture_orange, TexCoords).rgb; 
-    vec3 cyanVal = texture(texture_cyan, TexCoords).rgb; 
-    vec3 pinkVal = texture(texture_pink, TexCoords).rgb; 
+    maskWhite *= wbr[0];
+    maskBlack *= wbr[1];
+    maskRed *= wbr[2];
+    maskPink *= pbc[0];
+    maskBlue *= pbc[1];
+    maskCyan *= pbc[2];
+    maskGreen *= gyo[0];
+    maskYellow *= gyo[1];
+    maskOrange *= gyo[2];
 
     vec3 res = vec3(0);
-    res = mix(res, blackVal, maskBlack);
-    res = mix(res, whiteVal, maskWhite);
-    res = mix(res, redVal, maskRed);
-    res = mix(res, greenVal, maskGreen);
-    res = mix(res, blueVal, maskBlue);
-    res = mix(res, yellowVal, maskYellow);
-    res = mix(res, orangeVal, maskOrange);
-    res = mix(res, cyanVal, maskCyan);
-    res = mix(res, pinkVal, maskPink);
+    res = mix(res, vec3(1.), maskBlack);
+    res = mix(res, vec3(1.), maskWhite);
+    res = mix(res, vec3(1.), maskRed);
+    res = mix(res, vec3(1.), maskGreen);
+    res = mix(res, vec3(1.), maskBlue);
+    res = mix(res, vec3(1.), maskYellow);
+    res = mix(res, vec3(1.), maskOrange);
+    res = mix(res, vec3(1.), maskCyan);
+    res = mix(res, vec3(1.), maskPink);
 
     fragColor = vec4(res, 1.);
 }
