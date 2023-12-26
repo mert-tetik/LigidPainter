@@ -205,9 +205,41 @@ bool FileHandler::readLGDMATERIALFile(
 
             material.materialModifiers.push_back(modifier);
         }    
-    }
+    
+        material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
 
-    material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
+
+        if(versionNumber == 2200){
+            // Shortcuts
+            int matShortcutSize;
+            LGDMATERIAL_READBITS(matShortcutSize, int, "Material Shortcut - Material Shortcut Size");
+            for (size_t i = 0; i < matShortcutSize; i++)
+            {
+                MaterialShortcut shortcut;
+                LGDMATERIAL_READBITS(shortcut.modI, int, "Material Shortcut - modI");
+                LGDMATERIAL_READBITS(shortcut.secI, int, "Material Shortcut - secI");
+                LGDMATERIAL_READBITS(shortcut.elementI, int, "Material Shortcut - elementI");
+
+                int titleSize;
+                LGDMATERIAL_READBITS(titleSize, int, "Material Shortcut - Title Size");
+                for (size_t i = 0; i < titleSize; i++)
+                {
+                    char c;
+                    LGDMATERIAL_READBITS(c, char, "Material Shortcut - Title char");
+                    shortcut.title.push_back(c);
+                }
+                
+                if(shortcut.secI != -1){
+                    shortcut.element = &material.materialModifiers[shortcut.modI].sections[shortcut.secI].elements[shortcut.elementI];      
+                }
+                else{
+                    shortcut.maskTxtr = &material.materialModifiers[shortcut.modI].maskTexture;      
+                }
+
+                material.materialShortcuts.push_back(shortcut);
+            }
+        }
+    }
 
     return true;
 }

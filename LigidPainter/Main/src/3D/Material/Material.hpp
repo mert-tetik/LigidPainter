@@ -91,14 +91,17 @@ public:
 
 struct MaterialShortcut{
     std::string title;
-    Element* element;
+    Element* element = nullptr;
+    Texture* maskTxtr = nullptr;
     int modI = 0;
     int secI = 0;
     int elementI = 0;
 
-    MaterialShortcut(std::string title, Element* element, int modI, int secI, int elementI){
+    MaterialShortcut(){}
+    MaterialShortcut(std::string title, Element* element, Texture* maskTxtr, int modI, int secI, int elementI){
         this->title = title;
         this->element = element;
+        this->maskTxtr = maskTxtr;
         this->modI = modI;
         this->secI = secI;
         this->elementI = elementI;

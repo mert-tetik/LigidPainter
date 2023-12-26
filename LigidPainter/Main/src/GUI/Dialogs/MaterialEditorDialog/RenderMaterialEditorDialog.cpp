@@ -50,6 +50,12 @@ void MaterialEditorDialog::render
                                 )
 {
     dialogControl.updateStart();
+
+    for (size_t i = 0; i < this->material->materialShortcuts.size(); i++)
+    {
+        this->material->materialShortcuts[i].updateElement(*this->material, this->material->materialShortcuts[i].modI);
+    }
+
     // ------- Positioning & Prepearing the panels to rendering -------
     navPanel.scale.x = bgPanel.scale.x - shortcutPanel.scale.x - layerPanel.scale.x - modifiersPanel.scale.x;
     navPanel.pos = shortcutPanel.pos;
@@ -146,8 +152,19 @@ void MaterialEditorDialog::render
                 bool ctrlShiftWCondition = getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && getContext()->window.isKeyPressed(LIGIDGL_KEY_W);
                 if((material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].button.hover || material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar.hover || material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox.hover) && *Mouse::RClick() && ctrlShiftWCondition){
                     registerMaterialAction("New material shortcut", *this->material);
-                    this->material->materialShortcuts.push_back(MaterialShortcut("New_Shortcut", &material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI], this->selectedMaterialModifierIndex, secI, elementI));
+                    this->material->materialShortcuts.push_back(MaterialShortcut("New_Shortcut", &material->materialModifiers[this->selectedMaterialModifierIndex].sections[secI].elements[elementI], nullptr, this->selectedMaterialModifierIndex, secI, elementI));
                 }
+            }
+        }
+    }
+
+    if(layerPanel.sections.size()){
+        for (size_t elementI = 0; elementI < layerPanel.sections[0].elements.size(); elementI++){
+            bool ctrlShiftWCondition = getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && getContext()->window.isKeyPressed(LIGIDGL_KEY_W);
+            
+            if((layerPanel.sections[0].elements[elementI].button.hover) && *Mouse::RClick() && ctrlShiftWCondition && elementI < material->materialModifiers.size()){
+                registerMaterialAction("New material shortcut", *this->material);
+                this->material->materialShortcuts.push_back(MaterialShortcut("New_Shortcut", nullptr, &material->materialModifiers[elementI].maskTexture, elementI, -1, -1));
             }
         }
     }
@@ -156,17 +173,34 @@ void MaterialEditorDialog::render
 
     for (size_t i = 0; i < this->material->materialShortcuts.size(); i++)
     {
-        Section section = Section(
-                                    SectionHolder(ColorPalette::secondColor, ColorPalette::thirdColor, 3.f, this->material->materialShortcuts[i].title),
-                                    {
-                                        *this->material->materialShortcuts[i].element,
-                                        Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Rename", Texture(), 2.f, false),
-                                        Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Delete", Texture(), 1.f, false),
-                                    }
-                                );
+        Section section;
+        if(this->material->materialShortcuts[i].element != nullptr){
+            section = Section(
+                                        SectionHolder(ColorPalette::secondColor, ColorPalette::thirdColor, 3.f, this->material->materialShortcuts[i].title),
+                                        {
+                                            *this->material->materialShortcuts[i].element,
+                                            Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Rename", Texture(), 2.f, false),
+                                            Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Delete", Texture(), 1.f, false),
+                                        }
+                                    );
+        }
+        if(this->material->materialShortcuts[i].maskTxtr != nullptr){
+            section = Section(
+                                        SectionHolder(ColorPalette::secondColor, ColorPalette::thirdColor, 3.f, this->material->materialShortcuts[i].title),
+                                        {
+                                            Button(ELEMENT_STYLE_BASIC, glm::vec2(5.f), "Modifier Mask Texture", *this->material->materialShortcuts[i].maskTxtr, 2.f, false),
+                                            CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use UV", 1.f),
+                                            Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Rename", Texture(), 2.f, false),
+                                            Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Delete", Texture(), 1.f, false),
+                                        }
+                                    );
+            section.elements[0].button.textureSizeScale = 0.95f;
+            section.elements[1].checkBox.clickState1 = this->material->materialShortcuts[i].maskTxtr->proceduralProps.proceduralUseTexCoords;
+            section.elements[1].checkBox.clickedMixVal = this->material->materialShortcuts[i].maskTxtr->proceduralProps.proceduralUseTexCoords;
+        }
 
         section.elements[0].panelOffset = 1.f;
-        section.elements[2].button.color = glm::vec4(1.f, 0.f, 0.f, 0.5f);
+        section.elements[section.elements.size() - 1].button.color = glm::vec4(1.f, 0.f, 0.f, 0.5f);
         if(shortcutRenamingIndex == i){
             section.header.sectionHolder.textColor = ColorPalette::secondColor;
             section.header.sectionHolder.textColor.a = 1.f;
@@ -195,21 +229,33 @@ void MaterialEditorDialog::render
     }
 
     for (size_t i = 0; i < this->material->materialShortcuts.size(); i++){
-        if(shortcutPanel.sections[i + 1].elements[1].button.hover && *Mouse::LClick()){
+        if(shortcutPanel.sections[i + 1].elements[shortcutPanel.sections[i + 1].elements.size() - 2].button.hover && *Mouse::LClick()){
             registerMaterialAction("Material shortcut renamed", *this->material);
             this->shortcutRenamingIndex = i;
             shortcutRenamingTextbox.text = this->material->materialShortcuts[i].title; 
             shortcutRenamingTextbox.activeChar = shortcutRenamingTextbox.text.size()-1; 
             shortcutRenamingTextbox.activeChar2 = shortcutRenamingTextbox.text.size()-1;
         }
-        if(shortcutPanel.sections[i + 1].elements[2].button.hover && *Mouse::LClick()){
+        if(shortcutPanel.sections[i + 1].elements[shortcutPanel.sections[i + 1].elements.size() - 1].button.hover && *Mouse::LClick()){
             registerMaterialAction("Material shortcut removed", *this->material);
             this->material->materialShortcuts.erase(this->material->materialShortcuts.begin() + i);    
             break;
         }
+        if(this->material->materialShortcuts[i].element != nullptr)
+            *this->material->materialShortcuts[i].element = shortcutPanel.sections[i + 1].elements[0];
 
-        *this->material->materialShortcuts[i].element = shortcutPanel.sections[i + 1].elements[0];
+        else if(this->material->materialShortcuts[i].maskTxtr != nullptr){
+            if(shortcutPanel.sections[i + 1].elements[0].button.hover && *Mouse::LClick()){
+                showTextureSelectionDialog(*this->material->materialShortcuts[i].maskTxtr, 400, false);
+                this->updateTheMaterial = true;
+            }
+
+            this->material->materialShortcuts[i].maskTxtr->proceduralProps.proceduralUseTexCoords = shortcutPanel.sections[i + 1].elements[1].checkBox.clickState1;
+        }
+
         if(shortcutPanel.sections[i + 1].elements[0].isInteracted())
+            this->updateTheMaterial = true;
+        if(shortcutPanel.sections[i + 1].elements[1].checkBox.hover && *Mouse::LClick())
             this->updateTheMaterial = true;
     }
     

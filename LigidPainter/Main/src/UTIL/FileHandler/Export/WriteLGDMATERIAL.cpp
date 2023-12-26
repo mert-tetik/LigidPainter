@@ -762,6 +762,24 @@ bool FileHandler::writeLGDMATERIALFile(
                 albedoFilterMask.writeTextureData(wf);
             }
         }        
+    
+    
+        // Shortcuts
+        int matShortcutSize = material.materialShortcuts.size();
+        LGDMATERIAL_WRITEBITS(matShortcutSize, int, "Material Shortcut - Material Shortcut Size");
+        for (size_t i = 0; i < matShortcutSize; i++)
+        {
+            LGDMATERIAL_WRITEBITS(material.materialShortcuts[i].modI, int, "Material Shortcut - modI");
+            LGDMATERIAL_WRITEBITS(material.materialShortcuts[i].secI, int, "Material Shortcut - secI");
+            LGDMATERIAL_WRITEBITS(material.materialShortcuts[i].elementI, int, "Material Shortcut - elementI");
+
+            int titleSize = material.materialShortcuts[i].title.size();
+            LGDMATERIAL_WRITEBITS(titleSize, int, "Material Shortcut - Title Size");
+            for (size_t ii = 0; ii < titleSize; ii++)
+            {
+                LGDMATERIAL_WRITEBITS(material.materialShortcuts[i].title[ii], char, "Material Shortcut - Title char");
+            }
+        }
     }
 
     return true;

@@ -92,18 +92,29 @@ void Material::deleteBuffers(){
 void MaterialShortcut::updateElement(Material &material, int newModI){
     if(newModI >= material.materialModifiers.size()){
         std::cout << "ERROR : Update shortcut element : Invalid modifier index" << std::endl;
+        this->element = nullptr;
+        this->maskTxtr = nullptr;
         return;    
     }
     
-    if(this->secI >= material.materialModifiers[newModI].sections.size()){
-        std::cout << "ERROR : Update shortcut element : Invalid section index" << std::endl;
-        return;    
-    }
-    
-    if(this->elementI >= material.materialModifiers[newModI].sections[secI].elements.size()){
-        std::cout << "ERROR : Update shortcut element : Invalid element index" << std::endl;
-        return;    
-    }
+    this->modI = newModI;
 
-    this->element = &material.materialModifiers[newModI].sections[this->secI].elements[this->elementI];
+    if(this->element != nullptr){
+        if(this->secI >= material.materialModifiers[newModI].sections.size()){
+            std::cout << "ERROR : Update shortcut element : Invalid section index" << std::endl;
+            this->element = nullptr;
+            return;    
+        }
+        
+        if(this->elementI >= material.materialModifiers[newModI].sections[secI].elements.size()){
+            std::cout << "ERROR : Update shortcut element : Invalid element index" << std::endl;
+            this->element = nullptr;
+            return;    
+        }
+        
+        this->element = &material.materialModifiers[newModI].sections[this->secI].elements[this->elementI];
+    }
+    else if(this->maskTxtr != nullptr){
+        this->maskTxtr = &material.materialModifiers[newModI].maskTexture;
+    }
 }

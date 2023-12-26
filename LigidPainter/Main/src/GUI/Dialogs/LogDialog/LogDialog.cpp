@@ -496,7 +496,8 @@ void LogDialog::render(
         }
     }
     else{
-        if(timer.seconds - messageInfoBtnStartTime >= 20){
+        //if(timer.seconds - messageInfoBtnStartTime >= 20){
+        if(false){
             messageInfoActive = false;
             quitMSG = "";
             getContext()->window.setShouldClose(false);
