@@ -291,7 +291,7 @@ static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& propert
         }
         else if(prop.valueType == 't'){
             unsigned int versionCode = 0;
-            if(versionNumber == 2100)
+            if(versionNumber >= 2100)
                 versionCode = 1;
 
             prop.texture.readTextureData(rf, false, versionCode);

@@ -1033,7 +1033,7 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int v
     LGDMATERIAL_READBITS(txtrTitleSize, int, "Property texture - Texture title size");
     for (size_t i = 0; i < txtrTitleSize; i++)
     {
-        char c = txtrTitle[i];
+        char c;
         LGDMATERIAL_READBITS(c, char, "Property texture - Texture title character");
         txtrTitle.push_back(c);
     }

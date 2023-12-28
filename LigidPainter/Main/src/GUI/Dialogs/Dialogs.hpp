@@ -309,17 +309,20 @@ class MaterialEditorDialog
 {
 private:
    //Private member functions
-   void checkLayerPanel(Material &material);
-   void checkModifiersPanel(Material &material, TextureSelectionDialog &textureSelectionDialog);
    void checkTextureSelectionDialog(TextureSelectionDialog &textureSelectionDialog, Material &material);
-   void manageContextMenuActions( Material &material);
    Model* getDisplayModel();
+   void renderShortcutPanel(Timer& timer, bool mouseTrackingFlag);
+   void renderLayerPanel(Timer& timer, bool mouseTrackingFlag);
+   void renderModifiersPanel(Timer& timer, bool mouseTrackingFlag);
+   void renderSkyboxTxtr(glm::mat4 projection);
+   void renderZoomIndicator(Timer& timer, bool mouseTrackingFlag);
+   void renderNavPanel(Timer& timer, bool mouseTrackingFlag);
+   void positioningPanels();
 
-
-   bool updateTheMaterial = false;
    bool prevUpdateTheMaterial = false;
 public:
-   void updateLayerPanel(Material &material);
+
+   bool updateTheMaterial = false;
    
    DialogControl dialogControl;
    Button materialDisplayer; //That buttons displays the material with a texture
@@ -361,8 +364,6 @@ public:
    void render(Timer &timer,TextureSelectionDialog &textureSelectionDialog, LogDialog& logDialog, glm::mat4 projection);
    void activate();
    void deactivate(TextureSelectionDialog &textureSelectionDialog);
-   void moveModifierToTop(int index, Material& material);
-   void moveModifierToBottom(int index, Material& material);
    void updateSkyboxTxtr();
 
 };

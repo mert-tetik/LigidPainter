@@ -136,7 +136,10 @@ void Renderer::scrollCallback(
     //Update the scroll value of the mouse class
     *Mouse::mouseScroll() = yoffset;
     
-    if((!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode) || this->userInterface.objectTexturingDialog.dialogControl.isActive() || this->userInterface.materialEditorDialog.dialogControl.isActive())
+    if(
+            ((this->userInterface.materialEditorDialog.dialogControl.isActive() && !this->userInterface.materialEditorDialog.shortcutPanel.hover && !this->userInterface.materialEditorDialog.modifiersPanel.hover) || !this->userInterface.materialEditorDialog.dialogControl.isActive()) || 
+            ((!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode) || this->userInterface.objectTexturingDialog.dialogControl.isActive())
+        )
     {
         //The distance between the camera & center 
         float originCameraDistance = glm::distance(cam->originPos,cam->cameraPos)/10;

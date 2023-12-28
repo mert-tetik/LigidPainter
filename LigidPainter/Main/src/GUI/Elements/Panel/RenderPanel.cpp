@@ -517,7 +517,7 @@ void Panel::drawPanel(
     endRenderingTheButtons:
 
     /* Render the slider of the panel*/
-    if(hasSlider){
+    if(hasSlider && this->doMouseTracking){
         
         sliderButton.pos = pos + this->additionalPos;
         

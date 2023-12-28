@@ -56,7 +56,7 @@ MaterialEditorDialog::MaterialEditorDialog()
     );
 
     //That panel where you add the modifiers (on the left side)
-    layerPanel = Panel({}, glm::vec2(7.f, bgPanel.scale.y), glm::vec3(12.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor,true,false,true,true,true,1.f,1.f,                                
+    layerPanel = Panel({Section()}, glm::vec2(7.f, bgPanel.scale.y), glm::vec3(12.f,50.f,0.8f), ColorPalette::mainColor,ColorPalette::thirdColor,true,false,true,true,true,1.f,1.f,                                
                             {
                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Add"        , Texture(), 0.f, false)
                             },
@@ -159,7 +159,12 @@ MaterialEditorDialog::MaterialEditorDialog()
 
     shortcutPanel.sections[0].elements.clear();
     shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Quick Modification Panel", Texture(), 0.f, false));
+    shortcutPanel.sections[0].elements[shortcutPanel.sections[0].elements.size() - 1].button.color2 = shortcutPanel.sections[0].elements[shortcutPanel.sections[0].elements.size() - 1].button.color; 
     shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "CTRL + SHIFT + W + R-CLICK : Add shortcuts", Texture(), 0.f, false));
+    shortcutPanel.sections[0].elements[shortcutPanel.sections[0].elements.size() - 1].button.color2 = shortcutPanel.sections[0].elements[shortcutPanel.sections[0].elements.size() - 1].button.color; 
+    
+    shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2.f), "Use Uv For All The Textures", Texture(), 2.f, false));
+    shortcutPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2.f), "Use Model Pos For All The Textures", Texture(), 0.f, false));
 
     shortcutRenamingTextbox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f), "", 0.f, false);
     shortcutRenamingTextbox.outlineColor = glm::vec4(0.f);

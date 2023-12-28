@@ -126,7 +126,7 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
             materialEditorDialog.material->deleteBuffers();
 
         *materialEditorDialog.material = action.material;
-        materialEditorDialog.updateLayerPanel(*materialEditorDialog.material);
+        materialEditorDialog.updateTheMaterial = true;
         if(materialEditorDialog.selectedMaterialModifierIndex < action.material.materialModifiers.size())
             materialEditorDialog.modifiersPanel.sections = action.material.materialModifiers[materialEditorDialog.selectedMaterialModifierIndex].sections;
         materialEditorDialog.material->updateMaterialDisplayingTexture(512, false, materialEditorDialog.displayerCamera, materialEditorDialog.displayModeComboBox.selectedIndex, true);
