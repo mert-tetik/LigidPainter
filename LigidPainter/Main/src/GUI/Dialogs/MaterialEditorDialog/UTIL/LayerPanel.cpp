@@ -452,6 +452,13 @@ static void contextMenuInteractions(Material* material, Panel& modifiersPanel, b
             newModifierAdded = true;
         }
 
+        // Math Modifier
+        else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[9].button.clicked){
+            registerMaterialAction("Math modifier added", *material);
+            material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(MATH_MATERIAL_MODIFIER));
+            newModifierAdded = true;
+        }
+
         if(newModifierAdded){
             material->materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
             material->materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;

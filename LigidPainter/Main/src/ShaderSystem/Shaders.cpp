@@ -74,6 +74,7 @@ Shader __rustModifierShader;
 Shader __skinModifierShader;
 Shader __solidModifierShader;
 Shader __woodenModifierShader;
+Shader __mathModifierShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -128,6 +129,7 @@ void ShaderSystem::initShaderSystem(){
     __skinModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SkinModifier.frag");
     __solidModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SolidModifier.frag");
     __woodenModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/WoodenModifier.frag");
+    __mathModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MathModifier.frag");
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -286,4 +288,7 @@ Shader ShaderSystem::solidModifierShader(){
 }
 Shader ShaderSystem::woodenModifierShader(){
     return __woodenModifierShader;
+}
+Shader ShaderSystem::mathModifierShader(){
+    return __mathModifierShader;
 }

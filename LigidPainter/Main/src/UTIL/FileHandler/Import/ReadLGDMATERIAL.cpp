@@ -51,6 +51,7 @@ bool readSkinModifier(std::ifstream& rf, MaterialModifier& modifier, int version
 bool readWoodenModifier(std::ifstream& rf, MaterialModifier& modifier, int version, unsigned int textureVersionCode);
 bool readAsphaltModifier(std::ifstream& rf, MaterialModifier& modifier, int version, unsigned int textureVersionCode);
 bool readDustModifier(std::ifstream& rf, MaterialModifier& modifier, int version, unsigned int textureVersionCode);
+bool readMathModifier(std::ifstream& rf, MaterialModifier& modifier, int version, unsigned int textureVersionCode);
 
 
 bool FileHandler::readLGDMATERIALFile(
@@ -143,6 +144,8 @@ bool FileHandler::readLGDMATERIALFile(
                 modifier = MaterialModifier(SOLID_MATERIAL_MODIFIER);
             else if(modifierIndex == 8)
                 modifier = MaterialModifier(WOODEN_MATERIAL_MODIFIER);
+            else if(modifierIndex == 9)
+                modifier = MaterialModifier(MATH_MATERIAL_MODIFIER);
             else{
                 LGDLOG::start<< "ERROR : Reading material file : Unknown modifier index." << LGDLOG::end;
                 return false;
@@ -205,6 +208,12 @@ bool FileHandler::readLGDMATERIALFile(
 
             else if (modifier.modifierIndex == DUST_MATERIAL_MODIFIER){
                if(!readDustModifier(rf, modifier, versionNumber, textureVersionCode)){
+                    return false;
+               }
+            }
+            
+            else if (modifier.modifierIndex == MATH_MATERIAL_MODIFIER){
+               if(!readMathModifier(rf, modifier, versionNumber, textureVersionCode)){
                     return false;
                }
             }
@@ -934,6 +943,38 @@ bool readDustModifier(std::ifstream& rf, MaterialModifier& modifier, int version
     LGDMATERIAL_READBITS( modifier.sections[7].elements[0].rangeBar.value, float, "Depth Value");
     //blurTheHeightMap
     LGDMATERIAL_READBITS( modifier.sections[7].elements[1].checkBox.clickState1, int, "blurTheHeightMap");
+    
+    // ---- Filter ----
+    // albedoFilter
+    modifier.sections[8].elements[0].button.filter.readFilterData(rf);
+    modifier.sections[8].elements[0].button.texture = modifier.sections[8].elements[0].button.filter.displayingTxtr;
+    if(!modifier.sections[8].elements[1].button.texture.readTextureData(rf, true, textureVersionCode))
+        return false;
+
+    return true;
+}
+
+bool readMathModifier(std::ifstream& rf, MaterialModifier& modifier, int version, unsigned int textureVersionCode){
+    // ---- Noise ----
+    LGDMATERIAL_READBITS( modifier.sections[0].elements[0].comboBox.selectedIndex, int, "Operation Index");
+    LGDMATERIAL_READBITS( modifier.sections[0].elements[3].rangeBar.value, float, "Right side value");
+    LGDMATERIAL_READBITS( modifier.sections[0].elements[4].checkBox.clickState1, bool, "Right side use texture");
+    if(!modifier.sections[0].elements[5].button.texture.readTextureData(rf, true, textureVersionCode))
+        return false;
+
+    // ---- Channel Opacities ----
+    //albedoOpacity
+    LGDMATERIAL_READBITS( modifier.sections[1].elements[0].rangeBar.value, float, "Albedo Opacity");
+    //roughnessOpacity
+    LGDMATERIAL_READBITS( modifier.sections[1].elements[1].rangeBar.value, float, "Roughness Opacity");
+    //metallicOpacity
+    LGDMATERIAL_READBITS( modifier.sections[1].elements[2].rangeBar.value, float, "Metallic Opacity");
+    //normalMapOpacity
+    LGDMATERIAL_READBITS( modifier.sections[1].elements[3].rangeBar.value, float, "Normal Map Opacity");
+    //heightMapOpacity
+    LGDMATERIAL_READBITS( modifier.sections[1].elements[4].rangeBar.value, float, "Height Map Opacity");
+    //ambientOcclusionOpacity
+    LGDMATERIAL_READBITS( modifier.sections[1].elements[5].rangeBar.value, float, "Ambient Occlusion Opacity");
     
     // ---- Filter ----
     // albedoFilter

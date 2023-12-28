@@ -47,6 +47,7 @@ class Material;
 #define SKIN_MATERIAL_MODIFIER 6
 #define SOLID_MATERIAL_MODIFIER 7
 #define WOODEN_MATERIAL_MODIFIER 8
+#define MATH_MATERIAL_MODIFIER 9
 
 class MaterialModifier
 {
@@ -83,6 +84,7 @@ public:
     std::vector<Section> createSkinModifier();
     std::vector<Section> createWoodenModifier();
     std::vector<Section> createSolidModifier();
+    std::vector<Section> createMathModifier();
 
 };
 

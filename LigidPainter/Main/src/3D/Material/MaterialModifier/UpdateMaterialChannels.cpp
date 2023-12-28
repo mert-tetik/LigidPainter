@@ -392,12 +392,12 @@ static void setUniforms(
 
 
 static Texture textureModifierSelectedTexture_procedural;
+static Texture mathModifierTexture_procedural;
 static Texture albedoFilterMaskTexture_procedural;
 static Texture previousTexture;
 static Texture prevDepthTexture;
 
 void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr, bool noPrevTxtrMode){
-    
     if(this->hide)
         return;
 
@@ -456,75 +456,163 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
         // Use the shader of the modifier
         modifierShader.use(); 
  
-        // Vertex shader
-        modifierShader.setMat4("orthoProjection", projection);
-        modifierShader.setMat4("perspectiveProjection", getScene()->projectionMatrix);
-        modifierShader.setMat4("view", getScene()->viewMatrix);
-
-        // Fragment shader
-        setUniforms(
-                        modifierShader, 
-                        material, 
-                        channelI, 
-                        curModI, 
-                        maskTexture_procedural.ID, 
-                        previousTexture, 
-                        currentTexture, 
-                        prevDepthTexture,
-                        textureModifierSelectedTexture_procedural.ID,
-                        mesh,
-                        meshMask,
-                        selectedObjectPrimitivesTxtr,
-                        noPrevTxtrMode
-                    );
-    
-        // Render the result to the framebuffer
-        mesh.Draw(false);
-        
-        //Delete the framebuffer after completing the channel
-        FBO.deleteBuffers(false, false);
-
-        //Generating the normal map based on the height map
-        if(channelI == 4){
-            // TODO HANDLE THIS
-            //Blur the height map option
-            if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].checkBox.clickState1)
-                blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+        if(material.materialModifiers[curModI].modifierIndex != MATH_MATERIAL_MODIFIER){
+            // Vertex shader
+            modifierShader.setMat4("orthoProjection", projection);
+            modifierShader.setMat4("perspectiveProjection", getScene()->projectionMatrix);
+            modifierShader.setMat4("view", getScene()->viewMatrix);
             
-            //Generate the normal map
-            mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
+            // Fragment shader
+            setUniforms(
+                            modifierShader, 
+                            material, 
+                            channelI, 
+                            curModI, 
+                            maskTexture_procedural.ID, 
+                            previousTexture, 
+                            currentTexture, 
+                            prevDepthTexture,
+                            textureModifierSelectedTexture_procedural.ID,
+                            mesh,
+                            meshMask,
+                            selectedObjectPrimitivesTxtr,
+                            noPrevTxtrMode
+                        );
             
-            //Remove the seams of the normal map texture
-            mesh.normalMap.removeSeams(mesh, textureResolution);
-        }
+            // Render the result to the framebuffer
+            mesh.Draw(false);
 
-        glEnable(GL_DEPTH_TEST);
+            //Delete the framebuffer after completing the channel
+            FBO.deleteBuffers(false, false);
 
-        // Remove the seams from the generated texture
-        currentTexture.removeSeams(mesh,textureResolution);
-
-        // Apply the filter to the albedo 
-        if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID){
-            glActiveTexture(GL_TEXTURE0);
-
-            // Generate the mask texture
-            Texture maskTxtr = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture; 
-            
-            if(albedoFilterMaskTexture_procedural.ID == 0)
-                albedoFilterMaskTexture_procedural = Texture(nullptr, textureResolution, textureResolution);
-            
-            albedoFilterMaskTexture_procedural.update(nullptr, textureResolution, textureResolution);
-
-            if(maskTxtr.ID){
-                maskTxtr.generateProceduralTexture(mesh, albedoFilterMaskTexture_procedural, textureResolution);
+            //Generating the normal map based on the height map
+            if(channelI == 4){
+                // TODO HANDLE THIS
+                //Blur the height map option
+                if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].checkBox.clickState1)
+                    blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+                
+                //Generate the normal map
+                mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
+                
+                //Remove the seams of the normal map texture
+                mesh.normalMap.removeSeams(mesh, textureResolution);
             }
 
+            glEnable(GL_DEPTH_TEST);
 
-            Filter filter = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter;
+            // Remove the seams from the generated texture
+            currentTexture.removeSeams(mesh,textureResolution);
 
-            // Apply the filter 
-            getBox()->bindBuffers();
-            filter.applyFilter(currentTexture.ID, albedoFilterMaskTexture_procedural, maskTexture_procedural);
+            // Apply the filter to the albedo 
+            if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID){
+                glActiveTexture(GL_TEXTURE0);
+
+                // Generate the mask texture
+                Texture maskTxtr = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture; 
+                
+                if(albedoFilterMaskTexture_procedural.ID == 0)
+                    albedoFilterMaskTexture_procedural = Texture(nullptr, textureResolution, textureResolution);
+                
+                albedoFilterMaskTexture_procedural.update(nullptr, textureResolution, textureResolution);
+
+                if(maskTxtr.ID){
+                    maskTxtr.generateProceduralTexture(mesh, albedoFilterMaskTexture_procedural, textureResolution);
+                }
+
+
+                Filter filter = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter;
+
+                // Apply the filter 
+                getBox()->bindBuffers();
+                filter.applyFilter(currentTexture.ID, albedoFilterMaskTexture_procedural, maskTexture_procedural);
+            }
         }
+        else{
+
+            int opI = material.materialModifiers[curModI].sections[0].elements[0].comboBox.selectedIndex;
+
+            // Operation uses both sides
+            if(opI == 0 || opI == 1 || opI == 2 || opI == 3 || opI == 4 ||  opI == 6 || opI == 7 || opI == 13 || opI == 14 || opI == 15){
+                
+                if(material.materialModifiers[curModI].sections[0].elements[4].checkBox.clickState1)
+                    sections[0].elements[2].button.text = "Right Side : From The Texture";
+                else
+                    sections[0].elements[2].button.text = "Right Side : From The Slide Bar";
+                
+                material.materialModifiers[curModI].sections[0].elements[3].scale.y = 1.5f;
+                material.materialModifiers[curModI].sections[0].elements[4].scale.y = 2.f;
+                material.materialModifiers[curModI].sections[0].elements[5].scale.y = 4.f;
+            }
+            // Only left side
+            else{
+                sections[0].elements[2].button.text = "Right Side : Not used";
+
+                material.materialModifiers[curModI].sections[0].elements[3].scale.y = 0.f;
+                material.materialModifiers[curModI].sections[0].elements[4].scale.y = 0.f;
+                material.materialModifiers[curModI].sections[0].elements[5].scale.y = 0.f;
+            }
+
+            if(opI == 0 || opI == 1 || opI == 6 || opI == 7){
+                material.materialModifiers[curModI].sections[0].elements[3].rangeBar.maxValue = 1.f;
+                material.materialModifiers[curModI].sections[0].elements[3].rangeBar.minValue = -1.f;
+                
+                if(
+                    material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value > 1.f || 
+                    material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value < -1.f
+                )
+                    material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value = 0.f;
+            }
+            else{
+                material.materialModifiers[curModI].sections[0].elements[3].rangeBar.maxValue = 10.f;
+                material.materialModifiers[curModI].sections[0].elements[3].rangeBar.minValue = -10.f;
+            }
+
+            modifierShader.setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
+            modifierShader.setVec3("pos", glm::vec3(0.5f, 0.5f, 0.7f));
+            modifierShader.setVec2("scale", glm::vec2(0.5f));
+            
+            modifierShader.setInt( "operationIndex" , material.materialModifiers[curModI].sections[0].elements[0].comboBox.selectedIndex);
+            modifierShader.setInt( "useRightSideTxtr" , material.materialModifiers[curModI].sections[0].elements[4].checkBox.clickState1);
+            modifierShader.setFloat( "rightSideVal" , material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value);
+            modifierShader.setInt( "previousTxtr" , 0);
+            modifierShader.setInt( "rightSideTxtr" , 1);
+            modifierShader.setInt( "mask" , 2);
+            modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[1].elements[channelI].rangeBar.value);
+        
+            {
+                if(mathModifierTexture_procedural.ID == 0)
+                    mathModifierTexture_procedural = Texture(nullptr, textureResolution, textureResolution);
+                
+                mathModifierTexture_procedural.update(nullptr, textureResolution, textureResolution);
+
+                Texture txtr = material.materialModifiers[curModI].sections[0].elements[5].button.texture;
+                txtr.generateProceduralTexture(mesh, mathModifierTexture_procedural, textureResolution);
+                
+                modifierShader.use();
+
+                FBO.bind();
+            }
+            
+            glActiveTexture(GL_TEXTURE0);
+            if(curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode)
+                glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
+            else
+                glBindTexture(GL_TEXTURE_2D, appTextures.black.ID);
+
+        
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, mathModifierTexture_procedural.ID);
+
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, maskTexture_procedural.ID);
+
+            getBox()->bindBuffers();
+            // Render the result to the framebuffer
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+
+            FBO.deleteBuffers(false, false);
+        }
+
     }
 }

@@ -114,6 +114,11 @@ MaterialModifier::MaterialModifier(int modifierIndex){
         this->title = "Wooden Modifier";
         this->shader = ShaderSystem::woodenModifierShader();    
     }
+    else if(modifierIndex == MATH_MATERIAL_MODIFIER){
+        this->sections = createMathModifier();
+        this->title = "Math Modifier";
+        this->shader = ShaderSystem::mathModifierShader();    
+    }
 
     this->modifierIndex = modifierIndex;
 }

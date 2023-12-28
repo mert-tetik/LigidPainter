@@ -138,6 +138,7 @@ namespace ShaderSystem{
     Shader skinModifierShader();
     Shader solidModifierShader();
     Shader woodenModifierShader();
+    Shader mathModifierShader();
 
     void initShaderSystem();
 };

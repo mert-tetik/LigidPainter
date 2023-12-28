@@ -227,6 +227,15 @@ void modifiersPanelInteractions(Panel& modifiersPanel, Material* material, int& 
                         updateTheMaterial = true;
                     }
                 }
+
+                //If checkbox clicked update the material
+                if(modifiersPanel.sections[secI].elements[elementI].state == 3){
+                    if(modifiersPanel.sections[secI].elements[elementI].comboBox.selectionDone){
+                        registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].checkBox.text, *material);
+
+                        updateTheMaterial = true;
+                    }
+                }
             }
         }
     }

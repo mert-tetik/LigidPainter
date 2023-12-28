@@ -23,6 +23,6 @@ namespace ContextMenus{
     ContextMenu menuBarHelp = ContextMenu({"Website", "YouTube"}); 
     ContextMenu materialModifier = ContextMenu({"Delete", "Move To Top", "Move To Bottom", "Change Mask"});
     ContextMenu node = ContextMenu({"Delete"}); 
-    ContextMenu addMaterialModifier = ContextMenu({"Texture Modifier", "Dust Modifier", "Asphalt Modifier", "Liquid Modifier", "Moss Modifier", "Rust Modifier", "Skin Modifier", "Solid Modifier", "Wooden Modifier"});
+    ContextMenu addMaterialModifier = ContextMenu({"Texture Modifier", "Dust Modifier", "Asphalt Modifier", "Liquid Modifier", "Moss Modifier", "Rust Modifier", "Skin Modifier", "Solid Modifier", "Wooden Modifier", "Math Modifier"});
     ContextMenu nodeScenePanel = ContextMenu({"Add Material ID Node", "Add Material Mask Node"});
 };

@@ -860,3 +860,59 @@ std::vector<Section> MaterialModifier::createDustModifier(){
     
     return sections;
 }
+
+std::vector<Section> MaterialModifier::createMathModifier(){
+    unsigned char whitePixel[] = { 255, 255, 255, 255 }; // 1 pixel, RGBA format (white)
+
+    std::vector<Section> sections =  
+    {
+        Section(
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Math"),
+            {
+                Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,1.5f),
+                                                                    {
+                                                                        "Add", 
+                                                                        "Subtract", 
+                                                                        "Multiply", 
+                                                                        "Divide", 
+                                                                        "Power", 
+                                                                        "Logarithm", 
+                                                                        "Min", 
+                                                                        "Max", 
+                                                                        "Sqrt", 
+                                                                        "Exponent", 
+                                                                        "Sin", 
+                                                                        "Cos", 
+                                                                        "Tan", 
+                                                                        "Cross", 
+                                                                        "Dot", 
+                                                                        "Distance", 
+                                                                    },"File Format", 4.f)),
+
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Left Side : From The Source", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Right Side : From The Slide Bar", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+                RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f),"Right Side Value",Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET,-10.f, 10.f, 0.f), 
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Texture", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1, 4.f), "Right Side Texture", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
+            }
+        ),
+        Section(
+            SectionHolder(ColorPalette::secondColor, 4.f, "Channel Opacities"),
+            {
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Albedo Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Roughness Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Metallic Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Normal Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
+            }
+        ),
+    };
+
+    sections[0].elements[1].button.color2 = sections[0].elements[1].button.color;
+    sections[0].elements[2].button.color2 = sections[0].elements[2].button.color;
+    sections[0].elements[5].button.textureSelection3D = true;
+    sections[0].elements[5].button.selectionDialogTxtrRes = 128;
+    
+    return sections;
+}
