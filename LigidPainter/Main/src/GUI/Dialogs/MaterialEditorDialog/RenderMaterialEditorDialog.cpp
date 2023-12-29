@@ -49,6 +49,9 @@ void MaterialEditorDialog::render
 {
     dialogControl.updateStart();
 
+    if(dialogControl.firstFrameActivated)
+        this->updateTheMaterial = true;
+
     // Update the shortcut elements of the material
     for (size_t i = 0; i < this->material->materialShortcuts.size(); i++)
     {

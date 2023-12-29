@@ -415,6 +415,7 @@ static Texture normalMapTxtrBlurred;
 static Texture noiseTxtr;
 static Texture destTxtrCopy;
 static Texture procTxtr;
+static Texture normalMapRes;
 
 Texture Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
     if(!procTxtr.ID){
@@ -594,14 +595,18 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
 
     // ------- Generating Normal Map -------
     if(this->proceduralProps.proceduralNormalMap){
-        /*
-        Texture normalMapRes = Texture(nullptr, textureRes, textureRes, GL_LINEAR);
+        if(!normalMapRes.ID){
+            normalMapRes = Texture(nullptr, textureRes, textureRes, GL_LINEAR);
+        }
+        else{
+            normalMapRes.update(nullptr, textureRes, textureRes, GL_LINEAR);
+        }
 
         destTxtr.generateNormalMap(normalMapRes.ID, textureRes, this->proceduralProps.proceduralNormalStrength, this->proceduralProps.proceduralNormalGrayScale); 
 
-        glDeleteTextures(1,&proceduralTxtr);
-        proceduralTxtr = normalMapRes.ID;
-        */
+        char* normalMapData = new char[textureRes * textureRes * 4]; 
+        normalMapRes.getData(normalMapData);
+        destTxtr.update(normalMapData, textureRes, textureRes);
     }
 
     destTxtr.removeSeams(mesh, textureRes);

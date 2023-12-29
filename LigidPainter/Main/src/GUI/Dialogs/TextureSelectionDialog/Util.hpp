@@ -359,12 +359,12 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
         receivedTexture.proceduralProps.proceduralNormalGrayScale = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Gray_Scale_INDEX].checkBox.clickState1;
         receivedTexture.proceduralProps.proceduralNormalStrength = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Normal_Strength_INDEX].rangeBar.value;
         receivedTexture.proceduralProps.proceduralUseTexCoords = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Use_Texture_Coordinates_INDEX].checkBox.clickState1;
-        receivedTexture.proceduralProps.proceduralGrayScale = this->subPanel.sections[0].elements[subPanelTxtrPack_Gray_Scale_INDEX].checkBox.clickState1;
-        receivedTexture.proceduralProps.proceduralBrightness = this->subPanel.sections[0].elements[subPanelTxtrPack_Brightness_INDEX].rangeBar.value;
+        receivedTexture.proceduralProps.proceduralGrayScale = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Gray_Scale_INDEX].checkBox.clickState1;
+        receivedTexture.proceduralProps.proceduralBrightness = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Brightness_INDEX].rangeBar.value;
+        receivedTexture.proceduralProps.proceduralStretch = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Stretch_INDEX].rangeBar.value;
+        receivedTexture.proceduralProps.proceduralMirroredRepeat = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_MirroredRepeat_INDEX].checkBox.clickState1;
         
         receivedTexture.proceduralProps.txtrPackScale = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Scale_INDEX].rangeBar.value;
-        receivedTexture.proceduralProps.proceduralStretch = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Stretch_INDEX].rangeBar.value;
-        receivedTexture.proceduralProps.proceduralMirroredRepeat = this->subPanel.sections[0].elements[subPanelTxtrPack_MirroredRepeat_INDEX].checkBox.clickState1;
         receivedTexture.proceduralProps.txtrPackCount = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Count_INDEX].rangeBar.value;
         receivedTexture.proceduralProps.txtrPackRotation_Jitter = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Rotation_Jitter_INDEX].rangeBar.value;
         receivedTexture.proceduralProps.txtrPackSize_Jitter = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Size_Jitter_INDEX].rangeBar.value;

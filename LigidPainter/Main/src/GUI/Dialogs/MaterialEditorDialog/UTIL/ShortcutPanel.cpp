@@ -164,8 +164,11 @@ static void shortcutPanelInteractions(Panel& shortcutPanel, Material* material, 
         }
         
         // Apply the changes to the original element if the shortcut is an element shortcut 
-        if(material->materialShortcuts[i].element != nullptr)
+        if(material->materialShortcuts[i].element != nullptr){
+            if(material->materialShortcuts[i].element->isInteracted())
+                updateTheMaterial = true;
             *material->materialShortcuts[i].element = shortcutPanel.sections[i + 1].elements[0];
+        }
 
         // Apply the changes to the original mask texture if the shortcut is an mask texture shortcut 
         else if(material->materialShortcuts[i].maskTxtr != nullptr){

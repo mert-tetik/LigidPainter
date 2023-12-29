@@ -23,17 +23,23 @@ out vec4 fragColor;
 
 void main(){
 
-    vec2 uv = Pos.xy;
     vec3 vPos = Pos;
 
-    uv = abs(uv);
+    vPos /= 2.;
+    vPos += 0.5;
+
+    vec2 uv = vPos.xy;
+    
     if(Pos.z < 0.3 && Pos.z > -0.3){
         if(Pos.z > 0.)
-            uv.xy += (0.3 - Pos.z) / 4.;
+            uv.x += (0.3 - Pos.z) / 3.;
         else if(Pos.z < 0.)
-            uv.xy += (0.3 + Pos.z) / 4.;
+            uv.x += (0.3 + Pos.z) / 3.;
     }
 
+    uv = abs(uv);
+    
+    
     if(proceduralUseTexCoords == 1){
         uv = TexCoords;
         vPos.xy = TexCoords;

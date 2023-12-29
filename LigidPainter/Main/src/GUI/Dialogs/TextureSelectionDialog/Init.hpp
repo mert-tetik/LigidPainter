@@ -250,7 +250,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 4.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f), "Mirrored Repeat", 2.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Stretch", Texture(), 0.5f, 0.f, 10.f, 1.f),
-                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 1.f, false),
+                                            Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 1.f, false)
                                         }
                                     )
                                 },
