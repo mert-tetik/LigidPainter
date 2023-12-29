@@ -99,8 +99,6 @@ bool FileHandler::readLGDMATERIALFile(
         uint32_t versionNumber; 
         LGDMATERIAL_READBITS(versionNumber, uint32_t, "Version number");
 
-        std::cout << "VERSION : " << versionNumber << std::endl;
-
         if(versionNumber != 2000 && versionNumber != 2100 && versionNumber != 2200){
             LGDLOG::start << "ERROR WHILE READING MATERIAL FILE! This version of the LigidPainter doesn't support this material file's version." << LGDLOG::end;
             return false;
@@ -123,8 +121,6 @@ bool FileHandler::readLGDMATERIALFile(
             int modifierIndex;
             LGDMATERIAL_READBITS(modifierIndex, int, "Modifier type index");
             
-            LGDLOG::start << "Reading modifier : " << modifierIndex  << LGDLOG::end;
-
             MaterialModifier modifier;
             if(modifierIndex == 0)
                 modifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);

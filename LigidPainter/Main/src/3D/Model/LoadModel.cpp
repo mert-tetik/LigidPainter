@@ -187,6 +187,43 @@ static void processNode(aiNode *node, const aiScene *scene, std::vector<AssimpOb
 
 static void resizeObjects(std::vector<AssimpObject> &objects){
     float big = 0.f;
+    glm::vec3 center = glm::vec3(0.f);
+    int counter = 0;
+    for (size_t i = 0; i < objects.size(); i++)
+    {
+        for (size_t vi = 0; vi < objects[i].vertices.size(); vi++)
+        {
+            if(big < abs(objects[i].vertices[vi].Position.x))
+                big = abs(objects[i].vertices[vi].Position.x);
+            
+            if(big < abs(objects[i].vertices[vi].Position.y))
+                big = abs(objects[i].vertices[vi].Position.y);
+            
+            if(big < abs(objects[i].vertices[vi].Position.z))
+                big = abs(objects[i].vertices[vi].Position.z);
+        
+            center += objects[i].vertices[vi].Position;
+
+            counter++;
+        }
+    }
+
+    center /= counter;
+    center /= big;
+    
+    for (size_t i = 0; i < objects.size(); i++){
+        for (size_t vi = 0; vi < objects[i].vertices.size(); vi++)
+        {
+            objects[i].vertices[vi].Position.x = objects[i].vertices[vi].Position.x / big;
+            objects[i].vertices[vi].Position.y = objects[i].vertices[vi].Position.y / big;
+            objects[i].vertices[vi].Position.z = objects[i].vertices[vi].Position.z / big;
+
+            objects[i].vertices[vi].Position -= center;
+        }
+    }
+    
+    big = 0.f;
+
     for (size_t i = 0; i < objects.size(); i++)
     {
         for (size_t vi = 0; vi < objects[i].vertices.size(); vi++)
@@ -202,7 +239,6 @@ static void resizeObjects(std::vector<AssimpObject> &objects){
         }
     }
 
-    
     for (size_t i = 0; i < objects.size(); i++){
         for (size_t vi = 0; vi < objects[i].vertices.size(); vi++)
         {

@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include <zlib/zlib.h>
 
@@ -92,6 +93,10 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
     Model model;
     
     float big = 0.f;
+    glm::vec3 origin = glm::vec3(0.f);
+
+    int counter = 0;
+
     for (size_t i = 0; i < meshVertices.size(); i++)
     {
         for (size_t vi = 0; vi < meshVertices[i].size(); vi++)
@@ -104,9 +109,14 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
             
             if(big < abs(meshVertices[i][vi].Position.z))
                 big = abs(meshVertices[i][vi].Position.z);
+
+
+            origin += meshVertices[i][vi].Position;
+            counter++;
         }
     }
     
+    origin /= counter;
     
     for (int i = 0; i < meshVertices.size(); i++)
     {
@@ -137,10 +147,13 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
                 meshVertices[i][vi].Position.y += 0.00001f;
             if(meshVertices[i][vi].Position.z == 0.f)
                 meshVertices[i][vi].Position.z += 0.00001f;
+            
+            meshVertices[i][vi].Position -= origin;
 
             meshVertices[i][vi].Position.x = meshVertices[i][vi].Position.x / big;
             meshVertices[i][vi].Position.y = meshVertices[i][vi].Position.y / big;
             meshVertices[i][vi].Position.z = meshVertices[i][vi].Position.z / big;
+            
         }
         if(meshVertices[i].size()){
             model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle));
