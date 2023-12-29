@@ -86,6 +86,7 @@ static void refreshShortcutPanelSections(Panel& shortcutPanel, Material* materia
                                             Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Delete", Texture(), 1.f, false),
                                         }
                                     );
+            section.elements[0].panelOffset = 1.f;
         }
         
         // If the shortcut is a mask texture shortcut
@@ -94,8 +95,8 @@ static void refreshShortcutPanelSections(Panel& shortcutPanel, Material* materia
                                         SectionHolder(ColorPalette::secondColor, ColorPalette::thirdColor, 3.f, material->materialShortcuts[i].title),
                                         {
                                             Button(ELEMENT_STYLE_BASIC, glm::vec2(5.f), "Modifier Mask Texture", *material->materialShortcuts[i].maskTxtr, 1.f, false),
-                                            CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use UV", 1.f),
-                                            Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Rename", Texture(), 2.f, false),
+                                            CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use UV", 0.f),
+                                            Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Rename", Texture(), 1.f, false),
                                             Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1.f), "Delete", Texture(), 1.f, false),
                                         }
                                     );
@@ -105,7 +106,6 @@ static void refreshShortcutPanelSections(Panel& shortcutPanel, Material* materia
             section.elements[1].checkBox.clickedMixVal = material->materialShortcuts[i].maskTxtr->proceduralProps.proceduralUseTexCoords;
         }
 
-        section.elements[0].panelOffset = 1.f;
         section.elements[section.elements.size() - 1].button.color = glm::vec4(1.f, 0.f, 0.f, 0.5f);
 
         // Create the header's text as invisible while renaming this shortcut (there's a textbox rendering on top of it)        

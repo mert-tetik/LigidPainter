@@ -365,7 +365,7 @@ void Panel::drawPanel(
         if((sections[0].header.button.text.size() && sections[0].header.state == 0) || sections[0].header.state == 5)
             elementStartPos -= sections[0].header.scale.y;
         else if(sections[0].elements.size()){
-            elementStartPos -= sections[0].elements[0].scale.y;
+            elementStartPos -= sections[0].elements[0].scale.y / 2.f;
         }
     }
 
@@ -402,7 +402,7 @@ void Panel::drawPanel(
                 float elementsLength = 2.f;
                 for (size_t i = 0; i < sections[sI].elements.size(); i++)
                 {
-                    elementsLength += sections[sI].elements[i].scale.y * 2.f +  sections[sI].elements[i].panelOffset;
+                    elementsLength += sections[sI].elements[i].scale.y * 2.f + sections[sI].elements[i].panelOffset;
                 }
                 
                 Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(4,2), "", Texture(), 0.f, true);
@@ -424,10 +424,17 @@ void Panel::drawPanel(
             {
                 //Prepare the transform data of the button    
                 if(sections[sI].elements[i].scale.x && sections[sI].elements[i].scale.y){
-                    if(vertical)
-                        prepDrawBtnVertically(sections[sI].elements[i],sections[sI].elements[std::max(i-1,0)],elementPos,btnCounter);
+                    
+                    Element prevElement;
+                    if(i > 0)
+                        prevElement = sections[sI].elements[i-1];
                     else
-                        prepDrawBtnHorizontally(sections[sI].elements[i],sections[sI].elements[std::max(i-1,0)],elementPos,btnCounter);
+                        prevElement = sections[sI].header;
+
+                    if(vertical)
+                        prepDrawBtnVertically(sections[sI].elements[i], prevElement, elementPos,btnCounter);
+                    else
+                        prepDrawBtnHorizontally(sections[sI].elements[i], prevElement, elementPos,btnCounter);
 
                 }
                 if(isLibraryDisplayer){

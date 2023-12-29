@@ -128,7 +128,7 @@ public:
     Texture texture;
     Filter filter;
     int selectedMeshI = 0;
-    glm::vec2 scale;  
+    glm::vec2 scale = glm::vec2(0.f);  
     glm::vec3 pos;
     glm::vec3 resultPos;
     glm::vec2 resultScale;
@@ -185,7 +185,7 @@ public:
     int activeChar = 0; 
     int activeChar2 = 0;
     int animationStyle;
-    glm::vec2 scale;  
+    glm::vec2 scale = glm::vec2(0.f);  
     glm::vec3 pos; 
     bool doMouseTracking;
     bool hover = false; 
@@ -230,7 +230,7 @@ public:
     float textScale;
     glm::vec3 outlineColor;
     glm::vec3 outlineColor2;
-    glm::vec2 scale;
+    glm::vec2 scale = glm::vec2(0.f);
     glm::vec3 pos;
     bool doMouseTracking;
     std::vector<bool> hover;
@@ -338,7 +338,7 @@ public:
     glm::vec3 outlineColor;
     glm::vec3 outlineColor2;
     int animationStyle;
-    glm::vec2 scale;
+    glm::vec2 scale = glm::vec2(0.f);
     glm::vec3 pos; 
     bool doMouseTracking;
     bool hover = false;
@@ -386,7 +386,7 @@ public:
     float outlineThickness;
     float radius; 
     Texture texture; 
-    glm::vec2 scale;  
+    glm::vec2 scale = glm::vec2(0.f);  
     glm::vec3 pos;
     bool hover = false; 
     float hoverMixVal = 0.f; 
