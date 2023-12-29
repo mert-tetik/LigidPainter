@@ -94,10 +94,18 @@ Model* MaterialEditorDialog::getDisplayModel(){
             customModel.meshes.clear();
 
             for (size_t i = 0; i < getModel()->meshes.size(); i++){
-                customModel.meshes.push_back(Mesh(getModel()->meshes[i].vertices, getModel()->meshes[i].indices, ""));
+                customModel.meshes.push_back(Mesh({}, {1,2,3}, ""));
             }
         }
 
+        for (size_t i = 0; i < customModel.meshes.size(); i++)
+        {
+            customModel.meshes[i].indices = getModel()->meshes[i].indices;
+            customModel.meshes[i].VBO = getModel()->meshes[i].VBO;
+            customModel.meshes[i].EBO = getModel()->meshes[i].EBO;
+            customModel.meshes[i].VAO = getModel()->meshes[i].VAO;
+            customModel.meshes[i].objects = getModel()->meshes[i].objects;
+        }
         return &customModel;
     }
 
