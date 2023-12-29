@@ -2613,7 +2613,6 @@ float gyroidNoise2(vec3 p)
 
 //0
 float smartPos(vec3 pos, float offset, float yaw, float pitch, float position){
-    pos *= 2.;
     pos -= 1.f;
 
     yaw = radians(yaw);
@@ -2659,7 +2658,6 @@ float smartPos3(vec3 pos, float offset, float yaw, float pitch, float position){
 
 float smartStripes(vec3 pos, float linesRows, float thickness, float blur, float rotation, vec2 txtrRes){
     
-    pos *= 2.;
     pos -= 1.f;
 
     pos = innerrotate(pos, vec3(0., 0., 1.), radians(rotation));
@@ -2725,7 +2723,6 @@ float gaussian(vec3 i) {
 float smartDistance(vec3 pos, float mn, float mx, float blurStrength, float noiseStrength, vec2 txtrRes){
     const vec3 originPos = vec3(0);
 
-    pos *= 2.;
     pos -= 1.f;
 
     float accum = 0.0;

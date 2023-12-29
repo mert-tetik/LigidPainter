@@ -27,6 +27,7 @@ void main(){
 
     vPos /= 2.;
     vPos += 0.5;
+    vPos *= 2.;
 
     vec2 uv = vPos.xy;
     
