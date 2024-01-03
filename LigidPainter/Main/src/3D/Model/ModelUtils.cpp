@@ -205,7 +205,7 @@ void Model::selectObject(Panel& objectsPanel){
                             this->meshes[meshI].selectedObjectIndices.push_back(objI);
                     }
                     else if(getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT)){
-                        for (size_t si = std::min(originalOBJI, objI); si < std::max(originalOBJI, objI); si++)
+                        for (size_t si = std::min(originalOBJI, objI); si < std::max(originalOBJI, objI) + 1; si++)
                         {
                             match = -1;
                             for (size_t i = 0; i < this->meshes[meshI].selectedObjectIndices.size(); i++)
@@ -214,7 +214,7 @@ void Model::selectObject(Panel& objectsPanel){
                                     match = i; 
                             }
                             
-                            if(match == -1)
+                            if(match == -1 && si < this->meshes[meshI].objects.size())
                                 this->meshes[meshI].selectedObjectIndices.push_back(si);
                         }
                     }
