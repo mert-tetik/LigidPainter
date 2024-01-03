@@ -37,6 +37,8 @@ void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Panel& vectorPaintingModePropertyPanel, Panel& smearPaintingModePropertyPanel, Painter &painter, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, Button filterPaintingModeFilterBtn, Box twoDPaintingBox, Material& paintingCustomMat);
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
+size_t lastSecAnyDialogActiveWasTrue = 0;
+
 void UI::elementInteraction(
                                 Painter &painter,
                                 Timer &timer, 
@@ -65,7 +67,12 @@ void UI::elementInteraction(
                     materialSelectionDialog.dialogControl.isActive() ||
                     paintingChannelsAutoCreateTexturesDialog.dialogControl.isActive() ||
                     paintingChannelsTextureSelectionPanelActive ||
-                    texturePackEditorDialog.dialogControl.isActive();
+                    texturePackEditorDialog.dialogControl.isActive() ||
+                    timer.seconds - lastSecAnyDialogActiveWasTrue <= 2; 
+
+    if(this->anyDialogActive && !(timer.seconds - lastSecAnyDialogActiveWasTrue <= 3)){
+        lastSecAnyDialogActiveWasTrue = timer.seconds;
+    }
 
     this->anyPanelHover = 
                     navigationPanel.hover               ||
