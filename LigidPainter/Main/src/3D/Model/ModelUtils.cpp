@@ -91,6 +91,8 @@ void Model::updateObjectIDsTexture(){
     glDepthFunc(GL_LEQUAL);
 }
 
+static int originalOBJI = 0;
+
 void Model::selectObject(Panel& objectsPanel){
     
     int objI = -1;
@@ -140,7 +142,7 @@ void Model::selectObject(Panel& objectsPanel){
         for (size_t secI = 0; secI < objectsPanel.sections.size(); secI++)
         {
             for (size_t elI = 0; elI < objectsPanel.sections[secI].elements.size(); elI++){
-                if(objectsPanel.sections[secI].elements[elI].button.hover){
+                if(objectsPanel.sections[secI].elements[elI].button.hover && !objectsPanel.sliderButton.hover){
                     meshI = secI;
                     objI = elI;
                     objectsPanel.sections[secI].elements[elI].button.hover = false;
@@ -150,9 +152,13 @@ void Model::selectObject(Panel& objectsPanel){
         
         delete[] pxs;
 
+
+
         if(meshI < this->meshes.size() && meshI >= 0 && *Mouse::LClick()){
             registerObjectSelectionAction("Object selected", meshI, this->meshes[meshI].selectedObjectIndices);
         }
+
+
 
         for (size_t i = 0; i < this->meshes.size(); i++){
             if(!this->meshes[i].selectedObjectPrimitivesTxtr.ID){
@@ -160,8 +166,10 @@ void Model::selectObject(Panel& objectsPanel){
             }
             
             if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-                if(*Mouse::LClick())
+                if(*Mouse::LClick()){
                     this->meshes[i].selectedObjectIndices.clear();
+                    originalOBJI = objI;
+                }
                 this->meshes[i].selectedObjectPrimitivesTxtr.update(nullptr, 1, 1);
             }        
         }
@@ -175,13 +183,41 @@ void Model::selectObject(Panel& objectsPanel){
             }
             
             if(*Mouse::LClick()){
-                if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-                    if(match == -1)
-                        this->meshes[meshI].selectedObjectIndices.push_back(objI);
+                if(!objectsPanel.hover){
+                    if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+                        if(match == -1)
+                            this->meshes[meshI].selectedObjectIndices.push_back(objI);
+                    }
+                    else{
+                        if(match != -1)
+                            this->meshes[meshI].selectedObjectIndices.erase(this->meshes[meshI].selectedObjectIndices.begin() + match);
+                    }
                 }
                 else{
-                    if(match != -1)
-                        this->meshes[meshI].selectedObjectIndices.erase(this->meshes[meshI].selectedObjectIndices.begin() + match);
+                    if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT)){
+                        if(match == -1)
+                            this->meshes[meshI].selectedObjectIndices.push_back(objI);
+                    }
+                    else if(getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+                        if(match != -1)
+                            this->meshes[meshI].selectedObjectIndices.erase(this->meshes[meshI].selectedObjectIndices.begin() + match);
+                        else
+                            this->meshes[meshI].selectedObjectIndices.push_back(objI);
+                    }
+                    else if(getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT)){
+                        for (size_t si = std::min(originalOBJI, objI); si < std::max(originalOBJI, objI); si++)
+                        {
+                            match = -1;
+                            for (size_t i = 0; i < this->meshes[meshI].selectedObjectIndices.size(); i++)
+                            {
+                                if(this->meshes[meshI].selectedObjectIndices[i] == si)
+                                    match = i; 
+                            }
+                            
+                            if(match == -1)
+                                this->meshes[meshI].selectedObjectIndices.push_back(si);
+                        }
+                    }
                 }
             }
 

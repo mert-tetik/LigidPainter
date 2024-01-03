@@ -172,13 +172,6 @@ void Mesh::generateUVMask(){
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName)
 {
-    this->albedo = Texture(nullptr, 1024, 1024, GL_LINEAR);
-    this->roughness = Texture(nullptr, 1024, 1024, GL_LINEAR);
-    this->metallic = Texture(nullptr, 1024, 1024, GL_LINEAR);
-    this->normalMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
-    this->heightMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
-    this->ambientOcclusion = Texture(nullptr, 1024, 1024, GL_LINEAR);
-
     this->vertices = vertices;
     this->indices = indices;
     this->materialName = materialName;

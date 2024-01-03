@@ -427,7 +427,7 @@ void UI::paintingPanelInteraction(
         {
             if(i + 1 >= paintingChannelsSection.size())
                 break;
-                
+            
             getModel()->meshes[i].albedo = paintingChannelsSection[i + 1].elements[0].button.texture;
             getModel()->meshes[i].roughness = paintingChannelsSection[i + 1].elements[1].button.texture;
             getModel()->meshes[i].metallic = paintingChannelsSection[i + 1].elements[2].button.texture;
