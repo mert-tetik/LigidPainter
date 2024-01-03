@@ -54,8 +54,8 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
         
         for (size_t i = 0; i < std::ceil(sqrt(primitivesArray.size())) * std::ceil(sqrt(primitivesArray.size())); i++)
         {
-            if(i < primitivesArray.size())
-                pxs[i] = primitivesArray[i] * 126;
+            if(i + 1 < primitivesArray.size())
+                pxs[i] = primitivesArray[i + 1] * 126;
             else
                 pxs[i] = primitivesArray[primitivesArray.size()-1] * 126;
         }
