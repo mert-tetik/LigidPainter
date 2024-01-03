@@ -313,7 +313,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    selectedTextureDisplayer.render(timer, true);
+    selectedTextureDisplayer.render(timer, !anyDialogActive);
     if(selectedTextureDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
