@@ -363,6 +363,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
         this->material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
         this->material.displayingTexture.title = "ObjectTexturingMaterial_DisplayingTexture";
+        this->updateMeshTextures();
 
         this->faceSelectionMode = false;
     }
