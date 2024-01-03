@@ -98,7 +98,7 @@ bool Project::loadLibraryElements(std::string folderPath, std::string ligidFileP
                 std::string modelPath = entry.path().string();
 
                 Model TDModel;
-                bool success = TDModel.loadModel(modelPath, true);
+                bool success = TDModel.loadModel(modelPath, true, false);
 
                 if(TDModel.meshes.size() && success){
                     Library::addModel(TDModel);

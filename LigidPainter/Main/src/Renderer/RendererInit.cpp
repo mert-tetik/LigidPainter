@@ -105,20 +105,13 @@ void Renderer::initRenderer(){
     getScene()->updateTransformMatrix();
     getScene()->updateProjectionMatrix();
 
-    Debugger::block("LOAD : Shaders"); //Start 12300288
-    
-    //Load shaders 
-    ShaderSystem::initShaderSystem();
-    
-    Debugger::block("LOAD : Shaders"); //End
-
     Debugger::block("LOAD : Models"); //Start
     
     //Load the 3D models 345235456
-    getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
-    getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true);
-    getPlaneModel()->loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true);
-    getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj",true);
+    getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true, false);
+    getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true, true);
+    getPlaneModel()->loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true, true);
+    getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj", true, true);
     
     Debugger::block("LOAD : Models"); //End
 

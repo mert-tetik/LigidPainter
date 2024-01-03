@@ -94,7 +94,7 @@ Model* MaterialEditorDialog::getDisplayModel(){
             customModel.meshes.clear();
 
             for (size_t i = 0; i < getModel()->meshes.size(); i++){
-                customModel.meshes.push_back(Mesh({}, {1,2,3}, ""));
+                customModel.meshes.push_back(Mesh({}, {1,2,3}, "", true));
             }
         }
 

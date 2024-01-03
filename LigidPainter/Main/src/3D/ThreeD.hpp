@@ -183,7 +183,7 @@ public:
     Mesh(){}
     
     /*! @brief Generates the buffer objects using the first two parameters */
-    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName);
+    Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, bool initTxtrs);
     
     /*! @brief Renders the mesh*/
     void Draw(bool displayWireframe);
@@ -234,7 +234,7 @@ public:
     
     void Draw();
     void exportModel(std::string path);
-    bool loadModel(std::string const &path, bool triangulate);
+    bool loadModel(std::string const &path, bool triangulate, bool initTxtrs);
     void updateObjectIDsTexture();
 
     /*! 

@@ -152,7 +152,7 @@ void UI::libraryPanelDisplayerInteraction(
             std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
                 Model tdModel;
-                bool success = tdModel.loadModel(test, true);
+                bool success = tdModel.loadModel(test, true, false);
                 if(tdModel.meshes.size() && success){
                     Library::addModel(tdModel);
                     UTIL::copyFileToFolder(test, project.folderPath + UTIL::folderDistinguisher() + "3DModels", 1);
@@ -219,7 +219,7 @@ void UI::libraryPanelDisplayerInteraction(
             std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
                 Model tdModel;
-                bool success = tdModel.loadModel(test, true);
+                bool success = tdModel.loadModel(test, true, false);
                 if(tdModel.meshes.size() && success){
                     Library::addModel(tdModel);
                     UTIL::copyFileToFolder(test, project.folderPath + UTIL::folderDistinguisher() + "3DModels", 1);

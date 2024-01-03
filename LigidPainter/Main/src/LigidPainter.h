@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "../../thirdparty/include/glm/glm.hpp"
 
 #include "SettingsSystem/Settings.hpp"
+#include "ShaderSystem/Shader.hpp"
 #include "Renderer.h"
 #include "UTIL/Util.hpp"
 
@@ -70,6 +71,13 @@ public:
         Settings::loadAppTextures();
 
         Debugger::block("LOAD : App Textures"); //End
+
+        Debugger::block("LOAD : Shaders"); //Start 12300288
+    
+        //Load shaders 
+        ShaderSystem::initShaderSystem();
+        
+        Debugger::block("LOAD : Shaders"); //End
 
         Renderer renderer;
         renderer.initRenderer();

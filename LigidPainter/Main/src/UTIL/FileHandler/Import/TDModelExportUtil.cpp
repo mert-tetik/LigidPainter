@@ -156,7 +156,7 @@ Model createModel(std::vector<std::vector<Vertex>> meshVertices, std::vector<std
             
         }
         if(meshVertices[i].size()){
-            model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle));
+            model.meshes.push_back(Mesh(meshVertices[i], meshIndices[i], matTitle, true));
             model.meshes[model.meshes.size() - 1].objects = objectData[i];
         }
     }

@@ -689,7 +689,4 @@ void UI::init
 
     paintingSectionDisplayMat = Material("Painting section display", 0);
     paintingSectionDisplayMat.materialModifiers.push_back(MaterialModifier(SOLID_MATERIAL_MODIFIER));
-
-    
-    objectTexturingDialog = ObjectTexturingDialog();
 }   

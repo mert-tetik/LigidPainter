@@ -136,7 +136,7 @@ bool Project::readLigidFile(
         }
         
         if(!getModel()->meshes.size())
-            getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true);
+            getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true, false);
         
         // ---------- Settings ------------
         READ_BITS(Settings::properties()->textureRes, int, "Texture resolution");

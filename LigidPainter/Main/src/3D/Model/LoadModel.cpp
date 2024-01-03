@@ -54,11 +54,11 @@ struct AssimpObject{
 static AssimpObject processMesh(aiMesh *mesh, std::string title);
 static void processNode(aiNode *node, const aiScene *scene, std::vector<AssimpObject> &meshes);
 static void resizeObjects(std::vector<AssimpObject> &objects);
-static void parseMeshData(std::vector<AssimpObject> &objects, std::vector<Mesh> &meshes, const aiScene* scene);
+static void parseMeshData(std::vector<AssimpObject> &objects, std::vector<Mesh> &meshes, const aiScene* scene, bool initTxtrs);
 static void generateDisplayingTexture(int displayRes, Texture& displayingTxtr, Model* model);
 
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-bool Model::loadModel(std::string const &path,bool triangulate)
+bool Model::loadModel(std::string const &path, bool triangulate, bool initTxtrs)
 {
     if(!std::filesystem::is_regular_file(path)){
         LGDLOG::start << "ERROR : Loading 3D model : " << path << " is not a regular file!" << LGDLOG::end;
@@ -91,7 +91,7 @@ bool Model::loadModel(std::string const &path,bool triangulate)
     resizeObjects(assimpObjects);
 
     // Applies the objects to the this->meshes according to the material data
-    parseMeshData(assimpObjects, this->meshes, scene);
+    parseMeshData(assimpObjects, this->meshes, scene, initTxtrs);
 
     this->newModelAdded = true;
 
@@ -249,7 +249,7 @@ static void resizeObjects(std::vector<AssimpObject> &objects){
     }
 }
 
-static void parseMeshData(std::vector<AssimpObject> &objects, std::vector<Mesh> &meshes, const aiScene* scene){
+static void parseMeshData(std::vector<AssimpObject> &objects, std::vector<Mesh> &meshes, const aiScene* scene, bool initTxtrs){
     
     unsigned int biggestMatI = 0;
     for (size_t i = 0; i < objects.size(); i++)
@@ -287,10 +287,9 @@ static void parseMeshData(std::vector<AssimpObject> &objects, std::vector<Mesh> 
     for (size_t i = 0; i < meshes.size(); i++)
     {
         std::vector<MeshObject> prevObjectData = meshes[i].objects; 
-        meshes[i] = Mesh(meshes[i].vertices, meshes[i].indices, meshes[i].materialName);
+        meshes[i] = Mesh(meshes[i].vertices, meshes[i].indices, meshes[i].materialName, initTxtrs);
         meshes[i].objects = prevObjectData;
     }
-    
 }
 
 static void generateDisplayingTexture(int displayRes, Texture& displayingTxtr, Model* model){
