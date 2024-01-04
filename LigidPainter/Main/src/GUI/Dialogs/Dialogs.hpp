@@ -601,6 +601,12 @@ public:
    Button selectedTextureMaterialBallDisplayingMode;
    Button selectedTextureCustomMeshDisplayingMode;
 
+   Button zoomInBtn;
+   Button zoomOutBtn;
+   Button zoomValDisplayer;
+   float zoomVal = 1;
+   RangeBar rotationRangeBar;
+
    Panel smartPositionTexturePanel;
    bool smartPositionTexturePanelActive = false;
    Panel smartStripesTexturePanel;

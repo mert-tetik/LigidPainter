@@ -226,6 +226,8 @@ struct AppTextures{
     Texture X;
     Texture flipH;
     Texture flipV;
+    Texture plus;
+    Texture minus;
     
     //--Textures
     Texture greetingDialogImage;  

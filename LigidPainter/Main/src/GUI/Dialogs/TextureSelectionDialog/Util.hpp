@@ -461,7 +461,7 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     receivedTexture.title = "SelectedTexture";
 
     // Generate the displaying texture of the selected texture
-    receivedTexture.generateProceduralDisplayingTexture(displayingTextureRes, displayMode);
+    receivedTexture.generateProceduralDisplayingTexture(displayingTextureRes, displayMode, 4.f - (this->zoomVal / 3.f) , 360.f - this->rotationRangeBar.value);
     
 }
 
@@ -497,9 +497,24 @@ void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection)
     this->selectedTextureDisplayingPanel.render(timer, false);
 
 
-    selectedTextureSolidDisplayingModeBtn.scale.x = 1.f + selectedTextureSolidDisplayingModeBtn.hoverMixVal * 1.5f;
-    selectedTextureMaterialBallDisplayingMode.scale.x = 1.f + selectedTextureMaterialBallDisplayingMode.hoverMixVal * 2.5f;
-    selectedTextureCustomMeshDisplayingMode.scale.x = 1.f + selectedTextureCustomMeshDisplayingMode.hoverMixVal * 2.8f;
+    if(selectedTextureSolidDisplayingModeBtn.hover)
+        selectedTextureSolidDisplayingModeBtn.texture = Texture();
+    else
+        selectedTextureSolidDisplayingModeBtn.texture = appTextures.twoDIcon;
+
+    if(selectedTextureMaterialBallDisplayingMode.hover)
+        selectedTextureMaterialBallDisplayingMode.texture = Texture();
+    else
+        selectedTextureMaterialBallDisplayingMode.texture = appTextures.materialIcon;
+
+    if(selectedTextureCustomMeshDisplayingMode.hover)
+        selectedTextureCustomMeshDisplayingMode.texture = Texture();
+    else
+        selectedTextureCustomMeshDisplayingMode.texture = appTextures.TDModelIcon;
+
+    selectedTextureSolidDisplayingModeBtn.scale.x = 1.f + selectedTextureSolidDisplayingModeBtn.hoverMixVal * 0.6f;
+    selectedTextureMaterialBallDisplayingMode.scale.x = 1.f + selectedTextureMaterialBallDisplayingMode.hoverMixVal * 1.5f;
+    selectedTextureCustomMeshDisplayingMode.scale.x = 1.f + selectedTextureCustomMeshDisplayingMode.hoverMixVal * 1.6f;
 
     selectedTextureSolidDisplayingModeBtn.pos = selectedTextureDisplayingPanel.pos;
     selectedTextureSolidDisplayingModeBtn.pos.x -= selectedTextureDisplayingPanel.scale.x - selectedTextureSolidDisplayingModeBtn.scale.x - 1.f; 
@@ -512,15 +527,33 @@ void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection)
     selectedTextureCustomMeshDisplayingMode.pos.y = selectedTextureMaterialBallDisplayingMode.pos.y;
     selectedTextureCustomMeshDisplayingMode.pos.z = selectedTextureMaterialBallDisplayingMode.pos.z;
 
-    if(!selectedTextureSolidDisplayingModeBtn.texture.ID){
-        selectedTextureSolidDisplayingModeBtn.texture = appTextures.solidPaintingDisplayingMode;
-        selectedTextureMaterialBallDisplayingMode.texture = appTextures.ligidPainterIcon;
-        selectedTextureCustomMeshDisplayingMode.texture = appTextures.TDModelIcon;
-    }
+    zoomValDisplayer.pos = selectedTextureDisplayingPanel.pos;
+    zoomValDisplayer.pos.x += selectedTextureDisplayingPanel.scale.x - zoomInBtn.scale.x - 2.f; 
+    zoomValDisplayer.pos.y -= selectedTextureDisplayingPanel.scale.y - zoomInBtn.scale.y - 1.f; 
+    zoomInBtn.pos = zoomValDisplayer.pos;
+    zoomInBtn.pos.x -= zoomValDisplayer.scale.x + zoomInBtn.scale.x;
+    zoomOutBtn.pos = zoomInBtn.pos;
+    zoomOutBtn.pos.x -= zoomInBtn.scale.x + zoomInBtn.scale.x;
+    rotationRangeBar.pos = selectedTextureDisplayingPanel.pos;
+    rotationRangeBar.pos.y += selectedTextureDisplayingPanel.scale.y - rotationRangeBar.scale.y - 1.f;
+
+    if(zoomInBtn.clicked && this->zoomVal != 10)
+        this->zoomVal++;
+    if(zoomOutBtn.clicked && this->zoomVal != 0)
+        this->zoomVal--;
 
     selectedTextureSolidDisplayingModeBtn.render(timer, true);
     selectedTextureMaterialBallDisplayingMode.render(timer, true);
     selectedTextureCustomMeshDisplayingMode.render(timer, true);
+    
+    if(this->activeSelectedTextureDisplayingMode != 0){
+        zoomInBtn.render(timer, true);
+        zoomOutBtn.render(timer, true);
+        zoomValDisplayer.text = "Zoom : " + std::to_string(this->zoomVal);
+        zoomValDisplayer.text.erase(zoomValDisplayer.text.end() - 4, zoomValDisplayer.text.end());
+        zoomValDisplayer.render(timer, true);
+        rotationRangeBar.render(timer, true);
+    }
 
     if(selectedTextureSolidDisplayingModeBtn.clicked)
         activeSelectedTextureDisplayingMode = 0;

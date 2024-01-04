@@ -397,4 +397,9 @@ TextureSelectionDialog::TextureSelectionDialog(){
     this->selectedTextureMaterialBallDisplayingMode.textColor2 = glm::vec4(1.);
     this->selectedTextureCustomMeshDisplayingMode = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1),"Custom Mesh", appTextures.TDModelIcon, 1.f,false);
     this->selectedTextureCustomMeshDisplayingMode.textColor2 = glm::vec4(1.);
+    this->zoomInBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(1.f, 1), "", appTextures.plus, 1.f,false);
+    this->zoomOutBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(1.f, 1), "", appTextures.minus, 1.f,false);
+    this->zoomValDisplayer = Button(ELEMENT_STYLE_SOLID,glm::vec2(2.f, 1), "Zoom : 1", Texture(), 1.f,false);
+    this->rotationRangeBar = RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(7.f, 1), "Rotaton", Texture(), 0.f, 0.f, 360.f, 0.f);
+    this->rotationRangeBar.defaultPointMode = false;
 }

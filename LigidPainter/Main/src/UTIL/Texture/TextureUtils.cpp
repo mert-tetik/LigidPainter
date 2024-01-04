@@ -715,7 +715,10 @@ void Texture::applyNormalMap(float proceduralNormalStrength, bool proceduralNorm
 }
 
 void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int displayMode){
-    
+    this->generateProceduralDisplayingTexture(displayingTextureRes, displayMode, 4.f, 0.f);
+}
+
+void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int displayMode, float radius, float rotation){
     // ------------- Set Up -------------
 
     GLint viewport[4]; 
@@ -778,8 +781,8 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
     // Generate the smart texture displaying texture
     if(displayMode == 1 || displayMode == 2){
         Camera matCam;
-        matCam.cameraPos = glm::vec3(0,0,-4.f);
-        matCam.radius = 4.f;
+        matCam.cameraPos = glm::vec3(radius * cos(glm::radians(rotation)), 0.0f, radius * sin(glm::radians(rotation)));;
+        matCam.radius = radius;
 
 
         //Move the camera to the side
@@ -791,8 +794,8 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         glm::mat4 projectionMatrix = glm::perspective(
                                                         glm::radians(35.f), //Fov  
                                                         -1.f,  //Ratio (is 1 since the width & the height is equal to displayRes)
-                                                        100.f,  //Near (the material is pretty close to the camera actually  ) 
-                                                        0.1f    //Far
+                                                        0.1f,    //Near
+                                                        100.f  //Far (the material is pretty close to the camera actually  ) 
                                                     );
 
         //Use the 3D model rendering shader

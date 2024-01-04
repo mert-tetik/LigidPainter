@@ -84,6 +84,8 @@ void Settings::loadAppTextures(){
     appTextures.X.load("./LigidPainter/Resources/Icons/X.png");
     appTextures.flipH.load("./LigidPainter/Resources/Icons/FlipH.png");
     appTextures.flipV.load("./LigidPainter/Resources/Icons/FlipV.png");
+    appTextures.plus.load("./LigidPainter/Resources/Icons/Plus.png");
+    appTextures.minus.load("./LigidPainter/Resources/Icons/Minus.png");
     appTextures.greetingDialogImage.load("./LigidPainter/Resources/Images/greetingDialogImage.jpg");
     appTextures.filterDisplayerImage.load("./LigidPainter/Resources/Images/FilterDisplayerImage.jpg");
     appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
