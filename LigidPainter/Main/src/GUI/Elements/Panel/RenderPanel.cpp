@@ -534,17 +534,27 @@ void Panel::drawPanel(
             sliderButton.pos.x = pos.x + this->additionalPos.x + sliderButton.scale.x - scale.x;
         
         float elementHeight = 0.f;
+        
+        if(barButtons.size())
+            elementHeight += barButtons[0].scale.y + barButtons[0].panelOffset / 2.f;
+
         for (size_t sectionI = 0; sectionI < sections.size(); sectionI++)
         {
             for (size_t elementI = 0; elementI < sections[sectionI].elements.size(); elementI++)
             {
-                elementHeight += sections[sectionI].elements[elementI].scale.y + sections[sectionI].elements[elementI].panelOffset / 2.f;
+                if(elementI % rowCount == 0){
+                    if(sections[sectionI].header.button.clickState1 || sections[sectionI].header.sectionHolder.active || sections[sectionI].header.state == -1 || (sections[sectionI].header.state == 0 && !sections[sectionI].header.button.text.size()))
+                        elementHeight += sections[sectionI].elements[elementI].scale.y + sections[sectionI].elements[elementI].panelOffset / 2.f;
+                }
             }
 
-            elementHeight += sections[sectionI].header.scale.y + sections[sectionI].header.panelOffset / 2.f;
+            if(sections[sectionI].header.state != -1){
+                if((sections[sectionI].header.state == 0 && sections[sectionI].header.button.text.size()) || sections[sectionI].header.state != 0)
+                    elementHeight += sections[sectionI].header.scale.y + sections[sectionI].header.panelOffset / 2.f;
+            }
         }
         
-        slideRatio = scale.y/elementHeight;
+        slideRatio = scale.y / elementHeight;
 
         if(slideRatio < 1 && vertical){
             if(sliderButton.clickState1){ //Pressed

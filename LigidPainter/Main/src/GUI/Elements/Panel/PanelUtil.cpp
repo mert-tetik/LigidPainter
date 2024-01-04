@@ -143,7 +143,6 @@ void Panel::resizeThePanel(){
 void Panel::prepDrawBtnVertically(Element &button,Element &previousButton,float& elementPos,int btnCounter){
     button.scale.x = scale.x/rowCount;
     
-    
     //Move the button on top of the panel
     button.pos = pos + this->additionalPos;
 
