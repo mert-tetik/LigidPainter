@@ -49,8 +49,8 @@ void UI::panelPositioning(
     paintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingPanel.scale.y; //Keep beneath the navigation bar
     windowPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
     windowPanel.scale.y = 50 - navigationPanel.scale.y; //Keep beneath the navigation bar
-    paintingPanel.scale.y = windowPanel.scale.y;
-    paintingPanelModePanel.scale.y = windowPanel.scale.y;
+    paintingPanel.scale.y = 40.f;
+    paintingPanelModePanel.scale.y = 50 - navigationPanel.scale.y;
     libraryPanelLeft.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
     libraryPanelDisplayer.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanelDisplayer.scale.y; //Keep beneath the navigation bar
     libraryPanelDisplayer.scale.y = 50 - navigationPanel.scale.y - selectedTextureDisplayer.scale.y;

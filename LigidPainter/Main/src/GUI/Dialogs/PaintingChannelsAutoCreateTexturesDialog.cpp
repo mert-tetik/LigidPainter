@@ -48,9 +48,9 @@ PaintingChannelsAutoCreateTexturesDialog::PaintingChannelsAutoCreateTexturesDial
                 )
             }
         },
-        glm::vec2(12.f),
+        glm::vec2(12.f, 10.f),
         glm::vec3(50.f,50.f,0.8f),
-        ColorPalette::mainColor,
+        ColorPalette::secondColor,
         ColorPalette::thirdColor,
         true,
         true,

@@ -533,7 +533,16 @@ void Panel::drawPanel(
         else
             sliderButton.pos.x = pos.x + this->additionalPos.x + sliderButton.scale.x - scale.x;
         
-        float elementHeight = (elementPos - elementStartPos + lastElementScale)/2.f;
+        float elementHeight = 0.f;
+        for (size_t sectionI = 0; sectionI < sections.size(); sectionI++)
+        {
+            for (size_t elementI = 0; elementI < sections[sectionI].elements.size(); elementI++)
+            {
+                elementHeight += sections[sectionI].elements[elementI].scale.y + sections[sectionI].elements[elementI].panelOffset / 2.f;
+            }
+
+            elementHeight += sections[sectionI].header.scale.y + sections[sectionI].header.panelOffset / 2.f;
+        }
         
         slideRatio = scale.y/elementHeight;
 
