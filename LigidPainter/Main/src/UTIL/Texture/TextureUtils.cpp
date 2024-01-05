@@ -551,6 +551,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         
         ShaderSystem::to2DProcedural().setFloat("proceduralScale", this->proceduralProps.proceduralScale);
         ShaderSystem::to2DProcedural().setFloat("proceduralStretch", this->proceduralProps.proceduralStretch);
+        ShaderSystem::to2DProcedural().setFloat("proceduralScaleModelPos", this->proceduralProps.proceduralScaleModelPos);
         ShaderSystem::to2DProcedural().setInt("proceduralInverted", this->proceduralProps.proceduralnverted);
         ShaderSystem::to2DProcedural().setInt("proceduralGrayScale", this->proceduralProps.proceduralGrayScale);
         ShaderSystem::to2DProcedural().setFloat("proceduralBrightness", this->proceduralProps.proceduralBrightness);
@@ -862,6 +863,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralID", this->proceduralProps.proceduralID);                
         ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScale", this->proceduralProps.proceduralScale);
         ShaderSystem::proceduralDisplayerShader().setFloat("proceduralStretch", this->proceduralProps.proceduralStretch);
+        ShaderSystem::proceduralDisplayerShader().setFloat("proceduralScaleModelPos", this->proceduralProps.proceduralScaleModelPos);
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralInverted", this->proceduralProps.proceduralnverted);
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", this->proceduralProps.proceduralGrayScale);
         ShaderSystem::proceduralDisplayerShader().setFloat("proceduralBrightness", this->proceduralProps.proceduralBrightness);

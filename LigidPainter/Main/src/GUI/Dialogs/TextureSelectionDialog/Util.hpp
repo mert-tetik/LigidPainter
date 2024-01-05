@@ -52,6 +52,7 @@ void TextureSelectionDialog::initTextureSelectionDialog(
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Brightness_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralBrightness;   
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Scale_INDEX].rangeBar.value = receivedTexture.proceduralProps.txtrPackScale;   
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Stretch_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralStretch;   
+        subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_ScaleModelPos_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralScaleModelPos;   
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_MirroredRepeat_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralMirroredRepeat;
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Count_INDEX].rangeBar.value = receivedTexture.proceduralProps.txtrPackCount;   
         subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Rotation_Jitter_INDEX].rangeBar.value = receivedTexture.proceduralProps.txtrPackRotation_Jitter;   
@@ -99,6 +100,7 @@ void TextureSelectionDialog::initTextureSelectionDialog(
         subPanel.sections[0].elements[subPanel_Invert_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralnverted;
         subPanel.sections[0].elements[subPanel_Scale_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralScale * 10.f;  
         subPanel.sections[0].elements[subPanel_Stretch_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralStretch;  
+        subPanel.sections[0].elements[subPanel_ScaleModelPos_INDEX].rangeBar.value = receivedTexture.proceduralProps.proceduralScaleModelPos;  
         subPanel.sections[0].elements[subPanel_MirroredRepeat_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralMirroredRepeat;
         subPanel.sections[0].elements[subPanel_Normal_Map_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralNormalMap;
         subPanel.sections[0].elements[subPanel_Normal_Gray_Scale_INDEX].checkBox.clickState1 = receivedTexture.proceduralProps.proceduralNormalGrayScale;
@@ -362,6 +364,7 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
         receivedTexture.proceduralProps.proceduralGrayScale = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Gray_Scale_INDEX].checkBox.clickState1;
         receivedTexture.proceduralProps.proceduralBrightness = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Brightness_INDEX].rangeBar.value;
         receivedTexture.proceduralProps.proceduralStretch = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Stretch_INDEX].rangeBar.value;
+        receivedTexture.proceduralProps.proceduralScaleModelPos = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_ScaleModelPos_INDEX].rangeBar.value;
         receivedTexture.proceduralProps.proceduralMirroredRepeat = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_MirroredRepeat_INDEX].checkBox.clickState1;
         
         receivedTexture.proceduralProps.txtrPackScale = this->subPanelTxtrPack.sections[0].elements[subPanelTxtrPack_Scale_INDEX].rangeBar.value;
@@ -413,6 +416,7 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     else{
         receivedTexture.proceduralProps.proceduralScale = this->subPanel.sections[0].elements[subPanel_Scale_INDEX].rangeBar.value / 10.f;
         receivedTexture.proceduralProps.proceduralStretch = this->subPanel.sections[0].elements[subPanel_Stretch_INDEX].rangeBar.value;
+        receivedTexture.proceduralProps.proceduralScaleModelPos = this->subPanel.sections[0].elements[subPanel_ScaleModelPos_INDEX].rangeBar.value;
         receivedTexture.proceduralProps.proceduralMirroredRepeat = this->subPanel.sections[0].elements[subPanel_MirroredRepeat_INDEX].checkBox.clickState1;
         receivedTexture.proceduralProps.proceduralnverted = this->subPanel.sections[0].elements[subPanel_Invert_INDEX].checkBox.clickState1;
         receivedTexture.proceduralProps.proceduralNormalMap = this->subPanel.sections[0].elements[subPanel_Normal_Map_INDEX].checkBox.clickState1;

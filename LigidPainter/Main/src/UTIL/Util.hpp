@@ -250,6 +250,7 @@ struct ProceduralProperties{
     int proceduralID = -1;
     float proceduralScale = 1.f;
     float proceduralStretch = 1.f;
+    float proceduralScaleModelPos = 1.f;
     bool proceduralMirroredRepeat = false;
     int proceduralnverted = 0;
     bool proceduralNormalMap = false;

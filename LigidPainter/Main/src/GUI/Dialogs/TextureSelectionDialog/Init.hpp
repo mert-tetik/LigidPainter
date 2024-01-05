@@ -43,7 +43,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define subPanel_Use_Texture_Coordinates_INDEX 7
 #define subPanel_MirroredRepeat_INDEX 8
 #define subPanel_Stretch_INDEX 9
-#define subPanel_Select_INDEX 10
+#define subPanel_ScaleModelPos_INDEX 10
+#define subPanel_Select_INDEX 11
 
 #define subPanelSmartTextures_Invert_INDEX 0
 #define subPanelSmartTextures_Brightness_INDEX 1
@@ -67,6 +68,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define subPanelTxtrPack_Use_Texture_Coordinates_INDEX 12 
 #define subPanelTxtrPack_MirroredRepeat_INDEX 13
 #define subPanelTxtrPack_Stretch_INDEX 14
+#define subPanelTxtrPack_ScaleModelPos_INDEX 14
 #define subPanelTxtrPack_Select_INDEX 15
 
 
@@ -178,6 +180,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 4.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f), "Mirrored Repeat", 2.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Stretch", Texture(), 0.5f, 0.f, 10.f, 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale Model Pos", Texture(), 0.5f, 0.f, 10.f, 1.f),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false),
                                         }
                                     )
@@ -250,6 +253,7 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 4.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f), "Mirrored Repeat", 2.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Stretch", Texture(), 0.5f, 0.f, 10.f, 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale Model Pos", Texture(), 0.5f, 0.f, 10.f, 1.f),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 1.f, false)
                                         }
                                     )

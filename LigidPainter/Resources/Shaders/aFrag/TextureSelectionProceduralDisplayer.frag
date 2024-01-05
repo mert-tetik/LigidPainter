@@ -9,6 +9,7 @@ out vec4 fragColor;
 uniform int proceduralID;
 uniform float proceduralScale;
 uniform float proceduralStretch;
+uniform float proceduralScaleModelPos;
 uniform int proceduralInverted;
 uniform sampler2D proceduralTexture;
 uniform int proceduralGrayScale;

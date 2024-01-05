@@ -11,6 +11,7 @@ in vec3 Bitangent;
 uniform int proceduralID; 
 uniform float proceduralScale; 
 uniform float proceduralStretch; 
+uniform float proceduralScaleModelPos; 
 uniform int proceduralInverted;
 uniform sampler2D proceduralTexture;
 uniform int proceduralUseTexCoords;
@@ -28,6 +29,7 @@ void main(){
     vPos /= 2.;
     vPos += 0.5;
     vPos *= 2.;
+    vPos *= proceduralScaleModelPos;
 
     vec2 uv = vPos.xy;
     
