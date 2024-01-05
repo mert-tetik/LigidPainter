@@ -462,8 +462,6 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                 Settings::defaultFramebuffer()->setViewport();
             }
         }    
-
-        this->dialogControl.unActivate();
     }
     else if(maskViaFaceSelection.clicked){
         faceSelectionMode = !faceSelectionMode;

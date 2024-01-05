@@ -68,8 +68,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define subPanelTxtrPack_Use_Texture_Coordinates_INDEX 12 
 #define subPanelTxtrPack_MirroredRepeat_INDEX 13
 #define subPanelTxtrPack_Stretch_INDEX 14
-#define subPanelTxtrPack_ScaleModelPos_INDEX 14
-#define subPanelTxtrPack_Select_INDEX 15
+#define subPanelTxtrPack_ScaleModelPos_INDEX 15
+#define subPanelTxtrPack_Select_INDEX 16
 
 
 TextureSelectionDialog::TextureSelectionDialog(){
