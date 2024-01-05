@@ -418,6 +418,8 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                                         Texture selectedPrimitives
                                                     )
 {
+    glDisable(GL_BLEND);
+
     std::vector<MirrorSide> mirrorSides;
     
     if(oSide.active)
@@ -613,4 +615,5 @@ void Painter::generateMirroredProjectedPaintingTexture(
         projectedPaintingTexture.update(whitePx, 1, 1, GL_NEAREST);
     }
 
+    glEnable(GL_BLEND);
 }

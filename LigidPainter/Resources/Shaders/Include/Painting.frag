@@ -209,6 +209,7 @@ vec3 getPaintedTexture  (
     float brushTxtrAlpha = texture(brushTxtr, TexCoords).a; 
     vec3 paintColor; 
     if(multiChannelsPaintingMod){
+        
         // Albedo
         if(channelI == 0){
             paintColor = texture2D(brushTxtr, TexCoords).rgb;
