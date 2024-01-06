@@ -142,49 +142,67 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
         unded = true;
     }
     
-    if(this->activeHistoryMode == HISTORY_PAINTING_MODE && actions_Painting.size()){
-        try
-        {
-            for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp")) {
-                if (entry.is_regular_file()) {
-                    std::string fileName = entry.path().filename().string();
-
-                    // Check if the file starts with "_history_"
-                    if (fileName.find("_history_") == 0) {
-                        // Use string stream to split the filename into parts
-                        std::istringstream iss(fileName);
-                        std::string part;
-                        std::getline(iss, part, '_'); // Skip the first part "_history_"
-                        std::getline(iss, part, '_'); // Read the first integer value
-                        std::getline(iss, part, '_'); // Read the first integer value
-                        int indexVal = std::stoi(part);
-
-                        std::getline(iss, part, '_'); // Read the second integer value
-                        int IDVal = std::stoi(part);
-                        
-                        /*
-                            TODO
-                            Library::getTexture(i)->copyDataToTheCopyContext();
-                            projectUpdatingThreadElements.updateTextures = true;
-                        */
-
-                        if(indexVal == actions_Painting.size() - 1){
-                            for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-                            {   
-                                if(Library::getTexture(i)->ID == IDVal){
-                                    Library::getTexture(i)->readTMP("_history_" + std::to_string(indexVal) + "_" + std::to_string(IDVal));
-                                }
-                            }
-                        }
+    if(this->activeHistoryMode == HISTORY_PAINTING_MODE){
+        if(painter.materialPainting){
+            if(actions_MultiChannelPainting.size()){
+                
+                if(actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].albedoPainted){
+                    Texture* albedo = &actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].albedo; 
+                    if(actions_Painting[albedo->ID].size()){
+                        albedo->readTMP("_history_" + std::to_string(actions_Painting[albedo->ID].size() - 1) + "_" + std::to_string(albedo->ID));
+                        actions_Painting[albedo->ID].pop_back();
                     }
                 }
+
+                if(actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].roughnessPainted){
+                    Texture* roughness = &actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].roughness; 
+                    if(actions_Painting[roughness->ID].size()){
+                        roughness->readTMP("_history_" + std::to_string(actions_Painting[roughness->ID].size() - 1) + "_" + std::to_string(roughness->ID));
+                        actions_Painting[roughness->ID].pop_back();
+                    }
+                }
+
+                if(actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].metallicPainted){
+                    Texture* metallic = &actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].metallic; 
+                    if(actions_Painting[metallic->ID].size()){
+                        metallic->readTMP("_history_" + std::to_string(actions_Painting[metallic->ID].size() - 1) + "_" + std::to_string(metallic->ID));
+                        actions_Painting[metallic->ID].pop_back();
+                    }
+                }
+
+                if(actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].normalPainted){
+                    Texture* normalMap = &actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].normal; 
+                    if(actions_Painting[normalMap->ID].size()){
+                        normalMap->readTMP("_history_" + std::to_string(actions_Painting[normalMap->ID].size() - 1) + "_" + std::to_string(normalMap->ID));
+                        actions_Painting[normalMap->ID].pop_back();
+                    }
+                }
+
+                if(actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].heightPainted){
+                    Texture* heightMap = &actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].height; 
+                    if(actions_Painting[heightMap->ID].size()){
+                        heightMap->readTMP("_history_" + std::to_string(actions_Painting[heightMap->ID].size() - 1) + "_" + std::to_string(heightMap->ID));
+                        actions_Painting[heightMap->ID].pop_back();
+                    }
+                }
+
+                if(actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].aoPainted){
+                    Texture* ambientOcclusion = &actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].ao; 
+                    if(actions_Painting[ambientOcclusion->ID].size()){
+                        ambientOcclusion->readTMP("_history_" + std::to_string(actions_Painting[ambientOcclusion->ID].size() - 1) + "_" + std::to_string(ambientOcclusion->ID));
+                        actions_Painting[ambientOcclusion->ID].pop_back();
+                    }
+                }
+
+                actions_MultiChannelPainting.pop_back();
             }
         }
-        catch (const std::filesystem::filesystem_error& ex) {
-            LGDLOG::start << "ERROR : Filesystem : Location ID 337523 " << ex.what() << LGDLOG::end;
+        else{
+            if(actions_Painting[painter.selectedTexture.ID].size()){
+                painter.selectedTexture.readTMP("_history_" + std::to_string(actions_Painting[painter.selectedTexture.ID].size() - 1) + "_" + std::to_string(painter.selectedTexture.ID));
+                actions_Painting[painter.selectedTexture.ID].pop_back();
+            }
         }
-
-        actions_Painting.pop_back();
     }
 
     if(this->activeHistoryMode == HISTORY_LIBRARY_MODE && actions_Library.size()){

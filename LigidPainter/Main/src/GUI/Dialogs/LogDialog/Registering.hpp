@@ -116,6 +116,8 @@ struct PaintingAction{
     std::string title;
     Texture icon;
 
+    bool multiChannelAction = false;
+
     Texture albedo; 
     bool albedoPainted;
     Texture roughness; 
@@ -130,6 +132,17 @@ struct PaintingAction{
     bool aoPainted;
 
     PaintingAction(
+                        std::string title, Texture icon, Texture texture 
+                    )
+    {
+        multiChannelAction = false;
+
+        this->title = title;
+        this->icon = icon;
+        this->albedo = texture;
+    }
+
+    PaintingAction(
                         std::string title, Texture icon,
                         Texture albedo, bool albedoPainted, 
                         Texture roughness, bool roughnessPainted, 
@@ -138,9 +151,26 @@ struct PaintingAction{
                         Texture height, bool heightPainted, 
                         Texture ao, bool aoPainted
                     )
-{
+    {
+        multiChannelAction = true;
+
         this->title = title;
         this->icon = icon;
+        
+        this->albedo = albedo; 
+        this->roughness = roughness; 
+        this->metallic = metallic; 
+        this->normal = normal; 
+        this->height = height; 
+        this->ao = ao; 
+
+        this->albedoPainted = albedoPainted; 
+        this->roughnessPainted = roughnessPainted; 
+        this->metallicPainted = metallicPainted; 
+        this->normalPainted = normalPainted; 
+        this->heightPainted = heightPainted; 
+        this->aoPainted = aoPainted; 
+
     }
 };
 
@@ -224,7 +254,8 @@ struct MaterialEditorAction{
 };
 
 extern std::vector<LibraryAction> actions_Library;
-extern std::vector<PaintingAction> actions_Painting;
+extern std::map<unsigned int, std::vector<PaintingAction>> actions_Painting;
+extern std::vector<PaintingAction> actions_MultiChannelPainting;
 extern std::vector<VectorsAction> actions_Vectors;
 extern std::vector<ObjectSelectionAction> actions_ObjectSelection;
 extern std::vector<FaceSelectionAction> actions_FaceSelection;
@@ -244,20 +275,40 @@ void registerPaintingAction(
                                 Texture ao, bool aoPainted
                             )
 {
-    if(albedoPainted)
-        albedo.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(albedo.ID));
-    if(roughnessPainted)
-        roughness.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(roughness.ID));
-    if(metallicPainted)
-        metallic.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(metallic.ID));
-    if(normalPainted)
-        normal.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(normal.ID));
-    if(heightPainted)
-        height.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(height.ID));
-    if(aoPainted)
-        ao.writeTMP("_history_" + std::to_string(actions_Painting.size()) + "_" + std::to_string(ao.ID));
+
+    if(albedoPainted){
+        albedo.writeTMP("_history_" + std::to_string(actions_Painting[albedo.ID].size()) + "_" + std::to_string(albedo.ID));
+        actions_Painting[albedo.ID].push_back(PaintingAction(title, icon, albedo));
+    }
+
+    if(roughnessPainted){
+        roughness.writeTMP("_history_" + std::to_string(actions_Painting[roughness.ID].size()) + "_" + std::to_string(roughness.ID));
+        actions_Painting[roughness.ID].push_back(PaintingAction(title, icon, roughness));
+    }
     
-    actions_Painting.push_back(PaintingAction(title, icon, albedo, albedoPainted, roughness, roughnessPainted, metallic, metallicPainted, normal, normalPainted, height, heightPainted, ao, aoPainted));
+    if(metallicPainted){
+        metallic.writeTMP("_history_" + std::to_string(actions_Painting[metallic.ID].size()) + "_" + std::to_string(metallic.ID));
+        actions_Painting[metallic.ID].push_back(PaintingAction(title, icon, metallic));
+    }
+    
+    if(normalPainted){
+        normal.writeTMP("_history_" + std::to_string(actions_Painting[normal.ID].size()) + "_" + std::to_string(normal.ID));
+        actions_Painting[normal.ID].push_back(PaintingAction(title, icon, normal));
+    }
+    
+    if(heightPainted){
+        height.writeTMP("_history_" + std::to_string(actions_Painting[height.ID].size()) + "_" + std::to_string(height.ID));
+        actions_Painting[height.ID].push_back(PaintingAction(title, icon, height));
+    }
+    
+    if(aoPainted){
+        ao.writeTMP("_history_" + std::to_string(actions_Painting[ao.ID].size()) + "_" + std::to_string(ao.ID));
+        actions_Painting[ao.ID].push_back(PaintingAction(title, icon, ao));
+    }
+    
+    if(roughnessPainted || metallicPainted || normalPainted || heightPainted || aoPainted){
+        actions_MultiChannelPainting.push_back(PaintingAction(title, icon, albedo, albedoPainted, roughness, roughnessPainted, metallic, metallicPainted, normal, normalPainted, height, heightPainted, ao, aoPainted));
+    }
 
     newOtherAction = true;
 }
