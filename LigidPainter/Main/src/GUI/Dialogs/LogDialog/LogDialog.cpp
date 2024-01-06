@@ -554,6 +554,9 @@ void LogDialog::render(
         actions_MaterialEditor.erase(actions_MaterialEditor.begin());
     }
 
+    if(painter.selectedDisplayingModeIndex != 1)
+        actions_MultiChannelPainting.clear();
+
     std::vector<PaintingAction>* paintingActions;
     if(painter.materialPainting)
         paintingActions = &actions_MultiChannelPainting;
