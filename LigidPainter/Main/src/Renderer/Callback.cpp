@@ -139,8 +139,7 @@ void Renderer::scrollCallback(
     if(
             (((this->userInterface.materialEditorDialog.dialogControl.isActive() && !this->userInterface.materialEditorDialog.shortcutPanel.hover && !this->userInterface.materialEditorDialog.modifiersPanel.hover) || !this->userInterface.materialEditorDialog.dialogControl.isActive()) || 
             ((!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode) || this->userInterface.objectTexturingDialog.dialogControl.isActive())) &&
-            !this->userInterface.anyPanelHover &&
-            !this->userInterface.anyDialogActive 
+            (!this->userInterface.anyPanelHover || this->userInterface.anyDialogActive) 
         )
     {
         //The distance between the camera & center 

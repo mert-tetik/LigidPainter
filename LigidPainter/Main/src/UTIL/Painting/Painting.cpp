@@ -448,8 +448,6 @@ void Painter::generateMirroredProjectedPaintingTexture(
 
         glm::vec3 cam = glm::abs(glm::normalize(getScene()->camera.cameraPos));
 
-        std::cout << glm::to_string(cam) << std::endl;
-
         //In the X axis
         if(cam.x > 0.5){
             float invertVal = 1.f;
