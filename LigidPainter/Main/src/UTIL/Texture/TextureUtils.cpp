@@ -937,6 +937,7 @@ bool Texture::writeTextureData(std::ofstream& wf){
     LGDTEXTURE_WRITEBITS(this->proceduralProps.textureSelectionDialog_selectedMode, int, "Property texture - textureSelectionDialog_selectedMode");
     LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralMirroredRepeat, bool, "Property texture - proceduralMirroredRepeat");
     LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralStretch, float, "Property texture - proceduralStretch");
+    LGDTEXTURE_WRITEBITS(this->proceduralProps.proceduralScaleModelPos, float, "Property texture - proceduralScaleModelPos");
 
     // -------- Procedural Texture Data --------
     std::string txtrTitle = "";
@@ -993,6 +994,7 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int v
     int textureSelectionDialog_selectedMode;
     bool proceduralMirroredRepeat;
     float proceduralStretch;
+    float proceduralScaleModelPos;
     
     LGDMATERIAL_READBITS(proceduralID, int, "Property texture - procedural ID");
     LGDMATERIAL_READBITS(proceduralScale, float, "Property texture - procedural Scale");
@@ -1019,10 +1021,17 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int v
     if(versionCode == 1){
         LGDMATERIAL_READBITS(proceduralMirroredRepeat, bool, "Property texture - proceduralMirroredRepeat");
         LGDMATERIAL_READBITS(proceduralStretch, float, "Property texture - proceduralStretch");
+        proceduralScaleModelPos = 1.f;
+    }
+    else if(versionCode == 2){
+        LGDMATERIAL_READBITS(proceduralMirroredRepeat, bool, "Property texture - proceduralMirroredRepeat");
+        LGDMATERIAL_READBITS(proceduralStretch, float, "Property texture - proceduralStretch");
+        LGDMATERIAL_READBITS(proceduralScaleModelPos, float, "Property texture - proceduralScaleModelPos");
     }
     else{
         proceduralMirroredRepeat = true;
         proceduralStretch = 1.f;
+        proceduralScaleModelPos = 1.f;
     }
 
     // --------- Recalculate procedural ID ---------
@@ -1092,6 +1101,7 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int v
     this->proceduralProps.textureSelectionDialog_selectedMode = textureSelectionDialog_selectedMode;
     this->proceduralProps.proceduralMirroredRepeat = proceduralMirroredRepeat;
     this->proceduralProps.proceduralStretch = proceduralStretch;
+    this->proceduralProps.proceduralScaleModelPos = proceduralScaleModelPos;
 
     glGenTextures(1, &this->ID);
 

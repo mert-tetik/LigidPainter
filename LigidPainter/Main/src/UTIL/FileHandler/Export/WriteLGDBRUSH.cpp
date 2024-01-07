@@ -82,7 +82,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITEBITS(h3, uint64_t, "Description 3rd");
 
         //Version number
-        uint32_t versionNumber = 2100; 
+        uint32_t versionNumber = 2200; 
         LGDBRUSH_WRITEBITS(versionNumber, uint32_t, "Version number");
     
         //!Brush Data

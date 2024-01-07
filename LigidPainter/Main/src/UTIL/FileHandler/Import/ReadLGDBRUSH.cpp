@@ -115,10 +115,10 @@ bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     }
     
     //Version number
-    uint32_t versionNumber; //2100 
+    uint32_t versionNumber; //2200 
     LGDBRUSH_READBITS(versionNumber, uint32_t, "Version number");
 
-    if(versionNumber != 2000 && versionNumber != 2100){
+    if(versionNumber != 2000 && versionNumber != 2100 && versionNumber != 2200){
         LGDLOG::start<< "ERROR : Invalid brush version : " << versionNumber << LGDLOG::end; 
         return false;
     }
@@ -291,7 +291,9 @@ static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& propert
         }
         else if(prop.valueType == 't'){
             unsigned int versionCode = 0;
-            if(versionNumber >= 2100)
+            if(versionNumber == 2200)
+                versionCode = 2;
+            else if(versionNumber == 2100)
                 versionCode = 1;
 
             prop.texture.readTextureData(rf, false, versionCode);

@@ -99,7 +99,7 @@ bool FileHandler::readLGDMATERIALFile(
         uint32_t versionNumber; 
         LGDMATERIAL_READBITS(versionNumber, uint32_t, "Version number");
 
-        if(versionNumber != 2000 && versionNumber != 2100 && versionNumber != 2200){
+        if(versionNumber != 2000 && versionNumber != 2100 && versionNumber != 2200 && versionNumber != 2300){
             LGDLOG::start << "ERROR WHILE READING MATERIAL FILE! This version of the LigidPainter doesn't support this material file's version." << LGDLOG::end;
             return false;
         }
@@ -148,7 +148,10 @@ bool FileHandler::readLGDMATERIALFile(
             }
 
             unsigned int textureVersionCode = 0;
-            if(versionNumber >= 2200)
+            
+            if(versionNumber >= 2300)
+                textureVersionCode = 2;
+            else if(versionNumber == 2200)
                 textureVersionCode = 1;
 
             if(!modifier.maskTexture.readTextureData(rf, true, textureVersionCode))
