@@ -44,6 +44,9 @@ void Painter::initPainter(){
     glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
     glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
 
+    //--------- init paintingTexture8 ---------
+    this->faceSelection.meshMask = Texture(nullptr, 1024, 1024);
+
     //--------- init paintingTexture8 --------- 
     glActiveTexture(GL_TEXTURE0);
     glGenTextures(1,&this->paintingTexture8);

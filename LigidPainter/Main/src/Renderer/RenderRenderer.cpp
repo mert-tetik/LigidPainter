@@ -479,10 +479,7 @@ void Renderer::renderMainModel(){
             glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
         
             glActiveTexture(GL_TEXTURE12);
-            if(painter.faceSelection.meshMask.ID)
-                glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
-            else
-                glBindTexture(GL_TEXTURE_2D, appTextures.white.ID);
+            glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
         }
         else{
             ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
