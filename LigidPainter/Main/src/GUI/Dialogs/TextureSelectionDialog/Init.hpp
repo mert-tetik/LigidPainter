@@ -177,10 +177,10 @@ TextureSelectionDialog::TextureSelectionDialog(){
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Map", 4.f),
                                             CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Normal Gray Scale", 0.f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Normal Strength", Texture(), 0.f, 0.f, 100.f, 10.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 4.f),
-                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f), "Mirrored Repeat", 2.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Use Texture Coordinates", 2.f),
+                                            CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f), "Mirrored Repeat", 0.5f),
                                             RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Stretch", Texture(), 0.5f, 0.f, 10.f, 1.f),
-                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale Model Pos", Texture(), 0.5f, 0.f, 10.f, 1.f),
+                                            RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1.f),"Scale Model Pos", Texture(), 2.f, 0.f, 10.f, 1.f),
                                             Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,2.f),"Select", Texture(), 2.f, false),
                                         }
                                     )
@@ -404,6 +404,6 @@ TextureSelectionDialog::TextureSelectionDialog(){
     this->zoomInBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(1.f, 1), "", appTextures.plus, 1.f,false);
     this->zoomOutBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(1.f, 1), "", appTextures.minus, 1.f,false);
     this->zoomValDisplayer = Button(ELEMENT_STYLE_SOLID,glm::vec2(2.f, 1), "Zoom : 1", Texture(), 1.f,false);
-    this->rotationRangeBar = RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(7.f, 1), "Rotaton", Texture(), 0.f, 0.f, 360.f, 0.f);
+    this->rotationRangeBar = RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(7.f, 1), "Rotaton", Texture(), 0.f, 0.f, 360.f, 272.f);
     this->rotationRangeBar.defaultPointMode = false;
 }

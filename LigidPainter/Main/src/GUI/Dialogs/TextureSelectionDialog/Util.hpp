@@ -465,8 +465,12 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     receivedTexture.title = "SelectedTexture";
 
     // Generate the displaying texture of the selected texture
-    receivedTexture.generateProceduralDisplayingTexture(displayingTextureRes, displayMode, 4.f - (this->zoomVal / 3.f) , 360.f - this->rotationRangeBar.value);
-    
+    if(!defaultProperties){
+        receivedTexture.generateProceduralDisplayingTexture(displayingTextureRes, displayMode, 4.f - (this->zoomVal / 3.f) , 360.f - this->rotationRangeBar.value);
+    }
+    else{
+        receivedTexture.generateProceduralDisplayingTexture(displayingTextureRes, displayMode);
+    }
 }
 
 void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection){

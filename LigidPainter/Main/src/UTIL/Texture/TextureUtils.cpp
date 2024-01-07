@@ -716,7 +716,7 @@ void Texture::applyNormalMap(float proceduralNormalStrength, bool proceduralNorm
 }
 
 void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int displayMode){
-    this->generateProceduralDisplayingTexture(displayingTextureRes, displayMode, 4.f, 0.f);
+    this->generateProceduralDisplayingTexture(displayingTextureRes, displayMode, 4.f, 272.f);
 }
 
 void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int displayMode, float radius, float rotation){
