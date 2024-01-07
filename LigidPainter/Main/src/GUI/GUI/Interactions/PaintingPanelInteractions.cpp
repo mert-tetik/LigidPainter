@@ -331,11 +331,6 @@ void UI::paintingPanelInteraction(
     painter.ambientOcclusionVal = colorSection.elements[15].rangeBar.value;
     painter.useCustomMaterial = colorSection.elements[16].checkBox.clickState1;
 
-    if(selectedPaintingPanelMode != 3)
-        this->meshSection.elements[2].checkBox.clickState1 = false;
-    if(selectedPaintingPanelMode != 5)
-        this->paintingOverSection.elements[1].checkBox.clickState1 = false;
-
     if(getModel()->newModelAdded){
         paintingChannelsSection.clear(); 
 

@@ -142,6 +142,8 @@ TextureField::TextureField(Texture texture){
     textureDisplayingButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
     textureDisplayingButton.stretchTexture = true;
     textureDisplayingButton.color = glm::vec4(0.f);
+    textureDisplayingButton.color2 = glm::vec4(0.f);
+    textureDisplayingButton.outline = false;
 
     textureDisplayingButtonIOutline = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
 }
@@ -328,6 +330,8 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             else
                 ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 0.f);
         }
+        else
+            ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
         ShaderSystem::buttonShader().setFloat("rotation", this->rotation);
         
