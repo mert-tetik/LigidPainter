@@ -75,6 +75,36 @@ bool Shortcuts::CTRL_W(){
 bool Shortcuts::CTRL_SHIFT_S(){
     return (IS_PRESSED(CTRL) && IS_PRESSED(SHIFT) && IS_CLICKED(LIGIDGL_KEY_S));
 }
+bool Shortcuts::F1(){
+    return (IS_CLICKED(LIGIDGL_KEY_F1));
+}
+bool Shortcuts::F2(){
+    return (IS_CLICKED(LIGIDGL_KEY_F2));
+}
+bool Shortcuts::F3(){
+    return (IS_CLICKED(LIGIDGL_KEY_F3));
+}
+bool Shortcuts::F4(){
+    return (IS_CLICKED(LIGIDGL_KEY_F4));
+}
+bool Shortcuts::F5(){
+    return (IS_CLICKED(LIGIDGL_KEY_F5));
+}
+bool Shortcuts::F6(){
+    return (IS_CLICKED(LIGIDGL_KEY_F6));
+}
+bool Shortcuts::F7(){
+    return (IS_CLICKED(LIGIDGL_KEY_F7));
+}
+bool Shortcuts::F8(){
+    return (IS_CLICKED(LIGIDGL_KEY_F8));
+}
+bool Shortcuts::F9(){
+    return (IS_CLICKED(LIGIDGL_KEY_F9));
+}
+bool Shortcuts::F10(){
+    return (IS_CLICKED(LIGIDGL_KEY_F10));
+}
 bool Shortcuts::F11(){
     return (IS_CLICKED(LIGIDGL_KEY_F11));
 }
@@ -94,5 +124,15 @@ bool Shortcuts::anyShortCut(){
             Shortcuts::CTRL_G()||
             Shortcuts::CTRL_W()||
             Shortcuts::CTRL_SHIFT_S()||
+            Shortcuts::F1() ||
+            Shortcuts::F2() ||
+            Shortcuts::F3() ||
+            Shortcuts::F4() ||
+            Shortcuts::F5() ||
+            Shortcuts::F6() ||
+            Shortcuts::F7() ||
+            Shortcuts::F8() ||
+            Shortcuts::F9() ||
+            Shortcuts::F10() ||
             Shortcuts::F11();
 }
