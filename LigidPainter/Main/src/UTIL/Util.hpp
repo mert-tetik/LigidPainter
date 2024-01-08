@@ -1076,24 +1076,32 @@ namespace Debugger{
     void block(std::string name);
 };
 
-namespace Shortcuts{
-    bool CTRL_Z();
-    bool CTRL_X();
-    bool CTRL_S();
-    bool CTRL_N();
-    bool CTRL_O();
-    bool CTRL_P();
-    bool CTRL_Y();
-    bool CTRL_C();
-    bool CTRL_V();
-    bool CTRL_A();
-    bool CTRL_F();
-    bool CTRL_G();
-    bool CTRL_W();
-    bool CTRL_SHIFT_S();
-    bool F11();
-    bool anyShortCut();
-}
+bool shortcuts_CTRL_Z();
+bool shortcuts_CTRL_X();
+bool shortcuts_CTRL_S();
+bool shortcuts_CTRL_N();
+bool shortcuts_CTRL_O();
+bool shortcuts_CTRL_P();
+bool shortcuts_CTRL_Y();
+bool shortcuts_CTRL_C();
+bool shortcuts_CTRL_V();
+bool shortcuts_CTRL_A();
+bool shortcuts_CTRL_F();
+bool shortcuts_CTRL_G();
+bool shortcuts_CTRL_W();
+bool shortcuts_CTRL_SHIFT_S();
+bool shortcuts_F1();
+bool shortcuts_F2();
+bool shortcuts_F3();
+bool shortcuts_F4();
+bool shortcuts_F5();
+bool shortcuts_F6();
+bool shortcuts_F7();
+bool shortcuts_F8();
+bool shortcuts_F9();
+bool shortcuts_F10();
+bool shortcuts_F11();
+bool shortcuts_anyShortCut();
 
 #include <thread>
 #include <mutex>

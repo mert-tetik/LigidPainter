@@ -121,7 +121,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh, int selectedMeshI, bool mous
 
     bool changesMade = false;
     
-    if(Shortcuts::CTRL_A()){
+    if(shortcuts_CTRL_A()){
         if(registerHistory)
             registerFaceSelectionAction("Select all the faces - Painting", selectedPrimitiveIDs, prevPrimArray, selectedMeshI);
 
@@ -136,7 +136,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh, int selectedMeshI, bool mous
         changesMade = true;
     }
 
-    if(mouseInteraction && !Shortcuts::CTRL_A()){
+    if(mouseInteraction && !shortcuts_CTRL_A()){
         if(*Mouse::LClick() && registerHistory)
             registerFaceSelectionAction("Face selection - Painting", selectedPrimitiveIDs, prevPrimArray, selectedMeshI);
        

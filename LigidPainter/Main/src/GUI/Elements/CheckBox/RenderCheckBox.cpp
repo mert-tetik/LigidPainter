@@ -117,7 +117,8 @@ void CheckBox::render(Timer &timer,bool doMouseTracking){
     }
 
     if(this->shortcutFunc != nullptr){
-        if(this->shortcutFunc())
+        if(this->shortcutFunc()){
             this->clickState1 = !this->clickState1;
+        }
     }
 }

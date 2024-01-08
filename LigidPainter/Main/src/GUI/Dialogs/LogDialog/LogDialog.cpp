@@ -775,7 +775,7 @@ void LogDialog::render(
 
     if(
             actionHistoryActive && this->historyPanel.sections.size() && this->historyPanel.sections[0].elements.size() && this->historyPanel.sections[0].elements[this->historyPanel.sections[0].elements.size() - 1].button.clicked  ||
-            Shortcuts::CTRL_Z()
+            shortcuts_CTRL_Z()
         )
     {
         undo(painter, objectTexturingDialog, paintingOverTextureFields, materialEditorDialog);

@@ -603,12 +603,12 @@ void ObjectTexturingDialog::updateDisplayingTexture(LogDialog& logDialog){
         getModel()->meshes[i].Draw(faceSelectionMode);
     }
     
-    if((*Mouse::LPressed() || Shortcuts::CTRL_A()) && this->faceSelectionMode && !this->anyElementHover()){
+    if((*Mouse::LPressed() || shortcuts_CTRL_A()) && this->faceSelectionMode && !this->anyElementHover()){
         glm::vec2 cursorPos = *Mouse::cursorPos();
         cursorPos -= glm::vec2(*Settings::videoScale() * glm::vec2(0.1f));    
         cursorPos *= glm::vec2(glm::vec2(1.25f));   
         
-        if((*Mouse::LClick() && !logDialog.isHovered()) || Shortcuts::CTRL_A()){
+        if((*Mouse::LClick() && !logDialog.isHovered()) || shortcuts_CTRL_A()){
             std::vector<std::vector<byte>> primitivesArray, prevPrimArray;
 
             for (size_t i = 0; i < faceSelection.size(); i++)

@@ -556,8 +556,8 @@ void UI::init
     this->paintingOverSection = Section(
                                     Element(),
                                     {   
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Painting Over", 7.f)), //0
-                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Editor Mode", 1.f)), //1
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Use Painting Over", 7.f, shortcuts_F1)), //0
+                                        Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Editor Mode", 1.f, shortcuts_F2)), //1
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Library", Texture(), 1.f,false)), //2
                                         Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"Add Texture From Computer", Texture(), 1.f,false)), //3
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Grayscale Masking", 1.f)),// 4

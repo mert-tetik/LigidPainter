@@ -98,7 +98,7 @@ void Model::selectObject(Panel& objectsPanel){
     int objI = -1;
     int meshI = -1;
 
-    if(Shortcuts::CTRL_A()){
+    if(shortcuts_CTRL_A()){
         for (size_t meshI = 0; meshI < this->meshes.size(); meshI++)
         {
             for (size_t i = 0; i < this->meshes[meshI].objects.size(); i++)
