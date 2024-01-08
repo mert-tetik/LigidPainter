@@ -68,6 +68,7 @@ void UI::elementInteraction(
                     paintingChannelsAutoCreateTexturesDialog.dialogControl.isActive() ||
                     paintingChannelsTextureSelectionPanelActive ||
                     texturePackEditorDialog.dialogControl.isActive() ||
+                    painter.paintingoverTextureEditorMode ||
                     dropper.active ||
                     timer.seconds - lastSecAnyDialogActiveWasTrue <= 1; 
 

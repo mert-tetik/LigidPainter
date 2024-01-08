@@ -197,7 +197,7 @@ void Renderer::cursorPositionCallback(
             ((getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
             window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS) || getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE) == LIGIDGL_PRESS) 
             &&  //If pressed to CTRL button
-            ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || this->userInterface.objectTexturingDialog.dialogControl.isActive()) && //If there is no active dialog (don't move the camera if a dialog is active)
+            ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || painter.paintingoverTextureEditorMode || this->userInterface.objectTexturingDialog.dialogControl.isActive()) && //If there is no active dialog (don't move the camera if a dialog is active)
             !this->userInterface.anyPanelHover       //Don't move the camera if cursor hover a panel
         ) 
     { 
@@ -258,6 +258,7 @@ void Renderer::cursorPositionCallback(
     else if (
                 getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
                 ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || //If there is no active dialog (don't move the camera if a dialog is active)
+                painter.paintingoverTextureEditorMode ||
                 this->userInterface.materialEditorDialog.dialogControl.isActive() ||
                 this->userInterface.objectTexturingDialog.dialogControl.isActive() ||
                 this->userInterface.materialSelectionDialog.dialogControl.isActive() ||

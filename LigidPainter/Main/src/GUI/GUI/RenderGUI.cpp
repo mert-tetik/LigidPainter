@@ -248,7 +248,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             this->panelPositioning(screenGapPerc, painter);
     }
     
-    paintingPanelModePanel.render(timer,!anyDialogActive);
+    paintingPanelModePanel.render(timer,!anyDialogActive || painter.paintingoverTextureEditorMode);
     if(paintingPanelModePanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
@@ -279,7 +279,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             paintingPanel.sections[0] = this->cantBeDisplayedSection;
     }
     
-    paintingPanel.render(timer,!anyDialogActive);
+    paintingPanel.render(timer,!anyDialogActive || (painter.paintingoverTextureEditorMode && selectedPaintingPanelMode == 5));
     if(paintingPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
@@ -776,7 +776,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     ShaderSystem::buttonShader().setMat4("projection", this->projection);
 
     // Rendering all the painting over texture fields
-    if(painter.usePaintingOver){
+    if(painter.usePaintingOver && (!anyDialogActive || painter.paintingoverTextureEditorMode)){
         for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
         {
             if(this->paintingOverTextureFields[i].transformedFlag)
@@ -791,7 +791,10 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
                 }
             }
 
-            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyDialogActive && !anyHover && !painter.faceSelection.editMode, false, this->paintingOverTextureFields, i, !painter.paintingOverWraping);
+            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyHover && !painter.faceSelection.editMode, false, this->paintingOverTextureFields, i, !painter.paintingOverWraping);
+        
+            if(!painter.paintingoverTextureEditorMode)
+                this->paintingOverTextureFields[i].active = false;
         }    
     }
 
