@@ -46,6 +46,21 @@ void UI::paintingPanelInteraction(
     //Get the brush data from GUI to the painter class
     painter.setBrushProperties(brushSection);
 
+    if(!anyDialogActive || painter.paintingoverTextureEditorMode){
+        
+        if(shortcuts_F1())
+            this->paintingOverSection.elements[0].checkBox.clickState1 = !this->paintingOverSection.elements[0].checkBox.clickState1;
+        if(shortcuts_F2())
+            this->paintingOverSection.elements[1].checkBox.clickState1 = !this->paintingOverSection.elements[1].checkBox.clickState1;
+        
+        if(!painter.paintingoverTextureEditorMode){
+            if(shortcuts_F3())
+                this->meshSection.elements[1].checkBox.clickState1 = false;
+            if(shortcuts_F4())
+                this->meshSection.elements[2].checkBox.clickState1 = false;
+        }
+    }
+
     if(painter.selectedDisplayingModeIndex == 0){
         this->paintingOverSection.elements[0].checkBox.clickState1 = false;
         this->paintingOverSection.elements[1].checkBox.clickState1 = false;
