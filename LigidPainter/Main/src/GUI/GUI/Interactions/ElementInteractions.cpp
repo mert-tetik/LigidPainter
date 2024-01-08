@@ -37,7 +37,7 @@ void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Panel& vectorPaintingModePropertyPanel, Panel& smearPaintingModePropertyPanel, Painter &painter, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, Button filterPaintingModeFilterBtn, Box twoDPaintingBox, Material& paintingCustomMat);
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
-size_t lastSecAnyDialogActiveWasTrue = 0;
+double lastSecAnyDialogActiveWasTrue = 0.;
 
 void UI::elementInteraction(
                                 Painter &painter,
@@ -70,10 +70,10 @@ void UI::elementInteraction(
                     texturePackEditorDialog.dialogControl.isActive() ||
                     painter.paintingoverTextureEditorMode ||
                     dropper.active ||
-                    timer.seconds - lastSecAnyDialogActiveWasTrue <= 1; 
+                    LigidGL::getTime() - lastSecAnyDialogActiveWasTrue <= 0.6; 
 
-    if(this->anyDialogActive && !(timer.seconds - lastSecAnyDialogActiveWasTrue <= 1)){
-        lastSecAnyDialogActiveWasTrue = timer.seconds;
+    if(this->anyDialogActive && !(LigidGL::getTime() - lastSecAnyDialogActiveWasTrue <= 0.6)){
+        lastSecAnyDialogActiveWasTrue = LigidGL::getTime();
     }
 
     this->anyPanelHover = 
