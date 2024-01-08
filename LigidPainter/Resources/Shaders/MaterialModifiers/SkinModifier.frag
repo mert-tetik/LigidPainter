@@ -427,6 +427,8 @@ void main()
     // Albedo
     fragColor = vec4(mix(noisedSkin, vec3(0.67, 0.25, 0.6) * skinColorX, voronoi2/10. * blushingStrength) ,1.);
 
+    fragColor.rgb = mix(frackledSkin, frackledSkin/1.5, voronoi/2.);
+
     //Roughness
     if(state == 1){
         fragColor.r /= skinWetness;
@@ -440,22 +442,18 @@ void main()
     
     //Normal Map
     else if(state == 3){
-        fragColor.rgb = mix(frackledSkin, frackledSkin/1.5, voronoi/2.);
         fragColor.rgb = vec3(fragColor.r);
     }
     
     //Height Map
     else if(state == 4){
-        fragColor.rgb = mix(frackledSkin, frackledSkin/1.5, voronoi/2.);
         fragColor.rgb = vec3((fragColor.r - 0.25) * skinHeight);
     }
     
     //Ambient Occlusion
     else if(state == 5){
         float ao = 1. - skinAmbientOcclusion;
-    
-        fragColor.rgb = mix(frackledSkin, frackledSkin/1.5, voronoi/2.);
-        
+            
         if(fragColor.r < ao)
             fragColor.r -= ao - fragColor.r;
 
