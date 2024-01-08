@@ -345,6 +345,8 @@ public:
     float hoverMixVal = 0.f;
     float clickedMixVal = 0.f;
     
+    bool (*shortcutFunc)() = nullptr;
+
     std::string infoText;
     size_t hoverDuration;
 
@@ -353,6 +355,7 @@ public:
     CheckBox(std::string text, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, int animationStyle,glm::vec4 textColor,glm::vec4 textColor2,
              float textScale,float panelOffset,glm::vec3 outlineColor,glm::vec3 outlineColor2);
     CheckBox(int style,glm::vec2 scale,std::string text,float panelOffset);
+    CheckBox(int style, glm::vec2 scale, std::string text, float panelOffset, bool (*shortcutFunc)());
 
     //Public member functions
     void render(Timer &timer,bool doMouseTracking);

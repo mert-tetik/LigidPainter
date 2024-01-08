@@ -31,9 +31,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void CheckBox::render(Timer &timer,bool doMouseTracking){
     
-    //Define the common utilities class
-    ;
-    
     this->doMouseTracking = doMouseTracking;
 
     //Original position in the screen coordinates
@@ -117,5 +114,10 @@ void CheckBox::render(Timer &timer,bool doMouseTracking){
         infoBtn.pos = this->pos;
         infoBtn.pos.z += 0.03f;
         infoBtn.render(timer, false);
+    }
+
+    if(this->shortcutFunc != nullptr){
+        if(this->shortcutFunc())
+            this->clickState1 = !this->clickState1;
     }
 }

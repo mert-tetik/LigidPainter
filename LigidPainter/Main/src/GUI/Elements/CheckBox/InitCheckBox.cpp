@@ -64,3 +64,10 @@ CheckBox::CheckBox(int style,glm::vec2 scale,std::string text,float panelOffset)
         this->outlineColor2 = {};
     }
 }
+
+CheckBox::CheckBox(int style, glm::vec2 scale, std::string text, float panelOffset, bool (*shortcutFunc)()){
+    
+    this->shortcutFunc = shortcutFunc;
+
+    *this = CheckBox(style, scale, text, panelOffset);
+}
