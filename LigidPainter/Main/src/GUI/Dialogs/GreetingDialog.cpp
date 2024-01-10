@@ -26,11 +26,64 @@
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
 
+#include <curl/curl.h>
+
 #include <string>
 #include <iostream>
 #include <vector>
 
+static bool newVersionMode = false;
+static int currentVersion = 240;
+
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
+{
+    ((std::string*)userp)->append((char*)contents, size * nmemb);
+    return size * nmemb;
+}
+
+bool isNumeric(const std::string& str) {
+    for (char c : str) {
+        if (!isdigit(c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
 GreetingDialog::GreetingDialog(){
+
+    CURL *curl;
+    CURLcode res;
+    std::string readBuffer;
+
+    curl = curl_easy_init();
+    if(curl) {
+
+        curl_easy_setopt(curl, CURLOPT_URL, "http://storage.googleapis.com/ligidtoolsbucket/LigidPainter_Latest_Version.txt");
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+
+        res = curl_easy_perform(curl);
+        curl_easy_cleanup(curl);
+
+        if(readBuffer.size()){
+            if(isNumeric(readBuffer)){
+                try
+                {
+                    if(std::stoi(readBuffer) > currentVersion){
+                        newVersionMode = true;
+                    }
+                }
+                catch(const std::exception& e)
+                {
+                }
+            }
+        }
+    }
+    else{
+        std::cout << "Failed to initialize libcurl!" << std::endl;
+    }
+
     
     //First text button
     this->textButton1 = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(8,2), "Welcome To The LigidPainter",Texture(),0.f,false);
@@ -43,7 +96,7 @@ GreetingDialog::GreetingDialog(){
     //Load project button
     this->loadProjectButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2), "Load",Texture(),0.f,false);
     this->loadProjectButton.pos.x = 45;
-    this->loadProjectButton.pos.y = 58;
+    this->loadProjectButton.pos.y = 62;
     this->loadProjectButton.pos.z = 0.9f;
     this->loadProjectButton.color = glm::vec4(1);
     this->loadProjectButton.outlineColor = glm::vec4(1);
@@ -52,14 +105,14 @@ GreetingDialog::GreetingDialog(){
     //Create project button
     this->createProjectButton = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2), "Create",Texture(),0.f,false);
     this->createProjectButton.pos.x = 55;
-    this->createProjectButton.pos.y = 58;
+    this->createProjectButton.pos.y = 62;
     this->createProjectButton.pos.z = 0.9f;
     this->createProjectButton.color = glm::vec4(1);
     this->createProjectButton.outlineColor = glm::vec4(1);
     this->createProjectButton.textColor = glm::vec4(1);
     
     //Decoration texture displayer button
-    this->textureDisplayerButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(30,30), "", appTextures.greetingDialogImage, 0.f, false);
+    this->textureDisplayerButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(40,40), "", appTextures.greetingDialogImage, 0.f, false);
     this->textureDisplayerButton.radius = 0.35;
     this->textureDisplayerButton.pos.x = 50;
     this->textureDisplayerButton.pos.y = 50;
@@ -69,8 +122,23 @@ GreetingDialog::GreetingDialog(){
     this->textureDisplayerButton.outlineColor = glm::vec4(0);
     this->textureDisplayerButton.outlineColor2 = glm::vec4(0);
     
+    this->newVersionBannerButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(40,40), "", appTextures.newVersionBanner, 0.f, false);
+    this->newVersionBannerButton.radius = 0.35;
+    this->newVersionBannerButton.pos.x = 50;
+    this->newVersionBannerButton.pos.y = 80;
+    this->newVersionBannerButton.pos.z = 0.8f;
+    this->newVersionBannerButton.color = glm::vec4(0);
+    this->newVersionBannerButton.color2 = glm::vec4(0);
+    this->newVersionBannerButton.outlineColor = glm::vec4(0);
+    this->newVersionBannerButton.outlineColor2 = glm::vec4(0);
+    
+    this->downloadNewVersionButton = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(10.f,2), "Download", Texture(), 0.f, false);
+    this->downloadNewVersionButton.pos.x = 40;
+    this->downloadNewVersionButton.pos.y = 82;
+    this->downloadNewVersionButton.pos.z = 0.9f;
+    
     //Background panel
-    this->bgPanel = Panel({},glm::vec2(20),glm::vec3(50.f,50.f,0.8f),ColorPalette::mainColor,ColorPalette::thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f,false);
+    this->bgPanel = Panel({},glm::vec2(40),glm::vec3(50.f,50.f,0.8f),ColorPalette::mainColor,ColorPalette::thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f,false);
 
     bgPanel.scale.x = textureDisplayerButton.scale.x;
 
@@ -85,6 +153,15 @@ void GreetingDialog::render(Timer timer,NewProjectDialog &newProjectDialog,LoadP
     
     //Render the texture displayer button 
     textureDisplayerButton.render(timer,false);
+    if(newVersionMode){
+        newVersionBannerButton.render(timer, false);
+        downloadNewVersionButton.render(timer, dialogControl.isComplete());
+        
+        if(downloadNewVersionButton.clicked){
+            Website website = Website("https://ligidtools.com/release");
+            website.open();
+        }
+    }
 
     //bgPanel.render(timer,false);
     loadProjectButton.render(timer,dialogControl.isComplete());

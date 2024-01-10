@@ -286,6 +286,8 @@ class GreetingDialog
 public:
    Button loadProjectButton;
    Button createProjectButton;
+   Button newVersionBannerButton;
+   Button downloadNewVersionButton;
    Button textureDisplayerButton;
    Button textButton1;
    Panel bgPanel;

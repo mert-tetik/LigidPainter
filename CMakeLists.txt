@@ -1,7 +1,7 @@
 ﻿# LigidPainter - The only CMakeLists.txt file
 
 
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.9)
 
 # Define the project data
 project(LigidPainter VERSION 2.4.0)
@@ -138,4 +138,5 @@ target_link_libraries(Ligid PRIVATE
     zlibd 
     OpenAL32 
     OpenGL::GL
+    libcurl-d_imp
 )

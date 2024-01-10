@@ -231,6 +231,7 @@ struct AppTextures{
     
     //--Textures
     Texture greetingDialogImage;  
+    Texture newVersionBanner;  
     Texture filterDisplayerImage;  
     Texture noMaterialConnectedToTheMeshWarningImage;  
     Texture noMaterialModifierIsConnectedToMaterialWarningImage;
