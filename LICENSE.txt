@@ -1,40 +1,66 @@
+© 2024 Mert Tetik. All rights reserved.
+
 LigidPainter Source Code License Agreement
 
-Version 1.0
+Version 1.1
 
-PLEASE READ THIS LICENSE AGREEMENT CAREFULLY BEFORE USING THE LIGIDPAINTER SOURCE CODE. BY USING THE SOURCE CODE, YOU ARE AGREEING TO BE BOUND BY THE TERMS OF THIS LICENSE AGREEMENT.
+PLEASE READ THIS LICENSE AGREEMENT CAREFULLY BEFORE USING THE LIGIDPAINTER'S SOURCE CODE OR LIGIDPAINTER'S BINARY FORM OR LIGIDPAINTER'S RESOURCE FILES. BY USING THE LIGIDPAINTER'S SOURCE CODE OR LIGIDPAINTER'S BINARY FORM OR LIGIDPAINTER'S RESOURCE FILES, YOU ARE AGREEING TO BE BOUND BY THE TERMS OF THIS LICENSE AGREEMENT.
+
+THIS LICENSE AGREEMENT COVERS THE SOURCE CODE, RESOURCE FILES AND THE BINARY FORM OF THE LIGIDPAINTER.
 
 Definitions
-a. "LigidPainter" refers to the source code of the software application titled "LigidPainter" developed by Mert Tetik.
-
+a. "LigidPainter" refers to the software application titled "LigidPainter" developed by Mert Tetik.
 b. "Source Code" refers to the human-readable form of the LigidPainter software application, comprising text files containing the programming instructions and related documentation.
-
 c. "Binary Form" refers to the compiled and executable version of the LigidPainter software application.
+d. "Mert Tetik" refers to the individual a graduate of "Borusan Asım Kocabıyık Mesleki Ve Teknik Anadolu Lisesi" in the year of 2023, who is the author and developer of the software LigidPainter.
+e. "Resource Files" refers to the image, 3D model, material, brush etc. files located in the "./LigidPainter/Resources" folder.
+
+Summarization (This header has no authority over this license agreement)
+a. You CAN'T use or distribute the Source Code for any purposes. (you can't do ANYTHING with the Source Code)
+b. You CAN distribute the Binary Form and the Resource Files of the LigidPainter by providing proper credits (See the "How To Give Credits" header) (No selling) (No modifications).
+c. Products (Textures, Brush or Material files) of the LigidPainter entirely belongs to the creator of the product. LigidPainter or Mert Tetik can't claim rights over your products and can't be liable for them too.
+d. You CAN do whatever you want with the Resource Files.
 
 Grant of License
-Subject to the terms and conditions of this License Agreement, Mert Tetik grants you a non-exclusive, non-transferable, revocable license to use the Source Code of LigidPainter for personal, non-commercial purposes only.
+Subject to the terms and conditions of this License Agreement, Mert Tetik grants you a non-exclusive, non-transferable, revocable license which prohibits you to use the Source Code of LigidPainter for any purposes, whether commercial or non-commercial. 
+Source Code is exclusively reserved for use by Mert Tetik, no other individual or entity is granted permission to utilize the LigidPainter's Source Code for any purposes. 
+Everyone and AI propgrams except Mert Tetik bounds to restrictions outlined under the "Restrictions" header.
+
+In the "Restrictions" header subpoints labeled with "a, b, j, k" covers the Source Code of the LigidPainter. "c, d" is general. "e, f, g, h" covers the Binary Form. "i" covers the Resource Files. 
 
 Restrictions
 a. You may not copy, distribute, modify, sublicense, or sell the Source Code of LigidPainter, in whole or in part, without the explicit written permission of Mert Tetik.
-
 b. You may not create derivative works based on the Source Code of LigidPainter or incorporate it into other software projects without the explicit written permission of Mert Tetik.
+c. You, including any contributors to the Source Code are explicitly prohibited from claiming any rights over the LigidPainter's Source Code or LigidPainter's Binary Form or LigidPainter's Resource Files. All rights to the LigidPainter are exclusively attributed to Mert Tetik.
+d. If a directory within the LigidPainter Source Code repository contains another file with the extension of "*.txt" named "LICENSE.txt", the Source Code files within that directory shall be governed by the terms and conditions of the respective license text file contained within that directory.
+e. LigidPainter's Binary Form can be distributed publicly by anyone with proper credits to the LigidPainter (See the "How To Give Credits" header). However, selling the LigidPainter's Binary Form in exchange of something is strictly prohibited.
+f. When distributing the LigidPainter's Binary Form, you must distribute using the name of the LigidPainter. Altering the name of the application is explicitly prohibited.
+g. When distributing the LigidPainter's Binary Form, the original Resource Files must also be distributed alongside it.
+h. When distributing the LigidPainter's Binary Form, the Binary Form must remain unchanged, and Resource Files must be unchanged. Distributing altered versions of the Binary Form or the Resource Files is strictly prohibited. You must distribute the files provided by Mert Tetik (find the files at www.ligidtools.com/ligidpainter). 
+i. LigidPainter's Resource Files can be used freely without any obligation to provide credits, even when used outside of the LigidPainter software.
+j. LigidPainter's Source Code can't be used to teach AI programs.
+k. LigidPainter's Source Code can't be used to generate code via AI programs.
 
-c. If a directory within the LigidPainter source code repository contains another license text file, the source code files within that directory shall be governed by the terms and conditions of the respective license text file contained within that directory.
+How To Give Credits
+a. When giving credits for the distribution of LigidPainter's Binary Form, include the following attribution:
+   - Mert Tetik
+   - LigidPainter
+   - https://www.ligidtools.com/ligidpainter
+b. The credit informtion must be prominently displayed in close proximity to the download button or any distribution method. It should be clearly visible whenever the download button is visible.
 
 Contribution and Modification
-a. The only way to contribute to the LigidPainter project is by becoming a contributor on the official GitHub repository maintained by Mert Tetik.
-
-b. By contributing to the LigidPainter project, you grant Mert Tetik a non-exclusive, worldwide, royalty-free, perpetual, irrevocable license to use, reproduce, modify, display, distribute, and sublicense your contributions within the LigidPainter project.
+a. The only way to contribute to the LigidPainter project is by becoming a contributor on the official GitHub repository named "LigidPainter" and maintained by Mert Tetik.
+b. Any code contributed to LigidPainter becomes the exclusive property of Mert Tetik. Contributors explicitly relinquish any claims or rights over the LigidPainter's Source Code. Contributors are bound by the restrictions outlined under the "Restrictions" header.
 
 Termination
 This License Agreement is effective until terminated. Mert Tetik may terminate this Agreement at any time without notice if you fail to comply with any of its terms and conditions. Upon termination, you must immediately cease all use of the LigidPainter Source Code and destroy any copies in your possession.
 
 Disclaimer of Warranty
-THE LIGIDPAINTER SOURCE CODE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL MERT TETIK BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE LIGIDPAINTER SOURCE CODE.
+THE LIGIDPAINTER SOURCE CODE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL MERT TETIK BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION WITH THE LIGIDPAINTER.
 
 Governing Law
 This License Agreement shall be governed by and construed in accordance with the laws of the jurisdiction in which Mert Tetik resides.
 
-By using the LigidPainter Source Code, you acknowledge that you have read and understood this License Agreement and agree to be bound by its terms and conditions.
+By using the LigidPainter's Source Code or LigidPainter's Binary Form or LigidPainter's Resource Files, you acknowledge that you have read and understood this License Agreement and agree to be bound by its terms and conditions.
 
-© 2023 Mert Tetik. All rights reserved.
+© 2024 Mert Tetik. All rights reserved.
