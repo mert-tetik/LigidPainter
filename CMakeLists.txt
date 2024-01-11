@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 # Define the project data
-project(LigidPainter VERSION 2.4.0)
+project(LigidPainter VERSION 2.4.1)
 
 # Glob all source files in the LigidPainter directory
 file(GLOB_RECURSE LIGID_SOURCES
@@ -52,6 +52,7 @@ install(
             "${CMAKE_SOURCE_DIR}/assimp-vc142-mtd.dll"
             "${CMAKE_SOURCE_DIR}/OpenAL32.dll"
             "${CMAKE_SOURCE_DIR}/zlibd.dll"
+            "${CMAKE_SOURCE_DIR}/libcurl-d.dll"
             "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.29.30133/debug_nonredist/x64/Microsoft.VC142.DebugCRT/concrt140d.dll"
             "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.29.30133/debug_nonredist/x64/Microsoft.VC142.DebugCRT/msvcp140_1d.dll"
             "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.29.30133/debug_nonredist/x64/Microsoft.VC142.DebugCRT/msvcp140_2d.dll"
@@ -75,12 +76,12 @@ install(
 # Set the project version
 set(PROJECT_VERSION_MAJOR 2)
 set(PROJECT_VERSION_MINOR 4)
-set(PROJECT_VERSION_PATCH 0)
+set(PROJECT_VERSION_PATCH 1)
 
 # Set CPack package details
 set(CPACK_PACKAGE_NAME LigidPainter)  # App name
 set(CPACK_PACKAGE_VENDOR LigidTools-MertTETIK)  # Publisher name
-set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE_BINARY_FORMAT.txt)  # The license
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE.txt)  # The license
 set(CPACK_RESOURCE_FILE_WELCOME ${CMAKE_SOURCE_DIR}/Installer/Welcome.txt)  # The welcome text
 set(CPACK_PACKAGE_ICON ${PROJECT_SOURCE_DIR}/LigidPainter/Resources/Icons/logo-1080x.ico)
 set(CPACK_WIX_PRODUCT_ICON ${PROJECT_SOURCE_DIR}/LigidPainter/Resources/Icons/logo-1080x.ico)
@@ -94,7 +95,7 @@ set(CPACK_CREATE_DESKTOP_LINKS Ligid)
 # Set CPack package version
 set(CPACK_PACKAGE_VERSION_MAJOR 2)
 set(CPACK_PACKAGE_VERSION_MINOR 4)
-set(CPACK_PACKAGE_VERSION_PATCH 0)
+set(CPACK_PACKAGE_VERSION_PATCH 1)
 set(CPACK_GENERATOR WIX)
 
 include(CPack)

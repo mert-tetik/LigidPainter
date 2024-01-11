@@ -6,9 +6,7 @@
 
  (c) 2024 Mert Tetik. All rights reserved.
 
- All rights reserved.
-
- Official GitHub Link : https:github.com/mert-tetik/LigidPainter
+ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
  Official Web Page : https:ligidtools.com/ligidpainter
 
  ---------------------------------------------------------------------------
