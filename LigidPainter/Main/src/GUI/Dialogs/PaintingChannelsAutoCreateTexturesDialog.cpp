@@ -98,8 +98,28 @@ void PaintingChannelsAutoCreateTexturesDialog::render(Timer timer, std::vector<S
                         
                         if(panel.sections[0].elements[1].checkBox.clickState1){
                             pxs = new char[textureRes * textureRes * 4];
+
                             for (size_t i = 0; i < textureRes * textureRes; i++)
                             {
+                                if(channelI == 0){
+                                    pxs[i*4+0] = 0; pxs[i*4+1] = 0; pxs[i*4+2] = 0;
+                                }
+                                else if(channelI == 1){
+                                    pxs[i*4+0] = 63; pxs[i*4+1] = 63; pxs[i*4+2] = 63;
+                                }
+                                else if(channelI == 2){
+                                    pxs[i*4+0] = 0; pxs[i*4+1] = 0; pxs[i*4+2] = 0;
+                                }
+                                else if(channelI == 3){
+                                    pxs[i*4+0] = 63; pxs[i*4+1] = 63; pxs[i*4+2] = 127;
+                                }
+                                else if(channelI == 4){
+                                    pxs[i*4+0] = 63; pxs[i*4+1] = 63; pxs[i*4+2] = 63;
+                                }
+                                else if(channelI == 5){
+                                    pxs[i*4+0] = 127; pxs[i*4+1] = 127; pxs[i*4+2] = 127;
+                                }
+                                
                                 pxs[i*4+3] = 127;
                             }
                         }
