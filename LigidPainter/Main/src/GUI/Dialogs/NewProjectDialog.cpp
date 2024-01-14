@@ -138,6 +138,8 @@ NewProjectDialog::NewProjectDialog(){
                                                                                 "2048",
                                                                                 "4096"
                                                                             },"Texture Resolution",4.f);
+
+    resolutionCombobox.selectedIndex = 2;
 }
 
 void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen, LogDialog& logDialog){
