@@ -277,12 +277,12 @@ void LogDialog::render(
 
             messageInfoBtn.text = quitMSG;
 
-            if(noBtn.clicked){
+            if(noBtn.clicked || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE)){
                 messageInfoActive = false;
                 quitMSG = "";
                 getContext()->window.setShouldClose(false);
             }
-            if(yesBtn.clicked){
+            if(yesBtn.clicked || getContext()->window.isKeyClicked(LIGIDGL_KEY_ENTER)){
                 this->windowShouldClose = true;
             }
         }
