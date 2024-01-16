@@ -78,11 +78,27 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
             }
         ),
         Section(
-            Element(Button()),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Image Filter"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter Mask", Texture(whitePixel, 1, 1, GL_NEAREST, 24), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
+        ),
+        Section(
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physically Based)"),
+            {
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Physically Based Ambient Occlusion", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous Ambient Occlusion ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Z Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Z Direction", 0.f),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -102,10 +118,22 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
     sections[0].elements[6].button.textureSelection3D = true;
     sections[0].elements[6].button.selectionDialogTxtrRes = 128;
 
-    sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[0].button.selectionDialogTxtrRes = 128;
-    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
-    sections[sections.size() - 1].elements[1].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[0].button.filterSelection = true;
+    sections[sections.size() - 2].elements[0].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
+    sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
+    
+    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+
+    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -145,11 +173,27 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
             }
         ),
         Section(
-            Element(Button()),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Image Filter"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter Mask", Texture(whitePixel, 1, 1, GL_NEAREST, 24), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
+        ),
+        Section(
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physically Based)"),
+            {
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Physically Based Ambient Occlusion", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous Ambient Occlusion ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Z Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Z Direction", 0.f),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -165,10 +209,22 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
     sections[0].elements[10].button.colorSelection = true;
     sections[0].elements[10].button.color = glm::vec4(1.f,1.f,1.f,1.f);
 
-    sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[0].button.selectionDialogTxtrRes = 128;
-    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
-    sections[sections.size() - 1].elements[1].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[0].button.filterSelection = true;
+    sections[sections.size() - 2].elements[0].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
+    sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
+    
+    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+
+    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -244,11 +300,27 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
             }
         ),
         Section(
-            Element(Button()),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Image Filter"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter Mask", Texture(whitePixel, 1, 1, GL_NEAREST, 24), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
+        ),
+        Section(
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physically Based)"),
+            {
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Physically Based Ambient Occlusion", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous Ambient Occlusion ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Z Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Z Direction", 0.f),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -261,10 +333,22 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
     sections[3].elements[3].button.colorSelection = true;
     sections[3].elements[3].button.color = glm::vec4(glm::vec3(0.58f, 0.82f, 0.75f), 1.f);
 
-    sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[0].button.selectionDialogTxtrRes = 128;
-    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
-    sections[sections.size() - 1].elements[1].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[0].button.filterSelection = true;
+    sections[sections.size() - 2].elements[0].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
+    sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
+    
+    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+
+    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 } 
@@ -343,11 +427,27 @@ std::vector<Section> MaterialModifier::createMossModifier(){
             }
         ),
         Section(
-            Element(Button()),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Image Filter"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter Mask", Texture(whitePixel, 1, 1, GL_NEAREST, 24), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
+        ),
+        Section(
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physically Based)"),
+            {
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physically Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Z Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Z Direction", 0.f),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -361,10 +461,22 @@ std::vector<Section> MaterialModifier::createMossModifier(){
     sections[0].elements[2].button.color = glm::vec4(glm::vec3(0.27f, 0.22f, 0.15f), 1.f);
     
 
-    sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[0].button.selectionDialogTxtrRes = 128;
-    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
-    sections[sections.size() - 1].elements[1].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[0].button.filterSelection = true;
+    sections[sections.size() - 2].elements[0].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
+    sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
+    
+    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+
+    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -444,11 +556,27 @@ std::vector<Section> MaterialModifier::createRustModifier(){
             }
         ),
         Section(
-            Element(Button()),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Image Filter"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter Mask", Texture(whitePixel, 1, 1, GL_NEAREST, 24), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
+        ),
+        Section(
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physically Based)"),
+            {
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Physically Based Ambient Occlusion", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous Ambient Occlusion ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Z Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Z Direction", 0.f),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -464,10 +592,22 @@ std::vector<Section> MaterialModifier::createRustModifier(){
     sections[0].elements[3].button.color = glm::vec4(glm::vec3(0.49f, 0.3f, 0.2f), 1.f);
     
 
-    sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[0].button.selectionDialogTxtrRes = 128;
-    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
-    sections[sections.size() - 1].elements[1].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[0].button.filterSelection = true;
+    sections[sections.size() - 2].elements[0].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
+    sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
+    
+    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+
+    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -542,11 +682,27 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
             }
         ),
         Section(
-            Element(Button()),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Image Filter"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter Mask", Texture(whitePixel, 1, 1, GL_NEAREST, 24), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
+        ),
+        Section(
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physically Based)"),
+            {
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Physically Based Ambient Occlusion", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous Ambient Occlusion ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Z Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Z Direction", 0.f),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -557,10 +713,22 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
     sections[5].elements[0].button.color = glm::vec4(glm::vec3(0.96, 0.76, 0.61), 1.);
     sections[5].elements[1].button.color = glm::vec4(glm::vec3(0.9, 0.1, 0.01), 1.);
     
-    sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[0].button.selectionDialogTxtrRes = 128;
-    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
-    sections[sections.size() - 1].elements[1].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[0].button.filterSelection = true;
+    sections[sections.size() - 2].elements[0].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
+    sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
+    
+    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+
+    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -642,11 +810,27 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
             }
         ),
         Section(
-            Element(Button()),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Image Filter"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter Mask", Texture(whitePixel, 1, 1, GL_NEAREST, 24), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
+        ),
+        Section(
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physically Based)"),
+            {
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Physically Based Ambient Occlusion", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous Ambient Occlusion ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Z Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Z Direction", 0.f),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -660,10 +844,22 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
     sections[0].elements[2].button.color = glm::vec4(glm::vec3(0.52f, 0.32f, 0.19f), 1.f);
 
 
-    sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[0].button.selectionDialogTxtrRes = 128;
-    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
-    sections[sections.size() - 1].elements[1].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[0].button.filterSelection = true;
+    sections[sections.size() - 2].elements[0].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
+    sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
+    
+    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+
+    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -735,11 +931,27 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
             }
         ),
         Section(
-            Element(Button()),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Image Filter"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter Mask", Texture(whitePixel, 1, 1, GL_NEAREST, 24), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
+        ),
+        Section(
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physically Based)"),
+            {
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Physically Based Ambient Occlusion", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous Ambient Occlusion ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Z Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Z Direction", 0.f),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -749,10 +961,22 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
     sections[0].elements[0].button.color = glm::vec4(glm::vec3(0.25f), 1.f);
     sections[0].elements[1].button.color = glm::vec4(glm::vec3(0.23f, 0.25f, 0.27f), 1.f);
     
-    sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[0].button.selectionDialogTxtrRes = 128;
-    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
-    sections[sections.size() - 1].elements[1].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[0].button.filterSelection = true;
+    sections[sections.size() - 2].elements[0].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
+    sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
+    
+    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+
+    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -833,11 +1057,27 @@ std::vector<Section> MaterialModifier::createDustModifier(){
             }
         ),
         Section(
-            Element(Button()),
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Image Filter"),
             {
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.5f), "Albedo Filter Mask", Texture(whitePixel, 1, 1, GL_NEAREST, 24), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false),
                 Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "Remove The Filter", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
+            }
+        ),
+        Section(
+            SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physically Based)"),
+            {
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Physically Based Ambient Occlusion", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous Ambient Occlusion ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Z Direction", 0.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Z Direction", 0.f),
+                Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1.f), "", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, false)
             }
         )
     };
@@ -851,10 +1091,22 @@ std::vector<Section> MaterialModifier::createDustModifier(){
     sections[4].elements[1].button.color = glm::vec4(glm::vec3(0.f), 1.f);
     sections[4].elements[2].button.color = glm::vec4(glm::vec3(0.f), 1.f);
 
-    sections[sections.size() - 1].elements[0].button.filterSelection = true;
-    sections[sections.size() - 1].elements[0].button.selectionDialogTxtrRes = 128;
-    sections[sections.size() - 1].elements[1].button.textureSelection3D = true;
-    sections[sections.size() - 1].elements[1].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[0].button.filterSelection = true;
+    sections[sections.size() - 2].elements[0].button.selectionDialogTxtrRes = 128;
+    sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
+    sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
+    
+    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+
+    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -904,7 +1156,7 @@ std::vector<Section> MaterialModifier::createMathModifier(){
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Height Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Ambient Occlusion Opacity", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 1.f, 1.f), 
             }
-        ),
+        )
     };
 
     sections[0].elements[1].button.color2 = sections[0].elements[1].button.color;

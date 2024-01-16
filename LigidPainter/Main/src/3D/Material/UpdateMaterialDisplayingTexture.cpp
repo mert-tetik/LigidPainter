@@ -94,7 +94,7 @@ void Material::updateMaterialDisplayingTexture(
             for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
             {
                 if(i == specificUpdateI || specificUpdateI == -1)
-                    this->materialModifiers[i].updateMaterialChannels(*this, displayModel.meshes[meshI], textureRes, i, appTextures.white, 0, specificUpdateI != -1);
+                    this->materialModifiers[i].updateMaterialChannels(*this, displayModel.meshes[meshI], textureRes, i, appTextures.white, 0, specificUpdateI != -1, displayModel);
             }
         }
     }

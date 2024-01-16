@@ -213,7 +213,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
 
         for (int i = paintingCustomMat.materialModifiers.size() - 1; i >= 0; --i)    
         {
-            paintingCustomMat.materialModifiers[i].updateMaterialChannels(paintingCustomMat, customMatMesh, res.x, i, appTextures.white, 0, false);
+            paintingCustomMat.materialModifiers[i].updateMaterialChannels(paintingCustomMat, customMatMesh, res.x, i, appTextures.white, 0, false, *getModel());
         }
     }
 

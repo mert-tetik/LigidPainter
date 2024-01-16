@@ -118,6 +118,7 @@ namespace ShaderSystem{
     Shader normalVectorShader();
     Shader edgeWearShader();
     Shader bakingShader();
+    Shader AOGen();
     Shader defaultFramebufferShader();
     Shader nodeConnectionCurve();
     Shader projectingPaintedTextureShader();

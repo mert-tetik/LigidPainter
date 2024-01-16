@@ -84,7 +84,7 @@ static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, 
 }
 
 Texture textureCopy_bluring;
-static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution){
+static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution, float blurVal){
     Texture textureObject = Texture(txtr);
     
     if(!textureCopy_bluring.ID)
@@ -111,7 +111,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
     ShaderSystem::bluringShader().setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
     ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
-    ShaderSystem::bluringShader().setFloat("blurVal"     ,     1.f);
+    ShaderSystem::bluringShader().setFloat("blurVal"     ,     blurVal);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureCopy_bluring.ID);
@@ -124,6 +124,140 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     Settings::defaultFramebuffer()->FBO.bind();
     
     FBO.deleteBuffers(false, false);
+}
+
+static Framebuffer aoFBO;
+static Texture aoDepthTxtr;
+static Framebuffer aoDepthFBO;
+static Texture aoTxtrDup;
+
+static void genAmbientOcclusion(
+                                    Texture& aoTxtr, 
+                                    Mesh& mesh, 
+                                    Texture meshMask, 
+                                    Texture selectedObjectPrimitivesTxtr, 
+                                    Model& model,
+                                    bool usePrevAO,
+                                    float aoOffset,
+                                    float smoothness,
+                                    bool xP,
+                                    bool xN,
+                                    bool yP,
+                                    bool yN,
+                                    bool zP,
+                                    bool zN
+                                )
+{ 
+
+    if(!model.meshes.size())
+        return;
+
+    glm::ivec2 aoTxtrRes = aoTxtr.getResolution();
+    
+    if(!aoFBO.ID){
+        aoFBO = Framebuffer(aoTxtr, GL_TEXTURE_2D);
+        aoDepthTxtr = Texture(nullptr, 1024, 1024, GL_NEAREST, GL_RGBA, GL_RGBA32F);
+        aoTxtrDup = Texture(nullptr, aoTxtrRes.x, aoTxtrRes.y);
+        aoDepthFBO = Framebuffer(aoDepthTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)));
+    }
+
+    aoTxtrDup.update(nullptr, aoTxtrRes.x, aoTxtrRes.y);
+
+    if(usePrevAO)
+        aoTxtr.duplicateTextureSub(aoTxtrDup);
+
+    aoFBO.bind();
+    aoFBO.setColorBuffer(aoTxtr, GL_TEXTURE_2D);
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //viewport
+    
+    aoFBO.bind();
+
+    for (size_t i = 0; i < 6; i++)
+    {
+        if(i == 0 && !xP)
+            i++;
+        if(i == 1 && !xN)
+            i++;
+        if(i == 2 && !yP)
+            i++;
+        if(i == 3 && !yN)
+            i++;
+        if(i == 4 && !zP)
+            i++;
+        if(i == 5 && !zN)
+            break;
+        
+        aoTxtr.duplicateTextureSub(aoTxtrDup);
+        
+        glm::vec3 camPos = glm::vec3(5.f, 0.f, 0.f);
+
+        if(i == 1)
+            camPos = glm::vec3(-5.f, 0.f, 0.f);
+        if(i == 2)
+            camPos = glm::vec3(1.f, 5.f, 1.f);
+        if(i == 3)
+            camPos = glm::vec3(1.f, -5.f, 1.f);
+        if(i == 4)
+            camPos = glm::vec3(0.f, 0.f, 5.f);
+        if(i == 5)
+            camPos = glm::vec3(0.f, 0.f, -5.f);
+
+        glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
+        glm::mat4 projection = glm::perspective(glm::radians(35.f), 1.f, 0.1f, 100.f);
+        //glm::mat4 projection = glm::ortho(0.f,5.f,0.f,5.f);
+
+        aoDepthFBO.bind();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        ShaderSystem::depth3D().use();
+        ShaderSystem::depth3D().setMat4("view", view);
+        ShaderSystem::depth3D().setMat4("projection", projection);
+        ShaderSystem::depth3D().setMat4("modelMatrix", glm::mat4(1.f));
+
+        ShaderSystem::depth3D().setInt("usingMeshSelection", false);
+        ShaderSystem::depth3D().setInt("hideUnselected", false);
+        ShaderSystem::depth3D().setInt("selectedPrimitiveIDS", 0);
+        ShaderSystem::depth3D().setInt("meshMask", 1);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, selectedObjectPrimitivesTxtr.ID);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, meshMask.ID);
+
+        getModel()->Draw();
+        
+        aoFBO.bind();
+        
+        ShaderSystem::AOGen().use();
+        ShaderSystem::AOGen().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f)); 
+        ShaderSystem::AOGen().setMat4("perspectiveProjection", projection); 
+        ShaderSystem::AOGen().setMat4("view", view); 
+        
+        ShaderSystem::AOGen().setInt("depthTexture", 0); 
+        ShaderSystem::AOGen().setInt("srcTxtr", 1);
+        ShaderSystem::AOGen().setFloat("aoOffset", aoOffset);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, aoDepthTxtr.ID);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, aoTxtrDup.ID);
+
+        mesh.Draw(false);
+    }
+    
+    if(smoothness > 0.1f)
+        blurTheTexture(aoTxtr.ID, mesh, aoTxtrRes.x, smoothness);
+    
+    aoTxtr.removeSeams(mesh, aoTxtrRes);
+
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
 }
 
 static glm::vec2 getDirectionVector(float rotation) {
@@ -161,11 +295,11 @@ static void setUniforms(
     modifierShader.setInt( "depthTxtr" , 2); //Set the previous height map texture
     
     if(material.materialModifiers[curModI].modifierIndex != SOLID_MATERIAL_MODIFIER)
-        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[channelI].rangeBar.value);
+        modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-4].elements[channelI].rangeBar.value);
     else
         modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[0].elements[channelI * 2 + 1].rangeBar.value);
 
-    modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].rangeBar.value);
+    modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[0].rangeBar.value);
     modifierShader.setInt("selectedPrimitiveIDS" , 3); //Set the previous height map texture
     modifierShader.setInt("meshMask" , 4); //Set the previous height map texture
     modifierShader.setInt("primitiveCount" , mesh.indices.size() / 3); //Set the previous height map texture
@@ -395,7 +529,7 @@ static Texture albedoFilterMaskTexture_procedural;
 static Texture previousTexture;
 static Texture prevDepthTexture;
 
-void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr, bool noPrevTxtrMode){
+void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr, bool noPrevTxtrMode, Model& model){
     if(this->hide)
         return;
 
@@ -485,10 +619,9 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
 
             //Generating the normal map based on the height map
             if(channelI == 4){
-                // TODO HANDLE THIS
                 //Blur the height map option
-                if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].checkBox.clickState1)
-                    blurTheTexture(mesh.heightMap.ID, mesh, textureResolution);
+                if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[1].checkBox.clickState1)
+                    blurTheTexture(mesh.heightMap.ID, mesh, textureResolution, 1.f);
                 
                 //Generate the normal map
                 mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
@@ -503,11 +636,11 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
             currentTexture.removeSeams(mesh,textureResolution);
 
             // Apply the filter to the albedo 
-            if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter.shader.ID){
+            if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].button.filter.shader.ID){
                 glActiveTexture(GL_TEXTURE0);
 
                 // Generate the mask texture
-                Texture maskTxtr = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[1].button.texture; 
+                Texture maskTxtr = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].button.texture; 
                 
                 if(albedoFilterMaskTexture_procedural.ID == 0)
                     albedoFilterMaskTexture_procedural = Texture(nullptr, textureResolution, textureResolution);
@@ -519,7 +652,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                 }
 
 
-                Filter filter = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-1].elements[0].button.filter;
+                Filter filter = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].button.filter;
 
                 // Apply the filter 
                 getBox()->bindBuffers();
@@ -611,6 +744,28 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
 
             FBO.deleteBuffers(false, false);
         }
-
+        
+        if(material.materialModifiers[curModI].modifierIndex != MATH_MATERIAL_MODIFIER){
+            if(material.materialModifiers[curModI].sections[sections.size() - 1].elements[0].checkBox.clickState1){
+                genAmbientOcclusion(
+                                    mesh.ambientOcclusion, 
+                                    mesh, 
+                                    meshMask, 
+                                    selectedObjectPrimitivesTxtr, 
+                                    model,
+                                    material.materialModifiers[curModI].sections[sections.size() - 1].elements[1].checkBox.clickState1,
+                                    material.materialModifiers[curModI].sections[sections.size() - 1].elements[2].rangeBar.value,
+                                    material.materialModifiers[curModI].sections[sections.size() - 1].elements[3].rangeBar.value,
+                                    material.materialModifiers[curModI].sections[sections.size() - 1].elements[4].checkBox.clickState1,
+                                    material.materialModifiers[curModI].sections[sections.size() - 1].elements[5].checkBox.clickState1,
+                                    material.materialModifiers[curModI].sections[sections.size() - 1].elements[6].checkBox.clickState1,
+                                    material.materialModifiers[curModI].sections[sections.size() - 1].elements[7].checkBox.clickState1,
+                                    material.materialModifiers[curModI].sections[sections.size() - 1].elements[8].checkBox.clickState1,
+                                    material.materialModifiers[curModI].sections[sections.size() - 1].elements[9].checkBox.clickState1
+                                );
+            }
+        }
+        
+        getBox()->bindBuffers();
     }
 }

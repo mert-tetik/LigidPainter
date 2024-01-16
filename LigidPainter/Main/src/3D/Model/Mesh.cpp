@@ -153,6 +153,7 @@ void Mesh::generateUVMask(){
     this->uvMask = Texture(nullptr, resolution, resolution, GL_LINEAR);
 
     Framebuffer FBO = Framebuffer(this->uvMask, GL_TEXTURE_2D);
+    FBO.bind();
     glViewport(0, 0, resolution, resolution);
 
     glClearColor(0, 0, 0, 1);

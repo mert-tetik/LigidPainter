@@ -239,7 +239,7 @@ static void exportLibraryMaterials(Panel& propertiesPanel){
 
         for (int modI = Library::getMaterialObj(i).materialModifiers.size() - 1; modI >= 0; --modI)    
         {
-            Library::getMaterialObj(i).materialModifiers[modI].updateMaterialChannels(*Library::getMaterial(i), matMesh, resolution, modI, appTextures.white, 0, false);
+            Library::getMaterialObj(i).materialModifiers[modI].updateMaterialChannels(*Library::getMaterial(i), matMesh, resolution, modI, appTextures.white, 0, false, Model());
         }
         
         FileHandler::writeLGDMATERIALFile(materialFolderPath + UTIL::folderDistinguisher() + Library::getMaterialObj(i).title + ".lgdmaterial", Library::getMaterialObj(i));

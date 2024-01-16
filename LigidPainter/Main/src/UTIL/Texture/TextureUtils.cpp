@@ -465,7 +465,6 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //TODO : Remove the box
         getBox()->bindBuffers();
         
         glm::mat4 projection = glm::ortho(0.f, (float)textureRes, (float)textureRes, 0.f); 

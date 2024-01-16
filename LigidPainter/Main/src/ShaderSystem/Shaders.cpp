@@ -73,12 +73,14 @@ Shader __skinModifierShader;
 Shader __solidModifierShader;
 Shader __woodenModifierShader;
 Shader __mathModifierShader;
+Shader __AOGen;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
     __depth3D.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag");
     __skyboxBall.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag");
     __primitiveIDShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PrimitiveID.frag");
+    __AOGen.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/AOGen.frag");
     __bakingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/Baking.frag");
     __textureUpdatingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag");
     __skyboxShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert", "LigidPainter/Resources/Shaders/aFrag/Skybox.frag");
@@ -237,6 +239,9 @@ Shader ShaderSystem::edgeWearShader(){
 }
 Shader ShaderSystem::bakingShader(){
     return __bakingShader;
+}
+Shader ShaderSystem::AOGen(){
+    return __AOGen;
 }
 Shader ShaderSystem::defaultFramebufferShader(){
     return __defaultFramebufferShader;

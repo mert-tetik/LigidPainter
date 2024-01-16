@@ -103,6 +103,7 @@ Model* MaterialEditorDialog::getDisplayModel(){
             customModel.meshes[i].EBO = getModel()->meshes[i].EBO;
             customModel.meshes[i].VAO = getModel()->meshes[i].VAO;
             customModel.meshes[i].objects = getModel()->meshes[i].objects;
+            customModel.meshes[i].uvMask = getModel()->meshes[i].uvMask;
         }
         return &customModel;
     }
