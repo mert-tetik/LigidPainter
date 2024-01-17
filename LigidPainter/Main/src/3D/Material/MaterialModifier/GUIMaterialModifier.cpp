@@ -90,7 +90,7 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
             {
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
@@ -185,7 +185,7 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
             {
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
@@ -312,7 +312,7 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
             {
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
@@ -568,7 +568,7 @@ std::vector<Section> MaterialModifier::createRustModifier(){
             {
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
@@ -694,7 +694,7 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
             {
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
@@ -822,7 +822,7 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
             {
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
@@ -943,7 +943,7 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
             {
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
@@ -1069,7 +1069,7 @@ std::vector<Section> MaterialModifier::createDustModifier(){
             {
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 2.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),

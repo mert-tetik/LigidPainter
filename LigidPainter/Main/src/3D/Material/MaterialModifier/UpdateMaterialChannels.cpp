@@ -171,6 +171,7 @@ static void genAmbientOcclusion(
 
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, aoTxtrRes.x, aoTxtrRes.y);
 
     //viewport
     
@@ -212,6 +213,7 @@ static void genAmbientOcclusion(
 
         aoDepthFBO.bind();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glViewport(0, 0, 1024, 1024);
         
         ShaderSystem::depth3D().use();
         ShaderSystem::depth3D().setMat4("view", view);
@@ -232,6 +234,7 @@ static void genAmbientOcclusion(
         getModel()->Draw();
         
         aoFBO.bind();
+        glViewport(0, 0, aoTxtrRes.x, aoTxtrRes.y);
         
         ShaderSystem::AOGen().use();
         ShaderSystem::AOGen().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f)); 
