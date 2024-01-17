@@ -55,6 +55,7 @@ void Painter::updateDepthTexture(){
         depthTextures.push_back(oXYZSide);        
     
     glDepthFunc(GL_LESS);
+    glDisable(GL_BLEND);
     
     glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
 
@@ -115,5 +116,6 @@ void Painter::updateDepthTexture(){
     Settings::defaultFramebuffer()->setViewport();
 
     glDepthFunc(GL_LEQUAL);
+    glEnable(GL_BLEND);
 
 }

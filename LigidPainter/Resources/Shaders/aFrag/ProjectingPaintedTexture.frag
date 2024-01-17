@@ -59,6 +59,10 @@ bool isPainted  (
 { 
     //3D Model's depth value in the given coordinate (where the painting will be done)
     float modelZ = texture(depthTexture, uv.xy).r;
+    float alpha = texture(depthTexture, uv.xy).a;
+    
+    if(alpha < 0.99)
+        return false;
 
     //TODO : Don't divide with far for the better result
     //Return true if the 3D Model's depth value & the screen position values are similiar

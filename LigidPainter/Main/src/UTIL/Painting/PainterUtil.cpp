@@ -357,21 +357,21 @@ void Painter::refreshBuffers(){
     paintingTexture16fOBJ.update(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F, GL_CLAMP_TO_BORDER);
 
     //--------- update depthTextures --------- 
-    this->oSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
     
-    this->oXSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oXSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
     
-    this->oYSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oYSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
     
-    this->oXYSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oXYSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
     
-    this->oZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
     
-    this->oXZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oXZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
     
-    this->oYZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oYZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
     
-    this->oXYZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RED, GL_R32F);
+    this->oXYZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
 
     //--------- update paintingOverTexture --------- 
     Texture paintingOverTextureOBJ = Texture(this->paintingOverTexture);
