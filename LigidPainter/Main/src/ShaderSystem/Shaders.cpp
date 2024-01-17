@@ -74,6 +74,7 @@ Shader __solidModifierShader;
 Shader __woodenModifierShader;
 Shader __mathModifierShader;
 Shader __AOGen;
+Shader __twoPassBlur;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -97,6 +98,7 @@ void ShaderSystem::initShaderSystem(){
     __boundaryExpandingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag");
     __uvMaskShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/Color.frag");
     __bluringShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/SinglePassBlur.frag");
+    __twoPassBlur.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/TwoPassBlur.frag");
     __proceduralDisplayerShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/TextureSelectionProceduralDisplayer.frag");
     __to2DProcedural.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/To2DProcedural.frag");
     __normalVectorShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/NormalVector.frag");
@@ -294,4 +296,7 @@ Shader ShaderSystem::woodenModifierShader(){
 }
 Shader ShaderSystem::mathModifierShader(){
     return __mathModifierShader;
+}
+Shader ShaderSystem::twoPassBlur(){
+    return __twoPassBlur;
 }

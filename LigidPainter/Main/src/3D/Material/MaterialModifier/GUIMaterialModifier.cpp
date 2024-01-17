@@ -88,11 +88,13 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
         Section(
             SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physics Based)"),
             {
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Single Mesh", 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use 2nd Blur Algorithm", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
@@ -123,17 +125,17 @@ std::vector<Section> MaterialModifier::createTextureModifier(){
     sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
     sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
     
-    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
-    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[10].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[11].checkBox.clickState1 = true;
 
-    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -183,11 +185,13 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
         Section(
             SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physics Based)"),
             {
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Single Mesh", 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use 2nd Blur Algorithm", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
@@ -214,17 +218,17 @@ std::vector<Section> MaterialModifier::createSolidModifier(){
     sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
     sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
     
-    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
-    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[10].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[11].checkBox.clickState1 = true;
 
-    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -310,11 +314,13 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
         Section(
             SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physics Based)"),
             {
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Single Mesh", 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use 2nd Blur Algorithm", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
@@ -338,17 +344,17 @@ std::vector<Section> MaterialModifier::createLiquidModifier(){
     sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
     sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
     
-    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
-    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[10].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[11].checkBox.clickState1 = true;
 
-    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 } 
@@ -437,11 +443,13 @@ std::vector<Section> MaterialModifier::createMossModifier(){
         Section(
             SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physics Based)"),
             {
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Single Mesh", 1.f),
                 RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use 2nd Blur Algorithm", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
@@ -466,17 +474,17 @@ std::vector<Section> MaterialModifier::createMossModifier(){
     sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
     sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
     
-    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
-    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[10].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[11].checkBox.clickState1 = true;
 
-    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -566,11 +574,13 @@ std::vector<Section> MaterialModifier::createRustModifier(){
         Section(
             SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physics Based)"),
             {
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Single Mesh", 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use 2nd Blur Algorithm", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
@@ -597,17 +607,17 @@ std::vector<Section> MaterialModifier::createRustModifier(){
     sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
     sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
     
-    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
-    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[10].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[11].checkBox.clickState1 = true;
 
-    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -692,11 +702,13 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
         Section(
             SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physics Based)"),
             {
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Single Mesh", 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use 2nd Blur Algorithm", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
@@ -718,17 +730,17 @@ std::vector<Section> MaterialModifier::createSkinModifier(){
     sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
     sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
     
-    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
-    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[10].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[11].checkBox.clickState1 = true;
 
-    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -820,11 +832,13 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
         Section(
             SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physics Based)"),
             {
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Single Mesh", 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use 2nd Blur Algorithm", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
@@ -849,17 +863,17 @@ std::vector<Section> MaterialModifier::createWoodenModifier(){
     sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
     sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
     
-    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
-    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[10].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[11].checkBox.clickState1 = true;
 
-    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -941,11 +955,13 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
         Section(
             SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physics Based)"),
             {
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Single Mesh", 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use 2nd Blur Algorithm", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
@@ -966,17 +982,17 @@ std::vector<Section> MaterialModifier::createAsphaltModifier(){
     sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
     sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
     
-    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
-    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[10].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[11].checkBox.clickState1 = true;
 
-    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }
@@ -1067,11 +1083,13 @@ std::vector<Section> MaterialModifier::createDustModifier(){
         Section(
             SectionHolder(ColorPalette::secondColor, MATERIAL_MODIFIERS_ELEMENT_OFFSET, "Ambient Occlusion (Physics Based)"),
             {
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO ", MATERIAL_MODIFIERS_ELEMENT_OFFSET),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(),MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
-                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 5.f, 2.f),
-                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Physics Based AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use Previous AO", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Calculate Single Mesh", 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Offset", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 1.f),
+                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(1, 1.5f), "Smoothness", Texture(), MATERIAL_MODIFIERS_ELEMENT_OFFSET, 0.f, 10.f, 2.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "Use 2nd Blur Algorithm", 1.f),
+                CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+X Direction", 2.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-X Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "+Y Direction", 0.f),
                 CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(1.f, 2.f), "-Y Direction", 0.f),
@@ -1096,17 +1114,17 @@ std::vector<Section> MaterialModifier::createDustModifier(){
     sections[sections.size() - 2].elements[1].button.textureSelection3D = true;
     sections[sections.size() - 2].elements[1].button.selectionDialogTxtrRes = 128;
     
-    sections[sections.size() - 1].elements[4].checkBox.clickState1 = true;
-    sections[sections.size() - 1].elements[5].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[6].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[7].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[8].checkBox.clickState1 = true;
     sections[sections.size() - 1].elements[9].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[10].checkBox.clickState1 = true;
+    sections[sections.size() - 1].elements[11].checkBox.clickState1 = true;
 
-    sections[sections.size() - 1].elements[10].button.color = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.color2 = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor = glm::vec4(0.f);
-    sections[sections.size() - 1].elements[10].button.textColor2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.color2 = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor = glm::vec4(0.f);
+    sections[sections.size() - 1].elements[12].button.textColor2 = glm::vec4(0.f);
     
     return sections;
 }

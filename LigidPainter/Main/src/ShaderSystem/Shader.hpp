@@ -126,6 +126,7 @@ namespace ShaderSystem{
     Shader primitiveIDShader();
     Shader modelObjectID();
     Shader objectTexturingAssign();
+    Shader twoPassBlur();
 
     
     Shader textureModifierShader();
