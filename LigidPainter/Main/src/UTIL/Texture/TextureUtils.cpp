@@ -476,7 +476,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
         ShaderSystem::bluringShader().setVec3("pos"         ,       glm::vec3((float)textureRes / 2.f, (float)textureRes / 2.f, 0.9f));
         ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureRes / 2.f));
-        ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->proceduralProps.smartProperties.x);
+        ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->proceduralProps.smartProperties.x * 35.f);
         
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, normalMapTxtr.ID);
@@ -521,7 +521,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
         ShaderSystem::bluringShader().setVec3("pos"         ,       glm::vec3((float)textureRes / 2.f, (float)textureRes / 2.f, 0.9f));
         ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureRes / 2.f));
-        ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->proceduralProps.smartProperties.z);
+        ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->proceduralProps.smartProperties.z * 35.f);
         
         destTxtr.duplicateTexture(destTxtrCopy);
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
