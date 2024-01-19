@@ -6,23 +6,30 @@ out vec4 fragColor;
 
 //from : https://www.shadertoy.com/view/mscfzj
 
-const float yaw = 45.;
-const float pitch = 45.;
+uniform mat4 rotMat;
 //0 : arrows, 1 : cubes, 2 : circular
-const int state = 2;
+uniform int state;
+uniform int solidShading;
 
 //https://www.shadertoy.com/view/mscfzj
 
-const float rod_radius = 0.025;
+uniform float rod_radius;
 const float rod_length = 0.3;
 const float head_length = 0.1;
 
-const vec3 red = vec3(180.0 / 255.0, 82.0 / 255.0, 82.0 / 255.0);
-const vec3 green = vec3(138.0 / 255.0, 176.0 / 255.0, 96.0 / 255.0);
-const vec3 blue = vec3(75.0 / 255.0, 128.0 / 255.0, 202.0 / 255.0);
-const vec3 white = vec3(242.0 / 255.0, 240.0 / 255.0, 229.0 / 255.0);
-const vec3 gray = vec3(134.0 / 255.0, 129.0 / 255.0, 136.0 / 255.0);
-const vec3 black = vec3(33.0 / 255.0, 33.0 / 255.0, 35.0 / 255.0);
+ vec3 red = vec3(180.0 / 255.0, 82.0 / 255.0, 82.0 / 255.0);
+ vec3 green = vec3(138.0 / 255.0, 176.0 / 255.0, 96.0 / 255.0);
+ vec3 blue = vec3(75.0 / 255.0, 128.0 / 255.0, 202.0 / 255.0);
+ vec3 white = vec3(242.0 / 255.0, 240.0 / 255.0, 229.0 / 255.0);
+ vec3 gray = vec3(134.0 / 255.0, 129.0 / 255.0, 136.0 / 255.0);
+ vec3 black = vec3(33.0 / 255.0, 33.0 / 255.0, 35.0 / 255.0);
+
+uniform int rHover;
+uniform int gHover;
+uniform int bHover;
+uniform int rHoverN;
+uniform int gHoverN;
+uniform int bHoverN;
 
 vec3 rotate(vec3 v, vec3 axis, float angle)
 {
@@ -45,6 +52,7 @@ vec3 rotate(vec3 v, vec3 axis, float angle)
 
     return rotatedVec;
 }
+
 
 vec4 sdCone(vec3 p, vec3 a, vec3 b, float ra, float rb, vec3 color)
 {
@@ -167,15 +175,26 @@ float gridTextureGradBox( in vec2 p, in vec2 ddx, in vec2 ddy )
 
 vec4 map(vec3 pos)
 {
-    pos = (rotate(pos, vec3(0.,1.,0.), yaw));
-    pos = (rotate(pos, vec3(1.,0.,0.), pitch));
+    if(solidShading == 1){
+        red = vec3(1., 0., 0.);
+        green = vec3(0., 1., 0.);
+        blue = vec3(0., 0., 1.);
+    }
+
+
+    pos = (rotate(pos, vec3(0.,1.,0.), radians(45.)));
+    pos = (rotate(pos, vec3(0.,0.,1.), radians(-35.)));
+
+    vec4 tpos = vec4(pos,1.);
+    tpos *= rotMat;
+    pos = (tpos.xyz);
 
     float t = 0.;
     if(state == 1)
         t = 2.;
     else if(state == 2)
         t = 15.;
-
+    
     float arrow_animation_morph = clamp((t - 3.0) * 2.0, 0.0, 1.0);
     float arrow_scale_morph = clamp((t - 1.0) * 2.0, 0.0, 1.0);
 
@@ -184,18 +203,52 @@ vec4 map(vec3 pos)
     vec4 pos_arrow = vec4(0.0);
     vec4 scale_arrow = vec4(0.0);
 
-    // arrows
-    pos_arrow = arrow(pos, vec3(1.0, 0.0, 0.0), red);
-    pos_arrow = opU(pos_arrow, arrow(pos, vec3(0.0, 1.0, 0.0), green));
-    pos_arrow = opU(pos_arrow, arrow(pos, vec3(0.0, 0.0, 1.0), blue));
+    
+    vec3 redClr = red;
+    vec3 greenClr = green;
+    vec3 blueClr = blue;
+    
+    if(rHover == 1)
+        redClr *= 2.;
+    if(gHover == 1)
+        greenClr *= 2.;
+    if(bHover == 1)
+        blueClr *= 2.;
 
-    scale_arrow = arrow_scale(pos, vec3(1.0, 0.0, 0.0), red);
-    scale_arrow = opU(scale_arrow, arrow_scale(pos, vec3(0.0, 1.0, 0.0), green));
-    scale_arrow = opU(scale_arrow, arrow_scale(pos, vec3(0.0, 0.0, 1.0), blue));
+    // arrows
+    pos_arrow = arrow(pos, vec3(1.0, 0.0, 0.0), redClr);
+    pos_arrow = opU(pos_arrow, arrow(pos, vec3(0.0, 1.0, 0.0), greenClr));
+    pos_arrow = opU(pos_arrow, arrow(pos, vec3(0.0, 0.0, 1.0), blueClr));
+
+    scale_arrow = arrow_scale(pos, vec3(1.0, 0.0, 0.0), redClr);
+    scale_arrow = opU(scale_arrow, arrow_scale(pos, vec3(0.0, 1.0, 0.0), greenClr));
+    scale_arrow = opU(scale_arrow, arrow_scale(pos, vec3(0.0, 0.0, 1.0), blueClr));
+    
+
+    redClr = red;
+    greenClr = green;
+    blueClr = blue;
+    
+    if(rHoverN == 1)
+        redClr *= 2.;
+    if(gHoverN == 1)
+        greenClr *= 2.;
+    if(bHoverN == 1)
+        blueClr *= 2.;
+
+    pos_arrow = opU(pos_arrow, arrow(pos, vec3(-1.0, 0.0, 0.0), redClr / 2.));
+    pos_arrow = opU(pos_arrow, arrow(pos, vec3(0.0, -1.0, 0.0), greenClr / 2.));
+    pos_arrow = opU(pos_arrow, arrow(pos, vec3(0.0, 0.0, -1.0), blueClr / 2.));
+
+    scale_arrow = opU(scale_arrow, arrow_scale(pos, vec3(-1.0, 0.0, 0.0), redClr / 2.));
+    scale_arrow = opU(scale_arrow, arrow_scale(pos, vec3(0.0, -1.0, 0.0), greenClr / 2.));
+    scale_arrow = opU(scale_arrow, arrow_scale(pos, vec3(0.0, 0.0, -1.0), blueClr / 2.));
 
     // rotation
     float rotation_smoothing = 0.0;
     float rot_scale = mix(0.0, rod_length + 0.045, 1.0);
+
+    pos = abs(tpos.xyz);
 
     //red
     vec2 c = vec2(sin(radians(180.0)),cos(radians(180.0)));
@@ -209,7 +262,7 @@ vec4 map(vec3 pos)
 
     vec4 arrows = opU(center_sphere, mix(pos_arrow, scale_arrow, arrow_scale_morph));
     vec4 sdf = mix(arrows, rotation, arrow_animation_morph);
-    return sdf;
+    return arrows;
 }
 
 // https://iquilezles.org/articles/normalsSDF
@@ -256,12 +309,9 @@ float intersect_grid( vec3 ro, vec3 rd, out vec3 pos, out vec3 nor )
 void main()
 {
 
-    vec2 iResolution = vec2(512);
-    vec2 fragCoord = TexCoords * 512.;
-
     float gamma = 2.2;
      // camera movement	
-	vec3 ro = vec3(0.5);
+	vec3 ro = vec3(0.8);
     vec3 ta = vec3( 0.0, 0.0, 0.0 );
     // camera matrix
     vec3 ww = normalize( ta - ro );
@@ -269,7 +319,7 @@ void main()
     vec3 vv =          ( cross(uu,ww));
     
     // render
-    vec3 tot = vec3(0.0);
+    vec4 tot = vec4(0.0);
     
     #if AA>1
     for( int m=0; m<AA; m++ )
@@ -277,9 +327,9 @@ void main()
     {
         // pixel coordinates
         vec2 o = vec2(float(m),float(n)) / float(AA) - 0.5;
-        vec2 p = (-iResolution.xy + 2.0*(fragCoord+o))/iResolution.y;
+        vec2 p = TexCoords - 0.5;
         #else    
-        vec2 p = (-iResolution.xy + 2.0*fragCoord)/iResolution.y;
+        vec2 p = TexCoords - 0.5;
         #endif
 
 	    // create view ray
@@ -294,6 +344,12 @@ void main()
             vec3 pos = ro + t*rd;
             vec4 result = map(pos);
             float h = result.w;
+            
+            if((state == 0 || state == 1) && solidShading == 0)
+                tot.a = (1. - result.w) * distance(pos, vec3(0.)) * 2.;
+            else
+                tot.a = (1. - result.w);
+
             obj_col = result.xyz;
             if( h<0.0001 || t>tmax ) break;
             t += h;
@@ -313,18 +369,23 @@ void main()
             lig = -rd;
             vec3 dif = half_lambert(lig, pos, hal, nor, obj_col);
             
-            col = obj_col*dif;
+            if(solidShading == 1)
+                col = obj_col;
+            else
+                col = obj_col * dif;
+
             occluded_grid = true;
         }
 
-
         // gamma        
         col = pow(col, vec3(1.0/gamma));
-	    tot += col;
+	    tot.rgb += col;
     #if AA>1
     }
-    tot /= float(AA*AA);
+    tot.rgb /= float(AA*AA);
     #endif
 
-	fragColor = vec4( tot, 1.0 );
+    tot.r = min(tot.r,1.);
+    tot.a = min(tot.a,1.);
+    fragColor = tot;
 }

@@ -124,6 +124,8 @@ public:
     Button filterPaintingModeFilterBtn;
     Button textureSelectedObjectsButton;
     Panel objectsPanel;
+
+    Gizmo sceneGizmo;
     
     Panel paintingPanel;
     Panel paintingPanelModePanel;

@@ -87,6 +87,8 @@ void UI::panelPositioning(
 
     displayingModesPanel.pos.x = paintingPanelModePanel.pos.x - paintingPanelModePanel.scale.x - displayingModesPanel.scale.x - 0.5f;
     displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;
+    sceneGizmo.pos = displayingModesPanel.pos;
+    sceneGizmo.pos.y += displayingModesPanel.scale.y + sceneGizmo.scale.y + 1.f;
 
     selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
 
@@ -102,4 +104,5 @@ void UI::panelPositioning(
         paintingPanelModeDisplayer.scale.x = paintingPanel.scale.x;
     paintingPanelModeDisplayer.pos.x = paintingPanel.pos.x - paintingPanel.scale.x + paintingPanelModeDisplayer.scale.x;
     paintingPanelModeDisplayer.pos.y -= paintingPanel.scale.y - paintingPanelModeDisplayer.scale.y - 2.f;
+
 }

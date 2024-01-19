@@ -318,6 +318,9 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             this->panelPositioning(screenGapPerc, painter);
     }
     
+    sceneGizmo.yaw = glm::radians(getScene()->camera.yaw);
+    sceneGizmo.pitch = glm::radians(getScene()->camera.pitch);
+    sceneGizmo.render(timer, !anyDialogActive);
     
     if(paintingChannelsTextureSelectionPanelActive){
         paintingChannelsTextureSelectionPanel.sections[0].elements.clear();

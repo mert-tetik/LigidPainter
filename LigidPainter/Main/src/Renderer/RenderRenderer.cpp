@@ -146,7 +146,7 @@ void Renderer::render(){
     glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
     
     // Process the shortcut inputs & move the camera gradually if necessary
-    getScene()->camera.posShortcutInteraction(!userInterface.anyContextMenuActive && !userInterface.anyDialogActive);
+    getScene()->camera.posShortcutInteraction(!userInterface.anyContextMenuActive && !userInterface.anyDialogActive, userInterface.sceneGizmo);
 
 
     Debugger::block("3D Model"); // Start

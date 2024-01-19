@@ -75,6 +75,7 @@ Shader __woodenModifierShader;
 Shader __mathModifierShader;
 Shader __AOGen;
 Shader __twoPassBlur;
+Shader __gizmo;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -90,6 +91,7 @@ void ShaderSystem::initShaderSystem(){
     __buttonShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Button.frag");
     __vectoralCurve.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/VectoralCurve.frag");
     __colorPicker.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag");
+    __gizmo.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Gizmo.frag");
     __twoDPainting.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/2DPainting.frag");
     __twoDPaintingModeAreaShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag");
     __circleShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Circle.frag");
@@ -299,4 +301,7 @@ Shader ShaderSystem::mathModifierShader(){
 }
 Shader ShaderSystem::twoPassBlur(){
     return __twoPassBlur;
+}
+Shader ShaderSystem::gizmo(){
+    return __gizmo;
 }

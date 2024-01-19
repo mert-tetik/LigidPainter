@@ -458,6 +458,48 @@ public:
     }
 };
 
+class Gizmo{
+public:
+    float panelOffset = 0.f;
+    std::string text;
+
+    glm::vec3 pos;
+    glm::vec2 scale;
+
+    bool hover = false;
+    Button hoverBtn;
+    bool doMouseTracking = true;
+    bool interacted = false;
+
+    // 0 : arrows, 1 : cubes, 2 : circular
+    int state = 0;
+    float yaw = 0.f;
+    float pitch = 0.f;
+    bool twoSides = false;
+    Framebuffer FBO;
+
+    bool rHover = false;
+    bool gHover = false;
+    bool bHover = false;
+    bool rHoverN = false;
+    bool gHoverN = false;
+    bool bHoverN = false;
+
+    Gizmo(){}
+
+    Gizmo(std::string text, int state, glm::vec3 pos, glm::vec2 scale, float panelOffset, bool twoSides){
+        this->text = text;
+        this->state = state;
+        this->pos = pos;
+        this->scale = scale;
+        this->panelOffset = panelOffset;
+        this->twoSides = twoSides;
+        this->hoverBtn = Button(ELEMENT_STYLE_SOLID, scale, "", Texture(), 0.f, false);
+    }
+
+    void render(Timer &timer,bool doMouseTracking);
+};
+
 struct Element{
     //The UI Element
 
@@ -467,6 +509,7 @@ struct Element{
     ComboBox comboBox;
     TextBox textBox;
     SectionHolder sectionHolder;
+    Gizmo gizmo;
 
     /*!
         @brief Decide which GUI element will be used 
@@ -476,6 +519,7 @@ struct Element{
         3 = combobox 
         4 = textbox
         5 = sectionHolder
+        6 = sectionHolder
     */
     int state = -1; 
     
@@ -493,6 +537,7 @@ struct Element{
     Element(ComboBox comboBox);
     Element(TextBox textBox);
     Element(SectionHolder sectionHolder);
+    Element(Gizmo sectionHolder);
 
     bool isInteracted();
 

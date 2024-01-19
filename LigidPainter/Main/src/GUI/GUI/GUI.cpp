@@ -104,12 +104,21 @@ Element::Element(TextBox textBox){
 
 Element::Element(SectionHolder sectionHolder){
 
-    //Init as text box
+    //Init as section holder
     this->sectionHolder = sectionHolder;
     panelOffset = sectionHolder.panelOffset;
     scale.y = sectionHolder.scaleY;
     state = 5;
+}
 
+Element::Element(Gizmo gizmo){
+
+    //Init as gizmo
+    this->gizmo = gizmo;
+    panelOffset = gizmo.panelOffset;
+    pos = gizmo.pos;
+    scale = gizmo.scale;
+    state = 6;
 }
 
 bool Element::isInteracted(){
@@ -122,6 +131,8 @@ bool Element::isInteracted(){
     if(this->state == 3 && this->comboBox.selectionDone)
         return true;
     if(this->state == 4 && this->textBox.active)
+        return true;
+    if(this->state == 6 && this->gizmo.interacted)
         return true;
         
     return false;
@@ -190,6 +201,13 @@ void Element::render(Timer &timer,bool doMouseTracking){
             sectionHolder.active = btn.clickState1;
         else 
             sectionHolder.active = true;
+    }
+    if(state == 6){ //Render the textbox
+        gizmo.pos = pos;
+        gizmo.scale = scale;
+        gizmo.panelOffset = panelOffset;
+        gizmo.doMouseTracking = doMouseTracking;
+        gizmo.render(timer, doMouseTracking);
     }
 }
 

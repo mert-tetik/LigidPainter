@@ -25,6 +25,8 @@ struct Context{
     glm::ivec2 windowScale;
 };
 
+class Gizmo;
+
 Context* getContext();
 Context* getCopyContext();
 extern std::atomic<bool> mainThreadUsingCopyContext;
@@ -84,7 +86,7 @@ struct Camera{
         this->setCameraPosition(camPos);
     }
 
-    void posShortcutInteraction(bool active);
+    void posShortcutInteraction(bool active, Gizmo& sceneGizmo);
 
     bool XPLocked = false;
     bool XNLocked = false;
