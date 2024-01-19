@@ -33,6 +33,14 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
 #define DISPLAY_RESOLUTION glm::vec2(this->panel.scale * 30.f)
 
+static std::vector<Mesh> meshTxtrHistory;
+static bool albedoHistoryUsed = false;
+static bool roughnessHistoryUsed = false;
+static bool metallicHistoryUsed = false;
+static bool normalMapHistoryUsed = false;
+static bool heightMapHistoryUsed = false;
+static bool aoHistoryUsed = false;
+
 ObjectTexturingDialog::ObjectTexturingDialog(){
     //Create the panel
     this->panel = Panel(
@@ -101,6 +109,7 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
     this->shiftInfoBtn.textScale = 0.6f;
     
     this->assignRelatedTexturesButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Assign to related textures", Texture(), 1.f, false);
+    this->undoButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(3, 2.f), "Undo", Texture(), 1.f, false);
 
     this->materialDisplayerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(6, 4.f), "", Texture(), 1.f, false);
     this->editMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 3.f), "Edit material", Texture(), 1.f, false);
@@ -264,6 +273,9 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
 
     this->assignRelatedTexturesButton.pos = maskMaterialBtn.pos;
     this->assignRelatedTexturesButton.pos.y += assignRelatedTexturesButton.scale.y + maskMaterialBtn.scale.y * 2.f;
+    
+    this->undoButton.pos = assignRelatedTexturesButton.pos;
+    this->undoButton.pos.x += assignRelatedTexturesButton.scale.x + undoButton.scale.x * 1.5f;
 
     this->materialDisplayerButton.pos = this->panel.pos;
     this->materialDisplayerButton.pos.x += this->panel.scale.x - this->materialDisplayerButton.scale.x - 6.f;
@@ -322,6 +334,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->cancelMasks.render(timer, !this->materialSelection && !this->textureSelection);
     this->maskMaterialBtn.render(timer, !this->materialSelection && !this->textureSelection);
     this->assignRelatedTexturesButton.render(timer, !this->materialSelection && !this->textureSelection);
+    if(albedoHistoryUsed || roughnessHistoryUsed || metallicHistoryUsed || normalMapHistoryUsed || heightMapHistoryUsed || aoHistoryUsed)
+        this->undoButton.render(timer, !this->materialSelection && !this->textureSelection);
     this->materialDisplayerButton.render(timer, false);
     this->editMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
     this->selectMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
@@ -407,15 +421,122 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                     colorBufferChannelTitle = "ambientOcclusion";
                 }
 
-                if(!colorBuffer.ID){
-                    LGDLOG::start << "WARNING! : Texture is missing for the " << colorBufferChannelTitle << " channel!" << LGDLOG::end;
+                if(!colorBuffer.ID || glIsTexture(colorBuffer.ID) == GL_FALSE){
+                    if(!colorBuffer.ID)
+                        LGDLOG::start << "WARNING! : Texture is missing for the " << colorBufferChannelTitle << " channel!" << LGDLOG::end;
+                    else
+                        LGDLOG::start << "WARNING! : Texture is invalid (OpenGL couldn't detect) for the " << colorBufferChannelTitle << " channel!" << LGDLOG::end;
+                    
                     channelI++;
+                    
                     if(channelI == 6)
                         break;
+                    
                     goto skipChannel;
                 }
 
                 glm::vec2 res = colorBuffer.getResolution();
+
+                bool prevAlbedoHistoryUsed = albedoHistoryUsed, prevRoughnessHistoryUsed = roughnessHistoryUsed, prevMetallicHistoryUsed = metallicHistoryUsed, prevNormalMapHistoryUsed = normalMapHistoryUsed, prevHeightMapHistoryUsed = heightMapHistoryUsed, prevAoHistoryUsed = aoHistoryUsed;
+
+                {
+                    if(meshTxtrHistory.size() < getModel()->meshes.size()){
+                        while (meshTxtrHistory.size() < getModel()->meshes.size())
+                        {
+                            Mesh msh;
+                            msh.albedo = Texture(nullptr, 1, 1);
+                            msh.roughness = Texture(nullptr, 1, 1);
+                            msh.metallic = Texture(nullptr, 1, 1);
+                            msh.normalMap = Texture(nullptr, 1, 1);
+                            msh.heightMap = Texture(nullptr, 1, 1);
+                            msh.ambientOcclusion = Texture(nullptr, 1, 1);
+                            
+                            meshTxtrHistory.push_back(msh);
+                        }
+                    }
+                    
+                    else if(meshTxtrHistory.size() > getModel()->meshes.size()){
+                        while (meshTxtrHistory.size() > getModel()->meshes.size()){
+                            glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].albedo.ID);
+                            glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].roughness.ID);
+                            glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].metallic.ID);
+                            glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].normalMap.ID);
+                            glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].heightMap.ID);
+                            glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].ambientOcclusion.ID);
+                            meshTxtrHistory.pop_back();
+                        }
+                    }
+                }
+
+                if(channelI == 0){
+                    albedoHistoryUsed = albedoChannelCheckBox.clickState1;
+                    if(albedoHistoryUsed){
+                        glm::ivec2 hTxtrRes = meshTxtrHistory[i].albedo.getResolution();
+                        glm::ivec2 oTxtrRes = colorBuffer.getResolution();
+                        
+                        meshTxtrHistory[i].albedo.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                        colorBuffer.duplicateTextureSub(meshTxtrHistory[i].albedo);
+                    }
+                }
+                if(channelI == 1){
+                    roughnessHistoryUsed = roughnessChannelCheckBox.clickState1;
+                    if(roughnessHistoryUsed){
+                        glm::ivec2 hTxtrRes = meshTxtrHistory[i].roughness.getResolution();
+                        glm::ivec2 oTxtrRes = colorBuffer.getResolution();
+                        
+                        meshTxtrHistory[i].roughness.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                        colorBuffer.duplicateTextureSub(meshTxtrHistory[i].roughness);
+                    }
+                }
+                if(channelI == 2){
+                    metallicHistoryUsed = metallicChannelCheckBox.clickState1;
+                    if(metallicHistoryUsed){
+                        glm::ivec2 hTxtrRes = meshTxtrHistory[i].metallic.getResolution();
+                        glm::ivec2 oTxtrRes = colorBuffer.getResolution();
+                        
+                        meshTxtrHistory[i].metallic.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                        colorBuffer.duplicateTextureSub(meshTxtrHistory[i].metallic);
+                    }
+                }
+                if(channelI == 3){
+                    normalMapHistoryUsed = normalMapChannelCheckBox.clickState1;
+                    if(normalMapHistoryUsed){
+                        glm::ivec2 hTxtrRes = meshTxtrHistory[i].normalMap.getResolution();
+                        glm::ivec2 oTxtrRes = colorBuffer.getResolution();
+                        
+                        meshTxtrHistory[i].normalMap.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                        colorBuffer.duplicateTextureSub(meshTxtrHistory[i].normalMap);
+                    }
+                }
+                if(channelI == 4){
+                    heightMapHistoryUsed = heightMapChannelCheckBox.clickState1;
+                    if(heightMapHistoryUsed){
+                        glm::ivec2 hTxtrRes = meshTxtrHistory[i].heightMap.getResolution();
+                        glm::ivec2 oTxtrRes = colorBuffer.getResolution();
+                        
+                        meshTxtrHistory[i].heightMap.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                        colorBuffer.duplicateTextureSub(meshTxtrHistory[i].heightMap);
+                    }
+                }
+                if(channelI == 5){
+                    aoHistoryUsed = aoChannelCheckBox.clickState1;
+                    if(aoHistoryUsed){
+                        glm::ivec2 hTxtrRes = meshTxtrHistory[i].ambientOcclusion.getResolution();
+                        glm::ivec2 oTxtrRes = colorBuffer.getResolution();
+                        
+                        meshTxtrHistory[i].ambientOcclusion.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                        colorBuffer.duplicateTextureSub(meshTxtrHistory[i].ambientOcclusion);
+                    }
+                }
+
+                if(!albedoHistoryUsed && !roughnessHistoryUsed && !metallicHistoryUsed && !normalMapHistoryUsed && !heightMapHistoryUsed && !aoHistoryUsed){
+                    albedoHistoryUsed = prevAlbedoHistoryUsed;
+                    roughnessHistoryUsed = prevRoughnessHistoryUsed;
+                    metallicHistoryUsed = prevMetallicHistoryUsed;
+                    normalMapHistoryUsed = prevNormalMapHistoryUsed;
+                    heightMapHistoryUsed = prevHeightMapHistoryUsed;
+                    aoHistoryUsed = prevAoHistoryUsed;
+                }
 
                 Framebuffer FBO = Framebuffer(colorBuffer, GL_TEXTURE_2D);
                 FBO.bind();
@@ -481,6 +602,32 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         }
     
         this->faceSelectionMode = false;
+    }
+    else if(undoButton.clicked){
+        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        {
+            if(i < meshTxtrHistory.size()){
+                if(albedoHistoryUsed)
+                    meshTxtrHistory[i].albedo.duplicateTexture(getModel()->meshes[i].albedo);
+                if(roughnessHistoryUsed)
+                    meshTxtrHistory[i].roughness.duplicateTexture(getModel()->meshes[i].roughness);
+                if(metallicHistoryUsed)
+                    meshTxtrHistory[i].metallic.duplicateTexture(getModel()->meshes[i].metallic);
+                if(normalMapHistoryUsed)
+                    meshTxtrHistory[i].normalMap.duplicateTexture(getModel()->meshes[i].normalMap);
+                if(heightMapHistoryUsed)
+                    meshTxtrHistory[i].heightMap.duplicateTexture(getModel()->meshes[i].heightMap);
+                if(aoHistoryUsed)
+                    meshTxtrHistory[i].ambientOcclusion.duplicateTexture(getModel()->meshes[i].ambientOcclusion);
+            }
+        }
+        
+        albedoHistoryUsed = false;
+        roughnessHistoryUsed = false;
+        metallicHistoryUsed = false;
+        normalMapHistoryUsed = false;
+        heightMapHistoryUsed = false;
+        aoHistoryUsed = false;
     }
     
     if(!this->editMaterialButton.clicked && __materialEditBtn || assignRelatedTexturesButton.clicked){

@@ -450,6 +450,7 @@ public:
    Button shiftInfoBtn;
    
    Button assignRelatedTexturesButton;
+   Button undoButton;
    
    Button materialDisplayerButton;
    Button editMaterialButton;
