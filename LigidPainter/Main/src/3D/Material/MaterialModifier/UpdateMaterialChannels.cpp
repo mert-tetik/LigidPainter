@@ -569,6 +569,8 @@ static Texture previousTexture;
 static Texture prevDepthTexture;
 
 void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr, bool noPrevTxtrMode, Model& model){
+    
+    Debugger::block("updateMaterialChannels : 897645122316454");
     if(this->hide)
         return;
 
@@ -576,7 +578,9 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
 
     //Set the orthographic projection to render the uvs
     glm::mat4 projection = glm::ortho(0.f, 1.f, 0.f, 1.f);
+    Debugger::block("updateMaterialChannels : 897645122316454");
 
+    Debugger::block("updateMaterialChannels : 78978734211231447");
     glm::ivec2 prevPrevDepthTextureRes = mesh.heightMap.getResolution(); 
 
     if(!prevDepthTexture.ID)
@@ -585,10 +589,14 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
         prevDepthTexture.update(nullptr, prevPrevDepthTextureRes.x, prevPrevDepthTextureRes.y);
 
     mesh.heightMap.duplicateTextureSub(prevDepthTexture);
+    Debugger::block("updateMaterialChannels : 78978734211231447");
     
+    Debugger::block("updateMaterialChannels : 112313148498432121");
     Texture maskTexture_procedural = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
+    Debugger::block("updateMaterialChannels : 112313148498432121");
 
     for (int channelI = 0; channelI < 6; channelI++){
+        Debugger::block("updateMaterialChannels : 7894413213151");
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
@@ -607,7 +615,9 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                         currentTexture, 
                         previousTexture
                     );
+        Debugger::block("updateMaterialChannels : 7894413213151");
         
+        Debugger::block("updateMaterialChannels : 798742313214649684");
         // Generate the procedural texture of the selected texture for the texture modifier
         if(material.materialModifiers[curModI].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
             if(textureModifierSelectedTexture_procedural.ID == 0)
@@ -620,14 +630,20 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
             
             modifierShader.use();
         }
+        Debugger::block("updateMaterialChannels : 798742313214649684");
 
+        Debugger::block("updateMaterialChannels : 11123132189897");
         // Bind the capture framebuffer after creating it in the channelPrep function
         FBO.bind();
         
         // Use the shader of the modifier
         modifierShader.use(); 
  
+        Debugger::block("updateMaterialChannels : 11123132189897");
         if(material.materialModifiers[curModI].modifierIndex != MATH_MATERIAL_MODIFIER){
+            
+            Debugger::block("updateMaterialChannels : 8979878974156");
+            
             // Vertex shader
             modifierShader.setMat4("orthoProjection", projection);
             modifierShader.setMat4("perspectiveProjection", getScene()->projectionMatrix);
@@ -649,13 +665,17 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                             selectedObjectPrimitivesTxtr,
                             noPrevTxtrMode
                         );
+            Debugger::block("updateMaterialChannels : 8979878974156");
             
+            Debugger::block("updateMaterialChannels : 44564164846451");
             // Render the result to the framebuffer
             mesh.Draw(false);
 
             //Delete the framebuffer after completing the channel
             FBO.deleteBuffers(false, false);
 
+            Debugger::block("updateMaterialChannels : 44564164846451");
+            Debugger::block("updateMaterialChannels : 13212319789877");
             //Generating the normal map based on the height map
             if(channelI == 4){
                 //Blur the height map option
@@ -668,12 +688,17 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                 //Remove the seams of the normal map texture
                 mesh.normalMap.removeSeams(mesh, textureResolution);
             }
+            Debugger::block("updateMaterialChannels : 13212319789877");
 
+            Debugger::block("updateMaterialChannels : 4889798741231");
             glEnable(GL_DEPTH_TEST);
 
             // Remove the seams from the generated texture
             currentTexture.removeSeams(mesh,textureResolution);
 
+            Debugger::block("updateMaterialChannels : 4889798741231");
+            
+            Debugger::block("updateMaterialChannels : 9798723131134854");
             // Apply the filter to the albedo 
             if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].button.filter.shader.ID){
                 glActiveTexture(GL_TEXTURE0);
@@ -697,9 +722,11 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                 getBox()->bindBuffers();
                 filter.applyFilter(currentTexture.ID, albedoFilterMaskTexture_procedural, maskTexture_procedural);
             }
+            Debugger::block("updateMaterialChannels : 9798723131134854");
         }
         else{
 
+            Debugger::block("updateMaterialChannels : 46544623131");
             int opI = material.materialModifiers[curModI].sections[0].elements[0].comboBox.selectedIndex;
 
             // Operation uses both sides
@@ -722,6 +749,8 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                 material.materialModifiers[curModI].sections[0].elements[4].scale.y = 0.f;
                 material.materialModifiers[curModI].sections[0].elements[5].scale.y = 0.f;
             }
+            Debugger::block("updateMaterialChannels : 46544623131");
+            Debugger::block("updateMaterialChannels : 46848423123131");
 
             if(opI == 0 || opI == 1 || opI == 6 || opI == 7){
                 material.materialModifiers[curModI].sections[0].elements[3].rangeBar.maxValue = 1.f;
@@ -737,7 +766,9 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                 material.materialModifiers[curModI].sections[0].elements[3].rangeBar.maxValue = 10.f;
                 material.materialModifiers[curModI].sections[0].elements[3].rangeBar.minValue = -10.f;
             }
+            Debugger::block("updateMaterialChannels : 46848423123131");
 
+            Debugger::block("updateMaterialChannels : 847894231321");
             modifierShader.setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
             modifierShader.setVec3("pos", glm::vec3(0.5f, 0.5f, 0.7f));
             modifierShader.setVec2("scale", glm::vec2(0.5f));
@@ -763,7 +794,9 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
 
                 FBO.bind();
             }
+            Debugger::block("updateMaterialChannels : 847894231321");
             
+            Debugger::block("updateMaterialChannels : 44113213213211");
             glActiveTexture(GL_TEXTURE0);
             if(curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode)
                 glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
@@ -782,8 +815,10 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
             glDrawArrays(GL_TRIANGLES, 0, 6);
 
             FBO.deleteBuffers(false, false);
+            Debugger::block("updateMaterialChannels : 44113213213211");
         }
         
+        Debugger::block("updateMaterialChannels : 4423132199999");
         if(material.materialModifiers[curModI].modifierIndex != MATH_MATERIAL_MODIFIER){
             if(material.materialModifiers[curModI].sections[sections.size() - 1].elements[0].checkBox.clickState1){
                 genAmbientOcclusion(
@@ -808,5 +843,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
         }
         
         getBox()->bindBuffers();
+        Debugger::block("updateMaterialChannels : 4423132199999");
     }
 }

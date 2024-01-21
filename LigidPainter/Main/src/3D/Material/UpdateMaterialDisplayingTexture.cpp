@@ -49,6 +49,7 @@ void Material::updateMaterialDisplayingTexture(
                                                 int specificUpdateI
                                             )
 { 
+    Debugger::block("updateMaterialDisplayingTexture : 1474897489"); // End
 
     //Resolution of the material displaying texture
     const int displayRes = customFBO.colorBuffer.getResolution().x;
@@ -70,7 +71,9 @@ void Material::updateMaterialDisplayingTexture(
                                                     0.1f,    //Near
                                                     100.f  //Far (the material is pretty close to the camera actually  ) 
                                                 );
+    Debugger::block("updateMaterialDisplayingTexture : 1474897489"); // End
     
+    Debugger::block("updateMaterialDisplayingTexture : 1238899889"); // End
     //Generates the material channels from scratch if the updateMaterial boolean set to true 
     if(updateMaterial)
     {
@@ -98,7 +101,9 @@ void Material::updateMaterialDisplayingTexture(
             }
         }
     }
+    Debugger::block("updateMaterialDisplayingTexture : 1238899889"); // End
     
+    Debugger::block("updateMaterialDisplayingTexture : 8979846516231"); // End
     //!Update the material displaying texture
     customFBO.bind();
 
@@ -111,7 +116,9 @@ void Material::updateMaterialDisplayingTexture(
     
     //Use the 3D model rendering shader
     ShaderSystem::tdModelShader().use();
+    Debugger::block("updateMaterialDisplayingTexture : 8979846516231"); // End
 
+    Debugger::block("updateMaterialDisplayingTexture : 9989898989"); // End
     //Throw the camera data to the shader
     ShaderSystem::tdModelShader().setInt("displayingMode", displayingMode);
     ShaderSystem::tdModelShader().setVec3("viewPos",matCam.cameraPos);
@@ -157,8 +164,10 @@ void Material::updateMaterialDisplayingTexture(
         //Draw the sphere
         displayModel.meshes[i].Draw(false);
     }
+    Debugger::block("updateMaterialDisplayingTexture : 9989898989"); // End
     
 
+    Debugger::block("updateMaterialDisplayingTexture : 79841313184794"); // End
     
     ShaderSystem::tdModelShader().setInt("displayingMode", 0);
     
@@ -174,4 +183,5 @@ void Material::updateMaterialDisplayingTexture(
     Settings::defaultFramebuffer()->setViewport();
 
     getBox()->bindBuffers();
+    Debugger::block("updateMaterialDisplayingTexture : 79841313184794"); // End
 }

@@ -429,11 +429,14 @@ Texture Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
 
 void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textureRes){
     
+    Debugger::block("generateProceduralTexture : 35131746484"); // Start
     glm::ivec2 destTxtrRes = destTxtr.getResolution();
+    Debugger::block("generateProceduralTexture : 35131746484"); // Start
 
     // ------- Edge Wear ------- 
     if(this->proceduralProps.proceduralID == 121){
-        
+        Debugger::block("generateProceduralTexture : 98484623161"); // Start
+    
         if(!normalMapTxtr.ID){
             normalMapTxtr = Texture(nullptr, 1024, 1024);
             normalMapTxtrBlurred = Texture(nullptr, 1024, 1024);
@@ -535,10 +538,12 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
 
         Settings::defaultFramebuffer()->FBO.bind();
         glDeleteFramebuffers(1, &FBO);
+        Debugger::block("generateProceduralTexture : 98484623161"); // Start
     }
 
     // ------- Regular Procedural Texture -------
     else{
+        Debugger::block("generateProceduralTexture : 464894231321"); // Start
         ShaderSystem::to2DProcedural().use();
 
         if(this->proceduralProps.proceduralID == 1000)
@@ -589,8 +594,10 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
 
         Settings::defaultFramebuffer()->FBO.bind();
         glDeleteFramebuffers(1, &FBO);
+        Debugger::block("generateProceduralTexture : 464894231321"); // Start
     }
 
+    Debugger::block("generateProceduralTexture : 965343177"); // Start
     // ------- Generating Normal Map -------
     if(this->proceduralProps.proceduralNormalMap){
         if(!normalMapRes.ID){
@@ -606,8 +613,11 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         normalMapRes.getData(normalMapData);
         destTxtr.update(normalMapData, textureRes, textureRes);
     }
+    Debugger::block("generateProceduralTexture : 965343177"); // Start
 
+    Debugger::block("generateProceduralTexture : 798749999"); // Start
     destTxtr.removeSeams(mesh, textureRes);
+    Debugger::block("generateProceduralTexture : 798749999"); // Start
 }
 
 void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale){

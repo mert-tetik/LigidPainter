@@ -41,9 +41,12 @@ void UI::paintingPanelInteraction(
                             )
 {
 
+    Debugger::block("paintingPanelInteraction : 68468444156"); // Start
     //Get the brush data from GUI to the painter class
     painter.setBrushProperties(brushSection);
+    Debugger::block("paintingPanelInteraction : 68468444156"); // End
 
+    Debugger::block("paintingPanelInteraction : 41313215"); // Start
     if(!anyDialogActive || painter.paintingoverTextureEditorMode){
         
         if(shortcuts_F1())
@@ -58,7 +61,9 @@ void UI::paintingPanelInteraction(
                 this->meshSection.elements[2].checkBox.clickState1 = false;
         }
     }
+    Debugger::block("paintingPanelInteraction : 41313215"); // End
 
+    Debugger::block("paintingPanelInteraction : 77878454151"); // Start
     if(painter.selectedDisplayingModeIndex == 0){
         this->paintingOverSection.elements[0].checkBox.clickState1 = false;
         this->paintingOverSection.elements[1].checkBox.clickState1 = false;
@@ -68,7 +73,9 @@ void UI::paintingPanelInteraction(
         this->mirrorSection.elements[2].checkBox.clickState1 = false;
         this->mirrorSection.elements[4].checkBox.clickState1 = false;
     }
+    Debugger::block("paintingPanelInteraction : 77878454151"); // End
 
+    Debugger::block("paintingPanelInteraction : 1474897489"); // Start
     for (size_t i = 0; i < this->colorSection.elements.size(); i++){
         if(this->colorSection.elements[i].rangeBar.valueDoneChanging || prevSelectedClr != painter.getSelectedColor().getRGB_normalized() || !painterColorDisplayMatInit){
             painterColorDisplayMatInit = true;
@@ -87,7 +94,9 @@ void UI::paintingPanelInteraction(
             break;
         }
     }
+    Debugger::block("paintingPanelInteraction : 1474897489"); // End
 
+    Debugger::block("paintingPanelInteraction : 1148498499"); // Start
     prevSelectedClr = painter.getSelectedColor().getRGB_normalized();
 
     if(!painter.useCustomMaterial)
@@ -95,7 +104,9 @@ void UI::paintingPanelInteraction(
     else{
         this->colorSection.elements[0].button.texture = this->paintingCustomMat.displayingTexture;
     }
+    Debugger::block("paintingPanelInteraction : 1148498499"); // End
 
+    Debugger::block("paintingPanelInteraction : 99945496846"); // End
     for (size_t i = 0; i < this->colorSection.elements.size(); i++)
     {
         if(painter.selectedDisplayingModeIndex == 1){
@@ -126,7 +137,9 @@ void UI::paintingPanelInteraction(
             }
         }
     }
+    Debugger::block("paintingPanelInteraction : 99945496846"); // End
 
+    Debugger::block("paintingPanelInteraction : 325888"); // End
     if(this->colorSection.elements[17].button.clicked){
         this->materialSelectionDialog.dialogControl.activate();
         this->materialSelectionDialog.material = &this->paintingCustomMat;
@@ -141,7 +154,9 @@ void UI::paintingPanelInteraction(
     if(colorSection.elements[4].button.hover && *Mouse::LDoubleClick()){//Pressed to third color button element
         painter.loadColor3();
     }
+    Debugger::block("paintingPanelInteraction : 325888"); // End
 
+    Debugger::block("paintingPanelInteraction : 555561819978"); // End
     //Prevent multiple selection and update the painter.selectedColorIndex for colors
     for (size_t i = 2; i < colorSection.elements.size(); i++)
     {
@@ -156,7 +171,9 @@ void UI::paintingPanelInteraction(
             }
         }
     }
+    Debugger::block("paintingPanelInteraction : 555561819978"); // End
 
+    Debugger::block("paintingPanelInteraction : 98411154874564684"); // End
     //Keep the selected color button pressed
     for (size_t i = 0; i < colorSection.elements.size(); i++){
         if(i == painter.selectedColorIndex + 2){
@@ -168,8 +185,10 @@ void UI::paintingPanelInteraction(
     colorSection.elements[2].button.color = glm::vec4(painter.color1.getRGB_normalized(), 1.f);
     colorSection.elements[3].button.color = glm::vec4(painter.color2.getRGB_normalized(), 1.f);
     colorSection.elements[4].button.color = glm::vec4(painter.color3.getRGB_normalized(), 1.f);
+    Debugger::block("paintingPanelInteraction : 98411154874564684"); // End
     
 
+    Debugger::block("paintingPanelInteraction : 89789746511"); // End
     //If clicked to the dropper button activate the dropper
     if(colorSection.elements[5].button.clicked){
         dropper.active = true;
@@ -231,7 +250,10 @@ void UI::paintingPanelInteraction(
         glDeleteTextures(1, &exportBrush.displayingTexture.ID);
         
     }
+    
+    Debugger::block("paintingPanelInteraction : 89789746511"); // End
 
+    Debugger::block("paintingPanelInteraction : 4654654541132"); // End
     //Update the meshes section of the painting panel if a new model is added
     if(getModel()->newModelAdded){
         meshSection.elements[0].button.selectedMeshI = 0;
@@ -253,7 +275,9 @@ void UI::paintingPanelInteraction(
     painter.oXZSide.active = painter.oXSide.active && painter.oZSide.active; 
     painter.oYZSide.active = painter.oYSide.active && painter.oZSide.active; 
     painter.oXYZSide.active = painter.oXSide.active && painter.oYSide.active && painter.oZSide.active; 
+    Debugger::block("paintingPanelInteraction : 4654654541132"); // End
 
+    Debugger::block("paintingPanelInteraction : 9888454894156"); // End
     // Updating the depth texture if interacted with the gui elements related to mirroring
     if( 
         mirrorSection.elements[0].isInteracted() || 
@@ -265,10 +289,14 @@ void UI::paintingPanelInteraction(
     ) {
         painter.updateDepthTexture();
     }
+    Debugger::block("paintingPanelInteraction : 9888454894156"); // End
 
 
+    Debugger::block("paintingPanelInteraction : 78978912332"); // End
     brushSection.elements[0].button.texture = painter.displayingBrush.displayingTexture; 
+    Debugger::block("paintingPanelInteraction : 78978912332"); // End
 
+    Debugger::block("paintingPanelInteraction : 48948946521231"); // End
     if(!painter.displayingBrush.displayingTexture.ID){
         // Init brush settings displaying brush
         painter.displayingBrush = Brush(
@@ -287,7 +315,9 @@ void UI::paintingPanelInteraction(
                                             painter.brushProperties.brushTexture
                                         );
     }
+    Debugger::block("paintingPanelInteraction : 48948946521231"); // End
     
+    Debugger::block("paintingPanelInteraction : 112233987654"); // End
     for (size_t i = 0; i < brushSection.elements.size(); i++)
     {
         if(brushSection.elements[i].isInteracted()){
@@ -308,7 +338,9 @@ void UI::paintingPanelInteraction(
                                             );
         }
     }
+    Debugger::block("paintingPanelInteraction : 112233987654"); // End
     
+    Debugger::block("paintingPanelInteraction : 454515211348948421"); // End
     for (size_t i = 0; i < paintingPanelModePanel.sections[0].elements.size(); i++)
     {
         if(paintingPanelModePanel.sections[0].elements[i].button.clickState1 && selectedPaintingPanelMode != i){
@@ -329,7 +361,9 @@ void UI::paintingPanelInteraction(
             paintingPanelModePanel.sections[0].elements[i].button.clickState1 = true;
         }
     }
+    Debugger::block("paintingPanelInteraction : 454515211348948421"); // End
 
+    Debugger::block("paintingPanelInteraction : 789741321312312"); // End
     painter.materialPainting = painter.selectedDisplayingModeIndex == 1;
     painter.enableAlbedoChannel = colorSection.elements[1].checkBox.clickState1;
     painter.enableRoughnessChannel = colorSection.elements[6].checkBox.clickState1;
@@ -343,7 +377,9 @@ void UI::paintingPanelInteraction(
     painter.enableAOChannel = colorSection.elements[14].checkBox.clickState1;
     painter.ambientOcclusionVal = colorSection.elements[15].rangeBar.value;
     painter.useCustomMaterial = colorSection.elements[16].checkBox.clickState1;
+    Debugger::block("paintingPanelInteraction : 789741321312312"); // End
 
+    Debugger::block("paintingPanelInteraction : 1111117865213214"); // End
     if(getModel()->newModelAdded){
         paintingChannelsSection.clear(); 
 
@@ -375,14 +411,18 @@ void UI::paintingPanelInteraction(
                                             );
         }
     }
+    Debugger::block("paintingPanelInteraction : 1111117865213214"); // End
 
+    Debugger::block("paintingPanelInteraction : 33215456489974961321"); // End
     if(paintingChannelsSection.size()){
         if(paintingChannelsSection[0].elements.size()){
             if(paintingChannelsSection[0].elements[0].button.clicked)
                 paintingChannelsAutoCreateTexturesDialog.dialogControl.activate();
         }
     }
+    Debugger::block("paintingPanelInteraction : 33215456489974961321"); // End
 
+    Debugger::block("paintingPanelInteraction : 73213249848974"); // End
     for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
     {
         for (size_t elI = 0; elI < 6; elI++){
@@ -429,7 +469,9 @@ void UI::paintingPanelInteraction(
             paintingChannelsSection[secI].elements.push_back(btn); 
         }
     }
+    Debugger::block("paintingPanelInteraction : 73213249848974"); // End
 
+    Debugger::block("paintingPanelInteraction : 13216544894891111"); // End
     if(!objectTexturingDialog.dialogControl.isActive()){
         for (size_t i = 0; i < getModel()->meshes.size(); i++)
         {
@@ -445,4 +487,5 @@ void UI::paintingPanelInteraction(
             getModel()->meshes[i].materialIDTxtr = paintingChannelsSection[i + 1].elements[6].button.texture;
         }
     }
+    Debugger::block("paintingPanelInteraction : 13216544894891111"); // End
 }
