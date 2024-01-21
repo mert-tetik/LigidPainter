@@ -48,6 +48,7 @@ void Renderer::initRenderer(){
     if(!getContext()->window.setWindowIcon(L"./LigidPainter/Resources/Icons/logo-1080x.ico"))
         LGDLOG::start<< "ERROR : Can't change the icon of the window" << LGDLOG::end;
 
+    Debugger::block("LOAD : Init context"); //Start
     getContext()->window.setWindowUserPointer(this);
 
     auto cursorPosFunc = [](LigidWindow w, double x, double y)
@@ -102,6 +103,7 @@ void Renderer::initRenderer(){
     getScene()->updateViewMatrix();
     getScene()->updateTransformMatrix();
     getScene()->updateProjectionMatrix();
+    Debugger::block("LOAD : Init context"); //End
 
     Debugger::block("LOAD : Models"); //Start
     
@@ -148,12 +150,18 @@ void Renderer::initRenderer(){
     
     Debugger::block("LOAD : GUI"); //End
 
+    Debugger::block("LOAD : Cursors"); //Start
     //Load the cursors of the LigidPainter
     Mouse::loadCursors();
+    Debugger::block("LOAD : Cursors"); //End
 
+    Debugger::block("LOAD : Init painter"); //Start
     //Init the painter
     painter.initPainter();
+    Debugger::block("LOAD : Init painter"); //End
 
+    Debugger::block("LOAD : Rest"); //Start
+    
     //Create the mesh node
     NodeScene::addNode(Node(MESH_NODE, 0));
 
@@ -193,6 +201,7 @@ void Renderer::initRenderer(){
     }
 
     Settings::defaultFramebuffer()->init(*Settings::videoScale());
+    Debugger::block("LOAD : Rest"); //End
 
     Debugger::block("LOAD : SOURCE LIB TEXTURES"); //Start 16916480
 
@@ -200,5 +209,4 @@ void Renderer::initRenderer(){
     Library::loadSourceLibTextures();
     
     Debugger::block("LOAD : SOURCE LIB TEXTURES"); //End
-
 }

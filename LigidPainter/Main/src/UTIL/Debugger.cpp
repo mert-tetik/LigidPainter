@@ -24,7 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-#define LIGIDPAINTER_DEBUGGING_MODE false
+extern bool ligidPainter_DEBUG_MODE;
 #define LIGIDPAINTER_DEBUGGING_TEST_MODE false
 #define LIGIDPAINTER_DEBUGGING_MEMORY_ONLY false
 
@@ -43,7 +43,7 @@ struct DebugObject{
 static std::vector<DebugObject> objects;
 
 void Debugger::block(std::string name){
-    if(LIGIDPAINTER_DEBUGGING_MODE){
+    if(ligidPainter_DEBUG_MODE){
         bool matched = false;
         
         for (size_t i = 0; i < objects.size(); i++)
@@ -52,12 +52,12 @@ void Debugger::block(std::string name){
                 if(LIGIDPAINTER_DEBUGGING_TEST_MODE){
                     if(name == "TEST"){
                         if((LIGIDPAINTER_DEBUGGING_MEMORY_ONLY && (int)LigidGL::getRamUsage() - (int)objects[i].memoryUsage != 0) || !LIGIDPAINTER_DEBUGGING_MEMORY_ONLY)
-                            std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << ", Registered Memory : " << (int)LigidGL::getRamUsage() - (int)objects[i].memoryUsage << std::endl; 
+                            std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << ", Registered Memory : " << (int)LigidGL::getRamUsage() - (int)objects[i].memoryUsage << ", Memory Left : " << LigidGL::getRamLeft() << " Out of " << LigidGL::getTotalRam()  << std::endl; 
                     }
                 }
                 else
                     if((LIGIDPAINTER_DEBUGGING_MEMORY_ONLY && (int)LigidGL::getRamUsage() - (int)objects[i].memoryUsage != 0) || !LIGIDPAINTER_DEBUGGING_MEMORY_ONLY)
-                        std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << ", Registered Memory : " << (int)LigidGL::getRamUsage() - (int)objects[i].memoryUsage << std::endl; 
+                        std::cout << "Block : " << name << " Duration : " << 1 / (LigidGL::getTime() - objects[i].time) << ", Registered Memory : " << (int)LigidGL::getRamUsage() - (int)objects[i].memoryUsage << ", Memory Left : " << LigidGL::getRamLeft() << " Out of " << LigidGL::getTotalRam() << std::endl; 
                 
                 matched = true;
 

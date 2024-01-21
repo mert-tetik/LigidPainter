@@ -37,6 +37,10 @@ bool _ligid_renderer_render_first_frame = true;
 
 void Renderer::render(){
 
+    Debugger::block("Started"); // Start
+    Debugger::block("Started"); // Start
+
+    Debugger::block("Updating video scale & pollEvents"); // Start
     glm::ivec2 maxWindowSize;
     getContext()->window.getMaximizedScreenSize(maxWindowSize.x, maxWindowSize.y);
     *Settings::videoScale() = maxWindowSize; 
@@ -48,9 +52,11 @@ void Renderer::render(){
     while (getContext()->window.isMinimized()){
         getContext()->window.pollEvents();
     }
+    Debugger::block("Updating video scale & pollEvents"); // End
 
     Debugger::block("Complete rendering"); // Start
     
+    Debugger::block("Prep"); // Start
     //Update local timer data
     timer.tick = false;
     if(timer.runTimer(1.f)){
@@ -84,7 +90,7 @@ void Renderer::render(){
     
     //Refresh the default framebuffer    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+    Debugger::block("Prep"); // End
 
 
     Debugger::block("Skybox Rendering"); // Start
@@ -95,6 +101,7 @@ void Renderer::render(){
 
     Debugger::block("Skybox Rendering"); // End
 
+    Debugger::block("Prep 3D Rendering"); // Start
     //Set the uniforms regarding 3D models (mostly vertex shader) 
     set3DUniforms();
 
@@ -113,6 +120,7 @@ void Renderer::render(){
         glEnable(GL_CULL_FACE);
     else
         glDisable(GL_CULL_FACE);
+    Debugger::block("Prep 3D Rendering"); // End
 
     Debugger::block("Rendering scene decorations"); // Start
 
@@ -130,6 +138,7 @@ void Renderer::render(){
 
     Debugger::block("Rendering scene decorations"); // End
 
+    Debugger::block("3D Model"); // Start
     // 3D Model    
     ShaderSystem::tdModelShader().use();
 
@@ -147,9 +156,6 @@ void Renderer::render(){
     
     // Process the shortcut inputs & move the camera gradually if necessary
     getScene()->camera.posShortcutInteraction(!userInterface.anyContextMenuActive && !userInterface.anyDialogActive, userInterface.sceneGizmo);
-
-
-    Debugger::block("3D Model"); // Start
 
     //Render each mesh
     this->renderMainModel();
@@ -185,6 +191,7 @@ void Renderer::render(){
     
     Debugger::block("Complete user interface"); // End
 
+    Debugger::block("Painting"); // Start
     //Painting
     if(
             *Mouse::LPressed() && 
@@ -225,8 +232,10 @@ void Renderer::render(){
 
         painter.refreshable = false;
     }
+    Debugger::block("Painting"); // End
 
 
+    Debugger::block("Ending"); // Start
     //Set mouse states to default
     *Mouse::LClick() = false;
     *Mouse::RClick() = false;
@@ -259,6 +268,7 @@ void Renderer::render(){
     //Sets the active cursor (mouse.activeCursor) as the cursor
     //Than changes the active cursor as default cursor
     Mouse::updateCursor();  
+    Debugger::block("Ending"); // End
 
     // ------- Rendering the framebuffer result ------- 
     if(true){

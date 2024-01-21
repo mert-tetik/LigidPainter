@@ -26,6 +26,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Renderer.h"
 #include "UTIL/Util.hpp"
 
+extern bool ligidPainter_ONLY_INIT;
+
 Renderer::Renderer(){
 
 }
@@ -77,13 +79,20 @@ public:
         
         Debugger::block("LOAD : Shaders"); //End
 
+        Debugger::block("LOAD : Overall renderer"); //Start
         Renderer renderer;
         renderer.initRenderer();
+        Debugger::block("LOAD : Overall renderer"); //End
         
+        Debugger::block("LOAD : Init other threads"); //Start
         // Start the export thread
         std::thread projectUpdatingThreadX(projectUpdatingThread, std::ref(renderer.project));
+        Debugger::block("LOAD : Init other threads"); //End
 
         LGDLOG::start.clear();
+
+        if(ligidPainter_ONLY_INIT)
+            return 1;
 
         while((!renderer.userInterface.logDialog.windowShouldClose && !Settings::properties()->cat_hide) || (!getContext()->window.shouldClose() && Settings::properties()->cat_hide))
         {   

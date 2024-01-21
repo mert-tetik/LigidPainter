@@ -93,3 +93,19 @@ size_t LigidGL::getRamUsage(){
     
     return virtualMemUsedByMe;
 }
+
+size_t LigidGL::getTotalRam(){
+    MEMORYSTATUSEX status;
+    status.dwLength = sizeof(status);
+    GlobalMemoryStatusEx(&status);
+
+    return status.ullTotalPhys;
+}
+
+size_t LigidGL::getRamLeft(){
+    MEMORYSTATUSEX status;
+    status.dwLength = sizeof(status);
+    GlobalMemoryStatusEx(&status);
+
+    return status.ullAvailPhys;
+}

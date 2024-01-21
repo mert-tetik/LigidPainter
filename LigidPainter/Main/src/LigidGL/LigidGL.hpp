@@ -263,6 +263,16 @@ namespace LigidGL{
     *   @brief Retrieve the memory usage of the application
     */
     size_t getRamUsage();  
+    
+    /*!
+    *   @brief Retrieve the ram capacity of the user
+    */
+    size_t getTotalRam();  
+
+    /*!
+    *   @brief Retrieve the free ram storage left
+    */
+    size_t getRamLeft();  
 };
 
 
