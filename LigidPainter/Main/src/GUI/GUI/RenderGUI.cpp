@@ -321,6 +321,79 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     sceneGizmo.yaw = glm::radians(getScene()->camera.yaw);
     sceneGizmo.pitch = glm::radians(getScene()->camera.pitch);
     sceneGizmo.render(timer, !anyDialogActive);
+
+    if(painter.selectedDisplayingModeIndex == 0){
+        currentModeDisplayer.text = "Object Selection Mode";
+        int selectedObjCount = 0;
+        int objCount = 0;
+        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        {
+            selectedObjCount += getModel()->meshes[i].selectedObjectIndices.size();
+            objCount += getModel()->meshes[i].objects.size();
+        }
+        
+        currentModeHintDisplayer.text = "Objects " + std::to_string(selectedObjCount) + "/" + std::to_string(objCount);
+    }
+    else if(painter.selectedDisplayingModeIndex == 1){
+        currentModeDisplayer.text = "Material Painting mode";
+        currentModeHintDisplayer.text = "Regular Painting";
+    }
+    else if(painter.selectedDisplayingModeIndex == 2){
+        currentModeDisplayer.text = "Single Texture Painting mode";
+        currentModeHintDisplayer.text = "Regular Painting";
+    }
+    else{
+        currentModeDisplayer.text = "Unknown mode";
+        currentModeHintDisplayer.text = "Unknown mode";
+    }
+
+    if(painter.oXSide.active || painter.oYSide.active || painter.oZSide.active){
+        
+        if(painter.oXSide.active && painter.oYSide.active && painter.oZSide.active)
+            currentModeHintDisplayer.text = "Mirror XYZ";
+        
+        else if(painter.oXSide.active && painter.oYSide.active)
+            currentModeHintDisplayer.text = "Mirror XY";
+        
+        else if(painter.oYSide.active && painter.oZSide.active)
+            currentModeHintDisplayer.text = "Mirror YZ";
+        
+        else if(painter.oXSide.active && painter.oZSide.active)
+            currentModeHintDisplayer.text = "Mirror XZ";
+        
+        else if(painter.oXSide.active)
+            currentModeHintDisplayer.text = "Mirror X";
+        
+        else if(painter.oYSide.active)
+            currentModeHintDisplayer.text = "Mirror Y";
+        
+        else if(painter.oZSide.active)
+            currentModeHintDisplayer.text = "Mirror Z";
+
+    }
+
+
+    if(painter.faceSelection.activated){
+        currentModeHintDisplayer.text = "Masking To Selected Mesh";
+    }
+    if(painter.faceSelection.editMode){
+        currentModeDisplayer.text = "Face Selection Mode (Edit)";
+        if(painter.selectedMeshIndex < getModel()->meshes.size())
+            currentModeHintDisplayer.text = "Faces Total : " + std::to_string(getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
+    }
+    
+    if(painter.usePaintingOver){
+        currentModeHintDisplayer.text = "Painting Over Mode";
+    }
+    if(painter.paintingoverTextureEditorMode){
+        currentModeDisplayer.text = "Painting Over Edit Mode";
+        
+        currentModeHintDisplayer.text = std::to_string(paintingOverTextureFields.size()) + " Textures";
+    }
+    
+    currentModeDisplayer.render(timer, false);
+    currentModeHintDisplayer.render(timer, false);
+    wrapModeCheckbox.render(timer, !anyDialogActive);
     
     if(paintingChannelsTextureSelectionPanelActive){
         paintingChannelsTextureSelectionPanel.sections[0].elements.clear();
@@ -592,6 +665,20 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             for (size_t i = 0; i < 5; i++)
                 this->panelPositioning(screenGapPerc, painter);
         }
+
+        faceSelectionCheckComboList.panel.sections[0] = meshSection;
+        faceSelectionCheckComboList.checkButton.clickState1 = meshSection.elements[1].checkBox.clickState1;
+        faceSelectionCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
+        faceSelectionCheckComboList.render(timer, !anyDialogActive);
+        meshSection = faceSelectionCheckComboList.panel.sections[0];
+        meshSection.elements[1].checkBox.clickState1 = faceSelectionCheckComboList.checkButton.clickState1;
+        
+        paintingOverCheckComboList.panel.sections[0] = paintingOverSection;
+        paintingOverCheckComboList.checkButton.clickState1 = paintingOverSection.elements[0].checkBox.clickState1;
+        paintingOverCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
+        paintingOverCheckComboList.render(timer, !anyDialogActive);
+        paintingOverSection = paintingOverCheckComboList.panel.sections[0];
+        paintingOverSection.elements[0].checkBox.clickState1 = paintingOverCheckComboList.checkButton.clickState1;
 
         if(painter.selectedPaintingModeIndex == 2)
             smearPaintingModePropertyPanel.render(timer, !anyDialogActive); 

@@ -500,6 +500,7 @@ public:
     void render(Timer &timer,bool doMouseTracking);
 };
 
+
 struct Element{
     //The UI Element
 
@@ -556,10 +557,6 @@ struct Section{ //Sections seperates the elements in the panel
     Section();
     Section(Element header,std::vector<Element> elements);
 };
-
-
-
-
 
 
 //!------------------------------PANEL------------------------------
@@ -715,6 +712,29 @@ public:
           bool hasSlider);
 
     /// @brief Renders the panel
+    void render(Timer &timer,bool doMouseTracking);
+};
+
+class CheckComboList{
+public:
+    float panelOffset = 0.f;
+    
+    std::string info;
+
+    glm::vec3 pos;
+    glm::vec2 scale;
+
+    bool hover = false;
+    double lastTimeHover = 0.;
+    bool doMouseTracking = true;
+
+    Button checkButton;
+    Button arrowButton;
+    Panel panel;
+
+    CheckComboList(){}
+    CheckComboList(std::string info, Texture texture, glm::vec3 pos, float panelOffset, Section& section);
+
     void render(Timer &timer,bool doMouseTracking);
 };
 

@@ -32,6 +32,7 @@ void Gizmo::render(
                         Timer &timer, //Timer that handles the animations
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
+                        
     this->doMouseTracking = doMouseTracking;
 
     // pos value % of the video scale
@@ -52,6 +53,8 @@ void Gizmo::render(
     hoverBtn.radius = scale.x / 2.f;
     hoverBtn.color2 = hoverBtn.color;
     hoverBtn.render(timer, doMouseTracking);
+
+    this->hover = hoverBtn.hover;
     
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 

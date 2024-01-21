@@ -67,6 +67,15 @@ void UI::panelPositioning(
     paintingModesPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + paintingModesPanel.scale.x + 1;
     paintingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingModesPanel.scale.y;
 
+    faceSelectionCheckComboList.pos = paintingModesPanel.pos;
+    faceSelectionCheckComboList.pos.x += paintingModesPanel.scale.x + faceSelectionCheckComboList.scale.x + 0.5f;
+    faceSelectionCheckComboList.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + faceSelectionCheckComboList.scale.y;
+    paintingOverCheckComboList.pos = faceSelectionCheckComboList.pos;  
+    paintingOverCheckComboList.pos.x += faceSelectionCheckComboList.scale.x + paintingOverCheckComboList.scale.x + 0.25f;  
+
+    //faceSelectionCheckComboList
+    //paintingOverCheckComboList
+
     vectorPaintingModePropertyPanel.pos.x = libraryPanelDisplayer.pos.x + libraryPanelDisplayer.scale.x + vectorPaintingModePropertyPanel.scale.x + 1;
     vectorPaintingModePropertyPanel.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + vectorPaintingModePropertyPanel.scale.y + 1;
     
@@ -87,8 +96,22 @@ void UI::panelPositioning(
 
     displayingModesPanel.pos.x = paintingPanelModePanel.pos.x - paintingPanelModePanel.scale.x - displayingModesPanel.scale.x - 0.5f;
     displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;
-    sceneGizmo.pos = displayingModesPanel.pos;
-    sceneGizmo.pos.y += displayingModesPanel.scale.y + sceneGizmo.scale.y + 1.f;
+    
+    currentModeDisplayer.pos = displayingModesPanel.pos;
+    currentModeDisplayer.pos.x = paintingPanelModeDisplayer.pos.x - paintingPanelModeDisplayer.scale.x - currentModeDisplayer.scale.x;
+    currentModeDisplayer.pos.y += displayingModesPanel.scale.y + currentModeDisplayer.scale.y + 1.f;
+    
+    currentModeHintDisplayer.pos = currentModeDisplayer.pos;
+    currentModeHintDisplayer.pos.x = paintingPanelModeDisplayer.pos.x - paintingPanelModeDisplayer.scale.x - currentModeHintDisplayer.scale.x;
+    currentModeHintDisplayer.pos.y += currentModeDisplayer.scale.y + currentModeHintDisplayer.scale.y;
+    
+    wrapModeCheckbox.pos = currentModeHintDisplayer.pos;
+    wrapModeCheckbox.pos.x = paintingPanelModeDisplayer.pos.x - paintingPanelModeDisplayer.scale.x - wrapModeCheckbox.scale.x * 2.f;
+    wrapModeCheckbox.pos.y += currentModeHintDisplayer.scale.y + wrapModeCheckbox.scale.y;
+
+    sceneGizmo.pos = wrapModeCheckbox.pos;
+    sceneGizmo.pos.x = displayingModesPanel.pos.x;
+    sceneGizmo.pos.y += wrapModeCheckbox.scale.y + sceneGizmo.scale.y + 1.f;
 
     selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
 

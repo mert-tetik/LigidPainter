@@ -89,6 +89,10 @@ void UI::elementInteraction(
                     textureSelectedObjectsButton.hover   ||
                     objectsPanel.hover   ||
                     smearPaintingModePropertyPanel.hover||
+                    sceneGizmo.hover||
+                    wrapModeCheckbox.hover||
+                    faceSelectionCheckComboList.hover||
+                    paintingOverCheckComboList.hover||
                     logDialog.isHovered() ||
                     vectorPaintingModePropertyPanel.hover;
 

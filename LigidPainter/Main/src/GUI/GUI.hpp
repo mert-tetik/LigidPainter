@@ -126,6 +126,12 @@ public:
     Panel objectsPanel;
 
     Gizmo sceneGizmo;
+    Button currentModeDisplayer;
+    Button currentModeHintDisplayer;
+    CheckBox wrapModeCheckbox;
+    
+    CheckComboList faceSelectionCheckComboList;
+    CheckComboList paintingOverCheckComboList;
     
     Panel paintingPanel;
     Panel paintingPanelModePanel;

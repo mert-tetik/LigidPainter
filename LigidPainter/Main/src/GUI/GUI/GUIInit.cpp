@@ -690,4 +690,17 @@ void UI::init
 
     sceneGizmo = Gizmo("", 0, glm::vec3(0.f), glm::vec2(1.f, Settings::videoScale()->x / Settings::videoScale()->y), 0.f, false);
     sceneGizmo.scale *= 2.5f;
+
+    currentModeDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f, 1.f), ""  , Texture(), 0.f, true);
+    currentModeDisplayer.color = glm::vec4(0.f);
+    currentModeDisplayer.outline = false;
+    
+    currentModeHintDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f, 1.f), ""  , Texture(), 0.f, true);
+    currentModeHintDisplayer.color = glm::vec4(0.f);
+    currentModeHintDisplayer.outline = false;
+
+    wrapModeCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(4.f,2), "Wrap Mode"  , 2.5f);
+
+    faceSelectionCheckComboList = CheckComboList("Toggle masking mesh for painting / See the mesh section from the painting panel", appTextures.TDModelIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, meshSection);
+    paintingOverCheckComboList = CheckComboList("Toggle painting over / See the painting over section from the painting panel", appTextures.paintingOverIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, paintingOverSection);
 }   
