@@ -569,6 +569,8 @@ static Texture previousTexture;
 static Texture prevDepthTexture;
 
 void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr, bool noPrevTxtrMode, Model& model){
+    Debugger::block("updateMaterialChannels : 4894352132135");
+    Debugger::block("updateMaterialChannels : 4894352132135");
     
     Debugger::block("updateMaterialChannels : 897645122316454");
     if(this->hide)

@@ -92,6 +92,7 @@ namespace ShaderSystem{
     Shader colorPicker();
     Shader twoDPainting();
     Shader depth3D();
+    Shader renderModelData();
     Shader textureUpdatingShader();
     Shader twoDPaintingModeAreaShader();
     Shader circleShader();

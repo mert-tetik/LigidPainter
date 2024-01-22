@@ -63,13 +63,75 @@ void Texture::getData(char*& pixels){
 }
 
 glm::ivec2 Texture::getResolution(){
-    int w,h;
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,ID);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
-    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+    Debugger::block("Texture::getResolution : 54465468444" + std::to_string(this->ID)); // End
+    Debugger::block("Texture::getResolution : 54465468444" + std::to_string(this->ID)); // End
 
-    return glm::ivec2(w,h);
+    Debugger::block("Texture::getResolution : 86456421111"); // End
+    if(!this->ID || glIsTexture(this->ID) == GL_FALSE){
+        std::cout << "ERROR : Can't get the resolution of the texture : Invalid ID" << std::endl;
+        return glm::ivec2(1024);
+    }
+    Debugger::block("Texture::getResolution : 86456421111"); // End
+    
+    Debugger::block("Texture::getResolution : 48948966245"); // End
+    while (glGetError() != GL_NO_ERROR)
+    {
+    }
+    Debugger::block("Texture::getResolution : 48948966245"); // End
+    
+    int w = 0, h = 0;
+
+    Debugger::block("Texture::getResolution : 5641313231312"); // End
+    // Check if the texture is bound
+    GLint currentTexture;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &currentTexture);
+    
+    if (currentTexture != ID) {
+        // Bind the texture if it's not already bound
+        glBindTexture(GL_TEXTURE_2D, ID);
+    }
+    Debugger::block("Texture::getResolution : 5641313231312"); // End
+
+    Debugger::block("Texture::getResolution : 462313214"); // End
+    // Retrieve the texture width
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+    Debugger::block("Texture::getResolution : 462313214"); // End
+
+    Debugger::block("Texture::getResolution : 98754654464"); // End
+    // Check for OpenGL errors after glGetTexLevelParameteriv
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        LGDLOG::start << "ERROR : Can't get the resolution of the texture : OpenGL Error " << error << LGDLOG::end;
+        return glm::ivec2(1024);
+        // Handle the error (print a message, log, etc.)
+        // Optionally, you might want to return an "invalid" value here
+    }
+    Debugger::block("Texture::getResolution : 98754654464"); // End
+
+    Debugger::block("Texture::getResolution : 4652138489777"); // End
+    // Retrieve the texture height
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+    Debugger::block("Texture::getResolution : 4652138489777"); // End
+
+    Debugger::block("Texture::getResolution : 99984651651"); // End
+    // Check for OpenGL errors after the second glGetTexLevelParameteriv
+    error = glGetError();
+    if (error != GL_NO_ERROR) {
+        LGDLOG::start << "ERROR : Can't get the resolution of the texture : OpenGL Error " << error << LGDLOG::end;
+        return glm::ivec2(1024);
+        // Handle the error (print a message, log, etc.)
+        // Optionally, you might want to return an "invalid" value here
+    }
+    Debugger::block("Texture::getResolution : 99984651651"); // End
+
+    Debugger::block("Texture::getResolution : 5989889562"); // End
+    // Restore the original texture binding (if it was changed)
+    if (currentTexture != ID) {
+        glBindTexture(GL_TEXTURE_2D, currentTexture);
+    }
+    Debugger::block("Texture::getResolution : 5989889562"); // End
+
+    return glm::ivec2(w, h);
 }
 
 unsigned int Texture::duplicateTexture(){

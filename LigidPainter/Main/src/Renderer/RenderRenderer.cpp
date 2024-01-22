@@ -109,6 +109,7 @@ void Renderer::render(){
     if(painter.updateTheDepthTexture && !*Mouse::RPressed()){
         //Update the depth texture
         painter.updateDepthTexture();
+        painter.updatePosNormalTexture();
         painter.updateTheDepthTexture = false;
         
         // Update the model's object id texture

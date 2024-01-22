@@ -17,6 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
@@ -77,29 +78,33 @@ void Material::updateMaterialDisplayingTexture(
     //Generates the material channels from scratch if the updateMaterial boolean set to true 
     if(updateMaterial)
     {
+        Debugger::block("updateMaterialDisplayingTexture : 8989894512"); // End
         //For every modifier the material has (Output every modifier the material has)
         //TODO : Material - update material function
         for (size_t meshI = 0; meshI < displayModel.meshes.size(); meshI++)
         {
+            Debugger::block("updateMaterialDisplayingTexture : 654684321312"); // End
             glm::ivec2 albedoRes = displayModel.meshes[meshI].albedo.getResolution(); 
+            Debugger::block("updateMaterialDisplayingTexture : 654684321312"); // End
+            
+            Debugger::block("updateMaterialDisplayingTexture : 9846415311"); // End
             displayModel.meshes[meshI].albedo.update(nullptr, albedoRes.x, albedoRes.y);
-            glm::ivec2 roughnessRes = displayModel.meshes[meshI].roughness.getResolution(); 
-            displayModel.meshes[meshI].roughness.update(nullptr, roughnessRes.x, roughnessRes.y);
-            glm::ivec2 metallicRes = displayModel.meshes[meshI].metallic.getResolution(); 
-            displayModel.meshes[meshI].metallic.update(nullptr, metallicRes.x, metallicRes.y);
-            glm::ivec2 normalMapRes = displayModel.meshes[meshI].normalMap.getResolution(); 
-            displayModel.meshes[meshI].normalMap.update(nullptr, normalMapRes.x, normalMapRes.y);
-            glm::ivec2 heightMapRes = displayModel.meshes[meshI].heightMap.getResolution(); 
-            displayModel.meshes[meshI].heightMap.update(nullptr, heightMapRes.x, heightMapRes.y);
-            glm::ivec2 ambientOcclusionRes = displayModel.meshes[meshI].ambientOcclusion.getResolution(); 
-            displayModel.meshes[meshI].ambientOcclusion.update(nullptr, ambientOcclusionRes.x, ambientOcclusionRes.y);
+            displayModel.meshes[meshI].roughness.update(nullptr, albedoRes.x, albedoRes.y);
+            displayModel.meshes[meshI].metallic.update(nullptr, albedoRes.x, albedoRes.y);
+            displayModel.meshes[meshI].normalMap.update(nullptr, albedoRes.x, albedoRes.y);
+            displayModel.meshes[meshI].heightMap.update(nullptr, albedoRes.x, albedoRes.y);
+            displayModel.meshes[meshI].ambientOcclusion.update(nullptr, albedoRes.x, albedoRes.y);
+            Debugger::block("updateMaterialDisplayingTexture : 9846415311"); // End
 
+            Debugger::block("updateMaterialDisplayingTexture : 888444222254984"); // End
             for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
             {
                 if(i == specificUpdateI || specificUpdateI == -1)
                     this->materialModifiers[i].updateMaterialChannels(*this, displayModel.meshes[meshI], textureRes, i, appTextures.white, 0, specificUpdateI != -1, displayModel);
             }
+            Debugger::block("updateMaterialDisplayingTexture : 888444222254984"); // End
         }
+        Debugger::block("updateMaterialDisplayingTexture : 8989894512"); // End
     }
     Debugger::block("updateMaterialDisplayingTexture : 1238899889"); // End
     

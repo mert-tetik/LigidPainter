@@ -113,7 +113,8 @@ void UI::elementInteraction(
     Debugger::block("GUI : Interactions : libraryPanelLeftInteraction"); // End
 
     Debugger::block("GUI : Interactions : paintingPanelInteraction"); // Start
-    this->paintingPanelInteraction(painter);
+    if(!greetingDialog.startScreen)
+        this->paintingPanelInteraction(painter);
     Debugger::block("GUI : Interactions : paintingPanelInteraction"); // End
     
     Debugger::block("GUI : Interactions : windowPanelInteraction"); // Start

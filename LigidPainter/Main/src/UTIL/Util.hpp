@@ -743,6 +743,9 @@ public:
     MirrorSide oYZSide;
     MirrorSide oXYZSide;
 
+    Texture meshPosTxtr;
+    Texture meshNormalTxtr;
+
     float mirrorXOffset = 0.f;
     float mirrorYOffset = 0.f;
     float mirrorZOffset = 0.f;
@@ -867,6 +870,8 @@ public:
     *        Use this right before the @ref refreshPainting  
     */
     void updateDepthTexture();
+
+    void updatePosNormalTexture();
 
     void loadColor1();
     void loadColor2();

@@ -30,6 +30,7 @@ Shader __vectoralCurve;
 Shader __colorPicker;
 Shader __twoDPainting;
 Shader __depth3D;
+Shader __renderModelData;
 Shader __textureUpdatingShader;
 Shader __twoDPaintingModeAreaShader;
 Shader __circleShader;
@@ -80,6 +81,7 @@ Shader __gizmo;
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
     __depth3D.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag");
+    __renderModelData.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/RenderModelData.frag");
     __skyboxBall.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag");
     __primitiveIDShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PrimitiveID.frag");
     __AOGen.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/AOGen.frag");
@@ -165,6 +167,9 @@ Shader ShaderSystem::twoDPainting(){
 }
 Shader ShaderSystem::depth3D(){
     return __depth3D;
+}
+Shader ShaderSystem::renderModelData(){
+    return __renderModelData;
 }
 Shader ShaderSystem::textureUpdatingShader(){
     return __textureUpdatingShader;

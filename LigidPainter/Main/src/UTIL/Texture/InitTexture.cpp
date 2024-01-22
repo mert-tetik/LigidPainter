@@ -128,22 +128,40 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
 }
 
 void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap){
-    glm::ivec2 res = this->getResolution();
     
+    Debugger::block("Texture::update : 645456123123"); // End
+    if(!this->ID || glIsTexture(this->ID) == GL_FALSE){
+        std::cout << "ERROR : Updating texture : Invalid ID" << std::endl;
+        return;
+    }
+    Debugger::block("Texture::update : 645456123123"); // End
+    
+    Debugger::block("Texture::update : 6848646543"); // End
+    glm::ivec2 res = this->getResolution();
+    Debugger::block("Texture::update : 6848646543"); // End
+    
+    Debugger::block("Texture::update : 7789787987"); // End
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ID);
+    Debugger::block("Texture::update : 7789787987"); // End
 
+    Debugger::block("Texture::update : 2132132231"); // End
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap);
+    Debugger::block("Texture::update : 2132132231"); // End
 
+    Debugger::block("Texture::update : 931188878454455"); // End
     if(res.x == w && res.y == h) 
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, format, GL_BYTE, pixels);
     else{
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);
     }
+    Debugger::block("Texture::update : 931188878454455"); // End
     
+    Debugger::block("Texture::update : 32113151"); // End
     glGenerateMipmap(GL_TEXTURE_2D);
+    Debugger::block("Texture::update : 32113151"); // End
 }
