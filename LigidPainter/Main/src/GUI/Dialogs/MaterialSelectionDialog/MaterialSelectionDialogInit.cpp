@@ -141,7 +141,7 @@ MaterialSelectionDialog::MaterialSelectionDialog(){
 
     matDisplayerPanel.solidStyle = true;
     
-    this->displayingFBO = Framebuffer(Texture(nullptr, 512, 512), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(512)));
+    this->displayingFBO = Framebuffer(Texture(nullptr, 512, 512), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(512)), "material selection dialog - displaying");
     
     this->selectedMatPanel.sections[0].elements[0].button.color2 = this->selectedMatPanel.sections[0].elements[0].button.color;
     this->selectedMatPanel.sections[0].elements[1].button.color2 = this->selectedMatPanel.sections[0].elements[1].button.color;

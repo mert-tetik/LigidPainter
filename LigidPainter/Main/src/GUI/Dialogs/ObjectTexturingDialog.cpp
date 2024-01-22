@@ -141,7 +141,7 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
 
     this->displayingTexture = Texture(nullptr, DISPLAY_RESOLUTION.x, DISPLAY_RESOLUTION.y);
 
-    this->displayingFBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, DISPLAY_RESOLUTION));
+    this->displayingFBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, DISPLAY_RESOLUTION), "Object texturing dialog - displaying");
 
     this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
     this->sceneCam.radius = 3.5f;
@@ -538,7 +538,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
                     aoHistoryUsed = prevAoHistoryUsed;
                 }
 
-                Framebuffer FBO = Framebuffer(colorBuffer, GL_TEXTURE_2D);
+                Framebuffer FBO = Framebuffer(colorBuffer, GL_TEXTURE_2D, "Object texturing dialog assigning");
                 FBO.bind();
 
                 glViewport(0,0,res.x,res.y);

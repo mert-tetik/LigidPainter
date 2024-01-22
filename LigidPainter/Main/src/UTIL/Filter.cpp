@@ -89,7 +89,7 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
         this->displayingTxtr.update(nullptr, displayRes.x, displayRes.y, GL_LINEAR);
 
     //Create the framebuffer
-    Framebuffer captureFBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D);
+    Framebuffer captureFBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D, "Filter generateDisplayingTexture");
 
     //Clear the capture frame buffer(displaying texture) with color alpha zero
     glClearColor(0,0,0,0);
@@ -133,7 +133,7 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
     glm::vec2 displayRes = txtrRes;
      
     //Create the framebuffer
-    Framebuffer captureFBO = Framebuffer(txtr, GL_TEXTURE_2D);
+    Framebuffer captureFBO = Framebuffer(txtr, GL_TEXTURE_2D, "Filter apply filter");
     captureFBO.bind();
 
     //Clear the capture frame buffer(displaying texture) with color alpha zero

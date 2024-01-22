@@ -465,10 +465,11 @@ public:
 
     Texture colorBuffer;
     Renderbuffer renderBuffer;
+    std::string purpose;
 
     Framebuffer();
-    Framebuffer(Texture colorBuffer, unsigned int textureTarget);
-    Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer);
+    Framebuffer(Texture colorBuffer, unsigned int textureTarget, std::string purpose);
+    Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer, std::string purpose);
     void update(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer);
 
 

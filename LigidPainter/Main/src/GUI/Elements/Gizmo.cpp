@@ -86,7 +86,7 @@ void Gizmo::render(
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
     if(!FBO.ID){
-        FBO = Framebuffer(Texture(nullptr, Settings::videoScale()->x, Settings::videoScale()->y), GL_TEXTURE_2D);
+        FBO = Framebuffer(Texture(nullptr, Settings::videoScale()->x, Settings::videoScale()->y), GL_TEXTURE_2D, "Gizmo FBO");
     }
 
     this->rHover = false;

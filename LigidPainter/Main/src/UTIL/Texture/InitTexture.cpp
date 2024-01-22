@@ -130,14 +130,18 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
 void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap){
     
     Debugger::block("Texture::update : 645456123123"); // End
-    if(!this->ID || glIsTexture(this->ID) == GL_FALSE){
-        std::cout << "ERROR : Updating texture : Invalid ID" << std::endl;
+    if(!this->ID){
+        std::cout << "ERROR : Updating texture : Invalid ID : " << ID << std::endl;
         return;
     }
     Debugger::block("Texture::update : 645456123123"); // End
     
     Debugger::block("Texture::update : 6848646543"); // End
     glm::ivec2 res = this->getResolution();
+
+    if(!glIsTexture(this->ID))
+        res = glm::ivec2(0);
+        
     Debugger::block("Texture::update : 6848646543"); // End
     
     Debugger::block("Texture::update : 7789787987"); // End

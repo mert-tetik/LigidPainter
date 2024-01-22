@@ -200,7 +200,7 @@ void Panel::updateGraphics(Timer &timer){
 
     this->graphics.update(nullptr, displayRes.x, displayRes.y, GL_NEAREST);
 
-    Framebuffer captureGraphicsFBO = Framebuffer(this->graphics, GL_TEXTURE_2D);
+    Framebuffer captureGraphicsFBO = Framebuffer(this->graphics, GL_TEXTURE_2D, "Panel update graphics");
     captureGraphicsFBO.bind();
 
     glClearColor(this->color.r, this->color.g, this->color.b, 0);

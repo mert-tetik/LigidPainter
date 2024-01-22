@@ -140,7 +140,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh, int selectedMeshI, bool mous
        
         // Generate & bind the framebuffer object to render the model primitives into the modelPrimitives texture
         if(!this->FBO.ID)
-            this->FBO = Framebuffer(this->modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, windowSize));
+            this->FBO = Framebuffer(this->modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, windowSize), "Face selection");
             
         this->FBO.bind();
 

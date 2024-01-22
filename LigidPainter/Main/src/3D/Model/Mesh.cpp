@@ -80,7 +80,7 @@ void Mesh::generateDisplayingTexture(){
 
     this->displayingTxtr.title = "MeshDisplayingTxtr";
 
-    Framebuffer FBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)));
+    Framebuffer FBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)), "Generating mesh displaying texture");
 
     glm::vec3 meshCenter = this->getCenterPosition();
     
@@ -152,7 +152,7 @@ void Mesh::generateUVMask(){
     
     this->uvMask = Texture(nullptr, resolution, resolution, GL_LINEAR);
 
-    Framebuffer FBO = Framebuffer(this->uvMask, GL_TEXTURE_2D);
+    Framebuffer FBO = Framebuffer(this->uvMask, GL_TEXTURE_2D, "Generating mesh uv mask");
     FBO.bind();
     glViewport(0, 0, resolution, resolution);
 

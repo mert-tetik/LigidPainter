@@ -90,7 +90,7 @@ void Brush::updateDisplayTexture(float radius){
     glm::vec2 displayRes = displayingTexture.getResolution();
 
     // Create and bind the capturing framebuffer
-    Framebuffer captureFBO = Framebuffer(displayingTexture, GL_TEXTURE_2D);
+    Framebuffer captureFBO = Framebuffer(displayingTexture, GL_TEXTURE_2D, "Brush::updateDisplayTexture");
     captureFBO.bind();
 
     glClearColor(0,0,0,0);

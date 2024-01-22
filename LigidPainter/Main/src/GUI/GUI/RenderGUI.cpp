@@ -908,7 +908,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     if(updatePaintingOverTexture){
         glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
 
-        Framebuffer FBO = Framebuffer(painter.paintingOverTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, paintingRes));
+        Framebuffer FBO = Framebuffer(painter.paintingOverTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, paintingRes), "update painting over texture");
         FBO.bind();
 
         glViewport(0, 0, paintingRes.x, paintingRes.y);

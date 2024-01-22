@@ -297,7 +297,7 @@ static void generateDisplayingTexture(int displayRes, Texture& displayingTxtr, M
     else
         displayingTxtr.update(nullptr, displayRes, displayRes, GL_LINEAR);
 
-    Framebuffer FBO = Framebuffer(displayingTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)));
+    Framebuffer FBO = Framebuffer(displayingTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)), "Generating model displaying texture");
 
     glDisable(GL_CULL_FACE);
 

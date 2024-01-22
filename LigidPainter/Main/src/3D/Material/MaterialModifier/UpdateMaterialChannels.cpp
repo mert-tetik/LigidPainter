@@ -77,7 +77,7 @@ static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, 
     currentTexture.update(nullptr, textureResolution, textureResolution);    
     
     //That framebuffer will be used to get the results of the shader 
-    FBO = Framebuffer(currentTexture, GL_TEXTURE_2D);
+    FBO = Framebuffer(currentTexture, GL_TEXTURE_2D, "ChannelPrep (material update)");
 
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -94,7 +94,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     
     textureObject.duplicateTextureSub(textureCopy_bluring);
 
-    Framebuffer FBO = Framebuffer(txtr, GL_TEXTURE_2D);
+    Framebuffer FBO = Framebuffer(txtr, GL_TEXTURE_2D, "Bluring texture (material update)");
     glViewport(0, 0, textureResolution, textureResolution);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -176,10 +176,10 @@ static void genAmbientOcclusion(
     glm::ivec2 aoTxtrRes = aoTxtr.getResolution();
     
     if(!aoFBO.ID){
-        aoFBO = Framebuffer(aoTxtr, GL_TEXTURE_2D);
+        aoFBO = Framebuffer(aoTxtr, GL_TEXTURE_2D, "aoFBO");
         aoDepthTxtr = Texture(nullptr, 1024, 1024, GL_NEAREST, GL_RGBA, GL_RGBA32F);
         aoTxtrDup = Texture(nullptr, aoTxtrRes.x, aoTxtrRes.y);
-        aoDepthFBO = Framebuffer(aoDepthTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)));
+        aoDepthFBO = Framebuffer(aoDepthTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)), "aoDepthFBO");
     }
 
     aoTxtrDup.update(nullptr, aoTxtrRes.x, aoTxtrRes.y);

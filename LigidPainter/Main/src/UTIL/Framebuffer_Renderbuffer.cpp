@@ -80,12 +80,13 @@ Framebuffer::Framebuffer(){
 #define TEST_FRAMEBUFFER \
 GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER); \
 if(status != GL_FRAMEBUFFER_COMPLETE){\
-    std::cout << "ERROR : Framebuffer is not valid. Error code: " << status << std::endl; \
+    std::cout << "ERROR : Framebuffer is not valid. Error code: " << status << " / " << purpose << std::endl; \
 }
 
 
-Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget){
+Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, std::string purpose){
     this->colorBuffer = colorBuffer;
+    this->purpose = purpose;
     
     glGenFramebuffers(1, &this->ID);
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
@@ -94,9 +95,10 @@ Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget){
     TEST_FRAMEBUFFER
 }
 
-Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer){
+Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer, std::string purpose){
     this->colorBuffer = colorBuffer;
     this->renderBuffer = renderbuffer;
+    this->purpose = purpose;
     
     glGenFramebuffers(1, &this->ID);
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);

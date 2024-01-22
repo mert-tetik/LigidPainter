@@ -48,7 +48,7 @@ void Skybox::createDisplayingTxtr(){
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// Create the capture framebuffer object
-	Framebuffer FBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(100)));
+	Framebuffer FBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(100)), "Skybox displaying texture");
 	FBO.bind();
 
 	//	

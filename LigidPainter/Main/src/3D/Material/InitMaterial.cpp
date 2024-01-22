@@ -46,7 +46,7 @@ Material::Material(std::string title, int ID){
     this->displayingTexture.title = "MaterialDisplay";
 
     //Capturing framebuffer
-    this->displayingFBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)));
+    this->displayingFBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)), "Material displaying fbo");
 
     Settings::defaultFramebuffer()->FBO.bind();
 }

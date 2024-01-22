@@ -58,7 +58,7 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
     glActiveTexture(GL_TEXTURE0);
 
     Texture captureTexture = Texture(nullptr, destScale.x, destScale.y, GL_LINEAR);
-    Framebuffer captureFBO = Framebuffer(captureTexture, GL_TEXTURE_2D);
+    Framebuffer captureFBO = Framebuffer(captureTexture, GL_TEXTURE_2D, "Painter::updateTheTexture");
     
     captureFBO.bind();
 

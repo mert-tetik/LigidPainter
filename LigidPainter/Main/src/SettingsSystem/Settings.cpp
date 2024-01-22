@@ -186,7 +186,7 @@ namespace Settings{
         this->bgTxtr = Texture(nullptr, resolution.x, resolution.y, GL_NEAREST);
         
         //--------- init FBO --------- 
-        this->FBO = Framebuffer(Texture(nullptr, resolution.x, resolution.y, GL_NEAREST), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT,resolution));
+        this->FBO = Framebuffer(Texture(nullptr, resolution.x, resolution.y, GL_NEAREST), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution), "Default FBO");
 
         orgID = this->FBO.ID;
         this->FBO.ID = 0;

@@ -290,7 +290,7 @@ void Painter::projectThePaintingTexture(
 
     // Generate and bind the capturing framebuffer
     // TODO Don't create the render buffer there
-    Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, textureRes));
+    Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, textureRes), "Painter::projectThePaintingTexture");
     captureFBO.bind();
     
     glClearColor(0, 0, 0, 0);
@@ -542,7 +542,7 @@ void Painter::generateMirroredProjectedPaintingTexture(
     if(selectedPaintingModeIndex != 6){
 
         // Generate and bind the capturing framebuffer
-        Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D);
+        Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D, "Painter::generateMirroredProjectedPaintingTexture");
         captureFBO.bind();
         
         glClearColor(0, 0, 0, 0);

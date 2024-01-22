@@ -356,7 +356,7 @@ std::vector<MaterialIDColor> Texture::getMaterialIDPalette(){
         materialIDColor.color = res[i];
         materialIDColor.grayScaleTxtr = Texture(nullptr, 512, 512);
 
-        Framebuffer FBO = Framebuffer(materialIDColor.grayScaleTxtr, GL_TEXTURE_2D);
+        Framebuffer FBO = Framebuffer(materialIDColor.grayScaleTxtr, GL_TEXTURE_2D, "Texture::getMaterialIDPalette");
         FBO.bind();
         getBox()->bindBuffers();
 
@@ -755,7 +755,7 @@ void Texture::applyNormalMap(float proceduralNormalStrength, bool proceduralNorm
 
     glm::ivec2 resolution = this->getResolution();
     
-    Framebuffer FBO = Framebuffer(this->ID, GL_TEXTURE_2D);
+    Framebuffer FBO = Framebuffer(this->ID, GL_TEXTURE_2D, "Texture::applyNormalMap");
     FBO.bind();
 
     glViewport(0, 0, resolution.x, resolution.y);
@@ -1185,7 +1185,7 @@ void Texture::flipTexture(bool horizontal, bool vertical){
     
     glm::ivec2 txtrRes = this->getResolution();
 
-    Framebuffer captureFBO = Framebuffer(*this, GL_TEXTURE_2D);
+    Framebuffer captureFBO = Framebuffer(*this, GL_TEXTURE_2D, "Texture::flipTexture");
     
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -1248,7 +1248,7 @@ void Texture::mix(Texture txtr2, Texture mask, bool maskAlpha, bool normalMapMod
     
     glm::vec2 resolution = this->getResolution();
     
-    Framebuffer FBO = Framebuffer(*this, GL_TEXTURE_2D);
+    Framebuffer FBO = Framebuffer(*this, GL_TEXTURE_2D, "Texture::mix");
     FBO.bind();
     glViewport(0,0,resolution.x,resolution.y);
     

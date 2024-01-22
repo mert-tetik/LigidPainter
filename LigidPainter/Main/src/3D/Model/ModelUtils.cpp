@@ -46,7 +46,7 @@ void Model::updateObjectIDsTexture(){
     // Remove if slow
     this->objectIDs.update(nullptr, resolution.x, resolution.y, GL_LINEAR, GL_RG, GL_RG32F);
 
-    Framebuffer captureFBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)));
+    Framebuffer captureFBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "updateObjectIDsTexture");
     captureFBO.bind();
 
     {
@@ -107,7 +107,7 @@ void Model::selectObject(Panel& objectsPanel){
     }
     else{
 
-        Framebuffer FBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D);
+        Framebuffer FBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D, "Model::selectObject");
         FBO.bind();
 
         glm::vec2 pos = *Mouse::cursorPos();
