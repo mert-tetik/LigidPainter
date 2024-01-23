@@ -184,7 +184,7 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, this->selectedFilter.displayingTxtr.ID);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter selection dialog : Split filters");
 
         dialogControl.updateEnd(timer,0.15f);
 
@@ -269,7 +269,7 @@ static void drawBG(
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, bgTexture);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter selection dialog : DrawBG");
     
     ShaderSystem::buttonShader().use();
 }

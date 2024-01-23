@@ -269,7 +269,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh, int textureRes){
             glClearColor(0,0,0,0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            glDrawArrays(GL_TRIANGLES, 0 , 6);
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "NodeScene");
             
             Settings::defaultFramebuffer()->FBO.bind();
             glDeleteFramebuffers(1, &FBO);
@@ -393,7 +393,7 @@ Mesh NodeScene::processNode(Node &node, Mesh& mesh, int textureRes){
             glClearColor(0,0,0,0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            glDrawArrays(GL_TRIANGLES, 0 , 6);
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Nodescene");
             
             Settings::defaultFramebuffer()->FBO.bind();
             glDeleteFramebuffers(1, &FBO);

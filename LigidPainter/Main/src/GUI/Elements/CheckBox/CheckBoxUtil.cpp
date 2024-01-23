@@ -78,7 +78,7 @@ void CheckBox::render(
         ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness); 
 
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "CheckBox::render");
 }
 
 

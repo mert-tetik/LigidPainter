@@ -184,7 +184,7 @@ void TextRenderer::renderLeftToRight(
 			glBindTexture(GL_TEXTURE_2D,ch.TextureID);
 			
 			if(textDataMinX < xpos)
-				glDrawArrays(GL_TRIANGLES, 0, 6);
+				LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TextRenderer::renderLeftToRight");
 
 			//To the right
 			pos.x += (ch.Advance >> 6) * textDataScale;
@@ -277,12 +277,12 @@ void TextRenderer::renderInsertionPointCursor(int &textPosCharIndex){
 			}
 
 			//Render the multiselection insertion point cursor 
-			glDrawArrays(GL_TRIANGLES, 0, 6);
+			LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TextRenderer::renderInsertionPointCursor : multiselection insertion point cursor ");
 		}
 		else{
 			//Draw the insertion point cursor
 			if(this->timer.seconds % 2 == 0) //Hide and show the insertion point cursor every half second
-				glDrawArrays(GL_TRIANGLES, 0, 6);
+				LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TextRenderer::renderInsertionPointCursor : insertion point cursor");
 		}
 	}
 }

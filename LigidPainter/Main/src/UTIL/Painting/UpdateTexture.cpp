@@ -88,7 +88,7 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, txtr.ID);
     
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Rendering the original texture (background)");
 
     ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
 
@@ -137,7 +137,7 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
         ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
         twoDPaintingBox.bindBuffers();
-        glDrawArrays(GL_TRIANGLES, 0 ,6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Applying painting to the texture");
     }
     
     if(this->threeDimensionalMode){

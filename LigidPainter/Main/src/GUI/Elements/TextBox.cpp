@@ -53,7 +53,7 @@ void TextBox::render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadiu
     else  //Set the thickness value of the button
         ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness); 
     
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TextBox::render");
 }
 
 TextBox::TextBox(){}

@@ -322,7 +322,7 @@ void SettingsDialog::render(Timer timer, Painter &painter, LogDialog& logDialog)
         }
     }
     
-    getScene()->updateProjectionMatrix();
+    getScene()->updateProjectionMatrix(0.f);
     getScene()->updateViewMatrix();
     getScene()->updateTransformMatrix();
 

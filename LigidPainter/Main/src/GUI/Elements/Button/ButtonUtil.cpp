@@ -91,7 +91,7 @@ void Button::render(
    
     
     //Render
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Button::render");
 }
 
 
@@ -174,7 +174,7 @@ bool Button::renderTheTexture(
         glBindTexture(GL_TEXTURE_2D,texture.ID);
         
         //Draw the texture
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Button::renderTheTexture");
         
         //Tell the button shader to rendering the texture is done
         ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );

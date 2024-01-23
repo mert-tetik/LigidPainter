@@ -39,6 +39,9 @@ public:
     /// @brief Default constructor (is not used) 
     Shader();
 
+    std::string fragPath = "";
+    std::string vertPath = "";
+
     /// @brief Creates shader program using source codes
     void loadShader(std::string vertexCode, std::string fragmentCode);
     
@@ -129,6 +132,7 @@ namespace ShaderSystem{
     Shader objectTexturingAssign();
     Shader twoPassBlur();
     Shader gizmo();
+    Shader color3d();
 
     
     Shader textureModifierShader();

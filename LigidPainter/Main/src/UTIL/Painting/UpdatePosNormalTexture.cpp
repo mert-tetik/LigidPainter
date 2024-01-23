@@ -39,7 +39,8 @@ void Painter::updatePosNormalTexture(){
     glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
     
-    glm::ivec2 res = glm::ivec2(512);
+    glm::ivec2 res = glm::ivec2(256);
+    res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
 
     //Create the capture framebuffer
     unsigned int captureFBO;
@@ -50,9 +51,9 @@ void Painter::updatePosNormalTexture(){
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, this->depthRBO);
 
     if(!this->meshPosTxtr.ID)
-        this->meshPosTxtr = Texture(nullptr, res.x, res.y);
+        this->meshPosTxtr = Texture(nullptr, res.x, res.y, GL_RGBA, GL_RGBA32F);
     if(!this->meshNormalTxtr.ID)
-        this->meshNormalTxtr = Texture(nullptr, res.x, res.y);
+        this->meshNormalTxtr = Texture(nullptr, res.x, res.y, GL_RGBA, GL_RGBA32F);
 
     for (size_t i = 0; i < 2; i++)
     {
@@ -64,9 +65,10 @@ void Painter::updatePosNormalTexture(){
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.ID, 0);
 
         //Clear the depth texture
-        glViewport(0, 0, res.x, res.y);
+        glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
         
         //Use the depth 3D shader
         ShaderSystem::renderModelData().use();
@@ -79,6 +81,7 @@ void Painter::updatePosNormalTexture(){
         if(selectedMeshIndex < getModel()->meshes.size()){
             getModel()->meshes[selectedMeshIndex].Draw(false);
         }
+        
     }
     
     //!Finished

@@ -324,7 +324,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->displayingTexture.ID);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Object texturing dialog : Rendering displaying texture");
 
     ShaderSystem::buttonShader().use();
 

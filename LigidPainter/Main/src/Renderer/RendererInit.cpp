@@ -102,7 +102,7 @@ void Renderer::initRenderer(){
     glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);    
     getScene()->updateViewMatrix();
     getScene()->updateTransformMatrix();
-    getScene()->updateProjectionMatrix();
+    getScene()->updateProjectionMatrix(0.f);
     Debugger::block("LOAD : Init context"); //End
 
     Debugger::block("LOAD : Models"); //Start
@@ -112,6 +112,7 @@ void Renderer::initRenderer(){
     getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true, true);
     getPlaneModel()->loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true, true);
     getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj", true, true);
+    getTDBrushCursorModel()->loadModel("./LigidPainter/Resources/3D Models/TDBrushCursor.fbx", true, true);
     
     Debugger::block("LOAD : Models"); //End
 

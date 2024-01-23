@@ -125,7 +125,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
 
-    glDrawArrays(GL_TRIANGLES, 0 , 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "blurTheTexture first draw");
 
     if(algorithmI == 1){
         textureObject.duplicateTextureSub(textureCopy_bluring);
@@ -137,7 +137,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
         getBox()->bindBuffers();
         
         blurShader.setInt("horizontal", 1);
-        glDrawArrays(GL_TRIANGLES, 0 , 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "blurTheTexture second draw");
     }
 
     Settings::defaultFramebuffer()->FBO.bind();
@@ -814,7 +814,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
 
             getBox()->bindBuffers();
             // Render the result to the framebuffer
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Updating material channels");
 
             FBO.deleteBuffers(false, false);
             Debugger::block("updateMaterialChannels : 44113213213211");

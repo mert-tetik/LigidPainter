@@ -111,17 +111,18 @@ struct Scene{
 
     bool useOrtho = false;
 
-    void updateProjectionMatrix(){
+    void updateProjectionMatrix(float ratio){
         if(getContext()->windowScale.x){
-            float videoRatio = (float)getContext()->windowScale.x / (float)getContext()->windowScale.y;
+            if(ratio == 0.f)
+                ratio = (float)getContext()->windowScale.x / (float)getContext()->windowScale.y;
             if(!useOrtho){
                 this->projectionMatrix = glm::perspective(glm::radians(this->fov), 
-                                                    videoRatio, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
+                                                    ratio, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
                                                     this->aNear, 
                                                     this->aFar);
             }
             else{
-                this->projectionMatrix = glm::ortho((-this->fov * videoRatio)/10.f * this->camera.radius, (this->fov * videoRatio)/10.f * this->camera.radius, (-this->fov)/10.f * this->camera.radius, (this->fov)/10.f * this->camera.radius, (this->aNear), (this->aFar));
+                this->projectionMatrix = glm::ortho((-this->fov * ratio)/10.f * this->camera.radius, (this->fov * ratio)/10.f * this->camera.radius, (-this->fov)/10.f * this->camera.radius, (this->fov)/10.f * this->camera.radius, (this->aNear), (this->aFar));
             }
         }
     }
@@ -176,6 +177,7 @@ Model* getModel();
 Model* getSphereModel();
 Model* getPlaneModel();
 Model* getMaterialDisplayerModel();
+Model* getTDBrushCursorModel();
 Box* getBox();
 
 struct AppTextures{ 

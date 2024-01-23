@@ -39,7 +39,7 @@ uniform int paintingOverGrayScale;
 uniform float paintingOpacity;
 
 //Do depth testing (painting) if set to 1
-uniform int doDepthTest;
+int doDepthTest = 0;
 
 uniform int selectedPaintingModeIndex;
 

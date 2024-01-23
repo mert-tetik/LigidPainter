@@ -36,37 +36,87 @@ Renderbuffer::Renderbuffer(){
 }
 
 Renderbuffer::Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution){
+
+    LigidGL::cleanGLErrors();
+
+    Debugger::block("Init RenderBuffer start"); // Start
+    Debugger::block("Init RenderBuffer start"); // End
+
+    Debugger::block("Init RenderBuffer"); // End
     this->internalformat = internalformat;
     this->attachment = attachment;
 
     glGenRenderbuffers(1, &this->ID);
+    LigidGL::testGLError("Init RenderBuffer : generating renderbuffer");
+    
     glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
+    LigidGL::testGLError("Init RenderBuffer : binding renderbuffer");
+    
     glRenderbufferStorage(GL_RENDERBUFFER, internalformat, resolution.x, resolution.y);
+    LigidGL::testGLError("Init RenderBuffer : allocating memeory");
+    
+    Debugger::block("Init RenderBuffer"); // End
 }
 
 Renderbuffer::Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution, int samples){
+    
+    LigidGL::cleanGLErrors();
+
+    Debugger::block("Init RenderBuffer start"); // Start
+    Debugger::block("Init RenderBuffer start"); // End
+
+    Debugger::block("Init RenderBuffer"); // End
     this->internalformat = internalformat;
     this->attachment = attachment;
 
     glGenRenderbuffers(1, &this->ID);
+    LigidGL::testGLError("Init RenderBuffer : generating renderbuffer");
+
     glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
+    LigidGL::testGLError("Init RenderBuffer : binding renderbuffer");
+
     glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalformat, resolution.x, resolution.y);
+    LigidGL::testGLError("Init RenderBuffer : allocating memeory");
+
+    Debugger::block("Init RenderBuffer"); // End
+
 }
 
 void Renderbuffer::update(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution){
+    
+    LigidGL::cleanGLErrors();
+
+    Debugger::block("Update RenderBuffer start"); // Start
+    Debugger::block("Update RenderBuffer start"); // End
+
+    Debugger::block("Update RenderBuffer"); // End
     this->internalformat = internalformat;
     this->attachment = attachment;
 
     glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
+    LigidGL::testGLError("Update RenderBuffer : binding renderbuffer");
     glRenderbufferStorage(GL_RENDERBUFFER, internalformat, resolution.x, resolution.y);
+    LigidGL::testGLError("Update RenderBuffer : allocating memory");
+
+    Debugger::block("Update RenderBuffer"); // End
 }
 
 void Renderbuffer::update(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution, int samples){
+    LigidGL::cleanGLErrors();
+
+    Debugger::block("Update RenderBuffer start"); // Start
+    Debugger::block("Update RenderBuffer start"); // End
+
+    Debugger::block("Update RenderBuffer"); // End
     this->internalformat = internalformat;
     this->attachment = attachment;
 
     glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
+    LigidGL::testGLError("Update RenderBuffer : binding renderbuffer");
     glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalformat, resolution.x, resolution.y);
+    LigidGL::testGLError("Update RenderBuffer : allocating memory");
+
+    Debugger::block("Update RenderBuffer"); // End
 }
 
 
@@ -85,63 +135,122 @@ if(status != GL_FRAMEBUFFER_COMPLETE){\
 
 
 Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, std::string purpose){
+    LigidGL::cleanGLErrors();
+
+    Debugger::block("Init FBO start" + std::string(" : ") + this->purpose); // Start
+    Debugger::block("Init FBO start" + std::string(" : ") + this->purpose); // End
+
+    Debugger::block("Init FBO" + std::string(" : ") + this->purpose); // Start
+    
     this->colorBuffer = colorBuffer;
     this->purpose = purpose;
     
     glGenFramebuffers(1, &this->ID);
+    LigidGL::testGLError("Init FBO : generating FBO" + std::string(" : ") + this->purpose);
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+    LigidGL::testGLError("Init FBO : binding FBO" + std::string(" : ") + this->purpose);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
+    LigidGL::testGLError("Init FBO : attaching colorBuffer to FBO" + std::string(" : ") + this->purpose);
+    
+    Debugger::block("Init FBO" + std::string(" : ") + this->purpose); // End
 
     TEST_FRAMEBUFFER
 }
 
 Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer, std::string purpose){
+    LigidGL::cleanGLErrors();
+
+    Debugger::block("Init FBO start" + std::string(" : ") + this->purpose); // Start
+    Debugger::block("Init FBO start" + std::string(" : ") + this->purpose); // End
+
+    Debugger::block("Init FBO" + std::string(" : ") + this->purpose); // Start
+    
     this->colorBuffer = colorBuffer;
     this->renderBuffer = renderbuffer;
     this->purpose = purpose;
     
     glGenFramebuffers(1, &this->ID);
+    LigidGL::testGLError("Init FBO : generating FBO" + std::string(" : ") + this->purpose);
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+    LigidGL::testGLError("Init FBO : binding FBO" + std::string(" : ") + this->purpose);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
+    LigidGL::testGLError("Init FBO : attaching colorBuffer to FBO" + std::string(" : ") + this->purpose);     
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, renderbuffer.attachment, GL_RENDERBUFFER, renderbuffer.ID);
+    LigidGL::testGLError("Init FBO : attaching renderBuffer to FBO" + std::string(" : ") + this->purpose);     
+    
+    Debugger::block("Init FBO" + std::string(" : ") + this->purpose); // End
 
     TEST_FRAMEBUFFER
 }
 
 void Framebuffer::update(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer){
+    LigidGL::cleanGLErrors();
+
+    Debugger::block("Update FBO start" + std::string(" : ") + this->purpose); // Start
+    Debugger::block("Update FBO start" + std::string(" : ") + this->purpose); // End
+
+    Debugger::block("Update FBO" + std::string(" : ") + this->purpose); // Start
+    
     this->colorBuffer = colorBuffer;
     this->renderBuffer = renderbuffer;
     
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+    LigidGL::testGLError("Update FBO : binding FBO" + std::string(" : ") + this->purpose);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
+    LigidGL::testGLError("Update FBO : attaching colorBuffer to FBO" + std::string(" : ") + this->purpose);     
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, renderbuffer.attachment, GL_RENDERBUFFER, renderbuffer.ID);
+    LigidGL::testGLError("Update FBO : attaching renderBuffer to FBO" + std::string(" : ") + this->purpose);     
+
+    Debugger::block("Update FBO" + std::string(" : ") + this->purpose); // End
 
     TEST_FRAMEBUFFER
 }
 
 void Framebuffer::generate(){
+    LigidGL::cleanGLErrors();
+    
     glGenFramebuffers(1, &this->ID);
+    
+    LigidGL::testGLError("Framebuffer::generate : Generating FBO" + std::string(" : ") + this->purpose);
 }
 
 void Framebuffer::bind(){
+    LigidGL::cleanGLErrors();
+    
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
-    if(this->renderBuffer.ID)
+    LigidGL::testGLError("Framebuffer::bind : Binding FBO" + std::string(" : ") + this->purpose);
+    
+    if(this->renderBuffer.ID){
         glBindRenderbuffer(GL_RENDERBUFFER, this->renderBuffer.ID);
+        LigidGL::testGLError("Framebuffer::bind : Binding RBO" + std::string(" : ") + this->purpose);
+    }
 }
 
 void Framebuffer::setColorBuffer(Texture colorBuffer, unsigned int textureTarget){
+    LigidGL::cleanGLErrors();
+    
     this->colorBuffer = colorBuffer;
     
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+    LigidGL::testGLError("Framebuffer::setColorBuffer : Binding FBO" + std::string(" : ") + this->purpose);
+    
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
+    LigidGL::testGLError("Framebuffer::setColorBuffer : attaching colorBuffer to FBO" + std::string(" : ") + this->purpose);
 }
 
 void Framebuffer::deleteBuffers(bool delColorBuffer, bool delRenderBuffer){
-    glDeleteRenderbuffers(1, &this->ID);
+    LigidGL::cleanGLErrors();
     
-    if(delColorBuffer)
+    glDeleteRenderbuffers(1, &this->ID);
+    LigidGL::testGLError("Framebuffer::deleteBuffers : Deleting the FBO" + std::string(" : ") + this->purpose);
+    
+    if(delColorBuffer){
         glDeleteTextures(1, &this->colorBuffer.ID);
+        LigidGL::testGLError("Framebuffer::deleteBuffers : Deleting the FBO" + std::string(" : ") + this->purpose);
+    }
 
-    if(delRenderBuffer)
+    if(delRenderBuffer){
         glDeleteRenderbuffers(1, &this->renderBuffer.ID);
+        LigidGL::testGLError("Framebuffer::deleteBuffers : Deleting the RBO" + std::string(" : ") + this->purpose);
+    }
 }

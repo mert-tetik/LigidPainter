@@ -381,8 +381,7 @@ Texture TexturePack::generateSpriteTexture(){
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
         ShaderSystem::textureRenderingShader().setInt("txtr", 0);
 
-
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TexturePack::generateSpriteTexture : Drawing a region");
     }
     
     Settings::defaultFramebuffer()->FBO.bind();
@@ -438,7 +437,7 @@ void TexturePack::apply(Texture txtr, float scale, float count, float rotationJi
                 ShaderSystem::textureRenderingShader().setFloat("rotation", glm::mix((float)randX * 360.f, 0.f, rotationJitter));
                 ShaderSystem::textureRenderingShader().setFloat("opacity", glm::mix((float)randX, 1.f, opacityJitter));
                 ShaderSystem::textureRenderingShader().setInt("txtr",     0    );
-                glDrawArrays(GL_TRIANGLES, 0, 6);
+                LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TexturePack::apply : Drawing a sprite");
             }
         }
     }

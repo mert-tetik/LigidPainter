@@ -139,7 +139,7 @@ void Painter::applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel&
         
         ShaderSystem::vectoralCurve().setFloat("EDGE", 0.0005);
 
-        glDrawArrays(GL_TRIANGLES, 0 , 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Painter::applyVectorStrokes : Rendering vector strokes in line capturing mode");
     }
 
     //Finish
@@ -303,7 +303,7 @@ void VectorStroke::draw(Timer& timer, float edge, bool sceneState, std::vector<V
     else if(endPointClicked)
         endPointColor = glm::vec3(0.f,0.f,1.f);
 
-    glDrawArrays(GL_TRIANGLES, 0 , 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "VectorStroke::draw : Rendering the line");
     
     ShaderSystem::buttonShader().use();
 

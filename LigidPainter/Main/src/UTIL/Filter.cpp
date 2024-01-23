@@ -113,7 +113,7 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, sampleTxtr.ID);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::generatingDisplayingTexture");
     
     //Finish
     Settings::defaultFramebuffer()->FBO.bind();
@@ -158,7 +158,7 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, duplicatedTxtr.ID);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : applying filter");
 
     if(maskTexture.ID != 0 && glIsTexture(maskTexture.ID) == GL_TRUE){
         ShaderSystem::grayScaleIDMaskingShader().use();
@@ -185,7 +185,7 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, copiedDestTxtr.ID);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : masking filter 1");
     }
 
     if(maskTexture2.ID != 0 && glIsTexture(maskTexture2.ID) == GL_TRUE){
@@ -211,7 +211,7 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, copiedDestTxtr.ID);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : masking filter 2");
     }
     
 

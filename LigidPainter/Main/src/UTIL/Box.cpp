@@ -176,7 +176,7 @@ void Box::draw(glm::vec3 pos,glm::vec2 scale){
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
     //Draw the box
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Box::draw");
 
     //Bind default buffers
     glBindBuffer(GL_ARRAY_BUFFER, 0); 

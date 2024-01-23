@@ -260,7 +260,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 0");
 
     }
     else if(this->selectedSection == 1){
@@ -283,7 +283,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 1");
 
     }
     else if(this->selectedSection == 2){
@@ -308,7 +308,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 2");
 
     }
     else if(this->selectedSection == 3){
@@ -332,7 +332,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 3");
 
     }
     else if(this->selectedSection == 4){
@@ -364,7 +364,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 4");
 
     }
     else if(this->selectedSection == 5){
@@ -385,7 +385,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 5");
         }
     }
 
@@ -416,7 +416,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     else
         glBindTexture(GL_TEXTURE_2D, copiedDestTxtr.ID);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Masking result");
     
     //Finish
     Settings::defaultFramebuffer()->FBO.bind();

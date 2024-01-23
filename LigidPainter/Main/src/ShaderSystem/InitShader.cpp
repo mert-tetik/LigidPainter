@@ -123,6 +123,9 @@ void Shader::loadShaderSP(std::string vertexCode, std::string fragmentPath){
 
 void Shader::loadShaderPP(std::string vertexPath, std::string fragmentPath){
     
+    this->fragPath = fragmentPath;
+    this->vertPath = vertexPath;
+
     std::string fragCode;
     std::ifstream fShaderFile;
     fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);

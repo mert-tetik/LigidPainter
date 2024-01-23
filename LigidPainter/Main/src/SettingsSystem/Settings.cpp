@@ -31,6 +31,7 @@ Model __model;
 Model __sphereModel;
 Model __planeModel;
 Model __materialDisplayerModel;
+Model __getTDBrushCursorModel;
 Box __box;
 Settings::DefaultFramebuffer __defaultFramebuffer;
 
@@ -132,6 +133,9 @@ Model* getPlaneModel(){
 Model* getMaterialDisplayerModel(){
     return &__materialDisplayerModel;
 }
+Model* getTDBrushCursorModel(){
+    return &__getTDBrushCursorModel;
+}
 Box* getBox(){
     return &__box;
 }
@@ -170,7 +174,7 @@ namespace Settings{
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, this->FBO.colorBuffer.ID);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "DefaultFramebuffer::render");
         
         glBindFramebuffer(GL_FRAMEBUFFER, this->FBO.ID);
         
@@ -286,43 +290,43 @@ void Camera::posShortcutInteraction(bool active, Gizmo& sceneGizmo){
     if(this->originLocked){        
         this->transition(glm::vec3(10.f, 0.f, 0.f), glm::vec3(0.f));
         getScene()->updateViewMatrix();
-        getScene()->updateProjectionMatrix();
+        getScene()->updateProjectionMatrix(0.f);
 
     }
     if(this->XPLocked){        
         this->transition(glm::vec3(10.f, 0.f, 0.f) + this->originPos);
         getScene()->updateViewMatrix();
-        getScene()->updateProjectionMatrix();
+        getScene()->updateProjectionMatrix(0.f);
 
     }
     if(this->XNLocked){        
         this->transition(glm::vec3(-10.f, 0.f, 0.f) + this->originPos);
         getScene()->updateViewMatrix();
-        getScene()->updateProjectionMatrix();
+        getScene()->updateProjectionMatrix(0.f);
 
     }
     if(this->YPLocked){        
         this->transition(glm::vec3(0.f, 10.f, 0.f) + this->originPos);
         getScene()->updateViewMatrix();
-        getScene()->updateProjectionMatrix();
+        getScene()->updateProjectionMatrix(0.f);
 
     }
     if(this->YNLocked){        
         this->transition(glm::vec3(0.f, -10.f, 0.f) + this->originPos);
         getScene()->updateViewMatrix();
-        getScene()->updateProjectionMatrix();
+        getScene()->updateProjectionMatrix(0.f);
 
     }
     if(this->ZPLocked){        
         this->transition(glm::vec3(0.f, 0.f, 10.f) + this->originPos);
         getScene()->updateViewMatrix();
-        getScene()->updateProjectionMatrix();
+        getScene()->updateProjectionMatrix(0.f);
 
     }
     if(this->ZNLocked){        
         this->transition(glm::vec3(0.f, 0.f, -10.f) + this->originPos);
         getScene()->updateViewMatrix();
-        getScene()->updateProjectionMatrix();
+        getScene()->updateProjectionMatrix(0.f);
 
     }
 }

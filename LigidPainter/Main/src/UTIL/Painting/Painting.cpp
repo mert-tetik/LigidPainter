@@ -129,11 +129,11 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     if(!strokeLocations.size()){
         if(glm::distance(startCursorPos,*Mouse::cursorPos()) > this->brushProperties.spacing || *Mouse::LClick()){ //Provide spacing
             startCursorPos = *Mouse::cursorPos();            
-            glDrawArrays(GL_TRIANGLES,0,6);
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted with distance");
         }
     }
     else
-        glDrawArrays(GL_TRIANGLES,0,6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted");
     
     //Finish
     glEnable(GL_BLEND);
@@ -363,7 +363,7 @@ void Painter::projectThePaintingTexture(
         twoDPaintingBox.bindBuffers();
         
         ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", 2);
-        glDrawArrays(GL_TRIANGLES, 0 ,6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Painting : Projecting painted texture (For 2D Scene)");
     }
 
     // Finish
@@ -480,8 +480,53 @@ void Painter::generateMirroredProjectedPaintingTexture(
         if(horizontal || vertical)
             mirrorSides[i].mirroredPaintingTexture.flipTexture(horizontal, vertical);
 
+        glm::vec3 oldCamPos = getScene()->camera.cameraPos;
+        glm::vec3 oldCamOrigin = getScene()->camera.originPos;
 
-        
+        {
+            Framebuffer FBO = Framebuffer(this->meshPosTxtr, GL_TEXTURE_2D, "Mesh pos normal txtr check for painting");
+            FBO.bind();
+            
+            float* posData = new float[4]; 
+            
+            glReadPixels(
+                            Mouse::cursorPos()->x, 
+                            getContext()->windowScale.y - Mouse::cursorPos()->y, 
+                            1, 
+                            1,
+                            GL_RGBA,
+                            GL_FLOAT,
+                            posData
+                        );
+
+            FBO.setColorBuffer(this->meshNormalTxtr, GL_TEXTURE_2D);
+
+            float* normalData = new float[4]; 
+            
+            glReadPixels(
+                            Mouse::cursorPos()->x, 
+                            getContext()->windowScale.y - Mouse::cursorPos()->y, 
+                            1, 
+                            1,
+                            GL_RGBA,
+                            GL_FLOAT,
+                            normalData
+                        );
+
+            normalData[0] = normalData[0] * 2.f - 1.f;
+            normalData[1] = normalData[1] * 2.f - 1.f;
+            normalData[2] = normalData[2] * 2.f - 1.f;
+            
+            posData[0] = posData[0] * 2.f - 1.f;
+            posData[1] = posData[1] * 2.f - 1.f;
+            posData[2] = posData[2] * 2.f - 1.f;
+
+            getScene()->camera.cameraPos = glm::vec3(
+                                                        posData[0] + normalData[0] * getScene()->camera.radius, 
+                                                        posData[1] + normalData[1] * getScene()->camera.radius, 
+                                                        posData[2] + normalData[2] * getScene()->camera.radius
+                                                    );
+        }
 
         projectThePaintingTexture(selectedTexture, mirrorSides[i].projectedPaintingTexture, mirrorSides[i].mirroredPaintingTexture.ID, mirrorSides[i].depthTexture.ID, 
                                         selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, windowOrtho, 
@@ -489,6 +534,8 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                         faceSelectionActive, selectedPrimitives
                                 );
 
+        getScene()->camera.cameraPos = oldCamPos;
+        getScene()->camera.originPos = oldCamOrigin;
     }
 
     getBox()->bindBuffers();
@@ -596,7 +643,7 @@ void Painter::generateMirroredProjectedPaintingTexture(
         glActiveTexture(GL_TEXTURE8);
         glBindTexture(GL_TEXTURE_2D, oXYZSide.projectedPaintingTexture.ID);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::generateMirroredProjectedPaintingTexture : Render result");
 
         captureFBO.deleteBuffers(false, false);
     }

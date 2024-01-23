@@ -449,7 +449,7 @@ public:
 
 class Renderbuffer{
 public:
-    unsigned int ID, internalformat, attachment;
+    unsigned int ID = 0, internalformat = 0, attachment = 0;
     
     Renderbuffer();
     Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution);
@@ -735,6 +735,8 @@ public:
     /// @brief indicates which material channel will be painted. 0 : albedo, 1 : roughness, 2 : metallic, 3 : normal map, 4 : height map, 5 : ambient occlusion map
     int selectedPaintingChannelIndex = 0;
     
+    bool wrapMode = false;
+
     MirrorSide oSide;
     MirrorSide oXSide;
     MirrorSide oYSide;
@@ -964,12 +966,12 @@ public:
             Shader related stuff
             ...
 
-            glDrawArrays(GL_TRIANGLES, 0 , 6); 
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, ""); 
             
             Shader related stuff
             ...
             
-            glDrawArrays(GL_TRIANGLES, 0 , 6); 
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, ""); 
 
             box.unbindBuffers();
         }

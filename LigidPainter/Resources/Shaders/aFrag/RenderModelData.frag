@@ -34,9 +34,9 @@ void main() {
     if(state == 0)
         color = vec4(TexCoords, 0., 1.); 
     else if(state == 1)
-        color = vec4(Pos, 1.); 
+        color = vec4((Pos + vec3(1.)) / 2., 1.); 
     else if(state == 2)
-        color = vec4(Normal, 1.); 
+        color = vec4((Normal + vec3(1.)) / 2., 1.); 
     else if(state == 3)
         color = vec4(Tangent, 1.); 
     else if(state == 4)

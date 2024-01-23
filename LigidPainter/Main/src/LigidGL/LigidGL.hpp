@@ -17,6 +17,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef LIGIDWINDOW_HPP
 #define LIGIDWINDOW_HPP 
 
+#include <glad/glad.h>
+
 
 /* -- Current OpenGL version -- 
     Change these macros as your OpenGL version
@@ -273,6 +275,23 @@ namespace LigidGL{
     *   @brief Retrieve the free ram storage left
     */
     size_t getRamLeft();  
+
+    /*!
+    *   @brief Makes an OpenGL draw call using glDrawArrays
+    *   @return Returns true if draw call was a success
+    */
+    bool makeDrawCall(GLenum mode, GLint first, GLsizei count, std::string debugTitle);
+
+    /*!
+    *   @brief runs while (glGetError() != GL_NO_ERROR){}
+    */
+    void cleanGLErrors();
+
+    /*!
+    *   @brief runs glGetError() & prints error message if there are
+    *   @return returns true if faced with an error
+    */
+    bool testGLError(std::string debugTitle); 
 };
 
 

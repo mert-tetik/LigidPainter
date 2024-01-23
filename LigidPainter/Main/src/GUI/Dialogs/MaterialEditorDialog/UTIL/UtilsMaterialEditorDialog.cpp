@@ -162,7 +162,7 @@ void MaterialEditorDialog::renderSkyboxTxtr(glm::mat4 projection){
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->skyboxFBO.colorBuffer.ID);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Material editor dialog : Render skybox");
 
     ShaderSystem::buttonShader().use();
 

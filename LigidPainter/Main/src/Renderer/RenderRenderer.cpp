@@ -163,6 +163,90 @@ void Renderer::render(){
 
     Debugger::block("3D Model"); // End
 
+    if(            
+            !userInterface.anyPanelHover && 
+            !userInterface.anyDialogActive && 
+            !userInterface.anyContextMenuActive && 
+            (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 && painter.selectedPaintingModeIndex != 6 &&
+            !painter.paintingoverTextureEditorMode &&
+            !painter.faceSelection.editMode &&
+            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
+            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) && 
+            !userInterface.dropper.active &&
+            painter.wrapMode &&
+            !*Mouse::RPressed()
+        )
+    {
+        glClear(GL_DEPTH_BUFFER_BIT);
+        ShaderSystem::color3d().use();
+        ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
+        ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
+        
+        Framebuffer FBO = Framebuffer(painter.meshPosTxtr, GL_TEXTURE_2D, "Mesh pos normal txtr check for cursor");
+        FBO.bind();
+        
+        float* posData = new float[4]; 
+        
+        glReadPixels(
+                        Mouse::cursorPos()->x, 
+                        getContext()->windowScale.y - Mouse::cursorPos()->y, 
+                        1, 
+                        1,
+                        GL_RGBA,
+                        GL_FLOAT,
+                        posData
+                    );
+
+        FBO.setColorBuffer(painter.meshNormalTxtr, GL_TEXTURE_2D);
+
+        float* normalData = new float[4]; 
+        
+        glReadPixels(
+                        Mouse::cursorPos()->x, 
+                        getContext()->windowScale.y - Mouse::cursorPos()->y, 
+                        1, 
+                        1,
+                        GL_RGBA,
+                        GL_FLOAT,
+                        normalData
+                    );
+        
+        FBO.deleteBuffers(false, false);
+
+        Settings::defaultFramebuffer()->FBO.bind();
+
+        for (size_t i = 0; i < getTDBrushCursorModel()->meshes.size(); i++)
+        {
+            glm::mat4 transform = glm::mat4(1.f);
+            transform = glm::translate(transform, glm::vec3(posData[0] * 2.f - 1.f, posData[1] * 2.f - 1.f, posData[2] * 2.f - 1.f));
+            
+            glm::vec3 initialForward(0.0f, 0.0f, 1.0f);
+
+            // Desired normal vector
+            glm::vec3 normalVector(normalData[0] * 2.f - 1.f, normalData[1] * 2.f - 1.f, normalData[2] * 2.f - 1.f);
+            normalVector = glm::normalize(normalVector); // Ensure it's a unit vector
+
+            // Compute the rotation axis using cross product
+            glm::vec3 rotationAxis = glm::cross(initialForward, normalVector);
+            float rotationAngle = glm::acos(glm::dot(initialForward, normalVector));
+
+            // Create a rotation matrix to align the model's initial forward direction with the normal vector
+            transform = glm::rotate(transform, rotationAngle, rotationAxis);
+            
+            if(i == 1)
+                transform = glm::scale(transform, glm::vec3(0.05f));
+            else if(i == 0)
+                transform = glm::scale(transform, glm::vec3(0.01f + painter.brushProperties.radius * 4.f));
+                        
+            ShaderSystem::color3d().setMat4("modelMatrix", transform);
+
+            if(posData[3] != 0.f)
+                getTDBrushCursorModel()->meshes[i].Draw(false);
+        }
+    }
+
+
     Debugger::block("3D Model Object Selection"); // Start
 
     // Check if an object is selected after rendering the mesh
@@ -393,7 +477,7 @@ void Renderer::renderSkyBox(){
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", userInterface.displayerDialog.panel.sections[0].elements[6].rangeBar.value);
     ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
     ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Renderer::renderSkybox");
     glBindTexture(GL_TEXTURE_2D, 0);
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
     ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );

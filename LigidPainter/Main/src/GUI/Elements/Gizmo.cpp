@@ -83,7 +83,7 @@ void Gizmo::render(
     
     ShaderSystem::gizmo().setFloat("rod_radius", 0.025f);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Gizmo : Render to screen");
 
     if(!FBO.ID){
         FBO = Framebuffer(Texture(nullptr, Settings::videoScale()->x, Settings::videoScale()->y), GL_TEXTURE_2D, "Gizmo FBO");
@@ -116,7 +116,7 @@ void Gizmo::render(
         glClear(GL_COLOR_BUFFER_BIT);
         glViewport(0,0,Settings::videoScale()->x, Settings::videoScale()->y);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Gizmo : Render to custom fbo for checking hovering");
 
         unsigned char* pxs = new unsigned char[4]; 
         

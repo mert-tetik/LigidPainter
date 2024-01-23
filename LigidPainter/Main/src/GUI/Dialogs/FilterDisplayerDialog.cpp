@@ -89,7 +89,7 @@ void FilterDisplayerDialog::render(Timer timer, glm::mat4 projection){
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, filter.displayingTxtr.ID);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter displayer dialog : Rendering the filter");
 
     dialogControl.updateEnd(timer,0.15f);
 

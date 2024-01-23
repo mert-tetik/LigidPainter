@@ -356,7 +356,7 @@ static void drawBG(
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, bgTexture);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture pack editor dialog : DrawBG");
     
     ShaderSystem::buttonShader().use();
 }

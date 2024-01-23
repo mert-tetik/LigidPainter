@@ -29,30 +29,44 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 
 void Skybox::draw(bool bindTxtr){ //Draw the skybox
+	LigidGL::cleanGLErrors();
+
 	//Bind the skybox texture to the texture slot 0
 	if(bindTxtr){
 		glActiveTexture(GL_TEXTURE0);
+		LigidGL::testGLError("Skybox::draw : Activate the texture slot 0");
 		glBindTexture(GL_TEXTURE_CUBE_MAP,IDPrefiltered);
+		LigidGL::testGLError("Skybox::draw : Binding texture");
 	}
 
 	//Disable the depth testing
 	glDisable(GL_DEPTH_TEST);
+	LigidGL::testGLError("Skybox::draw : glDisable(GL_DEPTH_TEST)");
 	glDepthMask(GL_FALSE);
+	LigidGL::testGLError("Skybox::draw : glDepthMask(GL_FALSE)");
 	glDepthFunc(GL_LEQUAL);
+	LigidGL::testGLError("Skybox::draw : glDepthFunc(GL_LEQUAL)");
 
 	//Bind vertex objects
 	glBindVertexArray(VAO);
+	LigidGL::testGLError("Skybox::draw : binding VAO");
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	LigidGL::testGLError("Skybox::draw : binding VBO");
 
 	//Draw the skybox
-	glDrawArrays(GL_TRIANGLES, 0, 108);
+	LigidGL::makeDrawCall(GL_TRIANGLES, 0, 108, "Skybox draw");
 
 	//Bind default buffers
 	glBindBuffer(GL_ARRAY_BUFFER, 0); 
+	LigidGL::testGLError("Skybox::draw : binding default VBO");
 	glBindVertexArray(0);
+	LigidGL::testGLError("Skybox::draw : binding default VAO");
 
 	//Enable the depth testing
 	glEnable(GL_DEPTH_TEST);
+	LigidGL::testGLError("Skybox::draw : glEnable(GL_DEPTH_TEST)");
 	glDepthFunc(GL_LESS);
+	LigidGL::testGLError("Skybox::draw : glDepthFunc(GL_LESS)");
 	glDepthMask(GL_TRUE);
+	LigidGL::testGLError("Skybox::draw : glDepthMask(GL_TRUE)");
 }

@@ -69,5 +69,5 @@ void ComboBox::render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadi
     ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness + aClickedMixVal*4.f ); 
     
     
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "ComboBox::render");
 }

@@ -33,6 +33,10 @@ bool updateThePreRenderedPanels = false;
     
 void Panel::render(Timer &timer, bool doMouseTracking){
     
+    Debugger::block("GUI : Panel : Panel rendering start"); // Start
+    Debugger::block("GUI : Panel : Panel rendering start"); // End
+
+    Debugger::block("GUI : Panel : Prep"); // Start
     this->doMouseTracking = doMouseTracking;
     
     // Pos value, % of the video scale
@@ -47,18 +51,28 @@ void Panel::render(Timer &timer, bool doMouseTracking){
     mouseTracking();
     
     resizeThePanel();
+    Debugger::block("GUI : Panel : Prep"); // End
+    
+    Debugger::block("GUI : Panel : Rendering start : " + std::to_string(preRenderingMode)); // Start
+    Debugger::block("GUI : Panel : Rendering start : " + std::to_string(preRenderingMode)); // End
 
-    if(preRenderingMode){
+    Debugger::block("GUI : Panel : Rendering : " + std::to_string(preRenderingMode)); // Start
+    if(this->preRenderingMode){
         this->updateUpdateGraphicsFlag();
 
         const double effectDuration = 2.;
 
         if(this->updateGraphicsFlag || LigidGL::getTime() - this->updateGraphicsTime < effectDuration){
+            Debugger::block("GUI : Panel : Updating graphics start"); // Start
+            Debugger::block("GUI : Panel : Updating graphics start"); // End
+            
+            Debugger::block("GUI : Panel : Updating graphics"); // Start
             if(this->updateGraphicsFlag)
                 this->updateGraphicsTime = LigidGL::getTime();
 
             this->updateGraphics(timer);
             this->updateGraphicsFlag = false;
+            Debugger::block("GUI : Panel : Updating graphics"); // End
         }
         
         glm::mat4 projection = glm::ortho(0.f, (float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
@@ -77,17 +91,17 @@ void Panel::render(Timer &timer, bool doMouseTracking){
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, graphics.ID);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Pre-rendering mode : Rendering result texture");
 
         ShaderSystem::buttonShader().use();    
         
         if(this->clearDepthBuffer)
             glClear(GL_DEPTH_BUFFER_BIT);
     }
-
     else{
         drawPanel(resultPos, resultScale, timer);
     }
+    Debugger::block("GUI : Panel : Rendering : " + std::to_string(preRenderingMode)); // End
     
 
     prevScale = this->scale;
@@ -242,7 +256,7 @@ static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::v
     ShaderSystem::buttonShader().setVec3  ("properties.outline.color2" , color2); 
     ShaderSystem::buttonShader().setFloat ("properties.outline.thickness" , outlineThickness);
     
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Draw the panel");
 }
 
 static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale, bool isLibraryDisplayer){
@@ -254,23 +268,23 @@ static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale, bool isL
     ShaderSystem::buttonShader().setInt("outlineExtra" , false); 
     ShaderSystem::buttonShader().setVec4("properties.color", glm::vec4(0)); //Invisible
     ShaderSystem::buttonShader().setVec3("properties.outline.color", glm::vec4(0)); //Invisible
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier bottom");
     
     //Top
     ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x, resultPos.y - resultScale.y - 2000,   1.f));
     ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier top");
 
     if(isLibraryDisplayer){
         //Left
         ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x - resultScale.x - 2000, resultPos.y,   1.f));
         ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier left");
         
         //Right
         ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x + resultScale.x + 2000, resultPos.y,   1.f));
         ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier right");
     }
 }
 
@@ -336,7 +350,6 @@ void Panel::drawPanel(
                         Timer &timer
                     )
 {
-
     float outlineRadius = 10.f;
 
     if(this->solidStyle)
@@ -590,7 +603,6 @@ void Panel::drawPanel(
         else
             this->slideVal = 0.f; 
     }
-    
     
     if(clearDepthBuffer)
         glClear(GL_DEPTH_BUFFER_BIT);

@@ -175,7 +175,7 @@ void Brush::updateDisplayTexture(float radius){
         }
         
         //Painting
-        glDrawArrays(GL_TRIANGLES,0,6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Brush::updateDisplayingTexture : Painting the stroke");
 
         getBox()->bindBuffers();
 

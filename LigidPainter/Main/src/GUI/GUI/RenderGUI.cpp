@@ -182,7 +182,8 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
             !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) && 
-            !dropper.active
+            !dropper.active &&
+            !painter.wrapMode
         )
     {
         renderBrushCursor(painter.brushProperties.radius, this->projection);
@@ -219,7 +220,7 @@ static void renderBrushCursor(float radius, glm::mat4 guiProjection){
     getContext()->window.setCursorVisibility(false);
 
     /* Render the circle s*/
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Rendering 2D brush cursor");
 
     /* Clear the depth buffer of the current framebuffers*/
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -233,25 +234,36 @@ int __faceSelectionActiveObjIndex = 0;
 
 void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     
+    Debugger::block("GUI : Panels : Start"); // Start
+    Debugger::block("GUI : Panels : Start"); // End
+    
     Debugger::block("GUI : Panels : Panel rendering"); // Start
     
+    Debugger::block("GUI : Panels : Navigation panel"); // Start
     navigationPanel.render(timer,!anyDialogActive);
     if(navigationPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+    Debugger::block("GUI : Panels : Navigation panel"); // End
+
+    Debugger::block("GUI : Panels : Window Panel"); // Start
     windowPanel.render(timer,!anyDialogActive);
     if(windowPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+    Debugger::block("GUI : Panels : Window Panel"); // End
     
+    Debugger::block("GUI : Panels : Painting Panel Mode Panel"); // Start
     paintingPanelModePanel.render(timer,!anyDialogActive || painter.paintingoverTextureEditorMode);
     if(paintingPanelModePanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+    Debugger::block("GUI : Panels : Painting Panel Mode Panel"); // End
 
+    Debugger::block("GUI : Panels : painting panel"); // End
     Section* paintingPanelActiveSection = nullptr;
 
     if(selectedPaintingPanelMode == 0 && painter.selectedDisplayingModeIndex != 0)
@@ -289,39 +301,48 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         *paintingPanelActiveSection = paintingPanel.sections[0];
     else if(paintingPanelActiveSection == nullptr)
         this->cantBeDisplayedSection = paintingPanel.sections[0];
+    Debugger::block("GUI : Panels : painting panel"); // End
 
     
+    Debugger::block("GUI : Panels : Painting Panel Mode Displayer"); // End
     paintingPanelModeDisplayer.text = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.text; 
     paintingPanelModeDisplayer.texture = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.texture; 
 
     if(!paintingPanel.slideVal)
         paintingPanelModeDisplayer.render(timer, false);
+    Debugger::block("GUI : Panels : Painting Panel Mode Displayer"); // End
     
+    Debugger::block("GUI : Panels : Library Panel Left"); // End
     libraryPanelLeft.render(timer,!anyDialogActive);
     if(libraryPanelLeft.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+    Debugger::block("GUI : Panels : Library Panel Left"); // End
+    
+    Debugger::block("GUI : Panels : Library Panel Displayer"); // End
     libraryPanelDisplayer.render(timer,!anyDialogActive);
     if(libraryPanelDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
-    //nodeEditorDisplayer.render(timer,!anyDialogActive);
-    if(nodeEditorDisplayer.resizingDone){
-        for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, painter);
-    }
+    Debugger::block("GUI : Panels : Library Panel Displayer"); // End
+    
+    Debugger::block("GUI : Panels : Selected Texture Displayer"); // End
     selectedTextureDisplayer.render(timer, !anyDialogActive);
     if(selectedTextureDisplayer.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+    Debugger::block("GUI : Panels : Selected Texture Displayer"); // End
     
+    Debugger::block("GUI : Panels : Scene Gizmo"); // End
     sceneGizmo.yaw = glm::radians(getScene()->camera.yaw);
     sceneGizmo.pitch = glm::radians(getScene()->camera.pitch);
     sceneGizmo.render(timer, !anyDialogActive);
+    Debugger::block("GUI : Panels : Scene Gizmo"); // End
 
+    Debugger::block("GUI : Panels : Scene Info & Wrap Mode Checkbox"); // End
     if(painter.selectedDisplayingModeIndex == 0){
         currentModeDisplayer.text = "Object Selection Mode";
         int selectedObjCount = 0;
@@ -394,7 +415,10 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     currentModeDisplayer.render(timer, false);
     currentModeHintDisplayer.render(timer, false);
     wrapModeCheckbox.render(timer, !anyDialogActive);
-    
+    painter.wrapMode = wrapModeCheckbox.clickState1;
+    Debugger::block("GUI : Panels : Scene Info & Wrap Mode Checkbox"); // End
+
+    Debugger::block("GUI : Panels : Painting panel texture selection"); // Start
     if(paintingChannelsTextureSelectionPanelActive){
         paintingChannelsTextureSelectionPanel.sections[0].elements.clear();
 
@@ -443,83 +467,9 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         }
 
     }
-    
-    if(nodeEditorDisplayer.hover){
-        if(*Mouse::MPressed()){
-            this->nodePanel.position += *Mouse::mouseOffset()/4.f;
-            
-            /*Restrict movement*/
-            if(this->nodePanel.position.x > 40){
-                this->nodePanel.boundaryState = 0;
-                this->nodePanel.hitBoundaries = true;
-                this->nodePanel.position.x = 40;
-            }
-            if(this->nodePanel.position.x < -40){
-                this->nodePanel.boundaryState = 1;
-                this->nodePanel.hitBoundaries = true;
-                this->nodePanel.position.x = -40;
-            }
-            
-            if(this->nodePanel.position.y > 40){
-                this->nodePanel.boundaryState = 2;
-                this->nodePanel.hitBoundaries = true;
-                this->nodePanel.position.y = 40;
-            }
-            if(this->nodePanel.position.y < -40){
-                this->nodePanel.boundaryState = 3;
-                this->nodePanel.hitBoundaries = true;
-                this->nodePanel.position.y = -40;
-            }
+    Debugger::block("GUI : Panels : Painting panel texture selection"); // End
 
-        }
-        else
-            this->nodePanel.hitBoundaries = false;
-
-        /* Calculate boundary animation */        
-        if(this->nodePanel.hitBoundaries){
-
-            glm::vec2 transPower = 1.f - abs(nodePanel.mixVal);
-            
-            if(transPower.x < 0)
-                transPower.x = 0;
-            if(transPower.y < 0)
-                transPower.y = 0;
-
-
-            this->nodePanel.mixVal += (*Mouse::mouseOffset() / 100.f * transPower);
-        
-        }
-        else{
-            timer.transition(false, this->nodePanel.mixVal.x, 0.5f);
-            timer.transition(false, this->nodePanel.mixVal.y, 0.5f);
-            
-            this->nodePanel.mixVal.x = sin(this->nodePanel.mixVal.x);
-            this->nodePanel.mixVal.y = sin(this->nodePanel.mixVal.y);
-        }
-
-    }
-
-    //Prep rendering dots
-    ShaderSystem::dotsShader().use();
-
-    ShaderSystem::dotsShader().setMat4("projection", this->projection);
-    ShaderSystem::dotsShader().setVec3("pos", nodeEditorDisplayer.resultPos);
-    ShaderSystem::dotsShader().setVec2("scale", nodeEditorDisplayer.resultScale);
-    
-    glm::vec2 dotPos = this->nodePanel.position * glm::vec2(2.f) + this->nodePanel.mixVal*10.f;
-    ShaderSystem::dotsShader().setVec2("dotPos", dotPos);
-    ShaderSystem::dotsShader().setFloat("scroll", this->nodePanel.scroll);
-    
-    /* Render the dots */
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    /* Clear the depth buffer of the current framebuffers*/
-    glClear(GL_DEPTH_BUFFER_BIT);
-
-    ShaderSystem::buttonShader().use();
-    //
-
-
+    Debugger::block("GUI : Panels : 2D Painting scene"); // Start
     if(!painter.threeDimensionalMode && painter.selectedDisplayingModeIndex == 2){
         glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
         glm::vec2 prevScale = destScale * this->twoDPaintingSceneScroll;
@@ -576,22 +526,22 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         ShaderSystem::buttonShader().setInt("outlineExtra" , false); 
         ShaderSystem::buttonShader().setVec4("properties.color", glm::vec4(0)); //Invisible
         ShaderSystem::buttonShader().setVec3("properties.outline.color", glm::vec4(0)); //Invisible
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Bottom");
 
         //Top Barrier
         ShaderSystem::buttonShader().setVec3("pos", glm::vec3(twoDPaintingPanel.resultPos.x,   twoDPaintingPanel.resultPos.y - twoDPaintingPanel.resultScale.y - 5000,   1.f));
         ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Top");
         
         //Left Barrier
         ShaderSystem::buttonShader().setVec3("pos", glm::vec3(twoDPaintingPanel.resultPos.x  - twoDPaintingPanel.resultScale.x  - 5000,   twoDPaintingPanel.resultPos.y,   1.f));
         ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Left");
         
         //Right Barrier
         ShaderSystem::buttonShader().setVec3("pos", glm::vec3(twoDPaintingPanel.resultPos.x  + twoDPaintingPanel.resultScale.x  + 5000,   twoDPaintingPanel.resultPos.y,   1.f));
         ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Right");
 
 
         ShaderSystem::twoDPaintingModeAreaShader().use();
@@ -642,7 +592,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         }
         
         twoDPaintingBox.bindBuffers();
-        glDrawArrays(GL_TRIANGLES, 0 ,6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "2D Painting scene : painted texture");
         getBox()->bindBuffers();
 
         ShaderSystem::buttonShader().use();
@@ -656,9 +606,12 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
                 this->panelPositioning(screenGapPerc, painter);
         }
     }
-
+    
     glClear(GL_DEPTH_BUFFER_BIT);
 
+    Debugger::block("GUI : Panels : 2D Painting scene"); // End
+
+    Debugger::block("GUI : Panels : Painting modes panel & Objects panel"); // Start
     if(painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2){
         paintingModesPanel.render(timer,!anyDialogActive);
         if(paintingModesPanel.resizingDone){
@@ -747,6 +700,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             }
         }
     }
+    Debugger::block("GUI : Panels : Painting modes panel"); // Start
 
     displayingModesPanel.render(timer,!anyDialogActive);
     if(displayingModesPanel.resizingDone){
@@ -897,7 +851,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         ShaderSystem::dotsShader().setFloat("scroll", 1.f);
 
         /* Render the dots */
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painting over : Edit mode : Rendering dots");
 
         /* Clear the depth buffer of the current framebuffers*/
         glClear(GL_DEPTH_BUFFER_BIT);
@@ -966,7 +920,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         
         ShaderSystem::vectoralCurve().setFloat("EDGE", 0.0005f);
 
-        glDrawArrays(GL_TRIANGLES, 0 , 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Straight line painting vector");
         
         ShaderSystem::buttonShader().use();
     }

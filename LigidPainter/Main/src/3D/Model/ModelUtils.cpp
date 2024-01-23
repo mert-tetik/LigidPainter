@@ -105,7 +105,7 @@ void Model::selectObject(Panel& objectsPanel){
             }
         }
     }
-    else{
+    else if(this->objectIDs.ID){
 
         Framebuffer FBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D, "Model::selectObject");
         FBO.bind();

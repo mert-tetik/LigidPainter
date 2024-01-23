@@ -68,7 +68,7 @@ glm::ivec2 Texture::getResolution(){
 
     Debugger::block("Texture::getResolution : 86456421111"); // End
     if(!this->ID || glIsTexture(this->ID) == GL_FALSE){
-        std::cout << "ERROR : Can't get the resolution of the texture : Invalid ID" << std::endl;
+        std::cout << "ERROR : Can't get the resolution of the texture : Invalid ID : "  << std::endl;
         return glm::ivec2(1024);
     }
     Debugger::block("Texture::getResolution : 86456421111"); // End
@@ -378,7 +378,7 @@ std::vector<MaterialIDColor> Texture::getMaterialIDPalette(){
         ShaderSystem::colorIDMaskingShader().setVec3("pbc", glm::vec3(res[i] == glm::vec3(1.f,0.f,1.f), res[i] == glm::vec3(0.f,0.f,1.f), res[i] == glm::vec3(0.f,1.f,1.f)));
         ShaderSystem::colorIDMaskingShader().setVec3("gyo", glm::vec3(res[i] == glm::vec3(0.f,1.f,0.f), res[i] == glm::vec3(1.f,1.f,0.f), res[i] == glm::vec3(1.f,0.5f,0.f)));
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::getMaterialIDPalette : Generating gray scale texture");
 
         Settings::defaultFramebuffer()->FBO.bind();
         Settings::defaultFramebuffer()->setViewport();
@@ -392,42 +392,7 @@ std::vector<MaterialIDColor> Texture::getMaterialIDPalette(){
 }
 
 void Texture::removeSeams(Mesh& mesh, int textureResolution){
-    
-    /*! Binds another framebuffer !*/
-    unsigned int textureCopy = this->duplicateTexture();
-    
-    unsigned int FBO;
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->ID, 0);
-    glViewport(0, 0, textureResolution, textureResolution);
-
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    getBox()->bindBuffers();
-    
-    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
-    ShaderSystem::boundaryExpandingShader().use();
-    ShaderSystem::boundaryExpandingShader().setMat4("projection"  ,       projection);
-    ShaderSystem::boundaryExpandingShader().setMat4("projectedPosProjection"  ,       projection);
-    ShaderSystem::boundaryExpandingShader().setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
-    ShaderSystem::boundaryExpandingShader().setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
-
-    ShaderSystem::boundaryExpandingShader().setInt("whiteUVTexture", 0);
-    ShaderSystem::boundaryExpandingShader().setInt("originalTexture", 1);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
-    
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textureCopy);
-
-    glDrawArrays(GL_TRIANGLES, 0 , 6);
-
-    Settings::defaultFramebuffer()->FBO.bind();
-    glDeleteFramebuffers(1, &FBO);
-    glDeleteTextures(1, &textureCopy);
+    this->removeSeams(mesh, glm::ivec2(textureResolution));
 }
 
 void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
@@ -463,7 +428,7 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, textureCopy);
 
-    glDrawArrays(GL_TRIANGLES, 0 , 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Texture::removeSeams : Rendering result");
 
     Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1, &FBO);
@@ -548,7 +513,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::generateProceduralTexture : Edge wear : Blurred normal vec");
 
         //
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, destTxtr.ID, 0);
@@ -575,7 +540,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, noiseTxtr.ID);
         
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::generateProceduralTexture : Edge wear : Result");
 
         //Bluring the result        
         ShaderSystem::bluringShader().use();
@@ -596,7 +561,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
 
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::generateProceduralTexture : Edge wear : Blurring result");
 
         Settings::defaultFramebuffer()->FBO.bind();
         glDeleteFramebuffers(1, &FBO);
@@ -683,36 +648,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
 }
 
 void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale){
-    unsigned int FBO;
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMap, 0);
-    glViewport(0, 0, textureResolution, textureResolution);
-
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    getBox()->bindBuffers();
-    
-    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
-    ShaderSystem::heightToNormalMap().use();
-    ShaderSystem::heightToNormalMap().setInt("heightMap", 0);
-    ShaderSystem::heightToNormalMap().setInt("alphaMode", 0);
-    ShaderSystem::heightToNormalMap().setInt("txtrRes", textureResolution);
-    ShaderSystem::heightToNormalMap().setFloat("strength", proceduralNormalStrength);
-    ShaderSystem::heightToNormalMap().setInt("grayScale", proceduralNormalGrayScale);
-    ShaderSystem::heightToNormalMap().setMat4("projection"  ,       projection);
-    ShaderSystem::heightToNormalMap().setMat4("projectedPosProjection"  ,       projection);
-    ShaderSystem::heightToNormalMap().setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
-    ShaderSystem::heightToNormalMap().setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, this->ID);
-
-    glDrawArrays(GL_TRIANGLES, 0 , 6);
-
-    Settings::defaultFramebuffer()->FBO.bind();
-    glDeleteFramebuffers(1, &FBO);
+    this->generateNormalMap(normalMap, glm::ivec2(textureResolution), proceduralNormalStrength, proceduralNormalGrayScale, false);
 }
 
 void Texture::generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale, bool alphaMode){
@@ -742,7 +678,7 @@ void Texture::generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResol
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, this->ID);
 
-    glDrawArrays(GL_TRIANGLES, 0 , 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Texture::generateNormalMap : Render result");
 
     Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1, &FBO);
@@ -776,7 +712,7 @@ void Texture::applyNormalMap(float proceduralNormalStrength, bool proceduralNorm
     ShaderSystem::heightToNormalMap().setVec2("scale", glm::vec2(0.5f));
 
     // Draw
-    glDrawArrays(GL_TRIANGLES, 0 , 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Texture::applyNormalMap : Rendering the result");
 
     // Finish
     Settings::defaultFramebuffer()->FBO.bind();
@@ -951,7 +887,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam);
         
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::generateProceduralDisplayingTexture : Rendering procedural texture");
     }
 
     // Generate normal map
@@ -1215,7 +1151,7 @@ void Texture::flipTexture(bool horizontal, bool vertical){
 
     getBox()->bindBuffers();
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::flipTexture : Rendering result");
 
     // Finish
     glDeleteTextures(1, &copiedTxtr.ID);
@@ -1282,7 +1218,7 @@ void Texture::mix(Texture txtr2, Texture mask, bool maskAlpha, bool normalMapMod
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, txtr2.ID);
     
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::mix : Rendering result");
     
     //Finish
     Settings::defaultFramebuffer()->FBO.bind();

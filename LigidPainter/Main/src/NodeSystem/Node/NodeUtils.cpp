@@ -56,7 +56,7 @@ void Node::drawLine(glm::vec2 src, glm::vec2 dest,Panel nodeEditorPanel, int dir
     ShaderSystem::nodeConnectionCurve().setVec2("destPos",       dest);
     ShaderSystem::nodeConnectionCurve().setVec2("percScale", nodeEditorPanel.resultScale);
     
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Node::drawLine");
     ShaderSystem::buttonShader().use();
 }
 
@@ -215,7 +215,7 @@ bool Node::renderBarriers(Panel &nodeEditorPanel){
         cursorOnBarriers = true;
     }
     
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "");
     
     //Top
     ShaderSystem::buttonShader().setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f)); //To the Top
@@ -223,7 +223,7 @@ bool Node::renderBarriers(Panel &nodeEditorPanel){
     if(Mouse::isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x,nodeEditorPanel.resultPos.y - nodeEditorPanel.resultScale.y - 5000,1.f))){
         cursorOnBarriers = true;
     }
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "");
     
     //Left
     ShaderSystem::buttonShader().setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f));
@@ -231,14 +231,14 @@ bool Node::renderBarriers(Panel &nodeEditorPanel){
     if(Mouse::isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x - nodeEditorPanel.resultScale.x - 5000,nodeEditorPanel.resultPos.y,1.f))){
         cursorOnBarriers = true;
     }
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "");
     
     //Right
     ShaderSystem::buttonShader().setVec3("pos",       glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f));
     ShaderSystem::buttonShader().setVec2("scale",     glm::vec2(5000));
     if(Mouse::isMouseHover(glm::vec2(5000),glm::vec3(nodeEditorPanel.resultPos.x + nodeEditorPanel.resultScale.x + 5000,nodeEditorPanel.resultPos.y,1.f)))
         cursorOnBarriers = true;
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "");
     return cursorOnBarriers;
 }
 
