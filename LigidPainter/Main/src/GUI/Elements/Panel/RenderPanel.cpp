@@ -246,7 +246,15 @@ static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::v
     ShaderSystem::buttonShader().setVec3  ("pos", pos);
     ShaderSystem::buttonShader().setVec2  ("scale", scale);
     ShaderSystem::buttonShader().setVec4  ("properties.color", color);
-
+    ShaderSystem::buttonShader().setVec4  ("properties.color2", color);
+    ShaderSystem::buttonShader().setFloat ("properties.colorMixVal", 0.f);
+    
+    ShaderSystem::buttonShader().setFloat ("properties.radius", cornerRadius);
+    ShaderSystem::buttonShader().setInt   ("properties.outline.state", 2);
+    ShaderSystem::buttonShader().setInt   ("outlineExtra", true); 
+    ShaderSystem::buttonShader().setVec3  ("properties.outline.color" , color2); 
+    ShaderSystem::buttonShader().setVec3  ("properties.outline.color2" , color2); 
+    ShaderSystem::buttonShader().setFloat ("properties.outline.thickness" , outlineThickness);
     
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Draw the panel");
 }

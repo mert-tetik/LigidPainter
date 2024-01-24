@@ -26,6 +26,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector> //std::vector
 #include <string> //std::string
 #include <map> //std::map
+#include <unordered_map> //std::unordered_map
+#include <any> //std::any
 
 /// @brief Manages shader programs
 class Shader
@@ -67,21 +69,19 @@ public:
     void setInt(const std::string &name, int value);
     void setFloat(const std::string &name, float value);
     void setVec2(const std::string &name, const glm::vec2 &value);
-    void setVec2(const std::string &name, float x, float y);
     void setVec3(const std::string &name, const glm::vec3 &value);
-    void setVec3(const std::string &name, float x, float y, float z);
     void setVec4(const std::string &name, const glm::vec4 &value);
-    void setVec4(const std::string &name, float x, float y, float z, float w);
     void setMat2(const std::string &name, const glm::mat2 &mat);
     void setMat3(const std::string &name, const glm::mat3 &mat);
     void setMat4(const std::string &name, const glm::mat4 &mat);
-    
 
 private:
     /// @brief Checks if an error is occured (print the error msg to the terminal)
     /// @param shader shader id
     /// @param type indicate if compiling a .frag file, .tc file or .vert file etc. (to print to the terminal) 
     void checkCompileErrors(GLuint shader, std::string type);
+
+    std::unordered_map<std::string, std::any> uniformValues;
 };
 
 namespace ShaderSystem{
