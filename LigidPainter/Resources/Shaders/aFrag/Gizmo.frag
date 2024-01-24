@@ -286,26 +286,6 @@ vec3 half_lambert(vec3 l_p, vec3 p, vec3 view, vec3 norm, vec3 col){
     return diffuse * col;
 }
 
-float intersect_grid( vec3 ro, vec3 rd, out vec3 pos, out vec3 nor )
-{
-    // raytrace
-	float tmin = 10000.0;
-	nor = vec3(0.0);
-	pos = vec3(0.0);
-	
-	// raytrace-plane
-	float h = (0.01-ro.y)/rd.y;
-	if( h>0.0 ) 
-	{ 
-		tmin = h; 
-		nor = vec3(0.0,1.0,0.0); 
-		pos = ro + h*rd;
-	}
-
-
-	return tmin;	
-}
-
 void main()
 {
 
@@ -339,7 +319,7 @@ void main()
         vec3 obj_col = vec3(0.0);
         const float tmax = 5.0;
         float t = 0.0;
-        for( int i=0; i<256; i++ )
+        for( int i=0; i < 256 / 8; i++ )
         {
             vec3 pos = ro + t*rd;
             vec4 result = map(pos);

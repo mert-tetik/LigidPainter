@@ -689,7 +689,7 @@ void UI::init
     paintingSectionDisplayMat.materialModifiers.push_back(MaterialModifier(SOLID_MATERIAL_MODIFIER));
 
     sceneGizmo = Gizmo("", 0, glm::vec3(0.f), glm::vec2(1.f, Settings::videoScale()->x / Settings::videoScale()->y), 0.f, false);
-    sceneGizmo.scale *= 2.5f;
+    sceneGizmo.scale *= 2.f;
 
     currentModeDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f, 1.f), ""  , Texture(), 0.f, true);
     currentModeDisplayer.color = glm::vec4(0.f);

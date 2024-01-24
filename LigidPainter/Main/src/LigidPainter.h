@@ -84,10 +84,10 @@ public:
         renderer.initRenderer();
         Debugger::block("LOAD : Overall renderer"); //End
         
-        //Debugger::block("LOAD : Init other threads"); //Start
-        //// Start the export thread
-        //std::thread projectUpdatingThreadX(projectUpdatingThread, std::ref(renderer.project));
-        //Debugger::block("LOAD : Init other threads"); //End
+        Debugger::block("LOAD : Init other threads"); //Start
+        // Start the export thread
+        std::thread projectUpdatingThreadX(projectUpdatingThread, std::ref(renderer.project));
+        Debugger::block("LOAD : Init other threads"); //End
 
         LGDLOG::start.clear();
 
@@ -115,7 +115,7 @@ public:
         renderer.project.discardUpdateProjectFlag = true;
 
         // Wait for the projectUpdatingThread to finish
-        //projectUpdatingThreadX.join();
+        projectUpdatingThreadX.join();
 
         getContext()->window.deleteContext();
         getCopyContext()->window.deleteContext();

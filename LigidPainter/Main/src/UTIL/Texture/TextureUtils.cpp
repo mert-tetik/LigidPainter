@@ -63,25 +63,18 @@ void Texture::getData(char*& pixels){
 }
 
 glm::ivec2 Texture::getResolution(){
-    Debugger::block("Texture::getResolution : 54465468444" + std::to_string(this->ID)); // End
-    Debugger::block("Texture::getResolution : 54465468444" + std::to_string(this->ID)); // End
 
-    Debugger::block("Texture::getResolution : 86456421111"); // End
     if(!this->ID || glIsTexture(this->ID) == GL_FALSE){
         std::cout << "ERROR : Can't get the resolution of the texture : Invalid ID : "  << std::endl;
         return glm::ivec2(1024);
     }
-    Debugger::block("Texture::getResolution : 86456421111"); // End
     
-    Debugger::block("Texture::getResolution : 48948966245"); // End
     while (glGetError() != GL_NO_ERROR)
     {
     }
-    Debugger::block("Texture::getResolution : 48948966245"); // End
     
     int w = 0, h = 0;
 
-    Debugger::block("Texture::getResolution : 5641313231312"); // End
     // Check if the texture is bound
     GLint currentTexture;
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &currentTexture);
@@ -90,14 +83,10 @@ glm::ivec2 Texture::getResolution(){
         // Bind the texture if it's not already bound
         glBindTexture(GL_TEXTURE_2D, ID);
     }
-    Debugger::block("Texture::getResolution : 5641313231312"); // End
 
-    Debugger::block("Texture::getResolution : 462313214"); // End
     // Retrieve the texture width
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
-    Debugger::block("Texture::getResolution : 462313214"); // End
 
-    Debugger::block("Texture::getResolution : 98754654464"); // End
     // Check for OpenGL errors after glGetTexLevelParameteriv
     GLenum error = glGetError();
     if (error != GL_NO_ERROR) {
@@ -106,14 +95,10 @@ glm::ivec2 Texture::getResolution(){
         // Handle the error (print a message, log, etc.)
         // Optionally, you might want to return an "invalid" value here
     }
-    Debugger::block("Texture::getResolution : 98754654464"); // End
 
-    Debugger::block("Texture::getResolution : 4652138489777"); // End
     // Retrieve the texture height
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
-    Debugger::block("Texture::getResolution : 4652138489777"); // End
 
-    Debugger::block("Texture::getResolution : 99984651651"); // End
     // Check for OpenGL errors after the second glGetTexLevelParameteriv
     error = glGetError();
     if (error != GL_NO_ERROR) {
@@ -122,14 +107,11 @@ glm::ivec2 Texture::getResolution(){
         // Handle the error (print a message, log, etc.)
         // Optionally, you might want to return an "invalid" value here
     }
-    Debugger::block("Texture::getResolution : 99984651651"); // End
 
-    Debugger::block("Texture::getResolution : 5989889562"); // End
     // Restore the original texture binding (if it was changed)
     if (currentTexture != ID) {
         glBindTexture(GL_TEXTURE_2D, currentTexture);
     }
-    Debugger::block("Texture::getResolution : 5989889562"); // End
 
     return glm::ivec2(w, h);
 }
@@ -456,13 +438,10 @@ Texture Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
 
 void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textureRes){
     
-    Debugger::block("generateProceduralTexture : 35131746484"); // Start
     glm::ivec2 destTxtrRes = destTxtr.getResolution();
-    Debugger::block("generateProceduralTexture : 35131746484"); // Start
 
     // ------- Edge Wear ------- 
     if(this->proceduralProps.proceduralID == 121){
-        Debugger::block("generateProceduralTexture : 98484623161"); // Start
     
         if(!normalMapTxtr.ID){
             normalMapTxtr = Texture(nullptr, 1024, 1024);
@@ -565,12 +544,10 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
 
         Settings::defaultFramebuffer()->FBO.bind();
         glDeleteFramebuffers(1, &FBO);
-        Debugger::block("generateProceduralTexture : 98484623161"); // Start
     }
 
     // ------- Regular Procedural Texture -------
     else{
-        Debugger::block("generateProceduralTexture : 464894231321"); // Start
         ShaderSystem::to2DProcedural().use();
 
         if(this->proceduralProps.proceduralID == 1000)
@@ -621,10 +598,8 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
 
         Settings::defaultFramebuffer()->FBO.bind();
         glDeleteFramebuffers(1, &FBO);
-        Debugger::block("generateProceduralTexture : 464894231321"); // Start
     }
 
-    Debugger::block("generateProceduralTexture : 965343177"); // Start
     // ------- Generating Normal Map -------
     if(this->proceduralProps.proceduralNormalMap){
         if(!normalMapRes.ID){
@@ -640,11 +615,8 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         normalMapRes.getData(normalMapData);
         destTxtr.update(normalMapData, textureRes, textureRes);
     }
-    Debugger::block("generateProceduralTexture : 965343177"); // Start
 
-    Debugger::block("generateProceduralTexture : 798749999"); // Start
     destTxtr.removeSeams(mesh, textureRes);
-    Debugger::block("generateProceduralTexture : 798749999"); // Start
 }
 
 void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale){

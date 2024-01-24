@@ -47,47 +47,7 @@ void Button::render(
     ShaderSystem::buttonShader().setVec3("pos"    ,     resultPos );
     ShaderSystem::buttonShader().setVec2("scale"  ,     glm::abs(resultScale));
     
-    if(clickState1 && !this->colorSelection && !this->solidColor)//If button is pressed
-        ShaderSystem::buttonShader().setVec4("properties.color"  ,     color * glm::vec4(2.f,2.f,2.f,1.f)     ); //Button pressing color
-    else
-        ShaderSystem::buttonShader().setVec4("properties.color"  ,     glm::mix(color, glm::vec4(color.r, color.g, color.b, color.a * 0.5), this->locked)); //Default button color
-    
 
-    ShaderSystem::buttonShader().setVec4("properties.color2"  ,     color2     ); //Second color that is used by hover or click animations
-    
-
-    if(animationStyle == 1) //If hover or clicked change the color of the button
-        ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,     (clickedMixVal + hoverMixVal)/2.f   );
-    else if(animationStyle == 2) //If hover or clicked change the color of the button
-        ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,     (hover/2.f)   );
-    else //If clicked change the color of the button
-        ShaderSystem::buttonShader().setFloat("properties.colorMixVal"  ,     (clickedMixVal)   );
-
-
-    ShaderSystem::buttonShader().setFloat("properties.radius",     resultRadius    );
-
-
-    if(outline)
-        ShaderSystem::buttonShader().setInt("properties.outline.state" ,     1      ); 
-    else if(outlineExtra)
-        ShaderSystem::buttonShader().setInt("properties.outline.state" ,     2      ); 
-    else
-        ShaderSystem::buttonShader().setInt("properties.outline.state" ,    0      ); 
-    
-
-    //Outline extra color (affected by the colorMixVal)
-    ShaderSystem::buttonShader().setVec3("properties.outline.color" ,     outlineColor     );  
-    
-    
-    ShaderSystem::buttonShader().setVec3("properties.outline.color2" ,     outlineColor2     );   
-
-
-    if(animationStyle == 0) //Increase the thicness of the button if hover
-        ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness + hoverMixVal*2.f ); 
-    else if(animationStyle == 2)
-        ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness + clickedMixVal*2.f ); 
-    else  //Set the thickness value of the button
-        ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness); 
    
     
     //Render

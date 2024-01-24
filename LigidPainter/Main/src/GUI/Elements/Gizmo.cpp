@@ -96,7 +96,7 @@ void Gizmo::render(
     this->gHoverN = false;
     this->bHoverN = false;
     
-    if(true){
+    if(this->hover){
 
         FBO.bind();
 
