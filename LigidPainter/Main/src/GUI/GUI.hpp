@@ -107,6 +107,14 @@ private:
     bool prevStraightLinePaintingCondition = false;
     glm::vec2 straightLinePaintingStartPos = glm::vec2(50.f);
     glm::vec2 straightLinePaintingDirectionPos = glm::vec2(50.f);
+
+    void renderObjectsPanel(Timer& timer, Painter& painter);
+    void renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGapPerc);
+    void render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPerc);
+    void renderPaintingChannelsTextureSelectionPanel(Timer& timer, Painter& painter);
+    void renderSceneInfoWrapModeCheckbox(Timer& timer, Painter& painter);
+    void renderPaintingPanel(Timer& timer, Painter &painter, float screenGapPerc);
+
 public:
     /* -- PANELS -- */
     

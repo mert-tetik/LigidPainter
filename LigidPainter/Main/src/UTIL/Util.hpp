@@ -452,6 +452,7 @@ public:
     unsigned int ID = 0, internalformat = 0, attachment = 0;
     
     Renderbuffer();
+    Renderbuffer(unsigned int ID, unsigned int internalformat, unsigned int attachment);
     Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution);
     Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution, int samples);
 
@@ -749,6 +750,8 @@ public:
     Texture meshPosTxtr;
     Texture meshNormalTxtr;
 
+    void getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData);
+
     float mirrorXOffset = 0.f;
     float mirrorYOffset = 0.f;
     float mirrorZOffset = 0.f;
@@ -888,19 +891,19 @@ public:
     void refreshBuffers();
 
     /// @brief renderbuffer object used to depth test (used to create the depth texture)
-    unsigned int depthRBO; 
+    unsigned int depthRBO = 0; 
 
     /*!
     * @brief framebuffer object used to capture paintingTexture
     *   Always uses the paintingTexture as it's texture buffer
     */
-    unsigned int paintingFBO; 
+    unsigned int paintingFBO = 0; 
 
     /// @brief RGBA8
-    unsigned int paintingTexture8; 
+    unsigned int paintingTexture8 = 0; 
     
     /// @brief RGBA16F (Used for smear brush)
-    unsigned int paintingTexture16f;
+    unsigned int paintingTexture16f = 0;
 
     Texture paintingBGTexture; 
     
@@ -908,8 +911,11 @@ public:
     glm::vec2 lastCursorPos = glm::vec2(0); 
     int frameCounter = 0;
     
-    std::vector<glm::vec2> getCursorSubstitution(float spacing);
+    std::vector<glm::vec2> getCursorSubstitution(float spacing, glm::vec2 start, glm::vec2 dest);
     void changeColor(Color &color);
+
+    glm::ivec2 getResolution();
+
 
 private:
     void projectThePaintingTexture(Texture& selectedTexture,  Texture& projectedPaintingTexture,  unsigned int paintingTexture,  unsigned int depthTexture, 

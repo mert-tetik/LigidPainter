@@ -39,7 +39,7 @@ uniform int paintingOverGrayScale;
 uniform float paintingOpacity;
 
 //Do depth testing (painting) if set to 1
-int doDepthTest = 0;
+uniform int doDepthTest;
 
 uniform int selectedPaintingModeIndex;
 
@@ -51,6 +51,25 @@ uniform sampler2D selectedPrimitiveIDS;
 uniform sampler2D meshMask;
 uniform int primitiveCount;
 
+uniform int wrapMode;
+uniform sampler2D wrapModeBGTxtr;
+
+// Function for blending stroke values
+void strokeBlendUniColor(
+                            float src,          // Source color
+                            float srcA,        // Source alpha
+                            float dst,          // Destination color
+                            out float color     // Output blended color
+                        )
+{
+    // Blend the alpha values of source and destination
+    color = dst + (1.0 - dst) * src; // Blending based on alpha values
+    
+    // Check if the resulting alpha exceeds the source alpha
+    if (color > srcA) {
+        color = max(dst, srcA);  // Keep the maximum alpha between source and destination
+    }
+}
 
 bool isPainted  (
                     vec3 uv, //Screen position (projected position) of the vertex
@@ -135,4 +154,10 @@ void main(){
     }
 
     fragColor = brushTxtr;
+
+    if(wrapMode == 1){
+        //strokeBlendUniColor(fragColor.a, fragColor.a, texture(wrapModeBGTxtr, TexCoords).a, fragColor.a);
+        //fragColor.a = max(texture(wrapModeBGTxtr, TexCoords).a, fragColor.a);
+        fragColor += texture(wrapModeBGTxtr, TexCoords);
+    }
 }

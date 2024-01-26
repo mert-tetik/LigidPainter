@@ -39,7 +39,9 @@ void Painter::updatePosNormalTexture(){
     glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
     
-    glm::ivec2 res = glm::ivec2(256);
+    const unsigned int resolution = 1024; 
+
+    glm::ivec2 res = glm::ivec2(resolution);
     res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
 
     //Create the capture framebuffer
@@ -51,9 +53,9 @@ void Painter::updatePosNormalTexture(){
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, this->depthRBO);
 
     if(!this->meshPosTxtr.ID)
-        this->meshPosTxtr = Texture(nullptr, res.x, res.y, GL_RGBA, GL_RGBA32F);
+        this->meshPosTxtr = Texture(nullptr, res.x, res.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
     if(!this->meshNormalTxtr.ID)
-        this->meshNormalTxtr = Texture(nullptr, res.x, res.y, GL_RGBA, GL_RGBA32F);
+        this->meshNormalTxtr = Texture(nullptr, res.x, res.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
 
     for (size_t i = 0; i < 2; i++)
     {
@@ -65,10 +67,9 @@ void Painter::updatePosNormalTexture(){
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.ID, 0);
 
         //Clear the depth texture
-        glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);
+        glViewport(0, 0, getContext()->windowScale.x / (Settings::videoScale()->x / res.x), getContext()->windowScale.y / (Settings::videoScale()->y / res.y));
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
         
         //Use the depth 3D shader
         ShaderSystem::renderModelData().use();
@@ -81,7 +82,6 @@ void Painter::updatePosNormalTexture(){
         if(selectedMeshIndex < getModel()->meshes.size()){
             getModel()->meshes[selectedMeshIndex].Draw(false);
         }
-        
     }
     
     //!Finished
@@ -97,4 +97,49 @@ void Painter::updatePosNormalTexture(){
 
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_BLEND);
+}
+
+void Painter::getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData){
+        
+    const unsigned int resolution = 1024; 
+    glm::ivec2 res = glm::ivec2(resolution);
+    res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
+
+    pointPos.x /= (Settings::videoScale()->x / res.x); 
+    pointPos.y /= (Settings::videoScale()->y / res.y); 
+    
+    Framebuffer FBO = Framebuffer(this->meshPosTxtr, GL_TEXTURE_2D, "Mesh pos normal txtr check for cursor");
+    FBO.bind();
+    
+    glReadPixels(
+                    pointPos.x, 
+                    pointPos.y, 
+                    1, 
+                    1,
+                    GL_RGBA,
+                    GL_FLOAT,
+                    posData
+                );
+
+    FBO.setColorBuffer(this->meshNormalTxtr, GL_TEXTURE_2D);
+
+    glReadPixels(
+                    pointPos.x, 
+                    pointPos.y, 
+                    1, 
+                    1,
+                    GL_RGBA,
+                    GL_FLOAT,
+                    normalData
+                );
+    
+    FBO.deleteBuffers(false, false);
+
+    normalData[0] = normalData[0] * 2.f - 1.f;
+    normalData[1] = normalData[1] * 2.f - 1.f;
+    normalData[2] = normalData[2] * 2.f - 1.f;
+    
+    posData[0] = posData[0] * 2.f - 1.f;
+    posData[1] = posData[1] * 2.f - 1.f;
+    posData[2] = posData[2] * 2.f - 1.f;
 }

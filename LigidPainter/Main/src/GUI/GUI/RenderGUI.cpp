@@ -40,6 +40,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
+extern Texture posTxtr;
+
 // Defined in the RenderPanel.cpp
 extern bool updateThePreRenderedPanels;
 
@@ -232,38 +234,7 @@ static void renderBrushCursor(float radius, glm::mat4 guiProjection){
 std::string __faceSelectionActiveMesh = "";
 int __faceSelectionActiveObjIndex = 0;
 
-void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
-    
-    Debugger::block("GUI : Panels : Start"); // Start
-    Debugger::block("GUI : Panels : Start"); // End
-    
-    Debugger::block("GUI : Panels : Panel rendering"); // Start
-    
-    Debugger::block("GUI : Panels : Navigation panel"); // Start
-    navigationPanel.render(timer,!anyDialogActive);
-    if(navigationPanel.resizingDone){
-        for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, painter);
-    }
-    Debugger::block("GUI : Panels : Navigation panel"); // End
-
-    Debugger::block("GUI : Panels : Window Panel"); // Start
-    windowPanel.render(timer,!anyDialogActive);
-    if(windowPanel.resizingDone){
-        for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, painter);
-    }
-    Debugger::block("GUI : Panels : Window Panel"); // End
-    
-    Debugger::block("GUI : Panels : Painting Panel Mode Panel"); // Start
-    paintingPanelModePanel.render(timer,!anyDialogActive || painter.paintingoverTextureEditorMode);
-    if(paintingPanelModePanel.resizingDone){
-        for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, painter);
-    }
-    Debugger::block("GUI : Panels : Painting Panel Mode Panel"); // End
-
-    Debugger::block("GUI : Panels : painting panel"); // End
+void UI::renderPaintingPanel(Timer& timer, Painter &painter, float screenGapPerc){
     Section* paintingPanelActiveSection = nullptr;
 
     if(selectedPaintingPanelMode == 0 && painter.selectedDisplayingModeIndex != 0)
@@ -301,48 +272,9 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         *paintingPanelActiveSection = paintingPanel.sections[0];
     else if(paintingPanelActiveSection == nullptr)
         this->cantBeDisplayedSection = paintingPanel.sections[0];
-    Debugger::block("GUI : Panels : painting panel"); // End
+}
 
-    
-    Debugger::block("GUI : Panels : Painting Panel Mode Displayer"); // End
-    paintingPanelModeDisplayer.text = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.text; 
-    paintingPanelModeDisplayer.texture = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.texture; 
-
-    if(!paintingPanel.slideVal)
-        paintingPanelModeDisplayer.render(timer, false);
-    Debugger::block("GUI : Panels : Painting Panel Mode Displayer"); // End
-    
-    Debugger::block("GUI : Panels : Library Panel Left"); // End
-    libraryPanelLeft.render(timer,!anyDialogActive);
-    if(libraryPanelLeft.resizingDone){
-        for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, painter);
-    }
-    Debugger::block("GUI : Panels : Library Panel Left"); // End
-    
-    Debugger::block("GUI : Panels : Library Panel Displayer"); // End
-    libraryPanelDisplayer.render(timer,!anyDialogActive);
-    if(libraryPanelDisplayer.resizingDone){
-        for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, painter);
-    }
-    Debugger::block("GUI : Panels : Library Panel Displayer"); // End
-    
-    Debugger::block("GUI : Panels : Selected Texture Displayer"); // End
-    selectedTextureDisplayer.render(timer, !anyDialogActive);
-    if(selectedTextureDisplayer.resizingDone){
-        for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, painter);
-    }
-    Debugger::block("GUI : Panels : Selected Texture Displayer"); // End
-    
-    Debugger::block("GUI : Panels : Scene Gizmo"); // End
-    sceneGizmo.yaw = glm::radians(getScene()->camera.yaw);
-    sceneGizmo.pitch = glm::radians(getScene()->camera.pitch);
-    sceneGizmo.render(timer, !anyDialogActive);
-    Debugger::block("GUI : Panels : Scene Gizmo"); // End
-
-    Debugger::block("GUI : Panels : Scene Info & Wrap Mode Checkbox"); // End
+void UI::renderSceneInfoWrapModeCheckbox(Timer& timer, Painter& painter){
     if(painter.selectedDisplayingModeIndex == 0){
         currentModeDisplayer.text = "Object Selection Mode";
         int selectedObjCount = 0;
@@ -416,61 +348,58 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     currentModeHintDisplayer.render(timer, false);
     wrapModeCheckbox.render(timer, !anyDialogActive);
     painter.wrapMode = wrapModeCheckbox.clickState1;
-    Debugger::block("GUI : Panels : Scene Info & Wrap Mode Checkbox"); // End
+}
 
-    Debugger::block("GUI : Panels : Painting panel texture selection"); // Start
-    if(paintingChannelsTextureSelectionPanelActive){
-        paintingChannelsTextureSelectionPanel.sections[0].elements.clear();
+void UI::renderPaintingChannelsTextureSelectionPanel(Timer& timer, Painter& painter){
+    paintingChannelsTextureSelectionPanel.sections[0].elements.clear();
 
-        for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-        {
-            Button btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getTextureObj(i).title, Library::getTextureObj(i), 0.f, false);
-            btn.textureSizeScale = 1.2f;
-            paintingChannelsTextureSelectionPanel.sections[0].elements.push_back(btn);
-        }  
+    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+    {
+        Button btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getTextureObj(i).title, Library::getTextureObj(i), 0.f, false);
+        btn.textureSizeScale = 1.2f;
+        paintingChannelsTextureSelectionPanel.sections[0].elements.push_back(btn);
+    }  
 
-        paintingChannelsTextureSelectionPanel.render(timer, true);
+    paintingChannelsTextureSelectionPanel.render(timer, true);
 
-        for (size_t i = 0; i < paintingChannelsTextureSelectionPanel.sections[0].elements.size(); i++)
-        {
-            if(paintingChannelsTextureSelectionPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
-                for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
-                {
-                    for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
-                        if(paintingChannelsSection[secI].elements[elI].button.clickState1){
-                            for (size_t elICheck = 0; elICheck < paintingChannelsSection[secI].elements.size(); elICheck++){
-                                if(paintingChannelsSection[secI].elements[elICheck].button.texture.ID == Library::getTexture(i)->ID && elI != elICheck){
-                                    paintingChannelsSection[secI].elements[elICheck].button.texture = Texture();
-                                    LGDLOG::start << "WARNING! Same textures in a material. " << paintingChannelsSection[secI].elements[elICheck].button.text << " is replaced." << LGDLOG::end;
-                                }
-                            }
-
-                            paintingChannelsSection[secI].elements[elI].button.texture = *Library::getTexture(i);
-                            paintingChannelsSection[secI].elements[elI].button.clickState1 = false;
-                        }
-                    }
-                }
-                
-                paintingChannelsTextureSelectionPanelActive = false;
-            }
-        }
-        
-        if(!paintingChannelsTextureSelectionPanel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)){
+    for (size_t i = 0; i < paintingChannelsTextureSelectionPanel.sections[0].elements.size(); i++)
+    {
+        if(paintingChannelsTextureSelectionPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
             for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
             {
                 for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
-                    paintingChannelsSection[secI].elements[elI].button.clickState1 = false;
+                    if(paintingChannelsSection[secI].elements[elI].button.clickState1){
+                        for (size_t elICheck = 0; elICheck < paintingChannelsSection[secI].elements.size(); elICheck++){
+                            if(paintingChannelsSection[secI].elements[elICheck].button.texture.ID == Library::getTexture(i)->ID && elI != elICheck){
+                                paintingChannelsSection[secI].elements[elICheck].button.texture = Texture();
+                                LGDLOG::start << "WARNING! Same textures in a material. " << paintingChannelsSection[secI].elements[elICheck].button.text << " is replaced." << LGDLOG::end;
+                            }
+                        }
+
+                        paintingChannelsSection[secI].elements[elI].button.texture = *Library::getTexture(i);
+                        paintingChannelsSection[secI].elements[elI].button.clickState1 = false;
+                    }
                 }
             }
-           
+            
             paintingChannelsTextureSelectionPanelActive = false;
         }
-
     }
-    Debugger::block("GUI : Panels : Painting panel texture selection"); // End
+    
+    if(!paintingChannelsTextureSelectionPanel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)){
+        for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
+        {
+            for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
+                paintingChannelsSection[secI].elements[elI].button.clickState1 = false;
+            }
+        }
+        
+        paintingChannelsTextureSelectionPanelActive = false;
+    }
+}
 
-    Debugger::block("GUI : Panels : 2D Painting scene"); // Start
-    if(!painter.threeDimensionalMode && painter.selectedDisplayingModeIndex == 2){
+void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPerc){
+    if(painter.selectedDisplayingModeIndex == 2){
         glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
         glm::vec2 prevScale = destScale * this->twoDPaintingSceneScroll;
         float scrVal = *Mouse::mouseScroll() / Settings::videoScale()->y * 4.f;
@@ -560,7 +489,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, posTxtr.ID);
 
         // Render the texture as it's pixels can be seen
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -597,7 +526,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
         ShaderSystem::buttonShader().use();
     }
-    else if(!painter.threeDimensionalMode){
+    else{
         //Render the 2D painting panel
         twoDPaintingPanel.sections[0].elements[0].button.text = "2D Painting can't be displayed in the current displaying mode";
         twoDPaintingPanel.render(timer, false);
@@ -608,97 +537,197 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
     
     glClear(GL_DEPTH_BUFFER_BIT);
+}
 
+void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGapPerc){
+    paintingModesPanel.render(timer,!anyDialogActive);
+    if(paintingModesPanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, painter);
+    }
+
+    faceSelectionCheckComboList.panel.sections[0] = meshSection;
+    faceSelectionCheckComboList.checkButton.clickState1 = meshSection.elements[1].checkBox.clickState1;
+    faceSelectionCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
+    faceSelectionCheckComboList.render(timer, !anyDialogActive);
+    meshSection = faceSelectionCheckComboList.panel.sections[0];
+    meshSection.elements[1].checkBox.clickState1 = faceSelectionCheckComboList.checkButton.clickState1;
+    
+    paintingOverCheckComboList.panel.sections[0] = paintingOverSection;
+    paintingOverCheckComboList.checkButton.clickState1 = paintingOverSection.elements[0].checkBox.clickState1;
+    paintingOverCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
+    paintingOverCheckComboList.render(timer, !anyDialogActive);
+    paintingOverSection = paintingOverCheckComboList.panel.sections[0];
+    paintingOverSection.elements[0].checkBox.clickState1 = paintingOverCheckComboList.checkButton.clickState1;
+
+    if(painter.selectedPaintingModeIndex == 2)
+        smearPaintingModePropertyPanel.render(timer, !anyDialogActive); 
+    
+    if(painter.selectedPaintingModeIndex == 4)
+        this->filterPaintingModeFilterBtn.render(timer, !anyDialogActive);
+
+    if(painter.selectedPaintingModeIndex == 5)
+        vectorPaintingModePropertyPanel.render(timer, !anyDialogActive); 
+}
+
+void UI::renderObjectsPanel(Timer& timer, Painter& painter){
+    this->textureSelectedObjectsButton.render(timer, !anyDialogActive);
+
+    if(this->textureSelectedObjectsButton.clicked){
+        bool anyObjSelected = false;
+        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        {
+            if(getModel()->meshes[i].selectedObjectIndices.size())
+                anyObjSelected = true;
+        }
+        
+        if(!anyObjSelected)
+            LGDLOG::start << "WARNING! No object was selected" << LGDLOG::end;
+
+        this->objectTexturingDialog.dialogControl.activate();
+    }
+
+    for (size_t secI = 0; secI < objectsPanel.sections.size(); secI++)
+    {
+        for (size_t elI = 0; elI < objectsPanel.sections[secI].elements.size(); elI++){
+            bool match = false;
+            if(secI < getModel()->meshes.size()){
+                for (size_t i = 0; i < getModel()->meshes[secI].selectedObjectIndices.size(); i++)
+                {
+                    if(getModel()->meshes[secI].selectedObjectIndices[i] == elI)
+                        match = true;
+                }
+            }
+
+            if(match)
+                objectsPanel.sections[secI].elements[elI].button.color = ColorPalette::themeColor;
+            else
+                objectsPanel.sections[secI].elements[elI].button.color = ColorPalette::secondColor;
+        }
+    }
+    
+
+    this->objectsPanel.render(timer, !anyDialogActive);
+
+    if(getModel()->newModelAdded){
+        this->objectsPanel.sections.clear();
+        
+        for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+        {
+            Section section;
+            section.header = SectionHolder(ColorPalette::secondColor,0.f,getModel()->meshes[meshI].materialName);
+            section.header.sectionHolder.active = true;
+
+            for (size_t objI = 0; objI < getModel()->meshes[meshI].objects.size(); objI++){
+                Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), getModel()->meshes[meshI].objects[objI].title, Texture(), 0.f, false));
+                btn.button.color = ColorPalette::mainColor;
+                section.elements.push_back(btn);
+            }
+
+            objectsPanel.sections.push_back(section);
+        }
+    }
+}
+
+void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
+    
+    Debugger::block("GUI : Panels : Start"); // Start
+    Debugger::block("GUI : Panels : Start"); // End
+    
+    Debugger::block("GUI : Panels : Panel rendering"); // Start
+    
+    Debugger::block("GUI : Panels : Navigation panel"); // Start
+    navigationPanel.render(timer,!anyDialogActive);
+    if(navigationPanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, painter);
+    }
+    Debugger::block("GUI : Panels : Navigation panel"); // End
+
+    Debugger::block("GUI : Panels : Window Panel"); // Start
+    windowPanel.render(timer,!anyDialogActive);
+    if(windowPanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, painter);
+    }
+    Debugger::block("GUI : Panels : Window Panel"); // End
+    
+    Debugger::block("GUI : Panels : Painting Panel Mode Panel"); // Start
+    paintingPanelModePanel.render(timer,!anyDialogActive || painter.paintingoverTextureEditorMode);
+    if(paintingPanelModePanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, painter);
+    }
+    Debugger::block("GUI : Panels : Painting Panel Mode Panel"); // End
+
+    
+    Debugger::block("GUI : Panels : painting panel"); // Start
+    renderPaintingPanel(timer, painter, screenGapPerc);
+    Debugger::block("GUI : Panels : painting panel"); // End
+    
+
+    Debugger::block("GUI : Panels : Painting Panel Mode Displayer"); // Start
+    paintingPanelModeDisplayer.text = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.text; 
+    paintingPanelModeDisplayer.texture = paintingPanelModePanel.sections[0].elements[selectedPaintingPanelMode].button.texture; 
+
+    if(!paintingPanel.slideVal)
+        paintingPanelModeDisplayer.render(timer, false);
+    Debugger::block("GUI : Panels : Painting Panel Mode Displayer"); // End
+
+    
+    Debugger::block("GUI : Panels : Library Panel Left"); // Start
+    libraryPanelLeft.render(timer,!anyDialogActive);
+    if(libraryPanelLeft.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, painter);
+    }
+    Debugger::block("GUI : Panels : Library Panel Left"); // End
+
+    
+    Debugger::block("GUI : Panels : Library Panel Displayer"); // Start
+    libraryPanelDisplayer.render(timer,!anyDialogActive);
+    if(libraryPanelDisplayer.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, painter);
+    }
+    Debugger::block("GUI : Panels : Library Panel Displayer"); // End
+    
+    Debugger::block("GUI : Panels : Selected Texture Displayer"); // Start
+    selectedTextureDisplayer.render(timer, !anyDialogActive);
+    if(selectedTextureDisplayer.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, painter);
+    }
+    Debugger::block("GUI : Panels : Selected Texture Displayer"); // End
+    
+    Debugger::block("GUI : Panels : Scene Gizmo"); // Start
+    sceneGizmo.yaw = glm::radians(getScene()->camera.yaw);
+    sceneGizmo.pitch = glm::radians(getScene()->camera.pitch);
+    sceneGizmo.render(timer, !anyDialogActive);
+    Debugger::block("GUI : Panels : Scene Gizmo"); // End
+
+    Debugger::block("GUI : Panels : Scene Info & Wrap Mode Checkbox"); // End
+    renderSceneInfoWrapModeCheckbox(timer, painter);
+    Debugger::block("GUI : Panels : Scene Info & Wrap Mode Checkbox"); // End
+
+    Debugger::block("GUI : Panels : Painting panel texture selection"); // Start
+    if(paintingChannelsTextureSelectionPanelActive){
+        renderPaintingChannelsTextureSelectionPanel(timer, painter);
+    }
+    Debugger::block("GUI : Panels : Painting panel texture selection"); // End
+
+    Debugger::block("GUI : Panels : 2D Painting scene"); // Start
+    if(!painter.threeDimensionalMode){
+        render2DPaintingScene(timer, painter, screenGapPerc);
+    }
     Debugger::block("GUI : Panels : 2D Painting scene"); // End
 
     Debugger::block("GUI : Panels : Painting modes panel & Objects panel"); // Start
     if(painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2){
-        paintingModesPanel.render(timer,!anyDialogActive);
-        if(paintingModesPanel.resizingDone){
-            for (size_t i = 0; i < 5; i++)
-                this->panelPositioning(screenGapPerc, painter);
-        }
-
-        faceSelectionCheckComboList.panel.sections[0] = meshSection;
-        faceSelectionCheckComboList.checkButton.clickState1 = meshSection.elements[1].checkBox.clickState1;
-        faceSelectionCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
-        faceSelectionCheckComboList.render(timer, !anyDialogActive);
-        meshSection = faceSelectionCheckComboList.panel.sections[0];
-        meshSection.elements[1].checkBox.clickState1 = faceSelectionCheckComboList.checkButton.clickState1;
-        
-        paintingOverCheckComboList.panel.sections[0] = paintingOverSection;
-        paintingOverCheckComboList.checkButton.clickState1 = paintingOverSection.elements[0].checkBox.clickState1;
-        paintingOverCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
-        paintingOverCheckComboList.render(timer, !anyDialogActive);
-        paintingOverSection = paintingOverCheckComboList.panel.sections[0];
-        paintingOverSection.elements[0].checkBox.clickState1 = paintingOverCheckComboList.checkButton.clickState1;
-
-        if(painter.selectedPaintingModeIndex == 2)
-            smearPaintingModePropertyPanel.render(timer, !anyDialogActive); 
-        
-        if(painter.selectedPaintingModeIndex == 4)
-            this->filterPaintingModeFilterBtn.render(timer, !anyDialogActive);
-
-        if(painter.selectedPaintingModeIndex == 5)
-            vectorPaintingModePropertyPanel.render(timer, !anyDialogActive); 
+        renderPaintingModesPanel(timer, painter, screenGapPerc);
     }
     else{
-        this->textureSelectedObjectsButton.render(timer, !anyDialogActive);
-
-        if(this->textureSelectedObjectsButton.clicked){
-            bool anyObjSelected = false;
-            for (size_t i = 0; i < getModel()->meshes.size(); i++)
-            {
-                if(getModel()->meshes[i].selectedObjectIndices.size())
-                    anyObjSelected = true;
-            }
-            
-            if(!anyObjSelected)
-                LGDLOG::start << "WARNING! No object was selected" << LGDLOG::end;
-
-            this->objectTexturingDialog.dialogControl.activate();
-        }
-
-        for (size_t secI = 0; secI < objectsPanel.sections.size(); secI++)
-        {
-            for (size_t elI = 0; elI < objectsPanel.sections[secI].elements.size(); elI++){
-                bool match = false;
-                if(secI < getModel()->meshes.size()){
-                    for (size_t i = 0; i < getModel()->meshes[secI].selectedObjectIndices.size(); i++)
-                    {
-                        if(getModel()->meshes[secI].selectedObjectIndices[i] == elI)
-                            match = true;
-                    }
-                }
-
-                if(match)
-                    objectsPanel.sections[secI].elements[elI].button.color = ColorPalette::themeColor;
-                else
-                    objectsPanel.sections[secI].elements[elI].button.color = ColorPalette::secondColor;
-            }
-        }
-        
-
-        this->objectsPanel.render(timer, !anyDialogActive);
-
-        if(getModel()->newModelAdded){
-            this->objectsPanel.sections.clear();
-            
-            for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
-            {
-                Section section;
-                section.header = SectionHolder(ColorPalette::secondColor,0.f,getModel()->meshes[meshI].materialName);
-                section.header.sectionHolder.active = true;
-
-                for (size_t objI = 0; objI < getModel()->meshes[meshI].objects.size(); objI++){
-                    Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), getModel()->meshes[meshI].objects[objI].title, Texture(), 0.f, false));
-                    btn.button.color = ColorPalette::mainColor;
-                    section.elements.push_back(btn);
-                }
-
-                objectsPanel.sections.push_back(section);
-            }
-        }
+        renderObjectsPanel(timer, painter);
     }
     Debugger::block("GUI : Panels : Painting modes panel"); // Start
 

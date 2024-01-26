@@ -57,9 +57,9 @@ void Painter::changeColor(Color &color){
         color.loadHex(check);
 }
 
-std::vector<glm::vec2> Painter::getCursorSubstitution(float spacing){
+std::vector<glm::vec2> Painter::getCursorSubstitution(float spacing, glm::vec2 start, glm::vec2 dest){
     
-    glm::vec2 cursorPos = *Mouse::cursorPos();
+    glm::vec2 cursorPos = start;
     
     std::vector<glm::vec2> holdLocations;
     
@@ -68,12 +68,12 @@ std::vector<glm::vec2> Painter::getCursorSubstitution(float spacing){
     
     //----------------------PAINTING----------------------\\
 
-    int differenceBetweenMousePoints = glm::distance(cursorPos, lastCursorPos);
+    int differenceBetweenMousePoints = glm::distance(cursorPos, dest);
     if(spacing > 5)
         differenceBetweenMousePoints = 1; 
 
-    float xposDif = (cursorPos.x - lastCursorPos.x) / differenceBetweenMousePoints;
-    float yposDif = (cursorPos.y - lastCursorPos.y) / differenceBetweenMousePoints;
+    float xposDif = (cursorPos.x - dest.x) / differenceBetweenMousePoints;
+    float yposDif = (cursorPos.y - dest.y) / differenceBetweenMousePoints;
 
     for (size_t i = 0; i < differenceBetweenMousePoints; i++)
     {
@@ -345,6 +345,7 @@ void VectorStroke::draw(Timer& timer, float edge, bool sceneState, std::vector<V
 }
 
 void Painter::refreshBuffers(){
+    
     glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
     glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
 

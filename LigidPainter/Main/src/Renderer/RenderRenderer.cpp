@@ -163,6 +163,7 @@ void Renderer::render(){
 
     Debugger::block("3D Model"); // End
 
+    Debugger::block("3D Brush Cursor"); // Start
     if(            
             !userInterface.anyPanelHover && 
             !userInterface.anyDialogActive && 
@@ -177,74 +178,9 @@ void Renderer::render(){
             !*Mouse::RPressed()
         )
     {
-        glClear(GL_DEPTH_BUFFER_BIT);
-        ShaderSystem::color3d().use();
-        ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
-        ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
-        ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
-        
-        Framebuffer FBO = Framebuffer(painter.meshPosTxtr, GL_TEXTURE_2D, "Mesh pos normal txtr check for cursor");
-        FBO.bind();
-        
-        float* posData = new float[4]; 
-        
-        glReadPixels(
-                        Mouse::cursorPos()->x, 
-                        getContext()->windowScale.y - Mouse::cursorPos()->y, 
-                        1, 
-                        1,
-                        GL_RGBA,
-                        GL_FLOAT,
-                        posData
-                    );
-
-        FBO.setColorBuffer(painter.meshNormalTxtr, GL_TEXTURE_2D);
-
-        float* normalData = new float[4]; 
-        
-        glReadPixels(
-                        Mouse::cursorPos()->x, 
-                        getContext()->windowScale.y - Mouse::cursorPos()->y, 
-                        1, 
-                        1,
-                        GL_RGBA,
-                        GL_FLOAT,
-                        normalData
-                    );
-        
-        FBO.deleteBuffers(false, false);
-
-        Settings::defaultFramebuffer()->FBO.bind();
-
-        for (size_t i = 0; i < getTDBrushCursorModel()->meshes.size(); i++)
-        {
-            glm::mat4 transform = glm::mat4(1.f);
-            transform = glm::translate(transform, glm::vec3(posData[0] * 2.f - 1.f, posData[1] * 2.f - 1.f, posData[2] * 2.f - 1.f));
-            
-            glm::vec3 initialForward(0.0f, 0.0f, 1.0f);
-
-            // Desired normal vector
-            glm::vec3 normalVector(normalData[0] * 2.f - 1.f, normalData[1] * 2.f - 1.f, normalData[2] * 2.f - 1.f);
-            normalVector = glm::normalize(normalVector); // Ensure it's a unit vector
-
-            // Compute the rotation axis using cross product
-            glm::vec3 rotationAxis = glm::cross(initialForward, normalVector);
-            float rotationAngle = glm::acos(glm::dot(initialForward, normalVector));
-
-            // Create a rotation matrix to align the model's initial forward direction with the normal vector
-            transform = glm::rotate(transform, rotationAngle, rotationAxis);
-            
-            if(i == 1)
-                transform = glm::scale(transform, glm::vec3(0.05f));
-            else if(i == 0)
-                transform = glm::scale(transform, glm::vec3(0.01f + painter.brushProperties.radius * 4.f));
-                        
-            ShaderSystem::color3d().setMat4("modelMatrix", transform);
-
-            if(posData[3] != 0.f)
-                getTDBrushCursorModel()->meshes[i].Draw(false);
-        }
+        render3DBrushCursor();
     }
+    Debugger::block("3D Brush Cursor"); // End
 
 
     Debugger::block("3D Model Object Selection"); // Start
@@ -616,4 +552,58 @@ void Renderer::renderMainModel(){
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
     ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
     ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
+}
+
+void Renderer::render3DBrushCursor(){
+    glClear(GL_DEPTH_BUFFER_BIT);
+    ShaderSystem::color3d().use();
+    ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
+    
+    float* posData = new float[4]; 
+    float* normalData = new float[4]; 
+
+    painter.getPosNormalValOverPoint(
+                                        glm::vec2(
+                                                    Mouse::cursorPos()->x, 
+                                                    getContext()->windowScale.y - Mouse::cursorPos()->y
+                                                ),
+                                        posData,
+                                        normalData
+                                    );
+
+    Settings::defaultFramebuffer()->FBO.bind();
+
+    for (size_t i = 0; i < getTDBrushCursorModel()->meshes.size(); i++)
+    {
+        glm::mat4 transform = glm::mat4(1.f);
+        transform = glm::translate(transform, glm::vec3(posData[0], posData[1], posData[2]));
+        
+        glm::vec3 initialForward(0.0f, 0.0f, 1.0f);
+
+        // Desired normal vector
+        glm::vec3 normalVector(normalData[0], normalData[1], normalData[2]);
+        normalVector = glm::normalize(normalVector); // Ensure it's a unit vector
+
+        // Compute the rotation axis using cross product
+        glm::vec3 rotationAxis = glm::cross(initialForward, normalVector);
+        float rotationAngle = glm::acos(glm::dot(initialForward, normalVector));
+
+        // Create a rotation matrix to align the model's initial forward direction with the normal vector
+        transform = glm::rotate(transform, rotationAngle, rotationAxis);
+        
+        if(i == 1)
+            transform = glm::scale(transform, glm::vec3(0.05f));
+        else if(i == 0)
+            transform = glm::scale(transform, glm::vec3(0.01f + painter.brushProperties.radius * 4.f));
+                    
+        ShaderSystem::color3d().setMat4("modelMatrix", transform);
+
+        if(posData[3] != 0.f)
+            getTDBrushCursorModel()->meshes[i].Draw(false);
+    }
+
+    delete[] posData;
+    delete[] normalData;
 }

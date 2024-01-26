@@ -118,4 +118,4 @@ void Painter::updateDepthTexture(){
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_BLEND);
 
-}
+} 

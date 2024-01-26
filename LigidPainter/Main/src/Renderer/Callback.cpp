@@ -137,7 +137,8 @@ void Renderer::scrollCallback(
     if(
             (((this->userInterface.materialEditorDialog.dialogControl.isActive() && !this->userInterface.materialEditorDialog.shortcutPanel.hover && !this->userInterface.materialEditorDialog.modifiersPanel.hover)) || 
             ((!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode) || this->userInterface.objectTexturingDialog.dialogControl.isActive())) &&
-            (!this->userInterface.anyPanelHover || this->userInterface.anyDialogActive) 
+            (!this->userInterface.anyPanelHover || this->userInterface.anyDialogActive) &&
+            !*Mouse::LPressed()
         )
     {
         //The distance between the camera & center 
@@ -196,7 +197,8 @@ void Renderer::cursorPositionCallback(
             window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS) || getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE) == LIGIDGL_PRESS) 
             &&  //If pressed to CTRL button
             ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || painter.paintingoverTextureEditorMode || this->userInterface.objectTexturingDialog.dialogControl.isActive()) && //If there is no active dialog (don't move the camera if a dialog is active)
-            !this->userInterface.anyPanelHover       //Don't move the camera if cursor hover a panel
+            !this->userInterface.anyPanelHover &&       //Don't move the camera if cursor hover a panel
+            !*Mouse::LPressed()
         ) 
     { 
         if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
@@ -261,7 +263,8 @@ void Renderer::cursorPositionCallback(
                 this->userInterface.objectTexturingDialog.dialogControl.isActive() ||
                 this->userInterface.materialSelectionDialog.dialogControl.isActive() ||
                 this->userInterface.materialDisplayerDialog.dialogControl.isActive()) &&
-                !this->userInterface.anyPanelHover  //Don't move the camera if cursor hover a panel
+                !this->userInterface.anyPanelHover && //Don't move the camera if cursor hover a panel
+                !*Mouse::LPressed()
             ) 
     {   
         if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)

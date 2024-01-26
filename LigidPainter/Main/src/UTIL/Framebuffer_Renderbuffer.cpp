@@ -35,6 +35,12 @@ Renderbuffer::Renderbuffer(){
     
 }
 
+Renderbuffer::Renderbuffer(unsigned int ID, unsigned int internalformat, unsigned int attachment){
+    this->ID = ID;
+    this->internalformat = internalformat;
+    this->attachment = attachment;
+}
+
 Renderbuffer::Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution){
 
     LigidGL::cleanGLErrors();

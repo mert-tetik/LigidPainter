@@ -238,7 +238,7 @@ void Panel::updateGraphics(Timer &timer){
 
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
-    captureGraphicsFBO.deleteBuffers(false, true);
+    captureGraphicsFBO.deleteBuffers(false, false);
 }
 
 static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, float outlineThickness, float cornerRadius){

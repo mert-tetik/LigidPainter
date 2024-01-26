@@ -68,6 +68,7 @@ private:
     void renderSkyBox();
     void set3DUniforms();
     void renderMainModel();
+    void render3DBrushCursor();
 
     double previousClickTime = 0.0;
     glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset 

@@ -37,9 +37,40 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
+glm::ivec2 Painter::getResolution(){
+    // The resolution of the selected texture (painted texture)
+    glm::vec2 textureRes = selectedTexture.getResolution();
+
+    if(this->materialPainting && this->selectedMeshIndex < getModel()->meshes.size()){
+        if(getModel()->meshes[this->selectedMeshIndex].albedo.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
+
+        else if(getModel()->meshes[this->selectedMeshIndex].roughness.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].roughness.getResolution();
+
+        else if(getModel()->meshes[this->selectedMeshIndex].metallic.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].metallic.getResolution();
+
+        else if(getModel()->meshes[this->selectedMeshIndex].normalMap.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].normalMap.getResolution();
+
+        else if(getModel()->meshes[this->selectedMeshIndex].heightMap.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].heightMap.getResolution();
+
+        else if(getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
+            textureRes = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.getResolution();
+    
+        else
+            textureRes = glm::vec2(1024);
+    }
+
+    return textureRes;
+}
+
 //forward declerations for the utility functions
 static void twoDPaintShaderSetBrushProperties(
-                                    BrushProperties brushProperties
+                                    BrushProperties brushProperties,
+                                    bool wrapMode
                                 );
 
 static void sendPainterDataToThe3DModelShaderProgram(   
@@ -48,8 +79,9 @@ static void sendPainterDataToThe3DModelShaderProgram(
                                                         bool paintingOverWraping
                                                      );
 
-void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox){
+Texture posTxtr;
 
+void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox){
     glm::vec2 firstCursorPos = *Mouse::cursorPos();
     
     //First frame the painting is started
@@ -100,12 +132,136 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(0.));
 
     //Set brush properties
-    twoDPaintShaderSetBrushProperties(this->brushProperties);
+    twoDPaintShaderSetBrushProperties(this->brushProperties, this->wrapMode);
+    
+    glm::vec3 oldCamPos = getScene()->camera.cameraPos;
+    glm::vec3 oldCamOrigin = getScene()->camera.originPos;
 
     //Stroke positions
-    std::vector<glm::vec2> holdLocations = getCursorSubstitution(this->brushProperties.spacing);
-    if(strokeLocations.size())
+    std::vector<glm::vec2> holdLocations = getCursorSubstitution(this->brushProperties.spacing, *Mouse::cursorPos(), lastCursorPos);
+    if(strokeLocations.size()){
         holdLocations = strokeLocations;
+    }
+    else if(this->wrapMode){
+        
+        holdLocations.clear();
+        
+        float* posData = new float[4]; 
+        float* normalData = new float[4]; 
+        
+        this->getPosNormalValOverPoint(
+                                glm::vec2(
+                                            Mouse::cursorPos()->x, 
+                                            getContext()->windowScale.y - Mouse::cursorPos()->y
+                                        ),
+                                posData,
+                                normalData
+                            );
+
+        getScene()->camera.cameraPos = glm::vec3(
+                                                    posData[0] + normalData[0] * 5.1f, 
+                                                    posData[1] + normalData[1] * 5.f, 
+                                                    posData[2] + normalData[2] * 5.f
+                                                );
+
+        getScene()->camera.originPos = glm::vec3(
+                                                    posData[0], 
+                                                    posData[1], 
+                                                    posData[2]
+                                                );
+        
+
+        posData[0] = (posData[0] + 1.f) / 2.f;
+        posData[1] = (posData[1] + 1.f) / 2.f;
+        posData[2] = (posData[2] + 1.f) / 2.f;
+
+        const unsigned int resolution = 512; 
+
+        glm::ivec2 res = glm::ivec2(resolution);
+        res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
+
+        if(!projectedPaintingTextureDup.ID)
+            projectedPaintingTextureDup = Texture(nullptr, resolution, resolution);
+
+        Framebuffer fbo = Framebuffer(posTxtr, GL_TEXTURE_2D, Renderbuffer(this->depthRBO, GL_DEPTH_COMPONENT32F, GL_DEPTH_ATTACHMENT), "Rendering POS texture of the selected mesh to detect painting pos");
+
+        fbo.bind();
+
+        //Clear the depth texture
+        glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)res.x), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)res.y));
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        
+        glm::mat4 viewMat = getScene()->calculateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
+
+        //Use the depth 3D shader
+        ShaderSystem::renderModelData().use();
+        ShaderSystem::renderModelData().setMat4("view", viewMat);
+        ShaderSystem::renderModelData().setMat4("projection", getScene()->projectionMatrix);
+        ShaderSystem::renderModelData().setMat4("modelMatrix",getScene()->transformMatrix);
+        ShaderSystem::renderModelData().setInt("state", 1);
+
+        //Draw the selected mesh in 3D
+        if(selectedMeshIndex < getModel()->meshes.size()){
+            getModel()->meshes[selectedMeshIndex].Draw(false);
+        }
+
+        float* pxs = new float[res.x * res.y * 4]; 
+        
+        glReadPixels(
+                        0, 
+                        0, 
+                        res.x, 
+                        res.y,
+                        GL_RGBA,
+                        GL_FLOAT,
+                        pxs
+                    );
+
+        for (size_t y = 0; y < res.y; y++)
+        {
+            for (size_t x = 0; x < res.x; x++){
+                int index = (y * res.x + x) * 4;
+
+                if(true){
+                    float tolerance = 0.005f;
+
+                    if(index + 3 >= res.x * res.y * 4)
+                        goto exitPxChecking;
+
+                    if(pxs[index + 3] != 0.f){
+                        if(pxs[index] >= posData[0] - tolerance && pxs[index] <= posData[0] + tolerance){
+                            if(pxs[index + 1] >= posData[1] - tolerance && pxs[index + 1] <= posData[1] + tolerance){
+                                if(pxs[index + 2] >= posData[2] - tolerance && pxs[index + 2] <= posData[2] + tolerance){
+                                    
+                                    glm::vec2 crsPos = glm::vec2((float)Settings::videoScale()->x / ((float)res.x / (float)x), (float)Settings::videoScale()->y / ((float)res.y / (float)y));
+                                    
+                                    holdLocations = getCursorSubstitution(this->brushProperties.spacing, crsPos, crsPos + (*Mouse::cursorPos() - lastCursorPos) / 3.f);
+                                    
+                                    //holdLocations.push_back(glm::vec2((float)Settings::videoScale()->x / ((float)res.x / (float)x), (float)Settings::videoScale()->y / ((float)res.y / (float)y)));
+
+                                    goto exitPxChecking;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        exitPxChecking:
+        
+
+        delete[] posData;
+        delete[] normalData;
+        delete[] pxs;
+
+        getBox()->bindBuffers();
+        ShaderSystem::twoDPainting().use();
+        glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
+        glViewport(0, 0, paintingRes.x, paintingRes.y);
+        fbo.deleteBuffers(false, false);
+    }
     
     // Set the mouseOffset value
     if(holdLocations.size())
@@ -144,8 +300,6 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     lastCursorPos = firstCursorPos;
     this->refreshable = true;
     frameCounter++;
-    
-
 
     generateMirroredProjectedPaintingTexture(
                                                 this->oSide, this->oXSide, this->oYSide, this->oXYSide, this->oZSide, this->oXZSide, this->oYZSide, 
@@ -159,13 +313,26 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
         projectedPaintingTexture.applyNormalMap(8.f, false, true);
     }
     
+    if(this->wrapMode){
+        glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->paintingTexture16f, 0);
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->paintingTexture8, 0);
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+
     //Bind the default framebuffer
     Settings::defaultFramebuffer()->FBO.bind(); 
 
     // Send the painter data to the the PBR shader for the painting displaying 
     sendPainterDataToThe3DModelShaderProgram(this->selectedColorIndex, this->color1, this->color2, this->color3, this->brushProperties.opacity, paintingMode, this->usePaintingOver, this->paintingOverGrayScale, this->paintingOverWraping);
 
-
+    
+    getScene()->camera.cameraPos = oldCamPos;
+    getScene()->camera.originPos = oldCamOrigin;
 }
 
 
@@ -193,10 +360,15 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 
 
 static void twoDPaintShaderSetBrushProperties (
-                                    BrushProperties brushProperties
+                                    BrushProperties brushProperties,
+                                    bool wrapMode
                                )
 {
-    ShaderSystem::twoDPainting().setFloat("brush.radius", brushProperties.radius);
+    if(wrapMode)
+        ShaderSystem::twoDPainting().setFloat("brush.radius", brushProperties.radius);
+    else
+        ShaderSystem::twoDPainting().setFloat("brush.radius", brushProperties.radius);
+    
     ShaderSystem::twoDPainting().setFloat("brush.hardness", brushProperties.hardness);
     ShaderSystem::twoDPainting().setFloat("brush.sizeJitter", 1.f - brushProperties.sizeJitter);
     ShaderSystem::twoDPainting().setFloat("brush.scatter", 1.f - brushProperties.scatter);
@@ -221,7 +393,7 @@ static void twoDPaintShaderSetBrushProperties (
 
 
 
-
+Texture projectedPaintingTextureDup;
 
 void Painter::projectThePaintingTexture(
                                         // Textures
@@ -242,31 +414,7 @@ void Painter::projectThePaintingTexture(
                                         Texture selectedPrimitives
                                     )
 {
-    // The resolution of the selected texture (painted texture)
-    glm::vec2 textureRes = selectedTexture.getResolution();
-
-    if(this->materialPainting && this->selectedMeshIndex < getModel()->meshes.size()){
-        if(getModel()->meshes[this->selectedMeshIndex].albedo.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
-
-        else if(getModel()->meshes[this->selectedMeshIndex].roughness.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].roughness.getResolution();
-
-        else if(getModel()->meshes[this->selectedMeshIndex].metallic.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].metallic.getResolution();
-
-        else if(getModel()->meshes[this->selectedMeshIndex].normalMap.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].normalMap.getResolution();
-
-        else if(getModel()->meshes[this->selectedMeshIndex].heightMap.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].heightMap.getResolution();
-
-        else if(getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.getResolution();
-    
-        else
-            textureRes = glm::vec2(1024);
-    }
+    glm::vec2 textureRes = this->getResolution();
 
     // Update the resolution & the format of the projected painting texture in the first frame the painting started
     if(*Mouse::LClick()){
@@ -288,13 +436,27 @@ void Painter::projectThePaintingTexture(
         projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, format, internalFormat);
     }
 
+    if(this->wrapMode){
+        if(!projectedPaintingTextureDup.ID)
+            projectedPaintingTextureDup = Texture(nullptr, textureRes.x, textureRes.y);
+
+        projectedPaintingTextureDup.update(nullptr, textureRes.x, textureRes.y);
+
+        projectedPaintingTexture.duplicateTextureSub(projectedPaintingTextureDup);
+    }
+
     // Generate and bind the capturing framebuffer
     // TODO Don't create the render buffer there
     Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, textureRes), "Painter::projectThePaintingTexture");
     captureFBO.bind();
     
     glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    if(this->wrapMode)
+        glClear(GL_DEPTH_BUFFER_BIT);
+    else
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
     glViewport(0,0,textureRes.x,textureRes.y);
 
     // Bind the related shader program
@@ -313,6 +475,9 @@ void Painter::projectThePaintingTexture(
     ShaderSystem::projectingPaintedTextureShader().setInt("usePaintingOver", this->usePaintingOver);
     ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
     ShaderSystem::projectingPaintedTextureShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
+    
+    ShaderSystem::projectingPaintedTextureShader().setInt("wrapMode", this->wrapMode);
+    ShaderSystem::projectingPaintedTextureShader().setInt("wrapModeBGTxtr", 11);
 
     // Bind the painting texture
     glActiveTexture(GL_TEXTURE6);
@@ -332,6 +497,9 @@ void Painter::projectThePaintingTexture(
     // Bind the mesh mask texture
     glActiveTexture(GL_TEXTURE10);
     glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
+    
+    glActiveTexture(GL_TEXTURE11);
+    glBindTexture(GL_TEXTURE_2D, projectedPaintingTextureDup.ID);
     
     // Painting a 3D model
     if(threeDimensionalMode){
@@ -417,6 +585,10 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                                     )
 {
     glDisable(GL_BLEND);
+    
+    if((*Mouse::LClick() && !this->wrapMode) || this->wrapMode){
+        this->updateDepthTexture();
+    }
 
     std::vector<MirrorSide> mirrorSides;
     
@@ -480,183 +652,118 @@ void Painter::generateMirroredProjectedPaintingTexture(
         if(horizontal || vertical)
             mirrorSides[i].mirroredPaintingTexture.flipTexture(horizontal, vertical);
 
-        glm::vec3 oldCamPos = getScene()->camera.cameraPos;
-        glm::vec3 oldCamOrigin = getScene()->camera.originPos;
+        Texture projectedPaintingtxtr = mirrorSides[i].projectedPaintingTexture;
 
-        {
-            Framebuffer FBO = Framebuffer(this->meshPosTxtr, GL_TEXTURE_2D, "Mesh pos normal txtr check for painting");
-            FBO.bind();
-            
-            float* posData = new float[4]; 
-            
-            glReadPixels(
-                            Mouse::cursorPos()->x, 
-                            getContext()->windowScale.y - Mouse::cursorPos()->y, 
-                            1, 
-                            1,
-                            GL_RGBA,
-                            GL_FLOAT,
-                            posData
-                        );
-
-            FBO.setColorBuffer(this->meshNormalTxtr, GL_TEXTURE_2D);
-
-            float* normalData = new float[4]; 
-            
-            glReadPixels(
-                            Mouse::cursorPos()->x, 
-                            getContext()->windowScale.y - Mouse::cursorPos()->y, 
-                            1, 
-                            1,
-                            GL_RGBA,
-                            GL_FLOAT,
-                            normalData
-                        );
-
-            normalData[0] = normalData[0] * 2.f - 1.f;
-            normalData[1] = normalData[1] * 2.f - 1.f;
-            normalData[2] = normalData[2] * 2.f - 1.f;
-            
-            posData[0] = posData[0] * 2.f - 1.f;
-            posData[1] = posData[1] * 2.f - 1.f;
-            posData[2] = posData[2] * 2.f - 1.f;
-
-            getScene()->camera.cameraPos = glm::vec3(
-                                                        posData[0] + normalData[0] * getScene()->camera.radius, 
-                                                        posData[1] + normalData[1] * getScene()->camera.radius, 
-                                                        posData[2] + normalData[2] * getScene()->camera.radius
-                                                    );
+        if(mirrorSides.size() == 1){
+            projectedPaintingtxtr = this->projectedPaintingTexture;
         }
 
-        projectThePaintingTexture(selectedTexture, mirrorSides[i].projectedPaintingTexture, mirrorSides[i].mirroredPaintingTexture.ID, mirrorSides[i].depthTexture.ID, 
+        projectThePaintingTexture(selectedTexture, projectedPaintingtxtr, mirrorSides[i].mirroredPaintingTexture.ID, mirrorSides[i].depthTexture.ID, 
                                         selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, windowOrtho, 
                                         selectedMeshIndex, twoDPaintingBox, mirrorSides[i].getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)),
                                         faceSelectionActive, selectedPrimitives
                                 );
-
-        getScene()->camera.cameraPos = oldCamPos;
-        getScene()->camera.originPos = oldCamOrigin;
     }
 
     getBox()->bindBuffers();
-
-    // The resolution of the selected texture (painted texture)
-    glm::vec2 textureRes = selectedTexture.getResolution();
-
-    if(this->materialPainting && this->selectedMeshIndex < getModel()->meshes.size()){
-        if(getModel()->meshes[this->selectedMeshIndex].albedo.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
-
-        else if(getModel()->meshes[this->selectedMeshIndex].roughness.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].roughness.getResolution();
-
-        else if(getModel()->meshes[this->selectedMeshIndex].metallic.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].metallic.getResolution();
-
-        else if(getModel()->meshes[this->selectedMeshIndex].normalMap.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].normalMap.getResolution();
-
-        else if(getModel()->meshes[this->selectedMeshIndex].heightMap.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].heightMap.getResolution();
-
-        else if(getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.getResolution();
     
-        else
-            textureRes = glm::vec2(1024);
-    }
+    if(mirrorSides.size() != 1){
 
-    // Update the resolution & the format of the projected painting texture in the first frame the painting started
-    if(*Mouse::LClick()){
-        unsigned int format = 0;
-        unsigned int internalFormat = 0;
-        if(selectedPaintingModeIndex == 2){
-            format = GL_RGBA;
-            internalFormat = GL_RGBA16F;
+        // The resolution of the selected texture (painted texture)
+        glm::vec2 textureRes = this->getResolution();
+
+        // Update the resolution & the format of the projected painting texture in the first frame the painting started
+        if(*Mouse::LClick()){
+            unsigned int format = 0;
+            unsigned int internalFormat = 0;
+            if(selectedPaintingModeIndex == 2){
+                format = GL_RGBA;
+                internalFormat = GL_RGBA16F;
+            }
+            else if(selectedPaintingModeIndex == 3){
+                format = GL_RGBA;
+                internalFormat = GL_RGBA8;
+            }
+            else{
+                format = GL_RGBA;
+                internalFormat = GL_RGBA8;
+            }
+
+            projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, format, internalFormat);
         }
-        else if(selectedPaintingModeIndex == 3){
-            format = GL_RGBA;
-            internalFormat = GL_RGBA8;
+
+        if(selectedPaintingModeIndex != 6){
+            // Generate and bind the capturing framebuffer
+            Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D, "Painter::generateMirroredProjectedPaintingTexture");
+            captureFBO.bind();
+            
+            glClearColor(0, 0, 0, 0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glViewport(0,0,textureRes.x,textureRes.y);
+
+            ShaderSystem::projectedPaintingTextureMixerShader().use();
+
+            ShaderSystem::projectedPaintingTextureMixerShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
+            ShaderSystem::projectedPaintingTextureMixerShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
+            ShaderSystem::projectedPaintingTextureMixerShader().setVec2("scale", glm::vec2(0.5f));
+
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("redChannel", false);
+            
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr1", 1);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, oSide.projectedPaintingTexture.ID);
+            
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr2Active", oXSide.active);
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr2", 2);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, oXSide.projectedPaintingTexture.ID);
+
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr3Active", oYSide.active);
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr3", 3);
+            glActiveTexture(GL_TEXTURE3);
+            glBindTexture(GL_TEXTURE_2D, oYSide.projectedPaintingTexture.ID);
+
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr4Active", oXYSide.active);
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr4", 4);
+            glActiveTexture(GL_TEXTURE4);
+            glBindTexture(GL_TEXTURE_2D, oXYSide.projectedPaintingTexture.ID);
+
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr5Active", oZSide.active);
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr5", 5);
+            glActiveTexture(GL_TEXTURE5);
+            glBindTexture(GL_TEXTURE_2D, oZSide.projectedPaintingTexture.ID);
+
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr6Active", oXZSide.active);
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr6", 6);
+            glActiveTexture(GL_TEXTURE6);
+            glBindTexture(GL_TEXTURE_2D, oXZSide.projectedPaintingTexture.ID);
+
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr7Active", oYZSide.active);
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr7", 7);
+            glActiveTexture(GL_TEXTURE7);
+            glBindTexture(GL_TEXTURE_2D, oYZSide.projectedPaintingTexture.ID);
+
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8Active", oXYZSide.active);
+            ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8", 8);
+            glActiveTexture(GL_TEXTURE8);
+            glBindTexture(GL_TEXTURE_2D, oXYZSide.projectedPaintingTexture.ID);
+
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::generateMirroredProjectedPaintingTexture : Render result");
+
+            captureFBO.deleteBuffers(false, false);
         }
         else{
-            format = GL_RGBA;
-            internalFormat = GL_RGBA8;
+            char whitePx[4] = {
+                                this->getSelectedColor().getRGB_normalized().r * 127,
+                                this->getSelectedColor().getRGB_normalized().g * 127,
+                                this->getSelectedColor().getRGB_normalized().b * 127,
+                                this->brushProperties.opacity * 127
+                            };
+
+            projectedPaintingTexture.update(whitePx, 1, 1, GL_NEAREST);
         }
-
-        projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, format, internalFormat);
     }
 
-    if(selectedPaintingModeIndex != 6){
-
-        // Generate and bind the capturing framebuffer
-        Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D, "Painter::generateMirroredProjectedPaintingTexture");
-        captureFBO.bind();
-        
-        glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0,0,textureRes.x,textureRes.y);
-
-        ShaderSystem::projectedPaintingTextureMixerShader().use();
-
-        ShaderSystem::projectedPaintingTextureMixerShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
-        ShaderSystem::projectedPaintingTextureMixerShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
-        ShaderSystem::projectedPaintingTextureMixerShader().setVec2("scale", glm::vec2(0.5f));
-
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("redChannel", false);
-        
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr1", 1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, oSide.projectedPaintingTexture.ID);
-        
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr2Active", oXSide.active);
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr2", 2);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, oXSide.projectedPaintingTexture.ID);
-
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr3Active", oYSide.active);
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr3", 3);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, oYSide.projectedPaintingTexture.ID);
-
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr4Active", oXYSide.active);
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr4", 4);
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, oXYSide.projectedPaintingTexture.ID);
-
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr5Active", oZSide.active);
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr5", 5);
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, oZSide.projectedPaintingTexture.ID);
-
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr6Active", oXZSide.active);
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr6", 6);
-        glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, oXZSide.projectedPaintingTexture.ID);
-
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr7Active", oYZSide.active);
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr7", 7);
-        glActiveTexture(GL_TEXTURE7);
-        glBindTexture(GL_TEXTURE_2D, oYZSide.projectedPaintingTexture.ID);
-
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8Active", oXYZSide.active);
-        ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8", 8);
-        glActiveTexture(GL_TEXTURE8);
-        glBindTexture(GL_TEXTURE_2D, oXYZSide.projectedPaintingTexture.ID);
-
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::generateMirroredProjectedPaintingTexture : Render result");
-
-        captureFBO.deleteBuffers(false, false);
-    }
-    else{
-        char whitePx[4] = {
-                            this->getSelectedColor().getRGB_normalized().r * 127,
-                            this->getSelectedColor().getRGB_normalized().g * 127,
-                            this->getSelectedColor().getRGB_normalized().b * 127,
-                            this->brushProperties.opacity * 127
-                        };
-
-        projectedPaintingTexture.update(whitePx, 1, 1, GL_NEAREST);
-    }
 
     glEnable(GL_BLEND);
 }
