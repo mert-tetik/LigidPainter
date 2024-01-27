@@ -93,7 +93,39 @@ static void sendPainterDataToThe3DModelShaderProgram(
                                                         bool paintingOverWraping
                                                      );
 
+static glm::vec2 findPos(glm::ivec2 res, float* posData, float* pxs){
+    for (size_t y = 0; y < res.y; y++)
+    {
+        for (size_t x = 0; x < res.x; x++){
+            int index = (y * res.x + x) * 4;
+
+            if(true){
+                float tolerance = 0.005f;
+
+                if(index + 3 >= res.x * res.y * 4)
+                    return glm::vec2(-1.f);
+
+                if(pxs[index + 3] != 0.f){
+                    if(pxs[index] >= posData[0] - tolerance && pxs[index] <= posData[0] + tolerance){
+                        if(pxs[index + 1] >= posData[1] - tolerance && pxs[index + 1] <= posData[1] + tolerance){
+                            if(pxs[index + 2] >= posData[2] - tolerance && pxs[index + 2] <= posData[2] + tolerance){
+                                
+                                glm::vec2 crsPos = glm::vec2((float)Settings::videoScale()->x / ((float)res.x / (float)x), (float)Settings::videoScale()->y / ((float)res.y / (float)y));
+                                
+                                return crsPos;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return glm::vec2(-1.f);
+}
+
 Texture posTxtr;
+
+static glm::vec4 lastPos;
 
 void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox, bool highResMode){
     glm::vec2 firstCursorPos = *Mouse::cursorPos();
@@ -232,41 +264,35 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
                         pxs
                     );
 
-        for (size_t y = 0; y < res.y; y++)
-        {
-            for (size_t x = 0; x < res.x; x++){
-                int index = (y * res.x + x) * 4;
 
-                if(true){
-                    float tolerance = 0.005f;
+        float* lastPosP = new float[4]; 
+        lastPosP[0] = lastPos.x;
+        lastPosP[1] = lastPos.y;
+        lastPosP[2] = lastPos.z;
+        lastPosP[3] = lastPos.w;
 
-                    if(index + 3 >= res.x * res.y * 4)
-                        goto exitPxChecking;
-
-                    if(pxs[index + 3] != 0.f){
-                        if(pxs[index] >= posData[0] - tolerance && pxs[index] <= posData[0] + tolerance){
-                            if(pxs[index + 1] >= posData[1] - tolerance && pxs[index + 1] <= posData[1] + tolerance){
-                                if(pxs[index + 2] >= posData[2] - tolerance && pxs[index + 2] <= posData[2] + tolerance){
-                                    
-                                    glm::vec2 crsPos = glm::vec2((float)Settings::videoScale()->x / ((float)res.x / (float)x), (float)Settings::videoScale()->y / ((float)res.y / (float)y));
-                                    
-                                    holdLocations = getCursorSubstitution(this->brushProperties.spacing, crsPos, crsPos + (*Mouse::cursorPos() - lastCursorPos) / 2.f);
-                                    
-                                    //holdLocations.push_back(glm::vec2((float)Settings::videoScale()->x / ((float)res.x / (float)x), (float)Settings::videoScale()->y / ((float)res.y / (float)y)));
-
-                                    goto exitPxChecking;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        exitPxChecking:
+        glm::vec2 crsPos = findPos(res, posData, pxs);
+        glm::vec2 lastCrsPos = findPos(res, lastPosP, pxs);
         
+        if(crsPos != glm::vec2(-1.f) && lastCrsPos != glm::vec2(-1.f)){
+            glm::vec2 lastDest;
+            lastDest.x = crsPos.x - (crsPos.x - lastCrsPos.x);
+            lastDest.y = crsPos.y + (crsPos.y - lastCrsPos.y);
+            holdLocations = getCursorSubstitution(this->brushProperties.spacing, crsPos, lastDest);
+        }
+        else if(crsPos != glm::vec2(-1.f))
+            holdLocations.push_back(crsPos);
+
+        //std::cout << posData[0] << ", " << posData[1] << ", " << posData[2] << ", " << posData[3] << std::endl;
+        //std::cout << lastPosP[0] << ", " << lastPosP[1] << ", " << lastPosP[2] << ", " << lastPosP[3] << std::endl;
+
+        lastPos.x = posData[0];
+        lastPos.y = posData[1];
+        lastPos.z = posData[2];
+        lastPos.w = posData[3];
 
         delete[] posData;
+        delete[] lastPosP;
         delete[] normalData;
         delete[] pxs;
 
@@ -583,145 +609,144 @@ void Painter::generateMirroredProjectedPaintingTexture(
 {
     glDisable(GL_BLEND);
     
-    if((*Mouse::LClick() && !this->wrapMode) || this->wrapMode){
-        this->updateDepthTexture();
-    }
-
-    std::vector<MirrorSide*> mirrorSides;
-    
-    if(oSide.active)
-        mirrorSides.push_back(&oSide); // 0
-    if(oXSide.active)
-        mirrorSides.push_back(&oXSide); // 1
-    if(oYSide.active)
-        mirrorSides.push_back(&oYSide); // 2
-    if(oXYSide.active)
-        mirrorSides.push_back(&oXYSide); // 3
-    if(oZSide.active)
-        mirrorSides.push_back(&oZSide); // 4
-    if(oXZSide.active)
-        mirrorSides.push_back(&oXZSide); // 5
-    if(oYZSide.active)
-        mirrorSides.push_back(&oYZSide); // 6
-    if(oXYZSide.active)
-        mirrorSides.push_back(&oXYZSide); // 7
-
-    bool use16f = false;
-    if(selectedPaintingModeIndex == 2){
-        use16f = true;
-    }
-
-    // Update the projected painting textures
-    {
-        if(use16f){
-            if(highResMode){
-                this->projectedPaintingTexture = this->projectedPaintingTexture16f;
-                if(this->projectedPaintingTexture16f.getResolution() != this->getResolution())
-                    this->projectedPaintingTexture16f.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR, GL_RGBA, GL_RGBA16F);  
-            }
-            else
-                this->projectedPaintingTexture = this->projectedPaintingTexture16fLow;  
-
-        }
-        else{
-            if(highResMode){
-                this->projectedPaintingTexture = this->projectedPaintingTexture8;  
-                if(this->projectedPaintingTexture8.getResolution() != this->getResolution())
-                    this->projectedPaintingTexture8.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR);  
-            }
-            else
-                this->projectedPaintingTexture = this->projectedPaintingTexture8Low;  
+    if(selectedPaintingModeIndex != 6){
+        if((*Mouse::LClick() && !this->wrapMode) || this->wrapMode){
+            this->updateDepthTexture();
         }
 
-        for (size_t i = 0; i < mirrorSides.size(); i++)
+        std::vector<MirrorSide*> mirrorSides;
+        
+        if(oSide.active)
+            mirrorSides.push_back(&oSide); // 0
+        if(oXSide.active)
+            mirrorSides.push_back(&oXSide); // 1
+        if(oYSide.active)
+            mirrorSides.push_back(&oYSide); // 2
+        if(oXYSide.active)
+            mirrorSides.push_back(&oXYSide); // 3
+        if(oZSide.active)
+            mirrorSides.push_back(&oZSide); // 4
+        if(oXZSide.active)
+            mirrorSides.push_back(&oXZSide); // 5
+        if(oYZSide.active)
+            mirrorSides.push_back(&oYZSide); // 6
+        if(oXYZSide.active)
+            mirrorSides.push_back(&oXYZSide); // 7
+
+        bool use16f = false;
+        if(selectedPaintingModeIndex == 2){
+            use16f = true;
+        }
+
+        // Update the projected painting textures
         {
             if(use16f){
                 if(highResMode){
-                    mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture16f;  
-                    if(mirrorSides[i]->projectedPaintingTexture16f.getResolution() != this->getResolution())
-                        mirrorSides[i]->projectedPaintingTexture16f.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR, GL_RGBA, GL_RGBA16F);  
+                    this->projectedPaintingTexture = this->projectedPaintingTexture16f;
+                    if(this->projectedPaintingTexture16f.getResolution() != this->getResolution())
+                        this->projectedPaintingTexture16f.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR, GL_RGBA, GL_RGBA16F);  
                 }
                 else
-                    mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture16fLow;  
+                    this->projectedPaintingTexture = this->projectedPaintingTexture16fLow;  
 
             }
             else{
                 if(highResMode){
-                    mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture8;  
-                    if(mirrorSides[i]->projectedPaintingTexture8.getResolution() != this->getResolution())
-                        mirrorSides[i]->projectedPaintingTexture8.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR);  
+                    this->projectedPaintingTexture = this->projectedPaintingTexture8;  
+                    if(this->projectedPaintingTexture8.getResolution() != this->getResolution())
+                        this->projectedPaintingTexture8.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR);  
                 }
                 else
-                    mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture8Low;  
+                    this->projectedPaintingTexture = this->projectedPaintingTexture8Low;  
+            }
+
+            for (size_t i = 0; i < mirrorSides.size(); i++)
+            {
+                if(use16f){
+                    if(highResMode){
+                        mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture16f;  
+                        if(mirrorSides[i]->projectedPaintingTexture16f.getResolution() != this->getResolution())
+                            mirrorSides[i]->projectedPaintingTexture16f.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR, GL_RGBA, GL_RGBA16F);  
+                    }
+                    else
+                        mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture16fLow;  
+
+                }
+                else{
+                    if(highResMode){
+                        mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture8;  
+                        if(mirrorSides[i]->projectedPaintingTexture8.getResolution() != this->getResolution())
+                            mirrorSides[i]->projectedPaintingTexture8.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR);  
+                    }
+                    else
+                        mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture8Low;  
+                }
             }
         }
-    }
-    
-
-    for (size_t i = 0; i < mirrorSides.size(); i++)
-    {
-        paintingTxtrObj.duplicateTexture(mirrorSides[i]->mirroredPaintingTexture);
-
-        bool horizontal = false;
-        bool vertical = false;
-
-        glm::vec3 cam = glm::abs(glm::normalize(getScene()->camera.cameraPos));
-
-        //In the X axis
-        if(cam.x > 0.5){
-            float invertVal = 1.f;
-            if(
-                mirrorSides[i]->effectAxis == oXSide.effectAxis || 
-                mirrorSides[i]->effectAxis == oXYSide.effectAxis || 
-                mirrorSides[i]->effectAxis == oXZSide.effectAxis || 
-                mirrorSides[i]->effectAxis == oXYZSide.effectAxis
-            )
-                invertVal = -1.f;
-            
-            horizontal = std::max(mirrorSides[i]->effectAxis.z * invertVal, 0.f);
-            vertical = std::max(mirrorSides[i]->effectAxis.y, 0.f);
-        }
         
-        
-        //In the Z axis
-        else{
-            float invertVal = 1.f;
-            if(
-                mirrorSides[i]->effectAxis == oZSide.effectAxis || 
-                mirrorSides[i]->effectAxis == oXZSide.effectAxis || 
-                mirrorSides[i]->effectAxis == oYZSide.effectAxis || 
-                mirrorSides[i]->effectAxis == oXYZSide.effectAxis
-            )
-                invertVal = -1.f;
+
+        for (size_t i = 0; i < mirrorSides.size(); i++)
+        {
+            paintingTxtrObj.duplicateTexture(mirrorSides[i]->mirroredPaintingTexture);
+
+            bool horizontal = false;
+            bool vertical = false;
+
+            glm::vec3 cam = glm::abs(glm::normalize(getScene()->camera.cameraPos));
+
+            //In the X axis
+            if(cam.x > 0.5){
+                float invertVal = 1.f;
+                if(
+                    mirrorSides[i]->effectAxis == oXSide.effectAxis || 
+                    mirrorSides[i]->effectAxis == oXYSide.effectAxis || 
+                    mirrorSides[i]->effectAxis == oXZSide.effectAxis || 
+                    mirrorSides[i]->effectAxis == oXYZSide.effectAxis
+                )
+                    invertVal = -1.f;
+                
+                horizontal = std::max(mirrorSides[i]->effectAxis.z * invertVal, 0.f);
+                vertical = std::max(mirrorSides[i]->effectAxis.y, 0.f);
+            }
             
-            horizontal = std::max(mirrorSides[i]->effectAxis.x * invertVal, 0.f);
-            vertical = std::max(mirrorSides[i]->effectAxis.y, 0.f);
+            
+            //In the Z axis
+            else{
+                float invertVal = 1.f;
+                if(
+                    mirrorSides[i]->effectAxis == oZSide.effectAxis || 
+                    mirrorSides[i]->effectAxis == oXZSide.effectAxis || 
+                    mirrorSides[i]->effectAxis == oYZSide.effectAxis || 
+                    mirrorSides[i]->effectAxis == oXYZSide.effectAxis
+                )
+                    invertVal = -1.f;
+                
+                horizontal = std::max(mirrorSides[i]->effectAxis.x * invertVal, 0.f);
+                vertical = std::max(mirrorSides[i]->effectAxis.y, 0.f);
+            }
+
+            if(horizontal || vertical)
+                mirrorSides[i]->mirroredPaintingTexture.flipTexture(horizontal, vertical);
+
+            Texture projectedPaintingtxtr = mirrorSides[i]->projectedPaintingTexture;
+
+            if(mirrorSides.size() == 1){
+                projectedPaintingtxtr = this->projectedPaintingTexture;
+            }
+
+            projectThePaintingTexture(selectedTexture, projectedPaintingtxtr, mirrorSides[i]->mirroredPaintingTexture.ID, mirrorSides[i]->depthTexture.ID, 
+                                            selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, windowOrtho, 
+                                            selectedMeshIndex, twoDPaintingBox, mirrorSides[i]->getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)),
+                                            faceSelectionActive, selectedPrimitives
+                                    );
         }
 
-        if(horizontal || vertical)
-            mirrorSides[i]->mirroredPaintingTexture.flipTexture(horizontal, vertical);
+        getBox()->bindBuffers();
+        
+        if(mirrorSides.size() != 1){
+            // The resolution of the selected texture (painted texture)
+            glm::vec2 textureRes = this->getResolution();
 
-        Texture projectedPaintingtxtr = mirrorSides[i]->projectedPaintingTexture;
-
-        if(mirrorSides.size() == 1){
-            projectedPaintingtxtr = this->projectedPaintingTexture;
-        }
-
-        projectThePaintingTexture(selectedTexture, projectedPaintingtxtr, mirrorSides[i]->mirroredPaintingTexture.ID, mirrorSides[i]->depthTexture.ID, 
-                                        selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, windowOrtho, 
-                                        selectedMeshIndex, twoDPaintingBox, mirrorSides[i]->getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)),
-                                        faceSelectionActive, selectedPrimitives
-                                );
-    }
-
-    getBox()->bindBuffers();
-    
-    if(mirrorSides.size() != 1){
-
-        // The resolution of the selected texture (painted texture)
-        glm::vec2 textureRes = this->getResolution();
-
-        if(selectedPaintingModeIndex != 6){
             // Generate and bind the capturing framebuffer
             Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D, "Painter::generateMirroredProjectedPaintingTexture");
             captureFBO.bind();
@@ -781,18 +806,41 @@ void Painter::generateMirroredProjectedPaintingTexture(
 
             captureFBO.deleteBuffers(false, false);
         }
-        else{
-            char whitePx[4] = {
-                                this->getSelectedColor().getRGB_normalized().r * 127,
-                                this->getSelectedColor().getRGB_normalized().g * 127,
-                                this->getSelectedColor().getRGB_normalized().b * 127,
-                                this->brushProperties.opacity * 127
-                            };
-
-            //projectedPaintingTexture.update(whitePx, 1, 1, GL_NEAREST);
-        }
     }
+    
+    // If bucket painting - Fill the projected painting texture with a color
+    else{
+        
+        char whitePx[4] = {
+                            this->getSelectedColor().getRGB_normalized().r * 127,
+                            this->getSelectedColor().getRGB_normalized().g * 127,
+                            this->getSelectedColor().getRGB_normalized().b * 127,
+                            this->brushProperties.opacity * 127
+                        };
 
+        projectedPaintingTexture = projectedPaintingTexture8Low; 
+
+        glm::ivec2 res = projectedPaintingTexture.getResolution();
+        char* pxs = new char[res.x * res.y * 4];
+
+        for (size_t y = 0; y < res.y; y++)
+        {
+            for (size_t x = 0; x < res.x; x++){
+                int index = (y * res.x + x) * 4;
+            
+                if(index + 3 < res.x * res.y * 4){
+                    pxs[index + 0] = whitePx[0]; 
+                    pxs[index + 1] = whitePx[1]; 
+                    pxs[index + 2] = whitePx[2]; 
+                    pxs[index + 3] = whitePx[3]; 
+                }
+            }
+        }
+
+        projectedPaintingTexture.update(pxs, res.x, res.y, GL_LINEAR);
+
+        delete[] pxs;
+    }
 
     glEnable(GL_BLEND);
 }
