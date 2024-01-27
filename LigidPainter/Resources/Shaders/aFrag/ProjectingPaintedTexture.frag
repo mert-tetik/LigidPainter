@@ -51,9 +51,6 @@ uniform sampler2D selectedPrimitiveIDS;
 uniform sampler2D meshMask;
 uniform int primitiveCount;
 
-uniform int wrapMode;
-uniform sampler2D wrapModeBGTxtr;
-
 // Function for blending stroke values
 void strokeBlendUniColor(
                             float src,          // Source color
@@ -154,10 +151,4 @@ void main(){
     }
 
     fragColor = brushTxtr;
-
-    if(wrapMode == 1){
-        //strokeBlendUniColor(fragColor.a, fragColor.a, texture(wrapModeBGTxtr, TexCoords).a, fragColor.a);
-        //fragColor.a = max(texture(wrapModeBGTxtr, TexCoords).a, fragColor.a);
-        fragColor += texture(wrapModeBGTxtr, TexCoords);
-    }
 }

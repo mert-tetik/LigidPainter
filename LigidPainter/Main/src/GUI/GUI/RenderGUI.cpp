@@ -40,8 +40,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
-extern Texture posTxtr;
-
 // Defined in the RenderPanel.cpp
 extern bool updateThePreRenderedPanels;
 
@@ -489,7 +487,7 @@ void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPe
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, posTxtr.ID);
+        glBindTexture(GL_TEXTURE_2D, painter.paintingTexture8.ID);
 
         // Render the texture as it's pixels can be seen
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -889,7 +887,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     }
 
     if(updatePaintingOverTexture){
-        glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
+        glm::ivec2 paintingRes = glm::vec2(painter.getBufferResolutions(0));
 
         Framebuffer FBO = Framebuffer(painter.paintingOverTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, paintingRes), "update painting over texture");
         FBO.bind();

@@ -219,8 +219,8 @@ void SettingsDialog::render(Timer timer, Painter &painter, LogDialog& logDialog)
     systemSettings[3].elements[1].checkBox.clickState1 = Settings::properties()->cat_verifyTheExit;
     systemSettings[3].elements[2].checkBox.clickState1 = Settings::properties()->cat_hide;
 
-    glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
-    glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
+    glm::ivec2 paintingRes = glm::ivec2(painter.getBufferResolutions(0));
+    glm::ivec2 depthRes = glm::ivec2(painter.getBufferResolutions(1));
     glm::ivec2 framebufferRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->framebufferResolutionDivier);
 
     systemSettings[2].elements[0].button.text = "Painting resolution : " + std::to_string(paintingRes.x) + "x" + std::to_string(paintingRes.y);
@@ -332,7 +332,6 @@ void SettingsDialog::render(Timer timer, Painter &painter, LogDialog& logDialog)
             ((!bgPanel.hover && *Mouse::LClick() && !logDialog.isHovered())) && !dialogControl.firstFrameActivated //Mouse Lclick out of the panel
         )
     {
-        painter.refreshBuffers();
         dialogControl.unActivate();
         Settings::defaultFramebuffer()->setResolution(*Settings::videoScale() / Settings::properties()->framebufferResolutionDivier);
     }

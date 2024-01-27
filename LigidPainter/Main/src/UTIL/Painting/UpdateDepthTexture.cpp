@@ -57,20 +57,16 @@ void Painter::updateDepthTexture(){
     glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
     
-    glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
+    glm::ivec2 depthRes = glm::vec2(getBufferResolutions(1));
 
-    //Create the capture framebuffer
-    unsigned int captureFBO;
-    glGenFramebuffers(1,&captureFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
-    
-    //Render buffer for depth testing (refresh the RBO if the videoscale value is changed)
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, this->depthRBO);
+    //Bind the capture framebuffer
+    paintingFBO.setRenderbuffer(depthRBO1024);
+    paintingFBO.bind();
 
     for (size_t i = 0; i < depthTextures.size(); i++)
     {
         //Bind the depth texture (Painter class public member variable)
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, depthTextures[i].depthTexture.ID, 0);
+        paintingFBO.setColorBuffer(depthTextures[i].depthTexture, GL_TEXTURE_2D);
 
         //Clear the depth texture
         glViewport(0, 0, depthRes.x, depthRes.y);
@@ -101,21 +97,17 @@ void Painter::updateDepthTexture(){
             getModel()->meshes[selectedMeshIndex].Draw(false);
         }
     }
-    
-
 
     //!Finished
 
     //Set back to default shader
     ShaderSystem::buttonShader().use();
 
-    //Delete the capture framebuffer
-    glDeleteFramebuffers(1,&captureFBO);
+    this->paintingFBO.removeRenderbuffer();
 
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_BLEND);
-
 } 

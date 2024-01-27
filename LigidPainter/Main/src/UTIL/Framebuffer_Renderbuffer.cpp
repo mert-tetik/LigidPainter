@@ -101,8 +101,21 @@ void Renderbuffer::update(unsigned int internalformat, unsigned int attachment, 
 
     glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
     LigidGL::testGLError("Update RenderBuffer : binding renderbuffer");
-    glRenderbufferStorage(GL_RENDERBUFFER, internalformat, resolution.x, resolution.y);
-    LigidGL::testGLError("Update RenderBuffer : allocating memory");
+
+    // Check if the renderbuffer size matches the provided size
+    GLint currentWidth, currentHeight;
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &currentWidth);
+    LigidGL::testGLError("Update RenderBuffer : Getting width data of the rbo");
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &currentHeight);
+    LigidGL::testGLError("Update RenderBuffer : Getting height data of the rbo");
+
+    if (currentWidth == resolution.x && currentHeight == resolution.y) {
+        // Size matches, no need to reallocate
+    }
+    else{
+        glRenderbufferStorage(GL_RENDERBUFFER, internalformat, resolution.x, resolution.y);
+        LigidGL::testGLError("Update RenderBuffer : allocating memory");
+    }
 
     Debugger::block("Update RenderBuffer"); // End
 }
@@ -119,8 +132,21 @@ void Renderbuffer::update(unsigned int internalformat, unsigned int attachment, 
 
     glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
     LigidGL::testGLError("Update RenderBuffer : binding renderbuffer");
-    glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalformat, resolution.x, resolution.y);
-    LigidGL::testGLError("Update RenderBuffer : allocating memory");
+
+    // Check if the renderbuffer size matches the provided size
+    GLint currentWidth, currentHeight;
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &currentWidth);
+    LigidGL::testGLError("Update RenderBuffer : Getting width data of the rbo");
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &currentHeight);
+    LigidGL::testGLError("Update RenderBuffer : Getting height data of the rbo");
+
+    if (currentWidth == resolution.x && currentHeight == resolution.y) {
+        // Size matches, no need to reallocate
+    }
+    else{
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalformat, resolution.x, resolution.y);
+        LigidGL::testGLError("Update RenderBuffer : allocating memory");
+    }
 
     Debugger::block("Update RenderBuffer"); // End
 }
@@ -242,6 +268,37 @@ void Framebuffer::setColorBuffer(Texture colorBuffer, unsigned int textureTarget
     
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
     LigidGL::testGLError("Framebuffer::setColorBuffer : attaching colorBuffer to FBO" + std::string(" : ") + this->purpose);
+}
+
+void Framebuffer::setRenderbuffer(Renderbuffer rbo){
+    LigidGL::cleanGLErrors();
+    
+    this->renderBuffer = rbo;
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+    LigidGL::testGLError("Framebuffer::setRenderbuffer : Binding FBO" + std::string(" : ") + this->purpose);
+    
+    if (glIsRenderbuffer(rbo.ID) == GL_FALSE) {
+        LGDLOG::start << "Framebuffer::setRenderbuffer : RBO is not valid!" + std::string(" : ") + this->purpose << LGDLOG::end;
+    }
+
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, rbo.attachment, GL_RENDERBUFFER, rbo.ID);
+    LigidGL::testGLError("Framebuffer::setRenderbuffer : attaching renderbuffer to FBO" + std::string(" : ") + this->purpose);
+}
+
+void Framebuffer::removeRenderbuffer(){
+    LigidGL::cleanGLErrors();
+    
+    this->renderBuffer.ID = 0;
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+    LigidGL::testGLError("Framebuffer::removeRenderbuffer : Binding FBO" + std::string(" : ") + this->purpose);
+    
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, 0);
+    LigidGL::testGLError("Framebuffer::removeRenderbuffer : attaching renderbuffer to FBO" + std::string(" : ") + this->purpose);
+    
+    this->renderBuffer.attachment = 0;
+    this->renderBuffer.internalformat = 0;
 }
 
 void Framebuffer::deleteBuffers(bool delColorBuffer, bool delRenderBuffer){

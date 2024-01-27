@@ -67,6 +67,20 @@ glm::ivec2 Painter::getResolution(){
     return textureRes;
 }
 
+unsigned int Painter::getBufferResolutions(int bufferIndex){
+    // 2D Painting texture
+    if(bufferIndex == 0)
+        return 1024;
+    
+    // Depth texture res
+    else if(bufferIndex == 1)
+        return 1024;
+
+    // Low resolution projected painting texture
+    else if(bufferIndex == 2)
+        return 256;
+}
+
 //forward declerations for the utility functions
 static void twoDPaintShaderSetBrushProperties(
                                     BrushProperties brushProperties,
@@ -81,7 +95,7 @@ static void sendPainterDataToThe3DModelShaderProgram(
 
 Texture posTxtr;
 
-void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox){
+void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox, bool highResMode){
     glm::vec2 firstCursorPos = *Mouse::cursorPos();
     
     //First frame the painting is started
@@ -91,10 +105,10 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
         frameCounter = 0;
     }
 
-    glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
+    glm::ivec2 paintingRes = glm::ivec2(getBufferResolutions(0));
 
     //Bind the painting texture to the painting framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
+    this->paintingFBO.bind();
 
     if(paintingMode == 2){//If smearing 
         //(Use the 16-bit floating-point RGBA color format)
@@ -109,8 +123,8 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     paintingTxtrObj.duplicateTexture(this->paintingBGTexture);
     
     //Bind the painting texture to the painting framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture, 0);
+    this->paintingFBO.bind();
+    this->paintingFBO.setColorBuffer(paintingTexture, GL_TEXTURE_2D);
     
     //Cover the whole monitor (since we are painting to the screen)
     glViewport(0, 0, paintingRes.x, paintingRes.y);
@@ -180,12 +194,12 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
         glm::ivec2 res = glm::ivec2(resolution);
         res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
 
-        if(!projectedPaintingTextureDup.ID)
-            projectedPaintingTextureDup = Texture(nullptr, resolution, resolution);
+        if(!posTxtr.ID)
+            posTxtr = Texture(nullptr, resolution, resolution);
 
-        Framebuffer fbo = Framebuffer(posTxtr, GL_TEXTURE_2D, Renderbuffer(this->depthRBO, GL_DEPTH_COMPONENT32F, GL_DEPTH_ATTACHMENT), "Rendering POS texture of the selected mesh to detect painting pos");
-
-        fbo.bind();
+        paintingFBO.setRenderbuffer(depthRBO512);
+        paintingFBO.setColorBuffer(posTxtr, GL_TEXTURE_2D);
+        paintingFBO.bind();
 
         //Clear the depth texture
         glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)res.x), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)res.y));
@@ -236,7 +250,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
                                     
                                     glm::vec2 crsPos = glm::vec2((float)Settings::videoScale()->x / ((float)res.x / (float)x), (float)Settings::videoScale()->y / ((float)res.y / (float)y));
                                     
-                                    holdLocations = getCursorSubstitution(this->brushProperties.spacing, crsPos, crsPos + (*Mouse::cursorPos() - lastCursorPos) / 3.f);
+                                    holdLocations = getCursorSubstitution(this->brushProperties.spacing, crsPos, crsPos + (*Mouse::cursorPos() - lastCursorPos) / 2.f);
                                     
                                     //holdLocations.push_back(glm::vec2((float)Settings::videoScale()->x / ((float)res.x / (float)x), (float)Settings::videoScale()->y / ((float)res.y / (float)y)));
 
@@ -258,9 +272,10 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
 
         getBox()->bindBuffers();
         ShaderSystem::twoDPainting().use();
-        glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
+        this->paintingFBO.bind();
+        this->paintingFBO.setColorBuffer(paintingTexture, GL_TEXTURE_2D);
+        this->paintingFBO.removeRenderbuffer();
         glViewport(0, 0, paintingRes.x, paintingRes.y);
-        fbo.deleteBuffers(false, false);
     }
     
     // Set the mouseOffset value
@@ -305,7 +320,8 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
                                                 this->oSide, this->oXSide, this->oYSide, this->oXYSide, this->oZSide, this->oXZSide, this->oYZSide, 
                                                 this->oXYZSide, this->mirrorXOffset, this->mirrorYOffset, this->mirrorZOffset, paintingTxtrObj, this->selectedTexture, 
                                                 this->projectedPaintingTexture, paintingMode, this->brushProperties.opacity, 
-                                                this->threeDimensionalMode, windowOrtho, this->selectedMeshIndex, twoDPaintingBox, this->faceSelection.activated, this->faceSelection.selectedFaces
+                                                this->threeDimensionalMode, windowOrtho, this->selectedMeshIndex, twoDPaintingBox, this->faceSelection.activated, 
+                                                this->faceSelection.selectedFaces, highResMode
                                             );
 
     // If painting mode is set to 3 generate the normal map using paintingTexture8 and write to the paintingTexture16f
@@ -314,12 +330,12 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     }
     
     if(this->wrapMode){
-        glBindFramebuffer(GL_FRAMEBUFFER,this->paintingFBO);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->paintingTexture16f, 0);
+        this->paintingFBO.bind();
+        this->paintingFBO.setColorBuffer(this->paintingTexture16f, GL_TEXTURE_2D);
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->paintingTexture8, 0);
+        this->paintingFBO.setColorBuffer(this->paintingTexture8, GL_TEXTURE_2D);
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT);
     }
@@ -414,41 +430,15 @@ void Painter::projectThePaintingTexture(
                                         Texture selectedPrimitives
                                     )
 {
-    glm::vec2 textureRes = this->getResolution();
+    glm::ivec2 projectedPaintingTextureRes = projectedPaintingTexture.getResolution();
 
-    // Update the resolution & the format of the projected painting texture in the first frame the painting started
-    if(*Mouse::LClick()){
-        unsigned int format = 0;
-        unsigned int internalFormat = 0;
-        if(selectedPaintingModeIndex == 2){
-            format = GL_RGBA;
-            internalFormat = GL_RGBA16F;
-        }
-        else if(selectedPaintingModeIndex == 3){
-            format = GL_RGBA;
-            internalFormat = GL_RGBA8;
-        }
-        else{
-            format = GL_RGBA;
-            internalFormat = GL_RGBA8;
-        }
-
-        projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, format, internalFormat);
-    }
-
-    if(this->wrapMode){
-        if(!projectedPaintingTextureDup.ID)
-            projectedPaintingTextureDup = Texture(nullptr, textureRes.x, textureRes.y);
-
-        projectedPaintingTextureDup.update(nullptr, textureRes.x, textureRes.y);
-
-        projectedPaintingTexture.duplicateTextureSub(projectedPaintingTextureDup);
-    }
 
     // Generate and bind the capturing framebuffer
     // TODO Don't create the render buffer there
-    Framebuffer captureFBO = Framebuffer(projectedPaintingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, textureRes), "Painter::projectThePaintingTexture");
-    captureFBO.bind();
+    paintingFBO.setRenderbuffer(depthRBOcustom);
+    paintingFBO.setColorBuffer(projectedPaintingTexture, GL_TEXTURE_2D);
+    paintingFBO.bind();
+    depthRBOcustom.update(GL_DEPTH_COMPONENT32F, GL_DEPTH_ATTACHMENT, glm::ivec2(projectedPaintingTextureRes));
     
     glClearColor(0, 0, 0, 0);
     
@@ -457,7 +447,7 @@ void Painter::projectThePaintingTexture(
     else
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glViewport(0,0,textureRes.x,textureRes.y);
+    glViewport(0,0,projectedPaintingTextureRes.x,projectedPaintingTextureRes.y);
 
     // Bind the related shader program
     ShaderSystem::projectingPaintedTextureShader().use();
@@ -476,9 +466,6 @@ void Painter::projectThePaintingTexture(
     ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverGrayScale", this->paintingOverGrayScale);
     ShaderSystem::projectingPaintedTextureShader().setVec3("paintingColor", this->getSelectedColor().getRGB_normalized());
     
-    ShaderSystem::projectingPaintedTextureShader().setInt("wrapMode", this->wrapMode);
-    ShaderSystem::projectingPaintedTextureShader().setInt("wrapModeBGTxtr", 11);
-
     // Bind the painting texture
     glActiveTexture(GL_TEXTURE6);
     glBindTexture(GL_TEXTURE_2D, paintingTexture);
@@ -492,14 +479,11 @@ void Painter::projectThePaintingTexture(
 
     // Bind the painting over texture
     glActiveTexture(GL_TEXTURE9);
-    glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
+    glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture.ID);
     
     // Bind the mesh mask texture
     glActiveTexture(GL_TEXTURE10);
     glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
-    
-    glActiveTexture(GL_TEXTURE11);
-    glBindTexture(GL_TEXTURE_2D, projectedPaintingTextureDup.ID);
     
     // Painting a 3D model
     if(threeDimensionalMode){
@@ -513,8 +497,21 @@ void Painter::projectThePaintingTexture(
         
         //Draw the UV of the selected model
         if(selectedMeshIndex < getModel()->meshes.size()){
+            
+            if(wrapMode){
+                glEnable(GL_BLEND);
+                glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+                glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
+            }
+
             ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", getModel()->meshes[selectedMeshIndex].indices.size() / 3);
             getModel()->meshes[selectedMeshIndex].Draw(false);
+            
+            if(wrapMode){
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+                glDisable(GL_BLEND);
+            }
         }
     }
 
@@ -534,8 +531,7 @@ void Painter::projectThePaintingTexture(
         LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Painting : Projecting painted texture (For 2D Scene)");
     }
 
-    // Finish
-    captureFBO.deleteBuffers(false, true);
+    this->paintingFBO.removeRenderbuffer();
 }
 
 static void sendPainterDataToThe3DModelShaderProgram(
@@ -581,7 +577,8 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                                         int selectedMeshIndex, 
                                                         Box twoDPaintingBox,
                                                         bool faceSelectionActive,
-                                                        Texture selectedPrimitives
+                                                        Texture selectedPrimitives,
+                                                        bool highResMode
                                                     )
 {
     glDisable(GL_BLEND);
@@ -590,28 +587,80 @@ void Painter::generateMirroredProjectedPaintingTexture(
         this->updateDepthTexture();
     }
 
-    std::vector<MirrorSide> mirrorSides;
+    std::vector<MirrorSide*> mirrorSides;
     
     if(oSide.active)
-        mirrorSides.push_back(oSide); // 0
+        mirrorSides.push_back(&oSide); // 0
     if(oXSide.active)
-        mirrorSides.push_back(oXSide); // 1
+        mirrorSides.push_back(&oXSide); // 1
     if(oYSide.active)
-        mirrorSides.push_back(oYSide); // 2
+        mirrorSides.push_back(&oYSide); // 2
     if(oXYSide.active)
-        mirrorSides.push_back(oXYSide); // 3
+        mirrorSides.push_back(&oXYSide); // 3
     if(oZSide.active)
-        mirrorSides.push_back(oZSide); // 4
+        mirrorSides.push_back(&oZSide); // 4
     if(oXZSide.active)
-        mirrorSides.push_back(oXZSide); // 5
+        mirrorSides.push_back(&oXZSide); // 5
     if(oYZSide.active)
-        mirrorSides.push_back(oYZSide); // 6
+        mirrorSides.push_back(&oYZSide); // 6
     if(oXYZSide.active)
-        mirrorSides.push_back(oXYZSide); // 7
+        mirrorSides.push_back(&oXYZSide); // 7
+
+    bool use16f = false;
+    if(selectedPaintingModeIndex == 2){
+        use16f = true;
+    }
+
+    // Update the projected painting textures
+    {
+        if(use16f){
+            if(highResMode){
+                this->projectedPaintingTexture = this->projectedPaintingTexture16f;
+                if(this->projectedPaintingTexture16f.getResolution() != this->getResolution())
+                    this->projectedPaintingTexture16f.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR, GL_RGBA, GL_RGBA16F);  
+            }
+            else
+                this->projectedPaintingTexture = this->projectedPaintingTexture16fLow;  
+
+        }
+        else{
+            if(highResMode){
+                this->projectedPaintingTexture = this->projectedPaintingTexture8;  
+                if(this->projectedPaintingTexture8.getResolution() != this->getResolution())
+                    this->projectedPaintingTexture8.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR);  
+            }
+            else
+                this->projectedPaintingTexture = this->projectedPaintingTexture8Low;  
+        }
+
+        for (size_t i = 0; i < mirrorSides.size(); i++)
+        {
+            if(use16f){
+                if(highResMode){
+                    mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture16f;  
+                    if(mirrorSides[i]->projectedPaintingTexture16f.getResolution() != this->getResolution())
+                        mirrorSides[i]->projectedPaintingTexture16f.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR, GL_RGBA, GL_RGBA16F);  
+                }
+                else
+                    mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture16fLow;  
+
+            }
+            else{
+                if(highResMode){
+                    mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture8;  
+                    if(mirrorSides[i]->projectedPaintingTexture8.getResolution() != this->getResolution())
+                        mirrorSides[i]->projectedPaintingTexture8.update(nullptr, this->getResolution().x, this->getResolution().y, GL_LINEAR);  
+                }
+                else
+                    mirrorSides[i]->projectedPaintingTexture = mirrorSides[i]->projectedPaintingTexture8Low;  
+            }
+        }
+    }
+    
 
     for (size_t i = 0; i < mirrorSides.size(); i++)
     {
-        paintingTxtrObj.duplicateTexture(mirrorSides[i].mirroredPaintingTexture);
+        paintingTxtrObj.duplicateTexture(mirrorSides[i]->mirroredPaintingTexture);
 
         bool horizontal = false;
         bool vertical = false;
@@ -622,15 +671,15 @@ void Painter::generateMirroredProjectedPaintingTexture(
         if(cam.x > 0.5){
             float invertVal = 1.f;
             if(
-                mirrorSides[i].effectAxis == oXSide.effectAxis || 
-                mirrorSides[i].effectAxis == oXYSide.effectAxis || 
-                mirrorSides[i].effectAxis == oXZSide.effectAxis || 
-                mirrorSides[i].effectAxis == oXYZSide.effectAxis
+                mirrorSides[i]->effectAxis == oXSide.effectAxis || 
+                mirrorSides[i]->effectAxis == oXYSide.effectAxis || 
+                mirrorSides[i]->effectAxis == oXZSide.effectAxis || 
+                mirrorSides[i]->effectAxis == oXYZSide.effectAxis
             )
                 invertVal = -1.f;
             
-            horizontal = std::max(mirrorSides[i].effectAxis.z * invertVal, 0.f);
-            vertical = std::max(mirrorSides[i].effectAxis.y, 0.f);
+            horizontal = std::max(mirrorSides[i]->effectAxis.z * invertVal, 0.f);
+            vertical = std::max(mirrorSides[i]->effectAxis.y, 0.f);
         }
         
         
@@ -638,29 +687,29 @@ void Painter::generateMirroredProjectedPaintingTexture(
         else{
             float invertVal = 1.f;
             if(
-                mirrorSides[i].effectAxis == oZSide.effectAxis || 
-                mirrorSides[i].effectAxis == oXZSide.effectAxis || 
-                mirrorSides[i].effectAxis == oYZSide.effectAxis || 
-                mirrorSides[i].effectAxis == oXYZSide.effectAxis
+                mirrorSides[i]->effectAxis == oZSide.effectAxis || 
+                mirrorSides[i]->effectAxis == oXZSide.effectAxis || 
+                mirrorSides[i]->effectAxis == oYZSide.effectAxis || 
+                mirrorSides[i]->effectAxis == oXYZSide.effectAxis
             )
                 invertVal = -1.f;
             
-            horizontal = std::max(mirrorSides[i].effectAxis.x * invertVal, 0.f);
-            vertical = std::max(mirrorSides[i].effectAxis.y, 0.f);
+            horizontal = std::max(mirrorSides[i]->effectAxis.x * invertVal, 0.f);
+            vertical = std::max(mirrorSides[i]->effectAxis.y, 0.f);
         }
 
         if(horizontal || vertical)
-            mirrorSides[i].mirroredPaintingTexture.flipTexture(horizontal, vertical);
+            mirrorSides[i]->mirroredPaintingTexture.flipTexture(horizontal, vertical);
 
-        Texture projectedPaintingtxtr = mirrorSides[i].projectedPaintingTexture;
+        Texture projectedPaintingtxtr = mirrorSides[i]->projectedPaintingTexture;
 
         if(mirrorSides.size() == 1){
             projectedPaintingtxtr = this->projectedPaintingTexture;
         }
 
-        projectThePaintingTexture(selectedTexture, projectedPaintingtxtr, mirrorSides[i].mirroredPaintingTexture.ID, mirrorSides[i].depthTexture.ID, 
+        projectThePaintingTexture(selectedTexture, projectedPaintingtxtr, mirrorSides[i]->mirroredPaintingTexture.ID, mirrorSides[i]->depthTexture.ID, 
                                         selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, windowOrtho, 
-                                        selectedMeshIndex, twoDPaintingBox, mirrorSides[i].getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)),
+                                        selectedMeshIndex, twoDPaintingBox, mirrorSides[i]->getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)),
                                         faceSelectionActive, selectedPrimitives
                                 );
     }
@@ -671,26 +720,6 @@ void Painter::generateMirroredProjectedPaintingTexture(
 
         // The resolution of the selected texture (painted texture)
         glm::vec2 textureRes = this->getResolution();
-
-        // Update the resolution & the format of the projected painting texture in the first frame the painting started
-        if(*Mouse::LClick()){
-            unsigned int format = 0;
-            unsigned int internalFormat = 0;
-            if(selectedPaintingModeIndex == 2){
-                format = GL_RGBA;
-                internalFormat = GL_RGBA16F;
-            }
-            else if(selectedPaintingModeIndex == 3){
-                format = GL_RGBA;
-                internalFormat = GL_RGBA8;
-            }
-            else{
-                format = GL_RGBA;
-                internalFormat = GL_RGBA8;
-            }
-
-            projectedPaintingTexture.update(nullptr, textureRes.x, textureRes.y, GL_LINEAR, format, internalFormat);
-        }
 
         if(selectedPaintingModeIndex != 6){
             // Generate and bind the capturing framebuffer
@@ -760,7 +789,7 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                 this->brushProperties.opacity * 127
                             };
 
-            projectedPaintingTexture.update(whitePx, 1, 1, GL_NEAREST);
+            //projectedPaintingTexture.update(whitePx, 1, 1, GL_NEAREST);
         }
     }
 

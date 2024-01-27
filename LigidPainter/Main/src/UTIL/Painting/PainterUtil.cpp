@@ -185,7 +185,7 @@ void Painter::applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel&
         std::vector<glm::vec2> subVector(strokePositions.begin() + startIdx, strokePositions.begin() + endIdx);
 
         // Call the function for the subvector
-        this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingBox);
+        this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingBox, true);
     }
 
     this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
@@ -342,53 +342,6 @@ void VectorStroke::draw(Timer& timer, float edge, bool sceneState, std::vector<V
 
     if(curI == 0)
         __anyVectoralPointMoving = false;
-}
-
-void Painter::refreshBuffers(){
-    
-    glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
-    glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
-
-    //--------- update paintingTexture8 --------- 
-    Texture paintingTexture8OBJ = Texture(this->paintingTexture8);
-    paintingTexture8OBJ.update(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR, GL_RGBA, GL_RGBA8, GL_CLAMP_TO_BORDER);
-
-    //--------- update paintingTexture16f --------- 
-    Texture paintingTexture16fOBJ = Texture(this->paintingTexture16f);
-    paintingTexture16fOBJ.update(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F, GL_CLAMP_TO_BORDER);
-
-    //--------- update depthTextures --------- 
-    this->oSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    
-    this->oXSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    
-    this->oYSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    
-    this->oXYSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    
-    this->oZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    
-    this->oXZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    
-    this->oYZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    
-    this->oXYZSide.depthTexture.update(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-
-    //--------- update paintingOverTexture --------- 
-    Texture paintingOverTextureOBJ = Texture(this->paintingOverTexture);
-    paintingOverTextureOBJ.update(nullptr, paintingRes.x, paintingRes.y);
-
-    //--------- update paintingFBO --------- 
-    glBindFramebuffer(GL_FRAMEBUFFER, this->paintingFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture8, 0);
-    
-    //--------- update depthRBO --------- 
-    glBindRenderbuffer(GL_RENDERBUFFER, depthRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32F, depthRes.x, depthRes.y);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    
-    //--------- Finish --------- 
-    Settings::defaultFramebuffer()->FBO.bind();
 }
 
 int Painter::getSelectedTextureIndexInLibrary(){

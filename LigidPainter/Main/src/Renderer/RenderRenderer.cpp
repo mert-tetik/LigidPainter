@@ -72,8 +72,9 @@ void Renderer::render(){
 
     Texture paintingTxtrObj = painter.paintingTexture;
     glm::ivec2 resTest = paintingTxtrObj.getResolution();
-    if(resTest != glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier))
-        painter.refreshBuffers();
+    if(resTest != glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier)){
+        // Vide scale is changed
+    }
 
     //VSync
     if(Settings::properties()->VSync)
@@ -86,7 +87,7 @@ void Renderer::render(){
     //Default blending settings
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
+    glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
     
     //Refresh the default framebuffer    
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -232,7 +233,8 @@ void Renderer::render(){
                             {},
                             painter.selectedPaintingModeIndex,
                             userInterface.twoDPaintingPanel,
-                            userInterface.twoDPaintingBox
+                            userInterface.twoDPaintingBox,
+                            false || painter.wrapMode
                         );
     }
 
@@ -246,6 +248,17 @@ void Renderer::render(){
             // library.materials[i].updateMaterial(this->settings.textureRes, context, shaders.buttonShader, shaders.tdModelShader);
         }
         */
+
+        //Paint
+        painter.doPaint(    
+                            userInterface.projection,
+                            {},
+                            painter.selectedPaintingModeIndex,
+                            userInterface.twoDPaintingPanel,
+                            userInterface.twoDPaintingBox,
+                            true
+                        );
+
         //Update the selected texture after painting
         painter.updateTexture(userInterface.twoDPaintingPanel, userInterface.projection, painter.selectedPaintingModeIndex, userInterface.filterPaintingModeFilterBtn.filter, userInterface.twoDPaintingBox, userInterface.paintingCustomMat);
         //Refresh the 2D painting texture
@@ -541,7 +554,7 @@ void Renderer::renderMainModel(){
         ShaderSystem::tdModelShader().setInt("paintingOverWrap", painter.paintingOverWraping);
         ShaderSystem::tdModelShader().setInt("paintingOverTexture", 13);
         glActiveTexture(GL_TEXTURE13);
-        glBindTexture(GL_TEXTURE_2D, painter.paintingOverTexture);
+        glBindTexture(GL_TEXTURE_2D, painter.paintingOverTexture.ID);
         
         if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);

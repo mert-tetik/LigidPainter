@@ -39,123 +39,122 @@ Painter::Painter(){
 
 void Painter::initPainter(){
     
-    glm::ivec2 paintingRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier);
-    glm::ivec2 depthRes = glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingDepthTextureResolutionDivier);
+    glm::ivec2 paintingRes = glm::vec2(getBufferResolutions(0));
+    glm::ivec2 depthRes = glm::vec2(getBufferResolutions(1));
+    glm::ivec2 lowResTxtrRes = glm::vec2(getBufferResolutions(2));
 
-    //--------- init paintingTexture8 ---------
+    //--------- init mesh mask ---------
     this->faceSelection.meshMask = Texture(nullptr, 1024, 1024);
 
-    //--------- init paintingTexture8 --------- 
-    glActiveTexture(GL_TEXTURE0);
-    glGenTextures(1,&this->paintingTexture8);
-    glBindTexture(GL_TEXTURE_2D,this->paintingTexture8);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, paintingRes.x, paintingRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
+    //--------- init paintingTexture8 ---------
+    paintingTexture8 = Texture(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR, GL_RGBA, GL_RGBA8); 
     this->paintingTexture = this->paintingTexture8;
 
-
     //--------- init paintingTexture16f --------- 
-    glGenTextures(1,&this->paintingTexture16f);
-    glBindTexture(GL_TEXTURE_2D,this->paintingTexture16f);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, paintingRes.x, paintingRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-
+    paintingTexture16f = Texture(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F); 
 
     //--------- init depthTextures --------- 
     this->oSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    this->oSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
-    this->oSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oSide.mirroredPaintingTexture = Texture(nullptr, paintingRes.x, paintingRes.y);
+    this->oSide.projectedPaintingTexture8Low = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR);
+    this->oSide.projectedPaintingTexture16fLow = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
+    this->oSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oSide.projectedPaintingTexture = projectedPaintingTexture8Low;
+
     this->oSide.effectAxis = glm::vec3(-1.f, -1.f, -1.f);
     
     this->oXSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    this->oXSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
-    this->oXSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXSide.mirroredPaintingTexture = Texture(nullptr, paintingRes.x, paintingRes.y);
+    this->oXSide.projectedPaintingTexture8Low = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR);
+    this->oXSide.projectedPaintingTexture16fLow = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oXSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
+    this->oXSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oXSide.projectedPaintingTexture = projectedPaintingTexture8Low;
+
     this->oXSide.effectAxis = glm::vec3(1.f, -1.f, -1.f);
     
     this->oYSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    this->oYSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
-    this->oYSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oYSide.mirroredPaintingTexture = Texture(nullptr, paintingRes.x, paintingRes.y);
+    this->oYSide.projectedPaintingTexture8Low = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR);
+    this->oYSide.projectedPaintingTexture16fLow = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oYSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
+    this->oYSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oYSide.projectedPaintingTexture = projectedPaintingTexture8Low;
+
     this->oYSide.effectAxis = glm::vec3(-1.f, 1.f, -1.f);
     
     this->oXYSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    this->oXYSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
-    this->oXYSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXYSide.mirroredPaintingTexture = Texture(nullptr, paintingRes.x, paintingRes.y);
+    this->oXYSide.projectedPaintingTexture8Low = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR);
+    this->oXYSide.projectedPaintingTexture16fLow = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oXYSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
+    this->oXYSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oXYSide.projectedPaintingTexture = projectedPaintingTexture8Low;
+
     this->oXYSide.effectAxis = glm::vec3(1.f, 1.f, -1.f);
     
     this->oZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    this->oZSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
-    this->oZSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oZSide.mirroredPaintingTexture = Texture(nullptr, paintingRes.x, paintingRes.y);
+    this->oZSide.projectedPaintingTexture8Low = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR);
+    this->oZSide.projectedPaintingTexture16fLow = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oZSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
+    this->oZSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oZSide.projectedPaintingTexture = projectedPaintingTexture8Low;
+
     this->oZSide.effectAxis = glm::vec3(-1.f, -1.f, 1.f);
     
     this->oXZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    this->oXZSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
-    this->oXZSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXZSide.mirroredPaintingTexture = Texture(nullptr, paintingRes.x, paintingRes.y);
+    this->oXZSide.projectedPaintingTexture8Low = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR);
+    this->oXZSide.projectedPaintingTexture16fLow = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oXZSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
+    this->oXZSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oXZSide.projectedPaintingTexture = projectedPaintingTexture8Low;
+
     this->oXZSide.effectAxis = glm::vec3(1.f, -1.f, 1.f);
     
     this->oYZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    this->oYZSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
-    this->oYZSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oYZSide.mirroredPaintingTexture = Texture(nullptr, paintingRes.x, paintingRes.y);
+    this->oYZSide.projectedPaintingTexture8Low = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR);
+    this->oYZSide.projectedPaintingTexture16fLow = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oYZSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
+    this->oYZSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oYZSide.projectedPaintingTexture = projectedPaintingTexture8Low;
+
     this->oYZSide.effectAxis = glm::vec3(-1.f, 1.f, 1.f);
     
     this->oXYZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    this->oXYZSide.mirroredPaintingTexture = Texture(nullptr, 1, 1);
-    this->oXYZSide.projectedPaintingTexture = Texture(nullptr, 1, 1);
+    this->oXYZSide.mirroredPaintingTexture = Texture(nullptr, paintingRes.x, paintingRes.y);
+    this->oXYZSide.projectedPaintingTexture8Low = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR);
+    this->oXYZSide.projectedPaintingTexture16fLow = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oXYZSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
+    this->oXYZSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->oXYZSide.projectedPaintingTexture = projectedPaintingTexture8Low;
+
     this->oXYZSide.effectAxis = glm::vec3(1.f, 1.f, 1.f);
     
-
-
-
-
     //--------- init paintingOverTexture --------- 
-    glGenTextures(1, &this->paintingOverTexture);
-    glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture);
- 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, paintingRes.x, paintingRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-
+    this->paintingOverTexture = Texture(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR);
 
     //--------- init paintingFBO --------- 
-    glGenFramebuffers(1, &this->paintingFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, this->paintingFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, paintingTexture8, 0);
+    this->paintingFBO = Framebuffer(paintingTexture8, GL_TEXTURE_2D, "Painting feature's FBO");
     
-
-
     //--------- init depthRBO --------- 
-    glGenRenderbuffers(1,&depthRBO);
-    glBindRenderbuffer(GL_RENDERBUFFER,depthRBO);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32F, depthRes.x, depthRes.y);
-    glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    
+    depthRBO1024 = Renderbuffer(GL_DEPTH_COMPONENT32F, GL_DEPTH_ATTACHMENT, glm::ivec2(1024));
+    depthRBO512 = Renderbuffer(GL_DEPTH_COMPONENT32F, GL_DEPTH_ATTACHMENT, glm::ivec2(512));
+    depthRBOcustom = Renderbuffer(GL_DEPTH_COMPONENT32F, GL_DEPTH_ATTACHMENT, glm::ivec2(1024));
     
     //--------- init paintingBGTexture --------- 
-    this->paintingBGTexture = Texture(nullptr, 1, 1);
+    this->paintingBGTexture = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y);
 
     //--------- init projectedPaintingTexture --------- 
-    this->projectedPaintingTexture = Texture(nullptr, 1, 1 , GL_LINEAR);
+    this->projectedPaintingTexture8Low = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR);
+    this->projectedPaintingTexture16fLow = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
+    this->projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
+    this->projectedPaintingTexture = projectedPaintingTexture8Low;
+
     
     //--------- Finish --------- 
     Settings::defaultFramebuffer()->FBO.bind();

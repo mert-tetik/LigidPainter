@@ -477,6 +477,8 @@ public:
     void generate();
     void bind();
     void setColorBuffer(Texture colorBuffer, unsigned int textureTarget);
+    void setRenderbuffer(Renderbuffer rbo);
+    void removeRenderbuffer();
     void deleteBuffers(bool delColorBuffer, bool delRenderBuffer);
 };
 
@@ -674,6 +676,10 @@ struct MirrorSide{
     Texture mirroredPaintingTexture;
 
     Texture projectedPaintingTexture;
+    Texture projectedPaintingTexture8Low;
+    Texture projectedPaintingTexture16fLow;
+    Texture projectedPaintingTexture8;
+    Texture projectedPaintingTexture16f;
 
     glm::vec3 effectAxis = glm::vec3(0.);
 
@@ -778,11 +784,15 @@ public:
     Brush displayingBrush;
 
     /// @brief Is paintingTexture16f if smearBrush used, paintingTexture8 if not
-    unsigned int paintingTexture;  
+    Texture paintingTexture;  
 
     Texture projectedPaintingTexture;
+    Texture projectedPaintingTexture8Low;
+    Texture projectedPaintingTexture16fLow;
+    Texture projectedPaintingTexture8;
+    Texture projectedPaintingTexture16f;
 
-    unsigned int paintingOverTexture;
+    Texture paintingOverTexture;
     bool usePaintingOver = false;
     bool paintingoverTextureEditorMode = false;
     bool paintingOverGrayScale = false;
@@ -851,7 +861,7 @@ public:
     *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
     * @param windowOrtho orthographic projection matrix created with window size value.
     */
-    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox);
+    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox, bool highResMode);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -887,23 +897,22 @@ public:
 
     void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat);
 
-    /// @brief Clears & refreshes all the buffers
-    void refreshBuffers();
-
     /// @brief renderbuffer object used to depth test (used to create the depth texture)
-    unsigned int depthRBO = 0; 
+    Renderbuffer depthRBO1024; 
+    Renderbuffer depthRBO512; 
+    Renderbuffer depthRBOcustom; 
 
     /*!
     * @brief framebuffer object used to capture paintingTexture
     *   Always uses the paintingTexture as it's texture buffer
     */
-    unsigned int paintingFBO = 0; 
+    Framebuffer paintingFBO; 
 
     /// @brief RGBA8
-    unsigned int paintingTexture8 = 0; 
+    Texture paintingTexture8; 
     
     /// @brief RGBA16F (Used for smear brush)
-    unsigned int paintingTexture16f = 0;
+    Texture paintingTexture16f;
 
     Texture paintingBGTexture; 
     
@@ -916,6 +925,8 @@ public:
 
     glm::ivec2 getResolution();
 
+    unsigned int getBufferResolutions(int bufferIndex);
+
 
 private:
     void projectThePaintingTexture(Texture& selectedTexture,  Texture& projectedPaintingTexture,  unsigned int paintingTexture,  unsigned int depthTexture, 
@@ -927,7 +938,7 @@ private:
                                                         MirrorSide& oXZSide, MirrorSide& oYZSide, MirrorSide& oXYZSide, float mirrorXOffset, float mirrorYOffset, 
                                                         float mirrorZOffset,Texture paintingTxtrObj, Texture& selectedTexture,  Texture& projectedPaintingTexture,  
                                                         int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode,  glm::mat4 windowOrtho,  
-                                                        int selectedMeshIndex, Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives
+                                                        int selectedMeshIndex, Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives, bool highResMode
                                                     );
 };
 
