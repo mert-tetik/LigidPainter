@@ -667,6 +667,12 @@ struct VectorStroke{
     void draw(Timer& timer, float edge, bool sceneState, std::vector<VectorStroke>& strokes, int curI);
 };
 
+struct ThreeDPoint{
+    glm::vec3 pos = glm::vec3(0.f);
+
+    void render(Timer& timer, bool doMouseTracking);
+};
+
 struct MirrorSide{
     bool active = false;
 

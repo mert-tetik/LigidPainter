@@ -128,6 +128,7 @@ Texture posTxtr;
 static glm::vec4 lastPos;
 
 void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox, bool highResMode){
+    
     glm::vec2 firstCursorPos = *Mouse::cursorPos();
     
     //First frame the painting is started

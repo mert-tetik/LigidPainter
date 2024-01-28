@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 # Define the project data
-project(LigidPainter VERSION 2.4.1)
+project(LigidPainter VERSION 2.5.0)
 
 # Glob all source files in the LigidPainter directory
 file(GLOB_RECURSE LIGID_SOURCES
@@ -75,8 +75,8 @@ install(
 
 # Set the project version
 set(PROJECT_VERSION_MAJOR 2)
-set(PROJECT_VERSION_MINOR 4)
-set(PROJECT_VERSION_PATCH 1)
+set(PROJECT_VERSION_MINOR 5)
+set(PROJECT_VERSION_PATCH 0)
 
 # Set CPack package details
 set(CPACK_PACKAGE_NAME LigidPainter)  # App name
@@ -94,8 +94,8 @@ set(CPACK_CREATE_DESKTOP_LINKS Ligid)
 
 # Set CPack package version
 set(CPACK_PACKAGE_VERSION_MAJOR 2)
-set(CPACK_PACKAGE_VERSION_MINOR 4)
-set(CPACK_PACKAGE_VERSION_PATCH 1)
+set(CPACK_PACKAGE_VERSION_MINOR 5)
+set(CPACK_PACKAGE_VERSION_PATCH 0)
 set(CPACK_GENERATOR WIX)
 
 include(CPack)

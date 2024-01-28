@@ -1136,20 +1136,23 @@ void Texture::copyDataToTheCopyContext(){
     char* pxs = new char[res.x * res.y * 4]; 
     this->getData(pxs);
 
-    mainThreadUsingCopyContext = true;
-    getCopyContext()->window.makeContextCurrent();
+    if(getCopyContext()->window.makeContextCurrent()){
+        mainThreadUsingCopyContext = true;
 
-    glActiveTexture(GL_TEXTURE0);
-    if(this->copyContextID == 0)
-        glGenTextures(1,&this->copyContextID);
+        glActiveTexture(GL_TEXTURE0);
+        if(this->copyContextID == 0)
+            glGenTextures(1,&this->copyContextID);
 
-    //!LEAK
-    Texture copyContextIDOBJ = Texture(copyContextID);
-    copyContextIDOBJ.update(pxs, res.x, res.y);
+        //!LEAK
+        Texture copyContextIDOBJ = Texture(copyContextID);
+        copyContextIDOBJ.update(pxs, res.x, res.y);
+        
+        mainThreadUsingCopyContext = false;
+        delete[] pxs;
+    }
     
     getContext()->window.makeContextCurrent();
-    mainThreadUsingCopyContext = false;
-    delete[] pxs;
+    
 }
 
 void Texture::mix(Texture txtr2, Texture mask, bool maskAlpha, bool normalMapMode, bool invert){

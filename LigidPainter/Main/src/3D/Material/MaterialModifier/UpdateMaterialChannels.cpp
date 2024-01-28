@@ -274,7 +274,6 @@ static void genAmbientOcclusion(
         ShaderSystem::AOGen().setInt("srcTxtr", 1);
         ShaderSystem::AOGen().setFloat("aoOffset", aoOffset);
         
-
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, aoDepthTxtr.ID);
         

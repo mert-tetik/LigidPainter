@@ -79,9 +79,6 @@ void Font::loadFont(const char* path){
 		//FreeType indicate the resolution of a single char texture
 		FT_Set_Pixel_Sizes(face, 0, 48); 
 		
-		//Disable byte-alignment restriction (see the comment header of this file for more)
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
 		//load first 128 characters of ASCII set
 		for (unsigned char c = 0; c < 128; c++)
 		{

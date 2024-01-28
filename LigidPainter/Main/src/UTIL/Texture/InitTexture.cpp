@@ -131,7 +131,7 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
     
     // Check if the texture size matches the provided data size
     if(glIsTexture(ID) == GL_TRUE){
-        GLint currentWidth, currentHeight;
+        GLint currentWidth, currentHeight, currentInternalFormat, currentFilterParam, currentWrap;
         
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &currentWidth);
         LigidGL::testGLError("Texture::update : Get texture's width data");
@@ -139,10 +139,26 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &currentHeight);
         LigidGL::testGLError("Texture::update : Get texture's height data");
 
-        if (currentWidth == w && currentHeight == h) {
-            // Use glTexSubImage2D if the sizes match
-            glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, format, GL_BYTE, pixels);
-            LigidGL::testGLError("Texture::update : glTexSubImage2D");
+        glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &currentInternalFormat);
+        LigidGL::testGLError("Texture::update : Get texture's internal format data");
+
+        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, &currentFilterParam);
+        LigidGL::testGLError("Texture::update: Get texture's min filter");
+
+        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &currentWrap);
+        LigidGL::testGLError("Texture::update: Get texture's wrap s");
+
+        // Check if size, internal format, min filter, and wrap are the same
+        if (currentWidth == w && currentHeight == h && currentInternalFormat == static_cast<int>(internalFormat) && currentFilterParam == static_cast<int>(filterParam) && currentWrap == static_cast<int>(wrap)) {
+            
+            if(pixels == nullptr){
+                // Pixels was nullptr
+            }
+            else{
+                // Use glTexSubImage2D if the parameters match
+                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, format, GL_BYTE, pixels);
+                LigidGL::testGLError("Texture::update : glTexSubImage2D");
+            }
         } 
         else {
             // Otherwise, use glTexImage2D
@@ -159,6 +175,9 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
 
             glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);
             LigidGL::testGLError("Texture::update : Allocate new memory for the texture : Texture is already initialized");
+            
+            glGenerateMipmap(GL_TEXTURE_2D);
+            LigidGL::testGLError("Texture::update : Generate mipmap");
         }
     }
     else {
@@ -176,8 +195,9 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
 
         glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);
         LigidGL::testGLError("Texture::update : Allocate new memory for the texture : Texture was not initialized");
+    
+        glGenerateMipmap(GL_TEXTURE_2D);
+        LigidGL::testGLError("Texture::update : Generate mipmap");
     }
 
-    glGenerateMipmap(GL_TEXTURE_2D);
-    LigidGL::testGLError("Texture::update : Generate mipmap");
 }

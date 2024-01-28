@@ -326,6 +326,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
     }
 
     updateThePreRenderedPanels = true;
+
 }
 
 //Clear the painting texture
