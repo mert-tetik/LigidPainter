@@ -78,6 +78,7 @@ Shader __AOGen;
 Shader __twoPassBlur;
 Shader __gizmo;
 Shader __color3d;
+Shader __threeDTextureRenderingShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -121,6 +122,7 @@ void ShaderSystem::initShaderSystem(){
     __splitTexturesShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/SplitTextures.frag");
     __solidShadingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/SolidShading.frag");
     __textureRenderingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/TextureRendering.frag");
+    __threeDTextureRenderingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/TextureRendering.frag");
     __edgeWearShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/EdgeWear.frag");
     __defaultFramebufferShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/DefaultFramebuffer.frag");
     __nodeConnectionCurve.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/NodeConnectionCurve.frag");
@@ -241,6 +243,9 @@ Shader ShaderSystem::solidShadingShader(){
 }
 Shader ShaderSystem::textureRenderingShader(){
     return __textureRenderingShader;
+}
+Shader ShaderSystem::threeDTextureRenderingShader(){
+    return __threeDTextureRenderingShader;
 }
 Shader ShaderSystem::normalVectorShader(){
     return __normalVectorShader;

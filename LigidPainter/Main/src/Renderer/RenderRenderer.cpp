@@ -110,11 +110,13 @@ void Renderer::render(){
     if(painter.updateTheDepthTexture && !*Mouse::RPressed()){
         //Update the depth texture
         painter.updateDepthTexture();
-        painter.updatePosNormalTexture();
         painter.updateTheDepthTexture = false;
         
         // Update the model's object id texture
         getModel()->updateObjectIDsTexture();
+    }
+    if(*Mouse::RPressed() || *Mouse::MPressed()){
+        painter.updatePosNormalTexture();
     }
 
     // Set backface culling property
@@ -567,6 +569,43 @@ void Renderer::renderMainModel(){
     ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
 }
 
+
+void render3DPoints(){
+    /*if(!threeDPointsStencilTexture.ID){
+        threeDPointsStencilTexture = Texture(nullptr, 256, 256);
+        threeDPointsStencilFBO = Framebuffer(threeDPointsStencilTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(256)), "threeDPointsStencilFBO");
+    }
+
+    threeDPointsStencilFBO.bind();
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);    
+
+    glViewport(0, 0, 256, 256);
+
+    ShaderSystem::color3d().use();
+    ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
+    ShaderSystem::color3d().setVec4("color", glm::vec4(0.f));
+
+    if(painter.selectedMeshIndex < getModel()->meshes.size())
+        getModel()->meshes[painter.selectedMeshIndex].Draw(false);
+
+    for (size_t i = 0; i < threeDPointsPipeline.size(); i++)
+    {
+        threeDPointsPipeline[i]->render(timer, false, this->painter, Framebuffer(), true);
+    }
+    
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
+    
+    for (size_t i = 0; i < threeDPointsPipeline.size(); i++)
+    {
+        threeDPointsPipeline[i]->render(timer, false, this->painter, threeDPointsStencilFBO, false);
+    }
+    */
+}
+
 void Renderer::render3DBrushCursor(){
     glClear(GL_DEPTH_BUFFER_BIT);
     ShaderSystem::color3d().use();
@@ -583,7 +622,8 @@ void Renderer::render3DBrushCursor(){
                                                     getContext()->windowScale.y - Mouse::cursorPos()->y
                                                 ),
                                         posData,
-                                        normalData
+                                        normalData,
+                                        true
                                     );
 
     Settings::defaultFramebuffer()->FBO.bind();

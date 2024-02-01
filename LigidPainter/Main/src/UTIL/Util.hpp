@@ -667,12 +667,6 @@ struct VectorStroke{
     void draw(Timer& timer, float edge, bool sceneState, std::vector<VectorStroke>& strokes, int curI);
 };
 
-struct ThreeDPoint{
-    glm::vec3 pos = glm::vec3(0.f);
-
-    void render(Timer& timer, bool doMouseTracking);
-};
-
 struct MirrorSide{
     bool active = false;
 
@@ -762,7 +756,7 @@ public:
     Texture meshPosTxtr;
     Texture meshNormalTxtr;
 
-    void getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData);
+    void getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData, bool readNormal);
 
     float mirrorXOffset = 0.f;
     float mirrorYOffset = 0.f;

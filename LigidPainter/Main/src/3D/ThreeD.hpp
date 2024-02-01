@@ -287,4 +287,24 @@ public:
     void draw();
 };
 
+class ThreeDBox
+{
+public:
+    unsigned int VBO = 0;
+    unsigned int VAO = 0;
+    unsigned int EBO = 0;
+
+    std::vector<Vertex> boxVertices;
+    std::vector<unsigned int> boxIndices;
+
+    ThreeDBox();
+
+    void init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight);
+    void update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight);
+    void projectToModel(std::vector<Vertex>& vertices, glm::vec3 center);
+
+
+    void draw();
+};
+
 #endif

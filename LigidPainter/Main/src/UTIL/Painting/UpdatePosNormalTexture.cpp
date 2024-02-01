@@ -92,7 +92,7 @@ void Painter::updatePosNormalTexture(){
     glEnable(GL_BLEND);
 }
 
-void Painter::getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData){
+void Painter::getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData, bool readNormal){
         
     const unsigned int resolution = this->getBufferResolutions(1); 
     glm::ivec2 res = glm::ivec2(resolution);
@@ -101,8 +101,8 @@ void Painter::getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, floa
     pointPos.x /= (Settings::videoScale()->x / res.x); 
     pointPos.y /= (Settings::videoScale()->y / res.y); 
     
-    Framebuffer FBO = Framebuffer(this->meshPosTxtr, GL_TEXTURE_2D, "Mesh pos normal txtr check for cursor");
-    FBO.bind();
+    paintingFBO.setColorBuffer(meshPosTxtr, GL_TEXTURE_2D);
+    paintingFBO.bind();
     
     glReadPixels(
                     pointPos.x, 
@@ -114,20 +114,20 @@ void Painter::getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, floa
                     posData
                 );
 
-    FBO.setColorBuffer(this->meshNormalTxtr, GL_TEXTURE_2D);
+    paintingFBO.setColorBuffer(meshNormalTxtr, GL_TEXTURE_2D);
 
-    glReadPixels(
-                    pointPos.x, 
-                    pointPos.y, 
-                    1, 
-                    1,
-                    GL_RGBA,
-                    GL_FLOAT,
-                    normalData
-                );
+    if(readNormal){
+        glReadPixels(
+                        pointPos.x, 
+                        pointPos.y, 
+                        1, 
+                        1,
+                        GL_RGBA,
+                        GL_FLOAT,
+                        normalData
+                    );
+    }
     
-    FBO.deleteBuffers(false, false);
-
     normalData[0] = normalData[0] * 2.f - 1.f;
     normalData[1] = normalData[1] * 2.f - 1.f;
     normalData[2] = normalData[2] * 2.f - 1.f;

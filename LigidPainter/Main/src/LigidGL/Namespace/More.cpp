@@ -125,7 +125,7 @@ bool LigidGL::makeDrawCall(GLenum mode, GLint first, GLsizei count, std::string 
 
     GLenum error = glGetError();
     if (error != GL_NO_ERROR) {
-        LGDLOG::start << "ERROR : Draw call failed : OpenGL Error " << error << LGDLOG::end;
+        LGDLOG::start << "ERROR : Draw call failed : " << debugTitle <<  " : OpenGL Error " << error << LGDLOG::end;
         return false;
     }
     

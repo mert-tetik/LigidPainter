@@ -91,6 +91,8 @@ bool wasTextureSelectionDialogActive(){
 
 static void renderBrushCursor(float radius, glm::mat4 guiProjection);
 
+std::vector<ThreeDPoint> threedPoints;
+
 void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox){
     
     Debugger::block("GUI : Start"); // Start
@@ -396,6 +398,8 @@ void UI::renderPaintingChannelsTextureSelectionPanel(Timer& timer, Painter& pain
     }
 }
 
+extern Texture projectToModelTxtr;
+
 void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPerc){
     if(painter.selectedDisplayingModeIndex == 2){
         glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
@@ -487,7 +491,7 @@ void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPe
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, painter.paintingTexture8.ID);
+        glBindTexture(GL_TEXTURE_2D, projectToModelTxtr.ID);
 
         // Render the texture as it's pixels can be seen
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -860,7 +864,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
                 }
             }
 
-            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyHover && !painter.faceSelection.editMode, false, this->paintingOverTextureFields, i, !painter.paintingOverWraping);
+            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyHover && !painter.faceSelection.editMode, false, this->paintingOverTextureFields, i, !painter.paintingOverWraping, painter);
         
             if(!painter.paintingoverTextureEditorMode)
                 this->paintingOverTextureFields[i].active = false;
@@ -900,7 +904,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         // Rendering all the painting over texture fields
         for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
         {
-            this->paintingOverTextureFields[i].render(timer, false, true, this->paintingOverTextureFields, i, true);
+            this->paintingOverTextureFields[i].render(timer, false, true, this->paintingOverTextureFields, i, true, painter);
         }    
 
         // Finish

@@ -43,12 +43,36 @@ struct NodePanel{
 
 };
 
+struct ThreeDPoint{
+    glm::vec3 pos = glm::vec3(0.f);
+
+    bool active = false;
+    bool moving = false;
+
+    Button btn;
+    
+    ThreeDPoint(){}
+    ThreeDPoint(Button btn, glm::vec3 pos){
+        this->btn = btn;
+        this->pos = pos;
+    }
+
+    void render(Timer& timer, bool doMouseTracking, Painter& painter, bool stencilTest);
+};
+
 /// Used to render and handle the movable, resizable or rotatable dynamic textures (Used for painting over and layer system) 
 class TextureField{
 public:
     Texture texture;
     Button textureDisplayingButton;
     Button textureDisplayingButtonIOutline;
+
+    bool wrapMode = false;
+    ThreeDPoint threeDPointTopLeft;
+    ThreeDPoint threeDPointTopRight;
+    ThreeDPoint threeDPointBottomLeft;
+    ThreeDPoint threeDPointBottomRight;
+    ThreeDBox threeDWrapBox;
 
     glm::vec2 scale;
     glm::vec3 pos;
@@ -71,6 +95,7 @@ public:
     Button flipVerticalButton;
     Button cancelRotationButton;
     Button rotationAngleDisplayButton;
+    Button wrapModeButton;
 
     bool active = false;
 
@@ -80,7 +105,7 @@ public:
     TextureField(){}
     TextureField(Texture texture);
 
-    void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture);
+    void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture, Painter& painter);
     
     bool isHover();
 

@@ -202,7 +202,8 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
                                             getContext()->windowScale.y - Mouse::cursorPos()->y
                                         ),
                                 posData,
-                                normalData
+                                normalData,
+                                true
                             );
 
         getScene()->camera.cameraPos = glm::vec3(
