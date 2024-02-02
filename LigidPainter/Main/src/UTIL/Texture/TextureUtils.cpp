@@ -1117,6 +1117,7 @@ void Texture::flipTexture(bool horizontal, bool vertical){
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
     ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+    ShaderSystem::textureRenderingShader().setInt("depthToleranceMode", 0);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, copiedTxtr.ID);

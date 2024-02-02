@@ -22,9 +22,16 @@ in vec2 TexCoords;
 uniform sampler2D txtr;
 uniform float opacity;
 
+uniform int depthToleranceMode = 0;
+
 out vec4 fragColor;
 
 void main(){
     fragColor = texture(txtr, TexCoords);
     fragColor.a *= opacity;
+
+    gl_FragDepth = gl_FragCoord.z;
+    
+    if(depthToleranceMode == 1)
+        gl_FragDepth = gl_FragCoord.z - 0.001;
 }

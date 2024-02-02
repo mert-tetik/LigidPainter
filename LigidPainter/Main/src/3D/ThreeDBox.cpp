@@ -33,16 +33,6 @@ Box.hpp : Is used to render a single 2D square.
     
 ThreeDBox::ThreeDBox(){}
 
-static bool contains(std::vector<glm::vec3> vec, glm::vec3 val){
-    for (size_t i = 0; i < vec.size(); i++)
-    {
-        if(vec[i] == val)
-            return true;
-    }
-    
-    return false;
-}
-
 
 static void subdivideFace(Vertex vert_TL, Vertex vert_TR, Vertex vert_BL, Vertex vert_BR, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices){
     
@@ -93,11 +83,7 @@ glm::vec3 calculateNormal(const glm::vec3& v0, const glm::vec3& v1, const glm::v
     // Cross product to get the normal vector
     glm::vec3 normal = glm::cross(vector1, vector2);
 
-    // Check if v3 is on the opposite side of the plane defined by v0, v1, and v2
-    if (glm::dot(normal, v3 - v0) < 0.0f) {
-        // If so, reverse the normal vector
-        normal = -normal;
-    }
+    glm::vec3 center = (v0 + v1 + v2 + v3) / 4.f;
 
     // Normalize the normal vector
     normal = glm::normalize(normal);
@@ -106,12 +92,12 @@ glm::vec3 calculateNormal(const glm::vec3& v0, const glm::vec3& v1, const glm::v
 }
 
 
-void subdivideMesh(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, std::vector<Vertex>& meshData, std::vector<unsigned int>& meshIndices, int subdivisions) {
+void subdivideMesh(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, std::vector<Vertex>& meshData, std::vector<unsigned int>& meshIndices, glm::vec3 normal, int subdivisions) {
     
-    Vertex topLeftVert = Vertex(pos_topLeft, glm::vec2(1.f, 0.f), calculateNormal(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight), glm::vec3(0.f), glm::vec3(0.f));
-    Vertex topRightVert = Vertex(pos_topRight, glm::vec2(1.f, 1.f), calculateNormal(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight), glm::vec3(0.f), glm::vec3(0.f));
-    Vertex bottomLeftVert = Vertex(pos_bottomLeft, glm::vec2(0.f, 0.f), calculateNormal(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight), glm::vec3(0.f), glm::vec3(0.f));
-    Vertex bottomRightVert = Vertex(pos_bottomRight, glm::vec2(0.f, 1.f), calculateNormal(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight), glm::vec3(0.f), glm::vec3(0.f));
+    Vertex topLeftVert = Vertex(pos_topLeft, glm::vec2(1.f, 0.f), normal, glm::vec3(0.f), glm::vec3(0.f));
+    Vertex topRightVert = Vertex(pos_topRight, glm::vec2(1.f, 1.f), normal, glm::vec3(0.f), glm::vec3(0.f));
+    Vertex bottomLeftVert = Vertex(pos_bottomLeft, glm::vec2(0.f, 0.f), normal, glm::vec3(0.f), glm::vec3(0.f));
+    Vertex bottomRightVert = Vertex(pos_bottomRight, glm::vec2(0.f, 1.f), normal, glm::vec3(0.f), glm::vec3(0.f));
 
     meshData.clear();
 
@@ -172,10 +158,10 @@ void ThreeDBox::projectToModel(std::vector<Vertex>& vertices, glm::vec3 center){
     if(!vertices.size())
         return;
 
-    glm::vec3 camPos = glm::vec3(center + vertices[0].Normal * 10.f);
+    glm::vec3 camPos = glm::vec3(center + vertices[0].Normal * 5.f);
     glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
 
-    const unsigned int resolution = 512;
+    const unsigned int resolution = 2048;
 
     if(!projectToModelFBO.ID){
         projectToModelTxtr = Texture(nullptr, resolution, resolution);
@@ -239,13 +225,16 @@ void ThreeDBox::projectToModel(std::vector<Vertex>& vertices, glm::vec3 center){
     }
 
     Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
+
+    delete[] pxs;
 }
 
-void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight){
+void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal){
     
     LigidGL::cleanGLErrors();
 
-    subdivideMesh(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, this->boxVertices, this->boxIndices, 4);
+    subdivideMesh(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, this->boxVertices, this->boxIndices, normal, 4);
     projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
 
     //Generate vertex objects
@@ -311,10 +300,10 @@ void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 po
     LigidGL::testGLError("ThreeDBox::init : Binding default VAO");
 }
 
-void ThreeDBox::update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight){
+void ThreeDBox::update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal){
     LigidGL::cleanGLErrors();
 
-    subdivideMesh(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, this->boxVertices, this->boxIndices, 4);
+    subdivideMesh(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, this->boxVertices, this->boxIndices, normal, 4);
     projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
 
     glBindVertexArray(VAO);

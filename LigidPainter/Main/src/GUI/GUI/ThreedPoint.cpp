@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -41,7 +42,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
     if(stencilTest)
         transMat = glm::scale(transMat, glm::vec3(0.05f));
     else
-        transMat = glm::scale(transMat, glm::vec3(0.02f));
+        transMat = glm::scale(transMat, glm::vec3(0.015f));
 
     ShaderSystem::color3d().use();
     ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
@@ -51,7 +52,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
     if(!this->active || stencilTest)
         ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
     else
-        ShaderSystem::color3d().setVec4("color", glm::vec4(1.f,0.f,0.f,1.f));
+        ShaderSystem::color3d().setVec4("color", ColorPalette::themeColor);
 
     getSphereModel()->Draw();    
 
@@ -128,13 +129,17 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         float* posData = new float[4];
         float* normalData = new float[4];
 
-        painter.getPosNormalValOverPoint(glm::vec2(screenPos.x + Mouse::mouseOffset()->x, getContext()->windowScale.y - screenPos.y - Mouse::mouseOffset()->y), posData, normalData, false);
+        painter.getPosNormalValOverPoint(glm::vec2(screenPos.x + Mouse::mouseOffset()->x, getContext()->windowScale.y - screenPos.y - Mouse::mouseOffset()->y), posData, normalData, true);
         Settings::defaultFramebuffer()->FBO.bind();
 
         if(posData[3] != 0.f){
             this->pos.x = posData[0];
             this->pos.y = posData[1];
             this->pos.z = posData[2]; 
+            
+            this->normal.x = normalData[0];
+            this->normal.y = normalData[1];
+            this->normal.z = normalData[2]; 
         }
 
         delete[] posData;

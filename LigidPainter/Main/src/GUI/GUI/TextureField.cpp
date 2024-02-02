@@ -246,13 +246,14 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             float* normalData = new float[4]; 
 
             glm::vec2 currentCursorPos = glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y);
-            painter.getPosNormalValOverPoint(currentCursorPos, posData, normalData, false);
+            painter.getPosNormalValOverPoint(currentCursorPos, posData, normalData, true);
             threeDPointTopLeftCursorPos = currentCursorPos; 
 
             Settings::defaultFramebuffer()->FBO.bind();
 
             if(posData[3] != 0.f && !anyThreedPointsHover && doMouseTracking){
                 this->threeDPointTopLeft.pos = glm::vec3(posData[0], posData[1], posData[2]);
+                this->threeDPointTopLeft.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
             }
 
             delete[] posData;
@@ -264,22 +265,28 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             float* normalData = new float[4]; 
 
             glm::vec2 currentCursorPos = glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y);
-            painter.getPosNormalValOverPoint(currentCursorPos, posData, normalData, false);
+            painter.getPosNormalValOverPoint(currentCursorPos, posData, normalData, true);
             
             Settings::defaultFramebuffer()->FBO.bind();
 
             if(posData[3] != 0.f && doMouseTracking){
                 this->threeDPointBottomRight.pos = glm::vec3(posData[0], posData[1], posData[2]);
+                this->threeDPointBottomRight.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
             
                 glm::vec2 topRightCursorPos = glm::vec2(currentCursorPos.x, threeDPointTopLeftCursorPos.y);
-                painter.getPosNormalValOverPoint(topRightCursorPos, posData, normalData, false);
+                painter.getPosNormalValOverPoint(topRightCursorPos, posData, normalData, true);
                 this->threeDPointTopRight.pos = glm::vec3(posData[0], posData[1], posData[2]);
+                this->threeDPointTopRight.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
                 
                 glm::vec2 bottomLeftCursorPos = glm::vec2(threeDPointTopLeftCursorPos.x, currentCursorPos.y);
-                painter.getPosNormalValOverPoint(bottomLeftCursorPos, posData, normalData, false);
+                painter.getPosNormalValOverPoint(bottomLeftCursorPos, posData, normalData, true);
                 this->threeDPointBottomLeft.pos = glm::vec3(posData[0], posData[1], posData[2]);
+                this->threeDPointBottomLeft.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
                 
-                threeDWrapBox.init(threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos);
+                threeDWrapBox.init(
+                                        threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
+                                        (threeDPointTopLeft.normal + threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
+                                    );
             }
 
             delete[] posData;
@@ -295,7 +302,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             //if(painter.selectedMeshIndex < getModel()->meshes.size())
             //    getModel()->meshes[painter.selectedMeshIndex].Draw(false);
 
-            //getModel()->Draw();
+            getModel()->Draw();
 
             threeDPointTopLeft.render(timer, doMouseTracking, painter, false);
             threeDPointTopRight.render(timer, doMouseTracking, painter, false);
@@ -307,6 +314,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 ShaderSystem::threeDTextureRenderingShader().setMat4("view", getScene()->viewMatrix);
                 ShaderSystem::threeDTextureRenderingShader().setMat4("projection", getScene()->projectionMatrix);
                 ShaderSystem::threeDTextureRenderingShader().setMat4("modelMatrix", glm::mat4(1.f));
+                ShaderSystem::threeDTextureRenderingShader().setInt("depthToleranceMode", 1);
                 
                 ShaderSystem::threeDTextureRenderingShader().setInt("txtr", 0);
                 ShaderSystem::threeDTextureRenderingShader().setFloat("opacity", 0.5f);
@@ -315,10 +323,16 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 glBindTexture(GL_TEXTURE_2D, this->texture.ID);
 
                 threeDWrapBox.draw();
+
+                ShaderSystem::threeDTextureRenderingShader().use();
+                ShaderSystem::threeDTextureRenderingShader().setInt("depthToleranceMode", 0);
             }
 
             if(threeDPointTopLeft.moving || threeDPointTopRight.moving || threeDPointBottomLeft.moving || threeDPointBottomRight.moving){
-                this->threeDWrapBox.update(threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos);
+                threeDWrapBox.update(
+                                        threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
+                                        (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
+                                    );             
             }
         }
         

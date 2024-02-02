@@ -380,6 +380,7 @@ Texture TexturePack::generateSpriteTexture(){
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
         ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+        ShaderSystem::textureRenderingShader().setInt("depthToleranceMode", 0);
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TexturePack::generateSpriteTexture : Drawing a region");
     }
