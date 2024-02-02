@@ -106,7 +106,7 @@ public:
     TextureField(){}
     TextureField(Texture texture);
 
-    void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture, Painter& painter);
+    void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture, Painter& painter, bool anyPanelHover, bool anyDialogActive);
     
     bool isHover();
 
@@ -140,6 +140,8 @@ private:
     void renderPaintingChannelsTextureSelectionPanel(Timer& timer, Painter& painter);
     void renderSceneInfoWrapModeCheckbox(Timer& timer, Painter& painter);
     void renderPaintingPanel(Timer& timer, Painter &painter, float screenGapPerc);
+    void renderPaintingOverTextureFields(Timer& timer, Painter& painter);
+
 
 public:
     /* -- PANELS -- */

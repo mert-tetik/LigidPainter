@@ -237,7 +237,7 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
 
 glm::vec2 threeDPointTopLeftCursorPos;
 
-void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture, Painter& painter){
+void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture, Painter& painter, bool anyPanelHover, bool anyDialogActive){
     if(this->wrapMode){
         if(this->threeDPointTopLeft.pos == glm::vec3(0.f) && this->threeDPointBottomRight.pos == glm::vec3(0.f) && *Mouse::LClick()){
             // If no point is selected
@@ -343,10 +343,10 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
 
             getModel()->Draw();
 
-            threeDPointTopLeft.render(timer, doMouseTracking, painter, false);
-            threeDPointTopRight.render(timer, doMouseTracking, painter, false);
-            threeDPointBottomLeft.render(timer, doMouseTracking, painter, false);
-            threeDPointBottomRight.render(timer, doMouseTracking, painter, false);
+            threeDPointTopLeft.render(timer, !anyPanelHover, painter, false);
+            threeDPointTopRight.render(timer, !anyPanelHover, painter, false);
+            threeDPointBottomLeft.render(timer, !anyPanelHover, painter, false);
+            threeDPointBottomRight.render(timer, !anyPanelHover, painter, false);
 
             if(threeDWrapBox.VBO){
                 ShaderSystem::threeDTextureRenderingShader().use();

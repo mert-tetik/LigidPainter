@@ -631,10 +631,128 @@ void UI::renderObjectsPanel(Timer& timer, Painter& painter){
     }
 }
 
+void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
+    painter.usePaintingOver = this->paintingOverSection.elements[0].checkBox.clickState1;
+    painter.paintingoverTextureEditorMode = this->paintingOverSection.elements[1].checkBox.clickState1;
+    painter.paintingOverGrayScale = this->paintingOverSection.elements[4].checkBox.clickState1;
+    painter.paintingOverWraping = this->paintingOverSection.elements[5].checkBox.clickState1;
+    
+    if(this->paintingOverSection.elements[2].button.clicked){
+        Texture texture;
+        showTextureSelectionDialog(texture, 512, true);
+        
+        if(texture.ID){
+            registerTextureFieldAction("New texture field via texture selection dialog", this->paintingOverTextureFields);
+            this->paintingOverTextureFields.push_back(TextureField(texture));
+        }
+    }
+    else if(this->paintingOverSection.elements[3].button.clicked){
+        std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+
+        if(test.size()){
+            Texture texture;
+            texture.load(test.c_str());
+            registerTextureFieldAction("New texture field via path", this->paintingOverTextureFields);
+            this->paintingOverTextureFields.push_back(TextureField(texture));
+        }
+
+    }
+    
+    bool updatePaintingOverTexture = false;
+    
+    getBox()->bindBuffers();
+    glClear(GL_DEPTH_BUFFER_BIT);
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
+    ShaderSystem::buttonShader().use();
+    ShaderSystem::buttonShader().setMat4("projection", this->projection);
+
+    // Rendering all the painting over texture fields
+    if(painter.usePaintingOver && (!anyDialogActive || painter.paintingoverTextureEditorMode)){
+        for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
+        {
+            if(this->paintingOverTextureFields[i].transformedFlag)
+                updatePaintingOverTexture = true;
+
+            bool anyHover = false;
+            for (int ii = 0; ii < this->paintingOverTextureFields.size(); ii++){
+                if(ii > i){
+                    if(this->paintingOverTextureFields[ii].isHover()){
+                        anyHover = true;
+                    }    
+                }
+            }
+
+            this->paintingOverTextureFields[i].render(
+                                                        timer, 
+                                                        painter.paintingoverTextureEditorMode && !anyHover && !painter.faceSelection.editMode, 
+                                                        false, 
+                                                        this->paintingOverTextureFields, 
+                                                        i, 
+                                                        !painter.paintingOverWraping, 
+                                                        painter,
+                                                        this->anyPanelHover,
+                                                        this->anyDialogActive || painter.paintingoverTextureEditorMode
+                                                    );
+        
+            if(!painter.paintingoverTextureEditorMode)
+                this->paintingOverTextureFields[i].active = false;
+        }    
+    }
+
+    if(painter.paintingoverTextureEditorMode && !painter.faceSelection.editMode){
+        ShaderSystem::dotsShader().use();
+
+        ShaderSystem::dotsShader().setMat4("projection", this->projection);
+        ShaderSystem::dotsShader().setVec3("pos", glm::vec3(getContext()->windowScale / glm::ivec2(2), 0.5f));
+        ShaderSystem::dotsShader().setVec2("scale", getContext()->windowScale / glm::ivec2(2));
+
+        ShaderSystem::dotsShader().setVec2("dotPos", glm::vec2(0.f));
+        ShaderSystem::dotsShader().setFloat("scroll", 1.f);
+
+        /* Render the dots */
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painting over : Edit mode : Rendering dots");
+
+        /* Clear the depth buffer of the current framebuffers*/
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        ShaderSystem::buttonShader().use();   
+    }
+
+    if(updatePaintingOverTexture){
+        glm::ivec2 paintingRes = glm::vec2(painter.getBufferResolutions(0));
+
+        Framebuffer FBO = Framebuffer(painter.paintingOverTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, paintingRes), "update painting over texture");
+        FBO.bind();
+
+        glViewport(0, 0, paintingRes.x, paintingRes.y);
+
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // Rendering all the painting over texture fields
+        for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
+        {
+            this->paintingOverTextureFields[i].render(timer, false, true, this->paintingOverTextureFields, i, true, painter, false, false);
+        }    
+
+        // Finish
+        Settings::defaultFramebuffer()->FBO.bind();
+        Settings::defaultFramebuffer()->setViewport();
+
+        // Deleting the OpenGL framebuffer object & the renderbuffer object
+        FBO.deleteBuffers(false, true);
+    }
+    
+    ShaderSystem::buttonShader().use();   
+}
+
 void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     
     Debugger::block("GUI : Panels : Start"); // Start
     Debugger::block("GUI : Panels : Start"); // End
+
+    this->renderPaintingOverTextureFields(timer, painter);
     
     Debugger::block("GUI : Panels : Panel rendering"); // Start
     
@@ -808,111 +926,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         }
 
         glClear(GL_DEPTH_BUFFER_BIT);
-    }
-
-
-    //---------------- Updating the painting over texture ----------------- 
-    
-    painter.usePaintingOver = this->paintingOverSection.elements[0].checkBox.clickState1;
-    painter.paintingoverTextureEditorMode = this->paintingOverSection.elements[1].checkBox.clickState1;
-    painter.paintingOverGrayScale = this->paintingOverSection.elements[4].checkBox.clickState1;
-    painter.paintingOverWraping = this->paintingOverSection.elements[5].checkBox.clickState1;
-    
-    if(this->paintingOverSection.elements[2].button.clicked){
-        Texture texture;
-        showTextureSelectionDialog(texture, 512, true);
-        
-        if(texture.ID){
-            registerTextureFieldAction("New texture field via texture selection dialog", this->paintingOverTextureFields);
-            this->paintingOverTextureFields.push_back(TextureField(texture));
-        }
-    }
-    else if(this->paintingOverSection.elements[3].button.clicked){
-        std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
-
-        if(test.size()){
-            Texture texture;
-            texture.load(test.c_str());
-            registerTextureFieldAction("New texture field via path", this->paintingOverTextureFields);
-            this->paintingOverTextureFields.push_back(TextureField(texture));
-        }
-
-    }
-    
-    bool updatePaintingOverTexture = false;
-    
-    getBox()->bindBuffers();
-    glClear(GL_DEPTH_BUFFER_BIT);
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-    ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", this->projection);
-
-    // Rendering all the painting over texture fields
-    if(painter.usePaintingOver && (!anyDialogActive || painter.paintingoverTextureEditorMode)){
-        for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
-        {
-            if(this->paintingOverTextureFields[i].transformedFlag)
-                updatePaintingOverTexture = true;
-
-            bool anyHover = false;
-            for (int ii = 0; ii < this->paintingOverTextureFields.size(); ii++){
-                if(ii > i){
-                    if(this->paintingOverTextureFields[ii].isHover()){
-                        anyHover = true;
-                    }    
-                }
-            }
-
-            this->paintingOverTextureFields[i].render(timer, painter.paintingoverTextureEditorMode && !anyHover && !painter.faceSelection.editMode, false, this->paintingOverTextureFields, i, !painter.paintingOverWraping, painter);
-        
-            if(!painter.paintingoverTextureEditorMode)
-                this->paintingOverTextureFields[i].active = false;
-        }    
-    }
-
-    if(painter.paintingoverTextureEditorMode && !painter.faceSelection.editMode){
-        ShaderSystem::dotsShader().use();
-
-        ShaderSystem::dotsShader().setMat4("projection", this->projection);
-        ShaderSystem::dotsShader().setVec3("pos", glm::vec3(getContext()->windowScale / glm::ivec2(2), 0.5f));
-        ShaderSystem::dotsShader().setVec2("scale", getContext()->windowScale / glm::ivec2(2));
-
-        ShaderSystem::dotsShader().setVec2("dotPos", glm::vec2(0.f));
-        ShaderSystem::dotsShader().setFloat("scroll", 1.f);
-
-        /* Render the dots */
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painting over : Edit mode : Rendering dots");
-
-        /* Clear the depth buffer of the current framebuffers*/
-        glClear(GL_DEPTH_BUFFER_BIT);
-
-        ShaderSystem::buttonShader().use();   
-    }
-
-    if(updatePaintingOverTexture){
-        glm::ivec2 paintingRes = glm::vec2(painter.getBufferResolutions(0));
-
-        Framebuffer FBO = Framebuffer(painter.paintingOverTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, paintingRes), "update painting over texture");
-        FBO.bind();
-
-        glViewport(0, 0, paintingRes.x, paintingRes.y);
-
-        glClearColor(0,0,0,0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Rendering all the painting over texture fields
-        for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
-        {
-            this->paintingOverTextureFields[i].render(timer, false, true, this->paintingOverTextureFields, i, true, painter);
-        }    
-
-        // Finish
-        Settings::defaultFramebuffer()->FBO.bind();
-        Settings::defaultFramebuffer()->setViewport();
-
-        // Deleting the OpenGL framebuffer object & the renderbuffer object
-        FBO.deleteBuffers(false, true);
     }
 
     bool straightLinePaintingCondition = painter.selectedDisplayingModeIndex != 0 && painter.selectedPaintingModeIndex != 5 && !anyDialogActive && (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && *Mouse::LPressed(); 
