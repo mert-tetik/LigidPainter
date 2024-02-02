@@ -110,7 +110,15 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
     }
 
     this->moving = false;
-    if(this->active && getContext()->window.isKeyPressed(LIGIDGL_KEY_G) && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y)){
+    if(
+            this->active && 
+            getContext()->window.isKeyPressed(LIGIDGL_KEY_G) && 
+            (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y) &&
+            !*Mouse::RPressed() && 
+            !*Mouse::MPressed() && 
+            !*Mouse::mouseScroll() && 
+        )
+    {
         this->moving = true;
 
         glm::mat4 transMat = glm::mat4(1.f);

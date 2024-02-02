@@ -108,15 +108,16 @@ void Renderer::render(){
 
     // Update the 3D model depth texture if necessary last frame camera changed position
     if(painter.updateTheDepthTexture && !*Mouse::RPressed()){
+        
+        painter.updatePosNormalTexture();
+        
         //Update the depth texture
         painter.updateDepthTexture();
         painter.updateTheDepthTexture = false;
         
         // Update the model's object id texture
         getModel()->updateObjectIDsTexture();
-    }
-    if(*Mouse::RPressed() || *Mouse::MPressed()){
-        painter.updatePosNormalTexture();
+        
     }
 
     // Set backface culling property
