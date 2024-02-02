@@ -240,6 +240,8 @@ glm::vec2 threeDPointTopLeftCursorPos;
 void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture, Painter& painter){
     if(this->wrapMode){
         if(this->threeDPointTopLeft.pos == glm::vec3(0.f) && this->threeDPointBottomRight.pos == glm::vec3(0.f) && *Mouse::LClick()){
+            // If no point is selected
+            
             bool anyThreedPointsHover = false;
 
             float* posData = new float[4]; 
@@ -251,7 +253,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
 
             Settings::defaultFramebuffer()->FBO.bind();
 
-            if(posData[3] != 0.f && !anyThreedPointsHover && doMouseTracking){
+            if(posData[3] == 1.f && !anyThreedPointsHover && doMouseTracking){
                 this->threeDPointTopLeft.pos = glm::vec3(posData[0], posData[1], posData[2]);
                 this->threeDPointTopLeft.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
             }
@@ -260,6 +262,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             delete[] normalData;
         }
         else if(this->threeDPointBottomRight.pos == glm::vec3(0.f) && *Mouse::LClick()){
+            // If the start point is selected
 
             float* posData = new float[4]; 
             float* normalData = new float[4]; 
@@ -269,19 +272,55 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             
             Settings::defaultFramebuffer()->FBO.bind();
 
-            if(posData[3] != 0.f && doMouseTracking){
+            if(posData[3] == 1.f && doMouseTracking){
                 this->threeDPointBottomRight.pos = glm::vec3(posData[0], posData[1], posData[2]);
                 this->threeDPointBottomRight.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
             
                 glm::vec2 topRightCursorPos = glm::vec2(currentCursorPos.x, threeDPointTopLeftCursorPos.y);
-                painter.getPosNormalValOverPoint(topRightCursorPos, posData, normalData, true);
-                this->threeDPointTopRight.pos = glm::vec3(posData[0], posData[1], posData[2]);
-                this->threeDPointTopRight.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
+                int tryCounter = 0;
+                while ((posData[3] != 1.f || tryCounter == 0))
+                {
+                    painter.getPosNormalValOverPoint(topRightCursorPos, posData, normalData, true);
+                    this->threeDPointTopRight.pos = glm::vec3(posData[0], posData[1], posData[2]);
+                    this->threeDPointTopRight.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
+
+                    if(tryCounter > 50){
+                        threeDPointTopLeft.pos = glm::vec3(0.f);
+                        threeDPointTopRight.pos = glm::vec3(0.f);
+                        threeDPointBottomLeft.pos = glm::vec3(0.f);
+                        threeDPointBottomRight.pos = glm::vec3(0.f);
+
+                        LGDLOG::start << "ERROR : Invalid point for the wrapped texture field!" << LGDLOG::end;
+
+                        break;
+                    }
+                    
+                    topRightCursorPos = glm::mix(topRightCursorPos, currentCursorPos, 0.25f);  
+                    tryCounter++;
+                }
+                
                 
                 glm::vec2 bottomLeftCursorPos = glm::vec2(threeDPointTopLeftCursorPos.x, currentCursorPos.y);
-                painter.getPosNormalValOverPoint(bottomLeftCursorPos, posData, normalData, true);
-                this->threeDPointBottomLeft.pos = glm::vec3(posData[0], posData[1], posData[2]);
-                this->threeDPointBottomLeft.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
+                tryCounter = 0;
+                while ((posData[3] != 1.f || tryCounter == 0) && tryCounter < 50){
+                    painter.getPosNormalValOverPoint(bottomLeftCursorPos, posData, normalData, true);
+                    this->threeDPointBottomLeft.pos = glm::vec3(posData[0], posData[1], posData[2]);
+                    this->threeDPointBottomLeft.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
+                
+                    if(tryCounter > 50){
+                        threeDPointTopLeft.pos = glm::vec3(0.f);
+                        threeDPointTopRight.pos = glm::vec3(0.f);
+                        threeDPointBottomLeft.pos = glm::vec3(0.f);
+                        threeDPointBottomRight.pos = glm::vec3(0.f);
+
+                        LGDLOG::start << "ERROR : Invalid point for the wrapped texture field!" << LGDLOG::end;
+
+                        break;
+                    }
+                    
+                    bottomLeftCursorPos = glm::mix(bottomLeftCursorPos, currentCursorPos, 0.25f);  
+                    tryCounter++;
+                }
                 
                 threeDWrapBox.init(
                                         threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
