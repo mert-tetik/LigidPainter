@@ -683,6 +683,13 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
                 }
             }
 
+            if(!painter.paintingoverTextureEditorMode){
+                this->paintingOverTextureFields[i].threeDPointTopLeft.active = false;    
+                this->paintingOverTextureFields[i].threeDPointTopRight.active = false;    
+                this->paintingOverTextureFields[i].threeDPointBottomLeft.active = false;    
+                this->paintingOverTextureFields[i].threeDPointBottomRight.active = false;    
+            }
+
             this->paintingOverTextureFields[i].render(
                                                         timer, 
                                                         painter.paintingoverTextureEditorMode && !anyHover && !painter.faceSelection.editMode, 

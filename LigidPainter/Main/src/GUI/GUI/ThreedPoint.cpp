@@ -116,7 +116,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
             (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y) &&
             !*Mouse::RPressed() && 
             !*Mouse::MPressed() && 
-            !*Mouse::mouseScroll() && 
+            !*Mouse::mouseScroll() 
         )
     {
         this->moving = true;
