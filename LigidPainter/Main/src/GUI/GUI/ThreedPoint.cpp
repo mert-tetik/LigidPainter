@@ -36,6 +36,9 @@ static Framebuffer threeDPointsStencilFBO;
 
 void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, bool stencilTest){
 
+    Framebuffer bindedFBO;
+    bindedFBO.makeCurrentlyBindedFBO();
+
     glm::mat4 transMat = glm::mat4(1.f);
     transMat = glm::translate(transMat, this->pos);
     
@@ -107,7 +110,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
 
         delete[] stencilData;
 
-        Settings::defaultFramebuffer()->FBO.bind();
+        bindedFBO.bind();
         Settings::defaultFramebuffer()->setViewport();
     }
 
@@ -140,7 +143,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         float* normalData = new float[4];
 
         painter.getPosNormalValOverPoint(glm::vec2(screenPos.x + Mouse::mouseOffset()->x, getContext()->windowScale.y - screenPos.y - Mouse::mouseOffset()->y), posData, normalData, true);
-        Settings::defaultFramebuffer()->FBO.bind();
+        bindedFBO.bind();
 
         if(posData[3] != 0.f){
             this->pos.x = posData[0];

@@ -99,8 +99,6 @@ void subdivideMesh(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_
     Vertex bottomLeftVert = Vertex(pos_bottomLeft, glm::vec2((float)flipX, (float)flipY), normal, glm::vec3(0.f), glm::vec3(0.f));
     Vertex bottomRightVert = Vertex(pos_bottomRight, glm::vec2((float)!flipX, (float)flipY), normal, glm::vec3(0.f), glm::vec3(0.f));
 
-    std::cout << glm::to_string(bottomLeftVert.TexCoords) << std::endl;
-
     meshData.clear();
 
     meshData.push_back(topLeftVert);

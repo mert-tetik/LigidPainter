@@ -248,9 +248,15 @@ glm::vec2 threeDPointTopLeftCursorPos;
 
 Texture threeDPointsStencilTexture;
 static Framebuffer threeDPointsStencilFBO;
+static bool wrapTransformFlag = false;
 
 void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture, Painter& painter, bool anyPanelHover, bool anyDialogActive){
     if(this->wrapMode){
+        Framebuffer bindedFBO;
+        bindedFBO.makeCurrentlyBindedFBO();
+        
+        wrapTransformFlag = false;
+        
         if(this->threeDPointTopLeft.pos == glm::vec3(0.f) && this->threeDPointBottomRight.pos == glm::vec3(0.f) && *Mouse::LClick()){
             // If no point is selected
             
@@ -263,7 +269,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             painter.getPosNormalValOverPoint(currentCursorPos, posData, normalData, true);
             threeDPointTopLeftCursorPos = currentCursorPos; 
 
-            Settings::defaultFramebuffer()->FBO.bind();
+            bindedFBO.bind();
 
             if(posData[3] == 1.f && !anyThreedPointsHover && doMouseTracking){
                 this->threeDPointTopLeft.pos = glm::vec3(posData[0], posData[1], posData[2]);
@@ -282,7 +288,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             glm::vec2 currentCursorPos = glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y);
             painter.getPosNormalValOverPoint(currentCursorPos, posData, normalData, true);
             
-            Settings::defaultFramebuffer()->FBO.bind();
+            bindedFBO.bind();
 
             if(posData[3] == 1.f && doMouseTracking){
                 this->threeDPointBottomRight.pos = glm::vec3(posData[0], posData[1], posData[2]);
@@ -338,6 +344,8 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                                         threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
                                         (threeDPointTopLeft.normal + threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
                                     );
+
+                wrapTransformFlag = true;
             }
 
             delete[] posData;
@@ -356,10 +364,12 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
 
             getModel()->Draw();
 
-            threeDPointTopLeft.render(timer, !anyPanelHover, painter, false);
-            threeDPointTopRight.render(timer, !anyPanelHover, painter, false);
-            threeDPointBottomLeft.render(timer, !anyPanelHover, painter, false);
-            threeDPointBottomRight.render(timer, !anyPanelHover, painter, false);
+            if(!generatingTextureMode){
+                threeDPointTopLeft.render(timer, !anyPanelHover, painter, false);
+                threeDPointTopRight.render(timer, !anyPanelHover, painter, false);
+                threeDPointBottomLeft.render(timer, !anyPanelHover, painter, false);
+                threeDPointBottomRight.render(timer, !anyPanelHover, painter, false);
+            }
 
             if(threeDWrapBox.VBO){
                 ShaderSystem::threeDTextureRenderingShader().use();
@@ -369,7 +379,11 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 ShaderSystem::threeDTextureRenderingShader().setInt("depthToleranceMode", 1);
                 
                 ShaderSystem::threeDTextureRenderingShader().setInt("txtr", 0);
-                ShaderSystem::threeDTextureRenderingShader().setFloat("opacity", 0.5f);
+                if(generatingTextureMode)
+                    ShaderSystem::threeDTextureRenderingShader().setFloat("opacity", 1.0f);
+                else
+                    ShaderSystem::threeDTextureRenderingShader().setFloat("opacity", 0.5f);
+                
                 if(this->active)
                     ShaderSystem::threeDTextureRenderingShader().setVec3("mixClr", ColorPalette::themeColor);
                 else
@@ -389,6 +403,8 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                                         threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
                                         (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
                                     );             
+            
+                wrapTransformFlag = true;
             }
 
             if(*Mouse::LClick() && !anyPanelHover && !wrap_deleteButton.hover && !wrap_flipHorizontalButton.hover && !wrap_flipVerticalButton.hover && !wrap_unwrapModeButton.hover){
@@ -449,7 +465,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
 
                 delete[] stencilData;
 
-                Settings::defaultFramebuffer()->FBO.bind();
+                bindedFBO.bind();
                 Settings::defaultFramebuffer()->setViewport();
             }
         }
@@ -483,6 +499,8 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             }
             else if(wrap_flipHorizontalButton.clicked){
                 this->threeDWrapBox.flipX = !this->threeDWrapBox.flipX;
+                
+                wrapTransformFlag = true;
 
                 threeDWrapBox.update(
                         threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
@@ -492,6 +510,8 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             else if(wrap_flipVerticalButton.clicked){
                 this->threeDWrapBox.flipY = !this->threeDWrapBox.flipY;
 
+                wrapTransformFlag = true;
+
                 threeDWrapBox.update(
                         threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
                         (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
@@ -499,9 +519,25 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             }
             else if(wrap_unwrapModeButton.clicked){
                 this->wrapMode = false;
+                
+                wrapTransformFlag = true;
             }
         }
+
+        if(*Mouse::RPressed() || *Mouse::MPressed() || *Mouse::mouseScroll()){
+            wrapTransformFlag = true;
+        }
         
+        if(!generatingTextureMode){
+            if(!wrapTransformFlag && prevTransformedFlag)
+                this->transformedFlag = true;
+            else
+                this->transformedFlag = false;
+
+        }
+
+        prevTransformedFlag = wrapTransformFlag;
+
         getBox()->bindBuffers();
         ShaderSystem::buttonShader().use();
         glClear(GL_DEPTH_BUFFER_BIT);

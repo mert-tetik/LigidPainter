@@ -480,6 +480,8 @@ public:
     void setRenderbuffer(Renderbuffer rbo);
     void removeRenderbuffer();
     void deleteBuffers(bool delColorBuffer, bool delRenderBuffer);
+    
+    void makeCurrentlyBindedFBO();
 };
 
 /// @brief Image filter library element. 

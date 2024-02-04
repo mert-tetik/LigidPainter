@@ -317,3 +317,10 @@ void Framebuffer::deleteBuffers(bool delColorBuffer, bool delRenderBuffer){
         LigidGL::testGLError("Framebuffer::deleteBuffers : Deleting the RBO" + std::string(" : ") + this->purpose);
     }
 }
+
+void Framebuffer::makeCurrentlyBindedFBO(){
+    GLuint currentFramebuffer;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, (GLint*)&currentFramebuffer);
+
+    this->ID = currentFramebuffer;
+}
