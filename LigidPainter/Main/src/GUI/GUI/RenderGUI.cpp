@@ -553,6 +553,7 @@ void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGa
     faceSelectionCheckComboList.checkButton.clickState1 = meshSection.elements[1].checkBox.clickState1;
     faceSelectionCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
     faceSelectionCheckComboList.render(timer, !anyDialogActive);
+    faceSelectionCheckComboList.panel.sections[0].elements[0].panelOffset = 7.f;
     meshSection = faceSelectionCheckComboList.panel.sections[0];
     meshSection.elements[1].checkBox.clickState1 = faceSelectionCheckComboList.checkButton.clickState1;
     
@@ -560,6 +561,7 @@ void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGa
     paintingOverCheckComboList.checkButton.clickState1 = paintingOverSection.elements[0].checkBox.clickState1;
     paintingOverCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
     paintingOverCheckComboList.render(timer, !anyDialogActive);
+    paintingOverCheckComboList.panel.sections[0].elements[0].panelOffset = 7.f;
     paintingOverSection = paintingOverCheckComboList.panel.sections[0];
     paintingOverSection.elements[0].checkBox.clickState1 = paintingOverCheckComboList.checkButton.clickState1;
 
