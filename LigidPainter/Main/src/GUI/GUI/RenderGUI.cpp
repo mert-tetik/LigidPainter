@@ -632,6 +632,8 @@ void UI::renderObjectsPanel(Timer& timer, Painter& painter){
     }
 }
 
+ProceduralProperties lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties;
+
 void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
     painter.usePaintingOver = this->paintingOverSection.elements[0].checkBox.clickState1;
     painter.paintingoverTextureEditorMode = this->paintingOverSection.elements[1].checkBox.clickState1;
@@ -640,9 +642,11 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
     
     if(this->paintingOverSection.elements[2].button.clicked){
         Texture texture;
+        texture.proceduralProps = lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties;
         showTextureSelectionDialog(texture, 512, true);
         
         if(texture.ID){
+            lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties = texture.proceduralProps;
             registerTextureFieldAction("New texture field via texture selection dialog", this->paintingOverTextureFields);
             this->paintingOverTextureFields.push_back(TextureField(texture));
         }
