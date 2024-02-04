@@ -31,8 +31,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-Texture threeDPointsStencilTexture;
-Framebuffer threeDPointsStencilFBO;
+static Texture threeDPointsStencilTexture;
+static Framebuffer threeDPointsStencilFBO;
 
 void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, bool stencilTest){
 
@@ -48,6 +48,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
     ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::color3d().setMat4("modelMatrix", transMat);
+    ShaderSystem::color3d().setInt("depthToleranceMode", 0);
  
     if(!this->active || stencilTest)
         ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
@@ -83,6 +84,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
         ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
         ShaderSystem::color3d().setVec4("color", glm::vec4(0.f,0.f,0.f,1.f));
+        ShaderSystem::color3d().setInt("depthToleranceMode", 0);
         
         getModel()->Draw();
 

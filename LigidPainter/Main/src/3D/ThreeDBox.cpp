@@ -92,12 +92,14 @@ glm::vec3 calculateNormal(const glm::vec3& v0, const glm::vec3& v1, const glm::v
 }
 
 
-void subdivideMesh(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, std::vector<Vertex>& meshData, std::vector<unsigned int>& meshIndices, glm::vec3 normal, int subdivisions) {
+void subdivideMesh(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, std::vector<Vertex>& meshData, std::vector<unsigned int>& meshIndices, glm::vec3 normal, int subdivisions, bool flipX, bool flipY) {
     
-    Vertex topLeftVert = Vertex(pos_topLeft, glm::vec2(0.f, 1.f), normal, glm::vec3(0.f), glm::vec3(0.f));
-    Vertex topRightVert = Vertex(pos_topRight, glm::vec2(1.f, 1.f), normal, glm::vec3(0.f), glm::vec3(0.f));
-    Vertex bottomLeftVert = Vertex(pos_bottomLeft, glm::vec2(0.f, 0.f), normal, glm::vec3(0.f), glm::vec3(0.f));
-    Vertex bottomRightVert = Vertex(pos_bottomRight, glm::vec2(1.f, 0.f), normal, glm::vec3(0.f), glm::vec3(0.f));
+    Vertex topLeftVert = Vertex(pos_topLeft, glm::vec2((float)flipX, (float)!flipY), normal, glm::vec3(0.f), glm::vec3(0.f));
+    Vertex topRightVert = Vertex(pos_topRight, glm::vec2((float)!flipX, (float)!flipY), normal, glm::vec3(0.f), glm::vec3(0.f));
+    Vertex bottomLeftVert = Vertex(pos_bottomLeft, glm::vec2((float)flipX, (float)flipY), normal, glm::vec3(0.f), glm::vec3(0.f));
+    Vertex bottomRightVert = Vertex(pos_bottomRight, glm::vec2((float)!flipX, (float)flipY), normal, glm::vec3(0.f), glm::vec3(0.f));
+
+    std::cout << glm::to_string(bottomLeftVert.TexCoords) << std::endl;
 
     meshData.clear();
 
@@ -234,7 +236,7 @@ void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 po
     
     LigidGL::cleanGLErrors();
 
-    subdivideMesh(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, this->boxVertices, this->boxIndices, normal, 4);
+    subdivideMesh(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, this->boxVertices, this->boxIndices, normal, 4, this->flipX, this->flipY);
     projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
 
     //Generate vertex objects
@@ -303,7 +305,7 @@ void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 po
 void ThreeDBox::update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal){
     LigidGL::cleanGLErrors();
 
-    subdivideMesh(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, this->boxVertices, this->boxIndices, normal, 4);
+    subdivideMesh(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, this->boxVertices, this->boxIndices, normal, 4, this->flipX, this->flipY);
     projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
 
     glBindVertexArray(VAO);

@@ -24,14 +24,20 @@ uniform float opacity;
 
 uniform int depthToleranceMode = 0;
 
+uniform vec3 mixClr = vec3(0.);
+
 out vec4 fragColor;
 
 void main(){
     fragColor = texture(txtr, TexCoords);
     fragColor.a *= opacity;
 
+    if(mixClr.r != 0 && mixClr.g != 0 && mixClr.b != 0){
+        fragColor.rgb = mix(fragColor.rgb, mixClr, 0.5);
+    }
+
     gl_FragDepth = gl_FragCoord.z;
-    
+
     if(depthToleranceMode == 1)
         gl_FragDepth = gl_FragCoord.z - 0.001;
 }

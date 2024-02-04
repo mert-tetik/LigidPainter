@@ -97,6 +97,11 @@ public:
     Button cancelRotationButton;
     Button rotationAngleDisplayButton;
     Button wrapModeButton;
+    
+    Button wrap_deleteButton;
+    Button wrap_flipHorizontalButton;
+    Button wrap_flipVerticalButton;
+    Button wrap_unwrapModeButton;
 
     bool active = false;
 

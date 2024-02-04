@@ -398,7 +398,8 @@ void UI::renderPaintingChannelsTextureSelectionPanel(Timer& timer, Painter& pain
     }
 }
 
-extern Texture projectToModelTxtr;
+extern Texture threeDPointsStencilTexture;
+
 
 void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPerc){
     if(painter.selectedDisplayingModeIndex == 2){
@@ -491,7 +492,7 @@ void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPe
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, projectToModelTxtr.ID);
+        glBindTexture(GL_TEXTURE_2D, threeDPointsStencilTexture.ID);
 
         // Render the texture as it's pixels can be seen
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -688,6 +689,8 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
                 this->paintingOverTextureFields[i].threeDPointTopRight.active = false;    
                 this->paintingOverTextureFields[i].threeDPointBottomLeft.active = false;    
                 this->paintingOverTextureFields[i].threeDPointBottomRight.active = false;    
+                
+                this->paintingOverTextureFields[i].active = false;    
             }
 
             this->paintingOverTextureFields[i].render(
@@ -702,8 +705,6 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
                                                         this->anyDialogActive || painter.paintingoverTextureEditorMode
                                                     );
         
-            if(!painter.paintingoverTextureEditorMode)
-                this->paintingOverTextureFields[i].active = false;
         }    
     }
 

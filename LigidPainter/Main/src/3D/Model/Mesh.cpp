@@ -162,6 +162,7 @@ void Mesh::generateUVMask(){
     ShaderSystem::uvMaskShader().use();
     ShaderSystem::uvMaskShader().setVec4("color", glm::vec4(1.));
     ShaderSystem::uvMaskShader().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f));
+    ShaderSystem::uvMaskShader().setInt("depthToleranceMode", 0);
 
     this->Draw(false);
 
