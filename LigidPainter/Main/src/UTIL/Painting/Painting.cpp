@@ -127,7 +127,16 @@ Texture posTxtr;
 
 static glm::vec4 lastPos;
 
-void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox, bool highResMode){
+void Painter::doPaint(
+                        glm::mat4 windowOrtho, 
+                        std::vector<glm::vec2> strokeLocations, 
+                        int paintingMode, 
+                        Panel twoDPaintingPanel, 
+                        Box twoDPaintingBox, 
+                        bool highResMode, 
+                        std::vector<TextureField> textureFields
+                    )
+{
     
     glm::vec2 firstCursorPos = *Mouse::cursorPos();
     
@@ -218,6 +227,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
                                                     posData[2]
                                                 );
         
+        getScene()->updateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
 
         posData[0] = (posData[0] + 1.f) / 2.f;
         posData[1] = (posData[1] + 1.f) / 2.f;
@@ -349,7 +359,7 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
                                                 this->oXYZSide, this->mirrorXOffset, this->mirrorYOffset, this->mirrorZOffset, paintingTxtrObj, this->selectedTexture, 
                                                 this->projectedPaintingTexture, paintingMode, this->brushProperties.opacity, 
                                                 this->threeDimensionalMode, windowOrtho, this->selectedMeshIndex, twoDPaintingBox, this->faceSelection.activated, 
-                                                this->faceSelection.selectedFaces, highResMode
+                                                this->faceSelection.selectedFaces, highResMode, textureFields
                                             );
 
     // If painting mode is set to 3 generate the normal map using paintingTexture8 and write to the paintingTexture16f
@@ -377,6 +387,8 @@ void Painter::doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocati
     
     getScene()->camera.cameraPos = oldCamPos;
     getScene()->camera.originPos = oldCamOrigin;
+
+    getScene()->updateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
 }
 
 
@@ -528,8 +540,9 @@ void Painter::projectThePaintingTexture(
             
             if(wrapMode){
                 glEnable(GL_BLEND);
-                glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-                glBlendEquationSeparate(GL_FUNC_ADD, GL_MAX);
+                
+                glBlendFunc(GL_SRC_COLOR, GL_ONE_MINUS_SRC_ALPHA);
+                glBlendEquationSeparate(GL_MAX, GL_MAX);
             }
 
             ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", getModel()->meshes[selectedMeshIndex].indices.size() / 3);
@@ -538,6 +551,7 @@ void Painter::projectThePaintingTexture(
             if(wrapMode){
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+                
                 glDisable(GL_BLEND);
             }
         }
@@ -606,7 +620,9 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                                         Box twoDPaintingBox,
                                                         bool faceSelectionActive,
                                                         Texture selectedPrimitives,
-                                                        bool highResMode
+                                                        bool highResMode,
+
+                                                        std::vector<TextureField> textureFields
                                                     )
 {
     glDisable(GL_BLEND);
@@ -614,6 +630,7 @@ void Painter::generateMirroredProjectedPaintingTexture(
     if(selectedPaintingModeIndex != 6){
         if((*Mouse::LClick() && !this->wrapMode) || this->wrapMode){
             this->updateDepthTexture();
+            this->updatePaintingOverTexture(textureFields);
         }
 
         std::vector<MirrorSide*> mirrorSides;

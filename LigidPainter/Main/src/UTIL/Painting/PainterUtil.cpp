@@ -99,7 +99,17 @@ Color Painter::getSelectedColor(){
         return this->color3;
 }
 
-void Painter::applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat){
+void Painter::applyVectorStrokes(
+                                    std::vector<VectorStroke> vectorStrokes, 
+                                    Panel& twoDPaintingPanel, 
+                                    glm::mat4 windowOrtho, 
+                                    int paintingMode, 
+                                    Filter filterBtnFilter, 
+                                    Box twoDPaintingBox, 
+                                    Material& paintingCustomMat,
+                                    std::vector<TextureField> textureFields
+                                )
+{
     
     int textureResolution = 256;
 
@@ -185,7 +195,7 @@ void Painter::applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel&
         std::vector<glm::vec2> subVector(strokePositions.begin() + startIdx, strokePositions.begin() + endIdx);
 
         // Call the function for the subvector
-        this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingBox, true);
+        this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields);
     }
 
     this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
@@ -380,4 +390,29 @@ void Painter::setBrushProperties(Section brushSection){
     this->brushProperties.rotation = brushSection.elements[12].rangeBar.value;
     this->brushProperties.rotationJitter = brushSection.elements[13].rangeBar.value;
     this->brushProperties.alphaJitter = brushSection.elements[14].rangeBar.value;
+}
+
+void Painter::updatePaintingOverTexture(std::vector<TextureField> textureFields){
+    glm::ivec2 paintingRes = glm::vec2(this->getBufferResolutions(0));
+
+    Framebuffer FBO = Framebuffer(this->paintingOverTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, paintingRes), "update painting over texture");
+    FBO.bind();
+
+    glViewport(0, 0, paintingRes.x, paintingRes.y);
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Rendering all the painting over texture fields
+    for (int i = 0; i < textureFields.size(); i++)
+    {
+        textureFields[i].render(Timer(), false, true, textureFields, i, true, *this, false, false);
+    }    
+
+    // Finish
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
+
+    // Deleting the OpenGL framebuffer object & the renderbuffer object
+    FBO.deleteBuffers(false, true);
 }

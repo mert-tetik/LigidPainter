@@ -398,9 +398,6 @@ void UI::renderPaintingChannelsTextureSelectionPanel(Timer& timer, Painter& pain
     }
 }
 
-extern Texture threeDPointsStencilTexture;
-
-
 void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPerc){
     if(painter.selectedDisplayingModeIndex == 2){
         glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
@@ -492,7 +489,7 @@ void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPe
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, threeDPointsStencilTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
 
         // Render the texture as it's pixels can be seen
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -635,6 +632,7 @@ void UI::renderObjectsPanel(Timer& timer, Painter& painter){
 }
 
 ProceduralProperties lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties;
+extern bool textureFields_decidingWrapPointsMode;
 
 void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
     painter.usePaintingOver = this->paintingOverSection.elements[0].checkBox.clickState1;
@@ -665,8 +663,6 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
 
     }
     
-    bool updatePaintingOverTexture = false;
-    
     getBox()->bindBuffers();
     glClear(GL_DEPTH_BUFFER_BIT);
     Settings::defaultFramebuffer()->FBO.bind();
@@ -674,12 +670,12 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
     ShaderSystem::buttonShader().use();
     ShaderSystem::buttonShader().setMat4("projection", this->projection);
 
+    textureFields_decidingWrapPointsMode = false;
+
     // Rendering all the painting over texture fields
     if(painter.usePaintingOver && (!anyDialogActive || painter.paintingoverTextureEditorMode)){
         for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
         {
-            if(this->paintingOverTextureFields[i].transformedFlag)
-                updatePaintingOverTexture = true;
 
             bool anyHover = false;
             for (int ii = 0; ii < this->paintingOverTextureFields.size(); ii++){
@@ -733,31 +729,6 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
         ShaderSystem::buttonShader().use();   
     }
 
-    if(updatePaintingOverTexture){
-        glm::ivec2 paintingRes = glm::vec2(painter.getBufferResolutions(0));
-
-        Framebuffer FBO = Framebuffer(painter.paintingOverTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, paintingRes), "update painting over texture");
-        FBO.bind();
-
-        glViewport(0, 0, paintingRes.x, paintingRes.y);
-
-        glClearColor(0,0,0,0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Rendering all the painting over texture fields
-        for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
-        {
-            this->paintingOverTextureFields[i].render(timer, false, true, this->paintingOverTextureFields, i, true, painter, false, false);
-        }    
-
-        // Finish
-        Settings::defaultFramebuffer()->FBO.bind();
-        Settings::defaultFramebuffer()->setViewport();
-
-        // Deleting the OpenGL framebuffer object & the renderbuffer object
-        FBO.deleteBuffers(false, true);
-    }
-    
     ShaderSystem::buttonShader().use();   
 }
 
@@ -985,7 +956,16 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     else if(prevStraightLinePaintingCondition && !painter.faceSelection.editMode){
         std::vector<VectorStroke> strokeArray;
         strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
-        painter.applyVectorStrokes(strokeArray, this->twoDPaintingPanel, this->projection, painter.selectedPaintingModeIndex, this->filterPaintingModeFilterBtn.filter, this->twoDPaintingBox, paintingCustomMat);
+        painter.applyVectorStrokes(
+                                    strokeArray, 
+                                    this->twoDPaintingPanel, 
+                                    this->projection, 
+                                    painter.selectedPaintingModeIndex, 
+                                    this->filterPaintingModeFilterBtn.filter, 
+                                    this->twoDPaintingBox, 
+                                    paintingCustomMat,
+                                    this->paintingOverTextureFields
+                                );
     }
     
     prevStraightLinePaintingCondition = straightLinePaintingCondition;

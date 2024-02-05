@@ -33,6 +33,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 
+extern bool textureFields_decidingWrapPointsMode;
+
+#define CAM_MOVE_CONDITION ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || painter.paintingoverTextureEditorMode || this->userInterface.objectTexturingDialog.dialogControl.isActive()) && /*If there is no active dialog (don't move the camera if a dialog is active)*/\
+                            !this->userInterface.anyPanelHover && /*Don't move the camera if cursor hover a panel */\
+                            !*Mouse::LPressed() &&\
+                            !textureFields_decidingWrapPointsMode
+
 void Renderer::mouseButtonCallback(
                                         LigidWindow window,
                                         int button, 
@@ -135,10 +142,7 @@ void Renderer::scrollCallback(
     *Mouse::mouseScroll() = yoffset;
     
     if(
-            (((this->userInterface.materialEditorDialog.dialogControl.isActive() && !this->userInterface.materialEditorDialog.shortcutPanel.hover && !this->userInterface.materialEditorDialog.modifiersPanel.hover)) || 
-            ((!this->userInterface.anyDialogActive && !this->userInterface.anyPanelHover && this->painter.threeDimensionalMode) || this->userInterface.objectTexturingDialog.dialogControl.isActive())) &&
-            (!this->userInterface.anyPanelHover || this->userInterface.anyDialogActive) &&
-            !*Mouse::LPressed()
+            CAM_MOVE_CONDITION
         )
     {
         //The distance between the camera & center 
@@ -194,11 +198,8 @@ void Renderer::cursorPositionCallback(
 
     if (
             ((getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
-            window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS) || getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE) == LIGIDGL_PRESS) 
-            &&  //If pressed to CTRL button
-            ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || painter.paintingoverTextureEditorMode || this->userInterface.objectTexturingDialog.dialogControl.isActive()) && //If there is no active dialog (don't move the camera if a dialog is active)
-            !this->userInterface.anyPanelHover &&       //Don't move the camera if cursor hover a panel
-            !*Mouse::LPressed()
+            window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS) || getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE) == LIGIDGL_PRESS) &&  //If pressed to CTRL button
+            CAM_MOVE_CONDITION
         ) 
     { 
         if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
@@ -257,14 +258,7 @@ void Renderer::cursorPositionCallback(
 
     else if (
                 getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
-                ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || //If there is no active dialog (don't move the camera if a dialog is active)
-                painter.paintingoverTextureEditorMode ||
-                this->userInterface.materialEditorDialog.dialogControl.isActive() ||
-                this->userInterface.objectTexturingDialog.dialogControl.isActive() ||
-                this->userInterface.materialSelectionDialog.dialogControl.isActive() ||
-                this->userInterface.materialDisplayerDialog.dialogControl.isActive()) &&
-                !this->userInterface.anyPanelHover && //Don't move the camera if cursor hover a panel
-                !*Mouse::LPressed()
+                CAM_MOVE_CONDITION
             ) 
     {   
         if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)

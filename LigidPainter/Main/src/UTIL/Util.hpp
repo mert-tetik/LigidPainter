@@ -55,6 +55,8 @@ class Mesh;
 struct Context;
 /// @brief forward declared Box class
 class Box;
+/// @brief forward declared TextureField class
+class TextureField;
 /// @brief forward declared Section struct
 struct Section;
 /// @brief forward declared MaterialIDColor struct
@@ -863,7 +865,7 @@ public:
     *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
     * @param windowOrtho orthographic projection matrix created with window size value.
     */
-    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox, bool highResMode);
+    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox, bool highResMode, std::vector<TextureField> textureFields);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -897,7 +899,7 @@ public:
 
     Color getSelectedColor();
 
-    void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat);
+    void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat, std::vector<TextureField> textureFields);
 
     /// @brief renderbuffer object used to depth test (used to create the depth texture)
     Renderbuffer depthRBO1024; 
@@ -929,6 +931,8 @@ public:
 
     unsigned int getBufferResolutions(int bufferIndex);
 
+    void updatePaintingOverTexture(std::vector<TextureField> textureFields);
+
 
 private:
     void projectThePaintingTexture(Texture& selectedTexture,  Texture& projectedPaintingTexture,  unsigned int paintingTexture,  unsigned int depthTexture, 
@@ -940,7 +944,8 @@ private:
                                                         MirrorSide& oXZSide, MirrorSide& oYZSide, MirrorSide& oXYZSide, float mirrorXOffset, float mirrorYOffset, 
                                                         float mirrorZOffset,Texture paintingTxtrObj, Texture& selectedTexture,  Texture& projectedPaintingTexture,  
                                                         int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode,  glm::mat4 windowOrtho,  
-                                                        int selectedMeshIndex, Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives, bool highResMode
+                                                        int selectedMeshIndex, Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives, bool highResMode,
+                                                        std::vector<TextureField> textureFields
                                                     );
 };
 

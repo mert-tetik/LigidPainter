@@ -250,6 +250,10 @@ Texture threeDPointsStencilTexture;
 static Framebuffer threeDPointsStencilFBO;
 static bool wrapTransformFlag = false;
 
+static Button cancelBtn(ELEMENT_STYLE_STYLIZED, glm::vec2(2.f,1.5f), "Cancel", Texture(), 0.f, false);
+
+bool textureFields_decidingWrapPointsMode = false;
+
 void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture, Painter& painter, bool anyPanelHover, bool anyDialogActive){
     if(this->wrapMode){
         Framebuffer bindedFBO;
@@ -281,7 +285,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
         }
         else if(this->threeDPointBottomRight.pos == glm::vec3(0.f) && *Mouse::LClick()){
             // If the start point is selected
-
+            
             float* posData = new float[4]; 
             float* normalData = new float[4]; 
 
@@ -371,7 +375,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 threeDPointBottomRight.render(timer, !anyPanelHover, painter, false);
             }
 
-            if(threeDWrapBox.VBO){
+            if(threeDWrapBox.VBO && this->threeDPointTopLeft.pos != glm::vec3(0.f) && this->threeDPointBottomRight.pos != glm::vec3(0.f)){
                 ShaderSystem::threeDTextureRenderingShader().use();
                 ShaderSystem::threeDTextureRenderingShader().setMat4("view", getScene()->viewMatrix);
                 ShaderSystem::threeDTextureRenderingShader().setMat4("projection", getScene()->projectionMatrix);
@@ -396,136 +400,176 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
 
                 ShaderSystem::threeDTextureRenderingShader().use();
                 ShaderSystem::threeDTextureRenderingShader().setInt("depthToleranceMode", 0);
-            }
 
-            if(threeDPointTopLeft.moving || threeDPointTopRight.moving || threeDPointBottomLeft.moving || threeDPointBottomRight.moving){
-                threeDWrapBox.update(
-                                        threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
-                                        (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
-                                    );             
-            
-                wrapTransformFlag = true;
-            }
-
-            if(*Mouse::LClick() && !anyPanelHover && !wrap_deleteButton.hover && !wrap_flipHorizontalButton.hover && !wrap_flipVerticalButton.hover && !wrap_unwrapModeButton.hover){
-                this->active = false;
-
-                wrap_deleteButton.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f; 
-                wrap_deleteButton.pos.x -= (wrap_deleteButton.scale.x + wrap_flipHorizontalButton.scale.x + wrap_flipVerticalButton.scale.x + wrap_unwrapModeButton.scale.x) / 1.5f; 
-                wrap_deleteButton.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f; 
-                wrap_deleteButton.pos.y -= 2.f; 
-                wrap_deleteButton.pos.z = 0.7f; 
-
-                const unsigned int resolution = 512;
-        
-                glm::vec2 pointPos = glm::vec2(Mouse::cursorPos()->x, (float)getContext()->windowScale.y - Mouse::cursorPos()->y);        
-                pointPos.x /= (Settings::videoScale()->x / resolution); 
-                pointPos.y /= (Settings::videoScale()->y / resolution); 
-
-                if(!threeDPointsStencilTexture.ID){
-                    threeDPointsStencilTexture = Texture(nullptr, resolution, resolution);
-                    threeDPointsStencilFBO = Framebuffer(threeDPointsStencilTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "threeDPointsStencilFBO");
+                if(threeDPointTopLeft.moving || threeDPointTopRight.moving || threeDPointBottomLeft.moving || threeDPointBottomRight.moving){
+                    threeDWrapBox.update(
+                                            threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
+                                            (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
+                                        );             
+                
+                    wrapTransformFlag = true;
                 }
 
-                threeDPointsStencilFBO.bind();
-                glClearColor(0,0,0,0);
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+                if(*Mouse::LClick() && !anyPanelHover && !wrap_deleteButton.hover && !wrap_flipHorizontalButton.hover && !wrap_flipVerticalButton.hover && !wrap_unwrapModeButton.hover && !cancelBtn.hover && wrap_deleteButton.hover && wrap_flipHorizontalButton.hover && wrap_flipVerticalButton.hover && wrap_unwrapModeButton.hover){
+                    this->active = false;
 
-                glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)resolution), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)resolution));
+                    wrap_deleteButton.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f; 
+                    wrap_deleteButton.pos.x -= (wrap_deleteButton.scale.x + wrap_flipHorizontalButton.scale.x + wrap_flipVerticalButton.scale.x + wrap_unwrapModeButton.scale.x) / 1.5f; 
+                    wrap_deleteButton.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f; 
+                    wrap_deleteButton.pos.y -= 2.f; 
+                    wrap_deleteButton.pos.z = 0.7f; 
 
-                ShaderSystem::color3d().use();
-                ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
-                ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
-                ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
-                ShaderSystem::color3d().setVec4("color", glm::vec4(0.f, 0.f, 0.f, 1.f));
-                ShaderSystem::color3d().setInt("depthToleranceMode", 0);
+                    const unsigned int resolution = 512;
+            
+                    glm::vec2 pointPos = glm::vec2(Mouse::cursorPos()->x, (float)getContext()->windowScale.y - Mouse::cursorPos()->y);        
+                    pointPos.x /= (Settings::videoScale()->x / resolution); 
+                    pointPos.y /= (Settings::videoScale()->y / resolution); 
+
+                    if(!threeDPointsStencilTexture.ID){
+                        threeDPointsStencilTexture = Texture(nullptr, resolution, resolution);
+                        threeDPointsStencilFBO = Framebuffer(threeDPointsStencilTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "threeDPointsStencilFBO");
+                    }
+
+                    threeDPointsStencilFBO.bind();
+                    glClearColor(0,0,0,0);
+                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+                    glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)resolution), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)resolution));
+
+                    ShaderSystem::color3d().use();
+                    ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
+                    ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
+                    ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
+                    ShaderSystem::color3d().setVec4("color", glm::vec4(0.f, 0.f, 0.f, 1.f));
+                    ShaderSystem::color3d().setInt("depthToleranceMode", 0);
+                    
+                    getModel()->Draw();
+                    
+                    ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
+                    ShaderSystem::color3d().setVec4("color", glm::vec4(1.f, 1.f, 1.f, 1.f));
+                    ShaderSystem::color3d().setInt("depthToleranceMode", 1);
+
+                    threeDWrapBox.draw();
+                    
+                    unsigned char* stencilData = new unsigned char[4];
+
+                    glReadPixels(
+                                    pointPos.x, 
+                                    pointPos.y, 
+                                    1, 
+                                    1,
+                                    GL_RGBA,
+                                    GL_UNSIGNED_BYTE,
+                                    stencilData
+                                );
+
+                    if(stencilData[0] > 100)
+                        this->active = true;
+
+                    delete[] stencilData;
+
+                    bindedFBO.bind();
+                    Settings::defaultFramebuffer()->setViewport();
+                }
                 
-                getModel()->Draw();
+                if(this->active){
+                    glClear(GL_DEPTH_BUFFER_BIT);
+                    ShaderSystem::buttonShader().use();
+                    getBox()->bindBuffers();
+
+                    wrap_flipHorizontalButton.pos = wrap_deleteButton.pos;
+                    wrap_flipHorizontalButton.pos.x += wrap_flipHorizontalButton.scale.x + wrap_deleteButton.scale.x;
+                    
+                    wrap_flipVerticalButton.pos = wrap_flipHorizontalButton.pos;
+                    wrap_flipVerticalButton.pos.x += wrap_flipVerticalButton.scale.x + wrap_flipHorizontalButton.scale.x;
+                    
+                    wrap_unwrapModeButton.pos = wrap_flipVerticalButton.pos;
+                    wrap_unwrapModeButton.pos.x += wrap_unwrapModeButton.scale.x + wrap_flipVerticalButton.scale.x;
+
+                    wrap_deleteButton.render(timer, !anyPanelHover);
+                    wrap_flipHorizontalButton.render(timer, !anyPanelHover);
+                    wrap_flipVerticalButton.render(timer, !anyPanelHover);
+                    wrap_unwrapModeButton.render(timer, !anyPanelHover);
                 
-                ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
-                ShaderSystem::color3d().setVec4("color", glm::vec4(1.f, 1.f, 1.f, 1.f));
-                ShaderSystem::color3d().setInt("depthToleranceMode", 1);
+                    if(wrap_deleteButton.clicked){
+                        registerTextureFieldAction("Texture field deleted", srcVector);
+                        srcVector.erase(srcVector.begin() + i);
+                        i--;
+                    }
+                    else if(wrap_flipHorizontalButton.clicked){
+                        this->threeDWrapBox.flipX = !this->threeDWrapBox.flipX;
+                        
+                        wrapTransformFlag = true;
 
-                threeDWrapBox.draw();
-                
-                unsigned char* stencilData = new unsigned char[4];
+                        threeDWrapBox.update(
+                                threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
+                                (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
+                            );  
+                    }
+                    else if(wrap_flipVerticalButton.clicked){
+                        this->threeDWrapBox.flipY = !this->threeDWrapBox.flipY;
 
-                glReadPixels(
-                                pointPos.x, 
-                                pointPos.y, 
-                                1, 
-                                1,
-                                GL_RGBA,
-                                GL_UNSIGNED_BYTE,
-                                stencilData
-                            );
+                        wrapTransformFlag = true;
 
-                if(stencilData[0] > 100)
-                    this->active = true;
+                        threeDWrapBox.update(
+                                threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
+                                (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
+                            );  
+                    }
+                    else if(wrap_unwrapModeButton.clicked){
+                        this->wrapMode = false;
 
-                delete[] stencilData;
-
-                bindedFBO.bind();
-                Settings::defaultFramebuffer()->setViewport();
+                        threeDPointTopLeft.pos = glm::vec3(0.f);
+                        threeDPointTopRight.pos = glm::vec3(0.f);
+                        threeDPointBottomLeft.pos = glm::vec3(0.f);
+                        threeDPointBottomRight.pos = glm::vec3(0.f);
+                        
+                        wrapTransformFlag = true;
+                    }
+                }
             }
         }
-        
-        if(*Mouse::RPressed() || *Mouse::MPressed())
-           this->active = false; 
 
-        if(this->active){
-            glClear(GL_DEPTH_BUFFER_BIT);
-            ShaderSystem::buttonShader().use();
-            getBox()->bindBuffers();
-
-            wrap_flipHorizontalButton.pos = wrap_deleteButton.pos;
-            wrap_flipHorizontalButton.pos.x += wrap_flipHorizontalButton.scale.x + wrap_deleteButton.scale.x;
-            
-            wrap_flipVerticalButton.pos = wrap_flipHorizontalButton.pos;
-            wrap_flipVerticalButton.pos.x += wrap_flipVerticalButton.scale.x + wrap_flipHorizontalButton.scale.x;
-            
-            wrap_unwrapModeButton.pos = wrap_flipVerticalButton.pos;
-            wrap_unwrapModeButton.pos.x += wrap_unwrapModeButton.scale.x + wrap_flipVerticalButton.scale.x;
-
-            wrap_deleteButton.render(timer, !anyPanelHover);
-            wrap_flipHorizontalButton.render(timer, !anyPanelHover);
-            wrap_flipVerticalButton.render(timer, !anyPanelHover);
-            wrap_unwrapModeButton.render(timer, !anyPanelHover);
-        
-            if(wrap_deleteButton.clicked){
-                registerTextureFieldAction("Texture field deleted", srcVector);
-                srcVector.erase(srcVector.begin() + i);
-                i--;
-            }
-            else if(wrap_flipHorizontalButton.clicked){
-                this->threeDWrapBox.flipX = !this->threeDWrapBox.flipX;
-                
-                wrapTransformFlag = true;
-
-                threeDWrapBox.update(
-                        threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
-                        (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
-                    );  
-            }
-            else if(wrap_flipVerticalButton.clicked){
-                this->threeDWrapBox.flipY = !this->threeDWrapBox.flipY;
-
-                wrapTransformFlag = true;
-
-                threeDWrapBox.update(
-                        threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
-                        (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
-                    );  
-            }
-            else if(wrap_unwrapModeButton.clicked){
-                this->wrapMode = false;
-                
-                wrapTransformFlag = true;
-            }
-        }
 
         if(*Mouse::RPressed() || *Mouse::MPressed() || *Mouse::mouseScroll()){
             wrapTransformFlag = true;
+        }
+        
+        if((this->threeDPointTopLeft.pos == glm::vec3(0.f) || this->threeDPointBottomRight.pos == glm::vec3(0.f)) && !generatingTextureMode){
+            
+            textureFields_decidingWrapPointsMode = true;
+
+            bindedFBO.bind();
+            getBox()->bindBuffers();
+            ShaderSystem::buttonShader().use();
+            glClear(GL_DEPTH_BUFFER_BIT);
+            Settings::defaultFramebuffer()->setViewport();
+            
+            Button text1 = Button(ELEMENT_STYLE_BASIC, glm::vec2(5.f,1.f), "Wrap Point Selection", Texture(), 0.f, false);
+            Button text2 = Button(ELEMENT_STYLE_BASIC, glm::vec2(16.f,1.f), "Please select 2 points from the top left to the bottom right in a way that forms a square by left-clicking on your 3D model", Texture(), 0.f, false);
+
+            text1.pos = glm::vec3(50.f, 10.f, 0.7f);
+            
+            text2.pos = text1.pos;
+            text2.pos.y += text1.scale.y + text2.scale.y;
+            
+            cancelBtn.pos = text2.pos;
+            cancelBtn.pos.y += text2.scale.y + cancelBtn.scale.y;
+        
+            text1.render(timer, false);
+            text2.render(timer, false);
+            cancelBtn.render(timer, true);
+
+            if(cancelBtn.clicked){
+                this->wrapMode = false;
+
+                threeDPointTopLeft.pos = glm::vec3(0.f);
+                threeDPointTopRight.pos = glm::vec3(0.f);
+                threeDPointBottomLeft.pos = glm::vec3(0.f);
+                threeDPointBottomRight.pos = glm::vec3(0.f);
+                
+                wrapTransformFlag = true;
+            }
         }
         
         if(!generatingTextureMode){
@@ -533,15 +577,22 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 this->transformedFlag = true;
             else
                 this->transformedFlag = false;
-
         }
 
         prevTransformedFlag = wrapTransformFlag;
+
+        if((*Mouse::RPressed() || *Mouse::MPressed()) && !textureFields_decidingWrapPointsMode)
+           this->active = false; 
 
         getBox()->bindBuffers();
         ShaderSystem::buttonShader().use();
         glClear(GL_DEPTH_BUFFER_BIT);
     }
+
+
+
+
+
     else{
         glm::vec3 orgPos = this->pos;
         glm::vec2 orgScale = this->scale;
@@ -756,6 +807,11 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
         this->prevScale = orgScale;
         this->prevRot = this->rotation;
     }
+
+    if(wrapMode != lastWrapMode)
+        this->transformedFlag = true;
+
+    lastWrapMode = wrapMode;
 }
 
 bool TextureField::isHover(){

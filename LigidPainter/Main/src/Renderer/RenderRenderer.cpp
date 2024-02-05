@@ -237,7 +237,8 @@ void Renderer::render(){
                             painter.selectedPaintingModeIndex,
                             userInterface.twoDPaintingPanel,
                             userInterface.twoDPaintingBox,
-                            false || painter.wrapMode
+                            false || painter.wrapMode,
+                            userInterface.paintingOverTextureFields
                         );
     }
 
@@ -259,7 +260,8 @@ void Renderer::render(){
                             painter.selectedPaintingModeIndex,
                             userInterface.twoDPaintingPanel,
                             userInterface.twoDPaintingBox,
-                            true
+                            true,
+                            userInterface.paintingOverTextureFields
                         );
 
         //Update the selected texture after painting

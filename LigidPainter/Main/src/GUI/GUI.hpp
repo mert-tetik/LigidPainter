@@ -69,6 +69,7 @@ public:
     Button textureDisplayingButtonIOutline;
 
     bool wrapMode = false;
+    bool lastWrapMode = false;
     ThreeDPoint threeDPointTopLeft;
     ThreeDPoint threeDPointTopRight;
     ThreeDPoint threeDPointBottomLeft;
