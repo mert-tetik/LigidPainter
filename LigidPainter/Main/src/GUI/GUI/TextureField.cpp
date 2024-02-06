@@ -364,7 +364,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
 
             getModel()->Draw();
 
-            if(!generatingTextureMode){
+            if(!generatingTextureMode && doMouseTracking){
                 threeDPointTopLeft.render(timer, !anyPanelHover, painter, false, 0.015f);
                 threeDPointTopRight.render(timer, !anyPanelHover, painter, false, 0.015f);
                 threeDPointBottomLeft.render(timer, !anyPanelHover, painter, false, 0.015f);
