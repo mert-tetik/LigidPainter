@@ -721,7 +721,7 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
         ShaderSystem::dotsShader().setFloat("scroll", 1.f);
 
         /* Render the dots */
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painting over : Edit mode : Rendering dots");
+        //LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painting over : Edit mode : Rendering dots");
 
         /* Clear the depth buffer of the current framebuffers*/
         glClear(GL_DEPTH_BUFFER_BIT);
