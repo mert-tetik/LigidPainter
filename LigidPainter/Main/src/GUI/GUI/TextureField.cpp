@@ -147,6 +147,8 @@ TextureField::TextureField(Texture texture){
     wrap_flipVerticalButton.textColor2 = glm::vec4(1.f);
     wrap_unwrapModeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1), "Unwrap", Texture(), 1.f,false);
     wrap_unwrapModeButton.textColor2 = glm::vec4(1.f);
+    wrap_detailModeButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(3,1), "Detailed", Texture(), 1.f, true);
+    wrap_detailModeButton.textColor2 = glm::vec4(1.f);
     
     textureDisplayingButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
     textureDisplayingButton.stretchTexture = true;
@@ -369,10 +371,34 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             getModel()->Draw();
 
             if(!generatingTextureMode){
-                threeDPointTopLeft.render(timer, !anyPanelHover, painter, false);
-                threeDPointTopRight.render(timer, !anyPanelHover, painter, false);
-                threeDPointBottomLeft.render(timer, !anyPanelHover, painter, false);
-                threeDPointBottomRight.render(timer, !anyPanelHover, painter, false);
+                threeDPointTopLeft.render(timer, !anyPanelHover, painter, false, 0.015f);
+                threeDPointTopRight.render(timer, !anyPanelHover, painter, false, 0.015f);
+                threeDPointBottomLeft.render(timer, !anyPanelHover, painter, false, 0.015f);
+                threeDPointBottomRight.render(timer, !anyPanelHover, painter, false, 0.015f);
+            
+                if(wrap_detailModeButton.clickState1){
+                    detailed_threeDPoint_r1_c2.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r1_c3.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r1_c4.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r2_c1.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r2_c2.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r2_c3.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r2_c4.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r2_c5.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r3_c1.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r3_c2.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r3_c3.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r3_c4.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r3_c5.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r4_c1.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r4_c2.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r4_c3.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r4_c4.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r4_c5.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r5_c2.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r5_c3.render(timer, !anyPanelHover, painter, false, 0.005f);
+                    detailed_threeDPoint_r5_c4.render(timer, !anyPanelHover, painter, false, 0.005f);
+                }
             }
 
             if(threeDWrapBox.VBO && this->threeDPointTopLeft.pos != glm::vec3(0.f) && this->threeDPointBottomRight.pos != glm::vec3(0.f)){
@@ -401,20 +427,79 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 ShaderSystem::threeDTextureRenderingShader().use();
                 ShaderSystem::threeDTextureRenderingShader().setInt("depthToleranceMode", 0);
 
-                if(threeDPointTopLeft.moving || threeDPointTopRight.moving || threeDPointBottomLeft.moving || threeDPointBottomRight.moving){
-                    threeDWrapBox.update(
-                                            threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
-                                            (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
-                                        );             
+                if(
+                        threeDPointTopLeft.moving || threeDPointTopRight.moving || threeDPointBottomLeft.moving || threeDPointBottomRight.moving ||
+                    
+                        ((detailed_threeDPoint_r1_c2.moving ||
+                        detailed_threeDPoint_r1_c3.moving ||
+                        detailed_threeDPoint_r1_c4.moving ||
+                        detailed_threeDPoint_r2_c1.moving ||
+                        detailed_threeDPoint_r2_c2.moving ||
+                        detailed_threeDPoint_r2_c3.moving ||
+                        detailed_threeDPoint_r2_c4.moving ||
+                        detailed_threeDPoint_r2_c5.moving ||
+                        detailed_threeDPoint_r3_c1.moving ||
+                        detailed_threeDPoint_r3_c2.moving ||
+                        detailed_threeDPoint_r3_c3.moving ||
+                        detailed_threeDPoint_r3_c4.moving ||
+                        detailed_threeDPoint_r3_c5.moving ||
+                        detailed_threeDPoint_r4_c1.moving ||
+                        detailed_threeDPoint_r4_c2.moving ||
+                        detailed_threeDPoint_r4_c3.moving ||
+                        detailed_threeDPoint_r4_c4.moving ||
+                        detailed_threeDPoint_r4_c5.moving ||
+                        detailed_threeDPoint_r5_c2.moving ||
+                        detailed_threeDPoint_r5_c3.moving ||
+                        detailed_threeDPoint_r5_c4.moving) && wrap_detailModeButton.clickState1)
+                    )
+                {
+                    this->updateWrapBox();
                 
                     wrapTransformFlag = true;
                 }
 
-                if(*Mouse::LClick() && !anyPanelHover && !wrap_deleteButton.hover && !wrap_flipHorizontalButton.hover && !wrap_flipVerticalButton.hover && !wrap_unwrapModeButton.hover && !cancelBtn.hover && wrap_deleteButton.hover && wrap_flipHorizontalButton.hover && wrap_flipVerticalButton.hover && wrap_unwrapModeButton.hover){
+                if(
+                    *Mouse::LClick() && 
+                    !anyPanelHover && 
+                    !wrap_deleteButton.hover && !wrap_flipHorizontalButton.hover && !wrap_flipVerticalButton.hover && !wrap_unwrapModeButton.hover && !wrap_detailModeButton.hover && 
+                    !cancelBtn.hover 
+                )
                     this->active = false;
 
+
+                if(
+                        *Mouse::LClick() && 
+                        !anyPanelHover && 
+                        !wrap_deleteButton.hover && !wrap_flipHorizontalButton.hover && !wrap_flipVerticalButton.hover && !wrap_unwrapModeButton.hover && !wrap_detailModeButton.hover && 
+                        !cancelBtn.hover &&
+                        !threeDPointTopLeft.active && !threeDPointTopRight.active && !threeDPointBottomLeft.active && !threeDPointBottomRight.active &&
+                    
+                        ((!detailed_threeDPoint_r1_c2.active &&
+                        !detailed_threeDPoint_r1_c3.active &&
+                        !detailed_threeDPoint_r1_c4.active &&
+                        !detailed_threeDPoint_r2_c1.active &&
+                        !detailed_threeDPoint_r2_c2.active &&
+                        !detailed_threeDPoint_r2_c3.active &&
+                        !detailed_threeDPoint_r2_c4.active &&
+                        !detailed_threeDPoint_r2_c5.active &&
+                        !detailed_threeDPoint_r3_c1.active &&
+                        !detailed_threeDPoint_r3_c2.active &&
+                        !detailed_threeDPoint_r3_c3.active &&
+                        !detailed_threeDPoint_r3_c4.active &&
+                        !detailed_threeDPoint_r3_c5.active &&
+                        !detailed_threeDPoint_r4_c1.active &&
+                        !detailed_threeDPoint_r4_c2.active &&
+                        !detailed_threeDPoint_r4_c3.active &&
+                        !detailed_threeDPoint_r4_c4.active &&
+                        !detailed_threeDPoint_r4_c5.active &&
+                        !detailed_threeDPoint_r5_c2.active &&
+                        !detailed_threeDPoint_r5_c3.active &&
+                        !detailed_threeDPoint_r5_c4.active) || !wrap_detailModeButton.clickState1)
+                    )
+                {
+
                     wrap_deleteButton.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f; 
-                    wrap_deleteButton.pos.x -= (wrap_deleteButton.scale.x + wrap_flipHorizontalButton.scale.x + wrap_flipVerticalButton.scale.x + wrap_unwrapModeButton.scale.x) / 1.5f; 
+                    wrap_deleteButton.pos.x -= (wrap_deleteButton.scale.x + wrap_flipHorizontalButton.scale.x + wrap_flipVerticalButton.scale.x + wrap_unwrapModeButton.scale.x + wrap_detailModeButton.scale.x) / 1.5f; 
                     wrap_deleteButton.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f; 
                     wrap_deleteButton.pos.y -= 2.f; 
                     wrap_deleteButton.pos.z = 0.7f; 
@@ -485,11 +570,15 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                     
                     wrap_unwrapModeButton.pos = wrap_flipVerticalButton.pos;
                     wrap_unwrapModeButton.pos.x += wrap_unwrapModeButton.scale.x + wrap_flipVerticalButton.scale.x;
+                    
+                    wrap_detailModeButton.pos = wrap_unwrapModeButton.pos;
+                    wrap_detailModeButton.pos.x += wrap_detailModeButton.scale.x + wrap_unwrapModeButton.scale.x;
 
                     wrap_deleteButton.render(timer, !anyPanelHover);
                     wrap_flipHorizontalButton.render(timer, !anyPanelHover);
                     wrap_flipVerticalButton.render(timer, !anyPanelHover);
                     wrap_unwrapModeButton.render(timer, !anyPanelHover);
+                    wrap_detailModeButton.render(timer, !anyPanelHover);
                 
                     if(wrap_deleteButton.clicked){
                         registerTextureFieldAction("Texture field deleted", srcVector);
@@ -501,20 +590,14 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         
                         wrapTransformFlag = true;
 
-                        threeDWrapBox.update(
-                                threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
-                                (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
-                            );  
+                        this->updateWrapBox();
                     }
                     else if(wrap_flipVerticalButton.clicked){
                         this->threeDWrapBox.flipY = !this->threeDWrapBox.flipY;
 
                         wrapTransformFlag = true;
 
-                        threeDWrapBox.update(
-                                threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
-                                (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
-                            );  
+                        this->updateWrapBox();
                     }
                     else if(wrap_unwrapModeButton.clicked){
                         this->wrapMode = false;
@@ -525,6 +608,9 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         threeDPointBottomRight.pos = glm::vec3(0.f);
                         
                         wrapTransformFlag = true;
+                    }
+                    else if(wrap_detailModeButton.hover && *Mouse::LClick()){
+                        this->setDetailedWrapPoints();
                     }
                 }
             }
@@ -827,4 +913,75 @@ bool TextureField::isHover(){
             this->cancelRotationButton.hover ||
             this->wrapModeButton.hover ||
             this->rotationAngleDisplayButton.hover;
+}
+
+void TextureField::setDetailedWrapPoints(){
+    this->threeDWrapBox.getDetailedVertices(
+                                                &detailed_threeDPoint_r1_c2.pos, &detailed_threeDPoint_r1_c2.detailI,
+                                                &detailed_threeDPoint_r1_c3.pos, &detailed_threeDPoint_r1_c3.detailI,
+                                                &detailed_threeDPoint_r1_c4.pos, &detailed_threeDPoint_r1_c4.detailI,
+
+                                                &detailed_threeDPoint_r2_c1.pos, &detailed_threeDPoint_r2_c1.detailI,
+                                                &detailed_threeDPoint_r2_c2.pos, &detailed_threeDPoint_r2_c2.detailI,
+                                                &detailed_threeDPoint_r2_c3.pos, &detailed_threeDPoint_r2_c3.detailI,
+                                                &detailed_threeDPoint_r2_c4.pos, &detailed_threeDPoint_r2_c4.detailI,
+                                                &detailed_threeDPoint_r2_c5.pos, &detailed_threeDPoint_r2_c5.detailI,
+
+                                                &detailed_threeDPoint_r3_c1.pos, &detailed_threeDPoint_r3_c1.detailI,
+                                                &detailed_threeDPoint_r3_c2.pos, &detailed_threeDPoint_r3_c2.detailI,
+                                                &detailed_threeDPoint_r3_c3.pos, &detailed_threeDPoint_r3_c3.detailI,
+                                                &detailed_threeDPoint_r3_c4.pos, &detailed_threeDPoint_r3_c4.detailI,
+                                                &detailed_threeDPoint_r3_c5.pos, &detailed_threeDPoint_r3_c5.detailI,
+                                                
+                                                &detailed_threeDPoint_r4_c1.pos, &detailed_threeDPoint_r4_c1.detailI,
+                                                &detailed_threeDPoint_r4_c2.pos, &detailed_threeDPoint_r4_c2.detailI,
+                                                &detailed_threeDPoint_r4_c3.pos, &detailed_threeDPoint_r4_c3.detailI,
+                                                &detailed_threeDPoint_r4_c4.pos, &detailed_threeDPoint_r4_c4.detailI,
+                                                &detailed_threeDPoint_r4_c5.pos, &detailed_threeDPoint_r4_c5.detailI,
+
+                                                &detailed_threeDPoint_r5_c2.pos, &detailed_threeDPoint_r5_c2.detailI,
+                                                &detailed_threeDPoint_r5_c3.pos, &detailed_threeDPoint_r5_c3.detailI,
+                                                &detailed_threeDPoint_r5_c4.pos, &detailed_threeDPoint_r5_c4.detailI
+                                            );
+}
+
+void TextureField::updateWrapBox(){
+    if(this->wrap_detailModeButton.clickState1){
+        this->threeDWrapBox.updateDetailed(
+                                                threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
+                                                (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f,
+
+                                                detailed_threeDPoint_r1_c2.pos, detailed_threeDPoint_r1_c2.detailI,
+                                                detailed_threeDPoint_r1_c3.pos, detailed_threeDPoint_r1_c3.detailI,
+                                                detailed_threeDPoint_r1_c4.pos, detailed_threeDPoint_r1_c4.detailI,
+
+                                                detailed_threeDPoint_r2_c1.pos, detailed_threeDPoint_r2_c1.detailI,
+                                                detailed_threeDPoint_r2_c2.pos, detailed_threeDPoint_r2_c2.detailI,
+                                                detailed_threeDPoint_r2_c3.pos, detailed_threeDPoint_r2_c3.detailI,
+                                                detailed_threeDPoint_r2_c4.pos, detailed_threeDPoint_r2_c4.detailI,
+                                                detailed_threeDPoint_r2_c5.pos, detailed_threeDPoint_r2_c5.detailI,
+
+                                                detailed_threeDPoint_r3_c1.pos, detailed_threeDPoint_r3_c1.detailI,
+                                                detailed_threeDPoint_r3_c2.pos, detailed_threeDPoint_r3_c2.detailI,
+                                                detailed_threeDPoint_r3_c3.pos, detailed_threeDPoint_r3_c3.detailI,
+                                                detailed_threeDPoint_r3_c4.pos, detailed_threeDPoint_r3_c4.detailI,
+                                                detailed_threeDPoint_r3_c5.pos, detailed_threeDPoint_r3_c5.detailI,
+                                                
+                                                detailed_threeDPoint_r4_c1.pos, detailed_threeDPoint_r4_c1.detailI,
+                                                detailed_threeDPoint_r4_c2.pos, detailed_threeDPoint_r4_c2.detailI,
+                                                detailed_threeDPoint_r4_c3.pos, detailed_threeDPoint_r4_c3.detailI,
+                                                detailed_threeDPoint_r4_c4.pos, detailed_threeDPoint_r4_c4.detailI,
+                                                detailed_threeDPoint_r4_c5.pos, detailed_threeDPoint_r4_c5.detailI,
+
+                                                detailed_threeDPoint_r5_c2.pos, detailed_threeDPoint_r5_c2.detailI,
+                                                detailed_threeDPoint_r5_c3.pos, detailed_threeDPoint_r5_c3.detailI,
+                                                detailed_threeDPoint_r5_c4.pos, detailed_threeDPoint_r5_c4.detailI
+                                            );
+    }
+    else{
+        this->threeDWrapBox.update(
+                                threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
+                                (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
+                            );        
+    }
 }

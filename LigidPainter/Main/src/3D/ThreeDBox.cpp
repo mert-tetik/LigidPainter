@@ -91,9 +91,7 @@ glm::vec3 calculateNormal(const glm::vec3& v0, const glm::vec3& v1, const glm::v
     return normal;
 }
 
-
-void subdivideMesh(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, std::vector<Vertex>& meshData, std::vector<unsigned int>& meshIndices, glm::vec3 normal, int subdivisions, bool flipX, bool flipY) {
-    
+static void initMeshData(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal, std::vector<Vertex>& meshData, std::vector<unsigned int>& meshIndices, bool flipX, bool flipY){
     Vertex topLeftVert = Vertex(pos_topLeft, glm::vec2((float)flipX, (float)!flipY), normal, glm::vec3(0.f), glm::vec3(0.f));
     Vertex topRightVert = Vertex(pos_topRight, glm::vec2((float)!flipX, (float)!flipY), normal, glm::vec3(0.f), glm::vec3(0.f));
     Vertex bottomLeftVert = Vertex(pos_bottomLeft, glm::vec2((float)flipX, (float)flipY), normal, glm::vec3(0.f), glm::vec3(0.f));
@@ -111,6 +109,9 @@ void subdivideMesh(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_
 
                         1,2,3
                     };
+}
+
+void subdivideMesh(std::vector<Vertex>& meshData, std::vector<unsigned int>& meshIndices, int subdivisions) {
     
     for (size_t i = 0; i < subdivisions; i++)
     {
@@ -230,11 +231,118 @@ void ThreeDBox::projectToModel(std::vector<Vertex>& vertices, glm::vec3 center){
     delete[] pxs;
 }
 
+struct ThreedPointReplica{
+    glm::vec3* point;
+    int* index;
+
+    ThreedPointReplica(){}
+
+    ThreedPointReplica(glm::vec3* point, int* index){
+        this->point = point;
+        this->index = index;
+    }
+};
+
+static bool pointsArrayContains(std::vector<ThreedPointReplica> points, glm::vec3 point){
+    for (size_t i = 0; i < points.size(); i++)
+    {
+        if(*points[i].point == point)
+            return true;
+    }
+    
+    return false;
+}
+
+
+void ThreeDBox::getDetailedVertices(
+                                        glm::vec3* detailed_threeDPoint_r1_c2, int* detailed_threeDPoint_r1_c2_index, 
+                                        glm::vec3* detailed_threeDPoint_r1_c3, int* detailed_threeDPoint_r1_c3_index, 
+                                        glm::vec3* detailed_threeDPoint_r1_c4, int* detailed_threeDPoint_r1_c4_index, 
+                                        glm::vec3* detailed_threeDPoint_r2_c1, int* detailed_threeDPoint_r2_c1_index, 
+                                        glm::vec3* detailed_threeDPoint_r2_c2, int* detailed_threeDPoint_r2_c2_index, 
+                                        glm::vec3* detailed_threeDPoint_r2_c3, int* detailed_threeDPoint_r2_c3_index, 
+                                        glm::vec3* detailed_threeDPoint_r2_c4, int* detailed_threeDPoint_r2_c4_index, 
+                                        glm::vec3* detailed_threeDPoint_r2_c5, int* detailed_threeDPoint_r2_c5_index, 
+                                        glm::vec3* detailed_threeDPoint_r3_c1, int* detailed_threeDPoint_r3_c1_index, 
+                                        glm::vec3* detailed_threeDPoint_r3_c2, int* detailed_threeDPoint_r3_c2_index, 
+                                        glm::vec3* detailed_threeDPoint_r3_c3, int* detailed_threeDPoint_r3_c3_index, 
+                                        glm::vec3* detailed_threeDPoint_r3_c4, int* detailed_threeDPoint_r3_c4_index, 
+                                        glm::vec3* detailed_threeDPoint_r3_c5, int* detailed_threeDPoint_r3_c5_index, 
+                                        glm::vec3* detailed_threeDPoint_r4_c1, int* detailed_threeDPoint_r4_c1_index, 
+                                        glm::vec3* detailed_threeDPoint_r4_c2, int* detailed_threeDPoint_r4_c2_index, 
+                                        glm::vec3* detailed_threeDPoint_r4_c3, int* detailed_threeDPoint_r4_c3_index, 
+                                        glm::vec3* detailed_threeDPoint_r4_c4, int* detailed_threeDPoint_r4_c4_index, 
+                                        glm::vec3* detailed_threeDPoint_r4_c5, int* detailed_threeDPoint_r4_c5_index, 
+                                        glm::vec3* detailed_threeDPoint_r5_c2, int* detailed_threeDPoint_r5_c2_index, 
+                                        glm::vec3* detailed_threeDPoint_r5_c3, int* detailed_threeDPoint_r5_c3_index, 
+                                        glm::vec3* detailed_threeDPoint_r5_c4, int* detailed_threeDPoint_r5_c4_index
+                                    )
+{
+    std::vector<Vertex> vertices;
+    std::vector<unsigned int> indices;
+    initMeshData(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, normal, vertices, indices, this->flipX, this->flipY);
+    subdivideMesh(vertices, indices, 2);
+    projectToModel(vertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
+
+    glm::vec3 pos_topLeft = vertices[0].Position;
+    glm::vec3 pos_topRight = vertices[9].Position;
+    glm::vec3 pos_bottomLeft = vertices[18].Position;
+    glm::vec3 pos_bottomRight = vertices[27].Position;
+
+    std::vector<ThreedPointReplica> points = {
+                                        ThreedPointReplica(detailed_threeDPoint_r1_c2, detailed_threeDPoint_r1_c2_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r1_c3, detailed_threeDPoint_r1_c3_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r1_c4, detailed_threeDPoint_r1_c4_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r2_c1, detailed_threeDPoint_r2_c1_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r2_c2, detailed_threeDPoint_r2_c2_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r2_c3, detailed_threeDPoint_r2_c3_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r2_c4, detailed_threeDPoint_r2_c4_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r2_c5, detailed_threeDPoint_r2_c5_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r3_c1, detailed_threeDPoint_r3_c1_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r3_c2, detailed_threeDPoint_r3_c2_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r3_c3, detailed_threeDPoint_r3_c3_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r3_c4, detailed_threeDPoint_r3_c4_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r3_c5, detailed_threeDPoint_r3_c5_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r4_c1, detailed_threeDPoint_r4_c1_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r4_c2, detailed_threeDPoint_r4_c2_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r4_c3, detailed_threeDPoint_r4_c3_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r4_c4, detailed_threeDPoint_r4_c4_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r4_c5, detailed_threeDPoint_r4_c5_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r5_c2, detailed_threeDPoint_r5_c2_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r5_c3, detailed_threeDPoint_r5_c3_index), 
+                                        ThreedPointReplica(detailed_threeDPoint_r5_c4, detailed_threeDPoint_r5_c4_index),
+                                        ThreedPointReplica(&pos_topLeft, nullptr),
+                                        ThreedPointReplica(&pos_topRight, nullptr),
+                                        ThreedPointReplica(&pos_bottomLeft, nullptr),
+                                        ThreedPointReplica(&pos_bottomRight, nullptr)
+                                    };
+
+    int pI = 0;
+    for (size_t i = 0; i < vertices.size(); i++)
+    {
+        if(!pointsArrayContains(points, vertices[i].Position)){
+            if(pI < points.size()){
+                *points[pI].point = vertices[i].Position;
+                *points[pI].index = i;
+                pI++;
+            }
+        }
+    }
+}
+
+
 void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal){
     
+    this->pos_topLeft = pos_topLeft;
+    this->pos_topRight = pos_topRight;
+    this->pos_bottomLeft = pos_bottomLeft;
+    this->pos_bottomRight = pos_bottomRight;
+    this->normal = normal;
+
     LigidGL::cleanGLErrors();
 
-    subdivideMesh(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, this->boxVertices, this->boxIndices, normal, 4, this->flipX, this->flipY);
+    initMeshData(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, normal, this->boxVertices, this->boxIndices, this->flipX, this->flipY);
+    subdivideMesh(this->boxVertices, this->boxIndices, 4);    
     projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
 
     //Generate vertex objects
@@ -301,11 +409,122 @@ void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 po
 }
 
 void ThreeDBox::update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal){
+    
+    this->pos_topLeft = pos_topLeft;
+    this->pos_topRight = pos_topRight;
+    this->pos_bottomLeft = pos_bottomLeft;
+    this->pos_bottomRight = pos_bottomRight;
+    this->normal = normal;
+    
     LigidGL::cleanGLErrors();
 
-    subdivideMesh(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, this->boxVertices, this->boxIndices, normal, 4, this->flipX, this->flipY);
+    initMeshData(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, normal, this->boxVertices, this->boxIndices, this->flipX, this->flipY);
+    subdivideMesh(this->boxVertices, this->boxIndices, 4);    
     projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
 
+    glBindVertexArray(VAO);
+    LigidGL::testGLError("ThreeDBox::update : Binding VAO");
+    
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    LigidGL::testGLError("ThreeDBox::update : Binding VBO");
+    glBufferSubData(GL_ARRAY_BUFFER, 0, boxVertices.size() * sizeof(Vertex), &boxVertices[0]);
+    LigidGL::testGLError("ThreeDBox::update : Changing data in the allocated memory for the VBO");
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    LigidGL::testGLError("ThreeDBox::update : Binding EBO");
+
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, this->boxIndices.size() * sizeof(unsigned int), &this->boxIndices[0]);
+    LigidGL::testGLError("ThreeDBox::update : Changing data in the allocated memory for the EBO");
+}
+
+void ThreeDBox::updateDetailed(
+                                glm::vec3 pos_topLeft, 
+                                glm::vec3 pos_topRight, 
+                                glm::vec3 pos_bottomLeft, 
+                                glm::vec3 pos_bottomRight, 
+                                glm::vec3 normal,
+                                
+                                glm::vec3 detailed_threeDPoint_r1_c2, int detailed_threeDPoint_r1_c2_index, 
+                                glm::vec3 detailed_threeDPoint_r1_c3, int detailed_threeDPoint_r1_c3_index, 
+                                glm::vec3 detailed_threeDPoint_r1_c4, int detailed_threeDPoint_r1_c4_index, 
+                                glm::vec3 detailed_threeDPoint_r2_c1, int detailed_threeDPoint_r2_c1_index, 
+                                glm::vec3 detailed_threeDPoint_r2_c2, int detailed_threeDPoint_r2_c2_index, 
+                                glm::vec3 detailed_threeDPoint_r2_c3, int detailed_threeDPoint_r2_c3_index, 
+                                glm::vec3 detailed_threeDPoint_r2_c4, int detailed_threeDPoint_r2_c4_index, 
+                                glm::vec3 detailed_threeDPoint_r2_c5, int detailed_threeDPoint_r2_c5_index, 
+                                glm::vec3 detailed_threeDPoint_r3_c1, int detailed_threeDPoint_r3_c1_index, 
+                                glm::vec3 detailed_threeDPoint_r3_c2, int detailed_threeDPoint_r3_c2_index, 
+                                glm::vec3 detailed_threeDPoint_r3_c3, int detailed_threeDPoint_r3_c3_index, 
+                                glm::vec3 detailed_threeDPoint_r3_c4, int detailed_threeDPoint_r3_c4_index, 
+                                glm::vec3 detailed_threeDPoint_r3_c5, int detailed_threeDPoint_r3_c5_index, 
+                                glm::vec3 detailed_threeDPoint_r4_c1, int detailed_threeDPoint_r4_c1_index, 
+                                glm::vec3 detailed_threeDPoint_r4_c2, int detailed_threeDPoint_r4_c2_index, 
+                                glm::vec3 detailed_threeDPoint_r4_c3, int detailed_threeDPoint_r4_c3_index, 
+                                glm::vec3 detailed_threeDPoint_r4_c4, int detailed_threeDPoint_r4_c4_index, 
+                                glm::vec3 detailed_threeDPoint_r4_c5, int detailed_threeDPoint_r4_c5_index, 
+                                glm::vec3 detailed_threeDPoint_r5_c2, int detailed_threeDPoint_r5_c2_index, 
+                                glm::vec3 detailed_threeDPoint_r5_c3, int detailed_threeDPoint_r5_c3_index, 
+                                glm::vec3 detailed_threeDPoint_r5_c4, int detailed_threeDPoint_r5_c4_index
+                            )
+{
+    
+    this->pos_topLeft = pos_topLeft;
+    this->pos_topRight = pos_topRight;
+    this->pos_bottomLeft = pos_bottomLeft;
+    this->pos_bottomRight = pos_bottomRight;
+    this->normal = normal;
+    
+    LigidGL::cleanGLErrors();
+
+    initMeshData(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, normal, this->boxVertices, this->boxIndices, this->flipX, this->flipY);
+    
+    subdivideMesh(this->boxVertices, this->boxIndices, 2);        
+
+    glm::vec3 topLeft = this->boxVertices[0].Position;
+    glm::vec3 topRight = this->boxVertices[9].Position;
+    glm::vec3 bottomLeft = this->boxVertices[18].Position;
+    glm::vec3 bottomRight = this->boxVertices[27].Position;
+
+    std::vector<ThreedPointReplica> points = {
+                                        ThreedPointReplica(&detailed_threeDPoint_r1_c2, &detailed_threeDPoint_r1_c2_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r1_c3, &detailed_threeDPoint_r1_c3_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r1_c4, &detailed_threeDPoint_r1_c4_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r2_c1, &detailed_threeDPoint_r2_c1_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r2_c2, &detailed_threeDPoint_r2_c2_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r2_c3, &detailed_threeDPoint_r2_c3_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r2_c4, &detailed_threeDPoint_r2_c4_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r2_c5, &detailed_threeDPoint_r2_c5_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r3_c1, &detailed_threeDPoint_r3_c1_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r3_c2, &detailed_threeDPoint_r3_c2_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r3_c3, &detailed_threeDPoint_r3_c3_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r3_c4, &detailed_threeDPoint_r3_c4_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r3_c5, &detailed_threeDPoint_r3_c5_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r4_c1, &detailed_threeDPoint_r4_c1_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r4_c2, &detailed_threeDPoint_r4_c2_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r4_c3, &detailed_threeDPoint_r4_c3_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r4_c4, &detailed_threeDPoint_r4_c4_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r4_c5, &detailed_threeDPoint_r4_c5_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r5_c2, &detailed_threeDPoint_r5_c2_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r5_c3, &detailed_threeDPoint_r5_c3_index),
+                                        ThreedPointReplica(&detailed_threeDPoint_r5_c4, &detailed_threeDPoint_r5_c4_index)
+                                    };
+
+    for (size_t i = 0; i < points.size(); i++)
+    {
+        glm::vec3 pos = this->boxVertices[*points[i].index].Position;
+        
+        for (size_t bvi = 0; bvi < this->boxVertices.size(); bvi++)
+        {
+            if(pos == this->boxVertices[bvi].Position)
+                this->boxVertices[bvi].Position = *points[i].point;
+        }
+        
+    }
+
+    subdivideMesh(this->boxVertices, this->boxIndices, 2);        
+    
+    projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
+    
     glBindVertexArray(VAO);
     LigidGL::testGLError("ThreeDBox::update : Binding VAO");
     

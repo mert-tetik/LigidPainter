@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static Texture threeDPointsStencilTexture;
 static Framebuffer threeDPointsStencilFBO;
 
-void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, bool stencilTest){
+void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius){
 
     Framebuffer bindedFBO;
     bindedFBO.makeCurrentlyBindedFBO();
@@ -43,9 +43,9 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
     transMat = glm::translate(transMat, this->pos);
     
     if(stencilTest)
-        transMat = glm::scale(transMat, glm::vec3(0.05f));
+        transMat = glm::scale(transMat, glm::vec3(radius * 3.5f));
     else
-        transMat = glm::scale(transMat, glm::vec3(0.015f));
+        transMat = glm::scale(transMat, glm::vec3(radius));
 
     ShaderSystem::color3d().use();
     ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
@@ -91,7 +91,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         
         getModel()->Draw();
 
-        this->render(timer, false, painter, true);
+        this->render(timer, false, painter, true, radius);
 
         unsigned char* stencilData = new unsigned char[4];
 

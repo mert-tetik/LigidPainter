@@ -50,6 +50,8 @@ struct ThreeDPoint{
     bool active = false;
     bool moving = false;
 
+    int detailI = 0;
+
     Button btn;
     
     ThreeDPoint(){}
@@ -58,7 +60,7 @@ struct ThreeDPoint{
         this->pos = pos;
     }
 
-    void render(Timer& timer, bool doMouseTracking, Painter& painter, bool stencilTest);
+    void render(Timer& timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius);
 };
 
 /// Used to render and handle the movable, resizable or rotatable dynamic textures (Used for painting over and layer system) 
@@ -70,10 +72,38 @@ public:
 
     bool wrapMode = false;
     bool lastWrapMode = false;
+    
     ThreeDPoint threeDPointTopLeft;
     ThreeDPoint threeDPointTopRight;
     ThreeDPoint threeDPointBottomLeft;
     ThreeDPoint threeDPointBottomRight;
+    
+    ThreeDPoint detailed_threeDPoint_r1_c2;
+    ThreeDPoint detailed_threeDPoint_r1_c3;
+    ThreeDPoint detailed_threeDPoint_r1_c4;
+
+    ThreeDPoint detailed_threeDPoint_r2_c1;
+    ThreeDPoint detailed_threeDPoint_r2_c2;
+    ThreeDPoint detailed_threeDPoint_r2_c3;
+    ThreeDPoint detailed_threeDPoint_r2_c4;
+    ThreeDPoint detailed_threeDPoint_r2_c5;
+    
+    ThreeDPoint detailed_threeDPoint_r3_c1;
+    ThreeDPoint detailed_threeDPoint_r3_c2;
+    ThreeDPoint detailed_threeDPoint_r3_c3;
+    ThreeDPoint detailed_threeDPoint_r3_c4;
+    ThreeDPoint detailed_threeDPoint_r3_c5;
+    
+    ThreeDPoint detailed_threeDPoint_r4_c1;
+    ThreeDPoint detailed_threeDPoint_r4_c2;
+    ThreeDPoint detailed_threeDPoint_r4_c3;
+    ThreeDPoint detailed_threeDPoint_r4_c4;
+    ThreeDPoint detailed_threeDPoint_r4_c5;
+    
+    ThreeDPoint detailed_threeDPoint_r5_c2;
+    ThreeDPoint detailed_threeDPoint_r5_c3;
+    ThreeDPoint detailed_threeDPoint_r5_c4;
+    
     ThreeDBox threeDWrapBox;
 
     glm::vec2 scale;
@@ -103,6 +133,7 @@ public:
     Button wrap_flipHorizontalButton;
     Button wrap_flipVerticalButton;
     Button wrap_unwrapModeButton;
+    Button wrap_detailModeButton;
 
     bool active = false;
 
@@ -122,6 +153,10 @@ private:
     glm::vec2 prevScale;
     glm::vec3 prevPos;
     bool prevTransformedFlag = false;
+
+    void setDetailedWrapPoints();
+    void updateWrapBox();
+    
 };
 
 class UI{
