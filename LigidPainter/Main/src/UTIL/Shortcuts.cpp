@@ -74,37 +74,37 @@ bool shortcuts_CTRL_SHIFT_S(){
     return (IS_PRESSED(CTRL) && IS_PRESSED(SHIFT) && IS_CLICKED(LIGIDGL_KEY_S));
 }
 bool shortcuts_F1(){
-    return (IS_CLICKED(LIGIDGL_KEY_F1));
+    return (IS_CLICKED(LIGIDGL_KEY_F1)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 bool shortcuts_F2(){
-    return (IS_CLICKED(LIGIDGL_KEY_F2));
+    return (IS_CLICKED(LIGIDGL_KEY_F2)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 bool shortcuts_F3(){
-    return (IS_CLICKED(LIGIDGL_KEY_F3));
+    return (IS_CLICKED(LIGIDGL_KEY_F3)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 bool shortcuts_F4(){
-    return (IS_CLICKED(LIGIDGL_KEY_F4));
+    return (IS_CLICKED(LIGIDGL_KEY_F4)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 bool shortcuts_F5(){
-    return (IS_CLICKED(LIGIDGL_KEY_F5));
+    return (IS_CLICKED(LIGIDGL_KEY_F5)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 bool shortcuts_F6(){
-    return (IS_CLICKED(LIGIDGL_KEY_F6));
+    return (IS_CLICKED(LIGIDGL_KEY_F6)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 bool shortcuts_F7(){
-    return (IS_CLICKED(LIGIDGL_KEY_F7));
+    return (IS_CLICKED(LIGIDGL_KEY_F7)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 bool shortcuts_F8(){
-    return (IS_CLICKED(LIGIDGL_KEY_F8));
+    return (IS_CLICKED(LIGIDGL_KEY_F8)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 bool shortcuts_F9(){
-    return (IS_CLICKED(LIGIDGL_KEY_F9));
+    return (IS_CLICKED(LIGIDGL_KEY_F9)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 bool shortcuts_F10(){
-    return (IS_CLICKED(LIGIDGL_KEY_F10));
+    return (IS_CLICKED(LIGIDGL_KEY_F10)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 bool shortcuts_F11(){
-    return (IS_CLICKED(LIGIDGL_KEY_F11));
+    return (IS_CLICKED(LIGIDGL_KEY_F11)) && !IS_PRESSED(SHIFT) && IS_PRESSED(CTRL);
 }
 
 bool shortcuts_anyShortCut(){
