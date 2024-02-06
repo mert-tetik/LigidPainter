@@ -28,7 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 in vec2 TexCoords;
 
 //Constant max position count value 
-const int maxPosSize = 50;
+const int maxPosSize = 80;
 
 //Positions of the stroke
 uniform vec2 positions[maxPosSize];
