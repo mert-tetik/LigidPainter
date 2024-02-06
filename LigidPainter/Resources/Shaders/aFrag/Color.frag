@@ -12,5 +12,5 @@ void main(){
     gl_FragDepth = gl_FragCoord.z;
     
     if(depthToleranceMode == 1)
-        gl_FragDepth = gl_FragCoord.z - 0.001;
+        gl_FragDepth = gl_FragCoord.z - 0.003;
 }
