@@ -370,7 +370,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 threeDPointBottomLeft.render(timer, !anyPanelHover, painter, false, 0.015f);
                 threeDPointBottomRight.render(timer, !anyPanelHover, painter, false, 0.015f);
             
-                if(wrap_detailModeButton.clickState1 && (threeDPointBottomLeft.pos == glm::vec3(0.f) || threeDPointBottomRight.pos == glm::vec3(0.f))){
+                if(wrap_detailModeButton.clickState1 && (threeDPointBottomLeft.pos != glm::vec3(0.f) || threeDPointBottomRight.pos != glm::vec3(0.f))){
                     detailed_threeDPoint_r1_c2.render(timer, !anyPanelHover, painter, false, 0.005f);
                     detailed_threeDPoint_r1_c3.render(timer, !anyPanelHover, painter, false, 0.005f);
                     detailed_threeDPoint_r1_c4.render(timer, !anyPanelHover, painter, false, 0.005f);
@@ -931,6 +931,8 @@ void TextureField::setDetailedWrapPoints(){
                                                 &detailed_threeDPoint_r5_c3.pos, &detailed_threeDPoint_r5_c3.detailI,
                                                 &detailed_threeDPoint_r5_c4.pos, &detailed_threeDPoint_r5_c4.detailI
                                             );
+
+    this->updateWrapBox();
 }
 
 void TextureField::updateWrapBox(){
