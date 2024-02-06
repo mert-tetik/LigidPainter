@@ -408,7 +408,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 else
                     ShaderSystem::threeDTextureRenderingShader().setFloat("opacity", 0.5f);
                 
-                if(this->active)
+                if(this->active && !generatingTextureMode)
                     ShaderSystem::threeDTextureRenderingShader().setVec3("mixClr", ColorPalette::themeColor);
                 else
                     ShaderSystem::threeDTextureRenderingShader().setVec3("mixClr", glm::vec3(0.f));
