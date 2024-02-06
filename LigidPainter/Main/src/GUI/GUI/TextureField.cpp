@@ -309,10 +309,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                     this->threeDPointTopRight.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
 
                     if(tryCounter > 50){
-                        threeDPointTopLeft.pos = glm::vec3(0.f);
-                        threeDPointTopRight.pos = glm::vec3(0.f);
-                        threeDPointBottomLeft.pos = glm::vec3(0.f);
-                        threeDPointBottomRight.pos = glm::vec3(0.f);
+                        this->unplaceWrapPoints();
 
                         LGDLOG::start << "ERROR : Invalid point for the wrapped texture field!" << LGDLOG::end;
 
@@ -332,10 +329,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                     this->threeDPointBottomLeft.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
                 
                     if(tryCounter > 50){
-                        threeDPointTopLeft.pos = glm::vec3(0.f);
-                        threeDPointTopRight.pos = glm::vec3(0.f);
-                        threeDPointBottomLeft.pos = glm::vec3(0.f);
-                        threeDPointBottomRight.pos = glm::vec3(0.f);
+                        this->unplaceWrapPoints();
 
                         LGDLOG::start << "ERROR : Invalid point for the wrapped texture field!" << LGDLOG::end;
 
@@ -376,7 +370,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 threeDPointBottomLeft.render(timer, !anyPanelHover, painter, false, 0.015f);
                 threeDPointBottomRight.render(timer, !anyPanelHover, painter, false, 0.015f);
             
-                if(wrap_detailModeButton.clickState1){
+                if(wrap_detailModeButton.clickState1 && (threeDPointBottomLeft.pos == glm::vec3(0.f) || threeDPointBottomRight.pos == glm::vec3(0.f))){
                     detailed_threeDPoint_r1_c2.render(timer, !anyPanelHover, painter, false, 0.005f);
                     detailed_threeDPoint_r1_c3.render(timer, !anyPanelHover, painter, false, 0.005f);
                     detailed_threeDPoint_r1_c4.render(timer, !anyPanelHover, painter, false, 0.005f);
@@ -602,10 +596,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                     else if(wrap_unwrapModeButton.clicked){
                         this->wrapMode = false;
 
-                        threeDPointTopLeft.pos = glm::vec3(0.f);
-                        threeDPointTopRight.pos = glm::vec3(0.f);
-                        threeDPointBottomLeft.pos = glm::vec3(0.f);
-                        threeDPointBottomRight.pos = glm::vec3(0.f);
+                        this->unplaceWrapPoints();
                         
                         wrapTransformFlag = true;
                     }
@@ -649,10 +640,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             if(cancelBtn.clicked){
                 this->wrapMode = false;
 
-                threeDPointTopLeft.pos = glm::vec3(0.f);
-                threeDPointTopRight.pos = glm::vec3(0.f);
-                threeDPointBottomLeft.pos = glm::vec3(0.f);
-                threeDPointBottomRight.pos = glm::vec3(0.f);
+                this->unplaceWrapPoints();
                 
                 wrapTransformFlag = true;
             }
@@ -984,4 +972,35 @@ void TextureField::updateWrapBox(){
                                 (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
                             );        
     }
+}
+
+void TextureField::unplaceWrapPoints(){
+    threeDPointTopLeft.pos = glm::vec3(0.f);
+    threeDPointTopRight.pos = glm::vec3(0.f);
+    threeDPointBottomLeft.pos = glm::vec3(0.f);
+    threeDPointBottomRight.pos = glm::vec3(0.f);
+
+    detailed_threeDPoint_r1_c2.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r1_c3.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r1_c4.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r2_c1.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r2_c2.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r2_c3.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r2_c4.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r2_c5.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r3_c1.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r3_c2.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r3_c3.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r3_c4.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r3_c5.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r4_c1.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r4_c2.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r4_c3.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r4_c4.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r4_c5.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r5_c2.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r5_c3.pos = glm::vec3(0.f);
+    detailed_threeDPoint_r5_c4.pos = glm::vec3(0.f);
+
+    this->wrap_detailModeButton.clickState1 = false;
 }

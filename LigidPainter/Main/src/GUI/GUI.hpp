@@ -156,6 +156,7 @@ private:
 
     void setDetailedWrapPoints();
     void updateWrapBox();
+    void unplaceWrapPoints();
     
 };
 
