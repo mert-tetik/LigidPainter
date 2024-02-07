@@ -154,8 +154,8 @@ private:
     glm::vec3 prevPos;
     bool prevTransformedFlag = false;
 
-    void setDetailedWrapPoints();
-    void updateWrapBox();
+    void setDetailedWrapPoints(Painter& painter);
+    void updateWrapBox(Painter& painter);
     void unplaceWrapPoints();
     
 };

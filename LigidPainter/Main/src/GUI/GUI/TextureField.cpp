@@ -342,7 +342,8 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 
                 threeDWrapBox.init(
                                         threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
-                                        (threeDPointTopLeft.normal + threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
+                                        (threeDPointTopLeft.normal + threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f,
+                                        painter
                                     );
 
                 wrapTransformFlag = true;
@@ -447,7 +448,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         detailed_threeDPoint_r5_c4.moving) && wrap_detailModeButton.clickState1)
                     )
                 {
-                    this->updateWrapBox();
+                    this->updateWrapBox(painter);
                 
                     wrapTransformFlag = true;
                 }
@@ -584,14 +585,14 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         
                         wrapTransformFlag = true;
 
-                        this->updateWrapBox();
+                        this->updateWrapBox(painter);
                     }
                     else if(wrap_flipVerticalButton.clicked){
                         this->threeDWrapBox.flipY = !this->threeDWrapBox.flipY;
 
                         wrapTransformFlag = true;
 
-                        this->updateWrapBox();
+                        this->updateWrapBox(painter);
                     }
                     else if(wrap_unwrapModeButton.clicked){
                         this->wrapMode = false;
@@ -601,7 +602,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         wrapTransformFlag = true;
                     }
                     else if(wrap_detailModeButton.hover && *Mouse::LClick()){
-                        this->setDetailedWrapPoints();
+                        this->setDetailedWrapPoints(painter);
                     }
                 }
             }
@@ -903,7 +904,7 @@ bool TextureField::isHover(){
             this->rotationAngleDisplayButton.hover;
 }
 
-void TextureField::setDetailedWrapPoints(){
+void TextureField::setDetailedWrapPoints(Painter& painter){
     this->threeDWrapBox.getDetailedVertices(
                                                 &detailed_threeDPoint_r1_c2.pos, &detailed_threeDPoint_r1_c2.detailI,
                                                 &detailed_threeDPoint_r1_c3.pos, &detailed_threeDPoint_r1_c3.detailI,
@@ -929,13 +930,14 @@ void TextureField::setDetailedWrapPoints(){
 
                                                 &detailed_threeDPoint_r5_c2.pos, &detailed_threeDPoint_r5_c2.detailI,
                                                 &detailed_threeDPoint_r5_c3.pos, &detailed_threeDPoint_r5_c3.detailI,
-                                                &detailed_threeDPoint_r5_c4.pos, &detailed_threeDPoint_r5_c4.detailI
+                                                &detailed_threeDPoint_r5_c4.pos, &detailed_threeDPoint_r5_c4.detailI,
+                                                painter
                                             );
 
-    this->updateWrapBox();
+    this->updateWrapBox(painter);
 }
 
-void TextureField::updateWrapBox(){
+void TextureField::updateWrapBox(Painter& painter){
     if(this->wrap_detailModeButton.clickState1){
         this->threeDWrapBox.updateDetailed(
                                                 threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
@@ -965,13 +967,15 @@ void TextureField::updateWrapBox(){
 
                                                 detailed_threeDPoint_r5_c2.pos, detailed_threeDPoint_r5_c2.detailI,
                                                 detailed_threeDPoint_r5_c3.pos, detailed_threeDPoint_r5_c3.detailI,
-                                                detailed_threeDPoint_r5_c4.pos, detailed_threeDPoint_r5_c4.detailI
+                                                detailed_threeDPoint_r5_c4.pos, detailed_threeDPoint_r5_c4.detailI,
+                                                painter
                                             );
     }
     else{
         this->threeDWrapBox.update(
                                 threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
-                                (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
+                                (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f,
+                                painter
                             );        
     }
 }

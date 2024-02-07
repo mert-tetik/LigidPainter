@@ -259,9 +259,22 @@ void Painter::doPaint(
         ShaderSystem::renderModelData().setMat4("modelMatrix",getScene()->transformMatrix);
         ShaderSystem::renderModelData().setInt("state", 1);
 
+        ShaderSystem::renderModelData().setInt("usingMeshSelection",this->faceSelection.activated);
+        ShaderSystem::renderModelData().setInt("hideUnselected",this->faceSelection.hideUnselected);
+        ShaderSystem::renderModelData().setInt("selectedPrimitiveIDS", 0);
+        ShaderSystem::renderModelData().setInt("meshMask", 1);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, this->faceSelection.selectedFaces.ID);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
+        
+
         //Draw the selected mesh in 3D
-        if(selectedMeshIndex < getModel()->meshes.size()){
-            getModel()->meshes[selectedMeshIndex].Draw(false);
+        if(this->selectedMeshIndex < getModel()->meshes.size()){
+            ShaderSystem::renderModelData().setInt("primitiveCount", getModel()->meshes[this->selectedMeshIndex].indices.size() / 3);
+            getModel()->meshes[this->selectedMeshIndex].Draw(false);
         }
 
         float* pxs = new float[res.x * res.y * 4]; 

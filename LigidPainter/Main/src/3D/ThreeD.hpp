@@ -308,9 +308,9 @@ public:
 
     ThreeDBox();
 
-    void init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal);
-    void update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal);
-    void projectToModel(std::vector<Vertex>& vertices, glm::vec3 center);
+    void init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal, Painter& painter);
+    void update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal, Painter& painter);
+    void projectToModel(std::vector<Vertex>& vertices, glm::vec3 center, Painter& painter);
 
     void updateDetailed(
                             glm::vec3 pos_topLeft, 
@@ -339,7 +339,8 @@ public:
                             glm::vec3 detailed_threeDPoint_r4_c5, int detailed_threeDPoint_r4_c5_index, 
                             glm::vec3 detailed_threeDPoint_r5_c2, int detailed_threeDPoint_r5_c2_index, 
                             glm::vec3 detailed_threeDPoint_r5_c3, int detailed_threeDPoint_r5_c3_index, 
-                            glm::vec3 detailed_threeDPoint_r5_c4, int detailed_threeDPoint_r5_c4_index
+                            glm::vec3 detailed_threeDPoint_r5_c4, int detailed_threeDPoint_r5_c4_index,
+                            Painter& painter
                         );
     
     void getDetailedVertices(
@@ -363,7 +364,8 @@ public:
                                 glm::vec3* detailed_threeDPoint_r4_c5, int* detailed_threeDPoint_r4_c5_index, 
                                 glm::vec3* detailed_threeDPoint_r5_c2, int* detailed_threeDPoint_r5_c2_index, 
                                 glm::vec3* detailed_threeDPoint_r5_c3, int* detailed_threeDPoint_r5_c3_index, 
-                                glm::vec3* detailed_threeDPoint_r5_c4, int* detailed_threeDPoint_r5_c4_index
+                                glm::vec3* detailed_threeDPoint_r5_c4, int* detailed_threeDPoint_r5_c4_index,
+                                Painter& painter
                             );
 
     void draw();
