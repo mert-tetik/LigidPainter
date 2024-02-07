@@ -122,6 +122,7 @@ TextureField::TextureField(Texture texture){
     bottomRight_ResizeButton.radius = 0.36f;
 
     rotateBtn = Button(ELEMENT_STYLE_STYLIZED,glm::vec2(1.f, Settings::videoScale()->x / Settings::videoScale()->y) / 1.5f,"", Texture(), 1.f, false);
+    rotateBtn.radius = rotateBtn.scale.x / 2.f;
     rotateBtn.color.a /= 2.f;
 
     deleteButton = Button(ELEMENT_STYLE_SOLID,glm::vec2(1,1),"Delete", appTextures.trashIcon, 1.f,false);
@@ -607,7 +608,6 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                 }
             }
         }
-
 
         if(*Mouse::RPressed() || *Mouse::MPressed() || *Mouse::mouseScroll()){
             wrapTransformFlag = true;
