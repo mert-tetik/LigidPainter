@@ -469,6 +469,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         !wrap_deleteButton.hover && !wrap_flipHorizontalButton.hover && !wrap_flipVerticalButton.hover && !wrap_unwrapModeButton.hover && !wrap_detailModeButton.hover && 
                         !cancelBtn.hover &&
                         !threeDPointTopLeft.active && !threeDPointTopRight.active && !threeDPointBottomLeft.active && !threeDPointBottomRight.active &&
+                        doMouseTracking &&
                     
                         ((!detailed_threeDPoint_r1_c2.active &&
                         !detailed_threeDPoint_r1_c3.active &&
