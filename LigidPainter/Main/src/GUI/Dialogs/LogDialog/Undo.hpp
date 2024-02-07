@@ -117,6 +117,12 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
         
         paintingOverTextureFields = action.fields;
 
+        for (size_t i = 0; i < paintingOverTextureFields.size(); i++)
+        {
+            paintingOverTextureFields[i].updateWrapBox(painter);
+        }
+        
+
         actions_TextureFields.pop_back();
         unded = true;
     }

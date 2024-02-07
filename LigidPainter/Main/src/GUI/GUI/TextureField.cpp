@@ -449,6 +449,9 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         detailed_threeDPoint_r5_c4.moving) && wrap_detailModeButton.clickState1)
                     )
                 {
+                    if(getContext()->window.isKeyClicked(LIGIDGL_KEY_G))
+                        registerTextureFieldAction("Wrapped texture field - Point moved", srcVector);
+
                     this->updateWrapBox(painter);
                 
                     wrapTransformFlag = true;
@@ -583,6 +586,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         i--;
                     }
                     else if(wrap_flipHorizontalButton.clicked){
+                        registerTextureFieldAction("Wrapped texture field - flip in x axis", srcVector);
                         this->threeDWrapBox.flipX = !this->threeDWrapBox.flipX;
                         
                         wrapTransformFlag = true;
@@ -590,6 +594,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         this->updateWrapBox(painter);
                     }
                     else if(wrap_flipVerticalButton.clicked){
+                        registerTextureFieldAction("Wrapped texture field - flip in y axis", srcVector);
                         this->threeDWrapBox.flipY = !this->threeDWrapBox.flipY;
 
                         wrapTransformFlag = true;
@@ -597,6 +602,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         this->updateWrapBox(painter);
                     }
                     else if(wrap_unwrapModeButton.clicked){
+                        registerTextureFieldAction("Texture field - Unwrapped", srcVector);
                         this->wrapMode = false;
 
                         this->unplaceWrapPoints();
@@ -604,6 +610,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
                         wrapTransformFlag = true;
                     }
                     else if(wrap_detailModeButton.hover && *Mouse::LClick()){
+                        registerTextureFieldAction("Wrapped Texture field - Detail mode activated", srcVector);
                         this->setDetailedWrapPoints(painter);
                     }
                 }
@@ -872,6 +879,7 @@ void TextureField::render(Timer& timer, bool doMouseTracking, bool generatingTex
             this->rotation = 0.f;
         }
         else if(this->wrapModeButton.clicked){
+            registerTextureFieldAction("Texture field - Wrap", srcVector);
             this->wrapMode = true;
         }
         
@@ -939,6 +947,10 @@ void TextureField::setDetailedWrapPoints(Painter& painter){
 }
 
 void TextureField::updateWrapBox(Painter& painter){
+    
+    if(!this->threeDWrapBox.VBO)
+        return;
+
     if(this->wrap_detailModeButton.clickState1){
         this->threeDWrapBox.updateDetailed(
                                                 threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 

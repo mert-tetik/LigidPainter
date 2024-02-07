@@ -146,6 +146,7 @@ public:
     void render(Timer& timer, bool doMouseTracking, bool generatingTextureMode, std::vector<TextureField>& srcVector, int& i, bool renderTheTexture, Painter& painter, bool anyPanelHover, bool anyDialogActive);
     
     bool isHover();
+    void updateWrapBox(Painter& painter);
 
 
 private:
@@ -155,7 +156,6 @@ private:
     bool prevTransformedFlag = false;
 
     void setDetailedWrapPoints(Painter& painter);
-    void updateWrapBox(Painter& painter);
     void unplaceWrapPoints();
     
 };
