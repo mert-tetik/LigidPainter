@@ -34,6 +34,9 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
 static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 &elementPos, std::string position, bool rotate, float rot);
 static glm::vec2 rotate2D(glm::vec2 v, float angleDegrees);
 
+/* Defined in the TextureField.cpp */
+extern bool textureField_alreadyInteracted;
+
 void TextureField::position2DElements(){
     // Position the texture field to match with the window ratio
     glm::vec3 orgPos = this->pos;
@@ -338,7 +341,8 @@ static void poisitionTheElement(glm::vec3 orgPos, glm::vec2 orgScale, glm::vec3 
 static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT, bool RB, bool center){
     glm::vec2 crsrOffset = *Mouse::mouseOffset() / (glm::vec2)getContext()->windowScale * 100.f;
     
-    if(RB){
+    if(RB && !textureField_alreadyInteracted){
+        textureField_alreadyInteracted = true;
         crsrOffset /= 1.75;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
@@ -346,14 +350,16 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
         scale.y += crsrOffset.y;
     }
     
-    else if(LB){
+    else if(LB && !textureField_alreadyInteracted){
+        textureField_alreadyInteracted = true;
         crsrOffset /= 1.75;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
         scale.x -= crsrOffset.x;
         scale.y += crsrOffset.y;
     }
-    else if(RT){
+    else if(RT && !textureField_alreadyInteracted){
+        textureField_alreadyInteracted = true;
         crsrOffset /= 1.75;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
@@ -361,7 +367,8 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
         scale.y -= crsrOffset.y;
     }
     
-    else if(LT){
+    else if(LT && !textureField_alreadyInteracted){
+        textureField_alreadyInteracted = true;
         crsrOffset /= 1.75;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
@@ -369,7 +376,8 @@ static void resizing(glm::vec3& pos, glm::vec2& scale, bool LT, bool LB, bool RT
         scale.y -= crsrOffset.y;
     }
     
-    else if(center){
+    else if(center && !textureField_alreadyInteracted){
+        textureField_alreadyInteracted = true;
         pos.x += crsrOffset.x;
         pos.y += crsrOffset.y;
     }

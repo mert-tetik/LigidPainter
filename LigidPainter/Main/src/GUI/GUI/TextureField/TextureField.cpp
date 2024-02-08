@@ -90,8 +90,12 @@ TextureField::TextureField(Texture texture){
     textureDisplayingButtonIOutline = Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"", Texture(), 1.f,false);
 }
 
-
-
+/* 
+    This global flag is used to prevent collision between multiple texture fields
+    Set to true inside of the Render2DMode.cpp or RenderWrapMode.cpp
+    Set to false in the renderGUI before rendering the texture fields
+*/
+bool textureField_alreadyInteracted = false;
 
 void TextureField::render(
                             Timer& timer, 

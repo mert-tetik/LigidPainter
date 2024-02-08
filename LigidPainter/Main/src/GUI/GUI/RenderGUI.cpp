@@ -633,6 +633,8 @@ void UI::renderObjectsPanel(Timer& timer, Painter& painter){
 
 ProceduralProperties lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties;
 extern bool textureFields_decidingWrapPointsMode;
+/* Defined in the TextureField.cpp */
+extern bool textureField_alreadyInteracted;
 
 void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
     painter.usePaintingOver = this->paintingOverSection.elements[0].checkBox.clickState1;
@@ -671,6 +673,7 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
     ShaderSystem::buttonShader().setMat4("projection", this->projection);
 
     textureFields_decidingWrapPointsMode = false;
+    textureField_alreadyInteracted = false;
 
     // Rendering all the painting over texture fields
     if(painter.usePaintingOver && (!anyDialogActive || painter.paintingoverTextureEditorMode)){

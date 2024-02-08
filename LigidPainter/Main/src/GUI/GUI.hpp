@@ -60,7 +60,7 @@ struct ThreeDPoint{
         this->pos = pos;
     }
 
-    void render(Timer& timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius);
+    void render(Timer& timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius, bool canMove);
 };
 
 /*! @brief Used to render and handle the movable, resizable or rotatable dynamic textures (Used for painting over) 
