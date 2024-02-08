@@ -73,7 +73,7 @@ public:
     /*! @brief Texture of the texture field (this texture is being rendered)*/
     Texture texture;
     
-    /*! @brief This flag is used to determine if the texture field is wrap mode or not*/
+    /*! @brief This flag is used to determine if the texture field is in wrap mode or not*/
     bool wrapMode = false;
 
     /*! @brief Texture field is selected */

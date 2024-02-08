@@ -688,16 +688,17 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
                 }
             }
 
-            this->paintingOverTextureFields[i].render(
-                                                        timer, 
-                                                        painter,
-                                                        this->paintingOverTextureFields, 
-                                                        i, 
-                                                        painter.paintingoverTextureEditorMode, 
-                                                        false, 
-                                                        this->anyPanelHover
-                                                    );
-        
+            if((painter.wrapMode && this->paintingOverTextureFields[i].wrapMode) || !painter.wrapMode){
+                this->paintingOverTextureFields[i].render(
+                                                            timer, 
+                                                            painter,
+                                                            this->paintingOverTextureFields, 
+                                                            i, 
+                                                            painter.paintingoverTextureEditorMode, 
+                                                            false, 
+                                                            this->anyPanelHover
+                                                        );
+            }
         }    
     }
 

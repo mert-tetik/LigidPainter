@@ -406,7 +406,9 @@ void Painter::updatePaintingOverTexture(std::vector<TextureField> textureFields)
     // Rendering all the painting over texture fields
     for (int i = 0; i < textureFields.size(); i++)
     {
-        textureFields[i].render(Timer(), *this, textureFields, i, false, true, false);
+        if((this->wrapMode && textureFields[i].wrapMode) || !this->wrapMode){
+            textureFields[i].render(Timer(), *this, textureFields, i, false, true, false);
+        }
     }    
 
     // Finish
