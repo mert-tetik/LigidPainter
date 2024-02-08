@@ -680,31 +680,20 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
             bool anyHover = false;
             for (int ii = 0; ii < this->paintingOverTextureFields.size(); ii++){
                 if(ii > i){
-                    if(this->paintingOverTextureFields[ii].isHover()){
+                    if(this->paintingOverTextureFields[ii].is2DModeHovered()){
                         anyHover = true;
                     }    
                 }
             }
 
-            if(!painter.paintingoverTextureEditorMode){
-                this->paintingOverTextureFields[i].threeDPointTopLeft.active = false;    
-                this->paintingOverTextureFields[i].threeDPointTopRight.active = false;    
-                this->paintingOverTextureFields[i].threeDPointBottomLeft.active = false;    
-                this->paintingOverTextureFields[i].threeDPointBottomRight.active = false;    
-                
-                this->paintingOverTextureFields[i].active = false;    
-            }
-
             this->paintingOverTextureFields[i].render(
                                                         timer, 
-                                                        painter.paintingoverTextureEditorMode && !anyHover && !painter.faceSelection.editMode, 
-                                                        false, 
+                                                        painter,
                                                         this->paintingOverTextureFields, 
                                                         i, 
-                                                        !painter.paintingOverWraping, 
-                                                        painter,
-                                                        this->anyPanelHover,
-                                                        this->anyDialogActive || painter.paintingoverTextureEditorMode
+                                                        painter.paintingoverTextureEditorMode, 
+                                                        false, 
+                                                        this->anyPanelHover
                                                     );
         
         }    

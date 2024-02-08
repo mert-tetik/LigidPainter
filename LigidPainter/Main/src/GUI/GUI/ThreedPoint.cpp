@@ -89,6 +89,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         ShaderSystem::color3d().setVec4("color", glm::vec4(0.f,0.f,0.f,1.f));
         ShaderSystem::color3d().setInt("depthToleranceMode", 0);
         
+        //TODO Use masked mesh 
         getModel()->Draw();
 
         this->render(timer, false, painter, true, radius);
