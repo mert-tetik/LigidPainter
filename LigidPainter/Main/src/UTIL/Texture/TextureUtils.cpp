@@ -787,7 +787,6 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
         ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
         ShaderSystem::tdModelShader().setInt("hideUnselected", false);
-        ShaderSystem::tdModelShader().setInt("paintingOverWrap", false);
 
         Model model;
         if(displayMode == 1)

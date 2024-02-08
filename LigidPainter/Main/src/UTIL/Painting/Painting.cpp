@@ -89,8 +89,7 @@ static void twoDPaintShaderSetBrushProperties(
 
 static void sendPainterDataToThe3DModelShaderProgram(   
                                                         int selectedColorIndex, Color color1, Color color2, Color color3, float opacity, 
-                                                        int selectedPaintingModeIndex, bool usePaintingOver, bool paintingOverGrayScale, 
-                                                        bool paintingOverWraping
+                                                        int selectedPaintingModeIndex, bool usePaintingOver, bool paintingOverGrayScale
                                                      );
 
 static glm::vec2 findPos(glm::ivec2 res, float* posData, float* pxs){
@@ -395,7 +394,7 @@ void Painter::doPaint(
     Settings::defaultFramebuffer()->FBO.bind(); 
 
     // Send the painter data to the the PBR shader for the painting displaying 
-    sendPainterDataToThe3DModelShaderProgram(this->selectedColorIndex, this->color1, this->color2, this->color3, this->brushProperties.opacity, paintingMode, this->usePaintingOver, this->paintingOverGrayScale, this->paintingOverWraping);
+    sendPainterDataToThe3DModelShaderProgram(this->selectedColorIndex, this->color1, this->color2, this->color3, this->brushProperties.opacity, paintingMode, this->usePaintingOver, this->paintingOverGrayScale);
 
     
     getScene()->camera.cameraPos = oldCamPos;
@@ -597,8 +596,7 @@ static void sendPainterDataToThe3DModelShaderProgram(
                                                         float opacity, // Brush opacity
                                                         int selectedPaintingModeIndex, 
                                                         bool usePaintingOver, 
-                                                        bool paintingOverGrayScale, 
-                                                        bool paintingOverWraping
+                                                        bool paintingOverGrayScale
                                                     )
 {
     ShaderSystem::tdModelShader().use();

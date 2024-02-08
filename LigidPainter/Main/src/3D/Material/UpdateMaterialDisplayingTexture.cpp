@@ -127,7 +127,6 @@ void Material::updateMaterialDisplayingTexture(
     ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
     ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
     ShaderSystem::tdModelShader().setInt("hideUnselected", false);
-    ShaderSystem::tdModelShader().setInt("paintingOverWrap", false);
     
     for (size_t i = 0; i < displayModel.meshes.size(); i++)
     {

@@ -640,7 +640,6 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
     painter.usePaintingOver = this->paintingOverSection.elements[0].checkBox.clickState1;
     painter.paintingoverTextureEditorMode = this->paintingOverSection.elements[1].checkBox.clickState1;
     painter.paintingOverGrayScale = this->paintingOverSection.elements[4].checkBox.clickState1;
-    painter.paintingOverWraping = this->paintingOverSection.elements[5].checkBox.clickState1;
     
     if(this->paintingOverSection.elements[2].button.clicked){
         Texture texture;

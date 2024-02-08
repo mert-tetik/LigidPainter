@@ -717,7 +717,6 @@ void ObjectTexturingDialog::updateDisplayingTexture(LogDialog& logDialog){
     ShaderSystem::tdModelShader().setMat4("modelMatrix", glm::mat4(1));
 
     ShaderSystem::tdModelShader().setInt("displayingMode", this->displayingOptionsComboBox.selectedIndex);
-    ShaderSystem::tdModelShader().setInt("paintingOverWrap", false);
     
     for (size_t i = 0; i < getModel()->meshes.size(); i++)
     {

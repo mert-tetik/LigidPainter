@@ -800,7 +800,6 @@ public:
     bool usePaintingOver = false;
     bool paintingoverTextureEditorMode = false;
     bool paintingOverGrayScale = false;
-    bool paintingOverWraping = false;
 
     /// @brief Is set to true in the callbacks and is set to false after updating the depth texture
     ///  (Update the depth texture if set to true)

@@ -59,7 +59,7 @@ void TextureField::renderWrappedTextureField(
         // If the start point is selected
         this->placeSecondPoint(painter, bindedFBO);
     }
-    else
+    else{
         ShaderSystem::color3d().use();
         ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
         ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
