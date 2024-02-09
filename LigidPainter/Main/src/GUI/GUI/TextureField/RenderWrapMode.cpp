@@ -60,22 +60,18 @@ void TextureField::renderWrappedTextureField(
         this->placeSecondPoint(painter, bindedFBO);
     }
     else{
+        // Render the model first with alpha zero to depth test
         ShaderSystem::color3d().use();
         ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
         ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
         ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
         ShaderSystem::color3d().setVec4("color", glm::vec4(0.f));
         ShaderSystem::color3d().setInt("depthToleranceMode", 0);
-
         //if(painter.selectedMeshIndex < getModel()->meshes.size())
         //    getModel()->meshes[painter.selectedMeshIndex].Draw(false);
-
         //TODO Use masked mesh 
         getModel()->Draw();
 
-        // Render the wrapped texture
-        this->renderWrappedTextureBox(generatingTextureMode);
-        
         // Render the points
         if(!generatingTextureMode && editMode){
             this->renderPoints(timer, painter, !anyPanelHover);
@@ -91,6 +87,24 @@ void TextureField::renderWrappedTextureField(
                 textureField_alreadyInteracted = true;
             }
         }
+        
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        // Render the model first with alpha zero to depth test
+        ShaderSystem::color3d().use();
+        ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
+        ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
+        ShaderSystem::color3d().setVec4("color", glm::vec4(0.f));
+        ShaderSystem::color3d().setInt("depthToleranceMode", 0);
+        //if(painter.selectedMeshIndex < getModel()->meshes.size())
+        //    getModel()->meshes[painter.selectedMeshIndex].Draw(false);
+        //TODO Use masked mesh 
+        getModel()->Draw();
+
+        // Render the wrapped texture
+        if(this->threeDPointTopLeft.pos != glm::vec3(0.f) && this->threeDPointBottomRight.pos != glm::vec3(0.f))
+            this->renderWrappedTextureBox(generatingTextureMode);
 
         // Unactivate the texture field if clicked outside of it
         if(
@@ -592,28 +606,28 @@ void TextureField::renderWrapPointDecidingScene(Timer& timer, Framebuffer binded
 }
 
 bool TextureField::isAnyWrapPointActive(){
-    return threeDPointTopLeft.active && threeDPointTopRight.active && threeDPointBottomLeft.active && threeDPointBottomRight.active &&
-            ((detailed_threeDPoint_r1_c2.active &&
-            detailed_threeDPoint_r1_c3.active &&
-            detailed_threeDPoint_r1_c4.active &&
-            detailed_threeDPoint_r2_c1.active &&
-            detailed_threeDPoint_r2_c2.active &&
-            detailed_threeDPoint_r2_c3.active &&
-            detailed_threeDPoint_r2_c4.active &&
-            detailed_threeDPoint_r2_c5.active &&
-            detailed_threeDPoint_r3_c1.active &&
-            detailed_threeDPoint_r3_c2.active &&
-            detailed_threeDPoint_r3_c3.active &&
-            detailed_threeDPoint_r3_c4.active &&
-            detailed_threeDPoint_r3_c5.active &&
-            detailed_threeDPoint_r4_c1.active &&
-            detailed_threeDPoint_r4_c2.active &&
-            detailed_threeDPoint_r4_c3.active &&
-            detailed_threeDPoint_r4_c4.active &&
-            detailed_threeDPoint_r4_c5.active &&
-            detailed_threeDPoint_r5_c2.active &&
-            detailed_threeDPoint_r5_c3.active &&
-            detailed_threeDPoint_r5_c4.active) || !wrap_detailModeButton.clickState1);
+    return threeDPointTopLeft.active || threeDPointTopRight.active || threeDPointBottomLeft.active || threeDPointBottomRight.active ||
+            ((detailed_threeDPoint_r1_c2.active ||
+            detailed_threeDPoint_r1_c3.active ||
+            detailed_threeDPoint_r1_c4.active ||
+            detailed_threeDPoint_r2_c1.active ||
+            detailed_threeDPoint_r2_c2.active ||
+            detailed_threeDPoint_r2_c3.active ||
+            detailed_threeDPoint_r2_c4.active ||
+            detailed_threeDPoint_r2_c5.active ||
+            detailed_threeDPoint_r3_c1.active ||
+            detailed_threeDPoint_r3_c2.active ||
+            detailed_threeDPoint_r3_c3.active ||
+            detailed_threeDPoint_r3_c4.active ||
+            detailed_threeDPoint_r3_c5.active ||
+            detailed_threeDPoint_r4_c1.active ||
+            detailed_threeDPoint_r4_c2.active ||
+            detailed_threeDPoint_r4_c3.active ||
+            detailed_threeDPoint_r4_c4.active ||
+            detailed_threeDPoint_r4_c5.active ||
+            detailed_threeDPoint_r5_c2.active ||
+            detailed_threeDPoint_r5_c3.active ||
+            detailed_threeDPoint_r5_c4.active) && wrap_detailModeButton.clickState1);
 }
 
 static Texture threeDPointsStencilTexture;
