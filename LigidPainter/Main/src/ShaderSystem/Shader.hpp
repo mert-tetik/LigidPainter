@@ -134,6 +134,7 @@ namespace ShaderSystem{
     Shader gizmo();
     Shader color3d();
     Shader threeDTextureRenderingShader();
+    Shader alphaZero3D();
 
     
     Shader textureModifierShader();

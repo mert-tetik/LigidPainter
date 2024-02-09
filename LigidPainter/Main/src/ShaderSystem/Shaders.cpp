@@ -79,10 +79,12 @@ Shader __twoPassBlur;
 Shader __gizmo;
 Shader __color3d;
 Shader __threeDTextureRenderingShader;
+Shader __alphaZero3D;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
     __depth3D.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag");
+    __alphaZero3D.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/AlphaZero3D.frag");
     __renderModelData.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/RenderModelData.frag");
     __skyboxBall.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/SkyboxBall.frag");
     __primitiveIDShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PrimitiveID.frag");
@@ -319,4 +321,7 @@ Shader ShaderSystem::gizmo(){
 }
 Shader ShaderSystem::color3d(){
     return __color3d;
+}
+Shader ShaderSystem::alphaZero3D(){
+    return __alphaZero3D;
 }

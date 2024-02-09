@@ -51,7 +51,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
     ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::color3d().setMat4("modelMatrix", transMat);
-    ShaderSystem::color3d().setInt("depthToleranceMode", 0);
+    ShaderSystem::color3d().setFloat("depthToleranceValue", 0);
  
     if(!this->active || stencilTest)
         ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
@@ -82,15 +82,26 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
 
         glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)resolution), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)resolution));
 
-        ShaderSystem::color3d().use();
-        ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
-        ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
-        ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
-        ShaderSystem::color3d().setVec4("color", glm::vec4(0.f,0.f,0.f,1.f));
-        ShaderSystem::color3d().setInt("depthToleranceMode", 0);
+        ShaderSystem::alphaZero3D().use();
+        ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
+        ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
+
+        ShaderSystem::alphaZero3D().setInt("usingMeshSelection", painter.faceSelection.activated);
+        ShaderSystem::alphaZero3D().setInt("hideUnselected", painter.faceSelection.hideUnselected);
+        ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
+        ShaderSystem::alphaZero3D().setInt("meshMask", 1);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
         
-        //TODO Use masked mesh 
-        getModel()->Draw();
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
+        
+        if(painter.selectedMeshIndex < getModel()->meshes.size()){
+            ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
+            getModel()->meshes[painter.selectedMeshIndex].Draw(false);
+        }
 
         this->render(timer, false, painter, true, radius, false);
 

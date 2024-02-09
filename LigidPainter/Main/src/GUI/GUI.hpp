@@ -198,7 +198,7 @@ public:
     
     /*! @brief Checks if the cursor is located on top of the wrapped texture
         (called if mouse left button clicked & other conditions are set like no panel was hovered too)*/
-    void checkIfWrappedTextureClicked(Framebuffer bindedFBO);
+    void checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& painter);
 
 
     /*! Updates the threeDWrapBox */

@@ -4,13 +4,10 @@ uniform vec4 color;
 
 out vec4 fragColor;
 
-uniform int depthToleranceMode = 0;
+uniform float depthToleranceValue;
 
 void main(){
     fragColor = color;
 
-    gl_FragDepth = gl_FragCoord.z;
-    
-    if(depthToleranceMode == 1)
-        gl_FragDepth = gl_FragCoord.z - 0.003;
+    gl_FragDepth = gl_FragCoord.z - depthToleranceValue;
 }

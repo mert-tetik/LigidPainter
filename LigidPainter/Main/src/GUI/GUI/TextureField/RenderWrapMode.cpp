@@ -61,16 +61,26 @@ void TextureField::renderWrappedTextureField(
     }
     else{
         // Render the model first with alpha zero to depth test
-        ShaderSystem::color3d().use();
-        ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
-        ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
-        ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
-        ShaderSystem::color3d().setVec4("color", glm::vec4(0.f));
-        ShaderSystem::color3d().setInt("depthToleranceMode", 0);
-        //if(painter.selectedMeshIndex < getModel()->meshes.size())
-        //    getModel()->meshes[painter.selectedMeshIndex].Draw(false);
-        //TODO Use masked mesh 
-        getModel()->Draw();
+        ShaderSystem::alphaZero3D().use();
+        ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
+        ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
+
+        ShaderSystem::alphaZero3D().setInt("usingMeshSelection", painter.faceSelection.activated);
+        ShaderSystem::alphaZero3D().setInt("hideUnselected", painter.faceSelection.hideUnselected);
+        ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
+        ShaderSystem::alphaZero3D().setInt("meshMask", 1);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
+        
+        if(painter.selectedMeshIndex < getModel()->meshes.size()){
+            ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
+            getModel()->meshes[painter.selectedMeshIndex].Draw(false);
+        }
 
         // Render the points
         if(!generatingTextureMode && editMode){
@@ -91,16 +101,26 @@ void TextureField::renderWrappedTextureField(
         glClear(GL_DEPTH_BUFFER_BIT);
 
         // Render the model first with alpha zero to depth test
-        ShaderSystem::color3d().use();
-        ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
-        ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
-        ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
-        ShaderSystem::color3d().setVec4("color", glm::vec4(0.f));
-        ShaderSystem::color3d().setInt("depthToleranceMode", 0);
-        //if(painter.selectedMeshIndex < getModel()->meshes.size())
-        //    getModel()->meshes[painter.selectedMeshIndex].Draw(false);
-        //TODO Use masked mesh 
-        getModel()->Draw();
+        ShaderSystem::alphaZero3D().use();
+        ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
+        ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
+
+        ShaderSystem::alphaZero3D().setInt("usingMeshSelection", painter.faceSelection.activated);
+        ShaderSystem::alphaZero3D().setInt("hideUnselected", painter.faceSelection.hideUnselected);
+        ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
+        ShaderSystem::alphaZero3D().setInt("meshMask", 1);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
+        
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
+
+        if(painter.selectedMeshIndex < getModel()->meshes.size()){
+            ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
+            getModel()->meshes[painter.selectedMeshIndex].Draw(false);
+        }
 
         // Render the wrapped texture
         if(this->threeDPointTopLeft.pos != glm::vec3(0.f) && this->threeDPointBottomRight.pos != glm::vec3(0.f))
@@ -124,7 +144,7 @@ void TextureField::renderWrappedTextureField(
                 !textureField_alreadyInteracted
             )
         {
-            this->checkIfWrappedTextureClicked(bindedFBO);
+            this->checkIfWrappedTextureClicked(bindedFBO, painter);
         }
         
         if(this->active){
@@ -478,6 +498,19 @@ void TextureField::renderPoints(Timer& timer, Painter& painter, bool doMouseTrac
     }
 }
 
+static float calculateDepthToleranceValue(glm::vec3 origin){
+    float distance = glm::distance(getScene()->camera.cameraPos, origin);
+
+    if(distance < 2.f)
+        return 0.01f;
+    else if(distance < 5.f)
+        return 0.001f;
+    else if(distance < 10.f)
+        return 0.0001f;
+
+    return 0.00001f;
+}
+
 void TextureField::renderWrappedTextureBox(bool generatingTextureMode){
     // --------------- Use the 3D texture rendering shader program ---------------
     ShaderSystem::threeDTextureRenderingShader().use();
@@ -488,7 +521,7 @@ void TextureField::renderWrappedTextureBox(bool generatingTextureMode){
     ShaderSystem::threeDTextureRenderingShader().setMat4("modelMatrix", glm::mat4(1.f));
     
     // --------------- Set fragment shader data ---------------
-    ShaderSystem::threeDTextureRenderingShader().setInt("depthToleranceMode", 1);
+    ShaderSystem::threeDTextureRenderingShader().setFloat("depthToleranceValue", calculateDepthToleranceValue((threeDPointTopLeft.pos + threeDPointTopRight.pos + threeDPointBottomLeft.pos + threeDPointBottomRight.pos) / 4.f));
     ShaderSystem::threeDTextureRenderingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->texture.ID);
     
     if(generatingTextureMode)
@@ -506,7 +539,7 @@ void TextureField::renderWrappedTextureBox(bool generatingTextureMode){
 
     // --------------- Finish ---------------
     ShaderSystem::threeDTextureRenderingShader().use();
-    ShaderSystem::threeDTextureRenderingShader().setInt("depthToleranceMode", 0);
+    ShaderSystem::threeDTextureRenderingShader().setFloat("depthToleranceValue", 0);
 }
 
 bool TextureField::didAnyWrapPointMove(){
@@ -633,7 +666,7 @@ bool TextureField::isAnyWrapPointActive(){
 static Texture threeDPointsStencilTexture;
 static Framebuffer threeDPointsStencilFBO;
 
-void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO){
+void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& painter){
     // Positioning the first modifying button (delete button) (other modifying buttons labeled with wrap_ will be positioned according to this)
     wrap_deleteButton.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f; 
     wrap_deleteButton.pos.x -= (wrap_deleteButton.scale.x + wrap_flipHorizontalButton.scale.x + wrap_flipVerticalButton.scale.x + wrap_unwrapModeButton.scale.x + wrap_detailModeButton.scale.x) / 1.5f; 
@@ -666,19 +699,34 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO){
     glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)resolution), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)resolution));
 
     // Render the model first with alpha zero to depth test
+    ShaderSystem::alphaZero3D().use();
+    ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
+
+    ShaderSystem::alphaZero3D().setInt("usingMeshSelection", painter.faceSelection.activated);
+    ShaderSystem::alphaZero3D().setInt("hideUnselected", painter.faceSelection.hideUnselected);
+    ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
+    ShaderSystem::alphaZero3D().setInt("meshMask", 1);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
+
+    if(painter.selectedMeshIndex < getModel()->meshes.size()){
+        ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
+        getModel()->meshes[painter.selectedMeshIndex].Draw(false);
+    }
+    
+    // Then render the wrapped image
     ShaderSystem::color3d().use();
     ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
-    ShaderSystem::color3d().setVec4("color", glm::vec4(0.f, 0.f, 0.f, 1.f));
-    ShaderSystem::color3d().setInt("depthToleranceMode", 0);
-    //TODO Use masked mesh 
-    getModel()->Draw();
-    
-    // Then render the wrapped image
-    ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
     ShaderSystem::color3d().setVec4("color", glm::vec4(1.f, 1.f, 1.f, 1.f));
-    ShaderSystem::color3d().setInt("depthToleranceMode", 1);
+    ShaderSystem::color3d().setFloat("depthToleranceValue", calculateDepthToleranceValue((threeDPointTopLeft.pos + threeDPointTopRight.pos + threeDPointBottomLeft.pos + threeDPointBottomRight.pos) / 4.f));
     this->threeDWrapBox.draw();
     
     // Get the pixel value on top of the cursor

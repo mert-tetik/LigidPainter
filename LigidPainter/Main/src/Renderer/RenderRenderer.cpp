@@ -614,7 +614,7 @@ void Renderer::render3DBrushCursor(){
     ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
-    ShaderSystem::color3d().setInt("depthToleranceMode", 0);
+    ShaderSystem::color3d().setFloat("depthToleranceValue", 0);
     
     float* posData = new float[4]; 
     float* normalData = new float[4]; 

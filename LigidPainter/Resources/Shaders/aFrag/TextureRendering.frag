@@ -22,7 +22,7 @@ in vec2 TexCoords;
 uniform sampler2D txtr;
 uniform float opacity;
 
-uniform int depthToleranceMode = 0;
+uniform float depthToleranceValue;
 
 uniform vec3 mixClr = vec3(0.);
 
@@ -36,8 +36,5 @@ void main(){
         fragColor.rgb = mix(fragColor.rgb, mixClr, 0.5);
     }
 
-    gl_FragDepth = gl_FragCoord.z;
-
-    if(depthToleranceMode == 1)
-        gl_FragDepth = gl_FragCoord.z - 0.003;
+    gl_FragDepth = gl_FragCoord.z - depthToleranceValue;
 }
