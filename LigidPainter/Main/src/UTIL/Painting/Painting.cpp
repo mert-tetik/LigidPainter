@@ -256,7 +256,6 @@ void Painter::doPaint(
         
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
-        
 
         //Draw the selected mesh in 3D
         if(this->selectedMeshIndex < getModel()->meshes.size()){
@@ -290,6 +289,10 @@ void Painter::doPaint(
             glm::vec2 lastDest;
             lastDest.x = crsPos.x - (crsPos.x - lastCrsPos.x);
             lastDest.y = crsPos.y + (crsPos.y - lastCrsPos.y);
+            
+            if(*Mouse::LClick())  
+                lastDest = crsPos;
+
             holdLocations = getCursorSubstitution(this->brushProperties.spacing, crsPos, lastDest);
         }
         else if(crsPos != glm::vec2(-1.f))
@@ -334,11 +337,11 @@ void Painter::doPaint(
         ShaderSystem::twoDPainting().setVec2("mouseOffset", holdLocations[0] - holdLocations[holdLocations.size()-1]);
     
     // Set the stroke positions
-    ShaderSystem::twoDPainting().setInt("posCount",holdLocations.size());
+    ShaderSystem::twoDPainting().setInt("posCount", holdLocations.size());
     for (int i = 0; i < holdLocations.size(); i++)
     {
         std::string target = "positions[" + std::to_string(i) + "]";
-        ShaderSystem::twoDPainting().setVec2(target,holdLocations[i]);
+        ShaderSystem::twoDPainting().setVec2(target, holdLocations[i]);
     }
     
     //Prepeare painting
