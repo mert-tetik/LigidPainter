@@ -241,6 +241,24 @@ vec3 getPaintedTexture  (
             );
 }
 
+vec3 getNormalMapPaintedTexture(
+                                    sampler2D brushTxtr,
+                                    vec2 TexCoords,
+                                    float channelStrength,
+                                    sampler2D txtr
+                                )
+{
+    vec3 paintColor = texNormalMap(brushTxtr, TexCoords, channelStrength).rgb;
+    vec3 srcTxtr = texture(txtr, TexCoords).rgb;
+    float brushTxtrAlpha = texture(brushTxtr, TexCoords).a; 
+
+    return mix(
+                srcTxtr, 
+                paintColor, 
+                brushTxtrAlpha
+            );
+}
+
 vec3 getPaintedTextureTxtrClr( 
                             sampler2D txtr, //The texture that will be painted  
                             vec4 brushTxtr, //Brush value (painted texture value)
@@ -324,7 +342,7 @@ vec3 getBrushedTexture (
     
     //Apply painting with painting texture color data
     if(brushModeState == 3)
-        return getPaintedTextureTxtrClr(txtr, brushTxtrVal, TexCoords);
+        return getNormalMapPaintedTexture(brushTxtr, TexCoords, channelStrength, txtr).rgb;
     
     //Apply painting with inverted texture color
     if(brushModeState == 4)

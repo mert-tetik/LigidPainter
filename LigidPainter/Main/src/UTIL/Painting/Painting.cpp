@@ -176,18 +176,6 @@ void Painter::doPaint(
     
     //Prepeare the 2D painting shader
     ShaderSystem::twoDPainting().use();
-    ShaderSystem::twoDPainting().setVec2("scale", scale); //Cover the screen
-    ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
-    ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
-    ShaderSystem::twoDPainting().setVec2("paintingRes", paintingRes); 
-    ShaderSystem::twoDPainting().setVec2("videoScale", getContext()->windowScale); 
-    ShaderSystem::twoDPainting().setInt("frame", frameCounter);
-    ShaderSystem::twoDPainting().setInt("bgTxtr", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, paintingBGTexture.ID);
-    ShaderSystem::twoDPainting().setInt("redChannelOnly", !(paintingMode == 2));
-    ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(0.));
-
-    //Set brush properties
-    twoDPaintShaderSetBrushProperties(this->brushProperties, this->wrapMode);
     
     glm::vec3 oldCamPos = getScene()->camera.cameraPos;
     glm::vec3 oldCamOrigin = getScene()->camera.originPos;
@@ -327,6 +315,19 @@ void Painter::doPaint(
         this->paintingFBO.removeRenderbuffer();
         glViewport(0, 0, paintingRes.x, paintingRes.y);
     }
+
+    ShaderSystem::twoDPainting().setVec2("scale", scale); //Cover the screen
+    ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
+    ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
+    ShaderSystem::twoDPainting().setVec2("paintingRes", paintingRes); 
+    ShaderSystem::twoDPainting().setVec2("videoScale", getContext()->windowScale); 
+    ShaderSystem::twoDPainting().setInt("frame", frameCounter);
+    ShaderSystem::twoDPainting().setInt("bgTxtr", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, paintingBGTexture.ID);
+    ShaderSystem::twoDPainting().setInt("redChannelOnly", !(paintingMode == 2));
+    ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(0.));
+    
+    //Set brush properties
+    twoDPaintShaderSetBrushProperties(this->brushProperties, this->wrapMode);
     
     // Set the mouseOffset value
     if(holdLocations.size())
@@ -374,11 +375,6 @@ void Painter::doPaint(
                                                 this->faceSelection.selectedFaces, highResMode, textureFields
                                             );
 
-    // If painting mode is set to 3 generate the normal map using paintingTexture8 and write to the paintingTexture16f
-    if(paintingMode == 3){
-        projectedPaintingTexture.applyNormalMap(8.f, false, true);
-    }
-    
     if(this->wrapMode){
         this->paintingFBO.bind();
         this->paintingFBO.setColorBuffer(this->paintingTexture16f, GL_TEXTURE_2D);
