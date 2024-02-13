@@ -80,6 +80,7 @@ Shader __gizmo;
 Shader __color3d;
 Shader __threeDTextureRenderingShader;
 Shader __alphaZero3D;
+Shader __color3DInstancing;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -132,6 +133,7 @@ void ShaderSystem::initShaderSystem(){
     __projectedPaintingTextureMixerShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/ProjectedPaintingTextureMixer.frag");
     __modelObjectID.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/ModelObjectID.frag");
     __objectTexturingAssign.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert" , "LigidPainter/Resources/Shaders/aFrag/ObjectTexturingAssign.frag");
+    __color3DInstancing.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model_instancing.vert","LigidPainter/Resources/Shaders/aFrag/Color.frag");
     __textureModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/TextureModifier.frag");
     __dustModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/DustModifier.frag");
     __asphaltModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/AsphaltModifier.frag");
@@ -324,4 +326,7 @@ Shader ShaderSystem::color3d(){
 }
 Shader ShaderSystem::alphaZero3D(){
     return __alphaZero3D;
+}
+Shader ShaderSystem::color3DInstancing(){
+    return __color3DInstancing;
 }

@@ -838,71 +838,14 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     Debugger::block("GUI : Panels : Rest"); // Start
 
-    bool anyVectorPointHover = false;
-    for (size_t i = 0; i < painter.vectorStrokes.size(); i++){
-        if(painter.vectorStrokes[i].endPointHover || painter.vectorStrokes[i].startPointHover || painter.vectorStrokes[i].offsetPointHover)
-            anyVectorPointHover = true;
-    }
-
-
-    if(*Mouse::LClick() && painter.selectedPaintingModeIndex == 5 && !anyVectorPointHover && !anyDialogActive && !anyContextMenuActive && !anyPanelHover){
-        VectorStroke vecStroke;
-        if(!painter.vectorStrokes.size()){
-            registerVectorAction("First point created", painter.vectorStrokes);
-            vecStroke.startPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f; 
-            vecStroke.endPos = vecStroke.startPos;
-            vecStroke.offsetPos = vecStroke.startPos;
-            painter.vectorStrokes.push_back(vecStroke);
+    // Vectoral painting vectors
+    if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0){
+        if(!painter.wrapMode){
+            painter.render2DVectors(timer, !anyDialogActive && !anyPanelHover);
         }
         else{
-            if(painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos == painter.vectorStrokes[painter.vectorStrokes.size() - 1].startPos){
-                registerVectorAction("New point", painter.vectorStrokes);
-                painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
-                painter.vectorStrokes[painter.vectorStrokes.size() - 1].offsetPos = painter.vectorStrokes[painter.vectorStrokes.size() - 1].startPos - (painter.vectorStrokes[painter.vectorStrokes.size() - 1].startPos - painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos) / 2.f;
-            }
-            else{
-                registerVectorAction("New point", painter.vectorStrokes);
-                vecStroke.startPos = painter.vectorStrokes[painter.vectorStrokes.size() - 1].endPos; 
-                vecStroke.endPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
-                vecStroke.offsetPos = vecStroke.startPos - (vecStroke.startPos - vecStroke.endPos) /2.f;
-                painter.vectorStrokes.push_back(vecStroke);
-            }
+            painter.render3DVectors(timer, !anyDialogActive && !anyPanelHover);
         }
-    }
-    else{
-        for (size_t i = 0; i < painter.vectorStrokes.size(); i++)
-        {
-            if(painter.vectorStrokes[i].endPointHover && *Mouse::LClick()){
-                registerVectorAction("Point transformed", painter.vectorStrokes);
-                break;
-            }
-            else if(painter.vectorStrokes[i].startPointHover && *Mouse::LClick()){
-                registerVectorAction("Point transformed", painter.vectorStrokes);
-                break;
-            }
-            else if(painter.vectorStrokes[i].offsetPointHover && *Mouse::LClick()){
-                registerVectorAction("Offset transformed", painter.vectorStrokes);
-                break;
-            }
-        }
-    }
-
-    if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0){
-        if(!anyContextMenuActive && !anyDialogActive && !anyPanelHover && Mouse::activeCursor()->cursorType == Mouse::defaultCursor()->cursorType)
-            Mouse::setCursor(*Mouse::inkPenCursor());
-
-        for (int i = painter.vectorStrokes.size() - 1; i >= 0; i--)
-        {
-            painter.vectorStrokes[i].draw(timer, 0.0005f, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
-
-            VectorStroke offsetStrokeEnd = VectorStroke(painter.vectorStrokes[i].endPos, painter.vectorStrokes[i].offsetPos, painter.vectorStrokes[i].offsetPos); 
-            VectorStroke offsetStrokeStart = VectorStroke(painter.vectorStrokes[i].startPos, painter.vectorStrokes[i].offsetPos, painter.vectorStrokes[i].offsetPos); 
-        
-            offsetStrokeEnd.draw(timer, 0.0001f, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
-            offsetStrokeStart.draw(timer, 0.0001f, anyContextMenuActive || anyDialogActive || anyPanelHover, painter.vectorStrokes, i);
-        }
-
-        glClear(GL_DEPTH_BUFFER_BIT);
     }
 
     bool straightLinePaintingCondition = painter.selectedDisplayingModeIndex != 0 && painter.selectedPaintingModeIndex != 5 && !anyDialogActive && (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && *Mouse::LPressed(); 

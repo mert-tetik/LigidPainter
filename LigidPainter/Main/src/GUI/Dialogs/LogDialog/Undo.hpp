@@ -44,8 +44,15 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
 
 void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields, MaterialEditorDialog& materialEditorDialog){
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
-        painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;
-        actions_Vectors.pop_back();
+        if(actions_Vectors[actions_Vectors.size() - 1].ID == VECTOR_ACTION){
+            painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;
+            actions_Vectors.pop_back();
+        }
+        else if(actions_Vectors[actions_Vectors.size() - 1].ID == VECTOR_ACTION_3D){
+            painter.vectorStrokes3D = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes3D;
+            actions_Vectors.pop_back();
+        }
+        
         unded = true;
     }
     if(this->activeHistoryMode == HISTORY_OBJECTSELECTION_MODE && actions_ObjectSelection.size()){

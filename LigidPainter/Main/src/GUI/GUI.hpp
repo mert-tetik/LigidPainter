@@ -43,25 +43,6 @@ struct NodePanel{
 
 };
 
-struct ThreeDPoint{
-    glm::vec3 pos = glm::vec3(0.f);
-    glm::vec3 normal = glm::vec3(0.f);
-
-    bool active = false;
-    bool moving = false;
-
-    int detailI = 0;
-
-    Button btn;
-    
-    ThreeDPoint(){}
-    ThreeDPoint(Button btn, glm::vec3 pos){
-        this->btn = btn;
-        this->pos = pos;
-    }
-
-    void render(Timer& timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius, bool canMove);
-};
 
 /*! @brief Used to render and handle the movable, resizable or rotatable dynamic textures (Used for painting over) 
             WRAP MODE : Texture field is being wrapped around the 3D model in 3D scene instead of being rendered in 2D
@@ -247,7 +228,6 @@ private:
     void renderSceneInfoWrapModeCheckbox(Timer& timer, Painter& painter);
     void renderPaintingPanel(Timer& timer, Painter &painter, float screenGapPerc);
     void renderPaintingOverTextureFields(Timer& timer, Painter& painter);
-
 
 public:
     /* -- PANELS -- */

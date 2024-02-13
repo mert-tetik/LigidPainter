@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static Texture threeDPointsStencilTexture;
 static Framebuffer threeDPointsStencilFBO;
 
-void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius, bool canMove){
+bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius, bool canMove){
 
     Framebuffer bindedFBO;
     bindedFBO.makeCurrentlyBindedFBO();
@@ -60,6 +60,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
 
     getSphereModel()->Draw();    
 
+    bool clicked = false;
     if(*Mouse::LClick() && doMouseTracking && !stencilTest){
         
         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
@@ -117,8 +118,10 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
                         stencilData
                     );
 
-        if(stencilData[0] > 100)
+        if(stencilData[0] > 100){
             this->active = !this->active;
+            clicked = true;
+        }
 
         delete[] stencilData;
 
@@ -128,12 +131,7 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
 
     this->moving = false;
     if(
-            this->active && 
-            getContext()->window.isKeyPressed(LIGIDGL_KEY_G) && 
-            !*Mouse::RPressed() && 
-            !*Mouse::MPressed() && 
-            !*Mouse::mouseScroll() &&
-            canMove 
+            this->areMovingConditionsSet(canMove)
         )
     {
         this->moving = true;
@@ -170,4 +168,15 @@ void ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         delete[] posData;
         delete[] normalData;
     }
+
+    return clicked;
+}
+
+bool ThreeDPoint::areMovingConditionsSet(bool canMove){
+    return  this->active && 
+            getContext()->window.isKeyPressed(LIGIDGL_KEY_G) && 
+            !*Mouse::RPressed() && 
+            !*Mouse::MPressed() && 
+            !*Mouse::mouseScroll() &&
+            canMove;
 }

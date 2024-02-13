@@ -23,6 +23,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "MouseSystem/Mouse.hpp"
+#include "GUI/GUI.hpp"
 
 #include <string>
 #include <fstream>
@@ -147,4 +149,28 @@ void Painter::getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, floa
     posData[0] = posData[0] * 2.f - 1.f;
     posData[1] = posData[1] * 2.f - 1.f;
     posData[2] = posData[2] * 2.f - 1.f;
+}
+
+ThreeDPoint Painter::getCurrentPosNormalDataOverCursor(){
+    // Retrieve the position value of the 3D model here
+    float* posData = new float[4]; 
+    float* normalData = new float[4]; 
+
+    // Get the position value of the 3D model wherever it got clicked
+    glm::vec2 currentCursorPos = glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y);
+    this->getPosNormalValOverPoint(currentCursorPos, posData, normalData, true);
+    
+    ThreeDPoint point;
+
+    // If clicked to the model and not into the space assign the position
+    if(posData[3] == 1.f){
+        point.pos = glm::vec3(posData[0], posData[1], posData[2]);
+        point.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
+    }
+
+    //Finish
+    delete[] posData;
+    delete[] normalData;
+
+    return point;
 }

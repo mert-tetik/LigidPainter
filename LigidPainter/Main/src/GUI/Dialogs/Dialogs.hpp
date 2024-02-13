@@ -842,6 +842,7 @@ namespace LGDLOG {
 #define BRUSH_DELETION_ACTION 12
 #define BRUSH_ADDITION_ACTION 13
 #define BRUSH_CHANGED_ACTION 14
+#define VECTOR_ACTION_3D 15
 
 #define HISTORY_LIBRARY_MODE 0
 #define HISTORY_PAINTING_MODE 1
@@ -870,6 +871,7 @@ void registerPaintingAction(const std::string title, const Texture icon, Texture
 
 // -- Vector --
 void registerVectorAction(const std::string title, std::vector<VectorStroke> vectorStrokes);
+void registerVectorAction(const std::string title, std::vector<VectorStroke3D> vectorStrokes);
 
 // -- Object Selection --
 void registerObjectSelectionAction(const std::string title, int meshI, std::vector<int> selectedObjectIndices);

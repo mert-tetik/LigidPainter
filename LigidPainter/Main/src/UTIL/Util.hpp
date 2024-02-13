@@ -28,7 +28,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <map> //std::map
 #include <atomic>
 
-
 #include "ShaderSystem/Shader.hpp"
 
 //forward declerations :
@@ -57,6 +56,8 @@ struct Context;
 class Box;
 /// @brief forward declared TextureField class
 class TextureField;
+/// @brief forward declared Painter class
+class Painter;
 /// @brief forward declared Section struct
 struct Section;
 /// @brief forward declared MaterialIDColor struct
@@ -671,6 +672,69 @@ struct VectorStroke{
     void draw(Timer& timer, float edge, bool sceneState, std::vector<VectorStroke>& strokes, int curI);
 };
 
+struct ThreeDPoint{
+    glm::vec3 pos = glm::vec3(0.f);
+    glm::vec3 normal = glm::vec3(0.f);
+
+    bool active = false;
+    bool moving = false;
+
+    int detailI = 0;
+
+    ThreeDPoint(){}
+    ThreeDPoint(glm::vec3 pos){
+        this->pos = pos;
+    }
+
+    /*! @return true if clicked to the point*/
+    bool render(Timer& timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius, bool canMove);
+
+    /*! @return true if the moving conditions of the point is set*/
+    bool areMovingConditionsSet(bool canMove);
+};
+
+struct VertexUTIL {
+    // position
+    glm::vec3 Position = glm::vec3(0.f);
+    // texCoords
+    glm::vec2 TexCoords = glm::vec2(0.f);
+    // normal
+    glm::vec3 Normal = glm::vec3(0.f);
+    // tangent
+    glm::vec3 Tangent = glm::vec3(0);
+    // bitangent
+    glm::vec3 Bitangent = glm::vec3(0);
+
+    VertexUTIL(){}
+    VertexUTIL(glm::vec3 Position, glm::vec2 TexCoords, glm::vec3 Normal, glm::vec3 Tangent, glm::vec3 Bitangent){
+        this->Position = Position;
+        this->TexCoords = TexCoords;
+        this->Normal = Normal;
+        this->Tangent = Tangent;
+        this->Bitangent = Bitangent;
+    }
+};
+
+struct VectorStroke3D{
+public:
+    ThreeDPoint startPoint;
+    ThreeDPoint endPoint;
+
+    void updateLinePoints(Painter& painter);
+
+    std::vector<VertexUTIL> lineVertices;
+
+    VectorStroke3D(){}
+    VectorStroke3D(ThreeDPoint startPoint, ThreeDPoint endPoint);
+
+    bool draw(Timer& timer, float edge, bool sceneState, std::vector<VectorStroke3D>& strokes, int curI, Painter& painter);
+
+private:
+    void projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3 center, Painter& painter);
+    void genLineVertices(); 
+    void renderLine(); 
+};
+
 struct MirrorSide{
     bool active = false;
 
@@ -761,6 +825,7 @@ public:
     Texture meshNormalTxtr;
 
     void getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData, bool readNormal);
+    ThreeDPoint getCurrentPosNormalDataOverCursor();
 
     float mirrorXOffset = 0.f;
     float mirrorYOffset = 0.f;
@@ -812,7 +877,19 @@ public:
     /// @brief Returns the index of the selected texture inside of the Library
     int getSelectedTextureIndexInLibrary();
 
-    std::vector<VectorStroke> vectorStrokes;
+    /* VECTORS - defined in Vectors.cpp*/
+    /**/std::vector<VectorStroke> vectorStrokes;
+    /**/std::vector<VectorStroke3D> vectorStrokes3D;
+    /**/void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat, std::vector<TextureField> textureFields);
+    /**/void deleteSelectedVectorPoints();
+    /**/void clearSelectedVectorPoints();
+    /**/void subdivideSelectedPoints();
+    /**/void render2DVectors(Timer& timer, bool doMouseTracking);
+    /**/void render3DVectors(Timer& timer, bool doMouseTracking);
+    /**/void addNew2DVector();
+    /**/void addNew3DVector();
+    /**/void update3DVectorBuffers();
+    
 
     FaceSelection faceSelection;
 
@@ -897,8 +974,6 @@ public:
     void loadColor3();
 
     Color getSelectedColor();
-
-    void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat, std::vector<TextureField> textureFields);
 
     /// @brief renderbuffer object used to depth test (used to create the depth texture)
     Renderbuffer depthRBO1024; 

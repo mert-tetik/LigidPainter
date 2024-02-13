@@ -177,6 +177,7 @@ struct PaintingAction{
 struct VectorsAction{
     std::string title;
     std::vector<VectorStroke> vectorStrokes;
+    std::vector<VectorStroke3D> vectorStrokes3D;
     unsigned int ID;
 
     VectorsAction(){}
@@ -184,6 +185,12 @@ struct VectorsAction{
     VectorsAction(std::string title, unsigned int ID, std::vector<VectorStroke> vectorStrokes){
         this->title = title;
         this->vectorStrokes = vectorStrokes;
+        this->ID = ID;
+    }
+    
+    VectorsAction(std::string title, unsigned int ID, std::vector<VectorStroke3D> vectorStrokes){
+        this->title = title;
+        this->vectorStrokes3D = vectorStrokes;
         this->ID = ID;
     }
 };
@@ -362,6 +369,11 @@ void registerLibraryElementRenamingAction(const std::string title, const Texture
 
 void registerVectorAction(const std::string title, std::vector<VectorStroke> vectorStrokes){
     actions_Vectors.push_back(VectorsAction(title, VECTOR_ACTION, vectorStrokes));
+    newOtherAction = true;
+}
+
+void registerVectorAction(const std::string title, std::vector<VectorStroke3D> vectorStrokes){
+    actions_Vectors.push_back(VectorsAction(title, VECTOR_ACTION_3D, vectorStrokes));
     newOtherAction = true;
 }
 

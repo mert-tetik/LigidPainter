@@ -60,55 +60,13 @@ void paintingModesPanelInteraction(
     }
 
     if(vectorPaintingModePropertyPanel.sections[0].elements[1].button.clicked){
-
-        registerVectorAction("New point between the selected points", painter.vectorStrokes);
-
-        for (size_t i = 0; i < painter.vectorStrokes.size(); i++)
-        {
-            if(painter.vectorStrokes[i].endPointClicked && painter.vectorStrokes[i].startPointClicked){
-                glm::vec2 strokeCenter = (painter.vectorStrokes[i].startPos + painter.vectorStrokes[i].endPos + painter.vectorStrokes[i].offsetPos) / 3.0f;
-                glm::vec2 offsetPointDistance = strokeCenter - painter.vectorStrokes[i].offsetPos;
-
-                VectorStroke newStroke;
-                newStroke.startPos = strokeCenter;
-                newStroke.endPos = painter.vectorStrokes[i].endPos;
-                newStroke.offsetPos = newStroke.startPos - (newStroke.startPos - newStroke.endPos) / 2.f - offsetPointDistance;
-
-                painter.vectorStrokes[i].endPos  = strokeCenter;
-
-                painter.vectorStrokes.insert(painter.vectorStrokes.begin() + i + 1, newStroke);
-                i++;
-            }
-        }
+        painter.subdivideSelectedPoints();
     }
     if(vectorPaintingModePropertyPanel.sections[0].elements[2].button.clicked){
-        registerVectorAction("Vector strokes cleared", painter.vectorStrokes);
-        painter.vectorStrokes.clear();
+        painter.clearSelectedVectorPoints();
     }
     if(vectorPaintingModePropertyPanel.sections[0].elements[3].button.clicked){
-        registerVectorAction("Selected vector point deleted", painter.vectorStrokes);
-        for (size_t i = 0; i < painter.vectorStrokes.size(); i++)
-        {
-            if(i == 0){
-                if(painter.vectorStrokes[i].startPointClicked){
-                    painter.vectorStrokes.erase(painter.vectorStrokes.begin() + i);
-                    break;
-                }
-                else if(painter.vectorStrokes[i].endPointClicked && painter.vectorStrokes.size() > 1){
-                    painter.vectorStrokes[i].endPos = painter.vectorStrokes[i + 1].endPos; 
-                    painter.vectorStrokes.erase(painter.vectorStrokes.begin() + i + 1);
-                    break;
-                }
-            }
-            else{
-                if(painter.vectorStrokes[i].endPointClicked){
-                    painter.vectorStrokes.erase(painter.vectorStrokes.begin() + i);
-                    if(i - 1 < painter.vectorStrokes.size() && i < painter.vectorStrokes.size())
-                        painter.vectorStrokes[i].startPos = painter.vectorStrokes[i - 1].endPos; 
-                    break;
-                }
-            }
-        }
+        painter.deleteSelectedVectorPoints();
     }
     if(vectorPaintingModePropertyPanel.sections[0].elements[4].button.clicked){
         painter.applyVectorStrokes(
