@@ -223,6 +223,22 @@ bool VectorStroke3D::draw(Timer& timer, float edge, bool sceneState, std::vector
     
     bool clicked = false;
 
+    glm::vec4 startClr = glm::vec4(1.f);
+    glm::vec4 endClr = glm::vec4(1.f);
+    
+    // If last stroke
+    if(curI == strokes.size() - 1){
+        endClr = glm::vec4(148.f / 255.f, 194.f / 255.f, 132.f / 255.f, 1.f);
+    }
+
+    // If first stroke 
+    if(curI == 0){
+        startClr = glm::vec4(194.f / 255.f, 132.f / 255.f, 177.f / 255.f, 1.f);
+    }
+
+    this->startPoint.color = startClr;
+    this->endPoint.color = endClr;
+
     if(this->startPoint.render(timer, true, painter, false, 0.015f, true))
         clicked = true;
 

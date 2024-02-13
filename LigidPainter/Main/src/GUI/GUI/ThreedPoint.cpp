@@ -53,10 +53,15 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
     ShaderSystem::color3d().setMat4("modelMatrix", transMat);
     ShaderSystem::color3d().setFloat("depthToleranceValue", 0);
  
-    if(!this->active || stencilTest)
+    if(stencilTest){
         ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
-    else
-        ShaderSystem::color3d().setVec4("color", ColorPalette::themeColor);
+    }
+    else{
+        if(!this->active)
+            ShaderSystem::color3d().setVec4("color", this->color);
+        else
+            ShaderSystem::color3d().setVec4("color", this->colorActive);
+    }
 
     getSphereModel()->Draw();    
 
@@ -120,6 +125,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
 
         if(stencilData[0] > 100){
             this->active = !this->active;
+            this->clickState1 = true;
             clicked = true;
         }
 
@@ -128,6 +134,9 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         bindedFBO.bind();
         Settings::defaultFramebuffer()->setViewport();
     }
+
+    if(!*Mouse::LPressed())
+        this->clickState1 = false;
 
     this->moving = false;
     if(
@@ -173,8 +182,8 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
 }
 
 bool ThreeDPoint::areMovingConditionsSet(bool canMove){
-    return  this->active && 
-            getContext()->window.isKeyPressed(LIGIDGL_KEY_G) && 
+    return  (getContext()->window.isKeyPressed(LIGIDGL_KEY_G) || this->clickState1) && 
+            this->active && 
             !*Mouse::RPressed() && 
             !*Mouse::MPressed() && 
             !*Mouse::mouseScroll() &&

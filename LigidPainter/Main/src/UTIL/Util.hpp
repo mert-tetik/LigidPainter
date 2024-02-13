@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <atomic>
 
 #include "ShaderSystem/Shader.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 
 //forward declerations :
 
@@ -676,6 +677,11 @@ struct ThreeDPoint{
     glm::vec3 pos = glm::vec3(0.f);
     glm::vec3 normal = glm::vec3(0.f);
 
+    glm::vec4 color = glm::vec4(1.f);
+    glm::vec4 colorActive = ColorPalette::themeColor;
+
+    bool clickState1 = false;
+    
     bool active = false;
     bool moving = false;
 
