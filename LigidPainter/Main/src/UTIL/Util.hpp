@@ -831,6 +831,9 @@ public:
     Texture meshNormalTxtr;
 
     void getPosNormalValOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData, bool readNormal);
+    /*! @brief Returns the 3D point value of the model on the cursor
+               Returns the pos & normal value -1000 if the point is not valid
+    */
     ThreeDPoint getCurrentPosNormalDataOverCursor();
 
     float mirrorXOffset = 0.f;

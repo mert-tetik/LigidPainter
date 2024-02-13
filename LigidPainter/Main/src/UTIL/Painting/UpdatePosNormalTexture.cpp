@@ -167,6 +167,10 @@ ThreeDPoint Painter::getCurrentPosNormalDataOverCursor(){
         point.pos = glm::vec3(posData[0], posData[1], posData[2]);
         point.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
     }
+    else{
+        point.pos = glm::vec3(-1000.f, -1000.f, -1000.f);
+        point.normal = glm::vec3(-1000.f, -1000.f, -1000.f);
+    }
 
     //Finish
     delete[] posData;

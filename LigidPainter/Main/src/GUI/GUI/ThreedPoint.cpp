@@ -9,9 +9,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
-    Timer takes care of time related things
-    Like getting fps or frame rendering speed
-    And helps you manage the time
+
 */
 
 #include<glad/glad.h>

@@ -266,6 +266,11 @@ void Painter::addNew2DVector(){
 }
 
 void Painter::addNew3DVector(){
+
+    // Point on top of the cursor is not valid 
+    if(this->getCurrentPosNormalDataOverCursor().pos == glm::vec3(-1000.f))
+        return;
+
     VectorStroke3D vecStroke;
     if(!this->vectorStrokes3D.size()){
         registerVectorAction("First wrapped point created", this->vectorStrokes3D);
