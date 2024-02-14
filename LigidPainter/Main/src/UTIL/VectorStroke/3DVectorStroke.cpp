@@ -230,6 +230,9 @@ bool VectorStroke3D::draw(Timer& timer, float edge, bool sceneState, std::vector
     if(curI == strokes.size() - 1){
         endClr = glm::vec4(148.f / 255.f, 194.f / 255.f, 132.f / 255.f, 1.f);
     }
+    else{
+        this->endPoint = strokes[curI + 1].startPoint;
+    }
 
     // If first stroke 
     if(curI == 0){
@@ -241,9 +244,11 @@ bool VectorStroke3D::draw(Timer& timer, float edge, bool sceneState, std::vector
 
     if(this->startPoint.render(timer, true, painter, false, 0.015f, true))
         clicked = true;
-
-    if(this->endPoint.render(timer, true, painter, false, 0.015f, true))
-        clicked = true;
+    
+    if(curI == strokes.size() - 1){
+        if(this->endPoint.render(timer, true, painter, false, 0.015f, true))
+            clicked = true;
+    }
     
     if(this->startPoint.moving || this->endPoint.moving){
         this->updateLinePoints(painter);

@@ -208,7 +208,7 @@ void Painter::render3DVectors(Timer& timer, bool doMouseTracking){
     // Render all the vectors
     int clickedPointI = -1; 
     bool anyPointMovingCondition = false;
-    for (int i = this->vectorStrokes3D.size() - 1; i >= 0; i--)
+    for (size_t i = 0; i < this->vectorStrokes3D.size(); i++)
     {
         if(this->vectorStrokes3D[i].draw(timer, 0.0005f, doMouseTracking, this->vectorStrokes3D, i, *this))
             clickedPointI = i;

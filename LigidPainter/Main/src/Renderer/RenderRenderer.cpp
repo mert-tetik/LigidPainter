@@ -34,6 +34,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 bool _ligid_renderer_render_first_frame = true;
 
+// 3D Point
+extern bool aPointWasAlreadyActivated;
 
 void Renderer::render(){
 
@@ -291,6 +293,8 @@ void Renderer::render(){
     *Mouse::mouseOffset() = glm::vec2(0);
     *Mouse::mods() = 0;
     *Mouse::mouseScroll() = 0;
+
+    aPointWasAlreadyActivated = false;
 
     //Set keyboard states to default
     textRenderer.keyInput = false;

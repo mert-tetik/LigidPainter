@@ -32,6 +32,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static Texture threeDPointsStencilTexture;
 static Framebuffer threeDPointsStencilFBO;
 
+bool aPointWasAlreadyActivated = false;
+
 bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius, bool canMove){
 
     Framebuffer bindedFBO;
@@ -69,68 +71,71 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
             this->active = false;
 
-        const unsigned int resolution = 512;
-        
-        glm::vec2 pointPos = glm::vec2(Mouse::cursorPos()->x, (float)getContext()->windowScale.y - Mouse::cursorPos()->y);        
-        pointPos.x /= (Settings::videoScale()->x / resolution); 
-        pointPos.y /= (Settings::videoScale()->y / resolution); 
+        if(!aPointWasAlreadyActivated){
+            const unsigned int resolution = 512;
+            
+            glm::vec2 pointPos = glm::vec2(Mouse::cursorPos()->x, (float)getContext()->windowScale.y - Mouse::cursorPos()->y);        
+            pointPos.x /= (Settings::videoScale()->x / resolution); 
+            pointPos.y /= (Settings::videoScale()->y / resolution); 
 
-        if(!threeDPointsStencilTexture.ID){
-            threeDPointsStencilTexture = Texture(nullptr, resolution, resolution);
-            threeDPointsStencilFBO = Framebuffer(threeDPointsStencilTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "threeDPointsStencilFBO");
+            if(!threeDPointsStencilTexture.ID){
+                threeDPointsStencilTexture = Texture(nullptr, resolution, resolution);
+                threeDPointsStencilFBO = Framebuffer(threeDPointsStencilTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "threeDPointsStencilFBO");
+            }
+
+            threeDPointsStencilFBO.bind();
+            glClearColor(0,0,0,0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)resolution), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)resolution));
+
+            ShaderSystem::alphaZero3D().use();
+            ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+            ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
+            ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
+
+            ShaderSystem::alphaZero3D().setInt("usingMeshSelection", painter.faceSelection.activated);
+            ShaderSystem::alphaZero3D().setInt("hideUnselected", painter.faceSelection.hideUnselected);
+            ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
+            ShaderSystem::alphaZero3D().setInt("meshMask", 1);
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
+            
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
+            
+            if(painter.selectedMeshIndex < getModel()->meshes.size()){
+                ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
+                getModel()->meshes[painter.selectedMeshIndex].Draw(false);
+            }
+
+            this->render(timer, false, painter, true, radius, false);
+
+            unsigned char* stencilData = new unsigned char[4];
+
+            glReadPixels(
+                            pointPos.x, 
+                            pointPos.y, 
+                            1, 
+                            1,
+                            GL_RGBA,
+                            GL_UNSIGNED_BYTE,
+                            stencilData
+                        );
+
+            if(stencilData[0] > 100){
+                aPointWasAlreadyActivated = true;
+                this->active = !this->active;
+                this->clickState1 = true;
+                clicked = true;
+            }
+
+            delete[] stencilData;
+
+            bindedFBO.bind();
+            Settings::defaultFramebuffer()->setViewport();
         }
-
-        threeDPointsStencilFBO.bind();
-        glClearColor(0,0,0,0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)resolution), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)resolution));
-
-        ShaderSystem::alphaZero3D().use();
-        ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
-        ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
-        ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
-
-        ShaderSystem::alphaZero3D().setInt("usingMeshSelection", painter.faceSelection.activated);
-        ShaderSystem::alphaZero3D().setInt("hideUnselected", painter.faceSelection.hideUnselected);
-        ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
-        ShaderSystem::alphaZero3D().setInt("meshMask", 1);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
-        
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
-        
-        if(painter.selectedMeshIndex < getModel()->meshes.size()){
-            ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
-            getModel()->meshes[painter.selectedMeshIndex].Draw(false);
-        }
-
-        this->render(timer, false, painter, true, radius, false);
-
-        unsigned char* stencilData = new unsigned char[4];
-
-        glReadPixels(
-                        pointPos.x, 
-                        pointPos.y, 
-                        1, 
-                        1,
-                        GL_RGBA,
-                        GL_UNSIGNED_BYTE,
-                        stencilData
-                    );
-
-        if(stencilData[0] > 100){
-            this->active = !this->active;
-            this->clickState1 = true;
-            clicked = true;
-        }
-
-        delete[] stencilData;
-
-        bindedFBO.bind();
-        Settings::defaultFramebuffer()->setViewport();
     }
 
     if(!*Mouse::LPressed())
