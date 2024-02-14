@@ -205,6 +205,27 @@ void Painter::render3DVectors(Timer& timer, bool doMouseTracking){
     if(doMouseTracking && Mouse::activeCursor()->cursorType == Mouse::defaultCursor()->cursorType)
         Mouse::setCursor(*Mouse::inkPenCursor());
 
+    ShaderSystem::alphaZero3D().use();
+    ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
+
+    ShaderSystem::alphaZero3D().setInt("usingMeshSelection", this->faceSelection.activated);
+    ShaderSystem::alphaZero3D().setInt("hideUnselected", this->faceSelection.hideUnselected);
+    ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
+    ShaderSystem::alphaZero3D().setInt("meshMask", 1);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, this->faceSelection.selectedFaces.ID);
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
+    
+    if(this->selectedMeshIndex < getModel()->meshes.size()){
+        ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[this->selectedMeshIndex].indices.size() / 3);
+        getModel()->meshes[this->selectedMeshIndex].Draw(false);
+    }
+
     // Render all the vectors
     int clickedPointI = -1; 
     bool anyPointMovingCondition = false;

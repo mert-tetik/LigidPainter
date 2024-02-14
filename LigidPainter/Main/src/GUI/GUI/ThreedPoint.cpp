@@ -34,6 +34,19 @@ static Framebuffer threeDPointsStencilFBO;
 
 bool aPointWasAlreadyActivated = false;
 
+static float calculateDepthToleranceValue(glm::vec3 origin){
+    float distance = glm::distance(getScene()->camera.cameraPos, origin);
+
+    if(distance < 2.f)
+        return 0.1f;
+    else if(distance < 5.f)
+        return 0.01f;
+    else if(distance < 10.f)
+        return 0.001f;
+
+    return 0.0001f;
+}
+
 bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius, bool canMove){
 
     Framebuffer bindedFBO;
@@ -51,7 +64,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
     ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
     ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::color3d().setMat4("modelMatrix", transMat);
-    ShaderSystem::color3d().setFloat("depthToleranceValue", 0);
+    ShaderSystem::color3d().setFloat("depthToleranceValue", calculateDepthToleranceValue(this->pos));
  
     if(stencilTest){
         ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
