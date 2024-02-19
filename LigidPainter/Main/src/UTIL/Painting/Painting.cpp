@@ -133,14 +133,16 @@ void Painter::doPaint(
                         Panel twoDPaintingPanel, 
                         Box twoDPaintingBox, 
                         bool highResMode, 
-                        std::vector<TextureField> textureFields
+                        std::vector<TextureField> textureFields,
+                        ThreeDPoint wrapPaintPoint,
+                        bool firstStroke
                     )
 {
     
     glm::vec2 firstCursorPos = *Mouse::cursorPos();
     
     //First frame the painting is started
-    if(*Mouse::LClick()){
+    if(firstStroke){
         startCursorPos = *Mouse::cursorPos();
         lastCursorPos = *Mouse::cursorPos();
         frameCounter = 0;
@@ -192,16 +194,30 @@ void Painter::doPaint(
         float* posData = new float[4]; 
         float* normalData = new float[4]; 
         
-        this->getPosNormalValOverPoint(
-                                glm::vec2(
-                                            Mouse::cursorPos()->x, 
-                                            getContext()->windowScale.y - Mouse::cursorPos()->y
-                                        ),
-                                posData,
-                                normalData,
-                                true
-                            );
+        if(wrapPaintPoint.pos.x == -1000.f){
+            this->getPosNormalValOverPoint(
+                                    glm::vec2(
+                                                Mouse::cursorPos()->x, 
+                                                getContext()->windowScale.y - Mouse::cursorPos()->y
+                                            ),
+                                    posData,
+                                    normalData,
+                                    true
+                                );
 
+        }
+        else{
+            posData[0] = wrapPaintPoint.pos.x;
+            posData[1] = wrapPaintPoint.pos.y;
+            posData[2] = wrapPaintPoint.pos.z;
+            posData[3] = 1.f;
+            
+            normalData[0] = wrapPaintPoint.normal.x;
+            normalData[1] = wrapPaintPoint.normal.y;
+            normalData[2] = wrapPaintPoint.normal.z;
+            normalData[3] = 1.f;
+        }
+        
         getScene()->camera.cameraPos = glm::vec3(
                                                     posData[0] + normalData[0] * 5.1f, 
                                                     posData[1] + normalData[1] * 5.f, 
@@ -219,7 +235,7 @@ void Painter::doPaint(
         posData[0] = (posData[0] + 1.f) / 2.f;
         posData[1] = (posData[1] + 1.f) / 2.f;
         posData[2] = (posData[2] + 1.f) / 2.f;
-
+        
         const unsigned int resolution = 512; 
 
         glm::ivec2 res = glm::ivec2(resolution);
@@ -276,6 +292,7 @@ void Painter::doPaint(
                     );
 
 
+
         float* lastPosP = new float[4]; 
         lastPosP[0] = lastPos.x;
         lastPosP[1] = lastPos.y;
@@ -290,7 +307,7 @@ void Painter::doPaint(
             lastDest.x = crsPos.x - (crsPos.x - lastCrsPos.x);
             lastDest.y = crsPos.y + (crsPos.y - lastCrsPos.y);
             
-            if(*Mouse::LClick())  
+            if(firstStroke && wrapPaintPoint.pos.x == -1000.f)  
                 lastDest = crsPos;
 
             holdLocations = getCursorSubstitution(this->brushProperties.spacing, crsPos, lastDest);
@@ -352,7 +369,7 @@ void Painter::doPaint(
 
     //Painting
     if(!strokeLocations.size()){
-        if(glm::distance(startCursorPos,*Mouse::cursorPos()) > this->brushProperties.spacing || *Mouse::LClick()){ //Provide spacing
+        if(glm::distance(startCursorPos,*Mouse::cursorPos()) > this->brushProperties.spacing || firstStroke){ //Provide spacing
             startCursorPos = *Mouse::cursorPos();            
             LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted with distance");
         }
@@ -375,7 +392,7 @@ void Painter::doPaint(
                                                 this->oXYZSide, this->mirrorXOffset, this->mirrorYOffset, this->mirrorZOffset, paintingTxtrObj, this->selectedTexture, 
                                                 this->projectedPaintingTexture, paintingMode, this->brushProperties.opacity, 
                                                 this->threeDimensionalMode, windowOrtho, this->selectedMeshIndex, twoDPaintingBox, this->faceSelection.activated, 
-                                                this->faceSelection.selectedFaces, highResMode, textureFields
+                                                this->faceSelection.selectedFaces, highResMode, textureFields, firstStroke
                                             );
 
     if(this->wrapMode){
@@ -632,13 +649,14 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                                         Texture selectedPrimitives,
                                                         bool highResMode,
 
-                                                        std::vector<TextureField> textureFields
+                                                        std::vector<TextureField> textureFields,
+                                                        bool firstStroke
                                                     )
 {
     glDisable(GL_BLEND);
     
     if(selectedPaintingModeIndex != 6){
-        if((*Mouse::LClick() && !this->wrapMode) || this->wrapMode){
+        if((firstStroke && !this->wrapMode) || this->wrapMode){
             this->updateDepthTexture();
             this->updatePaintingOverTexture(textureFields);
         }

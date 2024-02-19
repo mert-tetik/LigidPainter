@@ -63,7 +63,7 @@ void main(){
     vec2 tUV = vec2(applyThreshold(UV.x, dotGap),applyThreshold(UV.y, dotGap));
 
     if(tUV.x <= dotSize && tUV.y <= dotSize)
-        m = 1 / 1.5;
+        m = 1 / 1.75;
 
     fragColor = vec4(m);
 }

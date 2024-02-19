@@ -202,10 +202,10 @@ void TextureField::render2DTextureField(
             ShaderSystem::vectoralCurve().setVec3("pos", glm::vec3(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f, 0.9f));
             ShaderSystem::vectoralCurve().setVec2("scale", glm::vec2(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f));
 
-            ShaderSystem::vectoralCurve().setVec2("direction", stroke.offsetPos);
+            ShaderSystem::vectoralCurve().setVec2("direction", stroke.offsetPoint.pos);
 
-            ShaderSystem::vectoralCurve().setVec2("startPos", stroke.startPos);
-            ShaderSystem::vectoralCurve().setVec2("destPos", stroke.endPos);
+            ShaderSystem::vectoralCurve().setVec2("startPos", stroke.startPoint.pos);
+            ShaderSystem::vectoralCurve().setVec2("destPos", stroke.endPoint.pos);
 
             ShaderSystem::vectoralCurve().setVec2("percScale", *Settings::videoScale());
             ShaderSystem::vectoralCurve().setInt("lineCapturingMode", 0);

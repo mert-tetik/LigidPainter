@@ -641,36 +641,42 @@ struct BrushProperties{
     Texture brushTexture;
 };
 
-struct VectorStroke{
-    glm::vec2 startPos;
-    glm::vec2 endPos;
-    glm::vec2 offsetPos;
+struct VectorPoint2D{
+    /*! @brief Position of the point (0 - 100 scale) */
+    glm::vec2 pos = glm::vec2(0.f);
 
-    bool endPointPressed = false;
-    bool startPointPressed = false;
-    bool offsetPointPressed = false;
+    /*! @brief This flag indicates if the point was hovered by the cursor*/
+    bool hover = false;
     
-    bool endPointClicked = false;
-    bool startPointClicked = false;
-    bool offsetPointClicked = false;
+    /*! @brief This flag indicates if the point was pressed and ready to move*/
+    bool canMove = false;
     
-    float endPointHoverMixVal = 0.f;
-    float endPointClickedMixVal = 0.f;
-    float startPointHoverMixVal = 0.f;
-    float startPointClickedMixVal = 0.f;
+    /*! @brief This flag indicates if the point was pressed and ready to move*/
+    bool active = false;
     
-    bool endPointHover = false;
-    bool startPointHover = false;
-    bool offsetPointHover = false;
+    /*! @brief This value gradually becomes 1.f as the hover flag set to true*/
+    float hoverMixVal = 0.f;
     
+    /*! @brief This value gradually becomes 1.f as the active flag set to true*/
+    float activeMixVal = 0.f;
+
+    void render(Timer& timer, bool doMouseTracking, float scaleDivider, glm::vec4 color);
+};
+
+struct VectorStroke{
+    VectorPoint2D startPoint;
+    VectorPoint2D endPoint;
+    VectorPoint2D offsetPoint;
+
     VectorStroke(){}
     VectorStroke(glm::vec2 startPos, glm::vec2 endPos, glm::vec2 offsetPos){
-        this->startPos = startPos;
-        this->endPos = endPos;
-        this->offsetPos = offsetPos;
+        this->startPoint.pos = startPos;
+        this->endPoint.pos = endPos;
+        this->offsetPoint.pos = offsetPos;
     }
     
-    void draw(Timer& timer, float edge, bool sceneState, std::vector<VectorStroke>& strokes, int curI);
+    void renderCurve(float edge, glm::vec2 start, glm::vec2 dest, glm::vec2 offset);
+    void draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke>& strokes, int curI);
 };
 
 struct ThreeDPoint{
@@ -690,6 +696,10 @@ struct ThreeDPoint{
     ThreeDPoint(){}
     ThreeDPoint(glm::vec3 pos){
         this->pos = pos;
+    }
+    ThreeDPoint(glm::vec3 pos, glm::vec3 normal){
+        this->pos = pos;
+        this->normal = normal;
     }
 
     /*! @return true if clicked to the point*/
@@ -733,7 +743,7 @@ public:
     VectorStroke3D(){}
     VectorStroke3D(ThreeDPoint startPoint, ThreeDPoint endPoint);
 
-    bool draw(Timer& timer, float edge, bool sceneState, std::vector<VectorStroke3D>& strokes, int curI, Painter& painter);
+    bool draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke3D>& strokes, int curI, Painter& painter);
 
 private:
     void projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3 center, Painter& painter);
@@ -898,6 +908,8 @@ public:
     /**/void addNew2DVector();
     /**/void addNew3DVector();
     /**/void update3DVectorBuffers();
+    /**/bool isAny2DPointsActive();
+    /**/bool isAnyWrappedPointsActive();
     
 
     FaceSelection faceSelection;
@@ -950,7 +962,9 @@ public:
     *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
     * @param windowOrtho orthographic projection matrix created with window size value.
     */
-    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, Box twoDPaintingBox, bool highResMode, std::vector<TextureField> textureFields);
+    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, 
+                Box twoDPaintingBox, bool highResMode, std::vector<TextureField> textureFields, ThreeDPoint wrapPaintPoint,
+                bool firstStroke);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -1028,7 +1042,7 @@ private:
                                                         float mirrorZOffset,Texture paintingTxtrObj, Texture& selectedTexture,  Texture& projectedPaintingTexture,  
                                                         int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode,  glm::mat4 windowOrtho,  
                                                         int selectedMeshIndex, Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives, bool highResMode,
-                                                        std::vector<TextureField> textureFields
+                                                        std::vector<TextureField> textureFields, bool firstStroke
                                                     );
 };
 

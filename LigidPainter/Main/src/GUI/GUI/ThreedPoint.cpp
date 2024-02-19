@@ -78,6 +78,9 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
 
     getSphereModel()->Draw();    
 
+    if(shortcuts_CTRL_A())
+        this->active = true;
+
     bool clicked = false;
     if(*Mouse::LClick() && doMouseTracking && !stencilTest){
         

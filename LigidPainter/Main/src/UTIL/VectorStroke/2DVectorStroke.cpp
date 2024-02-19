@@ -35,149 +35,115 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
-bool __anyVectoralPointMoving = false;
-int __anyVectoralPointMovingType = 0;
-int __anyVectoralPointMovingIndex = 0;
-
-void VectorStroke::draw(Timer& timer, float edge, bool sceneState, std::vector<VectorStroke>& strokes, int curI){
-    glm::vec2 cursPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
-    const glm::vec2 dotScale = glm::vec2(10.);
-    this->endPointHover = Mouse::isMouseHover(dotScale, this->endPos / 100.f * *Settings::videoScale());
-    this->startPointHover = Mouse::isMouseHover(dotScale, this->startPos / 100.f * *Settings::videoScale());
-    this->offsetPointHover = Mouse::isMouseHover(dotScale, this->offsetPos / 100.f * *Settings::videoScale());
-
-    if(*Mouse::LClick()){
-        if(endPointHover){
-            if(this->startPos != this->endPos){
-                this->endPointPressed = true;
-            }
-            this->endPointClicked = !this->endPointClicked;
-        }
-        else if(!sceneState && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT))
-            this->endPointClicked = false;
-        if(startPointHover){
-            if(this->startPos != this->endPos){
-                this->startPointPressed = true;
-            }
-            this->startPointClicked = !this->startPointClicked;
-        }
-        else if(!sceneState && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT))
-            this->startPointClicked = false;
-        if(offsetPointHover){
-            if(this->startPos != this->endPos){
-                this->offsetPointPressed = true;
-            }
-            this->offsetPointClicked = !this->offsetPointClicked;
-        }
-        else if(!sceneState && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT))
-            this->offsetPointClicked = false;
-    }
-
-    if(!*Mouse::LPressed()){
-        this->endPointPressed = false;
-        this->startPointPressed = false;
-        this->offsetPointPressed = false;
-    }
-
-    if(Mouse::mouseOffset()->x || Mouse::mouseOffset()->y){
-        if(this->endPointPressed && !sceneState)
-            this->endPointClicked = false;
-        if(this->startPointPressed && !sceneState)
-            this->startPointClicked = false;
-        if(this->offsetPointPressed && !sceneState)
-            this->offsetPointClicked = false;
-    }
-
-    if(this->endPointPressed){
-        if(!__anyVectoralPointMoving || (__anyVectoralPointMovingIndex == curI + 1 && __anyVectoralPointMovingType == 1)){
-            this->endPos += *Mouse::mouseOffset()  / *Settings::videoScale() * 100.f; 
-            __anyVectoralPointMovingType = 0;
-            __anyVectoralPointMovingIndex = curI;
-        }
+void VectorPoint2D::render(Timer& timer, bool doMouseTracking, float scaleDivider, glm::vec4 color){
     
-        __anyVectoralPointMoving = true;
-    }
+    const float z_axis_val = 0.9f;
+    const glm::vec2 point_track_scale = glm::vec2(10.);
+    
+    // Check if the point was hovered by the cursor
+    this->hover = Mouse::isMouseHover(point_track_scale, this->pos / 100.f * *Settings::videoScale());
+    if(!doMouseTracking)
+        this->hover = false;
 
-    if(this->startPointPressed){
-        if(!__anyVectoralPointMoving || (__anyVectoralPointMovingIndex == curI - 1 && __anyVectoralPointMovingType == 0)){
-            this->startPos += *Mouse::mouseOffset()  / *Settings::videoScale() * 100.f; 
-            __anyVectoralPointMovingType = 1;
-            __anyVectoralPointMovingIndex = curI;
+    // Activate the point if CTRL + A 
+    if(shortcuts_CTRL_A())
+        this->active = true;
+
+    // If mouse left button clicked
+    if(*Mouse::LClick() && doMouseTracking){
+        // If clicked to the point
+        if(this->hover){
+            this->active = !this->active;
+            this->canMove = true;
         }
-        
-        __anyVectoralPointMoving = true;
+        // If not clicked to the point
+        else if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT))
+            this->active = false;
     }
 
-    if(this->offsetPointPressed){
-        if(!__anyVectoralPointMoving){
-            this->offsetPos += *Mouse::mouseOffset()  / *Settings::videoScale() * 100.f; 
-            __anyVectoralPointMovingType = 2;
-            __anyVectoralPointMovingIndex = curI;
-        }
-        
-        __anyVectoralPointMoving = true;
+    // Prevent moving if mouse left button is not pressed
+    if(!*Mouse::LPressed() || !this->active){
+        this->canMove = false;
     }
-        
 
-    //ABS
+    // Move the point if pressed to 'G'
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_G) && this->active){
+        this->canMove = true;
+    }
+    
+    // Move the point if it can move
+    if(this->canMove){
+        this->pos += *Mouse::mouseOffset()  / *Settings::videoScale() * 100.f; 
+    }
+    
+    // Create the button
+    Button btn = Button(0, glm::vec2(1.f), "", Texture(), 0.f, true);
+    btn.hoverMixVal = this->hoverMixVal;
+    btn.clickedMixVal = this->activeMixVal;
+    btn.hover = this->hover;
+    btn.clickState1 = this->active;
+    btn.scale = glm::vec2(1.f, Settings::videoScale()->x / Settings::videoScale()->y) / 2.f;
+    btn.scale /= scaleDivider;
+    btn.radius = btn.scale.x / 2.f;
+    btn.pos = glm::vec3(this->pos, z_axis_val);
+    btn.color = color;
+
+    // Render the button
+    btn.render(timer, doMouseTracking);
+
+    this->hoverMixVal = btn.hoverMixVal;
+    this->activeMixVal = btn.clickedMixVal;
+}
+
+void VectorStroke::renderCurve(float edge, glm::vec2 start, glm::vec2 dest, glm::vec2 offset){
     ShaderSystem::vectoralCurve().use();
     
     ShaderSystem::vectoralCurve().setVec3("pos", glm::vec3(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f, 0.9f));
     ShaderSystem::vectoralCurve().setVec2("scale", glm::vec2(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f));
     
-    ShaderSystem::vectoralCurve().setVec2("direction", this->offsetPos);
+    ShaderSystem::vectoralCurve().setVec2("startPos", start);
+    ShaderSystem::vectoralCurve().setVec2("destPos", dest);
+    ShaderSystem::vectoralCurve().setVec2("direction", offset);
     
-    ShaderSystem::vectoralCurve().setVec2("startPos", this->startPos);
-    ShaderSystem::vectoralCurve().setVec2("destPos", this->endPos);
     ShaderSystem::vectoralCurve().setVec2("percScale", *Settings::videoScale());
     ShaderSystem::vectoralCurve().setInt("lineCapturingMode", 0);
-    
     ShaderSystem::vectoralCurve().setFloat("EDGE", edge);
-
-    glm::vec3 endPointColor = glm::vec3(1.f, 1.f, 1.f);
-
-    if(endPointHover || endPointPressed)
-        endPointColor = ColorPalette::themeColor;
-    else if(endPointClicked)
-        endPointColor = glm::vec3(0.f,0.f,1.f);
-
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "VectorStroke::draw : Rendering the line");
     
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "VectorStroke::draw : Rendering the curve");
+}
+
+static bool __anyVectoralPointMoving = false;
+static int __anyVectoralPointMovingType = 0;
+static int __anyVectoralPointMovingIndex = 0;
+
+void VectorStroke::draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke>& strokes, int curI){
+    
+    // Rendering the main curve
+    this->renderCurve(edge, this->startPoint.pos, this->endPoint.pos, this->offsetPoint.pos);
+    // Rendering the offset curves
+    this->renderCurve(edge / 5.f, this->startPoint.pos, this->endPoint.pos, this->offsetPoint.pos);
+    this->renderCurve(edge / 5.f, this->startPoint.pos, this->offsetPoint.pos, this->offsetPoint.pos);
+    this->renderCurve(edge / 5.f, this->endPoint.pos, this->offsetPoint.pos, this->offsetPoint.pos);
+
+    // Rendering the points
     ShaderSystem::buttonShader().use();
 
-    Button endPointBtn = Button(0, glm::vec2(1.f), "", Texture(), 0.f, true);
-    endPointBtn.hoverMixVal = endPointHoverMixVal;
-    endPointBtn.clickedMixVal = endPointClickedMixVal;
-    endPointBtn.hover = endPointHover;
-    endPointBtn.clickState1 = endPointClicked;
-    endPointBtn.radius = 0.3f;
-    endPointBtn.scale = glm::vec2(1.f, Settings::videoScale()->x / Settings::videoScale()->y) / 2.f;
-    endPointBtn.pos = glm::vec3(this->endPos, 0.9f);
+    glm::vec4 endClr = glm::vec4(1.f);
+    glm::vec4 startClr = glm::vec4(1.f);
 
-    Button startPointBtn = endPointBtn;
-    startPointBtn.pos = glm::vec3(this->startPos, 0.9f);
-    startPointBtn.clickState1 = startPointClicked;
-    startPointBtn.hover = startPointHover;
-    startPointBtn.clickedMixVal = startPointClickedMixVal;
-    startPointBtn.hoverMixVal = startPointHoverMixVal;
-    
-    if(edge == 0.0001f){
-        endPointBtn.scale /= 2.;
-        endPointBtn.radius = 0.2;
+    if(curI == strokes.size() - 1){
+        endClr = glm::vec4(148.f / 255.f, 194.f / 255.f, 132.f / 255.f, 1.f);
     }
-    endPointBtn.render(timer, true);
-    if(edge != 0.0001f)
-        startPointBtn.render(timer, true);
-
-    if(startPointHover || startPointPressed || endPointHover || endPointPressed || offsetPointHover || offsetPointPressed){
-        Mouse::setCursor(*Mouse::pointerCursor());
+    if(curI == 0){
+        startClr = glm::vec4(194.f / 255.f, 132.f / 255.f, 177.f / 255.f, 1.f);
     }
 
-    endPointHoverMixVal = endPointBtn.hoverMixVal;
-    endPointClickedMixVal = endPointBtn.clickedMixVal;
-    startPointHoverMixVal = startPointBtn.hoverMixVal;
-    startPointClickedMixVal = startPointBtn.clickedMixVal;
-
-    if(curI == 0)
-        __anyVectoralPointMoving = false;
+    this->startPoint.render(timer, doMouseTracking, 1.f, startClr);
+    if(curI == strokes.size() - 1){
+        this->endPoint.render(timer, doMouseTracking, 1.f, endClr);
+    }
+    else{
+        this->endPoint = strokes[curI + 1].startPoint;
+    }
+    this->offsetPoint.render(timer, doMouseTracking, 2.f, glm::vec4(1.f));
 }

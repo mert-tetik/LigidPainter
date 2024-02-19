@@ -96,7 +96,7 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
                     pxs
                 );
     
-    ShaderSystem::renderModelData().setInt("state", 0);
+    ShaderSystem::renderModelData().setInt("state", 2);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     if(painter.selectedMeshIndex < getModel()->meshes.size()){
@@ -158,7 +158,7 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
 }
 
 void VectorStroke3D::genLineVertices(){
-    unsigned int details = (unsigned int)(glm::distance(this->startPoint.pos, this->endPoint.pos) * 20.f);
+    unsigned int details = (unsigned int)(glm::distance(this->startPoint.pos, this->endPoint.pos) * 20.f) + 1;
 
     this->lineVertices.clear();
  
@@ -219,7 +219,7 @@ void VectorStroke3D::renderLine(){
     }
 }
 
-bool VectorStroke3D::draw(Timer& timer, float edge, bool sceneState, std::vector<VectorStroke3D>& strokes, int curI, Painter& painter){
+bool VectorStroke3D::draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke3D>& strokes, int curI, Painter& painter){
     
     bool clicked = false;
 
@@ -242,11 +242,11 @@ bool VectorStroke3D::draw(Timer& timer, float edge, bool sceneState, std::vector
     this->startPoint.color = startClr;
     this->endPoint.color = endClr;
 
-    if(this->startPoint.render(timer, true, painter, false, 0.015f, true))
+    if(this->startPoint.render(timer, doMouseTracking, painter, false, 0.015f, true))
         clicked = true;
     
     if(curI == strokes.size() - 1){
-        if(this->endPoint.render(timer, true, painter, false, 0.015f, true))
+        if(this->endPoint.render(timer, doMouseTracking, painter, false, 0.015f, true))
             clicked = true;
     }
     

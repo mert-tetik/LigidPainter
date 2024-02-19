@@ -41,51 +41,103 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Painter::deleteSelectedVectorPoints(){
     if(!this->wrapMode){
+        if(!this->isAny2DPointsActive())
+            return;
+
         registerVectorAction("Selected point deleted", this->vectorStrokes);
-        for (size_t i = 0; i < this->vectorStrokes.size(); i++)
-        {
-            if(i == 0){
-                if(this->vectorStrokes[i].startPointClicked){
-                    this->vectorStrokes.erase(this->vectorStrokes.begin() + i);
-                    break;
+        while (this->isAny2DPointsActive()){
+            for (size_t i = 0; i < this->vectorStrokes.size(); i++)
+            {
+                if(i == 0){
+                    if(this->vectorStrokes[i].startPoint.active && this->vectorStrokes[i].endPoint.active && this->vectorStrokes.size() == 1){
+                        this->vectorStrokes.clear(); 
+                        break;
+                    }
+                    
+                    if(this->vectorStrokes[i].startPoint.active && this->vectorStrokes.size() == 1){
+                        this->vectorStrokes[i].startPoint.pos = this->vectorStrokes[i].endPoint.pos; 
+                        this->vectorStrokes[i].offsetPoint.pos = this->vectorStrokes[i].endPoint.pos; 
+                        this->vectorStrokes[i].startPoint.active = false; 
+                        break;
+                    }
+                    
+                    if(this->vectorStrokes[i].endPoint.active && this->vectorStrokes.size() == 1){
+                        this->vectorStrokes[i].endPoint.pos = this->vectorStrokes[i].startPoint.pos; 
+                        this->vectorStrokes[i].offsetPoint.pos = this->vectorStrokes[i].startPoint.pos; 
+                        this->vectorStrokes[i].endPoint.active = false; 
+                        break;
+                    }
+
+                    if(this->vectorStrokes[i].startPoint.active){
+                        this->vectorStrokes.erase(this->vectorStrokes.begin() + i);
+                        break;
+                    }
+                    
+                    if(this->vectorStrokes[i].endPoint.active && this->vectorStrokes.size() > 1){
+                        this->vectorStrokes[i].endPoint.pos = this->vectorStrokes[i + 1].endPoint.pos; 
+                        this->vectorStrokes[i].endPoint.active = this->vectorStrokes[i + 1].endPoint.active; 
+                        this->vectorStrokes.erase(this->vectorStrokes.begin() + i + 1);
+                        break;
+                    }
                 }
-                else if(this->vectorStrokes[i].endPointClicked && this->vectorStrokes.size() > 1){
-                    this->vectorStrokes[i].endPos = this->vectorStrokes[i + 1].endPos; 
-                    this->vectorStrokes.erase(this->vectorStrokes.begin() + i + 1);
-                    break;
-                }
-            }
-            else{
-                if(this->vectorStrokes[i].endPointClicked){
-                    this->vectorStrokes.erase(this->vectorStrokes.begin() + i);
-                    if(i - 1 < this->vectorStrokes.size() && i < this->vectorStrokes.size())
-                        this->vectorStrokes[i].startPos = this->vectorStrokes[i - 1].endPos; 
-                    break;
+                else{
+                    if(this->vectorStrokes[i].endPoint.active){
+                        this->vectorStrokes.erase(this->vectorStrokes.begin() + i);
+                        if(i - 1 < this->vectorStrokes.size() && i < this->vectorStrokes.size()){
+                            this->vectorStrokes[i].startPoint.pos = this->vectorStrokes[i - 1].endPoint.pos; 
+                            this->vectorStrokes[i].startPoint.active = false; 
+                        }
+                        break;
+                    }
                 }
             }
         }
     }
     else{
+        if(!this->isAnyWrappedPointsActive())
+            return;
+        
         registerVectorAction("Selected wrapped point deleted", this->vectorStrokes3D);
-        for (size_t i = 0; i < this->vectorStrokes3D.size(); i++)
-        {
-            if(i == 0){
-                if(this->vectorStrokes3D[i].startPoint.active){
-                    this->vectorStrokes3D.erase(this->vectorStrokes3D.begin() + i);
-                    break;
+        while(this->isAnyWrappedPointsActive()){
+            for (size_t i = 0; i < this->vectorStrokes3D.size(); i++)
+            {
+                if(i == 0){
+
+                    if(this->vectorStrokes3D[i].startPoint.active && this->vectorStrokes3D[i].endPoint.active && this->vectorStrokes3D.size() == 1){
+                        this->vectorStrokes3D.clear(); 
+                        break;
+                    }
+                    
+                    if(this->vectorStrokes3D[i].startPoint.active && this->vectorStrokes3D.size() == 1){
+                        this->vectorStrokes3D[i].startPoint = this->vectorStrokes3D[i].endPoint; 
+                        break;
+                    }
+                    
+                    if(this->vectorStrokes3D[i].endPoint.active && this->vectorStrokes3D.size() == 1){
+                        this->vectorStrokes3D[i].endPoint = this->vectorStrokes3D[i].startPoint; 
+                        break;
+                    }
+
+                    if(this->vectorStrokes3D[i].startPoint.active){
+                        this->vectorStrokes3D.erase(this->vectorStrokes3D.begin() + i);
+                        break;
+                    }
+                    
+                    if(this->vectorStrokes3D[i].endPoint.active && this->vectorStrokes3D.size() > 1){
+                        this->vectorStrokes3D[i].endPoint = this->vectorStrokes3D[i + 1].endPoint; 
+                        this->vectorStrokes3D.erase(this->vectorStrokes3D.begin() + i + 1);
+                        break;
+                    }
                 }
-                else if(this->vectorStrokes3D[i].endPoint.active && this->vectorStrokes3D.size() > 1){
-                    this->vectorStrokes3D[i].endPoint = this->vectorStrokes3D[i + 1].endPoint; 
-                    this->vectorStrokes3D.erase(this->vectorStrokes3D.begin() + i + 1);
-                    break;
-                }
-            }
-            else{
-                if(this->vectorStrokes3D[i].endPoint.active){
-                    this->vectorStrokes3D.erase(this->vectorStrokes3D.begin() + i);
-                    if(i - 1 < this->vectorStrokes3D.size() && i < this->vectorStrokes3D.size())
-                        this->vectorStrokes3D[i].startPoint = this->vectorStrokes3D[i - 1].endPoint; 
-                    break;
+                else{
+                    if(this->vectorStrokes3D[i].endPoint.active){
+                        this->vectorStrokes3D.erase(this->vectorStrokes3D.begin() + i);
+                        if(i - 1 < this->vectorStrokes3D.size() && i < this->vectorStrokes3D.size()){
+                            this->vectorStrokes3D[i].startPoint = this->vectorStrokes3D[i - 1].endPoint; 
+                            this->vectorStrokes3D[i].startPoint.active = false; 
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -111,16 +163,16 @@ void Painter::subdivideSelectedPoints(){
 
         for (size_t i = 0; i < this->vectorStrokes.size(); i++)
         {
-            if(this->vectorStrokes[i].endPointClicked && this->vectorStrokes[i].startPointClicked){
-                glm::vec2 strokeCenter = (this->vectorStrokes[i].startPos + this->vectorStrokes[i].endPos + this->vectorStrokes[i].offsetPos) / 3.0f;
-                glm::vec2 offsetPointDistance = strokeCenter - this->vectorStrokes[i].offsetPos;
+            if(this->vectorStrokes[i].endPoint.active && this->vectorStrokes[i].startPoint.active){
+                glm::vec2 strokeCenter = (this->vectorStrokes[i].startPoint.pos + this->vectorStrokes[i].endPoint.pos + this->vectorStrokes[i].offsetPoint.pos) / 3.0f;
+                glm::vec2 offsetPointDistance = strokeCenter - this->vectorStrokes[i].offsetPoint.pos;
 
                 VectorStroke newStroke;
-                newStroke.startPos = strokeCenter;
-                newStroke.endPos = this->vectorStrokes[i].endPos;
-                newStroke.offsetPos = newStroke.startPos - (newStroke.startPos - newStroke.endPos) / 2.f - offsetPointDistance;
+                newStroke.startPoint.pos = strokeCenter;
+                newStroke.endPoint.pos = this->vectorStrokes[i].endPoint.pos;
+                newStroke.offsetPoint.pos = newStroke.startPoint.pos - (newStroke.startPoint.pos - newStroke.endPoint.pos) / 2.f - offsetPointDistance;
 
-                this->vectorStrokes[i].endPos  = strokeCenter;
+                this->vectorStrokes[i].endPoint.pos  = strokeCenter;
 
                 this->vectorStrokes.insert(this->vectorStrokes.begin() + i + 1, newStroke);
                 i++;
@@ -163,19 +215,13 @@ void Painter::render2DVectors(Timer& timer, bool doMouseTracking){
     bool anyPointMovingCondition = false;
     for (int i = this->vectorStrokes.size() - 1; i >= 0; i--)
     {
-        this->vectorStrokes[i].draw(timer, 0.0005f, !doMouseTracking, this->vectorStrokes, i);
-
-        VectorStroke offsetStrokeEnd = VectorStroke(this->vectorStrokes[i].endPos, this->vectorStrokes[i].offsetPos, this->vectorStrokes[i].offsetPos); 
-        VectorStroke offsetStrokeStart = VectorStroke(this->vectorStrokes[i].startPos, this->vectorStrokes[i].offsetPos, this->vectorStrokes[i].offsetPos); 
+        this->vectorStrokes[i].draw(timer, 0.0005f, doMouseTracking, this->vectorStrokes, i);
     
-        offsetStrokeEnd.draw(timer, 0.0001f, !doMouseTracking, this->vectorStrokes, i);
-        offsetStrokeStart.draw(timer, 0.0001f, !doMouseTracking, this->vectorStrokes, i);
-    
-        if(this->vectorStrokes[i].startPointPressed)
+        if(this->vectorStrokes[i].startPoint.canMove)
             anyPointMovingCondition = true;
-        if(this->vectorStrokes[i].endPointPressed)
+        if(this->vectorStrokes[i].startPoint.canMove)
             anyPointMovingCondition = true;
-        if(this->vectorStrokes[i].offsetPointPressed)
+        if(this->vectorStrokes[i].startPoint.canMove)
             anyPointMovingCondition = true;
     }
 
@@ -190,7 +236,7 @@ void Painter::render2DVectors(Timer& timer, bool doMouseTracking){
     // Check if any points hovered
     bool anyVectorPointHover = false;
     for (size_t i = 0; i < this->vectorStrokes.size(); i++){
-        if(this->vectorStrokes[i].endPointHover || this->vectorStrokes[i].startPointHover || this->vectorStrokes[i].offsetPointHover)
+        if(this->vectorStrokes[i].endPoint.hover || this->vectorStrokes[i].startPoint.hover || this->vectorStrokes[i].offsetPoint.hover)
             anyVectorPointHover = true;
     }
 
@@ -265,22 +311,24 @@ void Painter::addNew2DVector(){
     VectorStroke vecStroke;
     if(!this->vectorStrokes.size()){
         registerVectorAction("First point created", this->vectorStrokes);
-        vecStroke.startPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f; 
-        vecStroke.endPos = vecStroke.startPos;
-        vecStroke.offsetPos = vecStroke.startPos;
+        vecStroke.startPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f; 
+        vecStroke.endPoint.pos = vecStroke.startPoint.pos;
+        vecStroke.offsetPoint.pos = vecStroke.startPoint.pos;
         this->vectorStrokes.push_back(vecStroke);
     }
     else{
-        if(this->vectorStrokes[this->vectorStrokes.size() - 1].endPos == this->vectorStrokes[this->vectorStrokes.size() - 1].startPos){
+        if(this->vectorStrokes[this->vectorStrokes.size() - 1].endPoint.pos == this->vectorStrokes[this->vectorStrokes.size() - 1].startPoint.pos){
             registerVectorAction("New point", this->vectorStrokes);
-            this->vectorStrokes[this->vectorStrokes.size() - 1].endPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
-            this->vectorStrokes[this->vectorStrokes.size() - 1].offsetPos = this->vectorStrokes[this->vectorStrokes.size() - 1].startPos - (this->vectorStrokes[this->vectorStrokes.size() - 1].startPos - this->vectorStrokes[this->vectorStrokes.size() - 1].endPos) / 2.f;
+            this->vectorStrokes[this->vectorStrokes.size() - 1].endPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+            this->vectorStrokes[this->vectorStrokes.size() - 1].offsetPoint.pos = this->vectorStrokes[this->vectorStrokes.size() - 1].startPoint.pos - (this->vectorStrokes[this->vectorStrokes.size() - 1].startPoint.pos - this->vectorStrokes[this->vectorStrokes.size() - 1].endPoint.pos) / 2.f;
+            this->vectorStrokes[this->vectorStrokes.size() - 1].offsetPoint.pos += 0.001f; // Vectors can't be rendered if the offset point alligns perfectly :(
         }
         else{
             registerVectorAction("New point", this->vectorStrokes);
-            vecStroke.startPos = this->vectorStrokes[this->vectorStrokes.size() - 1].endPos; 
-            vecStroke.endPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
-            vecStroke.offsetPos = vecStroke.startPos - (vecStroke.startPos - vecStroke.endPos) /2.f;
+            vecStroke.startPoint.pos = this->vectorStrokes[this->vectorStrokes.size() - 1].endPoint.pos; 
+            vecStroke.endPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+            vecStroke.offsetPoint.pos = vecStroke.startPoint.pos - (vecStroke.startPoint.pos - vecStroke.endPoint.pos) /2.f;
+            vecStroke.offsetPoint.pos += 0.001f; // Vectors can't be rendered if the offset point alligns perfectly :(
             this->vectorStrokes.push_back(vecStroke);
         }
     }
@@ -318,4 +366,127 @@ void Painter::update3DVectorBuffers(){
     {
         this->vectorStrokes3D[i].updateLinePoints(*this);
     }
+}
+
+/* 
+    Bezier curve function
+    
+    B(t) = (1 - t)^2 * start + 2 * (1 - t) * t * offset + t^2 * end
+*/
+static glm::vec2 bezier(float t, glm::vec2 start, glm::vec2 end, glm::vec2 offset){
+    return glm::pow((glm::vec2(1.f) - glm::vec2(t)), glm::vec2(2)) * start + glm::vec2(2) * (glm::vec2(1) - glm::vec2(t)) * glm::vec2(t) * offset + glm::pow(glm::vec2(t), glm::vec2(2)) * end;
+}
+
+static std::vector<glm::vec2> calculateBezierCurve(glm::vec2 start, glm::vec2 end, glm::vec2 direction, int frequency){
+    
+    std::vector<glm::vec2> points;
+
+    for (size_t i = 0; i < frequency; i++)
+    {
+        points.push_back(bezier((float)i / (float)frequency, start, end, direction));
+    }
+
+    return points;
+}
+
+void Painter::applyVectorStrokes(
+                                    std::vector<VectorStroke> vectorStrokes, 
+                                    Panel& twoDPaintingPanel, 
+                                    glm::mat4 windowOrtho, 
+                                    int paintingMode, 
+                                    Filter filterBtnFilter, 
+                                    Box twoDPaintingBox, 
+                                    Material& paintingCustomMat,
+                                    std::vector<TextureField> textureFields
+                                )
+{
+    if(this->wrapMode){
+        for (size_t strokeI = 0; strokeI < this->vectorStrokes3D.size(); strokeI++)
+        {
+            for (size_t vertI = 0; vertI < this->vectorStrokes3D[strokeI].lineVertices.size(); vertI++){
+                this->doPaint(windowOrtho, {}, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields, ThreeDPoint(this->vectorStrokes3D[strokeI].lineVertices[vertI].Position, this->vectorStrokes3D[strokeI].lineVertices[vertI].Normal), true);
+            }
+            this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
+
+            this->refreshPainting();
+        }
+
+
+        ShaderSystem::buttonShader().use();
+        Settings::defaultFramebuffer()->FBO.bind();
+        Settings::defaultFramebuffer()->setViewport();
+    }
+    else{
+
+        std::vector<glm::vec2> strokePositions;
+
+        for (size_t vecI = 0; vecI < this->vectorStrokes.size(); vecI++)
+        {
+            float distance = glm::distance(this->vectorStrokes[vecI].startPoint.pos, this->vectorStrokes[vecI].offsetPoint.pos) + glm::distance(this->vectorStrokes[vecI].endPoint.pos, this->vectorStrokes[vecI].offsetPoint.pos);
+            unsigned int quality = (unsigned int)(distance) * 2.f;
+
+            std::vector<glm::vec2> points = calculateBezierCurve(
+                                                                    this->vectorStrokes[vecI].startPoint.pos / 100.f * *Settings::videoScale(), 
+                                                                    this->vectorStrokes[vecI].endPoint.pos / 100.f * *Settings::videoScale(), 
+                                                                    this->vectorStrokes[vecI].offsetPoint.pos / 100.f * *Settings::videoScale(), 
+                                                                    quality
+                                                                );
+
+            // Add the points of a single vector to the total stroke positions
+            for (size_t pointI = 0; pointI < points.size(); pointI++)
+            {
+                strokePositions.push_back(points[pointI]);
+            }
+        }
+        
+        const int maxStrokeSize = 50;
+
+        // Calculate how many subvectors you'll need
+        const int numSubvectors = (strokePositions.size() + maxStrokeSize - 1) / maxStrokeSize;
+
+        // Loop through and process the subvectors
+        for (int i = 0; i < numSubvectors; ++i) {
+            // Calculate the start and end indices for each subvector
+            int startIdx = i * maxStrokeSize;
+            int endIdx = std::min((i + 1) * maxStrokeSize, static_cast<int>(strokePositions.size()));
+
+            // Create a subvector from the original vector
+            std::vector<glm::vec2> subVector(strokePositions.begin() + startIdx, strokePositions.begin() + endIdx);
+
+            // Call the function for the subvector
+            this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields, ThreeDPoint(glm::vec3(-1000.f)), i == 0);
+        }
+
+        this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
+
+        this->refreshPainting();
+
+        ShaderSystem::buttonShader().use();
+        Settings::defaultFramebuffer()->FBO.bind();
+        Settings::defaultFramebuffer()->setViewport();
+    }
+}
+
+bool Painter::isAny2DPointsActive(){
+    for (size_t i = 0; i < this->vectorStrokes.size(); i++)
+    {
+        if(this->vectorStrokes[i].startPoint.active)
+            return true;
+        if(this->vectorStrokes[i].endPoint.active)
+            return true;
+    }
+    
+    return false;
+}
+
+bool Painter::isAnyWrappedPointsActive(){
+    for (size_t i = 0; i < this->vectorStrokes3D.size(); i++)
+    {
+        if(this->vectorStrokes3D[i].startPoint.active)
+            return true;
+        if(this->vectorStrokes3D[i].endPoint.active)
+            return true;
+    }
+    
+    return false;
 }

@@ -65,7 +65,7 @@ void paintingModesPanelInteraction(
     if(vectorPaintingModePropertyPanel.sections[0].elements[2].button.clicked){
         painter.clearSelectedVectorPoints();
     }
-    if(vectorPaintingModePropertyPanel.sections[0].elements[3].button.clicked){
+    if(vectorPaintingModePropertyPanel.sections[0].elements[3].button.clicked || shortcuts_CTRL_X()){
         painter.deleteSelectedVectorPoints();
     }
     if(vectorPaintingModePropertyPanel.sections[0].elements[4].button.clicked){

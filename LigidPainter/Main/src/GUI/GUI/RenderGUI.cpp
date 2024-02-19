@@ -702,26 +702,26 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
         }    
     }
 
-    if(painter.paintingoverTextureEditorMode && !painter.faceSelection.editMode){
-        ShaderSystem::dotsShader().use();
-
-        ShaderSystem::dotsShader().setMat4("projection", this->projection);
-        ShaderSystem::dotsShader().setVec3("pos", glm::vec3(getContext()->windowScale / glm::ivec2(2), 0.5f));
-        ShaderSystem::dotsShader().setVec2("scale", getContext()->windowScale / glm::ivec2(2));
-
-        ShaderSystem::dotsShader().setVec2("dotPos", glm::vec2(0.f));
-        ShaderSystem::dotsShader().setFloat("scroll", 1.f);
-
-        /* Render the dots */
-        //LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painting over : Edit mode : Rendering dots");
-
-        /* Clear the depth buffer of the current framebuffers*/
-        glClear(GL_DEPTH_BUFFER_BIT);
-
-        ShaderSystem::buttonShader().use();   
-    }
-
     ShaderSystem::buttonShader().use();   
+}
+
+static void renderDotsToWindow(glm::mat4 projection){
+    ShaderSystem::dotsShader().use();
+
+    ShaderSystem::dotsShader().setMat4("projection", projection);
+    ShaderSystem::dotsShader().setVec3("pos", glm::vec3(getContext()->windowScale / glm::ivec2(2), 0.5f));
+    ShaderSystem::dotsShader().setVec2("scale", getContext()->windowScale / glm::ivec2(2));
+
+    ShaderSystem::dotsShader().setVec2("dotPos", glm::vec2(0.f));
+    ShaderSystem::dotsShader().setFloat("scroll", 1.f);
+
+    /* Render the dots */
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Rendering dots to window");
+
+    /* Clear the depth buffer of the current framebuffers*/
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    ShaderSystem::buttonShader().use(); 
 }
 
 void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
@@ -729,7 +729,27 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     Debugger::block("GUI : Panels : Start"); // Start
     Debugger::block("GUI : Panels : Start"); // End
 
+    if(painter.paintingoverTextureEditorMode){
+        Debugger::block("GUI : Rendering dots for the painting over texture fields editor mode"); // Start
+        renderDotsToWindow(this->projection);
+        Debugger::block("GUI : Rendering dots for the painting over texture fields editor mode"); // End
+    }
+
+    Debugger::block("GUI : Texture fields"); // Start
     this->renderPaintingOverTextureFields(timer, painter);
+    Debugger::block("GUI : Texture fields"); // End
+    
+    Debugger::block("GUI : Texture fields"); // Start
+    // Vectoral painting vectors
+    if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0){
+        if(!painter.wrapMode){
+            painter.render2DVectors(timer, !anyDialogActive && !anyPanelHover);
+        }
+        else{
+            painter.render3DVectors(timer, !anyDialogActive && !anyPanelHover);
+        }
+    }
+    Debugger::block("GUI : Texture fields"); // End
     
     Debugger::block("GUI : Panels : Panel rendering"); // Start
     
@@ -837,16 +857,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     Debugger::block("GUI : Panels : Panel rendering"); // End
 
     Debugger::block("GUI : Panels : Rest"); // Start
-
-    // Vectoral painting vectors
-    if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0){
-        if(!painter.wrapMode){
-            painter.render2DVectors(timer, !anyDialogActive && !anyPanelHover);
-        }
-        else{
-            painter.render3DVectors(timer, !anyDialogActive && !anyPanelHover);
-        }
-    }
 
     bool straightLinePaintingCondition = painter.selectedDisplayingModeIndex != 0 && painter.selectedPaintingModeIndex != 5 && !anyDialogActive && (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && *Mouse::LPressed(); 
     if(straightLinePaintingCondition && !painter.faceSelection.editMode){

@@ -240,7 +240,9 @@ void Renderer::render(){
                             userInterface.twoDPaintingPanel,
                             userInterface.twoDPaintingBox,
                             false || painter.wrapMode,
-                            userInterface.paintingOverTextureFields
+                            userInterface.paintingOverTextureFields,
+                            ThreeDPoint(glm::vec3(-1000.f)),
+                            *Mouse::LClick()
                         );
     }
 
@@ -263,7 +265,9 @@ void Renderer::render(){
                             userInterface.twoDPaintingPanel,
                             userInterface.twoDPaintingBox,
                             true,
-                            userInterface.paintingOverTextureFields
+                            userInterface.paintingOverTextureFields,
+                            ThreeDPoint(glm::vec3(-1000.f)),
+                            *Mouse::LClick()
                         );
 
         //Update the selected texture after painting

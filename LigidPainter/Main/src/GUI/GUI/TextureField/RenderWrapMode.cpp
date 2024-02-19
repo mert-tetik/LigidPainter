@@ -140,11 +140,10 @@ void TextureField::renderWrappedTextureField(
                 !anyPanelHover && 
                 !wrap_deleteButton.hover && !wrap_flipHorizontalButton.hover && !wrap_flipVerticalButton.hover && !wrap_unwrapModeButton.hover && !wrap_detailModeButton.hover && 
                 editMode &&
-                !this->isAnyWrapPointActive() &&
                 !textureField_alreadyInteracted
             )
         {
-            this->checkIfWrappedTextureClicked(bindedFBO, painter);
+            this->checkIfWrappedTextureClicked(bindedFBO, painter, !this->isAnyWrapPointActive());
         }
         
         if(this->active){
@@ -666,7 +665,7 @@ bool TextureField::isAnyWrapPointActive(){
 static Texture threeDPointsStencilTexture;
 static Framebuffer threeDPointsStencilFBO;
 
-void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& painter){
+void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& painter, bool doMouseTracking){
     // Positioning the first modifying button (delete button) (other modifying buttons labeled with wrap_ will be positioned according to this)
     wrap_deleteButton.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f; 
     wrap_deleteButton.pos.x -= (wrap_deleteButton.scale.x + wrap_flipHorizontalButton.scale.x + wrap_flipVerticalButton.scale.x + wrap_unwrapModeButton.scale.x + wrap_detailModeButton.scale.x) / 1.5f; 
@@ -744,7 +743,9 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& 
     // If the pixel on top of the cursor is opaque 
     if(stencilData[0] > 100){
         textureField_alreadyInteracted = true;
-        this->active = true; // Activate the texture field
+        
+        if(doMouseTracking)
+            this->active = true; // Activate the texture field
     }
 
     // Finish
