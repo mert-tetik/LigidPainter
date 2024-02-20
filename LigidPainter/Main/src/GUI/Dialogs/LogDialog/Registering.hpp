@@ -25,7 +25,6 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp" 
 #include "MouseSystem/Mouse.hpp" 
 #include "LibrarySystem/Library.hpp" 
-#include "NodeSystem/Node/Node.hpp" 
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp" 
 

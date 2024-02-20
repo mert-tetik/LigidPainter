@@ -22,7 +22,6 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
 #include "3D/ThreeD.hpp" 
 #include "GUI/GUI.hpp" 
-#include "NodeSystem/Node/Node.hpp" 
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"

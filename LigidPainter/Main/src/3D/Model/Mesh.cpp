@@ -247,7 +247,7 @@ void Mesh::processHeightMap(){
 
     char* txtr = new char[this->heightMap.getResolution().x * this->heightMap.getResolution().y * 4];
     this->heightMap.getData(txtr);
-    if(Settings::properties()->useHeightMap){
+    if(getScene()->useHeightMap){
         for (size_t i = 0; i < this->vertices.size(); i++)
         {
             glm::vec2 uv = this->vertices[i].TexCoords;
@@ -260,7 +260,7 @@ void Mesh::processHeightMap(){
                 char blue = txtr[pixelIndex + 2];
                 char alpha = txtr[pixelIndex + 3]; 
                 
-                newVertArray[i].Position += glm::vec3(((float)red / 127.f - 0.5) * Settings::properties()->heightMapStrength) * newVertArray[i].Normal;
+                newVertArray[i].Position += glm::vec3(((float)red / 127.f - 0.5) * getScene()->heightMapStrength) * newVertArray[i].Normal;
             }
         }
     }

@@ -21,7 +21,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
-#include "NodeSystem/Node/Node.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
 #include "LibrarySystem/Library.hpp"
@@ -104,13 +103,14 @@ bool Project::readLigidFile(
         uint32_t versionNumber2200 = 2200;   
         uint32_t versionNumber2300 = 2300;   
         uint32_t versionNumber2400 = 2400;   
+        uint32_t versionNumber2500 = 2500;   
         
-        uint32_t versionNumber; //2400  
+        uint32_t versionNumber; //2500  
         READ_BITS(versionNumber, uint32_t, "Version number");
         
         std::cout << "File Version : " << versionNumber << std::endl;
         
-        if(versionNumber != versionNumber2400){
+        if(versionNumber != versionNumber2500){
             LGDLOG::start<< "ERROR : Reading ligid file : Invalid version : " << versionNumber << LGDLOG::end; 
             return false;
         }
@@ -137,7 +137,6 @@ bool Project::readLigidFile(
             getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true, false);
         
         // ---------- Settings ------------
-        READ_BITS(Settings::properties()->textureRes, int, "Texture resolution");
         
         // ------------- Material Channels & Material ID TEXTURE ------------
         int32_t meshCount;

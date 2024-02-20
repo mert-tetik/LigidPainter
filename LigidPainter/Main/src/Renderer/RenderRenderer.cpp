@@ -28,7 +28,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 #include "ShaderSystem/Shader.hpp"
-#include "NodeSystem/Node/Node.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 
@@ -59,7 +58,8 @@ void Renderer::render(){
     Debugger::block("Complete rendering"); // Start
     
     Debugger::block("Prep"); // Start
-    //Update local timer data
+    
+    // Update local timer data
     timer.tick = false;
     if(timer.runTimer(1.f)){
         timer.tick = true;
@@ -70,13 +70,7 @@ void Renderer::render(){
         getContext()->window.setWindowSize(Settings::videoScale()->x, Settings::videoScale()->y);
 
     //Update OpenGL viewport every frame
-        Settings::defaultFramebuffer()->setViewport();
-
-    Texture paintingTxtrObj = painter.paintingTexture;
-    glm::ivec2 resTest = paintingTxtrObj.getResolution();
-    if(resTest != glm::ivec2(*Settings::videoScale() / Settings::properties()->paintingResolutionDivier)){
-        // Vide scale is changed
-    }
+    Settings::defaultFramebuffer()->setViewport();
 
     //VSync
     if(Settings::properties()->VSync)
@@ -123,10 +117,11 @@ void Renderer::render(){
     }
 
     // Set backface culling property
-    if(Settings::properties()->backfaceCulling)
+    if(getScene()->backfaceCulling)
         glEnable(GL_CULL_FACE);
     else
         glDisable(GL_CULL_FACE);
+        
     Debugger::block("Prep 3D Rendering"); // End
 
     Debugger::block("Rendering scene decorations"); // Start

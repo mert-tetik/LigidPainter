@@ -20,7 +20,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
-#include "NodeSystem/Node/Node.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
@@ -36,6 +35,8 @@ bool __materialEditorDialogESCPressed = false;
 bool __materialEditorDialogESCFirstFramePressed = false;
 
 bool __lastDisplayModeComboBoxPressed = false;
+
+unsigned int tempTextureResolution = 1024;
 
 void MaterialEditorDialog::render
                                 (
@@ -97,7 +98,7 @@ void MaterialEditorDialog::render
         int specificUpdateI = -1;
         if(this->selectedResultModeIndex == 1)
             specificUpdateI = this->selectedMaterialModifierIndex;
-        material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), specificUpdateI);
+        material->updateMaterialDisplayingTexture((float)tempTextureResolution, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), specificUpdateI);
     }
     
     this->prevUpdateTheMaterial = this->updateTheMaterial;
@@ -117,7 +118,7 @@ void MaterialEditorDialog::render
         if(!wasTextureSelectionDialogActive() && !ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
             this->displayModeComboBox.selectedIndex = 0;
             // Update the material displaying texture one more time before closing the dialog
-            material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, Camera(), 0, false);
+            material->updateMaterialDisplayingTexture((float)tempTextureResolution, false, Camera(), 0, false);
 
             updateThePreRenderedPanels = true;
 
@@ -129,7 +130,7 @@ void MaterialEditorDialog::render
 
 
     // Update the displaying texture
-    material->updateMaterialDisplayingTexture((float)Settings::properties()->textureRes, false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), -1);
+    material->updateMaterialDisplayingTexture((float)tempTextureResolution, false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), -1);
 
     __lastDisplayModeComboBoxPressed = this->displayModeComboBox.pressed;
 

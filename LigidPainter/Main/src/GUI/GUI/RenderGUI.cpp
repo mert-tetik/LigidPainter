@@ -27,7 +27,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "LibrarySystem/Library.hpp"
-#include "NodeSystem/Node/Node.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"

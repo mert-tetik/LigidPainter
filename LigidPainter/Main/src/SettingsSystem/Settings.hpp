@@ -169,6 +169,10 @@ struct Scene{
     bool renderAxisDisplayer = false;
     SceneAxisDisplayer axisDisplayer;
 
+    bool backfaceCulling = false;
+    bool useHeightMap = false;
+    float heightMapStrength = 0.f;
+
     Camera camera;
 };
 
@@ -286,17 +290,7 @@ namespace Settings{
         /*! @brief Set swapInterval(1) if true */
         bool VSync = false; 
 
-        bool backfaceCulling = false;
-
         float framebufferResolutionDivier = 1.f;
-        float paintingResolutionDivier = 1.f;
-        float paintingDepthTextureResolutionDivier = 1.f;
-
-        /*! @brief Textures will be generated with that resolution value */
-        int textureRes = 1024; 
-
-        int useHeightMap;
-        float heightMapStrength;
 
         bool cat_allowComments = false;
         bool cat_verifyTheExit = true;

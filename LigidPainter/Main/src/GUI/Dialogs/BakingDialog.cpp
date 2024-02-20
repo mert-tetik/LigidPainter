@@ -27,7 +27,6 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
-#include "NodeSystem/Node/Node.hpp"
 #include "LibrarySystem/Library.hpp"
 
 #include <string>
@@ -35,6 +34,8 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <vector>
 
 #include "tinyfiledialogs.h"
+
+unsigned int tempTxtrRes = 1024;
 
 BakingDialog::BakingDialog(){
 
@@ -234,7 +235,7 @@ void BakingDialog::render(Timer timer, Skybox skybox, LogDialog& logDialog){
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
 
-        Texture txtr = Texture(nullptr, Settings::properties()->textureRes, Settings::properties()->textureRes);
+        Texture txtr = Texture(nullptr, tempTxtrRes, tempTxtrRes);
         txtr.title = "baked_" + getModel()->meshes[selectMeshButton.selectedMeshI].materialName;
 
         /* Capturing FBO */
@@ -249,7 +250,7 @@ void BakingDialog::render(Timer timer, Skybox skybox, LogDialog& logDialog){
         glBindRenderbuffer(GL_RENDERBUFFER,RBO);
         
         //Set the renderbuffer to store depth
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, Settings::properties()->textureRes, Settings::properties()->textureRes);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, tempTxtrRes, tempTxtrRes);
         
         //Give the renderbuffer to the framebuffer
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);

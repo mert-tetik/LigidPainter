@@ -565,7 +565,7 @@ public:
     /// @param TDModelPath 3D Model file path. Copies that file to the Project/3DModels
     /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
     /// @return true if success
-    bool createProject(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths, int textureRes);
+    bool createProject(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths);
     
     bool discardUpdateProjectFlag = false;
 

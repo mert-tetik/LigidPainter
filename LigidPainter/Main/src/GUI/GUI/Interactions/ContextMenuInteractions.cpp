@@ -21,7 +21,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "LibrarySystem/Library.hpp"
-#include "NodeSystem/Node/Node.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 
@@ -41,9 +40,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
                            ContextMenus::menuBarProject.dialogControl.isActive() ||
                            ContextMenus::menuBarHelp.dialogControl.isActive() ||
                            ContextMenus::materialModifier.dialogControl.isActive() ||
-                           ContextMenus::node.dialogControl.isActive() ||
-                           ContextMenus::addMaterialModifier.dialogControl.isActive() ||
-                           ContextMenus::nodeScenePanel.dialogControl.isActive(); 
+                           ContextMenus::addMaterialModifier.dialogControl.isActive();
     
                               
     if(Library::getSelectedElementIndex() == 0 && ContextMenus::texture.dialogControl.isActive() && ContextMenus::texture.selectedElement < Library::getTextureArraySize()){ //If texture context menu is active
@@ -105,16 +102,6 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(ContextMenus::material.selectedElement)->title + ".lgdmaterial");
         }
         else if(ContextMenus::material.contextPanel.sections[0].elements[4].button.clicked){//Clicked to delete button
-            
-            //Delete the nodes using same material
-            for (int nodeI = 0; nodeI < NodeScene::getArraySize(); nodeI++)
-            {
-                if(NodeScene::getNode(nodeI)->materialID == Library::getMaterial(ContextMenus::material.selectedElement)->uniqueID && NodeScene::getNode(nodeI)->nodeIndex == MATERIAL_NODE){
-                    NodeScene::deleteNode( nodeI);
-                    nodeI--;
-                }
-            }
-            
             //Delete the material
             Library::eraseMaterial(ContextMenus::material.selectedElement);
         }
@@ -238,26 +225,6 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         }
     }
     
-    if(ContextMenus::node.dialogControl.isActive()){ //If node context menu is active
-        //Delete the node
-        if(ContextMenus::node.contextPanel.sections[0].elements[0].button.clicked && ContextMenus::node.selectedElement){
-            NodeScene::deleteNode(ContextMenus::node.selectedElement);                
-        }
-    }
-
-    if(ContextMenus::nodeScenePanel.dialogControl.isActive()){//If node scene context menu is active
-        //Add material ID node button pressed
-        if(ContextMenus::nodeScenePanel.contextPanel.sections[0].elements[0].button.clicked){
-            NodeScene::addNode(Node(MATERIAL_ID_NODE, 0));
-            NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
-        }
-        //Add material mask node button pressed
-        else if(ContextMenus::nodeScenePanel.contextPanel.sections[0].elements[1].button.clicked){
-            NodeScene::addNode(Node(MATERIAL_MASK_NODE, 0));
-            NodeScene::getNode(NodeScene::getArraySize()-1)->nodePanel.pos = NodeScene::getNode(0)->nodePanel.pos;
-        }
-    } 
-
     if(ContextMenus::texture.dialogControl.isActive())
         ContextMenus::texture.render(timer);
     else
@@ -288,20 +255,10 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     else
         ContextMenus::materialModifier.selectedElement = 0;
 
-    if(ContextMenus::node.dialogControl.isActive())
-        ContextMenus::node.render(timer);
-    else
-        ContextMenus::node.selectedElement = 0;
-
     if(ContextMenus::addMaterialModifier.dialogControl.isActive())
         ContextMenus::addMaterialModifier.render(timer);
     else
         ContextMenus::addMaterialModifier.selectedElement = 0;
-
-    if(ContextMenus::nodeScenePanel.dialogControl.isActive())
-        ContextMenus::nodeScenePanel.render(timer);
-    else
-        ContextMenus::nodeScenePanel.selectedElement = 0;
 
 
 
@@ -377,26 +334,4 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         ContextMenus::addMaterialModifier.pos.z = 0.95f;
     }
 
-    bool anyNodeHover = false;
-    for (size_t i = 0; i < NodeScene::getArraySize(); i++)
-    {
-        if((NodeScene::getNode(i)->nodePanel.hover || NodeScene::getNode(i)->barButton.hover))
-            anyNodeHover = true;
-
-        if((NodeScene::getNode(i)->nodePanel.hover || NodeScene::getNode(i)->barButton.hover) && *Mouse::RClick() && !NodeScene::getNode(i)->cursorOnBarriers){
-            ContextMenus::node.dialogControl.activate();
-            ContextMenus::node.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-            ContextMenus::node.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::node.contextPanel.scale.y;
-            ContextMenus::node.pos.z = 0.95f;
-            ContextMenus::node.selectedElement = i;
-        }
-    }
-    
-    if((this->nodeEditorDisplayer.hover && !anyNodeHover) && *Mouse::RClick()){
-        ContextMenus::nodeScenePanel.dialogControl.activate();
-        ContextMenus::nodeScenePanel.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-        ContextMenus::nodeScenePanel.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::nodeScenePanel.contextPanel.scale.y;
-        ContextMenus::nodeScenePanel.pos.z = 0.95f;
-        ContextMenus::nodeScenePanel.selectedElement = 0;
-    }
 }

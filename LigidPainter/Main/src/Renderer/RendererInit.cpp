@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
-#include "NodeSystem/Node/Node.hpp"
+
 #include "SettingsSystem/Settings.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "LibrarySystem/Library.hpp"
@@ -163,12 +163,6 @@ void Renderer::initRenderer(){
 
     Debugger::block("LOAD : Rest"); //Start
     
-    //Create the mesh node
-    NodeScene::addNode(Node(MESH_NODE, 0));
-
-    //Load the inputs of the mesh node
-    NodeScene::getNode(0)->uploadNewIOs();
-
     try
     {
         //Create the LigidPainter folder in the app data folder if not exists

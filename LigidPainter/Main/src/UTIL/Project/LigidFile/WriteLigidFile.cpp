@@ -22,7 +22,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "SettingsSystem/Settings.hpp"
-#include "NodeSystem/Node/Node.hpp"
 #include "LibrarySystem/Library.hpp"
 
 #include <string>
@@ -99,8 +98,9 @@ bool Project::wrtLigidFile(std::string path){
     uint32_t versionNumber2200 = 2200;
     uint32_t versionNumber2300 = 2300;
     uint32_t versionNumber2400 = 2400;
+    uint32_t versionNumber2500 = 2500;
 
-    WRITE_BITS(versionNumber2400, uint32_t, "");
+    WRITE_BITS(versionNumber2500, uint32_t, "");
 
     // ------------- Date ------------
     time_t currentDate = time(0);
@@ -114,8 +114,6 @@ bool Project::wrtLigidFile(std::string path){
         return false;
 
     // ------------- Settings ------------
-    int textureRes = Settings::properties()->textureRes;
-    WRITE_BITS(textureRes, int, "");
 
     // ------------- Material Channels & Material ID TEXTURE ------------
     int32_t meshCount = getModel()->meshes.size();

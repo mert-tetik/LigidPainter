@@ -117,6 +117,16 @@ public:
 
    //Public member functions    
    void render(Timer timer, Painter& painter, LogDialog& logDialog);
+
+   /*! @brief Assignes the setting values to elements*/
+   void setPropertiesToDialog();
+   /*! @brief Assignes the elements to setting values */
+   void setDialogToProperties();
+
+private:
+   void renderPanel(Timer& timer);
+   void updateInfoTexts(Painter& painter, Timer& timer);
+
 };
 
 

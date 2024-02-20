@@ -39,7 +39,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void completeFolder(std::string path, int action);
 
 
-bool Project::createProject(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths, int textureRes){
+bool Project::createProject(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths){
 
     while(true){
         if(!this->projectProcessing)

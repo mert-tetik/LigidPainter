@@ -203,9 +203,6 @@ void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialo
         pathTextbox.pos.y += 23.f;
         pathTextbox.render(timer, true);
         
-        resolutionCombobox.pos = panel.sections[0].elements[0].pos;
-        resolutionCombobox.pos.y += 31.f;
-        resolutionCombobox.render(timer, true);
     }
     else{
         tdModelsPanel.render(timer, true);
@@ -261,14 +258,11 @@ void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialo
         if(project.createProject(   
                                     pathTextbox.text, //Destination path
                                     titleTextbox.text, //Title of the project
-                                    TDModelPaths,  //3D model path
-                                    std::stoi(resolutionCombobox.texts[resolutionCombobox.selectedIndex])
+                                    TDModelPaths  //3D model path
                                  ))
         {
             project.loadProject(project.ligidFilePath());
 
-            Settings::properties()->textureRes = std::stoi(resolutionCombobox.texts[resolutionCombobox.selectedIndex]);
-            
             startScreen = false;
 
             this->dialogControl.unActivate();
