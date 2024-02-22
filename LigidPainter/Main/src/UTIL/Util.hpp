@@ -899,7 +899,9 @@ public:
     /* VECTORS - defined in Vectors.cpp*/
     /**/std::vector<VectorStroke> vectorStrokes;
     /**/std::vector<VectorStroke3D> vectorStrokes3D;
-    /**/void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat, std::vector<TextureField> textureFields);
+    /**/void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, 
+                                Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat, std::vector<TextureField> textureFields, 
+                                bool twoDWrap);
     /**/void deleteSelectedVectorPoints();
     /**/void clearSelectedVectorPoints();
     /**/void subdivideSelectedPoints();
@@ -964,7 +966,7 @@ public:
     */
     void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, 
                 Box twoDPaintingBox, bool highResMode, std::vector<TextureField> textureFields, ThreeDPoint wrapPaintPoint,
-                bool firstStroke);
+                bool firstStroke, glm::vec2 mousePos);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)

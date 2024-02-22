@@ -135,7 +135,8 @@ void Painter::doPaint(
                         bool highResMode, 
                         std::vector<TextureField> textureFields,
                         ThreeDPoint wrapPaintPoint,
-                        bool firstStroke
+                        bool firstStroke,
+                        glm::vec2 mousePos
                     )
 {
     
@@ -187,7 +188,7 @@ void Painter::doPaint(
     if(strokeLocations.size()){
         holdLocations = strokeLocations;
     }
-    else if(this->wrapMode){
+    if(this->wrapMode){
         
         holdLocations.clear();
         
@@ -195,15 +196,17 @@ void Painter::doPaint(
         float* normalData = new float[4]; 
         
         if(wrapPaintPoint.pos.x == -1000.f){
+
+            glm::vec2 dest = mousePos;
+            if(mousePos == glm::vec2(-1000.f))
+                dest = glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y);
+
             this->getPosNormalValOverPoint(
-                                    glm::vec2(
-                                                Mouse::cursorPos()->x, 
-                                                getContext()->windowScale.y - Mouse::cursorPos()->y
-                                            ),
-                                    posData,
-                                    normalData,
-                                    true
-                                );
+                                            dest,
+                                            posData,
+                                            normalData,
+                                            true
+                                        );
 
         }
         else{
@@ -307,7 +310,7 @@ void Painter::doPaint(
             lastDest.x = crsPos.x - (crsPos.x - lastCrsPos.x);
             lastDest.y = crsPos.y + (crsPos.y - lastCrsPos.y);
             
-            if(firstStroke && wrapPaintPoint.pos.x == -1000.f)  
+            if(firstStroke && wrapPaintPoint.pos.x == -1000.f && mousePos == glm::vec2(-1000.f))  
                 lastDest = crsPos;
 
             holdLocations = getCursorSubstitution(this->brushProperties.spacing, crsPos, lastDest);

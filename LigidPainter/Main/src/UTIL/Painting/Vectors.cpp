@@ -397,14 +397,15 @@ void Painter::applyVectorStrokes(
                                     Filter filterBtnFilter, 
                                     Box twoDPaintingBox, 
                                     Material& paintingCustomMat,
-                                    std::vector<TextureField> textureFields
+                                    std::vector<TextureField> textureFields,
+                                    bool twoDWrap
                                 )
 {
-    if(this->wrapMode){
+    if(this->wrapMode && this->selectedPaintingModeIndex == 5){
         for (size_t strokeI = 0; strokeI < this->vectorStrokes3D.size(); strokeI++)
         {
             for (size_t vertI = 0; vertI < this->vectorStrokes3D[strokeI].lineVertices.size(); vertI++){
-                this->doPaint(windowOrtho, {}, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields, ThreeDPoint(this->vectorStrokes3D[strokeI].lineVertices[vertI].Position, this->vectorStrokes3D[strokeI].lineVertices[vertI].Normal), true);
+                this->doPaint(windowOrtho, {}, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields, ThreeDPoint(this->vectorStrokes3D[strokeI].lineVertices[vertI].Position, this->vectorStrokes3D[strokeI].lineVertices[vertI].Normal), true, glm::vec2(-1000));
             }
             this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
 
@@ -420,15 +421,20 @@ void Painter::applyVectorStrokes(
 
         std::vector<glm::vec2> strokePositions;
 
-        for (size_t vecI = 0; vecI < this->vectorStrokes.size(); vecI++)
+        for (size_t vecI = 0; vecI < vectorStrokes.size(); vecI++)
         {
-            float distance = glm::distance(this->vectorStrokes[vecI].startPoint.pos, this->vectorStrokes[vecI].offsetPoint.pos) + glm::distance(this->vectorStrokes[vecI].endPoint.pos, this->vectorStrokes[vecI].offsetPoint.pos);
-            unsigned int quality = (unsigned int)(distance) * 2.f;
+            float distance = glm::distance(vectorStrokes[vecI].startPoint.pos, vectorStrokes[vecI].offsetPoint.pos) + glm::distance(vectorStrokes[vecI].endPoint.pos, vectorStrokes[vecI].offsetPoint.pos);
+            unsigned int quality = (unsigned int)(distance);
+
+            if(!twoDWrap)
+                quality *= 2.f;
+            else
+                quality /= 2.f;
 
             std::vector<glm::vec2> points = calculateBezierCurve(
-                                                                    this->vectorStrokes[vecI].startPoint.pos / 100.f * *Settings::videoScale(), 
-                                                                    this->vectorStrokes[vecI].endPoint.pos / 100.f * *Settings::videoScale(), 
-                                                                    this->vectorStrokes[vecI].offsetPoint.pos / 100.f * *Settings::videoScale(), 
+                                                                    vectorStrokes[vecI].startPoint.pos / 100.f * *Settings::videoScale(), 
+                                                                    vectorStrokes[vecI].endPoint.pos / 100.f * *Settings::videoScale(), 
+                                                                    vectorStrokes[vecI].offsetPoint.pos / 100.f * *Settings::videoScale(), 
                                                                     quality
                                                                 );
 
@@ -446,6 +452,9 @@ void Painter::applyVectorStrokes(
 
         // Loop through and process the subvectors
         for (int i = 0; i < numSubvectors; ++i) {
+            
+            bool lastWrapMode = this->wrapMode;
+            this->wrapMode = twoDWrap;
             // Calculate the start and end indices for each subvector
             int startIdx = i * maxStrokeSize;
             int endIdx = std::min((i + 1) * maxStrokeSize, static_cast<int>(strokePositions.size()));
@@ -454,7 +463,18 @@ void Painter::applyVectorStrokes(
             std::vector<glm::vec2> subVector(strokePositions.begin() + startIdx, strokePositions.begin() + endIdx);
 
             // Call the function for the subvector
-            this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields, ThreeDPoint(glm::vec3(-1000.f)), i == 0);
+            if(twoDWrap){
+                for (size_t i = 0; i < subVector.size(); i++)
+                {
+                    this->doPaint(windowOrtho, {}, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields, ThreeDPoint(glm::vec3(-1000.f)), true, subVector[i]);
+                }
+            }
+            else{
+                this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields, ThreeDPoint(glm::vec3(-1000.f)), i == 0, glm::vec2(-1000));
+            }
+            
+            
+            this->wrapMode = lastWrapMode;
         }
 
         this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);

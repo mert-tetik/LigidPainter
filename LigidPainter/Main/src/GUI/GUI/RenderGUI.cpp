@@ -567,8 +567,11 @@ void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGa
     if(painter.selectedPaintingModeIndex == 4)
         this->filterPaintingModeFilterBtn.render(timer, !anyDialogActive);
 
-    if(painter.selectedPaintingModeIndex == 5)
+    if(painter.selectedPaintingModeIndex == 5){
         vectorPaintingModePropertyPanel.render(timer, !anyDialogActive); 
+        if(!painter.wrapMode)
+            vectorPaintingMode2DModeWrapCheckBox.render(timer, !anyDialogActive);
+    }
 }
 
 void UI::renderObjectsPanel(Timer& timer, Painter& painter){
@@ -908,7 +911,8 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
                                     this->filterPaintingModeFilterBtn.filter, 
                                     this->twoDPaintingBox, 
                                     paintingCustomMat,
-                                    this->paintingOverTextureFields
+                                    this->paintingOverTextureFields,
+                                    painter.wrapMode
                                 );
     }
     

@@ -241,6 +241,7 @@ public:
     Panel twoDPaintingPanel; 
     Panel paintingModesPanel; 
     Panel vectorPaintingModePropertyPanel; 
+    CheckBox vectorPaintingMode2DModeWrapCheckBox;
     Panel smearPaintingModePropertyPanel;
     Panel displayingModesPanel; 
     Button filterPaintingModeFilterBtn;

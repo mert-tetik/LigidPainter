@@ -377,6 +377,8 @@ void UI::init
                             false
                         );
 
+    vectorPaintingMode2DModeWrapCheckBox = CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2), "Paint in wrap mode", 1.f); //1
+
     //Init the smear painting mode property panel
     smearPaintingModePropertyPanel = Panel(
                             {

@@ -237,7 +237,8 @@ void Renderer::render(){
                             false || painter.wrapMode,
                             userInterface.paintingOverTextureFields,
                             ThreeDPoint(glm::vec3(-1000.f)),
-                            *Mouse::LClick()
+                            *Mouse::LClick(),
+                            glm::vec2(-1000)
                         );
     }
 
@@ -262,7 +263,8 @@ void Renderer::render(){
                             true,
                             userInterface.paintingOverTextureFields,
                             ThreeDPoint(glm::vec3(-1000.f)),
-                            *Mouse::LClick()
+                            *Mouse::LClick(),
+                            glm::vec2(-1000)
                         );
 
         //Update the selected texture after painting

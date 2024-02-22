@@ -41,7 +41,8 @@ void paintingModesPanelInteraction(
                                     Button filterPaintingModeFilterBtn,
                                     Box twoDPaintingBox,
                                     Material& paintingCustomMat,
-                                    std::vector<TextureField> textureFields
+                                    std::vector<TextureField> textureFields,
+                                    CheckBox vectorPaintingMode2DModeWrapCheckBox
                                 )
 {
     //!PAINTING MODES PANEL
@@ -77,7 +78,8 @@ void paintingModesPanelInteraction(
                                         filterPaintingModeFilterBtn.filter, 
                                         twoDPaintingBox, 
                                         paintingCustomMat, 
-                                        textureFields
+                                        textureFields,
+                                        vectorPaintingMode2DModeWrapCheckBox.clickState1
                                     );
     }
 
