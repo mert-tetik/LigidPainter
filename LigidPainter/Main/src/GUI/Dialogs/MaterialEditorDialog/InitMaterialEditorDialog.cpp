@@ -110,6 +110,7 @@ MaterialEditorDialog::MaterialEditorDialog()
     this->displayerCamera.radius = 3.5f;
 
     this->displayModeComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(5.5f,1.8f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Height", "Ambient Occlusion"}, "Displaying Mode", 0.f);
+    this->displayTxtrResComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(5.5f,1.8f), {"256", "512", "1024", "2048"}, "Displaying Resolution", 0.f);
 
     //Material display is a button (is taking the material's display texture as a texture) (right in the middle)
     materialDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(45,45), "Material", Texture(), 0.f, false);

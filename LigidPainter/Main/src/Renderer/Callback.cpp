@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 extern bool textureFields_decidingWrapPointsMode;
 
-#define CAM_MOVE_CONDITION ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || painter.paintingoverTextureEditorMode || this->userInterface.objectTexturingDialog.dialogControl.isActive()) && /*If there is no active dialog (don't move the camera if a dialog is active)*/\
+#define CAM_MOVE_CONDITION ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || painter.paintingoverTextureEditorMode || this->userInterface.objectTexturingDialog.dialogControl.isActive() || this->userInterface.materialEditorDialog.dialogControl.isActive() || this->userInterface.materialDisplayerDialog.dialogControl.isActive()) && /*If there is no active dialog (don't move the camera if a dialog is active)*/\
                             !this->userInterface.anyPanelHover && /*Don't move the camera if cursor hover a panel */\
                             !*Mouse::LPressed() &&\
                             !textureFields_decidingWrapPointsMode

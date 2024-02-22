@@ -126,6 +126,7 @@ void MaterialEditorDialog::positioningPanels(){
     barButton.pos.y = bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y;
 
     displayModeComboBox.scale.y = navPanel.scale.y - 0.1;
+    displayTxtrResComboBox.scale.y = navPanel.scale.y - 0.1;
     matDisplayerBallModeBtn.scale.y = navPanel.scale.y - 0.1;
     twoDModelModeBtn.scale.y = navPanel.scale.y - 0.1;
     customModelModeBtn.scale.y = navPanel.scale.y - 0.1;
@@ -146,8 +147,12 @@ void MaterialEditorDialog::positioningPanels(){
 
     layerPanel.pos.x = modifiersPanel.pos.x - modifiersPanel.scale.x - layerPanel.scale.x; 
 
+    displayModeComboBox.scale.x = navPanel.scale.x / 5.f;
     displayModeComboBox.pos = navPanel.pos;
     displayModeComboBox.pos.x -= navPanel.scale.x - displayModeComboBox.scale.x * 1.5f;
+    displayTxtrResComboBox.scale.x = displayModeComboBox.scale.x;
+    displayTxtrResComboBox.pos = displayModeComboBox.pos;
+    displayTxtrResComboBox.pos.x += displayModeComboBox.scale.x + displayTxtrResComboBox.scale.x;
 }
 
 void MaterialEditorDialog::renderSkyboxTxtr(glm::mat4 projection){
@@ -214,6 +219,7 @@ void MaterialEditorDialog::renderNavPanel(Timer& timer, bool mouseTrackingFlag){
     this->overallResultMode.render(timer, mouseTrackingFlag);
     this->selectedModifierResultMode.render(timer, mouseTrackingFlag);
     this->displayModeComboBox.render(timer, true);
+    this->displayTxtrResComboBox.render(timer, true);
 
     // Interactions
     if(twoDModelModeBtn.clicked){

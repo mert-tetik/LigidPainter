@@ -242,6 +242,8 @@ struct AppTextures{
     Texture noMaterialConnectedToTheMeshWarningImage;  
     Texture noMaterialModifierIsConnectedToMaterialWarningImage;
     Texture materialChannelMissingTexture;
+    Texture baking_LigidRay;
+    Texture baking_Default;
     
     //--SYSTEM
     Texture white;

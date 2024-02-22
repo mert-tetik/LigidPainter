@@ -92,6 +92,8 @@ void Settings::loadAppTextures(){
     appTextures.noMaterialConnectedToTheMeshWarningImage.load("./LigidPainter/Resources/Images/NoMaterialWarning.jpg");
     appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.load("./LigidPainter/Resources/Images/NoMaterialModifierIsConnectedToMaterial.jpg");
     appTextures.materialChannelMissingTexture.load("./LigidPainter/Resources/Images/MaterialChannelMissingTexture.jpg");
+    appTextures.baking_LigidRay.load("./LigidPainter/Resources/Images/Baking_LigidRay.jpg");
+    appTextures.baking_Default.load("./LigidPainter/Resources/Images/Baking_Default.jpg");
     
     appTextures.mascotCat_default.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/default.png");
     appTextures.mascotCat_smile.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/smiling.png");

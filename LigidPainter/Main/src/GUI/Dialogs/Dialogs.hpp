@@ -219,18 +219,22 @@ class DisplayerDialog
 class BakingDialog
 {
 public:
-   Panel bgPanel;
+
+   int rendererMode = 0;
+   float rendererModeMixVal = 0.f;
+   Button modeImageDisplayer1;
+   Button modeImage1ElementsBg;
+   Button modeImageDisplayer2;
+   Button modeImage2ElementsBg;
+   Button renderModeLBtn;
+   Button renderModeRBtn;
    CheckBox pbrResultCheckbox;
-   CheckBox pbrUseLightingCheckbox;
-   CheckBox pbrRayTracingCheckbox;
+   CheckBox aoCheckbox;
+   CheckBox normalMapCheckbox;
    CheckBox vertexPositionCheckbox;
    CheckBox vertexNormalsCheckbox;
    CheckBox reflectanceCheckbox;
-   Button bakingDialogText;
-   Button selectedMeshTitleText;
-   Button selectMeshText;
    Button selectMeshButton;
-   Button bakingSettingsText;
    Button bakeButton;
    
    short selectedBakeMode = 0;  
@@ -242,6 +246,16 @@ public:
    
    //Public member functions
    void render(Timer timer, Skybox skybox, LogDialog& logDialog);
+
+   /*! @brief Returns true if the dialog was hovered*/   
+   bool isDialogHovered();
+
+private: 
+   /*! @brief Renders each elements inside of the dialog and handles their interactions */
+   void renderElements(Timer& timer, glm::vec3 pos, glm::vec2 scale, glm::vec3 resultPos, glm::vec2 resultScale);
+   
+   /*! @brief Returns the baked texture*/   
+   Texture bake(Skybox skybox, unsigned int resolution);
 };
 
 
@@ -342,6 +356,7 @@ public:
    Panel shortcutPanel; //
    Panel navPanel; //
    ComboBox displayModeComboBox;
+   ComboBox displayTxtrResComboBox;
    Button barButton; //
    TextBox shortcutRenamingTextbox;
    int shortcutRenamingIndex = -1;

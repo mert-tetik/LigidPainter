@@ -159,36 +159,36 @@ SettingsDialog::SettingsDialog(){
                                 ),
             };
 
-        // -------- 3D Rendering --------
-        transform_x_rotation_rangebar = &TDRendererSettings[0].elements[0].rangeBar;
-        transform_y_rotation_rangebar = &TDRendererSettings[0].elements[1].rangeBar;
-        transform_z_rotation_rangebar = &TDRendererSettings[0].elements[2].rangeBar;
+    // -------- 3D Rendering --------
+    transform_x_rotation_rangebar = &TDRendererSettings[0].elements[0].rangeBar;
+    transform_y_rotation_rangebar = &TDRendererSettings[0].elements[1].rangeBar;
+    transform_z_rotation_rangebar = &TDRendererSettings[0].elements[2].rangeBar;
         
-        camera_fov_rangebar = &TDRendererSettings[1].elements[0].rangeBar;
-        camera_near_rangebar = &TDRendererSettings[1].elements[1].rangeBar;
-        camera_far_rangebar = &TDRendererSettings[1].elements[2].rangeBar;
-        camera_ortho_projection_checkbox = &TDRendererSettings[1].elements[3].checkBox;
+    camera_fov_rangebar = &TDRendererSettings[1].elements[0].rangeBar;
+    camera_near_rangebar = &TDRendererSettings[1].elements[1].rangeBar;
+    camera_far_rangebar = &TDRendererSettings[1].elements[2].rangeBar;
+    camera_ortho_projection_checkbox = &TDRendererSettings[1].elements[3].checkBox;
         
-        heightmap_apply_heightmap_checkbox = &TDRendererSettings[2].elements[0].checkBox;
-        heightmap_heightmap_strength_rangebar = &TDRendererSettings[2].elements[1].rangeBar;
+    heightmap_apply_heightmap_checkbox = &TDRendererSettings[2].elements[0].checkBox;
+    heightmap_heightmap_strength_rangebar = &TDRendererSettings[2].elements[1].rangeBar;
         
-        scene_backface_culling_checkbox = &TDRendererSettings[3].elements[0].checkBox;
-        scene_render_grid_checkbox = &TDRendererSettings[3].elements[1].checkBox;
-        scene_render_axis_displayer_checkbox = &TDRendererSettings[3].elements[2].checkBox;
+    scene_backface_culling_checkbox = &TDRendererSettings[3].elements[0].checkBox;
+    scene_render_grid_checkbox = &TDRendererSettings[3].elements[1].checkBox;
+    scene_render_axis_displayer_checkbox = &TDRendererSettings[3].elements[2].checkBox;
         
-        // -------- System --------
-        performance_vsync_checkbox = &systemSettings[0].elements[0].checkBox;
-        performance_framebuffer_resolution_divider_combobox = &systemSettings[0].elements[1].comboBox;
+    // -------- System --------
+    performance_vsync_checkbox = &systemSettings[0].elements[0].checkBox;
+    performance_framebuffer_resolution_divider_combobox = &systemSettings[0].elements[1].comboBox;
         
-        cat_enable_comments_checkbox = &systemSettings[1].elements[0].checkBox;
-        cat_verify_exit_checkbox = &systemSettings[1].elements[0].checkBox;
-        cat_hide_checkbox = &systemSettings[1].elements[0].checkBox;
+    cat_enable_comments_checkbox = &systemSettings[1].elements[0].checkBox;
+    cat_verify_exit_checkbox = &systemSettings[1].elements[1].checkBox;
+    cat_hide_checkbox = &systemSettings[1].elements[2].checkBox;
         
-        info_txt0_button = &systemSettings[2].elements[0].button;
-        info_txt1_button = &systemSettings[2].elements[1].button;
-        info_txt2_button = &systemSettings[2].elements[2].button;
-        info_txt3_button = &systemSettings[2].elements[3].button;
-        info_txt4_button = &systemSettings[2].elements[4].button;
+    info_txt0_button = &systemSettings[2].elements[0].button;
+    info_txt1_button = &systemSettings[2].elements[1].button;
+    info_txt2_button = &systemSettings[2].elements[2].button;
+    info_txt3_button = &systemSettings[2].elements[3].button;
+    info_txt4_button = &systemSettings[2].elements[4].button;
 }
 
 
@@ -246,7 +246,7 @@ void SettingsDialog::setPropertiesToDialog(){
     
     // -------- System --------
     performance_vsync_checkbox->clickState1 = Settings::properties()->VSync;
-    performance_framebuffer_resolution_divider_combobox->selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->framebufferResolutionDivier), systemSettings[1].elements[3].comboBox.texts);
+    performance_framebuffer_resolution_divider_combobox->selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->framebufferResolutionDivier), performance_framebuffer_resolution_divider_combobox->texts);
     
     cat_enable_comments_checkbox->clickState1 = Settings::properties()->cat_allowComments;
     cat_verify_exit_checkbox->clickState1 = Settings::properties()->cat_verifyTheExit;

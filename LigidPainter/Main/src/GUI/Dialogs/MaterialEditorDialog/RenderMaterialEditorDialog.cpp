@@ -34,10 +34,6 @@ extern bool updateThePreRenderedPanels;
 bool __materialEditorDialogESCPressed = false;
 bool __materialEditorDialogESCFirstFramePressed = false;
 
-bool __lastDisplayModeComboBoxPressed = false;
-
-unsigned int tempTextureResolution = 1024;
-
 void MaterialEditorDialog::render
                                 (
                                     Timer &timer,
@@ -93,12 +89,12 @@ void MaterialEditorDialog::render
     dialogControl.updateEnd(timer,0.15f);
 
     // Update the material if needed
-    if(!this->updateTheMaterial && this->prevUpdateTheMaterial){
+    if((!this->updateTheMaterial && this->prevUpdateTheMaterial) || displayTxtrResComboBox.selectionDone){
         // Updating the material textures
         int specificUpdateI = -1;
         if(this->selectedResultModeIndex == 1)
             specificUpdateI = this->selectedMaterialModifierIndex;
-        material->updateMaterialDisplayingTexture((float)tempTextureResolution, true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), specificUpdateI);
+        material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), specificUpdateI);
     }
     
     this->prevUpdateTheMaterial = this->updateTheMaterial;
@@ -118,7 +114,7 @@ void MaterialEditorDialog::render
         if(!wasTextureSelectionDialogActive() && !ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
             this->displayModeComboBox.selectedIndex = 0;
             // Update the material displaying texture one more time before closing the dialog
-            material->updateMaterialDisplayingTexture((float)tempTextureResolution, false, Camera(), 0, false);
+            material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, Camera(), 0, false);
 
             updateThePreRenderedPanels = true;
 
@@ -130,9 +126,7 @@ void MaterialEditorDialog::render
 
 
     // Update the displaying texture
-    material->updateMaterialDisplayingTexture((float)tempTextureResolution, false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), -1);
-
-    __lastDisplayModeComboBoxPressed = this->displayModeComboBox.pressed;
+    material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), -1);
 
     glClear(GL_DEPTH_BUFFER_BIT);
 }
