@@ -405,8 +405,16 @@ void Painter::applyVectorStrokes(
         for (size_t strokeI = 0; strokeI < this->vectorStrokes3D.size(); strokeI++)
         {
             for (size_t vertI = 0; vertI < this->vectorStrokes3D[strokeI].lineVertices.size(); vertI++){
-                this->doPaint(windowOrtho, {}, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields, ThreeDPoint(this->vectorStrokes3D[strokeI].lineVertices[vertI].Position, this->vectorStrokes3D[strokeI].lineVertices[vertI].Normal), true, glm::vec2(-1000));
+                this->doPaint(
+                                ThreeDPoint(this->vectorStrokes3D[strokeI].lineVertices[vertI].Position, this->vectorStrokes3D[strokeI].lineVertices[vertI].Normal), 
+                                vertI == 0, 
+                                paintingMode, 
+                                true, 
+                                twoDPaintingBox, 
+                                textureFields
+                            );
             }
+            
             this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
 
             this->refreshPainting();
@@ -453,8 +461,6 @@ void Painter::applyVectorStrokes(
         // Loop through and process the subvectors
         for (int i = 0; i < numSubvectors; ++i) {
             
-            bool lastWrapMode = this->wrapMode;
-            this->wrapMode = twoDWrap;
             // Calculate the start and end indices for each subvector
             int startIdx = i * maxStrokeSize;
             int endIdx = std::min((i + 1) * maxStrokeSize, static_cast<int>(strokePositions.size()));
@@ -466,15 +472,12 @@ void Painter::applyVectorStrokes(
             if(twoDWrap){
                 for (size_t i = 0; i < subVector.size(); i++)
                 {
-                    this->doPaint(windowOrtho, {}, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields, ThreeDPoint(glm::vec3(-1000.f)), true, subVector[i]);
+                    this->doPaint(subVector[i], true, i == 0, paintingMode, true, twoDPaintingBox, textureFields);
                 }
             }
             else{
-                this->doPaint(windowOrtho, subVector, paintingMode, twoDPaintingPanel, twoDPaintingBox, true, textureFields, ThreeDPoint(glm::vec3(-1000.f)), i == 0, glm::vec2(-1000));
+                this->doPaint(subVector[i], false, i == 0, paintingMode, true, twoDPaintingBox, textureFields);
             }
-            
-            
-            this->wrapMode = lastWrapMode;
         }
 
         this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);

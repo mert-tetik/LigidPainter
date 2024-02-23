@@ -959,14 +959,24 @@ public:
     */
     void initPainter();
     
+    void doPaint(std::vector<glm::vec2> strokeLocations, bool firstStroke, int paintingMode, bool highResMode, 
+                 Box twoDPaintingBox, std::vector<TextureField> textureFields);
+    
+    void doPaint(bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, 
+                 Box twoDPaintingBox, std::vector<TextureField> textureFields);
+    
+    void doPaint(glm::vec2 cursorPos, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, 
+                 Box twoDPaintingBox, std::vector<TextureField> textureFields);
+    
+    void doPaint(ThreeDPoint threeDPoint, bool firstStroke, int paintingMode, bool highResMode, 
+                 Box twoDPaintingBox, std::vector<TextureField> textureFields);
+
     /*! 
     * @brief do painting (paint 2D). Called every frame if painting conditions are set. 
     *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
-    * @param windowOrtho orthographic projection matrix created with window size value.
     */
-    void doPaint(glm::mat4 windowOrtho, std::vector<glm::vec2> strokeLocations, int paintingMode, Panel twoDPaintingPanel, 
-                Box twoDPaintingBox, bool highResMode, std::vector<TextureField> textureFields, ThreeDPoint wrapPaintPoint,
-                bool firstStroke, glm::vec2 mousePos);
+    void paintBuffers(std::vector<glm::vec2> strokeLocations, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, 
+                      Box twoDPaintingBox, std::vector<TextureField> textureFields);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -1035,16 +1045,16 @@ public:
 
 private:
     void projectThePaintingTexture(Texture& selectedTexture,  Texture& projectedPaintingTexture,  unsigned int paintingTexture,  unsigned int depthTexture, 
-                                            int selectedPaintingModeIndex, float brushPropertiesOpacity, bool threeDimensionalMode,glm::mat4 windowOrtho,int selectedMeshIndex,
-                                            Box twoDPaintingBox,glm::mat4 viewMat,bool faceSelectionActive,Texture selectedPrimitives);
+                                            int selectedPaintingModeIndex, float brushPropertiesOpacity, bool threeDimensionalMode, int selectedMeshIndex,
+                                            Box twoDPaintingBox,glm::mat4 viewMat,bool faceSelectionActive, Texture selectedPrimitives, bool wrapMode);
 
     void generateMirroredProjectedPaintingTexture(   
                                                         MirrorSide& oSide, MirrorSide& oXSide, MirrorSide& oYSide, MirrorSide& oXYSide, MirrorSide& oZSide, 
                                                         MirrorSide& oXZSide, MirrorSide& oYZSide, MirrorSide& oXYZSide, float mirrorXOffset, float mirrorYOffset, 
                                                         float mirrorZOffset,Texture paintingTxtrObj, Texture& selectedTexture,  Texture& projectedPaintingTexture,  
-                                                        int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode,  glm::mat4 windowOrtho,  
-                                                        int selectedMeshIndex, Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives, bool highResMode,
-                                                        std::vector<TextureField> textureFields, bool firstStroke
+                                                        int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode, int selectedMeshIndex, 
+                                                        Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives, bool highResMode,
+                                                        std::vector<TextureField> textureFields, bool firstStroke, bool wrapMode
                                                     );
 };
 

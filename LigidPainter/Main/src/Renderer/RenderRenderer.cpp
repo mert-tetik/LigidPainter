@@ -229,46 +229,30 @@ void Renderer::render(){
     {
         //Paint
         painter.doPaint(    
-                            userInterface.projection,
-                            {},
-                            painter.selectedPaintingModeIndex,
-                            userInterface.twoDPaintingPanel,
-                            userInterface.twoDPaintingBox,
-                            false || painter.wrapMode,
-                            userInterface.paintingOverTextureFields,
-                            ThreeDPoint(glm::vec3(-1000.f)),
+                            painter.wrapMode,
                             *Mouse::LClick(),
-                            glm::vec2(-1000)
+                            painter.selectedPaintingModeIndex,
+                            false || painter.wrapMode,
+                            userInterface.twoDPaintingBox,
+                            userInterface.paintingOverTextureFields
                         );
     }
 
     //Painting done (refresh)
     if(((painter.refreshable && !*Mouse::LPressed()) || (painter.refreshable && (*Mouse::RClick() || *Mouse::MClick()))) && painter.selectedPaintingModeIndex != 5){ //Last frame painting done or once mouse right click or mouse wheel click
-        /*//TODO Prevent updating all the materials
-        for (size_t i = 0; i < library.materials.size(); i++)
-        {   
-            //Update the material after painting
-            //TODO : Do smt after painting
-            // library.materials[i].updateMaterial(this->settings.textureRes, context, shaders.buttonShader, shaders.tdModelShader);
-        }
-        */
-
         //Paint
         painter.doPaint(    
-                            userInterface.projection,
-                            {},
-                            painter.selectedPaintingModeIndex,
-                            userInterface.twoDPaintingPanel,
-                            userInterface.twoDPaintingBox,
-                            true,
-                            userInterface.paintingOverTextureFields,
-                            ThreeDPoint(glm::vec3(-1000.f)),
+                            painter.wrapMode,
                             *Mouse::LClick(),
-                            glm::vec2(-1000)
+                            painter.selectedPaintingModeIndex,
+                            true,
+                            userInterface.twoDPaintingBox,
+                            userInterface.paintingOverTextureFields
                         );
 
         //Update the selected texture after painting
         painter.updateTexture(userInterface.twoDPaintingPanel, userInterface.projection, painter.selectedPaintingModeIndex, userInterface.filterPaintingModeFilterBtn.filter, userInterface.twoDPaintingBox, userInterface.paintingCustomMat);
+        
         //Refresh the 2D painting texture
         painter.refreshPainting();
 

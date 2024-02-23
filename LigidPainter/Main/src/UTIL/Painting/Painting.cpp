@@ -126,28 +126,281 @@ Texture posTxtr;
 
 static glm::vec4 lastPos;
 
-void Painter::doPaint(
-                        glm::mat4 windowOrtho, 
-                        std::vector<glm::vec2> strokeLocations, 
-                        int paintingMode, 
-                        Panel twoDPaintingPanel, 
-                        Box twoDPaintingBox, 
-                        bool highResMode, 
-                        std::vector<TextureField> textureFields,
-                        ThreeDPoint wrapPaintPoint,
-                        bool firstStroke,
-                        glm::vec2 mousePos
-                    )
+void Painter::doPaint(      
+                            std::vector<glm::vec2> strokeLocations, 
+
+                            // Dynamic Variables
+                            bool firstStroke,
+                            int paintingMode, 
+                            bool highResMode, 
+                            
+                            // Static Constants
+                            Box twoDPaintingBox, 
+                            std::vector<TextureField> textureFields
+                        )
 {
+    this->paintBuffers(strokeLocations, false, firstStroke, paintingMode, highResMode, twoDPaintingBox, textureFields);
+}
+
+void Painter::doPaint(      
+                            bool wrapMode, 
     
-    glm::vec2 firstCursorPos = *Mouse::cursorPos();
+                            // Dynamic Variables
+                            bool firstStroke,
+                            int paintingMode, 
+                            bool highResMode, 
+                            
+                            // Static Constants
+                            Box twoDPaintingBox, 
+                            std::vector<TextureField> textureFields
+                        )
+{
+    this->doPaint(
+                    glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y),
+                    wrapMode,
+                    firstStroke,
+                    paintingMode,
+                    highResMode,
+                    twoDPaintingBox,
+                    textureFields
+                );
+}
+
+void Painter::doPaint(      
+                            glm::vec2 cursorPos,
+                            bool wrapMode, 
     
+                            // Dynamic Variables
+                            bool firstStroke,
+                            int paintingMode, 
+                            bool highResMode, 
+                            
+                            // Static Constants
+                            Box twoDPaintingBox, 
+                            std::vector<TextureField> textureFields
+                        )
+{
+    if(wrapMode){
+        float* posData = new float[4]; 
+        float* normalData = new float[4]; 
+
+        this->getPosNormalValOverPoint(
+                                        cursorPos,
+                                        posData,
+                                        normalData,
+                                        true
+                                    );
+        
+        std::cout << normalData[0] << "," << normalData[1] << "," << normalData[2] << "," << normalData[3] << std::endl; 
+        
+        if(posData[3] == 1.f){
+            this->doPaint(
+                            ThreeDPoint(glm::vec3(posData[0], posData[1], posData[2]), glm::vec3(normalData[0], normalData[1], normalData[2])),
+                            firstStroke,
+                            paintingMode,
+                            highResMode,
+                            twoDPaintingBox,
+                            textureFields
+                        );
+        }
+
+        delete[] posData;
+        delete[] normalData;
+    }
+    else{
+
+        //First frame the painting is started
+        if(firstStroke){
+            startCursorPos = *Mouse::cursorPos();
+            lastCursorPos = *Mouse::cursorPos();
+            frameCounter = 0;
+        }
+
+        this->paintBuffers(this->getCursorSubstitution(this->brushProperties.spacing, cursorPos, lastCursorPos), false, firstStroke, paintingMode, highResMode, twoDPaintingBox, textureFields);
+    }
+}
+
+void Painter::doPaint(      
+                            ThreeDPoint threeDPoint, 
+    
+                            // Dynamic Variables
+                            bool firstStroke,
+                            int paintingMode, 
+                            bool highResMode, 
+                            
+                            // Static Constants
+                            Box twoDPaintingBox, 
+                            std::vector<TextureField> textureFields
+                        )
+{
+
     //First frame the painting is started
     if(firstStroke){
         startCursorPos = *Mouse::cursorPos();
         lastCursorPos = *Mouse::cursorPos();
         frameCounter = 0;
     }
+
+    //Stroke positions
+    std::vector<glm::vec2> strokeLocations;
+        
+    float* posData = new float[4]; 
+    float* normalData = new float[4]; 
+    
+    posData[0] = threeDPoint.pos.x;
+    posData[1] = threeDPoint.pos.y;
+    posData[2] = threeDPoint.pos.z;
+    posData[3] = 1.f;
+    
+    normalData[0] = threeDPoint.normal.x;
+    normalData[1] = threeDPoint.normal.y;
+    normalData[2] = threeDPoint.normal.z;
+    normalData[3] = 1.f;
+
+    glm::vec3 oldCamPos = getScene()->camera.cameraPos;
+    glm::vec3 oldCamOrigin = getScene()->camera.originPos;
+    
+    getScene()->camera.cameraPos = glm::vec3(
+                                                posData[0] + normalData[0] * 5.1f, 
+                                                posData[1] + normalData[1] * 5.f, 
+                                                posData[2] + normalData[2] * 5.f
+                                            );
+
+    getScene()->camera.originPos = glm::vec3(
+                                                posData[0], 
+                                                posData[1], 
+                                                posData[2]
+                                            );
+    
+    getScene()->updateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
+
+    posData[0] = (posData[0] + 1.f) / 2.f;
+    posData[1] = (posData[1] + 1.f) / 2.f;
+    posData[2] = (posData[2] + 1.f) / 2.f;
+    
+    const unsigned int resolution = 512; 
+
+    glm::ivec2 res = glm::ivec2(resolution);
+    res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
+
+    if(!posTxtr.ID)
+        posTxtr = Texture(nullptr, resolution, resolution);
+
+    paintingFBO.setRenderbuffer(depthRBO512);
+    paintingFBO.setColorBuffer(posTxtr, GL_TEXTURE_2D);
+    paintingFBO.bind();
+
+    //Clear the depth texture
+    glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)res.x), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)res.y));
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glm::mat4 viewMat = getScene()->calculateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
+
+    //Use the depth 3D shader
+    ShaderSystem::renderModelData().use();
+    ShaderSystem::renderModelData().setMat4("view", viewMat);
+    ShaderSystem::renderModelData().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::renderModelData().setMat4("modelMatrix",getScene()->transformMatrix);
+    ShaderSystem::renderModelData().setInt("state", 1);
+
+    ShaderSystem::renderModelData().setInt("usingMeshSelection",this->faceSelection.activated);
+    ShaderSystem::renderModelData().setInt("hideUnselected",this->faceSelection.hideUnselected);
+    ShaderSystem::renderModelData().setInt("selectedPrimitiveIDS", 0);
+    ShaderSystem::renderModelData().setInt("meshMask", 1);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, this->faceSelection.selectedFaces.ID);
+    
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
+
+    //Draw the selected mesh in 3D
+    if(this->selectedMeshIndex < getModel()->meshes.size()){
+        ShaderSystem::renderModelData().setInt("primitiveCount", getModel()->meshes[this->selectedMeshIndex].indices.size() / 3);
+        getModel()->meshes[this->selectedMeshIndex].Draw(false);
+    }
+
+    float* pxs = new float[res.x * res.y * 4]; 
+    
+    glReadPixels(
+                    0, 
+                    0, 
+                    res.x, 
+                    res.y,
+                    GL_RGBA,
+                    GL_FLOAT,
+                    pxs
+                );
+
+
+
+    float* lastPosP = new float[4]; 
+    lastPosP[0] = lastPos.x;
+    lastPosP[1] = lastPos.y;
+    lastPosP[2] = lastPos.z;
+    lastPosP[3] = lastPos.w;
+
+    glm::vec2 crsPos = findPos(res, posData, pxs);
+    glm::vec2 lastCrsPos = findPos(res, lastPosP, pxs);
+    
+    if(crsPos != glm::vec2(-1.f) && lastCrsPos != glm::vec2(-1.f)){
+        glm::vec2 lastDest;
+        lastDest.x = crsPos.x - (crsPos.x - lastCrsPos.x);
+        lastDest.y = crsPos.y + (crsPos.y - lastCrsPos.y);
+        
+        if(firstStroke)  
+            lastDest = crsPos;
+
+        strokeLocations = getCursorSubstitution(this->brushProperties.spacing, crsPos, lastDest);
+    }
+    else if(crsPos != glm::vec2(-1.f))
+        strokeLocations.push_back(crsPos);
+
+    //std::cout << posData[0] << ", " << posData[1] << ", " << posData[2] << ", " << posData[3] << std::endl;
+    //std::cout << lastPosP[0] << ", " << lastPosP[1] << ", " << lastPosP[2] << ", " << lastPosP[3] << std::endl;
+
+    lastPos.x = posData[0];
+    lastPos.y = posData[1];
+    lastPos.z = posData[2];
+    lastPos.w = posData[3];
+
+    delete[] posData;
+    delete[] lastPosP;
+    delete[] normalData;
+    delete[] pxs;
+
+    getBox()->bindBuffers();
+    ShaderSystem::twoDPainting().use();
+    this->paintingFBO.bind();
+    this->paintingFBO.setColorBuffer(paintingTexture, GL_TEXTURE_2D);
+    this->paintingFBO.removeRenderbuffer();
+    
+    this->paintBuffers(strokeLocations, true, firstStroke, paintingMode, highResMode, twoDPaintingBox, textureFields);
+
+    getScene()->camera.cameraPos = oldCamPos;
+    getScene()->camera.originPos = oldCamOrigin;
+    getScene()->updateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
+
+}
+
+void Painter::paintBuffers(
+                            // Stroke locations
+                            std::vector<glm::vec2> strokeLocations, 
+                            
+                            // Dynamic Variables
+                            bool wrapMode,
+                            bool firstStroke,
+                            int paintingMode, 
+                            bool highResMode, 
+                            
+                            // Static Constants
+                            Box twoDPaintingBox, 
+                            std::vector<TextureField> textureFields
+                        )
+{
+    
+    glm::vec2 firstCursorPos = *Mouse::cursorPos();
 
     glm::ivec2 paintingRes = glm::ivec2(getBufferResolutions(0));
 
@@ -179,165 +432,6 @@ void Painter::doPaint(
     
     //Prepeare the 2D painting shader
     ShaderSystem::twoDPainting().use();
-    
-    glm::vec3 oldCamPos = getScene()->camera.cameraPos;
-    glm::vec3 oldCamOrigin = getScene()->camera.originPos;
-
-    //Stroke positions
-    std::vector<glm::vec2> holdLocations = getCursorSubstitution(this->brushProperties.spacing, *Mouse::cursorPos(), lastCursorPos);
-    if(strokeLocations.size()){
-        holdLocations = strokeLocations;
-    }
-    if(this->wrapMode){
-        
-        holdLocations.clear();
-        
-        float* posData = new float[4]; 
-        float* normalData = new float[4]; 
-        
-        if(wrapPaintPoint.pos.x == -1000.f){
-
-            glm::vec2 dest = mousePos;
-            if(mousePos == glm::vec2(-1000.f))
-                dest = glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y);
-
-            this->getPosNormalValOverPoint(
-                                            dest,
-                                            posData,
-                                            normalData,
-                                            true
-                                        );
-
-        }
-        else{
-            posData[0] = wrapPaintPoint.pos.x;
-            posData[1] = wrapPaintPoint.pos.y;
-            posData[2] = wrapPaintPoint.pos.z;
-            posData[3] = 1.f;
-            
-            normalData[0] = wrapPaintPoint.normal.x;
-            normalData[1] = wrapPaintPoint.normal.y;
-            normalData[2] = wrapPaintPoint.normal.z;
-            normalData[3] = 1.f;
-        }
-        
-        getScene()->camera.cameraPos = glm::vec3(
-                                                    posData[0] + normalData[0] * 5.1f, 
-                                                    posData[1] + normalData[1] * 5.f, 
-                                                    posData[2] + normalData[2] * 5.f
-                                                );
-
-        getScene()->camera.originPos = glm::vec3(
-                                                    posData[0], 
-                                                    posData[1], 
-                                                    posData[2]
-                                                );
-        
-        getScene()->updateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
-
-        posData[0] = (posData[0] + 1.f) / 2.f;
-        posData[1] = (posData[1] + 1.f) / 2.f;
-        posData[2] = (posData[2] + 1.f) / 2.f;
-        
-        const unsigned int resolution = 512; 
-
-        glm::ivec2 res = glm::ivec2(resolution);
-        res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
-
-        if(!posTxtr.ID)
-            posTxtr = Texture(nullptr, resolution, resolution);
-
-        paintingFBO.setRenderbuffer(depthRBO512);
-        paintingFBO.setColorBuffer(posTxtr, GL_TEXTURE_2D);
-        paintingFBO.bind();
-
-        //Clear the depth texture
-        glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)res.x), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)res.y));
-        glClearColor(0,0,0,0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
-        glm::mat4 viewMat = getScene()->calculateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
-
-        //Use the depth 3D shader
-        ShaderSystem::renderModelData().use();
-        ShaderSystem::renderModelData().setMat4("view", viewMat);
-        ShaderSystem::renderModelData().setMat4("projection", getScene()->projectionMatrix);
-        ShaderSystem::renderModelData().setMat4("modelMatrix",getScene()->transformMatrix);
-        ShaderSystem::renderModelData().setInt("state", 1);
-
-        ShaderSystem::renderModelData().setInt("usingMeshSelection",this->faceSelection.activated);
-        ShaderSystem::renderModelData().setInt("hideUnselected",this->faceSelection.hideUnselected);
-        ShaderSystem::renderModelData().setInt("selectedPrimitiveIDS", 0);
-        ShaderSystem::renderModelData().setInt("meshMask", 1);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->faceSelection.selectedFaces.ID);
-        
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
-
-        //Draw the selected mesh in 3D
-        if(this->selectedMeshIndex < getModel()->meshes.size()){
-            ShaderSystem::renderModelData().setInt("primitiveCount", getModel()->meshes[this->selectedMeshIndex].indices.size() / 3);
-            getModel()->meshes[this->selectedMeshIndex].Draw(false);
-        }
-
-        float* pxs = new float[res.x * res.y * 4]; 
-        
-        glReadPixels(
-                        0, 
-                        0, 
-                        res.x, 
-                        res.y,
-                        GL_RGBA,
-                        GL_FLOAT,
-                        pxs
-                    );
-
-
-
-        float* lastPosP = new float[4]; 
-        lastPosP[0] = lastPos.x;
-        lastPosP[1] = lastPos.y;
-        lastPosP[2] = lastPos.z;
-        lastPosP[3] = lastPos.w;
-
-        glm::vec2 crsPos = findPos(res, posData, pxs);
-        glm::vec2 lastCrsPos = findPos(res, lastPosP, pxs);
-        
-        if(crsPos != glm::vec2(-1.f) && lastCrsPos != glm::vec2(-1.f)){
-            glm::vec2 lastDest;
-            lastDest.x = crsPos.x - (crsPos.x - lastCrsPos.x);
-            lastDest.y = crsPos.y + (crsPos.y - lastCrsPos.y);
-            
-            if(firstStroke && wrapPaintPoint.pos.x == -1000.f && mousePos == glm::vec2(-1000.f))  
-                lastDest = crsPos;
-
-            holdLocations = getCursorSubstitution(this->brushProperties.spacing, crsPos, lastDest);
-        }
-        else if(crsPos != glm::vec2(-1.f))
-            holdLocations.push_back(crsPos);
-
-        //std::cout << posData[0] << ", " << posData[1] << ", " << posData[2] << ", " << posData[3] << std::endl;
-        //std::cout << lastPosP[0] << ", " << lastPosP[1] << ", " << lastPosP[2] << ", " << lastPosP[3] << std::endl;
-
-        lastPos.x = posData[0];
-        lastPos.y = posData[1];
-        lastPos.z = posData[2];
-        lastPos.w = posData[3];
-
-        delete[] posData;
-        delete[] lastPosP;
-        delete[] normalData;
-        delete[] pxs;
-
-        getBox()->bindBuffers();
-        ShaderSystem::twoDPainting().use();
-        this->paintingFBO.bind();
-        this->paintingFBO.setColorBuffer(paintingTexture, GL_TEXTURE_2D);
-        this->paintingFBO.removeRenderbuffer();
-        glViewport(0, 0, paintingRes.x, paintingRes.y);
-    }
 
     ShaderSystem::twoDPainting().setVec2("scale", scale); //Cover the screen
     ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
@@ -350,18 +444,18 @@ void Painter::doPaint(
     ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(0.));
     
     //Set brush properties
-    twoDPaintShaderSetBrushProperties(this->brushProperties, this->wrapMode);
+    twoDPaintShaderSetBrushProperties(this->brushProperties, wrapMode);
     
     // Set the mouseOffset value
-    if(holdLocations.size())
-        ShaderSystem::twoDPainting().setVec2("mouseOffset", holdLocations[0] - holdLocations[holdLocations.size()-1]);
+    if(strokeLocations.size())
+        ShaderSystem::twoDPainting().setVec2("mouseOffset", strokeLocations[0] - strokeLocations[strokeLocations.size()-1]);
     
     // Set the stroke positions
-    ShaderSystem::twoDPainting().setInt("posCount", holdLocations.size());
-    for (int i = 0; i < holdLocations.size(); i++)
+    ShaderSystem::twoDPainting().setInt("posCount", strokeLocations.size());
+    for (int i = 0; i < strokeLocations.size(); i++)
     {
         std::string target = "positions[" + std::to_string(i) + "]";
-        ShaderSystem::twoDPainting().setVec2(target, holdLocations[i]);
+        ShaderSystem::twoDPainting().setVec2(target, strokeLocations[i]);
     }
     
     //Prepeare painting
@@ -371,14 +465,16 @@ void Painter::doPaint(
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
     //Painting
+    /*
     if(!strokeLocations.size()){
-        if(glm::distance(startCursorPos,*Mouse::cursorPos()) > this->brushProperties.spacing || firstStroke){ //Provide spacing
+        if(glm::distance(startCursorPos, *Mouse::cursorPos()) > this->brushProperties.spacing || firstStroke){ //Provide spacing
             startCursorPos = *Mouse::cursorPos();            
             LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted with distance");
         }
     }
     else
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted");
+    */
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted");
     
     //Finish
     glEnable(GL_BLEND);
@@ -394,11 +490,11 @@ void Painter::doPaint(
                                                 this->oSide, this->oXSide, this->oYSide, this->oXYSide, this->oZSide, this->oXZSide, this->oYZSide, 
                                                 this->oXYZSide, this->mirrorXOffset, this->mirrorYOffset, this->mirrorZOffset, paintingTxtrObj, this->selectedTexture, 
                                                 this->projectedPaintingTexture, paintingMode, this->brushProperties.opacity, 
-                                                this->threeDimensionalMode, windowOrtho, this->selectedMeshIndex, twoDPaintingBox, this->faceSelection.activated, 
-                                                this->faceSelection.selectedFaces, highResMode, textureFields, firstStroke
+                                                this->threeDimensionalMode, this->selectedMeshIndex, twoDPaintingBox, this->faceSelection.activated, 
+                                                this->faceSelection.selectedFaces, highResMode, textureFields, firstStroke, wrapMode
                                             );
 
-    if(this->wrapMode){
+    if(wrapMode){
         this->paintingFBO.bind();
         this->paintingFBO.setColorBuffer(this->paintingTexture16f, GL_TEXTURE_2D);
         glClearColor(0,0,0,0);
@@ -414,12 +510,6 @@ void Painter::doPaint(
 
     // Send the painter data to the the PBR shader for the painting displaying 
     sendPainterDataToThe3DModelShaderProgram(this->selectedColorIndex, this->color1, this->color2, this->color3, this->brushProperties.opacity, paintingMode, this->usePaintingOver, this->paintingOverGrayScale);
-
-    
-    getScene()->camera.cameraPos = oldCamPos;
-    getScene()->camera.originPos = oldCamOrigin;
-
-    getScene()->updateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
 }
 
 
@@ -447,9 +537,9 @@ void Painter::doPaint(
 
 
 static void twoDPaintShaderSetBrushProperties (
-                                    BrushProperties brushProperties,
-                                    bool wrapMode
-                               )
+                                                    BrushProperties brushProperties,
+                                                    bool wrapMode
+                                            )
 {
     if(wrapMode)
         ShaderSystem::twoDPainting().setFloat("brush.radius", brushProperties.radius);
@@ -493,12 +583,13 @@ void Painter::projectThePaintingTexture(
                                         int selectedPaintingModeIndex, 
                                         float brushPropertiesOpacity, 
                                         bool threeDimensionalMode,
-                                        glm::mat4 windowOrtho,
                                         int selectedMeshIndex,
                                         Box twoDPaintingBox,
                                         glm::mat4 viewMat,
                                         bool faceSelectionActive,
-                                        Texture selectedPrimitives
+                                        Texture selectedPrimitives,
+
+                                        bool wrapMode
                                     )
 {
     glm::ivec2 projectedPaintingTextureRes = projectedPaintingTexture.getResolution();
@@ -513,7 +604,7 @@ void Painter::projectThePaintingTexture(
     
     glClearColor(0, 0, 0, 0);
     
-    if(this->wrapMode)
+    if(wrapMode)
         glClear(GL_DEPTH_BUFFER_BIT);
     else
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -595,8 +686,8 @@ void Painter::projectThePaintingTexture(
 
         //*Vertex
         ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-        ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", windowOrtho);
-        ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
+        //ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", windowOrtho);
+        //ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
         twoDPaintingBox.bindBuffers();
         
@@ -645,7 +736,6 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                                         int selectedPaintingModeIndex, 
                                                         float brushPropertiesOpacity, 
                                                         bool threeDimensionalMode, 
-                                                        glm::mat4 windowOrtho, 
                                                         int selectedMeshIndex, 
                                                         Box twoDPaintingBox,
                                                         bool faceSelectionActive,
@@ -653,13 +743,14 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                                         bool highResMode,
 
                                                         std::vector<TextureField> textureFields,
-                                                        bool firstStroke
+                                                        bool firstStroke,
+                                                        bool wrapMode
                                                     )
 {
     glDisable(GL_BLEND);
     
     if(selectedPaintingModeIndex != 6){
-        if((firstStroke && !this->wrapMode) || this->wrapMode){
+        if((firstStroke && !wrapMode) || wrapMode){
             this->updateDepthTexture();
             this->updatePaintingOverTexture(textureFields);
         }
@@ -785,9 +876,9 @@ void Painter::generateMirroredProjectedPaintingTexture(
             }
 
             projectThePaintingTexture(selectedTexture, projectedPaintingtxtr, mirrorSides[i]->mirroredPaintingTexture.ID, mirrorSides[i]->depthTexture.ID, 
-                                            selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, windowOrtho, 
-                                            selectedMeshIndex, twoDPaintingBox, mirrorSides[i]->getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)),
-                                            faceSelectionActive, selectedPrimitives
+                                            selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, selectedMeshIndex, twoDPaintingBox, 
+                                            mirrorSides[i]->getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)), faceSelectionActive, selectedPrimitives,
+                                            wrapMode
                                     );
         }
 
