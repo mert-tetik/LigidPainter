@@ -243,7 +243,7 @@ void Renderer::render(){
         //Paint
         painter.doPaint(    
                             painter.wrapMode,
-                            *Mouse::LClick(),
+                            true,
                             painter.selectedPaintingModeIndex,
                             true,
                             userInterface.twoDPaintingBox,

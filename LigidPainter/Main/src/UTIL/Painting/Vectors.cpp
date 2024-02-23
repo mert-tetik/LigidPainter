@@ -383,7 +383,7 @@ static std::vector<glm::vec2> calculateBezierCurve(glm::vec2 start, glm::vec2 en
 
     for (size_t i = 0; i < frequency; i++)
     {
-        points.push_back(bezier((float)i / (float)frequency, start, end, direction));
+        points.push_back(bezier((float)i / (float)frequency - 1, start, end, direction));
     }
 
     return points;
@@ -432,12 +432,7 @@ void Painter::applyVectorStrokes(
         for (size_t vecI = 0; vecI < vectorStrokes.size(); vecI++)
         {
             float distance = glm::distance(vectorStrokes[vecI].startPoint.pos, vectorStrokes[vecI].offsetPoint.pos) + glm::distance(vectorStrokes[vecI].endPoint.pos, vectorStrokes[vecI].offsetPoint.pos);
-            unsigned int quality = (unsigned int)(distance);
-
-            if(!twoDWrap)
-                quality *= 2.f;
-            else
-                quality /= 2.f;
+            unsigned int quality = (unsigned int)(distance / 2.f);
 
             std::vector<glm::vec2> points = calculateBezierCurve(
                                                                     vectorStrokes[vecI].startPoint.pos / 100.f * *Settings::videoScale(), 
@@ -468,15 +463,9 @@ void Painter::applyVectorStrokes(
             // Create a subvector from the original vector
             std::vector<glm::vec2> subVector(strokePositions.begin() + startIdx, strokePositions.begin() + endIdx);
 
-            // Call the function for the subvector
-            if(twoDWrap){
-                for (size_t i = 0; i < subVector.size(); i++)
-                {
-                    this->doPaint(subVector[i], true, i == 0, paintingMode, true, twoDPaintingBox, textureFields);
-                }
-            }
-            else{
-                this->doPaint(subVector[i], false, i == 0, paintingMode, true, twoDPaintingBox, textureFields);
+            for (size_t i = 0; i < subVector.size(); i++)
+            {
+                this->doPaint(subVector[i], twoDWrap, i == 0 || i == subVector.size() - 1, paintingMode, true, twoDPaintingBox, textureFields);
             }
         }
 

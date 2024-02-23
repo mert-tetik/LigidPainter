@@ -155,8 +155,14 @@ void Painter::doPaint(
                             std::vector<TextureField> textureFields
                         )
 {
+
+    glm::vec2 crsPos = *Mouse::cursorPos();
+    
+    if(wrapMode)
+        crsPos = glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y);
+
     this->doPaint(
-                    glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y),
+                    crsPos,
                     wrapMode,
                     firstStroke,
                     paintingMode,
@@ -180,44 +186,46 @@ void Painter::doPaint(
                             std::vector<TextureField> textureFields
                         )
 {
-    if(wrapMode){
-        float* posData = new float[4]; 
-        float* normalData = new float[4]; 
-
-        this->getPosNormalValOverPoint(
-                                        cursorPos,
-                                        posData,
-                                        normalData,
-                                        true
-                                    );
-        
-        std::cout << normalData[0] << "," << normalData[1] << "," << normalData[2] << "," << normalData[3] << std::endl; 
-        
-        if(posData[3] == 1.f){
-            this->doPaint(
-                            ThreeDPoint(glm::vec3(posData[0], posData[1], posData[2]), glm::vec3(normalData[0], normalData[1], normalData[2])),
-                            firstStroke,
-                            paintingMode,
-                            highResMode,
-                            twoDPaintingBox,
-                            textureFields
-                        );
-        }
-
-        delete[] posData;
-        delete[] normalData;
+    //First frame the painting is started
+    if(firstStroke){
+        startCursorPos = cursorPos;
+        lastCursorPos = cursorPos;
+        frameCounter = 0;
     }
-    else{
 
-        //First frame the painting is started
-        if(firstStroke){
-            startCursorPos = *Mouse::cursorPos();
-            lastCursorPos = *Mouse::cursorPos();
-            frameCounter = 0;
+    if(glm::distance(startCursorPos, cursorPos) > this->brushProperties.spacing || firstStroke){ //Provide spacing
+        startCursorPos = cursorPos;            
+        if(wrapMode){
+            float* posData = new float[4]; 
+            float* normalData = new float[4]; 
+
+            this->getPosNormalValOverPoint(
+                                            cursorPos,
+                                            posData,
+                                            normalData,
+                                            true
+                                        );
+            
+            if(posData[3] == 1.f){
+                this->doPaint(
+                                ThreeDPoint(glm::vec3(posData[0], posData[1], posData[2]), glm::vec3(normalData[0], normalData[1], normalData[2])),
+                                firstStroke,
+                                paintingMode,
+                                highResMode,
+                                twoDPaintingBox,
+                                textureFields
+                            );
+            }
+
+            delete[] posData;
+            delete[] normalData;
         }
-
-        this->paintBuffers(this->getCursorSubstitution(this->brushProperties.spacing, cursorPos, lastCursorPos), false, firstStroke, paintingMode, highResMode, twoDPaintingBox, textureFields);
+        else{
+            this->paintBuffers(this->getCursorSubstitution(this->brushProperties.spacing, cursorPos, lastCursorPos), false, firstStroke, paintingMode, highResMode, twoDPaintingBox, textureFields);
+        }
     }
+
+    lastCursorPos = cursorPos;
 }
 
 void Painter::doPaint(      
@@ -236,8 +244,8 @@ void Painter::doPaint(
 
     //First frame the painting is started
     if(firstStroke){
-        startCursorPos = *Mouse::cursorPos();
-        lastCursorPos = *Mouse::cursorPos();
+        //startCursorPos = *Mouse::cursorPos();
+        //lastCursorPos = *Mouse::cursorPos();
         frameCounter = 0;
     }
 
@@ -399,9 +407,6 @@ void Painter::paintBuffers(
                             std::vector<TextureField> textureFields
                         )
 {
-    
-    glm::vec2 firstCursorPos = *Mouse::cursorPos();
-
     glm::ivec2 paintingRes = glm::ivec2(getBufferResolutions(0));
 
     //Bind the painting texture to the painting framebuffer
@@ -465,15 +470,6 @@ void Painter::paintBuffers(
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
     //Painting
-    /*
-    if(!strokeLocations.size()){
-        if(glm::distance(startCursorPos, *Mouse::cursorPos()) > this->brushProperties.spacing || firstStroke){ //Provide spacing
-            startCursorPos = *Mouse::cursorPos();            
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted with distance");
-        }
-    }
-    else
-    */
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted");
     
     //Finish
@@ -482,7 +478,6 @@ void Painter::paintBuffers(
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
     glDepthFunc(GL_LESS);
 
-    lastCursorPos = firstCursorPos;
     this->refreshable = true;
     frameCounter++;
 
