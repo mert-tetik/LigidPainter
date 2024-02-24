@@ -383,7 +383,7 @@ static std::vector<glm::vec2> calculateBezierCurve(glm::vec2 start, glm::vec2 en
 
     for (size_t i = 0; i < frequency; i++)
     {
-        points.push_back(bezier((float)i / (float)frequency - 1, start, end, direction));
+        points.push_back(bezier((float)i / ((float)frequency - 1.f), start, end, direction));
     }
 
     return points;
@@ -405,14 +405,16 @@ void Painter::applyVectorStrokes(
         for (size_t strokeI = 0; strokeI < this->vectorStrokes3D.size(); strokeI++)
         {
             for (size_t vertI = 0; vertI < this->vectorStrokes3D[strokeI].lineVertices.size(); vertI++){
-                this->doPaint(
-                                ThreeDPoint(this->vectorStrokes3D[strokeI].lineVertices[vertI].Position, this->vectorStrokes3D[strokeI].lineVertices[vertI].Normal), 
-                                vertI == 0, 
-                                paintingMode, 
-                                true, 
-                                twoDPaintingBox, 
-                                textureFields
-                            );
+                if(vertI % (int)std::ceil((this->brushProperties.spacing + 1.f) / 20.f) == 0){
+                    this->doPaint(
+                                    ThreeDPoint(this->vectorStrokes3D[strokeI].lineVertices[vertI].Position, this->vectorStrokes3D[strokeI].lineVertices[vertI].Normal), 
+                                    vertI == 0, 
+                                    paintingMode, 
+                                    true, 
+                                    twoDPaintingBox, 
+                                    textureFields
+                                );
+                }
             }
             
             this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
@@ -465,7 +467,7 @@ void Painter::applyVectorStrokes(
 
             for (size_t i = 0; i < subVector.size(); i++)
             {
-                this->doPaint(subVector[i], twoDWrap, i == 0 || i == subVector.size() - 1, paintingMode, true, twoDPaintingBox, textureFields);
+                this->doPaint(subVector[i], twoDWrap, i == 0 || (i == subVector.size() - 1 && this->brushProperties.spacing > 5.f), paintingMode, true, twoDPaintingBox, textureFields);
             }
         }
 

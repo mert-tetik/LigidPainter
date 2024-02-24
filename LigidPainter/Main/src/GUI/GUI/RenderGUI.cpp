@@ -690,7 +690,7 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
                 }
             }
 
-            if((painter.wrapMode && this->paintingOverTextureFields[i].wrapMode) || !painter.wrapMode){
+            if((painter.wrapMode && this->paintingOverTextureFields[i].wrapMode) || !painter.wrapMode || painter.paintingoverTextureEditorMode){
                 this->paintingOverTextureFields[i].render(
                                                             timer, 
                                                             painter,
@@ -743,7 +743,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     
     Debugger::block("GUI : Texture fields"); // Start
     // Vectoral painting vectors
-    if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0){
+    if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0 && !painter.paintingoverTextureEditorMode){
         if(!painter.wrapMode){
             painter.render2DVectors(timer, !anyDialogActive && !anyPanelHover);
         }

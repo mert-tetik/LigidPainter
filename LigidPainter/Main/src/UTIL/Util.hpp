@@ -959,15 +959,19 @@ public:
     */
     void initPainter();
     
+    /*! @brief Painting the strokeLocations */
     void doPaint(std::vector<glm::vec2> strokeLocations, bool firstStroke, int paintingMode, bool highResMode, 
                  Box twoDPaintingBox, std::vector<TextureField> textureFields);
     
+    /*! @brief Painting the cursor location & generating strokeLocations*/
     void doPaint(bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, 
                  Box twoDPaintingBox, std::vector<TextureField> textureFields);
     
+    /*! @brief Painting the manual point (cursorPos) & generating strokeLocations*/
     void doPaint(glm::vec2 cursorPos, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, 
                  Box twoDPaintingBox, std::vector<TextureField> textureFields);
     
+    /*! @brief Painting the 3D point & generating strokeLocations*/
     void doPaint(ThreeDPoint threeDPoint, bool firstStroke, int paintingMode, bool highResMode, 
                  Box twoDPaintingBox, std::vector<TextureField> textureFields);
 
