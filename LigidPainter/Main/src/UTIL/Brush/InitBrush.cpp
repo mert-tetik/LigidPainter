@@ -46,20 +46,20 @@ Brush::Brush(
         Texture texture
     )
 {
-    this->spacing = spacing;
-    this->hardness = hardness;
-    this->sizeJitter = sizeJitter;
-    this->scatter = scatter;
-    this->fade = fade;
-    this->rotation = rotation;
-    this->rotationJitter = rotationJitter;
-    this->alphaJitter = alphaJitter;
-    this->individualTexture = individualTexture;
-    this->sinWavePattern = sinWavePattern;
+    this->properties.spacing = spacing;
+    this->properties.hardness = hardness;
+    this->properties.sizeJitter = sizeJitter;
+    this->properties.scatter = scatter;
+    this->properties.fade = fade;
+    this->properties.rotation = rotation;
+    this->properties.rotationJitter = rotationJitter;
+    this->properties.alphaJitter = alphaJitter;
+    this->properties.individualTexture = individualTexture;
+    this->properties.sinWavePattern = sinWavePattern;
     this->title = title;
 
-    this->texture.proceduralProps = texture.proceduralProps;
-    this->texture.ID = texture.duplicateTexture();
+    this->properties.brushTexture.proceduralProps = texture.proceduralProps;
+    this->properties.brushTexture.ID = texture.duplicateTexture();
 
     this->displayingTexture = Texture(nullptr, 100, 100, GL_LINEAR);
     this->displayingTexture.title = "BrushDisplayingTexture";    
@@ -82,19 +82,19 @@ void Brush::update(
         Texture texture
     )
 {
-    this->spacing = spacing;
-    this->hardness = hardness;
-    this->sizeJitter = sizeJitter;
-    this->scatter = scatter;
-    this->fade = fade;
-    this->rotation = rotation;
-    this->rotationJitter = rotationJitter;
-    this->alphaJitter = alphaJitter;
-    this->individualTexture = individualTexture;
-    this->sinWavePattern = sinWavePattern;
+    this->properties.spacing = spacing;
+    this->properties.hardness = hardness;
+    this->properties.sizeJitter = sizeJitter;
+    this->properties.scatter = scatter;
+    this->properties.fade = fade;
+    this->properties.rotation = rotation;
+    this->properties.rotationJitter = rotationJitter;
+    this->properties.alphaJitter = alphaJitter;
+    this->properties.individualTexture = individualTexture;
+    this->properties.sinWavePattern = sinWavePattern;
     
-    this->texture.proceduralProps = texture.proceduralProps;
-    this->texture.ID = texture.duplicateTexture();
+    this->properties.brushTexture.proceduralProps = texture.proceduralProps;
+    this->properties.brushTexture.ID = texture.duplicateTexture();
 
     this->updateDisplayTexture(displayRadius);
 }

@@ -396,29 +396,31 @@ public:
 
     void flipTexture(bool horizontal, bool vertical);
 
+    void resize(const glm::ivec2 newResolution);
+
     void mix(Texture txtr2, Texture mask, bool maskAlpha, bool normalMapMode, bool invert);
+};
+
+struct BrushProperties{
+    float radius = 0.f;
+    float hardness = 0.f;
+    float opacity = 0.f;
+    float spacing = 0.f;
+    float sizeJitter = 0.f;
+    float scatter = 0.f;
+    float fade = 0.f;
+    float rotation = 0.f;
+    float rotationJitter = 0.f;
+    float alphaJitter = 0.f;
+    bool individualTexture = false;
+    bool sinWavePattern = false;
+    Texture brushTexture;
 };
 
 class Brush
 {
 public:
-    
-    /*  --------- Brush Properties --------- */
-        float spacing = 0.f;
-        float hardness = 0.f;
-        float sizeJitter = 0.f;
-        float scatter = 0.f;
-        float fade = 0.f;
-        float rotation = 0.f;
-        float rotationJitter = 0.f;
-        float alphaJitter = 0.f;
-        bool individualTexture = false;
-        bool sinWavePattern = false;
-        Texture texture; 
-    /*  A brush class holds these values
-      Then applies these values to the GUI  
-        If clicked to a use brush button
-    */
+    BrushProperties properties;
 
     /// @brief Title of the brush (smt like myBrush_1)    
     std::string title;
@@ -427,7 +429,6 @@ public:
     ///        (a curvy stroke created with the brush)
     ///         Is initialized once and have a certain resolution value (W : 100, H : 100, C : RGBA)
     Texture displayingTexture;
-    
 
     /// @brief Default constructor (just initializes the @ref displayingTexture)
     Brush();
@@ -443,12 +444,6 @@ public:
 
     /// @brief Updates the displaying texture using brush properties.
     void updateDisplayTexture(float radius);
-
-    /// @brief move brush properties to the painting panel
-    void useBrush(Section &brushSection);
-
-    /// @brief move painting panel brush properties to the class's brush properties
-    void applyToBrush(Section &brushSection);
 };
 
 class Renderbuffer{
@@ -617,22 +612,6 @@ public:
 private:
     bool wrtLigidFile(std::string path);
 
-};
-
-struct BrushProperties{
-    float radius = 0.f;
-    float hardness = 0.f;
-    float opacity = 0.f;
-    float spacing = 0.f;
-    float sizeJitter = 0.f;
-    float scatter = 0.f;
-    float fade = 0.f;
-    float rotation = 0.f;
-    float rotationJitter = 0.f;
-    float alphaJitter = 0.f;
-    bool individualTexture = false;
-    bool sinWavePattern = false;
-    unsigned int brushTexture = 0;
 };
 
 struct VectorPoint2D{
@@ -942,8 +921,6 @@ public:
     /// Set by the GUI elements (painting panel (brush sections) )
     /// Is the same as the GUI elements
     BrushProperties brushProperties;
-
-    void setBrushProperties(Section brushSection);
 
     /// @brief Painter constructor (use initPainter to initialize the painter class)
     Painter();

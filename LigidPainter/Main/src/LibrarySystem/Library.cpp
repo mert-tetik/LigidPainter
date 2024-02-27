@@ -376,7 +376,7 @@ void Library::clearBrushes     (){
     for (size_t i = 0; i < __brushes.size(); i++)
     {
         glDeleteTextures(1, &__brushes[i].displayingTexture.ID);
-        glDeleteTextures(1, &__brushes[i].texture.ID);
+        glDeleteTextures(1, &__brushes[i].properties.brushTexture.ID);
     }
     
     __brushes.clear();

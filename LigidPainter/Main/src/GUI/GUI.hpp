@@ -258,7 +258,6 @@ public:
     Button paintingBrushButton;
     
     Section colorSection; 
-    Section brushSection; 
     Section meshSection; 
     Section mirrorSection; 
     Section paintingOverSection; 

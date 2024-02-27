@@ -553,7 +553,7 @@ static void twoDPaintShaderSetBrushProperties (
     
     //Bind the texture of the brush
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D,brushProperties.brushTexture);
+    glBindTexture(GL_TEXTURE_2D, brushProperties.brushTexture.ID);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);

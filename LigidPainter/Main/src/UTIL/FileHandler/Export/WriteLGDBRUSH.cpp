@@ -94,7 +94,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(scatterStr);
         char scatterValueType = 'f';
         LGDBRUSH_WRITEBITS(scatterValueType, char, "scatterValueType");
-        LGDBRUSH_WRITEBITS(brush.scatter, float, "scatter");
+        LGDBRUSH_WRITEBITS(brush.properties.scatter, float, "scatter");
         
         // Property 1
         std::string spacingStr = "spacing"; 
@@ -103,7 +103,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(spacingStr);
         char spacingValueType = 'f';
         LGDBRUSH_WRITEBITS(spacingValueType, char, "spacingValueType");
-        LGDBRUSH_WRITEBITS(brush.spacing, float, "spacing");
+        LGDBRUSH_WRITEBITS(brush.properties.spacing, float, "spacing");
 
         // Property 2
         std::string hardnessStr = "hardness"; 
@@ -112,7 +112,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(hardnessStr);
         char hardnessValueType = 'f';
         LGDBRUSH_WRITEBITS(hardnessValueType, char, "hardnessValueType");
-        LGDBRUSH_WRITEBITS(brush.hardness, float, "hardness");
+        LGDBRUSH_WRITEBITS(brush.properties.hardness, float, "hardness");
         
         // Property 3
         std::string sizeJitterStr = "sizeJitter"; 
@@ -121,7 +121,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(sizeJitterStr);
         char sizeJitterValueType = 'f';
         LGDBRUSH_WRITEBITS(sizeJitterValueType, char, "sizeJitterValueType");
-        LGDBRUSH_WRITEBITS(brush.sizeJitter, float, "sizeJitter");
+        LGDBRUSH_WRITEBITS(brush.properties.sizeJitter, float, "sizeJitter");
         
         // Property 4
         std::string fadeStr = "fade"; 
@@ -130,7 +130,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(fadeStr);
         char fadeValueType = 'f';
         LGDBRUSH_WRITEBITS(fadeValueType, char, "fadeValueType");
-        LGDBRUSH_WRITEBITS(brush.fade, float, "fade");
+        LGDBRUSH_WRITEBITS(brush.properties.fade, float, "fade");
         
         // Property 5
         std::string rotationStr = "rotation"; 
@@ -139,7 +139,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(rotationStr);
         char rotationValueType = 'f';
         LGDBRUSH_WRITEBITS(rotationValueType, char, "rotationValueType");
-        LGDBRUSH_WRITEBITS(brush.rotation, float, "rotation");
+        LGDBRUSH_WRITEBITS(brush.properties.rotation, float, "rotation");
         
         // Property 6
         std::string rotationJitterStr = "rotationJitter"; 
@@ -148,7 +148,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(rotationJitterStr);
         char rotationJitterValueType = 'f';
         LGDBRUSH_WRITEBITS(rotationJitterValueType, char, "rotationJitterValueType");
-        LGDBRUSH_WRITEBITS(brush.rotationJitter, float, "rotationJitter");
+        LGDBRUSH_WRITEBITS(brush.properties.rotationJitter, float, "rotationJitter");
         
         // Property 7
         std::string alphaJitterStr = "alphaJitter"; 
@@ -157,7 +157,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(alphaJitterStr);
         char alphaJitterValueType = 'f';
         LGDBRUSH_WRITEBITS(alphaJitterValueType, char, "alphaJitterValueType");
-        LGDBRUSH_WRITEBITS(brush.alphaJitter, float, "alphaJitter");
+        LGDBRUSH_WRITEBITS(brush.properties.alphaJitter, float, "alphaJitter");
         
         // Property 8
         std::string individualTextureStr = "individualTexture"; 
@@ -166,7 +166,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(individualTextureStr);
         char individualTextureValueType = 'b';
         LGDBRUSH_WRITEBITS(individualTextureValueType, char, "individualTextureValueType");
-        LGDBRUSH_WRITEBITS(brush.individualTexture, bool, "individualTexture");
+        LGDBRUSH_WRITEBITS(brush.properties.individualTexture, bool, "individualTexture");
         
         // Property 9
         std::string sinWavePatternStr = "sinWavePattern"; 
@@ -175,7 +175,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(sinWavePatternStr);
         char sinWavePatternValueType = 'b';
         LGDBRUSH_WRITEBITS(sinWavePatternValueType, char, "sinWavePatternValueType");
-        LGDBRUSH_WRITEBITS(brush.sinWavePattern, bool, "sinWavePattern");
+        LGDBRUSH_WRITEBITS(brush.properties.sinWavePattern, bool, "sinWavePattern");
 
         // Property 10
         std::string textureStr = "texture"; 
@@ -184,7 +184,7 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
         LGDBRUSH_WRITESTR(textureStr);
         char textureValueType = 't';
         LGDBRUSH_WRITEBITS(textureValueType, char, "textureValueType");
-        brush.texture.writeTextureData(wf);
+        brush.properties.brushTexture.writeTextureData(wf);
     }
 
     return true;

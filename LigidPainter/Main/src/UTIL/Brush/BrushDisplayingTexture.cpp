@@ -81,8 +81,8 @@ void Brush::updateDisplayTexture(float radius){
     double amplitude = 20.f;
     double lower = 45.f;
     int numInterpolationPoints = ((0.1f - radius) * 50.f);
-    if(this->spacing > 2.f){
-        numInterpolationPoints = -(this->spacing/10.f);
+    if(this->properties.spacing > 2.f){
+        numInterpolationPoints = -(this->properties.spacing / 10.f);
     }
 
     std::vector<glm::vec2> wave = getWaveVector(amplitude, lower, numInterpolationPoints);
@@ -115,15 +115,15 @@ void Brush::updateDisplayTexture(float radius){
 
     //Set brush properties
     ShaderSystem::twoDPainting().setFloat("brush.radius", radius);
-    ShaderSystem::twoDPainting().setFloat("brush.hardness", hardness);
-    ShaderSystem::twoDPainting().setFloat("brush.sizeJitter", 1.f - sizeJitter);
-    ShaderSystem::twoDPainting().setFloat("brush.scatter", 1.f - scatter);
-    ShaderSystem::twoDPainting().setFloat("brush.fade", fade);
-    ShaderSystem::twoDPainting().setFloat("brush.rotation", rotation);
-    ShaderSystem::twoDPainting().setFloat("brush.rotationJitter", 1.f - rotationJitter);
-    ShaderSystem::twoDPainting().setFloat("brush.alphaJitter", 1.f - alphaJitter);
-    ShaderSystem::twoDPainting().setInt("brush.individualTexture", individualTexture);
-    ShaderSystem::twoDPainting().setInt("brush.sinWavePattern", sinWavePattern);
+    ShaderSystem::twoDPainting().setFloat("brush.hardness", this->properties.hardness);
+    ShaderSystem::twoDPainting().setFloat("brush.sizeJitter", 1.f - this->properties.sizeJitter);
+    ShaderSystem::twoDPainting().setFloat("brush.scatter", 1.f - this->properties.scatter);
+    ShaderSystem::twoDPainting().setFloat("brush.fade", this->properties.fade);
+    ShaderSystem::twoDPainting().setFloat("brush.rotation", this->properties.rotation);
+    ShaderSystem::twoDPainting().setFloat("brush.rotationJitter", 1.f - this->properties.rotationJitter);
+    ShaderSystem::twoDPainting().setFloat("brush.alphaJitter", 1.f - this->properties.alphaJitter);
+    ShaderSystem::twoDPainting().setInt("brush.individualTexture", this->properties.individualTexture);
+    ShaderSystem::twoDPainting().setInt("brush.sinWavePattern", this->properties.sinWavePattern);
 
     const int strokeSize = 5;
 
@@ -151,7 +151,7 @@ void Brush::updateDisplayTexture(float radius){
 
         ShaderSystem::twoDPainting().setInt("brush.txtr", 0); 
         glActiveTexture(GL_TEXTURE0); 
-        glBindTexture(GL_TEXTURE_2D, this->texture.ID);
+        glBindTexture(GL_TEXTURE_2D, this->properties.brushTexture.ID);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);

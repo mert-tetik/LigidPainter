@@ -151,87 +151,87 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
     {
         if(properties[i].title == "sizeJitter"){
             if(properties[i].valueType == 'f')
-                dummyBrush.sizeJitter = properties[i].floatVal;
+                dummyBrush.properties.sizeJitter = properties[i].floatVal;
             else if(properties[i].valueType == 'b')
-                dummyBrush.sizeJitter = properties[i].boolVal;
+                dummyBrush.properties.sizeJitter = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the sizeJitter property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "hardness"){
             if(properties[i].valueType == 'f')
-                dummyBrush.hardness = properties[i].floatVal;
+                dummyBrush.properties.hardness = properties[i].floatVal;
             else if(properties[i].valueType == 'b')
-                dummyBrush.hardness = properties[i].boolVal;
+                dummyBrush.properties.hardness = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the hardness property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "spacing"){
             if(properties[i].valueType == 'f')
-                dummyBrush.spacing = properties[i].floatVal;
+                dummyBrush.properties.spacing = properties[i].floatVal;
             else if(properties[i].valueType == 'b')
-                dummyBrush.spacing = properties[i].boolVal;
+                dummyBrush.properties.spacing = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the spacing property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "scatter"){
             if(properties[i].valueType == 'f')
-                dummyBrush.scatter = properties[i].floatVal;
+                dummyBrush.properties.scatter = properties[i].floatVal;
             else if(properties[i].valueType == 'b')
-                dummyBrush.scatter = properties[i].boolVal;
+                dummyBrush.properties.scatter = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the scatter property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "fade"){
             if(properties[i].valueType == 'f')
-                dummyBrush.fade = properties[i].floatVal;
+                dummyBrush.properties.fade = properties[i].floatVal;
             else if(properties[i].valueType == 'b')
-                dummyBrush.fade = properties[i].boolVal;
+                dummyBrush.properties.fade = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the fade property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "rotation"){
             if(properties[i].valueType == 'f')
-                dummyBrush.rotation = properties[i].floatVal;
+                dummyBrush.properties.rotation = properties[i].floatVal;
             else if(properties[i].valueType == 'b')
-                dummyBrush.rotation = properties[i].boolVal;
+                dummyBrush.properties.rotation = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the rotation property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "rotationJitter"){
             if(properties[i].valueType == 'f')
-                dummyBrush.rotationJitter = properties[i].floatVal;
+                dummyBrush.properties.rotationJitter = properties[i].floatVal;
             else if(properties[i].valueType == 'b')
-                dummyBrush.rotationJitter = properties[i].boolVal;
+                dummyBrush.properties.rotationJitter = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the rotationJitter property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "alphaJitter"){
             if(properties[i].valueType == 'f')
-                dummyBrush.alphaJitter = properties[i].floatVal;
+                dummyBrush.properties.alphaJitter = properties[i].floatVal;
             else if(properties[i].valueType == 'b')
-                dummyBrush.alphaJitter = properties[i].boolVal;
+                dummyBrush.properties.alphaJitter = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the alphaJitter property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "individualTexture"){
             if(properties[i].valueType == 'f')
-                dummyBrush.individualTexture = properties[i].floatVal;
+                dummyBrush.properties.individualTexture = properties[i].floatVal;
             else if(properties[i].valueType == 'b')
-                dummyBrush.individualTexture = properties[i].boolVal;
+                dummyBrush.properties.individualTexture = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the individualTexture property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "sinWavePattern"){
             if(properties[i].valueType == 'f')
-                dummyBrush.sinWavePattern = properties[i].floatVal;
+                dummyBrush.properties.sinWavePattern = properties[i].floatVal;
             else if(properties[i].valueType == 'b')
-                dummyBrush.sinWavePattern = properties[i].boolVal;
+                dummyBrush.properties.sinWavePattern = properties[i].boolVal;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the sinWavePattern property : " << properties[i].valueType << "." << LGDLOG::end;
         }
         else if(properties[i].title == "texture"){
             if(properties[i].valueType == 't')
-                dummyBrush.texture = properties[i].texture;
+                dummyBrush.properties.brushTexture = properties[i].texture;
             else
                 LGDLOG::start<< "ERROR! Parsing brush file. Invalid value type for the texture property : " << properties[i].valueType << "." << LGDLOG::end;
         }
@@ -243,18 +243,18 @@ static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, 
     // Set the properties and generate neccessary textures
     brush = Brush(
                     0.1f,
-                    dummyBrush.spacing, 
-                    dummyBrush.hardness, 
-                    dummyBrush.sizeJitter, 
-                    dummyBrush.scatter, 
-                    dummyBrush.fade, 
-                    dummyBrush.rotation, 
-                    dummyBrush.rotationJitter, 
-                    dummyBrush.alphaJitter, 
-                    dummyBrush.individualTexture, 
-                    dummyBrush.sinWavePattern, 
+                    dummyBrush.properties.spacing, 
+                    dummyBrush.properties.hardness, 
+                    dummyBrush.properties.sizeJitter, 
+                    dummyBrush.properties.scatter, 
+                    dummyBrush.properties.fade, 
+                    dummyBrush.properties.rotation, 
+                    dummyBrush.properties.rotationJitter, 
+                    dummyBrush.properties.alphaJitter, 
+                    dummyBrush.properties.individualTexture, 
+                    dummyBrush.properties.sinWavePattern, 
                     dummyBrush.title, 
-                    dummyBrush.texture
+                    dummyBrush.properties.brushTexture
                 );
 
     return true;

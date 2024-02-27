@@ -121,22 +121,6 @@ glm::mat4 MirrorSide::getViewMat(glm::vec3 offset){
     return getScene()->calculateViewMatrix(camPos, orgOriginPos * -this->effectAxis - offset * 2.f);
 }
 
-void Painter::setBrushProperties(Section brushSection){
-    this->brushProperties.radius = brushSection.elements[1].rangeBar.value;
-    this->brushProperties.opacity = brushSection.elements[2].rangeBar.value;
-    this->brushProperties.hardness = brushSection.elements[3].rangeBar.value;
-    this->brushProperties.spacing = brushSection.elements[4].rangeBar.value;
-    this->brushProperties.sizeJitter = brushSection.elements[5].rangeBar.value;
-    this->brushProperties.fade = brushSection.elements[6].rangeBar.value;
-    this->brushProperties.sinWavePattern = brushSection.elements[7].checkBox.clickState1;
-    this->brushProperties.scatter = brushSection.elements[8].rangeBar.value;
-    this->brushProperties.brushTexture = brushSection.elements[9].button.texture.ID;
-    this->brushProperties.individualTexture = brushSection.elements[11].checkBox.clickState1;
-    this->brushProperties.rotation = brushSection.elements[12].rangeBar.value;
-    this->brushProperties.rotationJitter = brushSection.elements[13].rangeBar.value;
-    this->brushProperties.alphaJitter = brushSection.elements[14].rangeBar.value;
-}
-
 void Painter::updatePaintingOverTexture(std::vector<TextureField> textureFields){
     glm::ivec2 paintingRes = glm::vec2(this->getBufferResolutions(0));
 

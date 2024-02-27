@@ -112,33 +112,11 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         }
     }
     if(Library::getSelectedElementIndex() == 2 && ContextMenus::brush.dialogControl.isActive() && ContextMenus::brush.selectedElement < Library::getBrushArraySize()){ //If brush context menu is active
-        if(ContextMenus::brush.contextPanel.sections[0].elements[0].button.clicked){//Clicked to use brush button
-            
-            Library::getBrush(ContextMenus::brush.selectedElement)->useBrush(brushSection);
-
-            painter.setBrushProperties(brushSection);
-
-            painter.displayingBrush.update(
-                                                painter.brushProperties.radius * 2.f,
-                                                painter.brushProperties.spacing,
-                                                painter.brushProperties.hardness,
-                                                painter.brushProperties.sizeJitter,
-                                                painter.brushProperties.scatter,
-                                                painter.brushProperties.fade,
-                                                painter.brushProperties.rotation,
-                                                painter.brushProperties.rotationJitter,
-                                                painter.brushProperties.alphaJitter,
-                                                painter.brushProperties.individualTexture,
-                                                painter.brushProperties.sinWavePattern,
-                                                painter.brushProperties.brushTexture
-                                            );
-
+        if(ContextMenus::brush.contextPanel.sections[0].elements[0].button.clicked){//Clicked to edit brush button
+            registerBrushChangedAction("Edit brush", Texture(), *Library::getBrush(ContextMenus::brush.selectedElement), ContextMenus::brush.selectedElement);
+            showBrushModificationDialog(&Library::getBrush(ContextMenus::brush.selectedElement)->properties);
         }
-        else if(ContextMenus::brush.contextPanel.sections[0].elements[1].button.clicked){//Clicked to apply to brush button
-            registerBrushChangedAction("Applied to brush", Texture(), *Library::getBrush(ContextMenus::brush.selectedElement), ContextMenus::brush.selectedElement);
-            Library::getBrush(ContextMenus::brush.selectedElement)->applyToBrush(brushSection);
-        }
-        else if(ContextMenus::brush.contextPanel.sections[0].elements[2].button.clicked){//Clicked to rename button
+        else if(ContextMenus::brush.contextPanel.sections[0].elements[1].button.clicked){//Clicked to rename button
             renamingTextBox.active = true;
             Library::setChanged(true);
             renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[ContextMenus::brush.selectedElement].button.pos;
@@ -151,31 +129,33 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             renamingIndices.x = 2;
             renamingIndices.y = ContextMenus::brush.selectedElement;
         }
-        else if(ContextMenus::brush.contextPanel.sections[0].elements[3].button.clicked && ContextMenus::brush.selectedElement < Library::getBrushArraySize()){//Clicked to duplicate button
+        else if(ContextMenus::brush.contextPanel.sections[0].elements[2].button.clicked && ContextMenus::brush.selectedElement < Library::getBrushArraySize()){//Clicked to duplicate button
             Brush selectedBrush = *Library::getBrush(ContextMenus::brush.selectedElement);
+            Texture dupTxtr = selectedBrush.properties.brushTexture.duplicateTexture();
+            dupTxtr.proceduralProps = selectedBrush.properties.brushTexture.proceduralProps;
             Library::addBrush(
                                 Brush(
                                         0.1f,
-                                        selectedBrush.spacing,
-                                        selectedBrush.hardness,
-                                        selectedBrush.sizeJitter,
-                                        selectedBrush.scatter,
-                                        selectedBrush.fade,
-                                        selectedBrush.rotation,
-                                        selectedBrush.rotationJitter,
-                                        selectedBrush.alphaJitter,
-                                        selectedBrush.individualTexture,
-                                        selectedBrush.sinWavePattern,
+                                        selectedBrush.properties.spacing,
+                                        selectedBrush.properties.hardness,
+                                        selectedBrush.properties.sizeJitter,
+                                        selectedBrush.properties.scatter,
+                                        selectedBrush.properties.fade,
+                                        selectedBrush.properties.rotation,
+                                        selectedBrush.properties.rotationJitter,
+                                        selectedBrush.properties.alphaJitter,
+                                        selectedBrush.properties.individualTexture,
+                                        selectedBrush.properties.sinWavePattern,
                                         selectedBrush.title + "_duplicated",
-                                        selectedBrush.texture
+                                        dupTxtr                     
                                     ),
                                     "New brush via duplication"
                             );
         }
-        else if(ContextMenus::brush.contextPanel.sections[0].elements[4].button.clicked){//Clicked to copy path button
+        else if(ContextMenus::brush.contextPanel.sections[0].elements[3].button.clicked){//Clicked to copy path button
             LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + Library::getBrush(ContextMenus::brush.selectedElement)->title + ".lgdfilter");
         }
-        else if(ContextMenus::brush.contextPanel.sections[0].elements[5].button.clicked){//Clicked to delete button
+        else if(ContextMenus::brush.contextPanel.sections[0].elements[4].button.clicked){//Clicked to delete button
             Library::eraseBrush(ContextMenus::brush.selectedElement);
         }
     }

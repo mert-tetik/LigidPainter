@@ -1131,6 +1131,44 @@ void Texture::flipTexture(bool horizontal, bool vertical){
     Settings::defaultFramebuffer()->setViewport();
 }
 
+void Texture::resize(const glm::ivec2 newResolution){
+    
+    Texture copiedTxtr = this->duplicateTexture();
+
+    this->update(nullptr, newResolution.x, newResolution.y);
+    
+    Framebuffer captureFBO = Framebuffer(*this, GL_TEXTURE_2D, "Texture::flipTexture");
+    
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, newResolution.x, newResolution.y);
+
+    glm::mat4 projection = glm::ortho(0.f, 1.f, 1.f, 0.f);
+    glm::vec3 pos = glm::vec3(0.5f, 0.5f, 0.9f);
+    glm::vec2 scale = glm::vec2(0.5f, 0.5f);
+
+    ShaderSystem::textureRenderingShader().use();
+    ShaderSystem::textureRenderingShader().setMat4("projection", projection);
+    ShaderSystem::textureRenderingShader().setVec3("pos", pos);
+    ShaderSystem::textureRenderingShader().setVec2("scale", scale);
+    ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
+    ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
+    ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+    ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, copiedTxtr.ID);
+
+    getBox()->bindBuffers();
+
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::resize : Rendering result");
+
+    // Finish
+    glDeleteTextures(1, &copiedTxtr.ID);
+    captureFBO.deleteBuffers(false, false);
+    Settings::defaultFramebuffer()->setViewport();
+}
+
 void Texture::copyDataToTheCopyContext(){
     glm::ivec2 res = this->getResolution();
     char* pxs = new char[res.x * res.y * 4]; 

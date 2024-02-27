@@ -256,7 +256,7 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
         }
         else if(actions_Library[actions_Library.size()-1].ID == BRUSH_ADDITION_ACTION){
             glDeleteTextures(1, &actions_Library[actions_Library.size()-1].brush.displayingTexture.ID);
-            glDeleteTextures(1, &actions_Library[actions_Library.size()-1].brush.texture.ID);
+            glDeleteTextures(1, &actions_Library[actions_Library.size()-1].brush.properties.brushTexture.ID);
             Library::getBrushVectorPointer()->erase(Library::getBrushVectorPointer()->begin() + actions_Library[actions_Library.size()-1].textureIndex);
         }
         else if(actions_Library[actions_Library.size()-1].ID == BRUSH_DELETION_ACTION){
@@ -264,7 +264,7 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
         }
         else if(actions_Library[actions_Library.size()-1].ID == BRUSH_CHANGED_ACTION){
             *Library::getBrush(actions_Library[actions_Library.size()-1].textureIndex) = actions_Library[actions_Library.size()-1].brush;
-            Library::getBrush(actions_Library[actions_Library.size()-1].textureIndex)->texture.generateProceduralDisplayingTexture(512, false);
+            Library::getBrush(actions_Library[actions_Library.size()-1].textureIndex)->properties.brushTexture.generateProceduralDisplayingTexture(512, false);
             Library::getBrush(actions_Library[actions_Library.size()-1].textureIndex)->updateDisplayTexture(0.1);
         }
 
