@@ -140,18 +140,16 @@ void BrushModificationDialog::show(Timer &timer, glm::mat4 guiProjection, BrushP
                         whiteTxtr[i] = 127;
                     }
                     
-                    this->bgPanel.sections[0].elements[9].button.texture.update(whiteTxtr, brushTextureResolution, brushTextureResolution);
-                    this->bgPanel.sections[0].elements[9].button.texture.proceduralProps = ProceduralProperties();
-                    this->bgPanel.sections[0].elements[9].button.texture.proceduralProps.proceduralID = 24; //Solid white
+                    this->bgPanel.sections[0].elements[8].button.texture.update(whiteTxtr, brushTextureResolution, brushTextureResolution);
+                    this->bgPanel.sections[0].elements[8].button.texture.proceduralProps = ProceduralProperties();
+                    this->bgPanel.sections[0].elements[8].button.texture.proceduralProps.proceduralID = 24; //Solid white
                 }
 
                 if(i == 14){
                     this->applyDefaultBrushProperties(brushProperties);
-                    this->outToIn(brushProperties);
                 }
                 if(i == 15){
                     this->cancelChanges(brushProperties);
-                    this->outToIn(brushProperties);
                 }
                 
                 anyInteractions = true;
@@ -298,13 +296,36 @@ void BrushModificationDialog::outToIn(BrushProperties* brushProperties){
 }
 
 void BrushModificationDialog::applyDefaultBrushProperties(BrushProperties* brushProperties){
-    *brushProperties = BrushProperties();
-    brushProperties->radius = 0.01f;
-    brushProperties->opacity = 1.0f;
+    if(brushProperties->brushTexture.getResolution() != this->bgPanel.sections[0].elements[8].button.texture.getResolution())
+        brushProperties->brushTexture.resize(this->bgPanel.sections[0].elements[8].button.texture.getResolution());
+
+    brushProperties->radius = this->bgPanel.sections[0].elements[0].rangeBar.constructValue;
+    brushProperties->opacity = this->bgPanel.sections[0].elements[1].rangeBar.constructValue;
+    brushProperties->hardness = this->bgPanel.sections[0].elements[2].rangeBar.constructValue;
+    brushProperties->spacing = this->bgPanel.sections[0].elements[3].rangeBar.constructValue;
+
+    brushProperties->sizeJitter = this->bgPanel.sections[0].elements[4].rangeBar.constructValue;
+    brushProperties->fade = this->bgPanel.sections[0].elements[5].rangeBar.constructValue;
+    brushProperties->sinWavePattern = false;
+    brushProperties->scatter = this->bgPanel.sections[0].elements[7].rangeBar.constructValue;
+
+    brushProperties->brushTexture.proceduralProps = ProceduralProperties();
+    brushProperties->brushTexture.proceduralProps.proceduralID = 24; //Solid white
+    brushProperties->brushTexture.generateProceduralDisplayingTexture(brushTextureResolution, false);
+
+    brushProperties->individualTexture = false;
+    brushProperties->rotation = this->bgPanel.sections[0].elements[11].rangeBar.constructValue;
+    brushProperties->rotationJitter = this->bgPanel.sections[0].elements[12].rangeBar.constructValue;
+    brushProperties->alphaJitter = this->bgPanel.sections[0].elements[13].rangeBar.constructValue;
+    
+    this->outToIn(brushProperties);
 }
 
 void BrushModificationDialog::cancelChanges(BrushProperties* brushProperties){
     *brushProperties = initialProperties;
+    brushProperties->brushTexture.generateProceduralDisplayingTexture(brushTextureResolution, false);
+
+    this->outToIn(brushProperties);
 }
 
 static void drawBG(

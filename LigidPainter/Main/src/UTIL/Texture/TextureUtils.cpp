@@ -235,6 +235,8 @@ void Texture::duplicateTextureSub(Texture& txtr){
     
     Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1,&FBO);
+
+    txtr.proceduralProps = this->proceduralProps;
 }
 
 
