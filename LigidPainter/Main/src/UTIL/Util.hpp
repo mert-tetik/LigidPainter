@@ -402,9 +402,9 @@ public:
 };
 
 struct BrushProperties{
-    float radius = 0.f;
+    float radius = 0.01f;
     float hardness = 0.f;
-    float opacity = 0.f;
+    float opacity = 1.f;
     float spacing = 0.f;
     float sizeJitter = 0.f;
     float scatter = 0.f;
