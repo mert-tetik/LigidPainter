@@ -111,10 +111,15 @@ public:
     bool textureSelection3D = false;
     /// @brief Displays filter selection dialog using @ref (*this).filter on button click
     bool filterSelection = false;
+    Filter filter;
     /// @brief Displays color selection dialog using @ref (*this).color on button click
     bool colorSelection = false;
     /// @brief Displays mesh selection dialog using 
     bool meshSelection = false;
+    int selectedMeshI = 0;
+    /// @brief Displays brush modification dialog using 
+    bool brushModification = false;
+    BrushProperties brushProperties;
 
     int selectionDialogTxtrRes = 512;
     
@@ -124,8 +129,6 @@ public:
     float radius;  
     int animationStyle;
     Texture texture;
-    Filter filter;
-    int selectedMeshI = 0;
     glm::vec2 scale = glm::vec2(0.f);  
     glm::vec3 pos;
     glm::vec3 resultPos;

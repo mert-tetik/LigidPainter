@@ -233,10 +233,10 @@ public:
     /* -- PANELS -- */
     
     Panel navigationPanel;
+    Panel layersPanel;
     Panel windowPanel;
     Panel libraryPanelLeft; 
     Panel libraryPanelDisplayer; 
-    Panel nodeEditorDisplayer; 
     Panel selectedTextureDisplayer; 
     Panel twoDPaintingPanel; 
     Panel paintingModesPanel; 
@@ -255,9 +255,8 @@ public:
     
     CheckComboList faceSelectionCheckComboList;
     CheckComboList paintingOverCheckComboList;
+    Button paintingBrushButton;
     
-    Panel paintingPanel;
-    Panel paintingPanelModePanel;
     Section colorSection; 
     Section brushSection; 
     Section meshSection; 
@@ -265,7 +264,6 @@ public:
     Section paintingOverSection; 
     std::vector<Section> paintingChannelsSection;
     Section cantBeDisplayedSection; 
-    Button paintingPanelModeDisplayer;
     int selectedPaintingPanelMode = 0;
     Panel paintingChannelsTextureSelectionPanel;
     bool paintingChannelsTextureSelectionPanelActive = false;

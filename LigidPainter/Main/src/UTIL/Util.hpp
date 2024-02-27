@@ -619,26 +619,20 @@ private:
 
 };
 
-/*!
-* @brief Kinda holds the same values as the brush class
-* Holds the brush data of the app
-* Same values as the brush settings GUI elements
-* Special to the painter class
-*/
 struct BrushProperties{
-    float radius;
-    float hardness;
-    float opacity;
-    float spacing;
-    float sizeJitter;
-    float scatter;
-    float fade;
-    float rotation;
-    float rotationJitter;
-    float alphaJitter;
-    bool individualTexture;
-    bool sinWavePattern;
-    Texture brushTexture;
+    float radius = 0.f;
+    float hardness = 0.f;
+    float opacity = 0.f;
+    float spacing = 0.f;
+    float sizeJitter = 0.f;
+    float scatter = 0.f;
+    float fade = 0.f;
+    float rotation = 0.f;
+    float rotationJitter = 0.f;
+    float alphaJitter = 0.f;
+    bool individualTexture = false;
+    bool sinWavePattern = false;
+    unsigned int brushTexture = 0;
 };
 
 struct VectorPoint2D{

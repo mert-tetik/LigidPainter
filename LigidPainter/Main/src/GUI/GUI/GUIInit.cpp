@@ -110,64 +110,6 @@ void UI::init
                             false
                         );
     
-    //Init the painting panel 
-    paintingPanel=Panel(
-                            {
-                                Section(
-                                    Element(),
-                                    {
-
-                                    }
-                                )
-                            },
-                            
-                            glm::vec2(8,48), //Initial scale value
-                            glm::vec3(50,50,0.1f),  //Initial position value
-                            ColorPalette::mainColor, //Color of the panel
-                            ColorPalette::thirdColor, //Color of the panel
-                            true,
-                            false,
-                            true,
-                            true,
-                            true,
-                            1.f,
-                            1,
-                            {},
-                            20.f,
-                            true
-                        );
-
-    //Init the painting panel mode panel 
-    paintingPanelModePanel=Panel(
-                            {
-                                Section(
-                                    Element(),
-                                    {
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Color"  , appTextures.colorIcon, 4.f, true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Channels"  , appTextures.materialChannelsIcon, 1.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Brush"  , appTextures.brushIcon, 1.f, true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Mesh"  , appTextures.TDModelIcon, 1.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f), "Mirror"  , appTextures.mirrorIcon, 1.f,true)),
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Paint Over"  , appTextures.paintingOverIcon, 1.f,true))
-                                    }
-                                )
-                            },
-                            glm::vec2(1.f, 48.f), //Initial scale value
-                            glm::vec3(50.f,50.f,0.1f),  //Initial position value
-                            ColorPalette::secondColor, //Color of the panel
-                            ColorPalette::thirdColor, //Color of the panel
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            1.f,
-                            1,
-                            {},
-                            20.f,
-                            true
-                        );
-    
     //Init the library panel (left)
     libraryPanelLeft  = Panel(
                             
@@ -232,30 +174,6 @@ void UI::init
                             true
                         );
 
-    //Init the node editor displayer
-    nodeEditorDisplayer  = Panel(
-                            
-                            
-                            {
-                                {}
-                            },
-                            
-                            glm::vec2(25 ,5), //Initial scale value
-                            glm::vec3(50 ,95 ,0.1f),  //Initial position value
-                            ColorPalette::mainColor, //Color of the panel
-                            ColorPalette::thirdColor, //Color of the panel
-                            true,
-                            false,
-                            true,
-                            true,
-                            false,
-                            1.f,
-                            1,
-                            {},
-                            45.f,
-                            false
-                        );
-
     //Init the selected texture displayer
     selectedTextureDisplayer  = Panel(
                             
@@ -278,6 +196,30 @@ void UI::init
                             false,
                             false,
                             false,
+                            1.f,
+                            1,
+                            {},
+                            20.f,
+                            false
+                        );
+ 
+    layersPanel  = Panel(
+                            
+                            
+                            {
+                                Section(
+                                )
+                            },
+                            
+                            glm::vec2(10 ,5), //Initial scale value
+                            glm::vec3(50 ,95 ,0.1f),  //Initial position value
+                            ColorPalette::mainColor, //Color of the panel
+                            ColorPalette::thirdColor, //Color of the panel
+                            true,
+                            false,
+                            true,
+                            true,
+                            true,
                             1.f,
                             1,
                             {},
@@ -499,30 +441,26 @@ void UI::init
 
     this->navigationPanel.preRenderingMode = true;
     this->windowPanel.preRenderingMode = true;
-    this->paintingPanel.preRenderingMode = true;
     this->libraryPanelLeft.preRenderingMode = true;
     this->libraryPanelDisplayer.preRenderingMode = true;
-    this->nodeEditorDisplayer.preRenderingMode = true;
     this->twoDPaintingPanel.preRenderingMode = true;
     this->paintingModesPanel.preRenderingMode = true;
     this->vectorPaintingModePropertyPanel.preRenderingMode = true;
     this->smearPaintingModePropertyPanel.preRenderingMode = true;
     this->displayingModesPanel.preRenderingMode = true;
-    this->paintingPanelModePanel.preRenderingMode = true;
+    this->layersPanel.preRenderingMode = true;
     
     this->navigationPanel.solidStyle = true;
     this->windowPanel.solidStyle = true;
-    this->paintingPanel.solidStyle = true;
     this->libraryPanelLeft.solidStyle = true;
     this->libraryPanelDisplayer.solidStyle = true;
-    this->nodeEditorDisplayer.solidStyle = true;
     this->selectedTextureDisplayer.solidStyle = true;
     this->twoDPaintingPanel.solidStyle = true;
     this->paintingModesPanel.solidStyle = true;
     this->vectorPaintingModePropertyPanel.solidStyle = true;
     this->smearPaintingModePropertyPanel.solidStyle = true;
     this->displayingModesPanel.solidStyle = true;
-    this->paintingPanelModePanel.solidStyle = true;
+    this->layersPanel.solidStyle = true;
 
     this->meshSection =         Section(
                                     Element(),
@@ -669,18 +607,6 @@ void UI::init
                                             .button.solidColor = true;
     }
 
-    for (size_t i = 0; i < paintingPanelModePanel.sections[0].elements.size(); i++)
-    {
-        paintingPanelModePanel.sections[0].elements[i].button.outlineThickness = 0.f;
-        paintingPanelModePanel.sections[0].elements[i].button.color.a = 0.;
-    }
-    
-    paintingPanelModeDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2), ""  , Texture(), 0.f, true);
-    paintingPanelModeDisplayer.color = glm::vec4(0.);
-    paintingPanelModeDisplayer.color2 = glm::vec4(0.);
-    paintingPanelModeDisplayer.outlineColor = glm::vec4(0.);
-    paintingPanelModeDisplayer.outlineColor2 = glm::vec4(0.);
-
     for (size_t i = 0; i < brushSection.elements.size(); i++)
     {
         brushSection.elements[i].rangeBar.defaultPointMode = false;
@@ -704,4 +630,7 @@ void UI::init
 
     faceSelectionCheckComboList = CheckComboList("Toggle masking mesh for painting / See the mesh section from the painting panel", appTextures.TDModelIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, meshSection);
     paintingOverCheckComboList = CheckComboList("Toggle painting over / See the painting over section from the painting panel", appTextures.paintingOverIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, paintingOverSection);
+    paintingBrushButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f), ""  , appTextures.brushIcon, 0.f, false);
+    paintingBrushButton.infoText = "Modify or display the current brush used for painting";
+    paintingBrushButton.brushModification = true;
 }   

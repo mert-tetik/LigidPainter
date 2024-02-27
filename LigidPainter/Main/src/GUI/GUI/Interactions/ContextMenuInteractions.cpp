@@ -48,7 +48,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             renamingTextBox.active = true;
             Library::setChanged(true);
             renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[ContextMenus::texture.selectedElement].button.pos;
-            renamingTextBox.pos.y += 2.8f + this->paintingPanel.slideVal;
+            renamingTextBox.pos.y += 2.8f + this->libraryPanelDisplayer.slideVal;
             lastTitleBeforeRenaming = Library::getTexture(ContextMenus::texture.selectedElement)->title;
             Library::getTexture(ContextMenus::texture.selectedElement)->title = "";
             renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[ContextMenus::texture.selectedElement].button.text;
@@ -85,7 +85,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             renamingTextBox.active = true;
             Library::setChanged(true);
             renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[ContextMenus::material.selectedElement].button.pos;
-            renamingTextBox.pos.y += 2.8f + this->paintingPanel.slideVal;
+            renamingTextBox.pos.y += 2.8f + this->libraryPanelDisplayer.slideVal;
             lastTitleBeforeRenaming = Library::getMaterial(ContextMenus::material.selectedElement)->title;
             Library::getMaterial(ContextMenus::material.selectedElement)->title = "";
             renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[ContextMenus::material.selectedElement].button.text;
@@ -142,7 +142,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             renamingTextBox.active = true;
             Library::setChanged(true);
             renamingTextBox.pos = libraryPanelDisplayer.sections[0].elements[ContextMenus::brush.selectedElement].button.pos;
-            renamingTextBox.pos.y += 2.8f + this->paintingPanel.slideVal;
+            renamingTextBox.pos.y += 2.8f + this->libraryPanelDisplayer.slideVal;
             lastTitleBeforeRenaming = Library::getBrush(ContextMenus::brush.selectedElement)->title;
             Library::getBrush(ContextMenus::brush.selectedElement)->title = "";
             renamingTextBox.text = libraryPanelDisplayer.sections[0].elements[ContextMenus::brush.selectedElement].button.text;

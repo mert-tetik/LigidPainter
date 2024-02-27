@@ -185,7 +185,7 @@ void Brush::updateDisplayTexture(float radius){
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL);
     
     //Finish
     Settings::defaultFramebuffer()->FBO.bind();

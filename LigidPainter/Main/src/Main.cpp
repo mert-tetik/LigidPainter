@@ -42,7 +42,6 @@ int main(int argc, char *argv[])
 			std::cout << "WARNING! INVALID ARGUMENT SET : " << variableName << " : DEBUG MODE IS 'DEBUG_MODE' " << std::endl;
 		}
 	} 
-
 	bool end = ligidPainter.run();
 	
 	return 0;

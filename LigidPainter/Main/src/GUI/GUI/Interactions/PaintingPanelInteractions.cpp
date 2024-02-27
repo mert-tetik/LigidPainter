@@ -44,31 +44,6 @@ void UI::paintingPanelInteraction(
     //Get the brush data from GUI to the painter class
     painter.setBrushProperties(brushSection);
 
-    if(!anyDialogActive || painter.paintingoverTextureEditorMode){
-        
-        if(shortcuts_F1())
-            this->paintingOverSection.elements[0].checkBox.clickState1 = !this->paintingOverSection.elements[0].checkBox.clickState1;
-        if(shortcuts_F2())
-            this->paintingOverSection.elements[1].checkBox.clickState1 = !this->paintingOverSection.elements[1].checkBox.clickState1;
-        
-        if(!painter.paintingoverTextureEditorMode){
-            if(shortcuts_F3())
-                this->meshSection.elements[1].checkBox.clickState1 = false;
-            if(shortcuts_F4())
-                this->meshSection.elements[2].checkBox.clickState1 = false;
-        }
-    }
-
-    if(painter.selectedDisplayingModeIndex == 0){
-        this->paintingOverSection.elements[0].checkBox.clickState1 = false;
-        this->paintingOverSection.elements[1].checkBox.clickState1 = false;
-        this->meshSection.elements[1].checkBox.clickState1 = false;
-        this->meshSection.elements[2].checkBox.clickState1 = false;
-        this->mirrorSection.elements[0].checkBox.clickState1 = false;
-        this->mirrorSection.elements[2].checkBox.clickState1 = false;
-        this->mirrorSection.elements[4].checkBox.clickState1 = false;
-    }
-
     for (size_t i = 0; i < this->colorSection.elements.size(); i++){
         if(this->colorSection.elements[i].rangeBar.valueDoneChanging || prevSelectedClr != painter.getSelectedColor().getRGB_normalized() || !painterColorDisplayMatInit){
             painterColorDisplayMatInit = true;
@@ -233,13 +208,6 @@ void UI::paintingPanelInteraction(
     }
     
 
-    //Update the meshes section of the painting panel if a new model is added
-    if(getModel()->newModelAdded){
-        meshSection.elements[0].button.selectedMeshI = 0;
-    }
-
-    painter.selectedMeshIndex = meshSection.elements[0].button.selectedMeshI;
-
     painter.oSide.active = true;
     
     painter.oXSide.active = mirrorSection.elements[0].checkBox.clickState1; 
@@ -309,27 +277,6 @@ void UI::paintingPanelInteraction(
                                             );
         }
     }
-    
-    for (size_t i = 0; i < paintingPanelModePanel.sections[0].elements.size(); i++)
-    {
-        if(paintingPanelModePanel.sections[0].elements[i].button.clickState1 && selectedPaintingPanelMode != i){
-            selectedPaintingPanelMode = i;
-            for (size_t i = 0; i < paintingPanelModePanel.sections[0].elements.size(); i++){
-                paintingPanelModePanel.sections[0].elements[i].button.clickState1 = false;
-            }
-        }
-        if(selectedPaintingPanelMode == i){
-            paintingPanelModePanel.sections[0].elements[i].button.clickState1 = true;
-        }
-        else{
-            paintingPanelModePanel.sections[0].elements[i].button.clickState1 = false;
-        }
-    }
-    for (size_t i = 0; i < paintingPanelModePanel.sections[0].elements.size(); i++){
-        if(i == selectedPaintingPanelMode){
-            paintingPanelModePanel.sections[0].elements[i].button.clickState1 = true;
-        }
-    }
 
     painter.materialPainting = painter.selectedDisplayingModeIndex == 1;
     painter.enableAlbedoChannel = colorSection.elements[1].checkBox.clickState1;
@@ -389,8 +336,7 @@ void UI::paintingPanelInteraction(
         for (size_t elI = 0; elI < 6; elI++){
             if(paintingChannelsSection[secI].elements[elI].button.clickState1){
                 this->paintingChannelsTextureSelectionPanelActive = true;
-                this->paintingChannelsTextureSelectionPanel.pos = paintingPanelModePanel.pos;
-                this->paintingChannelsTextureSelectionPanel.pos.x -= paintingPanelModePanel.scale.x + this->paintingChannelsTextureSelectionPanel.scale.x;
+                this->paintingChannelsTextureSelectionPanel.pos = glm::vec3(50.f, 50.f, 0.7f);
             }
         }
 

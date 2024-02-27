@@ -77,11 +77,8 @@ void UI::elementInteraction(
     this->anyPanelHover = 
                     navigationPanel.hover               ||
                     windowPanel.hover                   ||
-                    paintingPanel.hover                 ||
-                    paintingPanelModePanel.hover        ||
                     libraryPanelLeft.hover              ||
                     libraryPanelDisplayer.hover         ||
-                    nodeEditorDisplayer.hover           ||
                     selectedTextureDisplayer.hover      || 
                     paintingModesPanel.hover            ||
                     displayingModesPanel.hover          ||
@@ -94,7 +91,9 @@ void UI::elementInteraction(
                     faceSelectionCheckComboList.hover||
                     paintingOverCheckComboList.hover||
                     logDialog.isHovered() ||
+                    layersPanel.hover ||
                     vectorPaintingMode2DModeWrapCheckBox.hover ||
+                    paintingBrushButton.hover ||
                     vectorPaintingModePropertyPanel.hover;
 
     Debugger::block("GUI : Interactions : contextMenuInteraction"); // Start

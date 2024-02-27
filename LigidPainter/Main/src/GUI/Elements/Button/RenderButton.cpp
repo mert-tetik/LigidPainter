@@ -111,6 +111,9 @@ void Button::render(
                 this->text = getModel()->meshes[this->selectedMeshI].materialName; 
             }
         }
+        if(this->brushModification){
+            showBrushModificationDialog(&this->brushProperties);
+        }
     }
 
     if(this->meshSelection){

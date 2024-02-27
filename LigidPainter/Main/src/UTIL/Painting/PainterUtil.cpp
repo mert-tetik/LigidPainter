@@ -130,7 +130,7 @@ void Painter::setBrushProperties(Section brushSection){
     this->brushProperties.fade = brushSection.elements[6].rangeBar.value;
     this->brushProperties.sinWavePattern = brushSection.elements[7].checkBox.clickState1;
     this->brushProperties.scatter = brushSection.elements[8].rangeBar.value;
-    this->brushProperties.brushTexture = brushSection.elements[9].button.texture;
+    this->brushProperties.brushTexture = brushSection.elements[9].button.texture.ID;
     this->brushProperties.individualTexture = brushSection.elements[11].checkBox.clickState1;
     this->brushProperties.rotation = brushSection.elements[12].rangeBar.value;
     this->brushProperties.rotationJitter = brushSection.elements[13].rangeBar.value;

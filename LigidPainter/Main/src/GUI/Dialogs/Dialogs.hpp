@@ -713,6 +713,33 @@ public:
    void show(Timer &timer, glm::mat4 guiProjection, int& selectedMeshI);
 };
 
+//!------------------------------BRUSH MODIFICATION DIALOG------------------------------
+
+void showBrushModificationDialog(BrushProperties* brushProperties);
+
+class BrushModificationDialog
+{
+private:
+    int selectedTextureMode = 0;
+public:
+   Panel bgPanel;
+   Button brushDisplayBtn;
+
+   DialogControl dialogControl;
+
+   //Constructors
+   BrushModificationDialog();
+
+   //Public member functions
+   void show(Timer &timer, glm::mat4 guiProjection, BrushProperties* brushProperties);
+
+   void updateDisplayingTexture(BrushProperties* brushProperties);
+   void inToOut(BrushProperties* brushProperties);
+   void outToIn(BrushProperties* brushProperties);
+   void applyDefaultBrushProperties(BrushProperties* brushProperties);
+   void cancelChanges(BrushProperties* brushProperties);
+};
+
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
 void showTexturePackEditorDialog(TexturePack& texturePack);
