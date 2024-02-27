@@ -101,6 +101,7 @@ void BrushModificationDialog::show(Timer &timer, glm::mat4 guiProjection, BrushP
     this->dialogControl.activate();
 
     this->outToIn(brushProperties);
+    this->updateDisplayingTexture(brushProperties);
 
     initialProperties = *brushProperties;
 
