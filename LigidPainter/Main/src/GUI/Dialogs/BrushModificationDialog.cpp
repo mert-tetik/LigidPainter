@@ -244,7 +244,7 @@ void BrushModificationDialog::updateDisplayingTexture(BrushProperties* brushProp
                                 brushProperties->brushTexture
                             );
     
-    displayBrush.updateDisplayTexture(brushProperties->radius);
+    displayBrush.updateDisplayTexture(brushProperties->radius * 2.f);
 
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
