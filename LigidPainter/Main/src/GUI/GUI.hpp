@@ -229,6 +229,11 @@ private:
     void renderPaintingPanel(Timer& timer, Painter &painter, float screenGapPerc);
     void renderPaintingOverTextureFields(Timer& timer, Painter& painter);
 
+    void renderFaceSelectionSettings(Timer& timer, Painter& painter, float screenGapPerc);
+    void renderPaintingOverSettings(Timer& timer, Painter& painter, float screenGapPerc);
+    void renderBrushSettings(Timer& timer, Painter& painter, float screenGapPerc);
+    void renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc);
+
 public:
     /* -- PANELS -- */
     
@@ -255,6 +260,7 @@ public:
     
     CheckComboList faceSelectionCheckComboList;
     CheckComboList paintingOverCheckComboList;
+    CheckComboList colorCheckComboList;
     Button paintingBrushButton;
     
     Section colorSection; 

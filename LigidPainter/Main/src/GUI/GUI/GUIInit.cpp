@@ -574,10 +574,8 @@ void UI::init
                                             .button.solidColor = true;
     }
 
-    /*
     paintingSectionDisplayMat = Material("Painting section display", 0);
     paintingSectionDisplayMat.materialModifiers.push_back(MaterialModifier(SOLID_MATERIAL_MODIFIER));
-    */
 
     sceneGizmo = Gizmo("", 0, glm::vec3(0.f), glm::vec2(1.f, Settings::videoScale()->x / Settings::videoScale()->y), 0.f, false);
     sceneGizmo.scale *= 2.f;
@@ -594,6 +592,7 @@ void UI::init
 
     faceSelectionCheckComboList = CheckComboList("Toggle masking mesh for painting / See the mesh section from the painting panel", appTextures.TDModelIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, meshSection);
     paintingOverCheckComboList = CheckComboList("Toggle painting over / See the painting over section from the painting panel", appTextures.paintingOverIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, paintingOverSection);
+    colorCheckComboList = CheckComboList("See the color section from the painting panel", appTextures.colorIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, colorSection);
     paintingBrushButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f), ""  , appTextures.brushIcon, 0.f, false);
     paintingBrushButton.infoText = "Modify or display the current brush used for painting";
     paintingBrushButton.brushModification = true;

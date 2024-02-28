@@ -507,13 +507,7 @@ void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPe
 
 ProceduralProperties lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties;
 
-void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGapPerc){
-    paintingModesPanel.render(timer,!anyDialogActive);
-    if(paintingModesPanel.resizingDone){
-        for (size_t i = 0; i < 5; i++)
-            this->panelPositioning(screenGapPerc, painter);
-    }
-
+void UI::renderFaceSelectionSettings(Timer& timer, Painter& painter, float screenGapPerc){
     faceSelectionCheckComboList.panel.sections[0] = meshSection;
     faceSelectionCheckComboList.checkButton.clickState1 = meshSection.elements[1].checkBox.clickState1;
     faceSelectionCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
@@ -521,58 +515,6 @@ void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGa
     faceSelectionCheckComboList.panel.sections[0].elements[0].panelOffset = 7.f;
     meshSection = faceSelectionCheckComboList.panel.sections[0];
     meshSection.elements[1].checkBox.clickState1 = faceSelectionCheckComboList.checkButton.clickState1;
-    
-    paintingOverCheckComboList.panel.sections[0] = paintingOverSection;
-    paintingOverCheckComboList.checkButton.clickState1 = paintingOverSection.elements[0].checkBox.clickState1;
-    paintingOverCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
-    paintingOverCheckComboList.render(timer, !anyDialogActive || painter.paintingoverTextureEditorMode);
-    paintingOverCheckComboList.panel.sections[0].elements[0].panelOffset = 7.f;
-    paintingOverSection = paintingOverCheckComboList.panel.sections[0];
-    paintingOverSection.elements[0].checkBox.clickState1 = paintingOverCheckComboList.checkButton.clickState1;
-
-    paintingBrushButton.render(timer, !anyDialogActive);
-
-    if(!anyDialogActive || painter.paintingoverTextureEditorMode){
-        
-        if(shortcuts_F1())
-            this->paintingOverSection.elements[0].checkBox.clickState1 = !this->paintingOverSection.elements[0].checkBox.clickState1;
-        if(shortcuts_F2())
-            this->paintingOverSection.elements[1].checkBox.clickState1 = !this->paintingOverSection.elements[1].checkBox.clickState1;
-        
-        if(!painter.paintingoverTextureEditorMode){
-            if(shortcuts_F3())
-                this->meshSection.elements[1].checkBox.clickState1 = false;
-            if(shortcuts_F4())
-                this->meshSection.elements[2].checkBox.clickState1 = false;
-        }
-    }
-
-    painter.usePaintingOver = this->paintingOverSection.elements[0].checkBox.clickState1;
-    painter.paintingoverTextureEditorMode = this->paintingOverSection.elements[1].checkBox.clickState1;
-    painter.paintingOverGrayScale = this->paintingOverSection.elements[4].checkBox.clickState1;
-
-    if(this->paintingOverSection.elements[2].button.clicked){
-        Texture texture;
-        texture.proceduralProps = lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties;
-        showTextureSelectionDialog(texture, 512, true);
-        
-        if(texture.ID){
-            lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties = texture.proceduralProps;
-            registerTextureFieldAction("New texture field via texture selection dialog", this->paintingOverTextureFields);
-            this->paintingOverTextureFields.push_back(TextureField(texture));
-        }
-    }
-    else if(this->paintingOverSection.elements[3].button.clicked){
-        std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
-
-        if(test.size()){
-            Texture texture;
-            texture.load(test.c_str());
-            registerTextureFieldAction("New texture field via path", this->paintingOverTextureFields);
-            this->paintingOverTextureFields.push_back(TextureField(texture));
-        }
-
-    }
 
     painter.selectedMeshIndex = meshSection.elements[0].button.selectedMeshI;
     painter.faceSelection.activated = meshSection.elements[1].checkBox.clickState1;
@@ -674,6 +616,213 @@ void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGa
         }
         __faceSelectionActiveObjIndex = meshSection.elements[5].comboBox.selectedIndex;
     }
+}
+
+void UI::renderPaintingOverSettings(Timer& timer, Painter& painter, float screenGapPerc){    
+    paintingOverCheckComboList.panel.sections[0] = paintingOverSection;
+    paintingOverCheckComboList.checkButton.clickState1 = paintingOverSection.elements[0].checkBox.clickState1;
+    paintingOverCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
+    paintingOverCheckComboList.render(timer, !anyDialogActive || painter.paintingoverTextureEditorMode);
+    paintingOverCheckComboList.panel.sections[0].elements[0].panelOffset = 7.f;
+    paintingOverSection = paintingOverCheckComboList.panel.sections[0];
+    paintingOverSection.elements[0].checkBox.clickState1 = paintingOverCheckComboList.checkButton.clickState1;
+
+    painter.usePaintingOver = this->paintingOverSection.elements[0].checkBox.clickState1;
+    painter.paintingoverTextureEditorMode = this->paintingOverSection.elements[1].checkBox.clickState1;
+    painter.paintingOverGrayScale = this->paintingOverSection.elements[4].checkBox.clickState1;
+
+    if(this->paintingOverSection.elements[2].button.clicked){
+        Texture texture;
+        texture.proceduralProps = lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties;
+        showTextureSelectionDialog(texture, 512, true);
+        
+        if(texture.ID){
+            lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties = texture.proceduralProps;
+            registerTextureFieldAction("New texture field via texture selection dialog", this->paintingOverTextureFields);
+            this->paintingOverTextureFields.push_back(TextureField(texture));
+        }
+    }
+    else if(this->paintingOverSection.elements[3].button.clicked){
+        std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+
+        if(test.size()){
+            Texture texture;
+            texture.load(test.c_str());
+            registerTextureFieldAction("New texture field via path", this->paintingOverTextureFields);
+            this->paintingOverTextureFields.push_back(TextureField(texture));
+        }
+    }
+}
+
+void UI::renderBrushSettings(Timer& timer, Painter& painter, float screenGapPerc){
+    paintingBrushButton.render(timer, !anyDialogActive);
+    painter.brushProperties = paintingBrushButton.brushProperties; 
+}
+
+
+static glm::vec3 prevSelectedClr;
+static bool painterColorDisplayMatInit = false;
+
+void UI::renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc){
+    colorCheckComboList.checkButton.color2 = colorCheckComboList.checkButton.color;
+
+    colorCheckComboList.panel.sections[0] = colorSection;
+    colorCheckComboList.checkButton.clickState1 = true;
+    colorCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
+    colorCheckComboList.render(timer, !anyDialogActive || painter.paintingoverTextureEditorMode);
+    colorCheckComboList.panel.sections[0].elements[0].panelOffset = 7.f;
+    colorSection = colorCheckComboList.panel.sections[0];
+    colorSection.elements[0].checkBox.clickState1 = colorCheckComboList.checkButton.clickState1;
+
+    if(dropper.active)
+        colorCheckComboList.arrowButton.clickState1 = true;
+
+    painter.materialPainting = painter.selectedDisplayingModeIndex == 1;
+    painter.enableAlbedoChannel = colorSection.elements[1].checkBox.clickState1;
+    painter.enableRoughnessChannel = colorSection.elements[6].checkBox.clickState1;
+    painter.roughnessVal = colorSection.elements[7].rangeBar.value;
+    painter.enableMetallicChannel = colorSection.elements[8].checkBox.clickState1;
+    painter.metallicVal = colorSection.elements[9].rangeBar.value;
+    painter.enableNormalMapChannel = colorSection.elements[10].checkBox.clickState1;
+    painter.normalMapStrengthVal = colorSection.elements[11].rangeBar.value;
+    painter.enableHeightMapChannel = colorSection.elements[12].checkBox.clickState1;
+    painter.heightMapVal = colorSection.elements[13].rangeBar.value;
+    painter.enableAOChannel = colorSection.elements[14].checkBox.clickState1;
+    painter.ambientOcclusionVal = colorSection.elements[15].rangeBar.value;
+    painter.useCustomMaterial = colorSection.elements[16].checkBox.clickState1;
+    
+    for (size_t i = 0; i < this->colorSection.elements.size(); i++){
+        if(this->colorSection.elements[i].rangeBar.valueDoneChanging || prevSelectedClr != painter.getSelectedColor().getRGB_normalized() || !painterColorDisplayMatInit){
+            painterColorDisplayMatInit = true;
+            
+            if(paintingSectionDisplayMat.materialModifiers.size()){
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[0].button.color = glm::vec4(glm::vec3(painter.getSelectedColor().getRGB_normalized()), 1.f);
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[2].button.color = glm::vec4(glm::vec3(painter.roughnessVal), 1.f);
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[4].button.color = glm::vec4(glm::vec3(painter.metallicVal), 1.f);
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[6].button.color = glm::vec4(glm::vec3(0.5f,0.5f,1.f), 1.f);
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[8].button.color = glm::vec4(glm::vec3(painter.heightMapVal), 1.f);
+                paintingSectionDisplayMat.materialModifiers[0].sections[0].elements[10].button.color = glm::vec4(glm::vec3(painter.ambientOcclusionVal), 1.f);
+            }
+            
+            paintingSectionDisplayMat.updateMaterialDisplayingTexture(512, true, Camera(), 0, false);
+            
+            break;
+        }
+    }
+
+    prevSelectedClr = painter.getSelectedColor().getRGB_normalized();
+
+    if(!painter.useCustomMaterial)
+        this->colorSection.elements[0].button.texture = paintingSectionDisplayMat.displayingTexture;
+    else{
+        this->colorSection.elements[0].button.texture = this->paintingCustomMat.displayingTexture;
+    }
+
+    for (size_t i = 0; i < this->colorSection.elements.size(); i++)
+    {
+        if(painter.selectedDisplayingModeIndex == 1){
+            if(painter.useCustomMaterial && i != 0 && i != 1  && i != 6 && i != 8 && i != 10 && i != 12 && i != 14 && i!= 16 && i!= 17){
+                this->colorSection.elements[i].scale.y = 0.f;
+            }
+            else{
+                if(i == 17 && !painter.useCustomMaterial){
+                    this->colorSection.elements[i].scale.y = 0.f;
+                }
+                else{
+                    this->colorSection.elements[i].scale.y = 2.f;
+                    if(this->colorSection.elements[i].state == 1)
+                        this->colorSection.elements[i].scale.y = 1.f;
+                    if(i == 0)
+                        this->colorSection.elements[i].scale.y = 4.f;
+                }
+            }
+        }
+        else{
+            colorSection.elements[16].checkBox.clickState1 = false;
+
+            if(i != 2 && i != 3 && i != 4 && i != 5){
+                this->colorSection.elements[i].scale.y = 0.f;
+            }
+            else{
+                this->colorSection.elements[i].scale.y = 2.f;
+            }
+        }
+    }
+
+    if(this->colorSection.elements[17].button.clicked){
+        this->materialSelectionDialog.dialogControl.activate();
+        this->materialSelectionDialog.material = &this->paintingCustomMat;
+    }
+
+    if(colorSection.elements[2].button.hover && *Mouse::LDoubleClick()){//Pressed to first color button element
+        painter.loadColor1();
+    }
+    if(colorSection.elements[3].button.hover && *Mouse::LDoubleClick()){//Pressed to second color button element
+        painter.loadColor2();
+    }
+    if(colorSection.elements[4].button.hover && *Mouse::LDoubleClick()){//Pressed to third color button element
+        painter.loadColor3();
+    }
+
+    //Prevent multiple selection and update the painter.selectedColorIndex for colors
+    for (size_t i = 2; i < colorSection.elements.size(); i++)
+    {
+        if(i == 5) 
+            break; //Don't bring the dropper button
+        
+        if(colorSection.elements[i].button.clickState1){ //If a color button is clicked
+            if(painter.selectedColorIndex != i - 2){ //If the clicked button is not selected 
+                colorSection.elements[painter.selectedColorIndex + 2].button.clickState1 = false; //Unselect the selected one
+                painter.selectedColorIndex = i - 2; //Select the clicked color button
+                break; 
+            }
+        }
+    }
+
+    //Keep the selected color button pressed
+    for (size_t i = 0; i < colorSection.elements.size(); i++){
+        if(i == painter.selectedColorIndex + 2){
+            colorSection.elements[i].button.clickState1 = true;           
+        }
+    }
+    
+    //Update the color values of the color buttons
+    colorSection.elements[2].button.color = glm::vec4(painter.color1.getRGB_normalized(), 1.f);
+    colorSection.elements[3].button.color = glm::vec4(painter.color2.getRGB_normalized(), 1.f);
+    colorSection.elements[4].button.color = glm::vec4(painter.color3.getRGB_normalized(), 1.f);
+    
+
+    //If clicked to the dropper button activate the dropper
+    if(colorSection.elements[5].button.clicked){
+        dropper.active = true;
+    }
+}
+
+void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGapPerc){
+    paintingModesPanel.render(timer,!anyDialogActive);
+    if(paintingModesPanel.resizingDone){
+        for (size_t i = 0; i < 5; i++)
+            this->panelPositioning(screenGapPerc, painter);
+    }
+    
+    this->renderFaceSelectionSettings(timer, painter, screenGapPerc);
+    this->renderPaintingOverSettings(timer, painter, screenGapPerc);
+    this->renderColorSettings(timer, painter, screenGapPerc);
+    this->renderBrushSettings(timer, painter, screenGapPerc);
+
+    if(!anyDialogActive || painter.paintingoverTextureEditorMode){
+        if(shortcuts_F1())
+            this->paintingOverSection.elements[0].checkBox.clickState1 = !this->paintingOverSection.elements[0].checkBox.clickState1;
+        if(shortcuts_F2())
+            this->paintingOverSection.elements[1].checkBox.clickState1 = !this->paintingOverSection.elements[1].checkBox.clickState1;
+        
+        if(!painter.paintingoverTextureEditorMode){
+            if(shortcuts_F3())
+                this->meshSection.elements[1].checkBox.clickState1 = false;
+            if(shortcuts_F4())
+                this->meshSection.elements[2].checkBox.clickState1 = false;
+        }
+    }
 
     if(painter.selectedPaintingModeIndex == 2)
         smearPaintingModePropertyPanel.render(timer, !anyDialogActive); 
@@ -686,8 +835,6 @@ void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGa
         if(!painter.wrapMode)
             vectorPaintingMode2DModeWrapCheckBox.render(timer, !anyDialogActive);
     }
-
-
 }
 
 void UI::renderObjectsPanel(Timer& timer, Painter& painter){

@@ -90,6 +90,7 @@ void UI::elementInteraction(
                     wrapModeCheckbox.hover||
                     faceSelectionCheckComboList.hover||
                     paintingOverCheckComboList.hover||
+                    colorCheckComboList.hover||
                     logDialog.isHovered() ||
                     layersPanel.hover ||
                     vectorPaintingMode2DModeWrapCheckBox.hover ||
