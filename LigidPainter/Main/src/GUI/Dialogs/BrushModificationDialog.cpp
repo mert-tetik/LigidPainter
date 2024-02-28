@@ -59,7 +59,7 @@ BrushModificationDialog::BrushModificationDialog(){
                                     }
                                 )
                             }, 
-                        glm::vec2(10.f, 20.f), glm::vec3(50.f, 50.f, 0.7), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 1, {}, 20.f, true);
+                        glm::vec2(10.f, 20.f), glm::vec3(50.f, 60.f, 0.7), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 1, {}, 20.f, true);
     
     this->libraryBrushSelectionPanel = Panel({Section()}, glm::vec2(10.f, 20.f), glm::vec3(50.f, 50.f, 0.7), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 1, {}, 20.f, true);
     this->libraryBrushSelectionPanel.solidStyle = true;
