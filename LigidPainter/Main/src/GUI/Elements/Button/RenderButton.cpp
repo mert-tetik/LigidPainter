@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "GUI/Dialogs/Dialogs.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 #include "tinyfiledialogs.h"
 
@@ -141,8 +142,10 @@ void Button::render(
 
     if(hoverDuration > 2 && this->infoText.size()){
         Button infoBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f, 1.3f), this->infoText, Texture(), 0.f, false);
-        infoBtn.pos = this->pos;
-        infoBtn.pos.z += 0.03f;
+        infoBtn.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+        infoBtn.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f;
+        infoBtn.pos.y += infoBtn.scale.y * 2.f;
+        infoBtn.pos.z = this->pos.z + 0.03f;
         infoBtn.render(timer, false);
     }
 }
