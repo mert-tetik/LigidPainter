@@ -233,6 +233,7 @@ private:
     void renderPaintingOverSettings(Timer& timer, Painter& painter, float screenGapPerc);
     void renderBrushSettings(Timer& timer, Painter& painter, float screenGapPerc);
     void renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc);
+    void renderMirrorSettings(Timer& timer, Painter& painter, float screenGapPerc);
 
 public:
     /* -- PANELS -- */
@@ -261,6 +262,7 @@ public:
     CheckComboList faceSelectionCheckComboList;
     CheckComboList paintingOverCheckComboList;
     CheckComboList colorCheckComboList;
+    CheckComboList mirrorCheckComboList;
     Button paintingBrushButton;
     
     Section colorSection; 

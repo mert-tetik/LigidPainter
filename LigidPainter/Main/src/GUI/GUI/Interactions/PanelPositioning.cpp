@@ -73,9 +73,11 @@ void UI::panelPositioning(
     paintingOverCheckComboList.pos.x += faceSelectionCheckComboList.scale.x + paintingOverCheckComboList.scale.x + 0.25f;  
     colorCheckComboList.pos = paintingOverCheckComboList.pos;  
     colorCheckComboList.pos.x += paintingOverCheckComboList.scale.x + colorCheckComboList.scale.x + 0.25f;  
-    paintingBrushButton.scale.y = colorCheckComboList.scale.y;  
-    paintingBrushButton.pos = colorCheckComboList.pos;  
-    paintingBrushButton.pos.x += colorCheckComboList.scale.x + paintingBrushButton.scale.x + 0.25f;  
+    mirrorCheckComboList.pos = colorCheckComboList.pos;  
+    mirrorCheckComboList.pos.x += colorCheckComboList.scale.x + mirrorCheckComboList.scale.x + 0.25f;  
+    paintingBrushButton.scale.y = mirrorCheckComboList.scale.y;  
+    paintingBrushButton.pos = mirrorCheckComboList.pos;  
+    paintingBrushButton.pos.x += mirrorCheckComboList.scale.x + paintingBrushButton.scale.x + 0.25f;  
 
     //faceSelectionCheckComboList
     //paintingOverCheckComboList

@@ -38,35 +38,6 @@ void UI::paintingPanelInteraction(
                                 Painter &painter 
                             )
 {
-
-
-    painter.oSide.active = true;
-    
-    painter.oXSide.active = mirrorSection.elements[0].checkBox.clickState1; 
-    painter.mirrorXOffset = mirrorSection.elements[1].rangeBar.value;
-    painter.oYSide.active = mirrorSection.elements[2].checkBox.clickState1; 
-    painter.mirrorYOffset = mirrorSection.elements[3].rangeBar.value;
-    painter.oZSide.active = mirrorSection.elements[4].checkBox.clickState1; 
-    painter.mirrorZOffset = mirrorSection.elements[5].rangeBar.value;
-
-
-    painter.oXYSide.active = painter.oXSide.active && painter.oYSide.active;     
-    painter.oXZSide.active = painter.oXSide.active && painter.oZSide.active; 
-    painter.oYZSide.active = painter.oYSide.active && painter.oZSide.active; 
-    painter.oXYZSide.active = painter.oXSide.active && painter.oYSide.active && painter.oZSide.active; 
-
-    // Updating the depth texture if interacted with the gui elements related to mirroring
-    if( 
-        mirrorSection.elements[0].isInteracted() || 
-        mirrorSection.elements[1].isInteracted() || 
-        mirrorSection.elements[2].isInteracted() || 
-        mirrorSection.elements[3].isInteracted() || 
-        mirrorSection.elements[4].isInteracted() || 
-        mirrorSection.elements[5].isInteracted()
-    ) {
-        painter.updateDepthTexture();
-    }
-
     if(!painter.displayingBrush.displayingTexture.ID){
         // Init brush settings displaying brush
         painter.displayingBrush = Brush(

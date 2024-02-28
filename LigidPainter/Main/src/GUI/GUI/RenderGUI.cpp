@@ -672,7 +672,6 @@ void UI::renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc
     colorCheckComboList.render(timer, !anyDialogActive || painter.paintingoverTextureEditorMode);
     colorCheckComboList.panel.sections[0].elements[0].panelOffset = 7.f;
     colorSection = colorCheckComboList.panel.sections[0];
-    colorSection.elements[0].checkBox.clickState1 = colorCheckComboList.checkButton.clickState1;
 
     if(dropper.active)
         colorCheckComboList.arrowButton.clickState1 = true;
@@ -798,6 +797,63 @@ void UI::renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc
     }
 }
 
+void UI::renderMirrorSettings(Timer& timer, Painter& painter, float screenGapPerc){
+    
+    mirrorCheckComboList.checkButton.color2 = mirrorCheckComboList.checkButton.color;
+
+    mirrorCheckComboList.panel.sections[0] = mirrorSection;
+    mirrorCheckComboList.checkButton.clickState1 = true;
+    mirrorCheckComboList.panel.sections[0].elements[0].panelOffset = 0.f;
+    mirrorCheckComboList.render(timer, !anyDialogActive || painter.paintingoverTextureEditorMode);
+    mirrorCheckComboList.panel.sections[0].elements[0].panelOffset = 7.f;
+    mirrorSection = mirrorCheckComboList.panel.sections[0];
+
+    painter.oSide.active = true;
+    
+    painter.oXSide.active = mirrorSection.elements[0].checkBox.clickState1; 
+    painter.mirrorXOffset = mirrorSection.elements[1].rangeBar.value;
+    painter.oYSide.active = mirrorSection.elements[2].checkBox.clickState1; 
+    painter.mirrorYOffset = mirrorSection.elements[3].rangeBar.value;
+    painter.oZSide.active = mirrorSection.elements[4].checkBox.clickState1; 
+    painter.mirrorZOffset = mirrorSection.elements[5].rangeBar.value;
+
+    painter.oXYSide.active = painter.oXSide.active && painter.oYSide.active;     
+    painter.oXZSide.active = painter.oXSide.active && painter.oZSide.active; 
+    painter.oYZSide.active = painter.oYSide.active && painter.oZSide.active; 
+    painter.oXYZSide.active = painter.oXSide.active && painter.oYSide.active && painter.oZSide.active; 
+
+    Button btnX = Button(ELEMENT_STYLE_SOLID, glm::vec2(mirrorCheckComboList.scale.x / 3.f, mirrorCheckComboList.scale.y), "X", Texture(), 0.f, false);
+    btnX.pos = mirrorCheckComboList.pos;
+    btnX.pos.x -= btnX.scale.x * 2.f;
+    btnX.pos.y += btnX.scale.y + mirrorCheckComboList.scale.y;
+    Button btnY = Button(ELEMENT_STYLE_SOLID, glm::vec2(mirrorCheckComboList.scale.x / 3.f, mirrorCheckComboList.scale.y), "Y", Texture(), 0.f, false);
+    btnY.pos = mirrorCheckComboList.pos;
+    btnY.pos.y += btnY.scale.y + mirrorCheckComboList.scale.y;
+    Button btnZ = Button(ELEMENT_STYLE_SOLID, glm::vec2(mirrorCheckComboList.scale.x / 3.f, mirrorCheckComboList.scale.y), "Z", Texture(), 0.f, false);
+    btnZ.pos = mirrorCheckComboList.pos;
+    btnZ.pos.x += btnX.scale.x * 2.f;
+    btnZ.pos.y += btnZ.scale.y + mirrorCheckComboList.scale.y;
+
+    if(painter.oXSide.active && !mirrorCheckComboList.arrowButton.clickState1)
+        btnX.render(timer, false);
+    if(painter.oYSide.active && !mirrorCheckComboList.arrowButton.clickState1)
+        btnY.render(timer, false);
+    if(painter.oZSide.active && !mirrorCheckComboList.arrowButton.clickState1)
+        btnZ.render(timer, false);
+
+    // Updating the depth texture if interacted with the gui elements related to mirroring
+    if( 
+        mirrorSection.elements[0].isInteracted() || 
+        mirrorSection.elements[1].isInteracted() || 
+        mirrorSection.elements[2].isInteracted() || 
+        mirrorSection.elements[3].isInteracted() || 
+        mirrorSection.elements[4].isInteracted() || 
+        mirrorSection.elements[5].isInteracted()
+    ) {
+        painter.updateDepthTexture();
+    }
+}
+
 void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGapPerc){
     paintingModesPanel.render(timer,!anyDialogActive);
     if(paintingModesPanel.resizingDone){
@@ -809,6 +865,7 @@ void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGa
     this->renderPaintingOverSettings(timer, painter, screenGapPerc);
     this->renderColorSettings(timer, painter, screenGapPerc);
     this->renderBrushSettings(timer, painter, screenGapPerc);
+    this->renderMirrorSettings(timer, painter, screenGapPerc);
 
     if(!anyDialogActive || painter.paintingoverTextureEditorMode){
         if(shortcuts_F1())

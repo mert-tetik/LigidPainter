@@ -485,7 +485,6 @@ void UI::init
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),
                                         CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Z Axis", 1.f),
                                         Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Z Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),
-
                                     }
                                 );
             
@@ -590,9 +589,10 @@ void UI::init
 
     wrapModeCheckbox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(4.f,2), "Wrap Mode"  , 2.5f);
 
-    faceSelectionCheckComboList = CheckComboList("Toggle masking mesh for painting / See the mesh section from the painting panel", appTextures.TDModelIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, meshSection);
-    paintingOverCheckComboList = CheckComboList("Toggle painting over / See the painting over section from the painting panel", appTextures.paintingOverIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, paintingOverSection);
-    colorCheckComboList = CheckComboList("See the color section from the painting panel", appTextures.colorIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, colorSection);
+    faceSelectionCheckComboList = CheckComboList("Toggle masking mesh for painting / See the mesh settings", appTextures.TDModelIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, meshSection);
+    paintingOverCheckComboList = CheckComboList("Toggle painting over / See the painting over settings", appTextures.paintingOverIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, paintingOverSection);
+    colorCheckComboList = CheckComboList("See the color settings", appTextures.colorIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, colorSection);
+    mirrorCheckComboList = CheckComboList("See the mirror settings", appTextures.mirrorIcon, glm::vec3(0.f, 0.f, 0.7f), 0.f, colorSection);
     paintingBrushButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f), ""  , appTextures.brushIcon, 0.f, false);
     paintingBrushButton.infoText = "Modify or display the current brush used for painting";
     paintingBrushButton.brushModification = true;

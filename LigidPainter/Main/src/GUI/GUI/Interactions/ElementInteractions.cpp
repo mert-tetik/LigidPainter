@@ -91,6 +91,7 @@ void UI::elementInteraction(
                     faceSelectionCheckComboList.hover||
                     paintingOverCheckComboList.hover||
                     colorCheckComboList.hover||
+                    mirrorCheckComboList.hover||
                     logDialog.isHovered() ||
                     layersPanel.hover ||
                     vectorPaintingMode2DModeWrapCheckBox.hover ||
