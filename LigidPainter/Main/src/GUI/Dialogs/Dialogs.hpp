@@ -150,25 +150,6 @@ public:
    void render(Timer timer);
  };
 
-//!------------------------------PaintingChannelsAutoCreateTexturesDialog ------------------------------
-
-
-class PaintingChannelsAutoCreateTexturesDialog
-{
-private:
-   
-public:
-     
-   Panel panel;
-     
-   DialogControl dialogControl;
-
-   //Constructor
-   PaintingChannelsAutoCreateTexturesDialog();
-    
-   //Public member function
-   void render(Timer timer, std::vector<Section>& paintingChannelsSection);
- };
 
 //!------------------------------LOAD PROJECT DIALOG------------------------------
 
@@ -993,8 +974,7 @@ public:
                ExportDialog& exportDialog, MaterialDisplayerDialog& materialDisplayerDialog, 
                FilterDisplayerDialog& filterDisplayerDialog, LoadProjectDialog& loadProjectDialog, MaterialEditorDialog& materialEditorDialog, 
                TextureSelectionDialog& textureSelectionDialog, BakingDialog& bakingDialog, FilterSelectionDialog& filterSelectionDialog, 
-               NewTextureDialog& newTextureDialog, PaintingChannelsAutoCreateTexturesDialog& paintingChannelsAutoCreateTexturesDialog, 
-               SettingsDialog& settingsDialog, DisplayerDialog& displayerDialog, TextureEditorDialog& textureEditorDialog, 
+               NewTextureDialog& newTextureDialog, SettingsDialog& settingsDialog, DisplayerDialog& displayerDialog, TextureEditorDialog& textureEditorDialog, 
                TexturePackEditorDialog& texturePackEditorDialog, ProjectRecoverDialog& projectRecoverDialog, 
                ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields, Project &project
             );

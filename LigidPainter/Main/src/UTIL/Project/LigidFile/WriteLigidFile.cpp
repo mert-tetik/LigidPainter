@@ -58,22 +58,6 @@ int findIndexInLibrary(Texture txtr){
     return -1;
 }
 
-bool writeMatChannel(std::ofstream& wf, Texture matChannel){
-    int i = findIndexInLibrary(matChannel);
-
-    if(i != -1){
-        if(!writeStr(wf, Library::getTextureObj(i).title))
-            return false;
-    }
-    else{
-        std::string empty = "";
-        if(!writeStr(wf, empty))
-            return false;
-    }
-
-    return true;
-}
-
 bool Project::wrtLigidFile(std::string path){
     std::ofstream wf;
     
@@ -99,8 +83,9 @@ bool Project::wrtLigidFile(std::string path){
     uint32_t versionNumber2300 = 2300;
     uint32_t versionNumber2400 = 2400;
     uint32_t versionNumber2500 = 2500;
+    uint32_t versionNumber2600 = 2600;
 
-    WRITE_BITS(versionNumber2500, uint32_t, "");
+    WRITE_BITS(versionNumber2600, uint32_t, "");
 
     // ------------- Date ------------
     time_t currentDate = time(0);
@@ -115,21 +100,6 @@ bool Project::wrtLigidFile(std::string path){
 
     // ------------- Settings ------------
 
-    // ------------- Material Channels & Material ID TEXTURE ------------
-    int32_t meshCount = getModel()->meshes.size();
-    WRITE_BITS(meshCount, int32_t, "");
-    for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
-    {
-        writeMatChannel(wf, getModel()->meshes[meshI].albedo);   
-        writeMatChannel(wf, getModel()->meshes[meshI].roughness);   
-        writeMatChannel(wf, getModel()->meshes[meshI].metallic);   
-        writeMatChannel(wf, getModel()->meshes[meshI].normalMap);   
-        writeMatChannel(wf, getModel()->meshes[meshI].heightMap);   
-        writeMatChannel(wf, getModel()->meshes[meshI].ambientOcclusion);
-
-        // Material ID Texture
-        writeStr(wf, getModel()->meshes[meshI].materialIDTxtrPath);
-    }
 
     return true;
 }

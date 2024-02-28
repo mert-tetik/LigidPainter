@@ -47,21 +47,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
                             str.push_back(c); \
                         }
 
-bool readMatChannel(std::ifstream& rf, Texture& matChannel){
-    std::string title;
-    READ_STR(title);
-
-    matChannel.ID = 0;
-
-    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-    {
-        if(Library::getTextureObj(i).title == title && title != ""){
-            matChannel = Library::getTextureObj(i);
-        }
-    }
-    
-    return true;
-}
 
 //Returns true if path is a ligid file
 bool Project::readLigidFile(
@@ -104,13 +89,14 @@ bool Project::readLigidFile(
         uint32_t versionNumber2300 = 2300;   
         uint32_t versionNumber2400 = 2400;   
         uint32_t versionNumber2500 = 2500;   
+        uint32_t versionNumber2600 = 2600;   
         
-        uint32_t versionNumber; //2500  
+        uint32_t versionNumber; //2600  
         READ_BITS(versionNumber, uint32_t, "Version number");
         
         std::cout << "File Version : " << versionNumber << std::endl;
         
-        if(versionNumber != versionNumber2500){
+        if(versionNumber != versionNumber2600){
             LGDLOG::start<< "ERROR : Reading ligid file : Invalid version : " << versionNumber << LGDLOG::end; 
             return false;
         }
@@ -137,31 +123,6 @@ bool Project::readLigidFile(
             getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true, false);
         
         // ---------- Settings ------------
-        
-        // ------------- Material Channels & Material ID TEXTURE ------------
-        int32_t meshCount;
-        READ_BITS(meshCount, int32_t, "");
-        for (size_t meshI = 0; meshI < meshCount; meshI++)
-        {
-            if(meshI >=  getModel()->meshes.size())
-                break;
-
-            readMatChannel(rf, getModel()->meshes[meshI].albedo);   
-            readMatChannel(rf, getModel()->meshes[meshI].roughness);   
-            readMatChannel(rf, getModel()->meshes[meshI].metallic);   
-            readMatChannel(rf, getModel()->meshes[meshI].normalMap);   
-            readMatChannel(rf, getModel()->meshes[meshI].heightMap);   
-            readMatChannel(rf, getModel()->meshes[meshI].ambientOcclusion);   
-            
-            // Material ID Texture
-            getModel()->meshes[meshI].materialIDTxtrPath.clear();
-            READ_STR(getModel()->meshes[meshI].materialIDTxtrPath);
-            if(getModel()->meshes[meshI].materialIDTxtrPath.size() && std::filesystem::exists(getModel()->meshes[meshI].materialIDTxtrPath)){
-                getModel()->meshes[meshI].materialIDTxtr.load(getModel()->meshes[meshI].materialIDTxtrPath.c_str());
-                getModel()->meshes[meshI].materialIDColors = getModel()->meshes[meshI].materialIDTxtr.getMaterialIDPalette();
-            }
-        }
-
 
         getModel()->newModelAdded = true;
 

@@ -19,6 +19,7 @@ namespace ContextMenus{
     ContextMenu texture = ContextMenu({"Rename", "Duplicate", "Copy Path", "Edit", "Delete"}); 
     ContextMenu material = ContextMenu({"Edit", "Rename", "Duplicate", "Copy Path", "Delete", "Export"});    
     ContextMenu brush = ContextMenu({"Edit Brush", "Rename", "Duplicate", "Copy Path", "Delete"});    
+    ContextMenu model = ContextMenu({"Model Info", "Use This Model"});    
     ContextMenu menuBarProject = ContextMenu({"Save / CTRL+S", "Save as / CTRL+SHIFT+S", "Create new", "Load new", "Copy Path", "File Explorer", "Recover"}); 
     ContextMenu menuBarHelp = ContextMenu({"Website", "YouTube"}); 
     ContextMenu materialModifier = ContextMenu({"Delete", "Move To Top", "Move To Bottom", "Change Mask"});

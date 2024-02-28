@@ -500,8 +500,6 @@ void UI::init
                                     }
                                 );
 
-    this->paintingChannelsSection = {};
-
     this->colorSection =        Section(
                                     Element(),
                                     {   

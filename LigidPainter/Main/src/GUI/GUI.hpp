@@ -269,7 +269,6 @@ public:
     Section meshSection; 
     Section mirrorSection; 
     Section paintingOverSection; 
-    std::vector<Section> paintingChannelsSection;
     Section cantBeDisplayedSection; 
     int selectedPaintingPanelMode = 0;
     Panel paintingChannelsTextureSelectionPanel;

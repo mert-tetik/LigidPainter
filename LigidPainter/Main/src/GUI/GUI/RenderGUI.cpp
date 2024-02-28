@@ -316,54 +316,6 @@ void UI::renderSceneInfoWrapModeCheckbox(Timer& timer, Painter& painter){
     painter.wrapMode = wrapModeCheckbox.clickState1;
 }
 
-void UI::renderPaintingChannelsTextureSelectionPanel(Timer& timer, Painter& painter){
-    paintingChannelsTextureSelectionPanel.sections[0].elements.clear();
-
-    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-    {
-        Button btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getTextureObj(i).title, Library::getTextureObj(i), 0.f, false);
-        btn.textureSizeScale = 1.2f;
-        paintingChannelsTextureSelectionPanel.sections[0].elements.push_back(btn);
-    }  
-
-    paintingChannelsTextureSelectionPanel.render(timer, true);
-
-    for (size_t i = 0; i < paintingChannelsTextureSelectionPanel.sections[0].elements.size(); i++)
-    {
-        if(paintingChannelsTextureSelectionPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
-            for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
-            {
-                for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
-                    if(paintingChannelsSection[secI].elements[elI].button.clickState1){
-                        for (size_t elICheck = 0; elICheck < paintingChannelsSection[secI].elements.size(); elICheck++){
-                            if(paintingChannelsSection[secI].elements[elICheck].button.texture.ID == Library::getTexture(i)->ID && elI != elICheck){
-                                paintingChannelsSection[secI].elements[elICheck].button.texture = Texture();
-                                LGDLOG::start << "WARNING! Same textures in a material. " << paintingChannelsSection[secI].elements[elICheck].button.text << " is replaced." << LGDLOG::end;
-                            }
-                        }
-
-                        paintingChannelsSection[secI].elements[elI].button.texture = *Library::getTexture(i);
-                        paintingChannelsSection[secI].elements[elI].button.clickState1 = false;
-                    }
-                }
-            }
-            
-            paintingChannelsTextureSelectionPanelActive = false;
-        }
-    }
-    
-    if(!paintingChannelsTextureSelectionPanel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)){
-        for (size_t secI = 1; secI < paintingChannelsSection.size(); secI++)
-        {
-            for (size_t elI = 0; elI < paintingChannelsSection[secI].elements.size(); elI++){
-                paintingChannelsSection[secI].elements[elI].button.clickState1 = false;
-            }
-        }
-        
-        paintingChannelsTextureSelectionPanelActive = false;
-    }
-}
-
 void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPerc){
     if(painter.selectedDisplayingModeIndex == 2){
         glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
@@ -1108,12 +1060,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     renderSceneInfoWrapModeCheckbox(timer, painter);
     Debugger::block("GUI : Panels : Scene Info & Wrap Mode Checkbox"); // End
 
-    Debugger::block("GUI : Panels : Painting panel texture selection"); // Start
-    if(paintingChannelsTextureSelectionPanelActive){
-        renderPaintingChannelsTextureSelectionPanel(timer, painter);
-    }
-    Debugger::block("GUI : Panels : Painting panel texture selection"); // End
-
     Debugger::block("GUI : Panels : 2D Painting scene"); // Start
     if(!painter.threeDimensionalMode){
         render2DPaintingScene(timer, painter, screenGapPerc);
@@ -1264,9 +1210,6 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     if(newTextureDialog.dialogControl.isActive())
         newTextureDialog.render(timer);
     
-    if(paintingChannelsAutoCreateTexturesDialog.dialogControl.isActive())
-        paintingChannelsAutoCreateTexturesDialog.render(timer, this->paintingChannelsSection);
-    
     if(settingsDialog.dialogControl.isActive())
         settingsDialog.render(timer, painter, logDialog);
     
@@ -1292,7 +1235,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
         logDialog.render(
                             timer, painter, greetingDialog, newProjectDialog, exportDialog, materialDisplayerDialog, filterDisplayerDialog,
                             loadProjectDialog, materialEditorDialog, textureSelectionDialog, bakingDialog, filterSelectionDialog, newTextureDialog, 
-                            paintingChannelsAutoCreateTexturesDialog, settingsDialog, displayerDialog, textureEditorDialog, texturePackEditorDialog, 
+                            settingsDialog, displayerDialog, textureEditorDialog, texturePackEditorDialog, 
                             projectRecoverDialog, objectTexturingDialog, paintingOverTextureFields, project
                         );
     }

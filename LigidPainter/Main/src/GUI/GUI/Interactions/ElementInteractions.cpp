@@ -63,7 +63,6 @@ void UI::elementInteraction(
                     textureEditorDialog.dialogControl.isActive() ||
                     objectTexturingDialog.dialogControl.isActive() ||
                     materialSelectionDialog.dialogControl.isActive() ||
-                    paintingChannelsAutoCreateTexturesDialog.dialogControl.isActive() ||
                     paintingChannelsTextureSelectionPanelActive ||
                     texturePackEditorDialog.dialogControl.isActive() ||
                     painter.paintingoverTextureEditorMode ||
@@ -114,10 +113,6 @@ void UI::elementInteraction(
     this->libraryPanelLeftInteraction(libraryPanelLeft);
     Debugger::block("GUI : Interactions : libraryPanelLeftInteraction"); // End
 
-    Debugger::block("GUI : Interactions : paintingPanelInteraction"); // Start
-    this->paintingPanelInteraction(painter);
-    Debugger::block("GUI : Interactions : paintingPanelInteraction"); // End
-    
     Debugger::block("GUI : Interactions : windowPanelInteraction"); // Start
     windowPanelInteraction(windowPanel, painter, this->settingsDialog, this->displayerDialog, this->exportDialog, this->bakingDialog, this->materialSelectionDialog);
     Debugger::block("GUI : Interactions : windowPanelInteraction"); // End
