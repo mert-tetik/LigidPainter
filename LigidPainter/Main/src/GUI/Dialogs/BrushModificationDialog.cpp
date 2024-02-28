@@ -61,6 +61,11 @@ BrushModificationDialog::BrushModificationDialog(){
                             }, 
                         glm::vec2(10.f, 20.f), glm::vec3(50.f, 50.f, 0.7), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 1, {}, 20.f, true);
     
+    this->libraryBrushSelectionPanel = Panel({Section()}, glm::vec2(10.f, 20.f), glm::vec3(50.f, 50.f, 0.7), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 1, {}, 20.f, true);
+    this->libraryBrushSelectionPanel.solidStyle = true;
+    this->libraryBrushSelectionButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2), "Apply From Library Brushes", Texture(), 0.f, true);
+    this->libraryBrushSelectionButton.color2 = this->libraryBrushSelectionButton.color;
+    
     this->bgPanel.solidStyle = true;
     
     this->bgPanel.sections[0].elements[8].button.textureSelection2D = true;
@@ -128,7 +133,41 @@ void BrushModificationDialog::show(Timer &timer, glm::mat4 guiProjection, BrushP
         this->brushDisplayBtn.pos = glm::vec3(this->bgPanel.pos.x, this->bgPanel.pos.y - this->bgPanel.scale.y - this->brushDisplayBtn.scale.y, this->bgPanel.pos.z);
         this->brushDisplayBtn.render(timer, false);
 
+        // Library selection panel
+        this->libraryBrushSelectionButton.texture = appTextures.stripes1Icon;
+        this->libraryBrushSelectionButton.textureSizeScale = 1.4f;
+        this->libraryBrushSelectionButton.scale.x = (this->libraryBrushSelectionButton.scale.y / (Settings::videoScale()->x / Settings::videoScale()->y)) + this->libraryBrushSelectionButton.clickedMixVal * this->bgPanel.scale.x / 1.5f;
+        this->libraryBrushSelectionButton.pos = glm::vec3(this->bgPanel.pos.x - this->bgPanel.scale.x - this->libraryBrushSelectionButton.scale.x, this->bgPanel.pos.y - this->bgPanel.scale.y + this->libraryBrushSelectionButton.scale.y, this->bgPanel.pos.z);
+        this->libraryBrushSelectionButton.render(timer, true);
+        
+        if(*Mouse::LClick() && !this->libraryBrushSelectionPanel.hover && !this->libraryBrushSelectionButton.hover)
+            this->libraryBrushSelectionButton.clickState1 = false;
+
         bool anyInteractions = false;
+        
+        this->libraryBrushSelectionPanel.scale.x = this->libraryBrushSelectionButton.clickedMixVal * ((this->libraryBrushSelectionButton.scale.y / (Settings::videoScale()->x / Settings::videoScale()->y)) + this->bgPanel.scale.x / 1.5f);
+        this->libraryBrushSelectionPanel.scale.y = this->libraryBrushSelectionButton.clickedMixVal * (this->bgPanel.scale.y - this->libraryBrushSelectionButton.scale.y);
+        this->libraryBrushSelectionPanel.pos = this->libraryBrushSelectionButton.pos;
+        this->libraryBrushSelectionPanel.pos.y += this->libraryBrushSelectionButton.scale.y + this->libraryBrushSelectionPanel.scale.y;
+        
+        this->libraryBrushSelectionPanel.sections[0].elements.clear();
+        for (size_t i = 0; i < Library::getBrushArraySize(); i++)
+        {
+            Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2), Library::getBrush(i)->title, Library::getBrush(i)->displayingTexture, 0.f, true);
+            this->libraryBrushSelectionPanel.sections[0].elements.push_back(btn);
+        }
+        this->libraryBrushSelectionPanel.render(timer, true);
+        for (size_t i = 0; i < Library::getBrushArraySize(); i++)
+        {
+            if(this->libraryBrushSelectionPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){
+                anyInteractions = true;
+                *brushProperties = Library::getBrush(i)->properties;
+
+                brushProperties->brushTexture.generateProceduralDisplayingTexture(brushTextureResolution, false);
+                this->outToIn(brushProperties);
+            }
+        }
+        
         for (size_t i = 0; i < this->bgPanel.sections[0].elements.size(); i++)
         {
             if(this->bgPanel.sections[0].elements[i].isInteracted()){
@@ -167,7 +206,7 @@ void BrushModificationDialog::show(Timer &timer, glm::mat4 guiProjection, BrushP
         dialogControl.updateEnd(timer,0.15f);
 
         //End the dialog
-        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && *Mouse::LClick())){
+        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && !this->libraryBrushSelectionButton.hover && !this->libraryBrushSelectionPanel.hover && !this->brushDisplayBtn.hover && *Mouse::LClick())){
             dialogControl.unActivate();
         }
 

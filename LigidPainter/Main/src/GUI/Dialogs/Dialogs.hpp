@@ -723,6 +723,8 @@ private:
     int selectedTextureMode = 0;
 public:
    Panel bgPanel;
+   Panel libraryBrushSelectionPanel;
+   Button libraryBrushSelectionButton;
    Button brushDisplayBtn;
 
    DialogControl dialogControl;
