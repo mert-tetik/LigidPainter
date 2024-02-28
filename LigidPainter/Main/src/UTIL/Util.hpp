@@ -841,9 +841,6 @@ public:
 
     bool useCustomMaterial = false;
 
-    // Used to create the displaying texture for the brush section in the paintingPanel
-    Brush displayingBrush;
-
     /// @brief Is paintingTexture16f if smearBrush used, paintingTexture8 if not
     Texture paintingTexture;  
 

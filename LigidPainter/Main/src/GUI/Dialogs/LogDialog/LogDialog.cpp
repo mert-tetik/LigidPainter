@@ -173,7 +173,6 @@ void LogDialog::render(
                             BakingDialog& bakingDialog,
                             FilterSelectionDialog& filterSelectionDialog,
                             NewTextureDialog& newTextureDialog,
-                            PaintingChannelsAutoCreateTexturesDialog& paintingChannelsAutoCreateTexturesDialog,
                             SettingsDialog& settingsDialog,
                             DisplayerDialog& displayerDialog,
                             TextureEditorDialog& textureEditorDialog,

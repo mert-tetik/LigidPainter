@@ -37,6 +37,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     anyContextMenuActive = ContextMenus::texture.dialogControl.isActive() ||
                            ContextMenus::material.dialogControl.isActive() ||
                            ContextMenus::brush.dialogControl.isActive() ||
+                           ContextMenus::model.dialogControl.isActive() ||
                            ContextMenus::menuBarProject.dialogControl.isActive() ||
                            ContextMenus::menuBarHelp.dialogControl.isActive() ||
                            ContextMenus::materialModifier.dialogControl.isActive() ||
@@ -159,6 +160,15 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             Library::eraseBrush(ContextMenus::brush.selectedElement);
         }
     }
+    if(Library::getSelectedElementIndex() == 3 && ContextMenus::model.dialogControl.isActive() && ContextMenus::model.selectedElement < Library::getBrushArraySize()){ //If brush context menu is active
+        if(ContextMenus::model.contextPanel.sections[0].elements[0].button.clicked){//Clicked to model info button
+        
+        }
+        else if(ContextMenus::model.contextPanel.sections[0].elements[1].button.clicked){//Clicked to use the model button
+            *getModel() = *Library::getModel(ContextMenus::model.selectedElement); //Select the model
+            getModel()->newModelAdded = true; 
+        }
+    }
 
     
     //Save
@@ -219,6 +229,11 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         ContextMenus::brush.render(timer);
     else
         ContextMenus::brush.selectedElement = 0;
+    
+    if(ContextMenus::model.dialogControl.isActive())
+        ContextMenus::model.render(timer);
+    else
+        ContextMenus::model.selectedElement = 0;
 
     if(ContextMenus::menuBarProject.dialogControl.isActive())
         ContextMenus::menuBarProject.render(timer);
@@ -271,6 +286,14 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
                 ContextMenus::brush.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::brush.contextPanel.scale.y;
                 ContextMenus::brush.pos.z = 0.95f;
                 ContextMenus::brush.selectedElement = i;
+            }
+            if(Library::getSelectedElementIndex() == 3){//To a model
+                //Show the context menu
+                ContextMenus::model.dialogControl.activate();
+                ContextMenus::model.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
+                ContextMenus::model.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::model.contextPanel.scale.y;
+                ContextMenus::model.pos.z = 0.95f;
+                ContextMenus::model.selectedElement = i;
             }
         }
     }

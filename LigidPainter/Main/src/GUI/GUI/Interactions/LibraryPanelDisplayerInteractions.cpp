@@ -81,12 +81,6 @@ void UI::libraryPanelDisplayerInteraction(
                 materialDisplayerDialog.material = *Library::getMaterial(i);
             } 
         }
-        if(Library::getSelectedElementIndex() == 3){ //Models selected
-            if(libraryPanelDisplayer.sections[0].elements[i].button.clicked){
-                *getModel() = *Library::getModel(i); //Select the model
-                getModel()->newModelAdded = true; 
-            } 
-        }
         if(Library::getSelectedElementIndex() == 6){ //Filters selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
                 filterDisplayerDialog.dialogControl.activate();

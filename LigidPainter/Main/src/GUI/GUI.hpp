@@ -224,7 +224,6 @@ private:
     void renderObjectsPanel(Timer& timer, Painter& painter);
     void renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGapPerc);
     void render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPerc);
-    void renderPaintingChannelsTextureSelectionPanel(Timer& timer, Painter& painter);
     void renderSceneInfoWrapModeCheckbox(Timer& timer, Painter& painter);
     void renderPaintingPanel(Timer& timer, Painter &painter, float screenGapPerc);
     void renderPaintingOverTextureFields(Timer& timer, Painter& painter);
@@ -296,7 +295,6 @@ public:
     BakingDialog bakingDialog;
     FilterSelectionDialog filterSelectionDialog;
     NewTextureDialog newTextureDialog;
-    PaintingChannelsAutoCreateTexturesDialog paintingChannelsAutoCreateTexturesDialog;
     SettingsDialog settingsDialog;
     DisplayerDialog displayerDialog;
     TextureEditorDialog textureEditorDialog;
@@ -348,7 +346,6 @@ private:
     void contextMenuInteraction(Timer &timer, Project& project, Painter &painter);
 
     void libraryPanelLeftInteraction(Panel &libraryPanelLeft);
-    void paintingPanelInteraction(Painter &painter);
     void libraryPanelDisplayerInteraction(Painter &painter, Timer& timer, Project& project);
 
 
