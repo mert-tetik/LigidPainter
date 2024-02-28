@@ -110,6 +110,8 @@ void BrushModificationDialog::show(Timer &timer, glm::mat4 guiProjection, BrushP
 
     initialProperties = *brushProperties;
 
+    this->bgPanel.slideVal = 0.f;
+
     while (!getContext()->window.shouldClose())
     {
         getContext()->window.pollEvents();
