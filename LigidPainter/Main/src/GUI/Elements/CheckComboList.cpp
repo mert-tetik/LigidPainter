@@ -104,7 +104,7 @@ void CheckComboList::render(
     if(hover)
         lastTimeHover = LigidGL::getTime();
 
-    if(!checkButton.clickState1 || LigidGL::getTime() - lastTimeHover > 0.5)
+    if(LigidGL::getTime() - lastTimeHover > 0.5)
         arrowButton.clickState1 = false;
 
 }
