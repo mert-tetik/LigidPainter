@@ -84,10 +84,7 @@ void CheckComboList::render(
     arrowButton.pos = pos;
     arrowButton.pos.x += arrowButton.scale.x;
     this->checkButton.render(timer, doMouseTracking);
-
-    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", checkButton.clickedMixVal / 2.f + 0.5f);
-    this->arrowButton.render(timer, this->checkButton.clickState1);
-    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
+    this->arrowButton.render(timer, doMouseTracking);
 
     this->scale.x = checkButton.scale.x + arrowButton.scale.x;
     this->scale.y = checkButton.scale.y;
