@@ -193,6 +193,23 @@ class DisplayerDialog
     void render(Timer timer, Skybox &skybox, LogDialog& logDialog);
  };
 
+//!------------------------------ MODEL INFO DIALOG ------------------------------
+
+class ModelInfoDialog
+{
+public:
+   Panel panel;
+    
+   DialogControl dialogControl;
+   Model* model = nullptr;
+
+   //Constructors
+   ModelInfoDialog();
+    
+   //Public member functions
+   void render(Timer& timer, LogDialog& logDialog);
+};
+
 
 //!------------------------------ BAKING DIALOG ------------------------------
 

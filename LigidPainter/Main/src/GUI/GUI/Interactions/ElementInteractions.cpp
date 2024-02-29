@@ -65,6 +65,7 @@ void UI::elementInteraction(
                     materialSelectionDialog.dialogControl.isActive() ||
                     paintingChannelsTextureSelectionPanelActive ||
                     texturePackEditorDialog.dialogControl.isActive() ||
+                    modelInfoDialog.dialogControl.isActive() ||
                     painter.paintingoverTextureEditorMode ||
                     dropper.active ||
                     LigidGL::getTime() - lastSecAnyDialogActiveWasTrue <= 0.6; 

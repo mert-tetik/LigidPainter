@@ -215,6 +215,9 @@ public:
 
     /*! @brief Title of the model*/    
     std::string title;
+    
+    /*! @brief Path of the model*/    
+    std::string path;
 
     /*! 
         @brief Is true in the same frame a new model is imported.

@@ -297,6 +297,7 @@ public:
     NewTextureDialog newTextureDialog;
     SettingsDialog settingsDialog;
     DisplayerDialog displayerDialog;
+    ModelInfoDialog modelInfoDialog;
     TextureEditorDialog textureEditorDialog;
     TexturePackEditorDialog texturePackEditorDialog;
     ProjectRecoverDialog projectRecoverDialog;

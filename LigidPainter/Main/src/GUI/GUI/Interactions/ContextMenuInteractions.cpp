@@ -162,7 +162,8 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     }
     if(Library::getSelectedElementIndex() == 3 && ContextMenus::model.dialogControl.isActive() && ContextMenus::model.selectedElement < Library::getBrushArraySize()){ //If brush context menu is active
         if(ContextMenus::model.contextPanel.sections[0].elements[0].button.clicked){//Clicked to model info button
-        
+            modelInfoDialog.model = Library::getModel(ContextMenus::model.selectedElement);
+            modelInfoDialog.dialogControl.activate();
         }
         else if(ContextMenus::model.contextPanel.sections[0].elements[1].button.clicked){//Clicked to use the model button
             *getModel() = *Library::getModel(ContextMenus::model.selectedElement); //Select the model
@@ -170,7 +171,6 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         }
     }
 
-    
     //Save
     if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[0].button.clicked || shortcuts_CTRL_S()){
         project.updateProject(true, false);

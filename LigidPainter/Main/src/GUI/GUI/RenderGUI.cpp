@@ -1201,6 +1201,9 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     if(displayerDialog.dialogControl.isActive())
         displayerDialog.render(timer,skybox, logDialog);
     
+    if(modelInfoDialog.dialogControl.isActive())
+        modelInfoDialog.render(timer, logDialog);
+    
     if(textureEditorDialog.dialogControl.isActive())
         textureEditorDialog.render(timer,skybox,this->projection, this->textureEditorSelectedTxtr, logDialog);
     

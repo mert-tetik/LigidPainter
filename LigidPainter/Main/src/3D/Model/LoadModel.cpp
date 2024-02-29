@@ -63,6 +63,8 @@ bool Model::loadModel(std::string const &path, bool triangulate, bool initTxtrs)
         return false;
     }
 
+    this->path = path;
+
     title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
     title = UTIL::removeExtension(title);
 
