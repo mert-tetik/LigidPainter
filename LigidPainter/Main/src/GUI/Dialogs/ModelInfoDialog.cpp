@@ -132,7 +132,6 @@ void ModelInfoDialog::render(Timer& timer, LogDialog& logDialog){
 
     }
     
-    
     //End the dialog
     if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !logDialog.isHovered() && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){

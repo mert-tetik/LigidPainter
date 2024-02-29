@@ -194,6 +194,7 @@ struct AppTextures{
     Texture dropperIcon;
     Texture colorIcon;
     Texture brushIcon;
+    Texture textureIcon;
     Texture arrowR;
     Texture arrowL;
     Texture arrowB;

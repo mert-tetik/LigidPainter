@@ -46,6 +46,7 @@ void Settings::loadAppTextures(){
     appTextures.dropperIcon.load("./LigidPainter/Resources/Icons/Dropper.png");
     appTextures.colorIcon.load("./LigidPainter/Resources/Icons/Color.png");
     appTextures.brushIcon.load("./LigidPainter/Resources/Icons/Brush.png");
+    appTextures.textureIcon.load("./LigidPainter/Resources/Icons/Texture.png");
     appTextures.arrowR.load("./LigidPainter/Resources/Icons/ArrowR.png");
     appTextures.arrowL.load("./LigidPainter/Resources/Icons/ArrowL.png");
     appTextures.arrowB.load("./LigidPainter/Resources/Icons/ArrowB.png");
