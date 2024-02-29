@@ -81,6 +81,7 @@ Shader __color3d;
 Shader __threeDTextureRenderingShader;
 Shader __alphaZero3D;
 Shader __color3DInstancing;
+Shader __layersUpdate;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -96,6 +97,7 @@ void ShaderSystem::initShaderSystem(){
     __skyboxModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/Skybox.frag");
     __prefilteringShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_skybox.vert", "LigidPainter/Resources/Shaders/aFrag/PrefilterSkybox.frag");
     __buttonShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Button.frag");
+    __layersUpdate.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/LayersUpdate.frag");
     __vectoralCurve.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/VectoralCurve.frag");
     __colorPicker.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag");
     __gizmo.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Gizmo.frag");
@@ -329,4 +331,7 @@ Shader ShaderSystem::alphaZero3D(){
 }
 Shader ShaderSystem::color3DInstancing(){
     return __color3DInstancing;
+}
+Shader ShaderSystem::layersUpdate(){
+    return __layersUpdate;
 }

@@ -48,7 +48,12 @@ void UI::panelPositioning(
     
     layersPanel.pos = windowPanel.pos;
     layersPanel.pos.x -= windowPanel.scale.x + layersPanel.scale.x;
-    layersPanel.scale.y = windowPanel.scale.y;
+    layersPanel.pos.y += addLayerPanel.scale.y;
+    layersPanel.scale.y = windowPanel.scale.y - addLayerPanel.scale.y;
+
+    addLayerPanel.scale.x = layersPanel.scale.x;
+    addLayerPanel.pos = layersPanel.pos;
+    addLayerPanel.pos.y -= layersPanel.scale.y + addLayerPanel.scale.y;
 
     libraryPanelLeft.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
     libraryPanelDisplayer.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanelDisplayer.scale.y; //Keep beneath the navigation bar

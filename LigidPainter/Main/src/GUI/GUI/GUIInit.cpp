@@ -225,6 +225,35 @@ void UI::init
                             20.f,
                             false
                         );
+    
+    addLayerPanel  = Panel(                        
+                            {
+                                Section(
+                                    Element(Button()),
+                                    {
+                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2, 1.2f), "", appTextures.textureIcon, 0.f, false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2, 1.2f), "", appTextures.brushIcon, 0.f, false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2, 1.2f), "", appTextures.materialIcon, 0.f, false)),
+                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2, 1.2f), "", appTextures.inkPenIcon, 0.f, false))
+                                    }
+                                )
+                            },
+                            
+                            glm::vec2(10, 1.2f), //Initial scale value
+                            glm::vec3(50 ,95 ,0.1f),  //Initial position value
+                            ColorPalette::mainColor, //Color of the panel
+                            ColorPalette::thirdColor, //Color of the panel
+                            true,
+                            false,
+                            true,
+                            true,
+                            true,
+                            1.f,
+                            4,
+                            {},
+                            20.f,
+                            false
+                        );
 
     //Init the 2D painting panel
     twoDPaintingPanel  = Panel(
@@ -571,8 +600,10 @@ void UI::init
                                             .button.solidColor = true;
     }
 
+    /*
     paintingSectionDisplayMat = Material("Painting section display", 0);
     paintingSectionDisplayMat.materialModifiers.push_back(MaterialModifier(SOLID_MATERIAL_MODIFIER));
+*/
 
     sceneGizmo = Gizmo("", 0, glm::vec3(0.f), glm::vec2(1.f, Settings::videoScale()->x / Settings::videoScale()->y), 0.f, false);
     sceneGizmo.scale *= 2.f;

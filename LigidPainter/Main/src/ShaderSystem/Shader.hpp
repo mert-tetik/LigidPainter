@@ -136,6 +136,7 @@ namespace ShaderSystem{
     Shader threeDTextureRenderingShader();
     Shader alphaZero3D();
     Shader color3DInstancing();
+    Shader layersUpdate();
 
     
     Shader textureModifierShader();

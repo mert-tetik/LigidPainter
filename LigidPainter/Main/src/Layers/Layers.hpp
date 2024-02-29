@@ -77,10 +77,15 @@ public:
     /*! @brief Button of the layer to display this layer*/
     Button layerButton;
 
+
     /*! @brief Generate result textures for the layer */
     virtual void render() = 0;
 
-
+    void render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale){
+        layerButton.pos = pos;
+        layerButton.scale = scale;
+        layerButton.render(timer, doMosueTracking);
+    }
 
     /*! @brief Generates the this->layerButton from scratch using this->title, this->layerIcon*/
     void updateLayerButton(){
@@ -150,5 +155,9 @@ public:
     void render() override {
     }
 };
+
+void layers_render(Timer& timer, Panel &layerPanel);
+void layers_add_new(Layer* layer);
+void layers_update_result();
 
 #endif // LIGID_LAYERS_HPP

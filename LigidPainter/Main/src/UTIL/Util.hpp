@@ -476,6 +476,7 @@ public:
     void generate();
     void bind();
     void setColorBuffer(Texture colorBuffer, unsigned int textureTarget);
+    void setColorBuffer(std::vector<Texture> colorBuffers, unsigned int textureTarget);
     void setRenderbuffer(Renderbuffer rbo);
     void removeRenderbuffer();
     void deleteBuffers(bool delColorBuffer, bool delRenderBuffer);

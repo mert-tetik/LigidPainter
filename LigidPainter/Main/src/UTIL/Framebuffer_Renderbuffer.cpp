@@ -270,6 +270,22 @@ void Framebuffer::setColorBuffer(Texture colorBuffer, unsigned int textureTarget
     LigidGL::testGLError("Framebuffer::setColorBuffer : attaching colorBuffer to FBO" + std::string(" : ") + this->purpose);
 }
 
+void Framebuffer::setColorBuffer(std::vector<Texture> colorBuffers, unsigned int textureTarget){
+    LigidGL::cleanGLErrors();
+    
+    this->colorBuffer = colorBuffer;
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
+    LigidGL::testGLError("Framebuffer::setColorBuffer : Binding FBO" + std::string(" : ") + this->purpose);
+    
+    for (size_t i = 0; i < colorBuffers.size(); i++)
+    {
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, textureTarget, colorBuffers[i].ID, 0);
+        LigidGL::testGLError("Framebuffer::setColorBuffer : attaching colorBuffer to FBO" + std::string(" : ") + this->purpose);
+    }
+    
+}
+
 void Framebuffer::setRenderbuffer(Renderbuffer rbo){
     LigidGL::cleanGLErrors();
     

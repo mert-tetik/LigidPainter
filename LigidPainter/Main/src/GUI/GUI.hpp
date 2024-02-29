@@ -239,6 +239,7 @@ public:
     
     Panel navigationPanel;
     Panel layersPanel;
+    Panel addLayerPanel;
     Panel windowPanel;
     Panel libraryPanelLeft; 
     Panel libraryPanelDisplayer; 

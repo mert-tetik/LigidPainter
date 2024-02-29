@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
+#include "Layers/Layers.hpp"
 
 #include <string>
 #include <fstream>
@@ -1022,6 +1023,34 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+    addLayerPanel.render(timer, !anyDialogActive);
+    // Add texture layer 
+    if(addLayerPanel.sections[0].elements[0].button.clicked){
+        TextureLayer* txtrLayer = new TextureLayer();
+        layers_add_new(txtrLayer);
+    }
+    // Add painting layer 
+    if(addLayerPanel.sections[0].elements[1].button.clicked){
+        PaintingLayer* paintingLayer = new PaintingLayer();
+        layers_add_new(paintingLayer);
+    }
+
+    // Add material layer 
+    if(addLayerPanel.sections[0].elements[2].button.clicked){
+        MaterialLayer* materialLayer = new MaterialLayer();
+        layers_add_new(materialLayer);
+    }
+    
+    // Add vector layer 
+    if(addLayerPanel.sections[0].elements[3].button.clicked){
+        VectorLayer* vectorLayer = new VectorLayer();
+        layers_add_new(vectorLayer);
+    }
+
+    layersPanel.render(timer, !anyDialogActive);
+
+    layers_render(timer, layersPanel);
+    
     Debugger::block("GUI : Panels : Layers Panel"); // End
 
     
