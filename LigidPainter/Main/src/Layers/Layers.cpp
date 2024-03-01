@@ -34,8 +34,14 @@ void layers_render(Timer& timer, Panel &layerPanel){
     for (int i = __layers.size() -1; i >= 0; i--)
     {
         glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 2.f); 
-        glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y + btnScale.y * (count * 2), layerPanel.pos.z);
-        __layers[i]->render_graphics(timer, false, btnPos, btnScale);
+        glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
+        int layerMSG = __layers[i]->render_graphics(timer, true, btnPos, btnScale);
+        
+        if(layerMSG == 1){
+            __layers.erase(__layers.begin() + i);
+            i--;
+        }
+        
         count++;
     }
 }
@@ -45,8 +51,6 @@ void layers_add_new(Layer* layer){
 }
 
 static Framebuffer layers_update_FBO;
-
-static 
 
 void layers_update_result(unsigned int resolution, glm::vec3 baseColor){
     

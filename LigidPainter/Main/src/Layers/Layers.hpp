@@ -28,6 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "GUI/Dialogs/Dialogs.hpp"
 #include "ContextMenuSystem/ContextMenus.hpp"
+#include "MouseSystem/Mouse.hpp"
 
 struct MaterialChannels{
     Texture albedo;
@@ -77,14 +78,65 @@ public:
     /*! @brief Button of the layer to display this layer*/
     Button layerButton;
 
+    bool rightClicked = false;
+    Panel contextMenu = Panel(
+                                        {
+                                            Section(
+                                                Element(),
+                                                {   
+                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Layer Info"  , Texture(), 0.f, false), //1
+                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Opacity Settings"  , Texture(), 0.f, false), //1
+                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Delete Layer"  , Texture(), 0.f, false), //1
+                                                }
+                                            )
+                                        }, 
+                                        glm::vec2(5.f, 3.f), glm::vec3(50.f, 50.f, 0.7), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, true, true, true, 1.f, 1, {}, 20.f, true
+                                    );
+
+    bool alphaSettingsMode = false;
+    void renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking);
 
     /*! @brief Generate result textures for the layer */
     virtual void render() = 0;
 
-    void render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale){
+    /*! 
+        @brief Renders GUI elements for the layer
+        @return 0 : No msg | 1 : Delete this layer
+    */
+    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale){
         layerButton.pos = pos;
         layerButton.scale = scale;
         layerButton.render(timer, doMosueTracking);
+
+        if(layerButton.hover && *Mouse::RClick()){
+            rightClicked = true;
+            contextMenu.pos = glm::vec3(*Mouse::cursorPos() / *Settings::videoScale() * 100.f, pos.z + 0.04f);
+        }
+
+        if(!doMosueTracking)
+            rightClicked = false;
+
+        if(rightClicked){
+            contextMenu.clearDepthBuffer = false;
+            contextMenu.render(timer, true);
+            if(contextMenu.sections[0].elements[1].button.clicked){
+                alphaSettingsMode = true;
+                rightClicked = false;
+            }
+            if(contextMenu.sections[0].elements[2].button.clicked){
+                return 1;
+                rightClicked = false;
+            }
+
+            if(!contextMenu.hover)
+                rightClicked = false;
+        }
+
+        if(alphaSettingsMode){
+            this->renderAlphaSettingsPanel(timer, doMosueTracking);
+        }
+        
+        return 0;
     }
 
     /*! @brief Generates the this->layerButton from scratch using this->title, this->layerIcon*/
