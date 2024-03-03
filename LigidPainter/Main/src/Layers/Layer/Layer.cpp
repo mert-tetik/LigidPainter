@@ -68,7 +68,14 @@ Panel alphaSettingsPanel = Panel(
                                 );
 
 void Layer::renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking){
-    
+    alphaSettingsPanel.sections[0].elements[1].button.textureSelection3D = true;
+    alphaSettingsPanel.sections[0].elements[3].button.textureSelection3D = true;
+    alphaSettingsPanel.sections[0].elements[5].button.textureSelection3D = true;
+    alphaSettingsPanel.sections[0].elements[7].button.textureSelection3D = true;
+    alphaSettingsPanel.sections[0].elements[9].button.textureSelection3D = true;
+    alphaSettingsPanel.sections[0].elements[11].button.textureSelection3D = true;
+    alphaSettingsPanel.sections[0].elements[13].button.textureSelection3D = true;
+
 
     alphaSettingsPanel.sections[0].elements[0].rangeBar.value = this->alpha.general_Alpha.alphaValue;
     alphaSettingsPanel.sections[0].elements[1].button.texture = this->alpha.general_Alpha.alphaMap;
@@ -120,4 +127,206 @@ void Layer::renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking){
     this->alpha.heightMap_Alpha.alphaMap = alphaSettingsPanel.sections[0].elements[11].button.texture;
     this->alpha.ambientOcclusion_Alpha.alphaValue = alphaSettingsPanel.sections[0].elements[12].rangeBar.value;
     this->alpha.ambientOcclusion_Alpha.alphaMap = alphaSettingsPanel.sections[0].elements[13].button.texture;
+}
+
+Panel infoPanel = Panel(
+                                    {
+                                        Section(
+                                            Element(),
+                                            {   
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Title : "  , Texture(), 0.f, false), //0
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Type : "  , Texture(), 0.f, false), //1
+                                                
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "ALBEDO"  , Texture(), 2.f, false), //2
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //3
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "ROUGHNESS"  , Texture(), 1.f, false), //4
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //5
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "METALLIC"  , Texture(), 1.f, false), //6
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //7
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "NORMAL MAP"  , Texture(), 1.f, false), //8
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //9
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "HEIGHT MAP"  , Texture(), 1.f, false), //10
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //11
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "AMBIENT OCCLUSION"  , Texture(), 1.f, false), //12
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //13
+                                            }
+                                        )
+                                    }, 
+                                    glm::vec2(15.f, 20.f), 
+                                    glm::vec3(50.f, 50.f, 0.7), 
+                                    ColorPalette::mainColor, 
+                                    ColorPalette::thirdColor, 
+                                    true, 
+                                    true, 
+                                    true, 
+                                    true, 
+                                    true, 
+                                    1.f, 
+                                    1, 
+                                    {}, 
+                                    20.f, 
+                                    true
+                                );
+
+void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
+    infoPanel.sections[0].elements[0].button.text = "Title : " + this->title;
+    infoPanel.sections[0].elements[1].button.text = "Type : " + this->layerType;
+    infoPanel.sections[0].elements[1].button.texture = this->layerIcon;
+    
+    infoPanel.sections[0].elements[3].button.texture = this->result.albedo;
+    infoPanel.sections[0].elements[5].button.texture = this->result.roughness;
+    infoPanel.sections[0].elements[7].button.texture = this->result.metallic;
+    infoPanel.sections[0].elements[9].button.texture = this->result.normalMap;
+    infoPanel.sections[0].elements[11].button.texture = this->result.heightMap;
+    infoPanel.sections[0].elements[13].button.texture = this->result.ambientOcclusion;
+    
+    infoPanel.pos = this->layerButton.pos;
+    infoPanel.pos.x -= this->layerButton.scale.x + infoPanel.scale.x;
+    infoPanel.pos.y -= this->layerButton.scale.y - infoPanel.scale.y;
+    infoPanel.render(timer, doMouseTracking);
+
+    if(infoPanel.hover)
+        __enteredPanelOnce = true;
+
+    if(*Mouse::LPressed())
+        __enteredPanelOnce = false;
+
+    if(*Mouse::LClick() && !__enteredPanelOnce && !infoPanel.hover){
+        this->infoMode = false;
+        __enteredPanelOnce = false;
+    }
+
+    if(__enteredPanelOnce && !infoPanel.hover){
+        this->infoMode = false;
+        __enteredPanelOnce = false;
+    }
+}
+
+int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity){
+    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
+    layerButton.pos = pos;
+    layerButton.scale = scale;
+    layerButton.render(timer, doMosueTracking && !eyeBtn.hover);
+
+    if(scale.x > 6.f){
+        ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity / 2.f);
+        Button layerIconDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->layerIcon, 0.f, false);
+        layerIconDisplayer.color = glm::vec4(0.f);
+        layerIconDisplayer.outline = false;
+        layerIconDisplayer.pos = pos;
+        layerIconDisplayer.pos.x -= scale.x - layerIconDisplayer.scale.x;
+        layerIconDisplayer.render(timer, false);
+        ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
+        
+        if(hiden)
+            eyeBtn.texture = appTextures.eyeClosedIcon;
+        else{
+            eyeBtn.texture = appTextures.eyeOpenedIcon;
+        }
+        eyeBtn.color = glm::vec4(0.f);
+        eyeBtn.color2 = glm::vec4(0.f);
+        eyeBtn.outline = false;
+        eyeBtn.pos = layerIconDisplayer.pos;
+        eyeBtn.pos.x += layerIconDisplayer.scale.x + 0.7f * 1.5f;
+        eyeBtn.scale = glm::vec2(0.7f, scale.y) + glm::vec2(0.1f) * eyeBtn.hoverMixVal + glm::vec2(0.1f) * eyeBtn.clickedMixVal;
+        if(eyeBtn.clicked)
+            this->hiden = !this->hiden;
+
+        eyeBtn.render(timer, doMosueTracking);
+        
+        Button generalOpacityMapDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->alpha.general_Alpha.alphaMap, 0.f, false);
+        generalOpacityMapDisplayer.color = glm::vec4(0.f);
+        generalOpacityMapDisplayer.outline = false;
+        generalOpacityMapDisplayer.pos = pos;
+        generalOpacityMapDisplayer.pos.x += scale.x - generalOpacityMapDisplayer.scale.x;
+        generalOpacityMapDisplayer.render(timer, false);
+        
+        Button generalOpacityDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f, scale.y), "", Texture(), 0.f, false);
+        generalOpacityDisplayer.color = glm::vec4(0.f);
+        generalOpacityDisplayer.outline = false;
+        std::string generalOpacityDisplayerTxt = std::to_string(this->alpha.general_Alpha.alphaValue);
+        generalOpacityDisplayerTxt.erase(generalOpacityDisplayerTxt.begin() + 4, generalOpacityDisplayerTxt.end());
+        generalOpacityDisplayer.text = generalOpacityDisplayerTxt; 
+        generalOpacityDisplayer.pos = generalOpacityMapDisplayer.pos;
+        generalOpacityDisplayer.pos.x -= generalOpacityMapDisplayer.scale.x + generalOpacityDisplayer.scale.x;
+        generalOpacityDisplayer.render(timer, false);
+    }
+
+    if(mainSelected){
+        layerButton.color = ColorPalette::themeColor;
+        layerButton.color.r /= 2.0f;
+        layerButton.color.g /= 2.0f;
+        layerButton.color.b /= 2.0f;
+        
+        layerButton.textColor = ColorPalette::oppositeColor;
+    }
+    else if(subSelected){
+        layerButton.color = ColorPalette::themeColor;
+        layerButton.color.r /= 4.0f;
+        layerButton.color.g /= 4.0f;
+        layerButton.color.b /= 4.0f;
+
+        layerButton.textColor = ColorPalette::oppositeColor;
+        layerButton.textColor.r /= 1.3f;
+        layerButton.textColor.g /= 1.3f;
+        layerButton.textColor.b /= 1.3f;
+    }
+    else{
+        layerButton.color = ColorPalette::secondColor;
+        layerButton.textColor = ColorPalette::oppositeColor;
+    }
+
+
+    if(layerButton.hover && *Mouse::RClick()){
+        rightClicked = true;
+        contextMenu.pos = glm::vec3(*Mouse::cursorPos() / *Settings::videoScale() * 100.f, pos.z + 0.04f);
+    }
+
+    if(!doMosueTracking)
+        rightClicked = false;
+
+    if(rightClicked){
+        contextMenu.clearDepthBuffer = false;
+        contextMenu.render(timer, true);
+        if(contextMenu.sections[0].elements[0].button.clicked){
+            infoMode = true;
+            rightClicked = false;
+        }
+        if(contextMenu.sections[0].elements[1].button.clicked){
+            alphaSettingsMode = true;
+            rightClicked = false;
+        }
+        if(contextMenu.sections[0].elements[2].button.clicked){
+            rightClicked = false;
+            return 1;
+        }
+
+        if(!contextMenu.hover)
+            rightClicked = false;
+    }
+
+    if(alphaSettingsMode)
+        this->renderAlphaSettingsPanel(timer, doMosueTracking);
+
+    if(infoMode)
+        this->renderInfoPanel(timer, doMosueTracking);
+    
+    
+    if(layerButton.clicked || (layerButton.hover && *Mouse::RClick() && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && !subSelected && !mainSelected)){
+        mainSelected = true;
+        subSelected = true;
+        return 2;
+    }
+    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
+
+    return 0;
+}
+
+void Layer::updateLayerButton(){
+    this->layerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), this->title, Texture(), 0.f, false);
 }

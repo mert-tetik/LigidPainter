@@ -75,8 +75,16 @@ public:
     std::string title;
     /*! @brief This icon represents the layer & rendered with the button*/
     Texture layerIcon;
+    /*! @brief This string represents the type of the layer (solid, painting, material, vector)*/
+    std::string layerType;
     /*! @brief Button of the layer to display this layer*/
     Button layerButton;
+
+    Button eyeBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.7f, 1.f), "", appTextures.eyeOpenedIcon, 0.f, false);
+    bool hiden = false;
+
+    bool mainSelected = false;
+    bool subSelected = false;
 
     bool rightClicked = false;
     Panel contextMenu = Panel(
@@ -86,7 +94,7 @@ public:
                                                 {   
                                                     Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Layer Info"  , Texture(), 0.f, false), //1
                                                     Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Opacity Settings"  , Texture(), 0.f, false), //1
-                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Delete Layer"  , Texture(), 0.f, false), //1
+                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Delete"  , Texture(), 0.f, false), //1
                                                 }
                                             )
                                         }, 
@@ -95,54 +103,21 @@ public:
 
     bool alphaSettingsMode = false;
     void renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking);
+    
+    bool infoMode = false;
+    void renderInfoPanel(Timer& timer, bool doMouseTracking);
 
     /*! @brief Generate result textures for the layer */
     virtual void render() = 0;
 
     /*! 
         @brief Renders GUI elements for the layer
-        @return 0 : No msg | 1 : Delete this layer
+        @return 0 : No msg | 1 : Delete this layer | 2 : layer selected
     */
-    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale){
-        layerButton.pos = pos;
-        layerButton.scale = scale;
-        layerButton.render(timer, doMosueTracking);
-
-        if(layerButton.hover && *Mouse::RClick()){
-            rightClicked = true;
-            contextMenu.pos = glm::vec3(*Mouse::cursorPos() / *Settings::videoScale() * 100.f, pos.z + 0.04f);
-        }
-
-        if(!doMosueTracking)
-            rightClicked = false;
-
-        if(rightClicked){
-            contextMenu.clearDepthBuffer = false;
-            contextMenu.render(timer, true);
-            if(contextMenu.sections[0].elements[1].button.clicked){
-                alphaSettingsMode = true;
-                rightClicked = false;
-            }
-            if(contextMenu.sections[0].elements[2].button.clicked){
-                return 1;
-                rightClicked = false;
-            }
-
-            if(!contextMenu.hover)
-                rightClicked = false;
-        }
-
-        if(alphaSettingsMode){
-            this->renderAlphaSettingsPanel(timer, doMosueTracking);
-        }
-        
-        return 0;
-    }
+    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity);
 
     /*! @brief Generates the this->layerButton from scratch using this->title, this->layerIcon*/
-    void updateLayerButton(){
-        this->layerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), this->title, this->layerIcon, 0.f, false);
-    }
+    void updateLayerButton();
 };
 
 /*!
@@ -152,6 +127,7 @@ class TextureLayer : public Layer {
 public:
     TextureLayer(){
         this->title = "Texture Layer";
+        this->layerType = "texture";
         this->layerIcon = appTextures.textureIcon;
         this->updateLayerButton();
     }
@@ -168,6 +144,7 @@ class PaintingLayer : public Layer {
 public:
     PaintingLayer(){
         this->title = "Painting Layer";
+        this->layerType = "painting";
         this->layerIcon = appTextures.brushIcon;
         this->updateLayerButton();
     }
@@ -184,6 +161,7 @@ class MaterialLayer : public Layer {
 public:
     MaterialLayer(){
         this->title = "Material Layer";
+        this->layerType = "material";
         this->layerIcon = appTextures.materialIcon;
         this->updateLayerButton();
     }
@@ -200,6 +178,7 @@ class VectorLayer : public Layer {
 public:
     VectorLayer(){
         this->title = "Vector Layer";
+        this->layerType = "vector";
         this->layerIcon = appTextures.inkPenIcon;
         this->updateLayerButton();
     }

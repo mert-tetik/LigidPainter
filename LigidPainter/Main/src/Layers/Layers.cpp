@@ -29,20 +29,131 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 std::vector<Layer*> __layers;
 
+static bool btnMoving = false;
+static std::vector<int> movingBtnIndices;
+static int btnMovingI = 0;
+
+static void moveLayer(int src, int dest){
+    std::cout << "dest : " << dest << std::endl;
+    
+    if(src >= __layers.size() && src < 0)
+        return;
+
+    Layer* layer = __layers[src];
+    __layers.erase(__layers.begin() + src);
+
+    if(dest >= __layers.size())
+        __layers.push_back(layer);
+    else if(dest < 0)
+        __layers.insert(__layers.begin(), layer);
+    else
+        __layers.insert(__layers.begin() + dest, layer);
+}
+
 void layers_render(Timer& timer, Panel &layerPanel){
     int count = 0;
+
+    bool anyBtnClickState1 = false;
     for (int i = __layers.size() -1; i >= 0; i--)
     {
         glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 2.f); 
         glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
-        int layerMSG = __layers[i]->render_graphics(timer, true, btnPos, btnScale);
+        int layerMSG = __layers[i]->render_graphics(timer, true, btnPos, btnScale, 1.f);
         
+        if(__layers[i]->layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
+            btnMoving = true;
+        if(__layers[i]->layerButton.clickState1)
+            anyBtnClickState1 = true;
+
+        if(__layers[i]->layerButton.clickState1 && btnMoving){
+            glm::vec2 crsPos = glm::vec2(Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f, Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f);
+            for (size_t cI = 0; cI < __layers.size(); cI++){
+                if(crsPos.y > __layers[cI]->layerButton.pos.y || (cI == __layers.size() - 1 && crsPos.y < __layers[cI]->layerButton.pos.y)){
+                    Button btn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(__layers[cI]->layerButton.scale.x, 0.2f), "", Texture(), 0.f, false);
+                    btn.radius = 0.05f;
+                    btn.outlineThickness /= 2.f;
+                    btn.color = glm::vec4(1.f);
+                    btn.pos = glm::vec3(__layers[cI]->layerButton.pos.x, __layers[cI]->layerButton.pos.y + __layers[cI]->layerButton.scale.y + btn.scale.y, __layers[cI]->layerButton.pos.z + 0.05f);
+                    if(!(crsPos.y > __layers[cI]->layerButton.pos.y) && (cI == __layers.size() - 1 && crsPos.y < __layers[cI]->layerButton.pos.y)){
+                        btn.pos.y = __layers[cI]->layerButton.pos.y - __layers[cI]->layerButton.scale.y - btn.scale.y;
+                        btnMovingI = cI + 1;                    
+                    }
+                    else{
+                        btnMovingI = cI;                    
+                    }
+
+                    btn.render(timer, false);
+                    break;
+                }
+            }
+
+            std::vector<Layer*> __layersCopy = __layers;
+            int copyCount = 0;
+            for (int cI = __layersCopy.size() -1; cI >= 0; cI--)
+            {
+                glm::vec3 btnPos = glm::vec3(crsPos.x, crsPos.y + btnScale.y * (copyCount * 2), layerPanel.pos.z + 0.05f);
+                if(layerPanel.hover)
+                    btnPos.x = layerPanel.pos.x;
+                
+                if(__layers[i]->subSelected && __layersCopy[cI]->subSelected || cI == i){
+                    if(copyCount == 0)
+                        movingBtnIndices.clear();    
+                    movingBtnIndices.push_back(cI);
+                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f);
+                    copyCount++;
+                }
+            }
+            
+        }
+
+        if(layerPanel.hover && shortcuts_CTRL_A()){
+            for (size_t cI = 0; cI < __layers.size(); cI++){
+                __layers[cI]->subSelected = true;
+            }
+        }
+
         if(layerMSG == 1){
-            __layers.erase(__layers.begin() + i);
-            i--;
+            for (size_t cI = 0; cI < __layers.size(); cI++){
+                if(__layers[cI]->subSelected || __layers[cI]->mainSelected){
+                    __layers.erase(__layers.begin() + cI);
+                    cI--;
+                }
+            }
+
+            break;
+        }
+
+        if(layerMSG == 2){
+            for (int cI = 0; cI < __layers.size(); cI++)
+            {
+                if(cI != i){
+                    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && __layers[cI]->mainSelected){
+                        for (int cII = 0; cII < __layers.size(); cII++){
+                            if(cII < std::max(cI, i) && cII > std::min(cI, i))
+                                __layers[cII]->subSelected = true;
+                        }
+                    }
+                    
+                    __layers[cI]->mainSelected = false;   
+                    
+                    
+                    if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
+                        __layers[cI]->subSelected = false;
+                }
+            }
         }
         
         count++;
+    }
+
+    if(!anyBtnClickState1){
+        if(btnMoving){
+            for (size_t i = 0; i < movingBtnIndices.size(); i++)
+            {
+                moveLayer(movingBtnIndices[i], btnMovingI);
+            }
+        }
+        btnMoving = false;
     }
 }
 
