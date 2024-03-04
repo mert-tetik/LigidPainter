@@ -79,6 +79,9 @@ public:
     std::string layerType;
     /*! @brief Button of the layer to display this layer*/
     Button layerButton;
+    
+    bool renamingMode = false;
+    TextBox renamingTextBox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Select A Path", 6.f, false);
 
     Button eyeBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.7f, 1.f), "", appTextures.eyeOpenedIcon, 0.f, false);
     bool hiden = false;
@@ -94,11 +97,12 @@ public:
                                                 {   
                                                     Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Layer Info"  , Texture(), 0.f, false), //1
                                                     Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Opacity Settings"  , Texture(), 0.f, false), //1
+                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Rename"  , Texture(), 0.f, false), //1
                                                     Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Delete"  , Texture(), 0.f, false), //1
                                                 }
                                             )
                                         }, 
-                                        glm::vec2(5.f, 3.f), glm::vec3(50.f, 50.f, 0.7), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, true, true, true, 1.f, 1, {}, 20.f, true
+                                        glm::vec2(5.f, 4.f), glm::vec3(50.f, 50.f, 0.7), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, true, true, true, 1.f, 1, {}, 20.f, true
                                     );
 
     bool alphaSettingsMode = false;

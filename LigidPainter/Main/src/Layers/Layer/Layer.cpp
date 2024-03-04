@@ -211,9 +211,13 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
     layerButton.pos = pos;
     layerButton.scale = scale;
+    if(renamingMode)
+        layerButton.text = "";
+    else    
+        layerButton.text = this->title;
     layerButton.render(timer, doMosueTracking && !eyeBtn.hover);
 
-    if(scale.x > 6.f){
+    if(scale.x > 6.f && !renamingMode){
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity / 2.f);
         Button layerIconDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->layerIcon, 0.f, false);
         layerIconDisplayer.color = glm::vec4(0.f);
@@ -255,6 +259,20 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         generalOpacityDisplayer.pos = generalOpacityMapDisplayer.pos;
         generalOpacityDisplayer.pos.x -= generalOpacityMapDisplayer.scale.x + generalOpacityDisplayer.scale.x;
         generalOpacityDisplayer.render(timer, false);
+    }
+
+    if(renamingMode){
+        renamingTextBox.active = true;
+        renamingTextBox.scale = this->layerButton.scale;
+        renamingTextBox.pos = this->layerButton.pos;
+        this->renamingTextBox.text = this->title;
+        renamingTextBox.render(timer, doMosueTracking);
+        this->title = this->renamingTextBox.text;
+        renamingTextBox.outlineColor2 = glm::vec4(0.f);
+
+        if(*Mouse::LClick() || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ENTER)){
+            renamingMode = false;
+        }
     }
 
     if(mainSelected){
@@ -302,6 +320,9 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
             rightClicked = false;
         }
         if(contextMenu.sections[0].elements[2].button.clicked){
+            renamingMode = true;
+        }
+        if(contextMenu.sections[0].elements[3].button.clicked){
             rightClicked = false;
             return 1;
         }
