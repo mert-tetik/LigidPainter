@@ -51,7 +51,7 @@ static void moveLayer(int src, int dest){
         __layers.insert(__layers.begin() + dest, layer);
 }
 
-void layers_render(Timer& timer, Panel &layerPanel){
+void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog){
     int count = 0;
 
     bool anyBtnClickState1 = false;
@@ -59,7 +59,7 @@ void layers_render(Timer& timer, Panel &layerPanel){
     {
         glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 2.f); 
         glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
-        int layerMSG = __layers[i]->render_graphics(timer, true, btnPos, btnScale, 1.f);
+        int layerMSG = __layers[i]->render_graphics(timer, true, btnPos, btnScale, 1.f, materialSelectionDialog);
         
         if(__layers[i]->layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
             btnMoving = true;
@@ -100,7 +100,7 @@ void layers_render(Timer& timer, Panel &layerPanel){
                     if(copyCount == 0)
                         movingLayers.clear();    
                     movingLayers.push_back(__layers[cI]);
-                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f);
+                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, materialSelectionDialog);
                     copyCount++;
                 }
             }

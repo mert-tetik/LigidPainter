@@ -1107,7 +1107,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     layersPanel.render(timer, !anyDialogActive);
 
-    layers_render(timer, layersPanel);
+    layers_render(timer, layersPanel, this->materialSelectionDialog);
     
     Debugger::block("GUI : Panels : Layers Panel"); // End
 

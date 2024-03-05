@@ -207,7 +207,7 @@ void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
     }
 }
 
-int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity){
+int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog){
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
     layerButton.pos = pos;
     layerButton.scale = scale;
@@ -326,10 +326,19 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
             rightClicked = false;
             return 1;
         }
+        if(contextMenu.sections[0].elements.size() > 4){
+            if(contextMenu.sections[0].elements[4].button.clicked){
+                elementSelectionMode = true;
+                rightClicked = false;
+            }
+        }
 
         if(!contextMenu.hover)
             rightClicked = false;
     }
+
+    if(elementSelectionMode)
+        this->render_element_selection_panel(timer, doMosueTracking, materialSelectionDialog);
 
     if(alphaSettingsMode)
         this->renderAlphaSettingsPanel(timer, doMosueTracking);
