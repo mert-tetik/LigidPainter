@@ -30,17 +30,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 std::vector<Layer*> __layers;
 
 static bool btnMoving = false;
-static std::vector<int> movingBtnIndices;
+static std::vector<Layer*> movingLayers;
 static int btnMovingI = 0;
 
 static void moveLayer(int src, int dest){
-    std::cout << "dest : " << dest << std::endl;
-    
     if(src >= __layers.size() && src < 0)
         return;
 
     Layer* layer = __layers[src];
     __layers.erase(__layers.begin() + src);
+
+    if(src < dest)
+        dest--;
 
     if(dest >= __layers.size())
         __layers.push_back(layer);
@@ -97,8 +98,8 @@ void layers_render(Timer& timer, Panel &layerPanel){
                 
                 if(__layers[i]->subSelected && __layersCopy[cI]->subSelected || cI == i){
                     if(copyCount == 0)
-                        movingBtnIndices.clear();    
-                    movingBtnIndices.push_back(cI);
+                        movingLayers.clear();    
+                    movingLayers.push_back(__layers[cI]);
                     __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f);
                     copyCount++;
                 }
@@ -148,9 +149,33 @@ void layers_render(Timer& timer, Panel &layerPanel){
 
     if(!anyBtnClickState1){
         if(btnMoving){
-            for (size_t i = 0; i < movingBtnIndices.size(); i++)
+            Layer* movingLayer;
+            int movingI = 0;
+            
+            if(btnMovingI != __layers.size()){
+                movingLayer = __layers[btnMovingI];
+            }
+            else{
+                movingI = __layers.size();
+            }
+            
+            for (int i = movingLayers.size() - 1; i >= 0 ; i--)
             {
-                moveLayer(movingBtnIndices[i], btnMovingI);
+                int movingLayerI = 0;
+                for (size_t ii = 0; ii < __layers.size(); ii++)
+                {
+                    if(btnMovingI != __layers.size()){
+                        if(__layers[ii] == movingLayer){
+                            movingI = ii;
+                        }
+                    }
+
+                    if(__layers[ii] == movingLayers[i]){
+                        movingLayerI = ii;
+                    }
+                }
+                
+                moveLayer(movingLayerI, movingI);
             }
         }
         btnMoving = false;
