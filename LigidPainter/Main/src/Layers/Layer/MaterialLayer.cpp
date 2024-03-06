@@ -69,10 +69,13 @@ void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTra
     if(materialSelectPanel.hover)
         __enteredPanelOnce = true;
 
+    if(materialSelectionDialog.dialogControl.isActive())
+        __enteredPanelOnce = false;
+
     if(*Mouse::LPressed())
         __enteredPanelOnce = false;
 
-    if(*Mouse::LClick() && !__enteredPanelOnce && !materialSelectPanel.hover){
+    if(*Mouse::LClick() && !__enteredPanelOnce && !materialSelectPanel.hover && !materialSelectionDialog.dialogControl.isActive()){
         this->elementSelectionMode = false;
         __enteredPanelOnce = false;
     }
