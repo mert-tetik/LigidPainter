@@ -51,7 +51,7 @@ static void moveLayer(int src, int dest){
         __layers.insert(__layers.begin() + dest, layer);
 }
 
-void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog){
+void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, bool doMouseTracking){
     int count = 0;
 
     bool anyBtnClickState1 = false;
@@ -59,7 +59,7 @@ void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &mat
     {
         glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 2.f); 
         glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
-        int layerMSG = __layers[i]->render_graphics(timer, true, btnPos, btnScale, 1.f, materialSelectionDialog);
+        int layerMSG = __layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, materialSelectionDialog);
         
         if(__layers[i]->layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
             btnMoving = true;
@@ -253,4 +253,13 @@ void layers_update_result(unsigned int resolution, glm::vec3 baseColor){
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "layers_update_result");
     }
     
+}
+
+bool layers_any_dialog_active(){
+    for (size_t i = 0; i < __layers.size(); i++)
+    {
+        if(__layers[i]->elementSelectionMode || __layers[i]->alphaSettingsMode || __layers[i]->infoMode || __layers[i]->renamingMode || __layers[i]->rightClicked)
+            return true;
+    }
+    return false;
 }

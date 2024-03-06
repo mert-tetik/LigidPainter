@@ -266,11 +266,11 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         renamingTextBox.scale = this->layerButton.scale;
         renamingTextBox.pos = this->layerButton.pos;
         this->renamingTextBox.text = this->title;
-        renamingTextBox.render(timer, doMosueTracking);
+        renamingTextBox.render(timer, true);
         this->title = this->renamingTextBox.text;
         renamingTextBox.outlineColor2 = glm::vec4(0.f);
 
-        if(*Mouse::LClick() || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ENTER)){
+        if(*Mouse::LClick() || *Mouse::RClick() || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ENTER)){
             renamingMode = false;
         }
     }
@@ -305,9 +305,6 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         contextMenu.pos = glm::vec3(*Mouse::cursorPos() / *Settings::videoScale() * 100.f, pos.z + 0.04f);
     }
 
-    if(!doMosueTracking)
-        rightClicked = false;
-
     if(rightClicked){
         contextMenu.clearDepthBuffer = false;
         contextMenu.render(timer, true);
@@ -321,6 +318,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         }
         if(contextMenu.sections[0].elements[2].button.clicked){
             renamingMode = true;
+            rightClicked = false;
         }
         if(contextMenu.sections[0].elements[3].button.clicked){
             rightClicked = false;
@@ -338,13 +336,13 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     }
 
     if(elementSelectionMode)
-        this->render_element_selection_panel(timer, doMosueTracking, materialSelectionDialog);
+        this->render_element_selection_panel(timer, true, materialSelectionDialog);
 
     if(alphaSettingsMode)
-        this->renderAlphaSettingsPanel(timer, doMosueTracking);
+        this->renderAlphaSettingsPanel(timer, true);
 
     if(infoMode)
-        this->renderInfoPanel(timer, doMosueTracking);
+        this->renderInfoPanel(timer, true);
     
     
     if(layerButton.clicked || (layerButton.hover && *Mouse::RClick() && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && !subSelected && !mainSelected)){

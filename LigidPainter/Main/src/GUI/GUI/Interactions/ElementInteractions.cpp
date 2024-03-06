@@ -20,6 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "Layers/Layers.hpp"
 
 #include <string>
 #include <fstream>
@@ -67,6 +68,7 @@ void UI::elementInteraction(
                     texturePackEditorDialog.dialogControl.isActive() ||
                     modelInfoDialog.dialogControl.isActive() ||
                     painter.paintingoverTextureEditorMode ||
+                    layers_any_dialog_active() ||
                     dropper.active ||
                     LigidGL::getTime() - lastSecAnyDialogActiveWasTrue <= 0.6; 
 
@@ -94,6 +96,7 @@ void UI::elementInteraction(
                     mirrorCheckComboList.hover||
                     logDialog.isHovered() ||
                     layersPanel.hover ||
+                    addLayerPanel.hover ||
                     vectorPaintingMode2DModeWrapCheckBox.hover ||
                     paintingBrushButton.hover ||
                     vectorPaintingModePropertyPanel.hover;

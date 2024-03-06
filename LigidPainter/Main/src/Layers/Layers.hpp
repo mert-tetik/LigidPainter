@@ -226,8 +226,9 @@ public:
     }
 };
 
-void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog);
+void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, bool doMouseTracking);
 void layers_add_new(Layer* layer);
 void layers_update_result();
+bool layers_any_dialog_active();
 
 #endif // LIGID_LAYERS_HPP
