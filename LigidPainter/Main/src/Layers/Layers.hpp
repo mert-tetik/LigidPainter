@@ -75,7 +75,7 @@ public:
     std::string title;
     /*! @brief This icon represents the layer & rendered with the button*/
     Texture layerIcon;
-    /*! @brief This string represents the type of the layer (solid, painting, material, vector)*/
+    /*! @brief This string represents the type of the layer ("texture", "painting", "material", "vector")*/
     std::string layerType;
     /*! @brief Button of the layer to display this layer*/
     Button layerButton;
@@ -162,8 +162,6 @@ public:
 */
 class PaintingLayer : public Layer {
 public:
-    MaterialChannels channels;
-
     PaintingLayer(){
         this->title = "Painting Layer";
         this->layerType = "painting";
@@ -174,7 +172,7 @@ public:
     }
     
     void render() override {
-    
+        
     }
 
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog) override{
@@ -230,5 +228,6 @@ void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &mat
 void layers_add_new(Layer* layer);
 void layers_update_result();
 bool layers_any_dialog_active();
+MaterialChannels layers_get_painting_channels(bool* success);
 
 #endif // LIGID_LAYERS_HPP

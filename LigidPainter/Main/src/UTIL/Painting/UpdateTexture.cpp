@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "LibrarySystem/Library.hpp"
+#include "Layers/Layers.hpp"
 
 #include <string>
 #include <iostream>
@@ -171,24 +172,18 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
         return;
     }
 
-    if(
-            this->selectedDisplayingModeIndex == 1 &&
-            (!getModel()->meshes[this->selectedMeshIndex].albedo.ID ||
-            !getModel()->meshes[this->selectedMeshIndex].roughness.ID ||
-            !getModel()->meshes[this->selectedMeshIndex].metallic.ID ||
-            !getModel()->meshes[this->selectedMeshIndex].normalMap.ID ||
-            !getModel()->meshes[this->selectedMeshIndex].heightMap.ID ||
-            !getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
-        )
-    {
-        LGDLOG::start << "WARNING : Painting : Missing texture detected!" << LGDLOG::end;
+    bool channelsSuccesss;
+    MaterialChannels channels = layers_get_painting_channels(&channelsSuccesss);
+    if(this->selectedDisplayingModeIndex == 1 && !channelsSuccesss){
+        LGDLOG::start << "ERROR : Painting : Select a painting layer to paint" << LGDLOG::end;
+        return;
     }
+
 
     int txtrI = this->getSelectedTextureIndexInLibrary();
     
     if(this->useCustomMaterial && this->selectedMeshIndex < getModel()->meshes.size()){
         glm::vec2 res = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
-
         customMatMesh.EBO = getModel()->meshes[this->selectedMeshIndex].EBO;
         customMatMesh.VBO = getModel()->meshes[this->selectedMeshIndex].VBO;
         customMatMesh.VAO = getModel()->meshes[this->selectedMeshIndex].VAO;
@@ -218,15 +213,16 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
     }
 
     if(this->materialPainting){
+
         registerPaintingAction(
                                     "Multi-channel painting", 
                                     Texture(), 
-                                    getModel()->meshes[this->selectedMeshIndex].albedo, this->enableAlbedoChannel, 
-                                    getModel()->meshes[this->selectedMeshIndex].roughness, this->enableRoughnessChannel,
-                                    getModel()->meshes[this->selectedMeshIndex].metallic, this->enableMetallicChannel,
-                                    getModel()->meshes[this->selectedMeshIndex].normalMap, this->enableNormalMapChannel,
-                                    getModel()->meshes[this->selectedMeshIndex].heightMap, this->enableHeightMapChannel,
-                                    getModel()->meshes[this->selectedMeshIndex].ambientOcclusion, this->enableAOChannel
+                                    channels.albedo, this->enableAlbedoChannel, 
+                                    channels.roughness, this->enableRoughnessChannel,
+                                    channels.metallic, this->enableMetallicChannel,
+                                    channels.normalMap, this->enableNormalMapChannel,
+                                    channels.heightMap, this->enableHeightMapChannel,
+                                    channels.ambientOcclusion, this->enableAOChannel
                                 );
     }
     else if(txtrI != -1){
@@ -270,37 +266,37 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
                 if(i == 0){
                     clr = this->getSelectedColor().getRGB_normalized();
                     enableChannel = this->enableAlbedoChannel;
-                    txtr = getModel()->meshes[this->selectedMeshIndex].albedo;
+                    txtr = channels.albedo;
                     customMatTxtr = customMatMesh.albedo;
                 }
                 if(i == 1){
                     clr = glm::vec3(this->roughnessVal);
                     enableChannel = this->enableRoughnessChannel;
-                    txtr = getModel()->meshes[this->selectedMeshIndex].roughness;
+                    txtr = channels.roughness;
                     customMatTxtr = customMatMesh.roughness;
                 }
                 if(i == 2){
                     clr = glm::vec3(this->metallicVal);
                     enableChannel = this->enableMetallicChannel;
-                    txtr = getModel()->meshes[this->selectedMeshIndex].metallic;
+                    txtr = channels.metallic;
                     customMatTxtr = customMatMesh.metallic;
                 }
                 if(i == 3){
                     clr = glm::vec3(this->normalMapStrengthVal);
                     enableChannel = this->enableNormalMapChannel;
-                    txtr = getModel()->meshes[this->selectedMeshIndex].normalMap;
+                    txtr = channels.normalMap;
                     customMatTxtr = customMatMesh.normalMap;
                 }
                 if(i == 4){
                     clr = glm::vec3(this->heightMapVal);
                     enableChannel = this->enableHeightMapChannel;
-                    txtr = getModel()->meshes[this->selectedMeshIndex].heightMap;
+                    txtr = channels.heightMap;
                     customMatTxtr = customMatMesh.heightMap;
                 }
                 if(i == 5){
                     clr = glm::vec3(this->ambientOcclusionVal);
                     enableChannel = this->enableAOChannel;
-                    txtr = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion;
+                    txtr = channels.ambientOcclusion;
                     customMatTxtr = customMatMesh.ambientOcclusion;
                 }
 

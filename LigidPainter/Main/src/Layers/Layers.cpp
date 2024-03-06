@@ -263,3 +263,17 @@ bool layers_any_dialog_active(){
     }
     return false;
 }
+
+MaterialChannels layers_get_painting_channels(bool* success){
+    for (size_t i = 0; i < __layers.size(); i++)
+    {
+        if(__layers[i]->mainSelected){
+            *success = true;
+            if(__layers[i]->layerType == "paint")
+                return __layers[i]->result;
+        }
+    }
+    
+    *success = false;
+    return MaterialChannels();
+}

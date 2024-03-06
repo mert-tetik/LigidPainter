@@ -55,5 +55,5 @@ void main(){
 
     float txtrAlpha = texture(txtr, TexCoords).a; 
 
-    fragColor = vec4(getBrushedTexture(txtr, brushTxtr, paintingTexture, TexCoords, screenPos.xy, brushModeState, smearTransformStrength, smearBlurStrength, multiChannelsPaintingMod == 1, channelI, channelStrength, usePaintingOver == 1), txtrAlpha);
+    fragColor = vec4(getBrushedTexture(txtr, brushTxtr, paintingTexture, TexCoords, screenPos.xy, brushModeState, smearTransformStrength, smearBlurStrength, multiChannelsPaintingMod == 1, channelI, channelStrength, usePaintingOver == 1));
 }
