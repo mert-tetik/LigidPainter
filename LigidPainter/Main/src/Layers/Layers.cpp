@@ -276,7 +276,16 @@ void layers_update_result(unsigned int resolution, glm::vec3 baseColor){
 bool layers_any_dialog_active(){
     for (size_t i = 0; i < __layers.size(); i++)
     {
-        if(__layers[i]->elementSelectionMode || __layers[i]->alphaSettingsMode || __layers[i]->infoMode || __layers[i]->renamingMode || __layers[i]->rightClicked)
+        if((__layers[i]->elementSelectionMode && __layers[i]->layerType != "vector") || __layers[i]->alphaSettingsMode || __layers[i]->infoMode || __layers[i]->renamingMode || __layers[i]->rightClicked)
+            return true;
+    }
+    return false;
+}
+
+bool layers_any_vector_editing(){
+    for (size_t i = 0; i < __layers.size(); i++)
+    {
+        if((__layers[i]->elementSelectionMode && __layers[i]->layerType == "vector"))
             return true;
     }
     return false;
@@ -287,7 +296,7 @@ MaterialChannels layers_get_painting_channels(bool* success){
     {
         if(__layers[i]->mainSelected){
             *success = true;
-            if(__layers[i]->layerType == "painting")
+            if(__layers[i]->layerType == "painting" || __layers[i]->layerType == "vector")
                 return __layers[i]->result;
         }
     }

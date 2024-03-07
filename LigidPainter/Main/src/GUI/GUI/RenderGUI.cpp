@@ -314,7 +314,11 @@ void UI::renderSceneInfoWrapModeCheckbox(Timer& timer, Painter& painter){
     currentModeDisplayer.render(timer, false);
     currentModeHintDisplayer.render(timer, false);
     wrapModeCheckbox.render(timer, !anyDialogActive);
-    painter.wrapMode = wrapModeCheckbox.clickState1;
+    
+    if(!layers_any_vector_editing())
+        painter.wrapMode = wrapModeCheckbox.clickState1;
+    else
+        wrapModeCheckbox.clickState1 = painter.wrapMode;
 }
 
 void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPerc){
@@ -994,7 +998,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             painter.render2DVectors(timer, !anyDialogActive && !anyPanelHover);
         }
         else{
-            painter.render3DVectors(timer, !anyDialogActive && !anyPanelHover, painter.vectorStrokes3D);
+            painter.render3DVectors(timer, !anyDialogActive && !anyPanelHover);
         }
     }
     Debugger::block("GUI : Texture fields"); // End

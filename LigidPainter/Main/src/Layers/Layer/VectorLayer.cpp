@@ -27,11 +27,53 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ContextMenuSystem/ContextMenus.hpp"
 #include "Layers/Layers.hpp"
 
-
+static Button cancel_editing_vectors_btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(7.f,2.f), "Quit Vector Editing", Texture(), 0.f, false);
+static bool firstFrameActivated = true;
 void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter){
-    /*painter.render3DVectors(timer, true, this->strokes);
-    painter.applyVectorStrokes(this->strokes, Panel(), glm::mat4(0.f), 0, )*/
+    
+    if(firstFrameActivated){
+        painter.vectorStrokes3D = this->strokes;
+        painter.wrapMode = true;
+        painter.selectedDisplayingModeIndex = 1;
+        painter.selectedPaintingModeIndex = 5;
+    }
+
+    cancel_editing_vectors_btn.pos = glm::vec3(50.f, 20.f, 0.8f);
+    cancel_editing_vectors_btn.render(timer, true);
+    if(cancel_editing_vectors_btn.clicked || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ENTER)){
+        this->elementSelectionMode = false;
+    }
+
+    firstFrameActivated = false;
+
+    bool anyStrokeInteracted = false;
+    for (size_t i = 0; i < painter.vectorStrokes3D.size(); i++)
+    {
+        if(painter.vectorStrokes3D[i].startPoint.moving || painter.vectorStrokes3D[i].endPoint.moving)
+            anyStrokeInteracted = true;
+    }
+    
+
+    if(anyStrokeInteracted){
+        painter.applyVectorStrokes(
+                                {}, 
+                                Panel(), 
+                                glm::mat4(0.f), 
+                                0, 
+                                Filter(), 
+                                Box(), 
+                                Material(),
+                                {},
+                                false
+                            );
+        
+        layers_update_result(1024, glm::vec3(0.f));
+    }
+
+    if(!this->elementSelectionMode)
+        firstFrameActivated = true;
 }
 
 void VectorLayer::render(){
+
 }

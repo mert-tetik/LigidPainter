@@ -239,6 +239,7 @@ void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &mat
 void layers_add_new(Layer* layer);
 void layers_update_result(unsigned int resolution, glm::vec3 baseColor);
 bool layers_any_dialog_active();
+bool layers_any_vector_editing();
 MaterialChannels layers_get_painting_channels(bool* success);
 
 #endif // LIGID_LAYERS_HPP

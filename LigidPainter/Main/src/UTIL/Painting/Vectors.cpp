@@ -245,7 +245,7 @@ void Painter::render2DVectors(Timer& timer, bool doMouseTracking){
     }
 }
 
-void Painter::render3DVectors(Timer& timer, bool doMouseTracking, std::vector<VectorStroke3D>& strokes){
+void Painter::render3DVectors(Timer& timer, bool doMouseTracking){
     
     // Set the cursor to ink pen if the current cursor is the default one 
     if(doMouseTracking && Mouse::activeCursor()->cursorType == Mouse::defaultCursor()->cursorType)
@@ -275,20 +275,20 @@ void Painter::render3DVectors(Timer& timer, bool doMouseTracking, std::vector<Ve
     // Render all the vectors
     int clickedPointI = -1; 
     bool anyPointMovingCondition = false;
-    for (size_t i = 0; i < strokes.size(); i++)
+    for (size_t i = 0; i < this->vectorStrokes3D.size(); i++)
     {
-        if(strokes[i].draw(timer, 0.0005f, doMouseTracking, strokes, i, *this))
+        if(this->vectorStrokes3D[i].draw(timer, 0.0005f, doMouseTracking, this->vectorStrokes3D, i, *this))
             clickedPointI = i;
     
-        if(strokes[i].startPoint.areMovingConditionsSet(true))
+        if(this->vectorStrokes3D[i].startPoint.areMovingConditionsSet(true))
             anyPointMovingCondition = true;
         
-        if(strokes[i].endPoint.areMovingConditionsSet(true))
+        if(this->vectorStrokes3D[i].endPoint.areMovingConditionsSet(true))
             anyPointMovingCondition = true;
     }
 
     if(anyPointMovingCondition && !lastVecMovingConditionState)
-        registerVectorAction("Wrapped point moved", strokes);
+        registerVectorAction("Wrapped point moved", this->vectorStrokes3D);
 
     lastVecMovingConditionState = anyPointMovingCondition;
 
@@ -416,12 +416,13 @@ void Painter::applyVectorStrokes(
                                 );
                 }
             }
-            
+        }
+
+        if(this->vectorStrokes3D.size()){
             this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
 
             this->refreshPainting();
-        }
-
+        }        
 
         ShaderSystem::buttonShader().use();
         Settings::defaultFramebuffer()->FBO.bind();

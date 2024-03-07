@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "Layers/Layers.hpp"
 
 #include <string>
 #include <fstream>
@@ -38,16 +39,21 @@ void displayingModesPanelInteraction(
     //!PAINTING MODES PANEL
     for (size_t i = 0; i < displayingModesPanel.sections[0].elements.size(); i++)
     {
-        if(displayingModesPanel.sections[0].elements[i].button.clickState1){ //Painting mode pressed
-            if(painter.selectedDisplayingModeIndex != i){
-                displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
-                painter.selectedDisplayingModeIndex = i;
-                break;
+        if(!layers_any_vector_editing()){
+            if(displayingModesPanel.sections[0].elements[i].button.clickState1){ //Painting mode pressed
+                    if(painter.selectedDisplayingModeIndex != i){
+                        displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
+                        painter.selectedDisplayingModeIndex = i;
+                        break;
+                    }
             }
+        }
+        else{
+            displayingModesPanel.sections[0].elements[i].button.clickState1 = false;
         }
 
         if(painter.selectedDisplayingModeIndex == i){
-            displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = true;
+            displayingModesPanel.sections[0].elements[i].button.clickState1 = true;
         }
     }
 }

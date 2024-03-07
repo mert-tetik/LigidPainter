@@ -20,6 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "Layers/Layers.hpp"
 
 #include <string>
 #include <fstream>
@@ -48,15 +49,20 @@ void paintingModesPanelInteraction(
     //!PAINTING MODES PANEL
     for (size_t i = 0; i < paintingModesPanel.sections[0].elements.size(); i++)
     {
-        if(paintingModesPanel.sections[0].elements[i].button.clickState1){ //Painting mode pressed
-            if(painter.selectedPaintingModeIndex != i){
-                paintingModesPanel.sections[0].elements[painter.selectedPaintingModeIndex].button.clickState1 = false;
-                painter.selectedPaintingModeIndex = i;
-                break;
+        if(!layers_any_vector_editing()){
+            if(paintingModesPanel.sections[0].elements[i].button.clickState1){ //Painting mode pressed
+                if(painter.selectedPaintingModeIndex != i){
+                    paintingModesPanel.sections[0].elements[painter.selectedPaintingModeIndex].button.clickState1 = false;
+                    painter.selectedPaintingModeIndex = i;
+                    break;
+                }
             }
         }
+        else{
+            paintingModesPanel.sections[0].elements[i].button.clickState1 = false;
+        }
         if(painter.selectedPaintingModeIndex == i){
-            paintingModesPanel.sections[0].elements[painter.selectedPaintingModeIndex].button.clickState1 = true;
+            paintingModesPanel.sections[0].elements[i].button.clickState1 = true;
         }
     }
 

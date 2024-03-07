@@ -877,7 +877,7 @@ public:
     /**/void clearSelectedVectorPoints();
     /**/void subdivideSelectedPoints();
     /**/void render2DVectors(Timer& timer, bool doMouseTracking);
-    /**/void render3DVectors(Timer& timer, bool doMouseTracking, std::vector<VectorStroke3D>& strokes);
+    /**/void render3DVectors(Timer& timer, bool doMouseTracking);
     /**/void addNew2DVector();
     /**/void addNew3DVector();
     /**/void update3DVectorBuffers();
