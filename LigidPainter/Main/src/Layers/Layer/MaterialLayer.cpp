@@ -54,7 +54,7 @@ Panel materialSelectPanel = Panel(
                                     true
                                 );
 
-void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog){
+void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter){
     materialSelectPanel.sections[0].elements[0].button.texture = this->material.displayingTexture;
     
     if(materialSelectPanel.sections[0].elements[0].button.clicked){
@@ -103,4 +103,6 @@ void MaterialLayer::render(){
     {
         this->material.materialModifiers[i].updateMaterialChannels(this->material, resMesh, 1024, i, appTextures.white, 0, false, Model());
     }
+
+    layers_update_result(1024, glm::vec3(0.f));
 }

@@ -994,7 +994,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             painter.render2DVectors(timer, !anyDialogActive && !anyPanelHover);
         }
         else{
-            painter.render3DVectors(timer, !anyDialogActive && !anyPanelHover);
+            painter.render3DVectors(timer, !anyDialogActive && !anyPanelHover, painter.vectorStrokes3D);
         }
     }
     Debugger::block("GUI : Texture fields"); // End
@@ -1107,7 +1107,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     layersPanel.render(timer, !anyDialogActive);
 
-    layers_render(timer, layersPanel, this->materialSelectionDialog, !anyDialogActive);
+    layers_render(timer, layersPanel, this->materialSelectionDialog, painter, !anyDialogActive);
     
     Debugger::block("GUI : Panels : Layers Panel"); // End
 

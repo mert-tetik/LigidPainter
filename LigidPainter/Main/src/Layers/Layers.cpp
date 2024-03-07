@@ -51,7 +51,7 @@ static void moveLayer(int src, int dest){
         __layers.insert(__layers.begin() + dest, layer);
 }
 
-void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, bool doMouseTracking){
+void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, bool doMouseTracking){
     int count = 0;
 
     bool anyBtnClickState1 = false;
@@ -59,7 +59,7 @@ void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &mat
     {
         glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 2.f); 
         glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
-        int layerMSG = __layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, materialSelectionDialog);
+        int layerMSG = __layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, materialSelectionDialog, painter);
         
         if(__layers[i]->layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
             btnMoving = true;
@@ -100,7 +100,7 @@ void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &mat
                     if(copyCount == 0)
                         movingLayers.clear();    
                     movingLayers.push_back(__layers[cI]);
-                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, materialSelectionDialog);
+                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, materialSelectionDialog, painter);
                     copyCount++;
                 }
             }
@@ -196,10 +196,28 @@ void layers_update_result(unsigned int resolution, glm::vec3 baseColor){
         layers_update_FBO.purpose = "layers_update_FBO";
     }
 
+    if(!getModel()->meshes[0].albedo.ID){
+        getModel()->meshes[0].albedo = Texture(nullptr, resolution, resolution);
+        getModel()->meshes[0].roughness = Texture(nullptr, resolution, resolution);
+        getModel()->meshes[0].metallic = Texture(nullptr, resolution, resolution);
+        getModel()->meshes[0].normalMap = Texture(nullptr, resolution, resolution);
+        getModel()->meshes[0].heightMap = Texture(nullptr, resolution, resolution);
+        getModel()->meshes[0].ambientOcclusion = Texture(nullptr, resolution, resolution);
+    }
+    else{
+        glm::vec2 albedoRes = getModel()->meshes[0].albedo.getResolution();
+        if(albedoRes.x != resolution){
+            getModel()->meshes[0].albedo.update(nullptr, resolution, resolution);
+            getModel()->meshes[0].roughness.update(nullptr, resolution, resolution);
+            getModel()->meshes[0].metallic.update(nullptr, resolution, resolution);
+            getModel()->meshes[0].normalMap.update(nullptr, resolution, resolution);
+            getModel()->meshes[0].heightMap.update(nullptr, resolution, resolution);
+            getModel()->meshes[0].ambientOcclusion.update(nullptr, resolution, resolution);
+        }
+    }
+    
     // Bind FBO
     layers_update_FBO.bind();
-
-    //TODO Init channel textures
 
     // Update FBO
     layers_update_FBO.setColorBuffer(
@@ -229,25 +247,25 @@ void layers_update_result(unsigned int resolution, glm::vec3 baseColor){
         ShaderSystem::layersUpdate().setVec2("scale", glm::vec2(0.5f));    
     
         ShaderSystem::layersUpdate().setInt("albedoTxtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.albedo.ID);
-        ShaderSystem::layersUpdate().setInt("roughnessTxtr", 1); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.roughness.ID);
-        ShaderSystem::layersUpdate().setInt("metallicTxtr", 2); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.metallic.ID);
-        ShaderSystem::layersUpdate().setInt("normalMapTxtr", 3); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.normalMap.ID);
-        ShaderSystem::layersUpdate().setInt("heightMapTxtr", 4); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.heightMap.ID);
-        ShaderSystem::layersUpdate().setInt("ambientOcclusionTxtr", 5); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.ambientOcclusion.ID);
+        ShaderSystem::layersUpdate().setInt("roughnessTxtr", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.roughness.ID);
+        ShaderSystem::layersUpdate().setInt("metallicTxtr", 2); glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.metallic.ID);
+        ShaderSystem::layersUpdate().setInt("normalMapTxtr", 3); glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.normalMap.ID);
+        ShaderSystem::layersUpdate().setInt("heightMapTxtr", 4); glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.heightMap.ID);
+        ShaderSystem::layersUpdate().setInt("ambientOcclusionTxtr", 5); glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, __layers[i]->result.ambientOcclusion.ID);
 
-        ShaderSystem::layersUpdate().setInt("generalMaskTxtr", 6); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.general_Alpha.alphaMap.ID);
+        ShaderSystem::layersUpdate().setInt("generalMaskTxtr", 6); glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.general_Alpha.alphaMapProceduralTxtr.ID);
         ShaderSystem::layersUpdate().setFloat("generalOpacity", __layers[i]->alpha.general_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("albedoMaskTxtr", 7); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.albedo_Alpha.alphaMap.ID);
+        ShaderSystem::layersUpdate().setInt("albedoMaskTxtr", 7); glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.albedo_Alpha.alphaMapProceduralTxtr.ID);
         ShaderSystem::layersUpdate().setFloat("albedoOpacity", __layers[i]->alpha.albedo_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("roughnessMaskTxtr", 8); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.roughness_Alpha.alphaMap.ID);
+        ShaderSystem::layersUpdate().setInt("roughnessMaskTxtr", 8); glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.roughness_Alpha.alphaMapProceduralTxtr.ID);
         ShaderSystem::layersUpdate().setFloat("roughnessOpacity", __layers[i]->alpha.roughness_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("metallicMaskTxtr", 9); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.metallic_Alpha.alphaMap.ID);
+        ShaderSystem::layersUpdate().setInt("metallicMaskTxtr", 9); glActiveTexture(GL_TEXTURE9); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.metallic_Alpha.alphaMapProceduralTxtr.ID);
         ShaderSystem::layersUpdate().setFloat("metallicOpacity", __layers[i]->alpha.metallic_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("normalMapMaskTxtr", 10); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.normalMap_Alpha.alphaMap.ID);
+        ShaderSystem::layersUpdate().setInt("normalMapMaskTxtr", 10); glActiveTexture(GL_TEXTURE10); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.normalMap_Alpha.alphaMapProceduralTxtr.ID);
         ShaderSystem::layersUpdate().setFloat("normalMapOpacity", __layers[i]->alpha.normalMap_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("heightMapMaskTxtr", 11); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.heightMap_Alpha.alphaMap.ID);
+        ShaderSystem::layersUpdate().setInt("heightMapMaskTxtr", 11); glActiveTexture(GL_TEXTURE11); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.heightMap_Alpha.alphaMapProceduralTxtr.ID);
         ShaderSystem::layersUpdate().setFloat("heightMapOpacity", __layers[i]->alpha.heightMap_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("ambientOcclusionMaskTxtr", 12); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.ambientOcclusion_Alpha.alphaMap.ID);
+        ShaderSystem::layersUpdate().setInt("ambientOcclusionMaskTxtr", 12); glActiveTexture(GL_TEXTURE12); glBindTexture(GL_TEXTURE_2D, __layers[i]->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr.ID);
         ShaderSystem::layersUpdate().setFloat("ambientOcclusionOpacity", __layers[i]->alpha.ambientOcclusion_Alpha.alphaValue);
    
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "layers_update_result");
@@ -269,7 +287,7 @@ MaterialChannels layers_get_painting_channels(bool* success){
     {
         if(__layers[i]->mainSelected){
             *success = true;
-            if(__layers[i]->layerType == "paint")
+            if(__layers[i]->layerType == "painting")
                 return __layers[i]->result;
         }
     }

@@ -127,6 +127,16 @@ void Layer::renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking){
     this->alpha.heightMap_Alpha.alphaMap = alphaSettingsPanel.sections[0].elements[11].button.texture;
     this->alpha.ambientOcclusion_Alpha.alphaValue = alphaSettingsPanel.sections[0].elements[12].rangeBar.value;
     this->alpha.ambientOcclusion_Alpha.alphaMap = alphaSettingsPanel.sections[0].elements[13].button.texture;
+
+    if(!this->alphaSettingsMode){
+        this->alpha.general_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.general_Alpha.alphaMapProceduralTxtr, 1024);
+        this->alpha.albedo_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.albedo_Alpha.alphaMapProceduralTxtr, 1024);
+        this->alpha.roughness_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.roughness_Alpha.alphaMapProceduralTxtr, 1024);
+        this->alpha.metallic_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.metallic_Alpha.alphaMapProceduralTxtr, 1024);
+        this->alpha.normalMap_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.normalMap_Alpha.alphaMapProceduralTxtr, 1024);
+        this->alpha.heightMap_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.heightMap_Alpha.alphaMapProceduralTxtr, 1024);
+        this->alpha.ambientOcclusion_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr, 1024);
+    }
 }
 
 Panel infoPanel = Panel(
@@ -136,24 +146,31 @@ Panel infoPanel = Panel(
                                             {   
                                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Title : "  , Texture(), 0.f, false), //0
                                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Type : "  , Texture(), 0.f, false), //1
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "General Mask Texture"  , Texture(), 0.f, false), //2
                                                 
-                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "ALBEDO"  , Texture(), 2.f, false), //2
-                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //3
-
-                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "ROUGHNESS"  , Texture(), 1.f, false), //4
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "ALBEDO"  , Texture(), 2.f, false), //3
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //4
                                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //5
 
-                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "METALLIC"  , Texture(), 1.f, false), //6
-                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //7
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "ROUGHNESS"  , Texture(), 1.f, false), //6
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //7
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //8
 
-                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "NORMAL MAP"  , Texture(), 1.f, false), //8
-                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //9
-
-                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "HEIGHT MAP"  , Texture(), 1.f, false), //10
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "METALLIC"  , Texture(), 1.f, false), //9
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //10
                                                 Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //11
 
-                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "AMBIENT OCCLUSION"  , Texture(), 1.f, false), //12
-                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //13
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "NORMAL MAP"  , Texture(), 1.f, false), //12
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //13
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //14
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "HEIGHT MAP"  , Texture(), 1.f, false), //15
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //16
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //17
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "AMBIENT OCCLUSION"  , Texture(), 1.f, false), //18
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //19
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //20
                                             }
                                         )
                                     }, 
@@ -178,12 +195,20 @@ void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
     infoPanel.sections[0].elements[1].button.text = "Type : " + this->layerType;
     infoPanel.sections[0].elements[1].button.texture = this->layerIcon;
     
-    infoPanel.sections[0].elements[3].button.texture = this->result.albedo;
-    infoPanel.sections[0].elements[5].button.texture = this->result.roughness;
-    infoPanel.sections[0].elements[7].button.texture = this->result.metallic;
-    infoPanel.sections[0].elements[9].button.texture = this->result.normalMap;
-    infoPanel.sections[0].elements[11].button.texture = this->result.heightMap;
-    infoPanel.sections[0].elements[13].button.texture = this->result.ambientOcclusion;
+    infoPanel.sections[0].elements[2].button.texture = this->alpha.albedo_Alpha.alphaMapProceduralTxtr;
+    infoPanel.sections[0].elements[4].button.texture = this->alpha.albedo_Alpha.alphaMapProceduralTxtr;
+    infoPanel.sections[0].elements[7].button.texture = this->alpha.roughness_Alpha.alphaMapProceduralTxtr;
+    infoPanel.sections[0].elements[10].button.texture = this->alpha.metallic_Alpha.alphaMapProceduralTxtr;
+    infoPanel.sections[0].elements[13].button.texture = this->alpha.normalMap_Alpha.alphaMapProceduralTxtr;
+    infoPanel.sections[0].elements[16].button.texture = this->alpha.heightMap_Alpha.alphaMapProceduralTxtr;
+    infoPanel.sections[0].elements[19].button.texture = this->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr;
+    
+    infoPanel.sections[0].elements[5].button.texture = this->result.albedo;
+    infoPanel.sections[0].elements[8].button.texture = this->result.roughness;
+    infoPanel.sections[0].elements[11].button.texture = this->result.metallic;
+    infoPanel.sections[0].elements[14].button.texture = this->result.normalMap;
+    infoPanel.sections[0].elements[17].button.texture = this->result.heightMap;
+    infoPanel.sections[0].elements[20].button.texture = this->result.ambientOcclusion;
     
     infoPanel.pos = this->layerButton.pos;
     infoPanel.pos.x -= this->layerButton.scale.x + infoPanel.scale.x;
@@ -207,7 +232,7 @@ void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
     }
 }
 
-int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog){
+int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog, Painter& painter){
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
     layerButton.pos = pos;
     layerButton.scale = scale;
@@ -336,7 +361,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     }
 
     if(elementSelectionMode)
-        this->render_element_selection_panel(timer, true, materialSelectionDialog);
+        this->render_element_selection_panel(timer, true, materialSelectionDialog, painter);
 
     if(alphaSettingsMode)
         this->renderAlphaSettingsPanel(timer, true);

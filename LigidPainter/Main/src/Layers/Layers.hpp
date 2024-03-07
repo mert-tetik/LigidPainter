@@ -43,8 +43,16 @@ struct MaterialChannels{
 struct ChannelAlpha{
     /*! @brief Alpha map (basically opacity map)*/
     Texture alphaMap;
+    Texture alphaMapProceduralTxtr;
     /*! @brief Alpha value (basically opacity)*/
     float alphaValue = 1.f;
+
+    void genTxtrs(){
+        char whitePx[4] = {127,127,127,127}; 
+        this->alphaMapProceduralTxtr = Texture(whitePx, 1, 1);
+        this->alphaMap = Texture();
+        this->alphaMap.proceduralProps.proceduralID = 24;
+    }
 };
 
 struct LayerAlpha{
@@ -116,13 +124,13 @@ public:
 
     /*! @brief Generate result textures for the layer */
     virtual void render() = 0;
-    virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog) = 0;
+    virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter) = 0;
 
     /*! 
         @brief Renders GUI elements for the layer
         @return 0 : No msg | 1 : Delete this layer | 2 : layer selected
     */
-    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog);
+    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog, Painter& painter);
 
     /*! @brief Generates the this->layerButton from scratch using this->title, this->layerIcon*/
     void updateLayerButton();
@@ -134,6 +142,14 @@ public:
         result.normalMap = Texture(nullptr ,1024, 1024);
         result.heightMap = Texture(nullptr ,1024, 1024);
         result.ambientOcclusion = Texture(nullptr ,1024, 1024);
+
+        this->alpha.general_Alpha.genTxtrs();
+        this->alpha.albedo_Alpha.genTxtrs();
+        this->alpha.roughness_Alpha.genTxtrs();
+        this->alpha.metallic_Alpha.genTxtrs();
+        this->alpha.normalMap_Alpha.genTxtrs();
+        this->alpha.heightMap_Alpha.genTxtrs();
+        this->alpha.ambientOcclusion_Alpha.genTxtrs();
     }
 };
 
@@ -154,7 +170,7 @@ public:
     
     void render() override;
     
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter) override;
 };
 
 /*!
@@ -175,7 +191,7 @@ public:
         
     }
 
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog) override{
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter) override{
 
     }
 };
@@ -196,7 +212,7 @@ public:
     }
     
     void render() override;
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter) override;
 };
 
 /*!
@@ -212,21 +228,16 @@ public:
         this->layerIcon = appTextures.inkPenIcon;
         this->updateLayerButton();
         this->genResultChannels();
-        this->contextMenu.sections[0].elements.pop_back();
     }
 
-    void render() override {
-    
-    }
+    void render() override;
 
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog) override{
-
-    }
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter) override;
 };
 
-void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, bool doMouseTracking);
+void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, bool doMouseTracking);
 void layers_add_new(Layer* layer);
-void layers_update_result();
+void layers_update_result(unsigned int resolution, glm::vec3 baseColor);
 bool layers_any_dialog_active();
 MaterialChannels layers_get_painting_channels(bool* success);
 

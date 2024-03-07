@@ -70,7 +70,7 @@ Panel textureSelectPanel = Panel(
                                     true
                                 );
 
-void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog){
+void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter){
     textureSelectPanel.sections[0].elements[1].button.textureSelection3D = true;
     textureSelectPanel.sections[0].elements[3].button.textureSelection3D = true;
     textureSelectPanel.sections[0].elements[5].button.textureSelection3D = true;
@@ -131,4 +131,6 @@ void TextureLayer::render(){
     this->channels.normalMap.generateProceduralTexture(getModel()->meshes[0], this->result.normalMap, 1024);
     this->channels.heightMap.generateProceduralTexture(getModel()->meshes[0], this->result.heightMap, 1024);
     this->channels.ambientOcclusion.generateProceduralTexture(getModel()->meshes[0], this->result.ambientOcclusion, 1024);
+
+    layers_update_result(1024, glm::vec3(0.f));
 }
