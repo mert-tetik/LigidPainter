@@ -143,15 +143,7 @@ void UI::libraryPanelDisplayerInteraction(
             
             std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
-                Model tdModel;
-                bool success = tdModel.loadModel(test, true, false);
-                if(tdModel.meshes.size() && success){
-                    Library::addModel(tdModel);
-                    UTIL::copyFileToFolder(test, project.folderPath + UTIL::folderDistinguisher() + "3DModels", 1);
-                }                
-                else{
-                    LGDLOG::start<< "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << LGDLOG::end;
-                }
+                project.addModelToProject(test);
             }
         }
         if(Library::getSelectedElementIndex() == 4){ //Fonts
@@ -210,15 +202,7 @@ void UI::libraryPanelDisplayerInteraction(
         if(Library::getSelectedElementIndex() == 3){ //3D Models
             std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
-                Model tdModel;
-                bool success = tdModel.loadModel(test, true, false);
-                if(tdModel.meshes.size() && success){
-                    Library::addModel(tdModel);
-                    UTIL::copyFileToFolder(test, project.folderPath + UTIL::folderDistinguisher() + "3DModels", 1);
-                }                
-                else{
-                    LGDLOG::start<< "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << LGDLOG::end;
-                }
+                project.addModelToProject(test);
             }
         }
 

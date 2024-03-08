@@ -31,7 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
     
 #define LGDBRUSH_WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
-                                    LGDLOG::start<< "ERROR : Writing lgdmaterial file. Failed to write at : " << loc << LGDLOG::end;\
+                                    LGDLOG::start<< "ERROR : Writing lgdbrush file. Failed to write at : " << loc << LGDLOG::end;\
                                     try{\
                                         if(std::filesystem::exists(path)){\
                                             std::filesystem::remove(path);\

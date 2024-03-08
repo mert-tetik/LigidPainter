@@ -161,7 +161,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         
         for (size_t i = 0; i < TDModelPaths.size(); i++)
         {
-            UTIL::copyFileToFolder(TDModelPaths[i], tdModelFolderPath, 1);
+            this->addModelToProject(TDModelPaths[i]);
         }
         
     }

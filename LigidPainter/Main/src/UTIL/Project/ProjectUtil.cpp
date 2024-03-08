@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "LibrarySystem/Library.hpp"
 
 #include <string>
 #include <fstream>
@@ -88,3 +89,23 @@ std::string Project::ligidFilePath(){
 std::string Project::projectName(){
     return UTIL::getLastWordBySeparatingWithChar(this->folderPath, UTIL::folderDistinguisher());
 }
+
+void Project::addModelToProject(std::string filePath){
+    Model tdModel;
+    bool success = tdModel.loadModel(filePath, true, false);
+    
+    if(!success){
+        LGDLOG::start << "ERROR : Can't add the 3D model to the library. Failed to read the 3D model file : " << filePath << LGDLOG::end;
+        return;
+    }
+    
+    if(!tdModel.meshes.size()){
+        LGDLOG::start << "ERROR : Can't add the 3D model to the library. Mesh size is 0!" << LGDLOG::end;
+        return;
+    }
+   
+    Library::addModel(tdModel);
+    UTIL::copyFileToFolder(filePath, this->folderPath + UTIL::folderDistinguisher() + "3DModels", 1);
+
+    FileHandler::writeLGDMODELFile(this->folderPath + UTIL::folderDistinguisher() + "3DModels", tdModel);
+}   

@@ -64,7 +64,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
     
 #define LGDBRUSH_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
-                                LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << LGDLOG::end;\
+                                LGDLOG::start<< "ERROR : Reading lgdbrush file. Failed to read at : " << loc << LGDLOG::end;\
                                 return false; \
                             }
 

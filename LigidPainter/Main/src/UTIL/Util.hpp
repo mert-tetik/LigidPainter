@@ -575,6 +575,8 @@ public:
 
     bool loadLibraryElements(std::string folderPath, std::string ligidFilePath);
 
+    void addModelToProject(std::string filePath);
+
     /// @brief Used to save as
     /// @param dstPath where to duplicate
     void duplicateFolder(std::string dstPath);
@@ -1162,6 +1164,9 @@ namespace FileHandler{
     
     bool writeLGDBRUSHFile(std::string path, Brush brush);
     bool readLGDBRUSHFile(std::string path, Brush& brush);
+    
+    bool writeLGDMODELFile(std::string path, Model& model);
+    bool readLGDMODELFile(std::string path, Model& model);
 }
 
 class SourceLibTexture{

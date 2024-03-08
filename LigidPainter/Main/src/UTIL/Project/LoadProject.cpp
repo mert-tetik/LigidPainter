@@ -95,14 +95,16 @@ bool Project::loadLibraryElements(std::string folderPath, std::string ligidFileP
             for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
                 std::string modelPath = entry.path().string();
 
-                Model TDModel;
-                bool success = TDModel.loadModel(modelPath, true, false);
+                if(UTIL::getFileExtension(modelPath) == "lgdmodel"){
+                    Model TDModel;
+                    bool success = FileHandler::readLGDMODELFile(modelPath, TDModel);
 
-                if(TDModel.meshes.size() && success){
-                    Library::addModel(TDModel);
+                    if(TDModel.meshes.size() && success){
+                        Library::addModel(TDModel);
+                    }
+                    else if(success)
+                        LGDLOG::start<< "ERROR : Can't add the 3D model to the Library : Mesh size is 0!" << LGDLOG::end;
                 }
-                else if(success)
-                    LGDLOG::start<< "ERROR : Can't add the 3D model to the Library : Mesh size is 0!" << LGDLOG::end;
             }
         }
         else{

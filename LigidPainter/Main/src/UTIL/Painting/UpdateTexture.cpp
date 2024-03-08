@@ -179,7 +179,6 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
         return;
     }
 
-
     int txtrI = this->getSelectedTextureIndexInLibrary();
     
     if(this->useCustomMaterial && this->selectedMeshIndex < getModel()->meshes.size()){
@@ -213,7 +212,6 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
     }
 
     if(this->materialPainting){
-
         registerPaintingAction(
                                     "Multi-channel painting", 
                                     Texture(), 
