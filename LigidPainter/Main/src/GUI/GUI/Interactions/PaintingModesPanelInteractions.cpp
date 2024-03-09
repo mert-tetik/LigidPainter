@@ -49,7 +49,7 @@ void paintingModesPanelInteraction(
     //!PAINTING MODES PANEL
     for (size_t i = 0; i < paintingModesPanel.sections[0].elements.size(); i++)
     {
-        if(!layers_any_vector_editing()){
+        if(!painter.getSelectedMesh()->layerScene.any_vector_editing()){
             if(paintingModesPanel.sections[0].elements[i].button.clickState1){ //Painting mode pressed
                 if(painter.selectedPaintingModeIndex != i){
                     paintingModesPanel.sections[0].elements[painter.selectedPaintingModeIndex].button.clickState1 = false;

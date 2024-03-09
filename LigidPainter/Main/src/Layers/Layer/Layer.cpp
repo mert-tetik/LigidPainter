@@ -232,7 +232,7 @@ void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
     }
 }
 
-int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog, Painter& painter){
+int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution){
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
     layerButton.pos = pos;
     layerButton.scale = scale;
@@ -361,7 +361,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     }
 
     if(elementSelectionMode)
-        this->render_element_selection_panel(timer, true, materialSelectionDialog, painter);
+        this->render_element_selection_panel(timer, true, materialSelectionDialog, painter, resolution);
 
     if(alphaSettingsMode)
         this->renderAlphaSettingsPanel(timer, true);

@@ -173,7 +173,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
     }
 
     bool channelsSuccesss;
-    MaterialChannels channels = layers_get_painting_channels(&channelsSuccesss);
+    MaterialChannels channels = this->getSelectedMesh()->layerScene.get_painting_channels(&channelsSuccesss);
     if(this->selectedDisplayingModeIndex == 1 && !channelsSuccesss){
         LGDLOG::start << "ERROR : Painting : Select a painting layer to paint" << LGDLOG::end;
         return;

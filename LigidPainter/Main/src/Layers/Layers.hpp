@@ -26,8 +26,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "GUI/Elements/Elements.hpp"
-#include "GUI/Dialogs/Dialogs.hpp"
-#include "ContextMenuSystem/ContextMenus.hpp"
 #include "MouseSystem/Mouse.hpp"
 
 struct MaterialChannels{
@@ -38,6 +36,9 @@ struct MaterialChannels{
     Texture heightMap;
     Texture ambientOcclusion;
 };
+
+// Forward declerations
+class MaterialSelectionDialog; 
 
 /*! @brief Handles the alpha value of a channel*/
 struct ChannelAlpha{
@@ -91,7 +92,7 @@ public:
     bool renamingMode = false;
     TextBox renamingTextBox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Select A Path", 6.f, false);
 
-    Button eyeBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.7f, 1.f), "", appTextures.eyeOpenedIcon, 0.f, false);
+    Button eyeBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.7f, 1.f), "", Texture(), 0.f, false);
     bool hiden = false;
 
     bool mainSelected = false;
@@ -123,25 +124,25 @@ public:
     void renderInfoPanel(Timer& timer, bool doMouseTracking);
 
     /*! @brief Generate result textures for the layer */
-    virtual void render() = 0;
-    virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter) = 0;
+    virtual void render(Painter& painter, const unsigned int resolution) = 0;
+    virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) = 0;
 
     /*! 
         @brief Renders GUI elements for the layer
         @return 0 : No msg | 1 : Delete this layer | 2 : layer selected
     */
-    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog, Painter& painter);
+    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution);
 
     /*! @brief Generates the this->layerButton from scratch using this->title, this->layerIcon*/
     void updateLayerButton();
 
-    void genResultChannels(){
-        result.albedo = Texture(nullptr ,1024, 1024);
-        result.roughness = Texture(nullptr ,1024, 1024);
-        result.metallic = Texture(nullptr ,1024, 1024);
-        result.normalMap = Texture(nullptr ,1024, 1024);
-        result.heightMap = Texture(nullptr ,1024, 1024);
-        result.ambientOcclusion = Texture(nullptr ,1024, 1024);
+    void genResultChannels(const unsigned int resolution){
+        result.albedo = Texture(nullptr, resolution, resolution);
+        result.roughness = Texture(nullptr, resolution, resolution);
+        result.metallic = Texture(nullptr, resolution, resolution);
+        result.normalMap = Texture(nullptr, resolution, resolution);
+        result.heightMap = Texture(nullptr, resolution, resolution);
+        result.ambientOcclusion = Texture(nullptr, resolution, resolution);
 
         this->alpha.general_Alpha.genTxtrs();
         this->alpha.albedo_Alpha.genTxtrs();
@@ -160,17 +161,11 @@ class TextureLayer : public Layer {
 public:
     MaterialChannels channels;
 
-    TextureLayer(){
-        this->title = "Texture Layer";
-        this->layerType = "texture";
-        this->layerIcon = appTextures.textureIcon;
-        this->updateLayerButton();
-        this->genResultChannels();
-    }
+    TextureLayer(const unsigned int resolution);
     
-    void render() override;
+    void render(Painter& painter, const unsigned int resolution) override;
     
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override;
 };
 
 /*!
@@ -178,20 +173,13 @@ public:
 */
 class PaintingLayer : public Layer {
 public:
-    PaintingLayer(){
-        this->title = "Painting Layer";
-        this->layerType = "painting";
-        this->layerIcon = appTextures.brushIcon;
-        this->updateLayerButton();
-        this->genResultChannels();
-        this->contextMenu.sections[0].elements.pop_back();
-    }
+    PaintingLayer(const unsigned int resolution);
     
-    void render() override {
+    void render(Painter& painter, const unsigned int resolution) override {
         
     }
 
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter) override{
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override{
 
     }
 };
@@ -203,16 +191,10 @@ class MaterialLayer : public Layer {
 public:
     Material material;
 
-    MaterialLayer(){
-        this->title = "Material Layer";
-        this->layerType = "material";
-        this->layerIcon = appTextures.materialIcon;
-        this->updateLayerButton();
-        this->genResultChannels();
-    }
+    MaterialLayer(const unsigned int resolution);
     
-    void render() override;
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter) override;
+    void render(Painter& painter, const unsigned int resolution) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override;
 };
 
 /*!
@@ -222,24 +204,28 @@ class VectorLayer : public Layer {
 public:
     std::vector<VectorStroke3D> strokes;
 
-    VectorLayer(){
-        this->title = "Vector Layer";
-        this->layerType = "vector";
-        this->layerIcon = appTextures.inkPenIcon;
-        this->updateLayerButton();
-        this->genResultChannels();
-    }
+    VectorLayer(const unsigned int resolution);
 
-    void render() override;
+    void render(Painter& painter, const unsigned int resolution) override;
 
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override;
 };
 
-void layers_render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, bool doMouseTracking);
-void layers_add_new(Layer* layer);
-void layers_update_result(unsigned int resolution, glm::vec3 baseColor);
-bool layers_any_dialog_active();
-bool layers_any_vector_editing();
-MaterialChannels layers_get_painting_channels(bool* success);
+class LayerScene{
+public:
+    LayerScene(){
+
+    }
+
+    std::vector<Layer*> layers;
+
+    void render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, bool doMouseTracking, const unsigned int resolution);
+    void add_new(Layer* layer);
+    void update_result(unsigned int resolution, glm::vec3 baseColor);
+    bool any_dialog_active();
+    bool any_vector_editing();
+    MaterialChannels get_painting_channels(bool* success);
+    void update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Painter& painter);
+};
 
 #endif // LIGID_LAYERS_HPP

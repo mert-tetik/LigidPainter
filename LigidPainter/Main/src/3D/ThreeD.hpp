@@ -11,13 +11,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ---------------------------------------------------------------------------
 */
 
+#include "3D/Material/Material.hpp"
+#include "Layers/Layers.hpp"
+
 #ifndef THREED_HPP
 #define THREED_HPP
 
-
 #include "UTIL/Util.hpp"
 
-#include "3D/Material/Material.hpp"
 
 //Forward decleration
 struct Section;
@@ -158,6 +159,8 @@ public:
     Texture materialIDTxtr;
     std::vector<MaterialIDColor> materialIDColors;
     std::string materialIDTxtrPath;
+
+    LayerScene layerScene;
 
     Texture uvMask;
 

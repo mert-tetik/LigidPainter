@@ -147,3 +147,11 @@ void Painter::updatePaintingOverTexture(std::vector<TextureField> textureFields)
     // Deleting the OpenGL framebuffer object & the renderbuffer object
     FBO.deleteBuffers(false, true);
 }
+
+static Mesh emptyMesh;
+Mesh* Painter::getSelectedMesh(){
+    if(this->selectedMeshIndex < getModel()->meshes.size())
+        return &getModel()->meshes[this->selectedMeshIndex];
+
+    return &emptyMesh;
+}

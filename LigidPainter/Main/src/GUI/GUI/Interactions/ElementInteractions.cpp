@@ -68,7 +68,7 @@ void UI::elementInteraction(
                     texturePackEditorDialog.dialogControl.isActive() ||
                     modelInfoDialog.dialogControl.isActive() ||
                     painter.paintingoverTextureEditorMode ||
-                    layers_any_dialog_active() ||
+                    painter.getSelectedMesh()->layerScene.any_dialog_active() ||
                     dropper.active ||
                     LigidGL::getTime() - lastSecAnyDialogActiveWasTrue <= 0.6; 
 
@@ -96,6 +96,7 @@ void UI::elementInteraction(
                     mirrorCheckComboList.hover||
                     logDialog.isHovered() ||
                     layersPanel.hover ||
+                    meshSelectionButton.hover ||
                     addLayerPanel.hover ||
                     vectorPaintingMode2DModeWrapCheckBox.hover ||
                     paintingBrushButton.hover ||

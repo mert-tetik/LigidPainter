@@ -239,6 +239,8 @@ public:
     
     Panel navigationPanel;
     Panel layersPanel;
+    Button meshSelectionButton;
+    ComboBox layersResolutionComboBox;
     Panel addLayerPanel;
     Panel windowPanel;
     Panel libraryPanelLeft; 

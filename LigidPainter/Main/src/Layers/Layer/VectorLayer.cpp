@@ -27,9 +27,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ContextMenuSystem/ContextMenus.hpp"
 #include "Layers/Layers.hpp"
 
+VectorLayer::VectorLayer(const unsigned int resolution){
+    this->title = "Vector Layer";
+    this->layerType = "vector";
+    this->layerIcon = appTextures.inkPenIcon;
+    this->updateLayerButton();
+    this->genResultChannels(resolution);
+}
+
 static Button cancel_editing_vectors_btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(7.f,2.f), "Quit Vector Editing", Texture(), 0.f, false);
 static bool firstFrameActivated = true;
-void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter){
+void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution){
     
     if(firstFrameActivated){
         painter.vectorStrokes3D = this->strokes;
@@ -53,9 +61,16 @@ void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTrack
             anyStrokeInteracted = true;
     }
     
-
     if(anyStrokeInteracted){
-        painter.applyVectorStrokes(
+        this->render(painter, resolution);
+    }
+
+    if(!this->elementSelectionMode)
+        firstFrameActivated = true;
+}
+
+void VectorLayer::render(Painter& painter, const unsigned int resolution){
+    painter.applyVectorStrokes(
                                 {}, 
                                 Panel(), 
                                 glm::mat4(0.f), 
@@ -67,13 +82,5 @@ void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTrack
                                 false
                             );
         
-        layers_update_result(1024, glm::vec3(0.f));
-    }
-
-    if(!this->elementSelectionMode)
-        firstFrameActivated = true;
-}
-
-void VectorLayer::render(){
-
+    painter.getSelectedMesh()->layerScene.update_result(resolution, glm::vec3(0.f));
 }

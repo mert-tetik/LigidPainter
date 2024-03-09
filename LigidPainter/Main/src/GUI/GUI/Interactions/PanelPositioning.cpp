@@ -48,13 +48,21 @@ void UI::panelPositioning(
     
     layersPanel.pos = windowPanel.pos;
     layersPanel.pos.x -= windowPanel.scale.x + layersPanel.scale.x;
-    layersPanel.pos.y += addLayerPanel.scale.y;
-    layersPanel.scale.y = windowPanel.scale.y - addLayerPanel.scale.y;
+    layersPanel.pos.y += addLayerPanel.scale.y + meshSelectionButton.scale.y + layersResolutionComboBox.scale.y;
+    layersPanel.scale.y = windowPanel.scale.y - addLayerPanel.scale.y - meshSelectionButton.scale.y - layersResolutionComboBox.scale.y;
 
+    meshSelectionButton.scale.x = layersPanel.scale.x;
+    meshSelectionButton.pos = layersPanel.pos;
+    meshSelectionButton.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + meshSelectionButton.scale.y;
+    
+    layersResolutionComboBox.scale.x = layersPanel.scale.x;
+    layersResolutionComboBox.pos = meshSelectionButton.pos;
+    layersResolutionComboBox.pos.y = meshSelectionButton.pos.y + meshSelectionButton.scale.y + layersResolutionComboBox.scale.y;
+    
     addLayerPanel.scale.x = layersPanel.scale.x;
-    addLayerPanel.pos = layersPanel.pos;
-    addLayerPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + addLayerPanel.scale.y;
-
+    addLayerPanel.pos = layersResolutionComboBox.pos;
+    addLayerPanel.pos.y = layersResolutionComboBox.pos.y + layersResolutionComboBox.scale.y + addLayerPanel.scale.y;
+    
     libraryPanelLeft.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
     libraryPanelDisplayer.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanelDisplayer.scale.y; //Keep beneath the navigation bar
     libraryPanelDisplayer.scale.y = 50 - navigationPanel.scale.y - selectedTextureDisplayer.scale.y;
@@ -62,7 +70,6 @@ void UI::panelPositioning(
     libraryPanelLeft.scale.y = 50 - navigationPanel.scale.y - selectedTextureDisplayer.scale.y;
     selectedTextureDisplayer.pos.x = libraryPanelDisplayer.pos.x - libraryPanelLeft.pos.x;
     selectedTextureDisplayer.scale.x = libraryPanelDisplayer.scale.x + libraryPanelLeft.scale.x;
-    
     
     twoDPaintingPanel.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (windowPanel.scale.x);
     twoDPaintingPanel.scale.y = 50 - navigationPanel.scale.y;

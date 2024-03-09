@@ -202,8 +202,10 @@ void UI::init
                             false
                         );
  
+    meshSelectionButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f, 4.f), "", Texture(), 0.f, false);
+    layersResolutionComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f), {"256", "512", "1024", "2048", "4096", "8192"}, "Layers Resolution", 1.f);
+    
     layersPanel  = Panel(
-                            
                             
                             {
                                 Section(
@@ -466,6 +468,9 @@ void UI::init
     navigationPanel.solidStyle = true;
 
     this->twoDPaintingBox.customMeshInit(glm::vec3(0.),glm::vec2(0.)); 
+    
+    this->meshSelectionButton.meshSelection = true;
+    this->layersResolutionComboBox.selectedIndex = 2;
 
     this->navigationPanel.preRenderingMode = true;
     this->windowPanel.preRenderingMode = true;
@@ -493,7 +498,6 @@ void UI::init
     this->meshSection =         Section(
                                     Element(),
                                     {  
-                                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "Select A Mesh"  , Texture(), 7.f, false)),//0
                                         CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mask to selected mesh (F3)", 1.f), //1
                                         CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Mesh selection mode (F4)", 1.f), //2
                                         ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //3
@@ -572,8 +576,7 @@ void UI::init
     this->cantBeDisplayedSection.elements[0].button.outline = false;;
     this->cantBeDisplayedSection.elements[0].button.outlineExtra = false;;
     
-    meshSection.elements[0].button.meshSelection = true;
-    meshSection.elements[6].button.textureSelection3D = true;
+    meshSection.elements[5].button.textureSelection3D = true;
 
     colorSection.elements[0].button.textureSizeScale = 1.f;
     colorSection.elements[0].button.color2 = colorSection.elements[0].button.color;

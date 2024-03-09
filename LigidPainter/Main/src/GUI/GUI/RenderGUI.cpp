@@ -315,7 +315,7 @@ void UI::renderSceneInfoWrapModeCheckbox(Timer& timer, Painter& painter){
     currentModeHintDisplayer.render(timer, false);
     wrapModeCheckbox.render(timer, !anyDialogActive);
     
-    if(!layers_any_vector_editing())
+    if(!painter.getSelectedMesh()->layerScene.any_vector_editing())
         painter.wrapMode = wrapModeCheckbox.clickState1;
     else
         wrapModeCheckbox.clickState1 = painter.wrapMode;
@@ -473,56 +473,55 @@ void UI::renderFaceSelectionSettings(Timer& timer, Painter& painter, float scree
     meshSection = faceSelectionCheckComboList.panel.sections[0];
     meshSection.elements[1].checkBox.clickState1 = faceSelectionCheckComboList.checkButton.clickState1;
 
-    painter.selectedMeshIndex = meshSection.elements[0].button.selectedMeshI;
-    painter.faceSelection.activated = meshSection.elements[1].checkBox.clickState1;
-    painter.faceSelection.editMode = meshSection.elements[2].checkBox.clickState1;
-    painter.faceSelection.selectionModeIndex = meshSection.elements[3].comboBox.selectedIndex;
-    painter.faceSelection.radius = meshSection.elements[4].rangeBar.value;
-    painter.faceSelection.hideUnselected = meshSection.elements[8].checkBox.clickState1;
+    painter.faceSelection.activated = meshSection.elements[0].checkBox.clickState1;
+    painter.faceSelection.editMode = meshSection.elements[1].checkBox.clickState1;
+    painter.faceSelection.selectionModeIndex = meshSection.elements[2].comboBox.selectedIndex;
+    painter.faceSelection.radius = meshSection.elements[3].rangeBar.value;
+    painter.faceSelection.hideUnselected = meshSection.elements[7].checkBox.clickState1;
 
     if(getModel()->newModelAdded){
         meshSection.elements[0].button.selectedMeshI = 0;
     }
 
-    if(meshSection.elements[6].button.clicked && painter.selectedMeshIndex < getModel()->meshes.size()){            
-        meshSection.elements[6].button.texture.generateProceduralTexture(getModel()->meshes[painter.selectedMeshIndex], painter.faceSelection.meshMask, 1024); 
+    if(meshSection.elements[5].button.clicked && painter.selectedMeshIndex < getModel()->meshes.size()){            
+        meshSection.elements[5].button.texture.generateProceduralTexture(getModel()->meshes[painter.selectedMeshIndex], painter.faceSelection.meshMask, 1024); 
     }
     
-    if(meshSection.elements[7].button.clicked || !meshSection.elements[6].button.texture.ID){
-        meshSection.elements[6].button.texture.proceduralProps.proceduralID = 24;
-        meshSection.elements[6].button.texture.proceduralProps.proceduralnverted = false;
-        meshSection.elements[6].button.texture.generateProceduralTexture(getModel()->meshes[painter.selectedMeshIndex], painter.faceSelection.meshMask, 1024); 
-        meshSection.elements[6].button.texture.generateProceduralDisplayingTexture(512, 1);
+    if(meshSection.elements[6].button.clicked || !meshSection.elements[5].button.texture.ID){
+        meshSection.elements[5].button.texture.proceduralProps.proceduralID = 24;
+        meshSection.elements[5].button.texture.proceduralProps.proceduralnverted = false;
+        meshSection.elements[5].button.texture.generateProceduralTexture(getModel()->meshes[painter.selectedMeshIndex], painter.faceSelection.meshMask, 1024); 
+        meshSection.elements[5].button.texture.generateProceduralDisplayingTexture(512, 1);
     }
 
     if(painter.selectedMeshIndex < getModel()->meshes.size()){
         if(getModel()->newModelAdded || getModel()->meshes[painter.selectedMeshIndex].materialName != __faceSelectionActiveMesh){
-            meshSection.elements[5].comboBox.texts.clear();
-            meshSection.elements[5].comboBox.hover.clear();
-            meshSection.elements[5].comboBox.hoverMixVal.clear();
-            meshSection.elements[5].comboBox.clickedMixVal.clear();
+            meshSection.elements[4].comboBox.texts.clear();
+            meshSection.elements[4].comboBox.hover.clear();
+            meshSection.elements[4].comboBox.hoverMixVal.clear();
+            meshSection.elements[4].comboBox.clickedMixVal.clear();
 
-            meshSection.elements[5].comboBox.texts.push_back("Custom");
+            meshSection.elements[4].comboBox.texts.push_back("Custom");
 
             __faceSelectionActiveMesh = getModel()->meshes[painter.selectedMeshIndex].materialName;
 
             for (size_t ii = 0; ii < getModel()->meshes[painter.selectedMeshIndex].objects.size(); ii++)
             {
-                meshSection.elements[5].comboBox.texts.push_back(getModel()->meshes[painter.selectedMeshIndex].objects[ii].title);
+                meshSection.elements[4].comboBox.texts.push_back(getModel()->meshes[painter.selectedMeshIndex].objects[ii].title);
             }
 
-            for (size_t i = 0; i < meshSection.elements[5].comboBox.texts.size(); i++)
+            for (size_t i = 0; i < meshSection.elements[4].comboBox.texts.size(); i++)
             {
-                meshSection.elements[5].comboBox.hover.push_back(0);
-                meshSection.elements[5].comboBox.hoverMixVal.push_back(0);
-                meshSection.elements[5].comboBox.clickedMixVal.push_back(0);
+                meshSection.elements[4].comboBox.hover.push_back(0);
+                meshSection.elements[4].comboBox.hoverMixVal.push_back(0);
+                meshSection.elements[4].comboBox.clickedMixVal.push_back(0);
             }
 
-            meshSection.elements[5].comboBox.selectedIndex = 0;
+            meshSection.elements[4].comboBox.selectedIndex = 0;
         }
     }
     
-    if(meshSection.elements[5].comboBox.selectedIndex != 0){
+    if(meshSection.elements[4].comboBox.selectedIndex != 0){
         painter.faceSelection.changedIndices.clear();
         for (size_t i = 0; i < painter.faceSelection.selectedPrimitiveIDs.size(); i++)
         {
@@ -539,7 +538,7 @@ void UI::renderFaceSelectionSettings(Timer& timer, Painter& painter, float scree
             int objI = 0;
             for (size_t ii = 0; ii < getModel()->meshes[painter.selectedMeshIndex].objects.size(); ii++)
             {
-                if(getModel()->meshes[painter.selectedMeshIndex].objects[ii].title == meshSection.elements[5].comboBox.texts[meshSection.elements[5].comboBox.selectedIndex]){
+                if(getModel()->meshes[painter.selectedMeshIndex].objects[ii].title == meshSection.elements[4].comboBox.texts[meshSection.elements[4].comboBox.selectedIndex]){
                     objI = ii;
                 }
             }
@@ -563,15 +562,15 @@ void UI::renderFaceSelectionSettings(Timer& timer, Painter& painter, float scree
             !anyPanelHover && 
             !anyDialogActive && 
             painter.faceSelection.editMode) ||
-            __faceSelectionActiveObjIndex != meshSection.elements[5].comboBox.selectedIndex
+            __faceSelectionActiveObjIndex != meshSection.elements[4].comboBox.selectedIndex
 
         )
     {
         if(painter.faceSelection.interaction(getModel()->meshes[painter.selectedMeshIndex], painter.selectedMeshIndex, !anyPanelHover, getScene()->viewMatrix, getScene()->projectionMatrix, getScene()->transformMatrix, *Mouse::cursorPos(), false, true)){
-            if(__faceSelectionActiveObjIndex == meshSection.elements[5].comboBox.selectedIndex)
-                meshSection.elements[5].comboBox.selectedIndex = 0;
+            if(__faceSelectionActiveObjIndex == meshSection.elements[4].comboBox.selectedIndex)
+                meshSection.elements[4].comboBox.selectedIndex = 0;
         }
-        __faceSelectionActiveObjIndex = meshSection.elements[5].comboBox.selectedIndex;
+        __faceSelectionActiveObjIndex = meshSection.elements[4].comboBox.selectedIndex;
     }
 }
 
@@ -832,9 +831,9 @@ void UI::renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGa
         
         if(!painter.paintingoverTextureEditorMode){
             if(shortcuts_F3())
-                this->meshSection.elements[1].checkBox.clickState1 = false;
+                this->meshSection.elements[0].checkBox.clickState1 = false;
             if(shortcuts_F4())
-                this->meshSection.elements[2].checkBox.clickState1 = false;
+                this->meshSection.elements[1].checkBox.clickState1 = false;
         }
     }
 
@@ -976,6 +975,8 @@ static void renderDotsToWindow(glm::mat4 projection){
     ShaderSystem::buttonShader().use(); 
 }
 
+static int lastLayerResolution = 1024;
+
 void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
     
     Debugger::block("GUI : Panels : Start"); // Start
@@ -1079,39 +1080,78 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     Debugger::block("GUI : Panels : Panel rendering"); // End
 
-        Debugger::block("GUI : Panels : Layers Panel"); // Start
+    Debugger::block("GUI : Panels : Layers Panel"); // Start
+
     layersPanel.render(timer,!anyDialogActive);
     if(layersPanel.resizingDone){
         for (size_t i = 0; i < 5; i++)
             this->panelPositioning(screenGapPerc, painter);
     }
+
+    painter.getSelectedMesh()->layerScene.render(timer, layersPanel, this->materialSelectionDialog, painter, !anyDialogActive, painter.layersResolution);
+    
     addLayerPanel.render(timer, !anyDialogActive);
+
+    meshSelectionButton.render(timer, !anyDialogActive);
+    
+    Button layersResolutionComboBoxBG = Button(ELEMENT_STYLE_SOLID, layersResolutionComboBox.scale, "", Texture(), 0.f, 0);
+    layersResolutionComboBoxBG.pos = layersResolutionComboBox.pos;
+    layersResolutionComboBoxBG.render(timer, false);
+    layersResolutionComboBox.render(timer, !anyDialogActive);
+    
+    painter.layersResolution = std::stoi(layersResolutionComboBox.texts[layersResolutionComboBox.selectedIndex]);
+    
+    painter.selectedMeshIndex = meshSelectionButton.selectedMeshI;
+    if(painter.selectedMeshIndex >= getModel()->meshes.size())
+        painter.selectedMeshIndex = 0;
+
+
+    if(getModel()->newModelAdded || lastLayerResolution != painter.layersResolution){
+        if(lastLayerResolution != painter.layersResolution){
+            int res = showMessageBox(
+                                        "Warning!", 
+                                        "You are altering the resolution value of the layers!" 
+                                        " This action will resize each textures in the layers. (Applied automatically for each mesh)"
+                                        " And is irreversible for painting layers (once you go low resolution (there is no covering painting textures to high resolution))"
+                                        " Are you sure you want to proceed?",
+                                        MESSAGEBOX_TYPE_WARNING,
+                                        MESSAGEBOX_BUTTON_YESNO
+                                        );
+            
+            // Pressed to no
+            if(res == 0){
+                layersResolutionComboBox.selectedIndex = std::log2(lastLayerResolution / 256); 
+                painter.layersResolution = lastLayerResolution;
+            }
+        }
+
+        painter.getSelectedMesh()->layerScene.update_all_layers(painter.layersResolution, glm::vec3(0.f), painter);
+    }
+
+    lastLayerResolution = painter.layersResolution;
+    
     // Add texture layer 
     if(addLayerPanel.sections[0].elements[0].button.clicked){
-        TextureLayer* txtrLayer = new TextureLayer();
-        layers_add_new(txtrLayer);
+        TextureLayer* txtrLayer = new TextureLayer(painter.layersResolution);
+        painter.getSelectedMesh()->layerScene.add_new(txtrLayer);
     }
     // Add painting layer 
     if(addLayerPanel.sections[0].elements[1].button.clicked){
-        PaintingLayer* paintingLayer = new PaintingLayer();
-        layers_add_new(paintingLayer);
+        PaintingLayer* paintingLayer = new PaintingLayer(painter.layersResolution);
+        painter.getSelectedMesh()->layerScene.add_new(paintingLayer);
     }
-
+    
     // Add material layer 
     if(addLayerPanel.sections[0].elements[2].button.clicked){
-        MaterialLayer* materialLayer = new MaterialLayer();
-        layers_add_new(materialLayer);
+        MaterialLayer* materialLayer = new MaterialLayer(painter.layersResolution);
+        painter.getSelectedMesh()->layerScene.add_new(materialLayer);
     }
     
     // Add vector layer 
     if(addLayerPanel.sections[0].elements[3].button.clicked){
-        VectorLayer* vectorLayer = new VectorLayer();
-        layers_add_new(vectorLayer);
+        VectorLayer* vectorLayer = new VectorLayer(painter.layersResolution);
+        painter.getSelectedMesh()->layerScene.add_new(vectorLayer);
     }
-
-    layersPanel.render(timer, !anyDialogActive);
-
-    layers_render(timer, layersPanel, this->materialSelectionDialog, painter, !anyDialogActive);
     
     Debugger::block("GUI : Panels : Layers Panel"); // End
 

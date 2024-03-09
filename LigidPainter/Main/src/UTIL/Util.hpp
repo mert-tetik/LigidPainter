@@ -909,6 +909,10 @@ public:
     /// Set by the user using GUI elements (paintingPanel)
     int selectedMeshIndex = 0;
     
+    int layersResolution = 0;
+    
+    Mesh* getSelectedMesh();
+
     /// @brief To avoid refreshing every frame in RendererRender.cpp
     /// Refreshing : Update the selected texture & clean the capturing framebuffer
     bool refreshable = true; 
