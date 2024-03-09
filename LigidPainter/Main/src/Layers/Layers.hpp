@@ -118,7 +118,7 @@ public:
     bool elementSelectionMode = false;
 
     bool alphaSettingsMode = false;
-    void renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking);
+    void renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking, const unsigned int resolution);
     
     bool infoMode = false;
     void renderInfoPanel(Timer& timer, bool doMouseTracking);
@@ -136,22 +136,11 @@ public:
     /*! @brief Generates the this->layerButton from scratch using this->title, this->layerIcon*/
     void updateLayerButton();
 
-    void genResultChannels(const unsigned int resolution){
-        result.albedo = Texture(nullptr, resolution, resolution);
-        result.roughness = Texture(nullptr, resolution, resolution);
-        result.metallic = Texture(nullptr, resolution, resolution);
-        result.normalMap = Texture(nullptr, resolution, resolution);
-        result.heightMap = Texture(nullptr, resolution, resolution);
-        result.ambientOcclusion = Texture(nullptr, resolution, resolution);
+    void genResultChannels(const unsigned int resolution);
 
-        this->alpha.general_Alpha.genTxtrs();
-        this->alpha.albedo_Alpha.genTxtrs();
-        this->alpha.roughness_Alpha.genTxtrs();
-        this->alpha.metallic_Alpha.genTxtrs();
-        this->alpha.normalMap_Alpha.genTxtrs();
-        this->alpha.heightMap_Alpha.genTxtrs();
-        this->alpha.ambientOcclusion_Alpha.genTxtrs();
-    }
+    void updateProceduralMaskTextures(const unsigned int resolution);
+
+    void updateResultTextureResolutions(const unsigned int resolution);
 };
 
 /*!
@@ -164,7 +153,6 @@ public:
     TextureLayer(const unsigned int resolution);
     
     void render(Painter& painter, const unsigned int resolution) override;
-    
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override;
 };
 
@@ -175,13 +163,8 @@ class PaintingLayer : public Layer {
 public:
     PaintingLayer(const unsigned int resolution);
     
-    void render(Painter& painter, const unsigned int resolution) override {
-        
-    }
-
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override{
-
-    }
+    void render(Painter& painter, const unsigned int resolution) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override;
 };
 
 /*!
@@ -207,7 +190,6 @@ public:
     VectorLayer(const unsigned int resolution);
 
     void render(Painter& painter, const unsigned int resolution) override;
-
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override;
 };
 

@@ -35,3 +35,12 @@ PaintingLayer::PaintingLayer(const unsigned int resolution){
     this->genResultChannels(resolution);
     this->contextMenu.sections[0].elements.pop_back();
 }
+
+void PaintingLayer::render(Painter& painter, const unsigned int resolution){
+    this->updateResultTextureResolutions(resolution);
+}
+
+void PaintingLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution){
+    this->elementSelectionMode = false;
+    return;
+}

@@ -99,6 +99,8 @@ void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTra
 }
 
 void MaterialLayer::render(Painter& painter, const unsigned int resolution){
+    this->updateResultTextureResolutions(resolution);
+    
     Mesh resMesh = getModel()->meshes[0];
     resMesh.albedo = this->result.albedo;
     resMesh.roughness = this->result.roughness;

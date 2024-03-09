@@ -67,7 +67,7 @@ Panel alphaSettingsPanel = Panel(
                                     true
                                 );
 
-void Layer::renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking){
+void Layer::renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking, const unsigned int resolution){
     alphaSettingsPanel.sections[0].elements[1].button.textureSelection3D = true;
     alphaSettingsPanel.sections[0].elements[3].button.textureSelection3D = true;
     alphaSettingsPanel.sections[0].elements[5].button.textureSelection3D = true;
@@ -129,13 +129,7 @@ void Layer::renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking){
     this->alpha.ambientOcclusion_Alpha.alphaMap = alphaSettingsPanel.sections[0].elements[13].button.texture;
 
     if(!this->alphaSettingsMode){
-        this->alpha.general_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.general_Alpha.alphaMapProceduralTxtr, 1024);
-        this->alpha.albedo_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.albedo_Alpha.alphaMapProceduralTxtr, 1024);
-        this->alpha.roughness_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.roughness_Alpha.alphaMapProceduralTxtr, 1024);
-        this->alpha.metallic_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.metallic_Alpha.alphaMapProceduralTxtr, 1024);
-        this->alpha.normalMap_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.normalMap_Alpha.alphaMapProceduralTxtr, 1024);
-        this->alpha.heightMap_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.heightMap_Alpha.alphaMapProceduralTxtr, 1024);
-        this->alpha.ambientOcclusion_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr, 1024);
+        this->updateProceduralMaskTextures(resolution);
     }
 }
 
@@ -364,7 +358,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         this->render_element_selection_panel(timer, true, materialSelectionDialog, painter, resolution);
 
     if(alphaSettingsMode)
-        this->renderAlphaSettingsPanel(timer, true);
+        this->renderAlphaSettingsPanel(timer, true, resolution);
 
     if(infoMode)
         this->renderInfoPanel(timer, true);
@@ -382,4 +376,52 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
 
 void Layer::updateLayerButton(){
     this->layerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), this->title, Texture(), 0.f, false);
+}
+
+void Layer::genResultChannels(const unsigned int resolution){
+    result.albedo = Texture(nullptr, resolution, resolution);
+    result.roughness = Texture(nullptr, resolution, resolution);
+    result.metallic = Texture(nullptr, resolution, resolution);
+    result.normalMap = Texture(nullptr, resolution, resolution);
+    result.heightMap = Texture(nullptr, resolution, resolution);
+    result.ambientOcclusion = Texture(nullptr, resolution, resolution);
+
+    this->alpha.general_Alpha.genTxtrs();
+    this->alpha.albedo_Alpha.genTxtrs();
+    this->alpha.roughness_Alpha.genTxtrs();
+    this->alpha.metallic_Alpha.genTxtrs();
+    this->alpha.normalMap_Alpha.genTxtrs();
+    this->alpha.heightMap_Alpha.genTxtrs();
+    this->alpha.ambientOcclusion_Alpha.genTxtrs();
+}
+
+void Layer::updateProceduralMaskTextures(const unsigned int resolution){
+    this->alpha.general_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.albedo_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.roughness_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.metallic_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.normalMap_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.heightMap_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+
+    this->alpha.general_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.general_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.albedo_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.albedo_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.roughness_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.roughness_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.metallic_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.metallic_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.normalMap_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.normalMap_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.heightMap_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.heightMap_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.ambientOcclusion_Alpha.alphaMap.generateProceduralTexture(getModel()->meshes[0], this->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr, resolution);
+} 
+
+void Layer::updateResultTextureResolutions(const unsigned int resolution){
+    if(result.albedo.getResolution().x != resolution){
+        result.albedo.resize(glm::ivec2(resolution));
+        result.roughness.resize(glm::ivec2(resolution));
+        result.metallic.resize(glm::ivec2(resolution));
+        result.normalMap.resize(glm::ivec2(resolution));
+        result.heightMap.resize(glm::ivec2(resolution));
+        result.ambientOcclusion.resize(glm::ivec2(resolution));
+
+        this->updateProceduralMaskTextures(resolution);
+    }
 }

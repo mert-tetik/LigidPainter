@@ -35,16 +35,22 @@ VectorLayer::VectorLayer(const unsigned int resolution){
     this->genResultChannels(resolution);
 }
 
+std::vector<VectorStroke3D> lastPainterStrokes;
+
 static Button cancel_editing_vectors_btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(7.f,2.f), "Quit Vector Editing", Texture(), 0.f, false);
 static bool firstFrameActivated = true;
 void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution){
     
     if(firstFrameActivated){
+        // Not needed rn
         painter.vectorStrokes3D = this->strokes;
-        painter.wrapMode = true;
-        painter.selectedDisplayingModeIndex = 1;
-        painter.selectedPaintingModeIndex = 5;
     }
+    
+    painter.wrapMode = true;
+    painter.selectedDisplayingModeIndex = 1;
+    painter.selectedPaintingModeIndex = 5;
+    
+    lastPainterStrokes = painter.vectorStrokes3D;
 
     cancel_editing_vectors_btn.pos = glm::vec3(50.f, 20.f, 0.8f);
     cancel_editing_vectors_btn.render(timer, true);
@@ -67,9 +73,17 @@ void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTrack
 
     if(!this->elementSelectionMode)
         firstFrameActivated = true;
+
+    if(!elementSelectionMode)
+        painter.vectorStrokes3D = lastPainterStrokes;
 }
 
 void VectorLayer::render(Painter& painter, const unsigned int resolution){
+    this->updateResultTextureResolutions(resolution);
+    
+    lastPainterStrokes = painter.vectorStrokes3D;
+    painter.vectorStrokes3D = this->strokes;
+
     painter.applyVectorStrokes(
                                 {}, 
                                 Panel(), 
@@ -83,4 +97,6 @@ void VectorLayer::render(Painter& painter, const unsigned int resolution){
                             );
         
     painter.getSelectedMesh()->layerScene.update_result(resolution, glm::vec3(0.f));
+    
+    painter.vectorStrokes3D = lastPainterStrokes;
 }

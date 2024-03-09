@@ -133,6 +133,8 @@ void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTrac
 }
 
 void TextureLayer::render(Painter& painter, const unsigned int resolution){
+    this->updateResultTextureResolutions(resolution);
+    
     this->channels.albedo.generateProceduralTexture(getModel()->meshes[0], this->result.albedo, resolution);
     this->channels.roughness.generateProceduralTexture(getModel()->meshes[0], this->result.roughness, resolution);
     this->channels.metallic.generateProceduralTexture(getModel()->meshes[0], this->result.metallic, resolution);
