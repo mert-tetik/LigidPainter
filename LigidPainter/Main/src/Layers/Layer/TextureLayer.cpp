@@ -78,7 +78,7 @@ Panel textureSelectPanel = Panel(
                                     true
                                 );
 
-void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution){
+void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh){
     textureSelectPanel.sections[0].elements[1].button.textureSelection3D = true;
     textureSelectPanel.sections[0].elements[3].button.textureSelection3D = true;
     textureSelectPanel.sections[0].elements[5].button.textureSelection3D = true;
@@ -113,7 +113,7 @@ void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTrac
         textureSelectPanel.sections[0].elements[9].button.clicked ||
         textureSelectPanel.sections[0].elements[11].button.clicked 
     )
-        this->render(painter, resolution);
+        this->render(painter, resolution, mesh);
 
     if(textureSelectPanel.hover)
         __enteredPanelOnce = true;
@@ -132,15 +132,15 @@ void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTrac
     }
 }
 
-void TextureLayer::render(Painter& painter, const unsigned int resolution){
-    this->updateResultTextureResolutions(resolution);
+void TextureLayer::render(Painter& painter, const unsigned int resolution, Mesh& mesh){
+    this->updateResultTextureResolutions(resolution, mesh);
     
-    this->channels.albedo.generateProceduralTexture(getModel()->meshes[0], this->result.albedo, resolution);
-    this->channels.roughness.generateProceduralTexture(getModel()->meshes[0], this->result.roughness, resolution);
-    this->channels.metallic.generateProceduralTexture(getModel()->meshes[0], this->result.metallic, resolution);
-    this->channels.normalMap.generateProceduralTexture(getModel()->meshes[0], this->result.normalMap, resolution);
-    this->channels.heightMap.generateProceduralTexture(getModel()->meshes[0], this->result.heightMap, resolution);
-    this->channels.ambientOcclusion.generateProceduralTexture(getModel()->meshes[0], this->result.ambientOcclusion, resolution);
+    this->channels.albedo.generateProceduralTexture(mesh, this->result.albedo, resolution);
+    this->channels.roughness.generateProceduralTexture(mesh, this->result.roughness, resolution);
+    this->channels.metallic.generateProceduralTexture(mesh, this->result.metallic, resolution);
+    this->channels.normalMap.generateProceduralTexture(mesh, this->result.normalMap, resolution);
+    this->channels.heightMap.generateProceduralTexture(mesh, this->result.heightMap, resolution);
+    this->channels.ambientOcclusion.generateProceduralTexture(mesh, this->result.ambientOcclusion, resolution);
 
-    painter.getSelectedMesh()->layerScene.update_result(resolution, glm::vec3(0.f));
+    painter.getSelectedMesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);
 }

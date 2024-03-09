@@ -49,7 +49,7 @@ static void moveLayer(int src, int dest, std::vector<Layer*> layers){
         layers.insert(layers.begin() + dest, layer);
 }
 
-void LayerScene::render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, bool doMouseTracking, const unsigned int resolution){
+void LayerScene::render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     int count = 0;
 
     bool anyBtnClickState1 = false;
@@ -57,11 +57,11 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog
     {
         glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 1.5f); 
         glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
-        int layerMSG = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, materialSelectionDialog, painter, resolution);
+        int layerMSG = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, materialSelectionDialog, painter, resolution, mesh);
         
         if(this->layers[i]->layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
             btnMoving = true;
-            
+
         if(this->layers[i]->layerButton.clickState1)
             anyBtnClickState1 = true;
 
@@ -99,7 +99,7 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog
                     if(copyCount == 0)
                         movingLayers.clear();    
                     movingLayers.push_back(this->layers[cI]);
-                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, materialSelectionDialog, painter, resolution);
+                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, materialSelectionDialog, painter, resolution, mesh);
                     copyCount++;
                 }
             }
@@ -187,7 +187,7 @@ void LayerScene::add_new(Layer* layer){
 
 static Framebuffer layers_update_FBO;
 
-void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor){
+void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mesh& mesh){
     
     // Init FBO
     if(!layers_update_FBO.ID){
@@ -195,23 +195,23 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor){
         layers_update_FBO.purpose = "layers_update_FBO";
     }
 
-    if(!getModel()->meshes[0].albedo.ID){
-        getModel()->meshes[0].albedo = Texture(nullptr, resolution, resolution);
-        getModel()->meshes[0].roughness = Texture(nullptr, resolution, resolution);
-        getModel()->meshes[0].metallic = Texture(nullptr, resolution, resolution);
-        getModel()->meshes[0].normalMap = Texture(nullptr, resolution, resolution);
-        getModel()->meshes[0].heightMap = Texture(nullptr, resolution, resolution);
-        getModel()->meshes[0].ambientOcclusion = Texture(nullptr, resolution, resolution);
+    if(!mesh.albedo.ID){
+        mesh.albedo = Texture(nullptr, resolution, resolution);
+        mesh.roughness = Texture(nullptr, resolution, resolution);
+        mesh.metallic = Texture(nullptr, resolution, resolution);
+        mesh.normalMap = Texture(nullptr, resolution, resolution);
+        mesh.heightMap = Texture(nullptr, resolution, resolution);
+        mesh.ambientOcclusion = Texture(nullptr, resolution, resolution);
     }
     else{
-        glm::vec2 albedoRes = getModel()->meshes[0].albedo.getResolution();
+        glm::vec2 albedoRes = mesh.albedo.getResolution();
         if(albedoRes.x != resolution){
-            getModel()->meshes[0].albedo.update(nullptr, resolution, resolution);
-            getModel()->meshes[0].roughness.update(nullptr, resolution, resolution);
-            getModel()->meshes[0].metallic.update(nullptr, resolution, resolution);
-            getModel()->meshes[0].normalMap.update(nullptr, resolution, resolution);
-            getModel()->meshes[0].heightMap.update(nullptr, resolution, resolution);
-            getModel()->meshes[0].ambientOcclusion.update(nullptr, resolution, resolution);
+            mesh.albedo.update(nullptr, resolution, resolution);
+            mesh.roughness.update(nullptr, resolution, resolution);
+            mesh.metallic.update(nullptr, resolution, resolution);
+            mesh.normalMap.update(nullptr, resolution, resolution);
+            mesh.heightMap.update(nullptr, resolution, resolution);
+            mesh.ambientOcclusion.update(nullptr, resolution, resolution);
         }
     }
     
@@ -221,12 +221,12 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor){
     // Update FBO
     layers_update_FBO.setColorBuffer(
                                         {
-                                            getModel()->meshes[0].albedo, 
-                                            getModel()->meshes[0].roughness, 
-                                            getModel()->meshes[0].metallic, 
-                                            getModel()->meshes[0].normalMap, 
-                                            getModel()->meshes[0].heightMap, 
-                                            getModel()->meshes[0].ambientOcclusion
+                                            mesh.albedo, 
+                                            mesh.roughness, 
+                                            mesh.metallic, 
+                                            mesh.normalMap, 
+                                            mesh.heightMap, 
+                                            mesh.ambientOcclusion
                                         },
                                         GL_TEXTURE_2D
                                     );
@@ -304,10 +304,10 @@ MaterialChannels LayerScene::get_painting_channels(bool* success){
     return MaterialChannels();
 }
 
-void LayerScene::update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Painter& painter){
+void LayerScene::update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Painter& painter, Mesh& mesh){
     for (size_t i = 0; i < this->layers.size(); i++)
     {
-        this->layers[i]->render(painter, resolution);
+        this->layers[i]->render(painter, resolution, mesh);
     }
-    this->update_result(resolution, baseColor);
+    this->update_result(resolution, baseColor, mesh);
 }

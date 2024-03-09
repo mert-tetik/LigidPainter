@@ -118,29 +118,29 @@ public:
     bool elementSelectionMode = false;
 
     bool alphaSettingsMode = false;
-    void renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking, const unsigned int resolution);
+    void renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh);
     
     bool infoMode = false;
     void renderInfoPanel(Timer& timer, bool doMouseTracking);
 
     /*! @brief Generate result textures for the layer */
-    virtual void render(Painter& painter, const unsigned int resolution) = 0;
-    virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) = 0;
+    virtual void render(Painter& painter, const unsigned int resolution, Mesh& mesh) = 0;
+    virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh) = 0;
 
     /*! 
         @brief Renders GUI elements for the layer
         @return 0 : No msg | 1 : Delete this layer | 2 : layer selected
     */
-    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution);
+    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh);
 
     /*! @brief Generates the this->layerButton from scratch using this->title, this->layerIcon*/
     void updateLayerButton();
 
     void genResultChannels(const unsigned int resolution);
 
-    void updateProceduralMaskTextures(const unsigned int resolution);
+    void updateProceduralMaskTextures(const unsigned int resolution, Mesh& mesh);
 
-    void updateResultTextureResolutions(const unsigned int resolution);
+    void updateResultTextureResolutions(const unsigned int resolution, Mesh& mesh);
 };
 
 /*!
@@ -152,8 +152,8 @@ public:
 
     TextureLayer(const unsigned int resolution);
     
-    void render(Painter& painter, const unsigned int resolution) override;
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override;
+    void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
 };
 
 /*!
@@ -163,8 +163,8 @@ class PaintingLayer : public Layer {
 public:
     PaintingLayer(const unsigned int resolution);
     
-    void render(Painter& painter, const unsigned int resolution) override;
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override;
+    void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
 };
 
 /*!
@@ -176,8 +176,8 @@ public:
 
     MaterialLayer(const unsigned int resolution);
     
-    void render(Painter& painter, const unsigned int resolution) override;
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override;
+    void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
 };
 
 /*!
@@ -189,8 +189,8 @@ public:
 
     VectorLayer(const unsigned int resolution);
 
-    void render(Painter& painter, const unsigned int resolution) override;
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution) override;
+    void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
 };
 
 class LayerScene{
@@ -201,13 +201,13 @@ public:
 
     std::vector<Layer*> layers;
 
-    void render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, bool doMouseTracking, const unsigned int resolution);
+    void render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, bool doMouseTracking, const unsigned int resolution, Mesh& mesh);
     void add_new(Layer* layer);
-    void update_result(unsigned int resolution, glm::vec3 baseColor);
+    void update_result(unsigned int resolution, glm::vec3 baseColor, Mesh& mesh);
     bool any_dialog_active();
     bool any_vector_editing();
     MaterialChannels get_painting_channels(bool* success);
-    void update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Painter& painter);
+    void update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Painter& painter, Mesh& mesh);
 };
 
 #endif // LIGID_LAYERS_HPP

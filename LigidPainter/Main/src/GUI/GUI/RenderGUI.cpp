@@ -1088,7 +1088,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             this->panelPositioning(screenGapPerc, painter);
     }
 
-    painter.getSelectedMesh()->layerScene.render(timer, layersPanel, this->materialSelectionDialog, painter, !anyDialogActive, painter.layersResolution);
+    painter.getSelectedMesh()->layerScene.render(timer, layersPanel, this->materialSelectionDialog, painter, !anyDialogActive, painter.layersResolution, *painter.getSelectedMesh());
     
     addLayerPanel.render(timer, !anyDialogActive);
 
@@ -1125,7 +1125,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             }
         }
 
-        painter.getSelectedMesh()->layerScene.update_all_layers(painter.layersResolution, glm::vec3(0.f), painter);
+        painter.getSelectedMesh()->layerScene.update_all_layers(painter.layersResolution, glm::vec3(0.f), painter, *painter.getSelectedMesh());
     }
 
     lastLayerResolution = painter.layersResolution;

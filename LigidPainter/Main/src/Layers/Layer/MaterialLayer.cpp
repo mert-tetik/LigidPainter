@@ -62,7 +62,7 @@ Panel materialSelectPanel = Panel(
                                     true
                                 );
 
-void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution){
+void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh){
     materialSelectPanel.sections[0].elements[0].button.texture = this->material.displayingTexture;
     
     if(materialSelectPanel.sections[0].elements[0].button.clicked){
@@ -94,14 +94,14 @@ void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTra
     }
 
     if(!this->elementSelectionMode){
-        this->render(painter, resolution);
+        this->render(painter, resolution, mesh);
     }
 }
 
-void MaterialLayer::render(Painter& painter, const unsigned int resolution){
-    this->updateResultTextureResolutions(resolution);
+void MaterialLayer::render(Painter& painter, const unsigned int resolution, Mesh& mesh){
+    this->updateResultTextureResolutions(resolution, mesh);
     
-    Mesh resMesh = getModel()->meshes[0];
+    Mesh resMesh = mesh;
     resMesh.albedo = this->result.albedo;
     resMesh.roughness = this->result.roughness;
     resMesh.metallic = this->result.metallic;
@@ -114,5 +114,5 @@ void MaterialLayer::render(Painter& painter, const unsigned int resolution){
         this->material.materialModifiers[i].updateMaterialChannels(this->material, resMesh, resolution, i, appTextures.white, 0, false, Model());
     }
 
-    painter.getSelectedMesh()->layerScene.update_result(resolution, glm::vec3(0.f));
+    painter.getSelectedMesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);
 }
