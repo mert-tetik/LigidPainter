@@ -126,6 +126,7 @@ public:
     /*! @brief Generate result textures for the layer */
     virtual void render(Painter& painter, const unsigned int resolution, Mesh& mesh) = 0;
     virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh) = 0;
+    virtual void get_type_specific_variable(Material* material, std::vector<VectorStroke3D>* strokes, MaterialChannels* materialChannels) = 0;
 
     /*! 
         @brief Renders GUI elements for the layer
@@ -154,6 +155,9 @@ public:
     
     void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void get_type_specific_variable(Material* material, std::vector<VectorStroke3D>* strokes, MaterialChannels* materialChannels) override{
+        *materialChannels = this->channels;
+    }
 };
 
 /*!
@@ -165,6 +169,9 @@ public:
     
     void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void get_type_specific_variable(Material* material, std::vector<VectorStroke3D>* strokes, MaterialChannels* materialChannels) override{
+        return;
+    }
 };
 
 /*!
@@ -178,6 +185,9 @@ public:
     
     void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void get_type_specific_variable(Material* material, std::vector<VectorStroke3D>* strokes, MaterialChannels* materialChannels) override{
+        *material = this->material; 
+    }
 };
 
 /*!
@@ -191,6 +201,9 @@ public:
 
     void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void get_type_specific_variable(Material* material, std::vector<VectorStroke3D>* strokes, MaterialChannels* materialChannels) override{
+        *strokes = this->strokes; 
+    }
 };
 
 class LayerScene{

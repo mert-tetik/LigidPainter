@@ -1163,11 +1163,16 @@ namespace FileHandler{
     
     Model readFBXFile(std::string path);
     
+    bool writeMaterialData(std::ofstream& wf, Material& material);
     bool writeLGDMATERIALFile(std::string path, Material material);
+
+    bool readMaterialData(std::ifstream& rf, Material& material),
     bool readLGDMATERIALFile(std::string path, Material& material);
+
     
     bool writeLGDBRUSHFile(std::string path, Brush brush);
     bool readLGDBRUSHFile(std::string path, Brush& brush);
+    
     
     bool writeLGDMODELFile(std::string path, Model& model);
     bool readLGDMODELFile(std::string path, Model& model);

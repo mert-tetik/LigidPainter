@@ -51,6 +51,188 @@ bool readAsphaltModifier(std::ifstream& rf, MaterialModifier& modifier, int vers
 bool readDustModifier(std::ifstream& rf, MaterialModifier& modifier, int version, unsigned int textureVersionCode);
 bool readMathModifier(std::ifstream& rf, MaterialModifier& modifier, int version, unsigned int textureVersionCode);
 
+bool FileHandler::readMaterialData(std::ifstream& rf, Material& material){
+    
+    //!HEADER
+    
+    //Description 
+    uint64_t h1; 
+    uint64_t h2; 
+    uint64_t h3; 
+    uint64_t r1 = 0x5A7D0C809A22F3B7; 
+    uint64_t r2 = 0xE8F691BE0D45C23A; 
+    uint64_t r3 = 0x3FD8A9657B101E8C; 
+    LGDMATERIAL_READBITS(h1, uint64_t, "File description header part 1");
+    LGDMATERIAL_READBITS(h2, uint64_t, "File description header part 2");
+    LGDMATERIAL_READBITS(h3, uint64_t, "File description header part 3");
+
+    if(h1 != r1 || h2 != r2 || h3 != r3){
+        LGDLOG::start << "ERROR WHILE READING MATERIAL FILE! Description header is not correct." << LGDLOG::end;
+        return false;
+    }
+
+    //Version number
+    uint32_t versionNumber; 
+    LGDMATERIAL_READBITS(versionNumber, uint32_t, "Version number");
+
+    if(versionNumber != 2000 && versionNumber != 2100 && versionNumber != 2200 && versionNumber != 2300){
+        LGDLOG::start << "ERROR WHILE READING MATERIAL FILE! This version of the LigidPainter doesn't support this material file's version." << LGDLOG::end;
+        return false;
+    }
+
+    //ID
+    LGDMATERIAL_READBITS(material.uniqueID, int, "Material ID");
+
+    //!Modifiers
+
+    //Read the material modifier size
+    uint64_t materialModifierSize;
+    LGDMATERIAL_READBITS(materialModifierSize, uint64_t, "Material modifier size");
+
+    material.materialModifiers.clear();
+
+    for (size_t i = 0; i < materialModifierSize; i++)
+    {
+
+        int modifierIndex;
+        LGDMATERIAL_READBITS(modifierIndex, int, "Modifier type index");
+        
+        MaterialModifier modifier;
+        if(modifierIndex == 0)
+            modifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);
+        else if(modifierIndex == 1)
+            modifier = MaterialModifier(DUST_MATERIAL_MODIFIER);
+        else if(modifierIndex == 2)
+            modifier = MaterialModifier(ASPHALT_MATERIAL_MODIFIER);
+        else if(modifierIndex == 3)
+            modifier = MaterialModifier(LIQUID_MATERIAL_MODIFIER);
+        else if(modifierIndex == 4)
+            modifier = MaterialModifier(MOSS_MATERIAL_MODIFIER);
+        else if(modifierIndex == 5)
+            modifier = MaterialModifier(RUST_MATERIAL_MODIFIER);
+        else if(modifierIndex == 6)
+            modifier = MaterialModifier(SKIN_MATERIAL_MODIFIER);
+        else if(modifierIndex == 7)
+            modifier = MaterialModifier(SOLID_MATERIAL_MODIFIER);
+        else if(modifierIndex == 8)
+            modifier = MaterialModifier(WOODEN_MATERIAL_MODIFIER);
+        else if(modifierIndex == 9)
+            modifier = MaterialModifier(MATH_MATERIAL_MODIFIER);
+        else{
+            LGDLOG::start<< "ERROR : Reading material file : Unknown modifier index." << LGDLOG::end;
+            return false;
+        }
+
+        unsigned int textureVersionCode = 0;
+        
+        if(versionNumber >= 2300)
+            textureVersionCode = 2;
+        else if(versionNumber == 2200)
+            textureVersionCode = 1;
+
+        if(!modifier.maskTexture.readTextureData(rf, true, textureVersionCode))
+            return false;
+
+        if(modifier.modifierIndex == TEXTURE_MATERIAL_MODIFIER){
+            if(!readTextureModifier(rf, modifier, versionNumber, textureVersionCode)){
+                return false;
+            }
+        }
+
+        else if (modifier.modifierIndex == SOLID_MATERIAL_MODIFIER){
+            if(!readSolidModifier(rf, modifier, versionNumber, textureVersionCode)){
+                return false;
+            }
+        }
+
+        else if (modifier.modifierIndex == LIQUID_MATERIAL_MODIFIER){
+            if(!readLiquidModifier(rf, modifier, versionNumber, textureVersionCode)){
+                return false;
+            }
+        }
+
+        else if (modifier.modifierIndex == MOSS_MATERIAL_MODIFIER){
+            if(!readMossModifier(rf, modifier, versionNumber, textureVersionCode)){
+                return false;
+            }
+        }
+
+        else if (modifier.modifierIndex == RUST_MATERIAL_MODIFIER){
+            if(!readRustModifier(rf, modifier, versionNumber, textureVersionCode)){
+                return false;
+            }
+        }
+
+        else if (modifier.modifierIndex == SKIN_MATERIAL_MODIFIER){
+            if(!readSkinModifier(rf, modifier, versionNumber, textureVersionCode)){
+                return false;
+            }
+        }
+
+        else if (modifier.modifierIndex == WOODEN_MATERIAL_MODIFIER){
+            if(!readWoodenModifier(rf, modifier, versionNumber, textureVersionCode)){
+                return false;
+            }
+        }
+
+        else if (modifier.modifierIndex == ASPHALT_MATERIAL_MODIFIER){
+            if(!readAsphaltModifier(rf, modifier, versionNumber, textureVersionCode)){
+                return false;
+            }
+        }
+
+        else if (modifier.modifierIndex == DUST_MATERIAL_MODIFIER){
+            if(!readDustModifier(rf, modifier, versionNumber, textureVersionCode)){
+                return false;
+            }
+        }
+        
+        else if (modifier.modifierIndex == MATH_MATERIAL_MODIFIER){
+            if(!readMathModifier(rf, modifier, versionNumber, textureVersionCode)){
+                return false;
+            }
+        }
+
+
+        material.materialModifiers.push_back(modifier);
+    }    
+
+    material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
+
+
+    if(versionNumber >= 2200){
+        // Shortcuts
+        int matShortcutSize;
+        LGDMATERIAL_READBITS(matShortcutSize, int, "Material Shortcut - Material Shortcut Size");
+        for (size_t i = 0; i < matShortcutSize; i++)
+        {
+            MaterialShortcut shortcut;
+            LGDMATERIAL_READBITS(shortcut.modI, int, "Material Shortcut - modI");
+            LGDMATERIAL_READBITS(shortcut.secI, int, "Material Shortcut - secI");
+            LGDMATERIAL_READBITS(shortcut.elementI, int, "Material Shortcut - elementI");
+
+            int titleSize;
+            LGDMATERIAL_READBITS(titleSize, int, "Material Shortcut - Title Size");
+            for (size_t i = 0; i < titleSize; i++)
+            {
+                char c;
+                LGDMATERIAL_READBITS(c, char, "Material Shortcut - Title char");
+                shortcut.title.push_back(c);
+            }
+            
+            if(shortcut.secI != -1){
+                shortcut.element = &material.materialModifiers[shortcut.modI].sections[shortcut.secI].elements[shortcut.elementI];      
+            }
+            else{
+                shortcut.maskTxtr = &material.materialModifiers[shortcut.modI].maskTexture;      
+            }
+
+            material.materialShortcuts.push_back(shortcut);
+        }
+    }
+
+    return true;
+}
 
 bool FileHandler::readLGDMATERIALFile(
                                         std::string path, 
@@ -67,191 +249,16 @@ bool FileHandler::readLGDMATERIALFile(
     if(path.size()){
         std::ifstream rf(path, std::ios::out | std::ios::binary);
         
-        material.title = UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher());
-        material.title = UTIL::removeExtension(material.title);
-        
         if(!rf) {
             LGDLOG::start<< "ERROR WHILE READING MATERIAL FILE! Cannot open file : " << path << LGDLOG::end;
             return false;
         }
         
-        //!HEADER
-        
-        //Description 
-        uint64_t h1; 
-        uint64_t h2; 
-        uint64_t h3; 
-        uint64_t r1 = 0x5A7D0C809A22F3B7; 
-        uint64_t r2 = 0xE8F691BE0D45C23A; 
-        uint64_t r3 = 0x3FD8A9657B101E8C; 
-        LGDMATERIAL_READBITS(h1, uint64_t, "File description header part 1");
-        LGDMATERIAL_READBITS(h2, uint64_t, "File description header part 2");
-        LGDMATERIAL_READBITS(h3, uint64_t, "File description header part 3");
+        material.title = UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher());
+        material.title = UTIL::removeExtension(material.title);
 
-        if(h1 != r1 || h2 != r2 || h3 != r3){
-            LGDLOG::start << "ERROR WHILE READING MATERIAL FILE! Description header is not correct." << LGDLOG::end;
+        if(!FileHandler::readMaterialData(rf, path))
             return false;
-        }
-
-        //Version number
-        uint32_t versionNumber; 
-        LGDMATERIAL_READBITS(versionNumber, uint32_t, "Version number");
-
-        if(versionNumber != 2000 && versionNumber != 2100 && versionNumber != 2200 && versionNumber != 2300){
-            LGDLOG::start << "ERROR WHILE READING MATERIAL FILE! This version of the LigidPainter doesn't support this material file's version." << LGDLOG::end;
-            return false;
-        }
-
-        //ID
-        LGDMATERIAL_READBITS(material.uniqueID, int, "Material ID");
-
-        //!Modifiers
-
-        //Read the material modifier size
-        uint64_t materialModifierSize;
-        LGDMATERIAL_READBITS(materialModifierSize, uint64_t, "Material modifier size");
-
-        material.materialModifiers.clear();
-
-        for (size_t i = 0; i < materialModifierSize; i++)
-        {
-
-            int modifierIndex;
-            LGDMATERIAL_READBITS(modifierIndex, int, "Modifier type index");
-            
-            MaterialModifier modifier;
-            if(modifierIndex == 0)
-                modifier = MaterialModifier(TEXTURE_MATERIAL_MODIFIER);
-            else if(modifierIndex == 1)
-                modifier = MaterialModifier(DUST_MATERIAL_MODIFIER);
-            else if(modifierIndex == 2)
-                modifier = MaterialModifier(ASPHALT_MATERIAL_MODIFIER);
-            else if(modifierIndex == 3)
-                modifier = MaterialModifier(LIQUID_MATERIAL_MODIFIER);
-            else if(modifierIndex == 4)
-                modifier = MaterialModifier(MOSS_MATERIAL_MODIFIER);
-            else if(modifierIndex == 5)
-                modifier = MaterialModifier(RUST_MATERIAL_MODIFIER);
-            else if(modifierIndex == 6)
-                modifier = MaterialModifier(SKIN_MATERIAL_MODIFIER);
-            else if(modifierIndex == 7)
-                modifier = MaterialModifier(SOLID_MATERIAL_MODIFIER);
-            else if(modifierIndex == 8)
-                modifier = MaterialModifier(WOODEN_MATERIAL_MODIFIER);
-            else if(modifierIndex == 9)
-                modifier = MaterialModifier(MATH_MATERIAL_MODIFIER);
-            else{
-                LGDLOG::start<< "ERROR : Reading material file : Unknown modifier index." << LGDLOG::end;
-                return false;
-            }
-
-            unsigned int textureVersionCode = 0;
-            
-            if(versionNumber >= 2300)
-                textureVersionCode = 2;
-            else if(versionNumber == 2200)
-                textureVersionCode = 1;
-
-            if(!modifier.maskTexture.readTextureData(rf, true, textureVersionCode))
-                return false;
-
-            if(modifier.modifierIndex == TEXTURE_MATERIAL_MODIFIER){
-                if(!readTextureModifier(rf, modifier, versionNumber, textureVersionCode)){
-                    return false;
-                }
-            }
-
-            else if (modifier.modifierIndex == SOLID_MATERIAL_MODIFIER){
-                if(!readSolidModifier(rf, modifier, versionNumber, textureVersionCode)){
-                    return false;
-                }
-            }
-
-            else if (modifier.modifierIndex == LIQUID_MATERIAL_MODIFIER){
-               if(!readLiquidModifier(rf, modifier, versionNumber, textureVersionCode)){
-                    return false;
-               }
-            }
-
-            else if (modifier.modifierIndex == MOSS_MATERIAL_MODIFIER){
-               if(!readMossModifier(rf, modifier, versionNumber, textureVersionCode)){
-                    return false;
-               }
-            }
-
-            else if (modifier.modifierIndex == RUST_MATERIAL_MODIFIER){
-                if(!readRustModifier(rf, modifier, versionNumber, textureVersionCode)){
-                    return false;
-                }
-            }
-
-            else if (modifier.modifierIndex == SKIN_MATERIAL_MODIFIER){
-                if(!readSkinModifier(rf, modifier, versionNumber, textureVersionCode)){
-                    return false;
-                }
-            }
-
-            else if (modifier.modifierIndex == WOODEN_MATERIAL_MODIFIER){
-                if(!readWoodenModifier(rf, modifier, versionNumber, textureVersionCode)){
-                    return false;
-                }
-            }
-
-            else if (modifier.modifierIndex == ASPHALT_MATERIAL_MODIFIER){
-                if(!readAsphaltModifier(rf, modifier, versionNumber, textureVersionCode)){
-                    return false;
-                }
-            }
-
-            else if (modifier.modifierIndex == DUST_MATERIAL_MODIFIER){
-               if(!readDustModifier(rf, modifier, versionNumber, textureVersionCode)){
-                    return false;
-               }
-            }
-            
-            else if (modifier.modifierIndex == MATH_MATERIAL_MODIFIER){
-               if(!readMathModifier(rf, modifier, versionNumber, textureVersionCode)){
-                    return false;
-               }
-            }
-
-
-            material.materialModifiers.push_back(modifier);
-        }    
-    
-        material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
-
-
-        if(versionNumber >= 2200){
-            // Shortcuts
-            int matShortcutSize;
-            LGDMATERIAL_READBITS(matShortcutSize, int, "Material Shortcut - Material Shortcut Size");
-            for (size_t i = 0; i < matShortcutSize; i++)
-            {
-                MaterialShortcut shortcut;
-                LGDMATERIAL_READBITS(shortcut.modI, int, "Material Shortcut - modI");
-                LGDMATERIAL_READBITS(shortcut.secI, int, "Material Shortcut - secI");
-                LGDMATERIAL_READBITS(shortcut.elementI, int, "Material Shortcut - elementI");
-
-                int titleSize;
-                LGDMATERIAL_READBITS(titleSize, int, "Material Shortcut - Title Size");
-                for (size_t i = 0; i < titleSize; i++)
-                {
-                    char c;
-                    LGDMATERIAL_READBITS(c, char, "Material Shortcut - Title char");
-                    shortcut.title.push_back(c);
-                }
-                
-                if(shortcut.secI != -1){
-                    shortcut.element = &material.materialModifiers[shortcut.modI].sections[shortcut.secI].elements[shortcut.elementI];      
-                }
-                else{
-                    shortcut.maskTxtr = &material.materialModifiers[shortcut.modI].maskTexture;      
-                }
-
-                material.materialShortcuts.push_back(shortcut);
-            }
-        }
     }
 
     return true;
