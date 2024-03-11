@@ -100,7 +100,7 @@ void ModelInfoDialog::render(Timer& timer, LogDialog& logDialog){
                                                 Section(
                                                     Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,0), "",  Texture(), 2.f, true)),
                                                     {
-                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2), model->meshes[i].materialName,  Texture(), 4.f, false)), 
+                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2), model->meshes[i].materialName,  Texture(), 8.f, false)), 
                                                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,10), "",  model->meshes[i].displayingTxtr, 0.f, false)), 
                                                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Object count : " + std::to_string(model->meshes[i].objects.size()),  Texture(), 0.f, false)), 
                                                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,6), "Texture coordinates Mask",  model->meshes[i].uvMask, 0.f, false)), 
@@ -112,6 +112,11 @@ void ModelInfoDialog::render(Timer& timer, LogDialog& logDialog){
                                                 )
                                             );
 
+            this->panel.sections[this->panel.sections.size() - 1].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Layers : ",  Texture(), 0.f, false));
+            for (int layerI = model->meshes[i].layerScene.layers.size() - 1; layerI >= 0; layerI--)
+            {
+                this->panel.sections[this->panel.sections.size() - 1].elements.push_back(model->meshes[i].layerScene.layers[layerI]->layerButton);
+            }
         }
     }
     
