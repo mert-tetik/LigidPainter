@@ -80,7 +80,7 @@ static bool write_texture_pixels(std::ofstream& wf, std::string path, Texture te
     }
 }
 
-bool FileHandler::writeLGDMODELFile(std::string path, Model& model){
+bool FileHandler::writeLGDMODELFile(std::string path, Model model){
     
     if(path == ""){
         path = showFileSystemObjectSelectionDialog(
@@ -94,7 +94,11 @@ bool FileHandler::writeLGDMODELFile(std::string path, Model& model){
     
     if(path.size()){
 
-        std::ofstream wf(path + UTIL::folderDistinguisher() + model.title + ".lgdmodel", std::ios::out | std::ios::binary);
+        // Create the file path if path leads to a directory
+        if(std::filesystem::is_directory(path))    
+            path += UTIL::folderDistinguisher() + model.title + ".lgdmodel";
+
+        std::ofstream wf(path, std::ios::out | std::ios::binary);
 
         if(!wf) {
             LGDLOG::start<< "ERROR WHILE WRITING MODEL FILE! Cannot open file : " << path << LGDLOG::end;

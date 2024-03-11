@@ -403,15 +403,14 @@ void ProjectRecoverDialog::render(Timer timer, Project &project){
                 if(showMessageBox("WARNING!", "Are you sure you want to recover this project", MESSAGEBOX_TYPE_WARNING, MESSAGEBOX_BUTTON_OKCANCEL)){
                     dialogControl.unActivate();
                     
-                    std::string lgdPath; 
-                    if(project.locateLigidFileInFolder(project.recoverSlotPath(slot), lgdPath)){
+                    std::string lgdPath = project.locateLigidFileInFolder(project.recoverSlotPath(slot)); 
+                    if(lgdPath.size()){
                         std::string projectPath = project.folderPath; 
                         project.loadProject(lgdPath);
                         project.folderPath = projectPath; 
                     }
                     else{
                         LGDLOG::start << "WARNING! No ligid file detected. Only the library elements will be updated." << LGDLOG::end;
-
                         project.loadLibraryElements(project.recoverSlotPath(slot), "");
                     }
                 }
@@ -448,6 +447,7 @@ void ProjectRecoverDialog::render(Timer timer, Project &project){
 
     ShaderSystem::buttonShader().use();
     Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport(); 
+    Settings::defaultFramebuffer()->setViewport();  
 
+    project.discardUpdateProjectFlag = false;
 }

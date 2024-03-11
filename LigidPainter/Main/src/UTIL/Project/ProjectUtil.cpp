@@ -32,11 +32,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 
-bool Project::locateLigidFileInFolder(const std::string& folderPath, std::string& ligidPath)
+std::string Project::locateLigidFileInFolder(const std::string& folderPath)
 {
+    if(!std::filesystem::is_directory(folderPath) || !std::filesystem::exists(folderPath)){
+        LGDLOG::start << "ERROR : Locating Ligid file in a folder : " << folderPath << " is not a folder!"  << LGDLOG::end;
+        return "";
+    }
+
     const std::string extension = ".ligid";
     std::vector<std::string> matchingFiles;
 
+    // Get all the files with a ligid extension
     try
     {
         for (const auto& entry : std::filesystem::directory_iterator(folderPath))
@@ -51,19 +57,26 @@ bool Project::locateLigidFileInFolder(const std::string& folderPath, std::string
         LGDLOG::start << "ERROR : Filesystem : Location ID 789215 " << ex.what() << LGDLOG::end;
     }    
 
+    // Can't find any ligid files
     if (matchingFiles.empty())
     {
-        ligidPath = this->folderPath + UTIL::folderDistinguisher() + this->projectName() + ".ligid"; // No file with the given extension found
-        return false;
+        return "";
     }
+
+    // Ligid files found
     else
     {
-        // Return the first matching file path
-        ligidPath = matchingFiles[0];
+        // If multiple ligid files found
         if(matchingFiles.size() > 1)
             LGDLOG::start << "WARNING : Multiple ligid files detected!" << LGDLOG::end;
-        return true;
+        
+        // Return the first matching file path
+        return matchingFiles[0];
     }
+}
+
+std::string Project::locateLigidFileInFolder(){
+    return this->locateLigidFileInFolder(this->folderPath);
 }
 
 std::string Project::absoluteProjectPath(){
@@ -78,12 +91,6 @@ std::string Project::recoverSlotPath(int slot){
 
 void Project::copyTheProjectPathToTheClipboard(){
     LigidGL::setClipboardText(this->absoluteProjectPath().c_str());
-}
-
-std::string Project::ligidFilePath(){
-    std::string a;
-    this->locateLigidFileInFolder(this->folderPath, a);
-    return a;
 }
 
 std::string Project::projectName(){
@@ -105,7 +112,37 @@ void Project::addModelToProject(std::string filePath){
     }
    
     Library::addModel(tdModel);
-    UTIL::copyFileToFolder(filePath, this->folderPath + UTIL::folderDistinguisher() + "3DModels", 1);
 
+    const std::string originalThreedModelsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Original_3D_Model_Files"; 
+    if((UTIL::createFolderIfDoesntExist(originalThreedModelsFolderPath))){
+        UTIL::copyFileToFolder(filePath, originalThreedModelsFolderPath, 1);
+    }
+    
     FileHandler::writeLGDMODELFile(this->folderPath + UTIL::folderDistinguisher() + "3DModels", tdModel);
 }   
+
+bool Project::folderPathCheck(){
+    // Path doesn't exist
+    int tries = 0;
+    while (!std::filesystem::exists(this->folderPath))
+    {
+        // Inform user
+        showMessageBox("CRITICAL PROBLEM!", "Your project path is not valid. Please select a new path to your project.", MESSAGEBOX_TYPE_ERROR, MESSAGEBOX_BUTTON_OK);
+        tries++;
+
+        // Select new path
+        std::string path = showFileSystemObjectSelectionDialog("Compensate the missing project path", UTIL::removeLastWordBySeparatingWithChar(this->absoluteProjectPath(), UTIL::folderDistinguisher()), 0, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
+        
+        // Try to create the project
+        if(std::filesystem::exists(path))
+            this->createProject(path, this->projectName(), {});
+
+        // Filesystem has a problem
+        if(tries == 3){
+            showMessageBox("oopsies", "Appearently LigidPainter & the file system having a problem determining if your project path exists or not. Since this problem is so rare our fellow developer didn't take his time to put a recovery mechanism there specifically. However don't worry! LigidPainter has a recovery system on its own. Just search it up. And you probably need to close the app rn. Sorry :3. Note : Pls contact the developer if u see this (especially Mert Tetik)", MESSAGEBOX_TYPE_ERROR, MESSAGEBOX_BUTTON_OK);
+            return false;
+        }
+    }
+    
+    return true;
+}

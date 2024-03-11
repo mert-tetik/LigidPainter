@@ -771,10 +771,13 @@ bool FileHandler::writeLGDMATERIALFile(
                                                     FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER
                                                 );
                                                 
-        path += UTIL::folderDistinguisher() + material.title + ".lgdmaterial";
     }
     
     if(path.size()){
+        // Create the file path if path leads to a directory
+        if(std::filesystem::is_directory(path))    
+            path += UTIL::folderDistinguisher() + material.title + ".lgdmaterial";
+    
         std::ofstream wf(path, std::ios::out | std::ios::binary);
 
         if(!wf) {

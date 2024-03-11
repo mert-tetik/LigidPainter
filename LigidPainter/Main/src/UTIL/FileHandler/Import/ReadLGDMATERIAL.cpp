@@ -257,7 +257,7 @@ bool FileHandler::readLGDMATERIALFile(
         material.title = UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher());
         material.title = UTIL::removeExtension(material.title);
 
-        if(!FileHandler::readMaterialData(rf, path))
+        if(!FileHandler::readMaterialData(rf, material))
             return false;
     }
 

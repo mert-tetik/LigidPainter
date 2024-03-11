@@ -189,14 +189,10 @@ void LoadProjectDialog::render(Timer timer, Project &project,bool &greetingDialo
                 //Scale the button in x axis
                 btn.scale.x = projectsPanel.scale.x;
                 
-                //Get the ligid file path inside of the project folder 
-                std::string ligidFilePath; 
-                
                 //If a ligid file is loacted
-                if(project.locateLigidFileInFolder(projectPath, ligidFilePath)){
+                if(project.locateLigidFileInFolder(projectPath).size()){
                     //Transfer the button to the new section
                     projectSection.elements.push_back(btn);
-                    
                     counter++;
                 }
             }
@@ -220,25 +216,26 @@ void LoadProjectDialog::render(Timer timer, Project &project,bool &greetingDialo
             
             if(std::filesystem::exists(projectsPanel.sections[0].elements[i].button.text)){
                 //Get the ligid file path using the button's text as a project folder path source
-                std::string ligidFilePath; 
-                project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text, ligidFilePath);
+                std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
                 
-                //Load the project
-                if(project.loadProject(ligidFilePath)){                
-                    startScreen = false;
-                    
-                    this->dialogControl.unActivate();
-                    break;
-                }
-                else{
+                if(ligidFilePath.size()){
+                    //Load the project
+                    if(project.loadProject(ligidFilePath)){                
+                        startScreen = false;
+                        
+                        this->dialogControl.unActivate();
+                        break;
+                    }
+                    else{
 
-                    showMessageBox(
-                                    "Warning!", 
-                                    "Error while reading the ligid file! Detailed error message is printed to the terminal." , 
-                                    MESSAGEBOX_TYPE_WARNING, 
-                                    MESSAGEBOX_BUTTON_OK
-                                );
+                        showMessageBox(
+                                        "Warning!", 
+                                        "Error while reading the ligid file! Detailed error message is printed to the terminal." , 
+                                        MESSAGEBOX_TYPE_WARNING, 
+                                        MESSAGEBOX_BUTTON_OK
+                                    );
 
+                    }
                 }
             }
             else{

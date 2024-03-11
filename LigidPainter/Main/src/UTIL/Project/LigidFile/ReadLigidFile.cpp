@@ -115,7 +115,7 @@ bool Project::readLigidFile(
         for (size_t i = 0; i < Library::getModelArraySize(); i++)
         {
             if(Library::getModelObj(i).title == modelTitle){
-                *getModel() = Library::getModelObj(i);
+                getModel() = Library::getModelObj(i);
             }
         }
         

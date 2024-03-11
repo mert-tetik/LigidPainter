@@ -59,9 +59,9 @@ int findIndexInLibrary(Texture txtr){
 }
 
 bool Project::wrtLigidFile(std::string path){
-    std::ofstream wf;
     
-    wf = std::ofstream(path, std::ios::out | std::ios::binary);
+    // Open writing stream and truncate the file
+    std::ofstream wf = std::ofstream(path, std::ios::out | std::ios::binary);
 
     if(!wf) {
         LGDLOG::start<< "ERROR! : Writing ligid file." << LGDLOG::end;

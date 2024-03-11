@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef LIGID_LAYERS_HPP
 #define LIGID_LAYERS_HPP
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
@@ -28,6 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements/Elements.hpp"
 #include "MouseSystem/Mouse.hpp"
 
+/*! @brief Channel textures of a material */
 struct MaterialChannels{
     Texture albedo;
     Texture roughness;

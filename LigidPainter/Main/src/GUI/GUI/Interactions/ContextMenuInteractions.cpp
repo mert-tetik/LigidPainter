@@ -107,7 +107,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             Library::eraseMaterial(ContextMenus::material.selectedElement);
         }
         else if(ContextMenus::material.contextPanel.sections[0].elements[5].button.clicked){//Clicked to export button
-            std::string exportingPath = showFileSystemObjectSelectionDialog("Export the lgdmaterial file", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false,FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE);
+            std::string exportingPath = showFileSystemObjectSelectionDialog("Export the lgdmaterial file", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE);
             if(exportingPath.size())
                 FileHandler::writeLGDMATERIALFile(exportingPath, *Library::getMaterial(ContextMenus::material.selectedElement));
         }
@@ -166,7 +166,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             modelInfoDialog.dialogControl.activate();
         }
         else if(ContextMenus::model.contextPanel.sections[0].elements[1].button.clicked){//Clicked to use the model button
-            *getModel() = *Library::getModel(ContextMenus::model.selectedElement); //Select the model
+            getModel() = &Library::getModel(ContextMenus::model.selectedElement); //Select the model
             getModel()->newModelAdded = true; 
         }
     }
@@ -178,7 +178,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     
     //Save as
     else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[1].button.clicked || shortcuts_CTRL_SHIFT_S()){
-        project.duplicateFolder("");
+        project.saveAs("");
     }
     
     //Create new

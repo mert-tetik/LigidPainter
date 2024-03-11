@@ -30,7 +30,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-
 #define TD_MODEL_FOLDER_CREATION 0
 #define BRUSH_FOLDER_CREATION 1
 #define FILTER_FOLDER_CREATION 2
@@ -47,13 +46,11 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
     }
     this->projectProcessing = true;
     
-    std::cout << "CREATE MODE : 0" << std::endl;
-    
     //Make sure destination path doesn't have / at the end
     if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') 
         destinationPath.pop_back();
 
-    //If the destination path doesn't exist give warning message box and return 
+    //If the destination path doesn't exist inform the user and return 
     if(!std::filesystem::exists(destinationPath)){
         showMessageBox(
                             "Warning!", 
@@ -61,13 +58,14 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
                             MESSAGEBOX_TYPE_WARNING, 
                             MESSAGEBOX_BUTTON_OK
                         );
+                        
         this->projectProcessing = false;
+        
         return false;
     }
     
     //If there is already a project with the same name and the same directory
     if(std::filesystem::exists(destinationPath + UTIL::folderDistinguisher() + name)){
-
         int res = showMessageBox
                 (
                     "Warning!", 
@@ -94,12 +92,9 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         }
     }
 
-
     //Update the folder path of the project
     this->folderPath = destinationPath + UTIL::folderDistinguisher() + name;
     
-    std::cout << "CREATE MODE : 1" << std::endl;
-
     try
     {
         //Create the project folder
@@ -125,7 +120,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         std::string brushesFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
         if(!std::filesystem::create_directory(brushesFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << brushesFolderPath << LGDLOG::end; 
-        completeFolder(brushesFolderPath, BRUSH_FOLDER_CREATION);
+        UTIL::duplicateFolder("./LigidPainter/Resources/Brushes", brushesFolderPath);
         
         //Fonts
         std::string fontsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Fonts";
@@ -146,7 +141,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         std::string filtersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Filters";
         if(!std::filesystem::create_directory(filtersFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << filtersFolderPath << LGDLOG::end; 
-        completeFolder(filtersFolderPath, FILTER_FOLDER_CREATION);
+        UTIL::duplicateFolder("./LigidPainter/Resources/Filters", filtersFolderPath);
         
         //Layers
         std::string layersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Layers";
@@ -157,8 +152,11 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
         if(!std::filesystem::create_directory(tdModelFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << tdModelFolderPath << LGDLOG::end; 
-        completeFolder(tdModelFolderPath, TD_MODEL_FOLDER_CREATION);
         
+
+        TDModelPaths.push_back("./LigidPainter/Resources/3D Models/sphere.fbx");
+        TDModelPaths.push_back("./LigidPainter/Resources/3D Models/plane.fbx");
+
         for (size_t i = 0; i < TDModelPaths.size(); i++)
         {
             this->addModelToProject(TDModelPaths[i]);
@@ -166,21 +164,14 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
         
     }
     catch (const std::filesystem::filesystem_error& ex) {
-        LGDLOG::start << "ERROR : Filesystem : Location ID 111121 " << ex.what() << LGDLOG::end;
+        LGDLOG::start << "ERROR : Filesystem : Location ID 119121 " << ex.what() << LGDLOG::end;
     }
 
-    std::cout << "CREATE MODE : 2" << std::endl;
-
-    //Create the .ligid file
-    std::string lgdPath;
-    this->locateLigidFileInFolder(this->folderPath, lgdPath);
-    
-    if(!writeLigidFile(lgdPath)){
+    // Create ligid file
+    if(!writeLigidFile(this->folderPath + UTIL::folderDistinguisher() + this->projectName() + ".ligid")){
         LGDLOG::start << "ERROR : Creating project folder : Failed to write ligid file." << LGDLOG::end;
     }
     
-    std::cout << "CREATE MODE : FINISH" << std::endl;
-
     this->projectProcessing = false;
     return true;
 }
@@ -188,11 +179,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
 /// @brief add the contents off the related folder
 void completeFolder(std::string path, int action){
     
-    if(action == TD_MODEL_FOLDER_CREATION){
-        UTIL::copyFileToFolder("./LigidPainter/Resources/3D Models/sphere.fbx", path, 1);
-        UTIL::copyFileToFolder("./LigidPainter/Resources/3D Models/plane.fbx", path, 1);
-    }
-    else if(action == FILTER_FOLDER_CREATION){
+    if(action == FILTER_FOLDER_CREATION){
         for (const auto& entry : std::filesystem::directory_iterator("./LigidPainter/Resources/Filters")) {
             if (std::filesystem::is_regular_file(entry)) {
                 // Get the filename from the full path

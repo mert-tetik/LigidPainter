@@ -61,8 +61,11 @@ bool FileHandler::writeLGDBRUSHFile(std::string path, Brush brush){
     }
     
     if(path.size()){
+        // Create the file path if path leads to a directory
+        if(std::filesystem::is_directory(path))    
+            path += UTIL::folderDistinguisher() + brush.title + ".lgdbrush";
 
-        std::ofstream wf(path + UTIL::folderDistinguisher() + brush.title + ".lgdbrush", std::ios::out | std::ios::binary);
+        std::ofstream wf(path, std::ios::out | std::ios::binary);
 
         if(!wf) {
             LGDLOG::start<< "ERROR WHILE WRITING BRUSH FILE! Cannot open file : " << path << LGDLOG::end;

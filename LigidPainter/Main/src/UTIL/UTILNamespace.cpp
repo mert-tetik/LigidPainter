@@ -171,33 +171,30 @@ bool UTIL::deleteFilesInFolder(const std::string folderPath) {
     return true;
 }
 
-void UTIL::duplicateFolder(const std::string src, const std::string dest){
-	
+bool UTIL::duplicateFolder(const std::string src, const std::string dest){
     try
     {
-        for (const auto& entry : std::filesystem::recursive_directory_iterator(src)){
-            
-            std::string file = entry.path().string();  
-
-            std::string dst = dest + UTIL::folderDistinguisher() + UTIL::rmvPath(src, file);
-            
-            //If a folder then create a folder
-            if(!std::filesystem::is_directory(file)){
-                if(!std::filesystem::create_directories(dst))
-                    LGDLOG::start<< "ERROR : Duplicating folder : " << src << " to " << dest << ". Couldn't create : " << dst <<LGDLOG::end;
-            }
-
-            //If a file then duplicate the file
-            else{
-                if(!std::filesystem::copy_file(file, dst))
-                    LGDLOG::start<< "ERROR : Duplicating folder : " << src << " to " << dest << ". Copying file : " << file << " to " << dst << LGDLOG::end;
+        if(!std::filesystem::exists(src)){
+            LGDLOG::start << "ERROR : Folder duplication failed : Source folder doesn't exist! " << src << LGDLOG::end;
+            return false;
+        }
+        
+        if(!std::filesystem::exists(dest)){
+            if(!std::filesystem::create_directories(dest)){
+                LGDLOG::start << "ERROR : Folder duplication failed : Destination folder can't be created! " << dest << LGDLOG::end;
+                return false;
             }
         }
+
+        // Copy the contents from the src folder to dest folder recursively
+        std::filesystem::copy(src, dest, std::filesystem::copy_options::recursive);
     }
     catch (const std::filesystem::filesystem_error& ex) {
         LGDLOG::start << "ERROR : Filesystem : Location ID 482555 " << ex.what() << LGDLOG::end;
+        return false;
     }
     
+    return true;
 }
 
 bool UTIL::uniqueName(std::string &s, std::vector<std::string> sArray){
@@ -371,4 +368,24 @@ void UTIL::copyFileToFolder(std::string file, std::string folder, int mode){
     catch (const std::filesystem::filesystem_error& ex) {
         LGDLOG::start << "ERROR : Filesystem : Location ID 784586 " << ex.what() << LGDLOG::end;
     }
+}
+
+bool UTIL::createFolderIfDoesntExist(const std::string path){
+    try{
+        // Path doesn't exist
+        if(!std::filesystem::exists(path)){
+            // Create the folder if doesn't exists
+            if(!std::filesystem::create_directories(path)){
+                LGDLOG::start << "ERROR : Creating folder for nonexisting path : Creating directories : " << path << LGDLOG::end;
+                return false;
+            }
+        }
+    }
+    catch (const std::filesystem::filesystem_error& ex) {
+        // Filesystem error 
+        LGDLOG::start << "ERROR : Filesystem : Location ID 6132189 " << ex.what() << LGDLOG::end;
+        return false;
+    }
+
+    return true;
 }

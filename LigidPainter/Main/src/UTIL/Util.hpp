@@ -140,8 +140,8 @@ namespace UTIL{
     /// @param folderPath 
     bool deleteFilesInFolder(const std::string folderPath);
 
-    /// @brief duplicates the folder in the @param src to the @param dest path
-    void duplicateFolder(const std::string src, const std::string dest);
+    /// @brief Writes the contents of the src folder to dest folder. (Creates the dest folder if doesn't exist)
+    bool duplicateFolder(const std::string src, const std::string dest);
 
     /// @brief moves the files inside of the src folder to the dst folder
     void moveFilesToDestination(const std::string& src, const std::string& dst);
@@ -165,6 +165,10 @@ namespace UTIL{
     ///        Renames the file if already has one
     /// @param mode 0 = abort if already exists, 1 = rename the file if already exists, 2 = delete the existing file if already exists 
     void copyFileToFolder(const std::string file, const std::string folder, int mode);
+
+    /// @brief Checks if the folder located at the path exists and creates the folder if does not.
+    /// @return Returns false if can't create the folder or faced with a filesystem error (automatically prints the error message to the terminal too) 
+    bool createFolderIfDoesntExist(const std::string path);
 }
 
 
@@ -552,19 +556,17 @@ public:
 
     std::string recoverSlotPath(int slot);
 
+
     //Constructor
     Project(){}
 
+
     /// @brief Create a project from scratch
-    /// @param destinationPath where will be the project folder be created
-    /// @param name project name
-    /// @param TDModelPath 3D Model file path. Copies that file to the Project/3DModels
-    /// @param textureRes 512 , 1024 , 2048 etc. (selected by the user & written to the .ligid file)
+    /// @param destinationPath where the project folder be created
+    /// @param name title of the project
     /// @return true if success
     bool createProject(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths);
     
-    bool discardUpdateProjectFlag = false;
-
     /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
     void updateProject(bool updateTextures, bool multithreadingMode);
     
@@ -573,22 +575,33 @@ public:
     /// @return 
     bool loadProject(std::string ligidFilePath);
 
+
+
+
+    /// @brief Checks if this->folderPath is valid. If not tries to create the folder into the same path. 
+    ///        If this fails too informs the user and asks for a new path. (Called in updateProject function)
+    /// @return if you're good to go
+    bool folderPathCheck();
+    
+    bool discardUpdateProjectFlag = false;    
+
+    /// @brief Loads each library elements (textures, materials, brushes, models etc.) into the Library
     bool loadLibraryElements(std::string folderPath, std::string ligidFilePath);
 
+    /// @brief 
     void addModelToProject(std::string filePath);
 
-    /// @brief Used to save as
     /// @param dstPath where to duplicate
-    void duplicateFolder(std::string dstPath);
+    void saveAs(std::string dstPath);
     
     /// @brief Copies the project path to the clipboard
     /// @param window 
     void copyTheProjectPathToTheClipboard();
 
-    /// @brief Locates the ligid file in the folderPath 
-    /// @param folderPath 
-    /// @return path to the ligidpainter "" if not located
-    bool locateLigidFileInFolder(const std::string& folderPath, std::string& ligidPath);
+    /// @brief Locates the ligid file in the folderPath param. Returns "" if there's no ligid file. 
+    std::string locateLigidFileInFolder(const std::string& folderPath);
+    /// @brief Locates the ligid file in this->folderPath. Returns "" if there's no ligid file. 
+    std::string locateLigidFileInFolder();
     
     /// @brief Retrieve data from the ligid file
     /// @param path 
@@ -601,10 +614,6 @@ public:
     
     /// @brief Write ligid file to the project folder
     bool writeLigidFile(std::string path);
-
-        /// @brief Returns the ligid file path of the project
-    ///        (AAA/MyProject/MyProject.ligid)
-    std::string ligidFilePath();
 
     /// @brief Returns the title of the project
     ///        (MyProject)
@@ -1158,23 +1167,32 @@ struct Fonts{
 };
 
 namespace FileHandler{
+    // Experimental
     bool writeOBJFile(std::string path, Model model);
     Model readOBJFile(std::string path);
-    
     Model readFBXFile(std::string path);
     
+
+    /*! @brief Write material data*/
     bool writeMaterialData(std::ofstream& wf, Material& material);
+    /*! @brief Write a *.lgdmaterial file to the path (path could lead to both folder or a file) */
     bool writeLGDMATERIALFile(std::string path, Material material);
 
-    bool readMaterialData(std::ifstream& rf, Material& material),
+    /*! @brief Read material data and write the data to material param*/
+    bool readMaterialData(std::ifstream& rf, Material& material);
+    /*! @brief Read a *.lgdmaterial file and write the data to material param */
     bool readLGDMATERIALFile(std::string path, Material& material);
 
     
+    /*! @brief Write a *.lgdbrush file to the path (path could lead to both folder or a file) */
     bool writeLGDBRUSHFile(std::string path, Brush brush);
+    /*! @brief Read a *.lgdbrush file and write the data to brush param */
     bool readLGDBRUSHFile(std::string path, Brush& brush);
     
-    
-    bool writeLGDMODELFile(std::string path, Model& model);
+
+    /*! @brief Write a *.lgdmodel file to the path (path could lead to both folder or a file) */
+    bool writeLGDMODELFile(std::string path, Model model);
+    /*! @brief Read a *.lgdmodel file and write the data to model param */
     bool readLGDMODELFile(std::string path, Model& model);
 }
 

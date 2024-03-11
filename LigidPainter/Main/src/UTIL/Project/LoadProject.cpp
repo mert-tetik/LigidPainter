@@ -32,100 +32,62 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
+static void LOAD_textures(const std::string textures_folder_path);
+static void LOAD_materials(const std::string materials_folder_path);
+static void LOAD_brushes(const std::string brushes_folder_path);
+static void LOAD_models(const std::string models_folder_path);
+static void LOAD_filters(const std::string filters_folder_path);
+static void LOAD_texturePacks(const std::string texture_packs_folder_path);
+
 bool Project::loadLibraryElements(std::string folderPath, std::string ligidFilePath){
     try
     {
         //Load the textures
         if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
-            std::cout << "LOAD MODE : TEXTURES" << std::endl;
-            
-            Library::clearTextures();
-            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
-                std::string texturePath = entry.path().string();
-
-                Texture texture;
-                bool error = !texture.load(texturePath.c_str());
-
-                if(!error){
-                    //Check if the texture is a png file
-                    if(UTIL::getLastWordBySeparatingWithChar(texturePath, '.') != "png"){
-                        //The texture in the project folder is not an png file
-
-                        //Delete the non-png file
-                        std::filesystem::remove(texturePath);
-                    
-                        //Recreate the png file
-                        texture.exportTexture(UTIL::removeLastWordBySeparatingWithChar(texturePath, UTIL::folderDistinguisher()), "PNG");
-                    }
-
-                    
-                    Library::addTexture(texture, "");
-                }
-            }
+            LOAD_textures(this->folderPath + UTIL::folderDistinguisher() + "Textures");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : Textures folder doesn't exists" << LGDLOG::end;
         }
 
-
-
         //Load the materials
         if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
-            std::cout << "LOAD MODE : MATERIALS" << std::endl;
-
-            Library::clearMaterials();
-            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
-                std::string materialPath = entry.path().string();
-
-                Material material("", 0);
-                if(FileHandler::readLGDMATERIALFile(materialPath, material))
-                    Library::addMaterial(material, "");
-            
-            }
+            LOAD_materials(this->folderPath + UTIL::folderDistinguisher() + "Materials");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : Materials folder doesn't exists" << LGDLOG::end;
         }
 
-        //Load the tdmodels
+        //Load the 3D models
         if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
-            std::cout << "LOAD MODE : 3D MODELS" << std::endl;
-            
-            Library::clearModels();
-            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
-                std::string modelPath = entry.path().string();
-
-                if(UTIL::getFileExtension(modelPath) == "lgdmodel"){
-                    Model TDModel;
-                    bool success = FileHandler::readLGDMODELFile(modelPath, TDModel);
-
-                    if(TDModel.meshes.size() && success){
-                        Library::addModel(TDModel);
-                    }
-                    else if(success)
-                        LGDLOG::start<< "ERROR : Can't add the 3D model to the Library : Mesh size is 0!" << LGDLOG::end;
-                }
-            }
+            LOAD_models(this->folderPath + UTIL::folderDistinguisher() + "3DModels");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : 3DModels folder doesn't exists" << LGDLOG::end;
         }
 
-
         if(ligidFilePath.size()){
-            std::cout << "LOAD MODE : LIGID FILE" << std::endl;
-            //TODO Do smt with these variables
             time_t creationDate; 
             time_t lastOpenedDate;
-
+            
+            // Read the ligid file
             if(!this->readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
-                LGDLOG::start << "WARNING : Failed to load the ligid file : New ligid file will be generated!" << LGDLOG::end;
+                // Couldn't read the ligid file (probably cause of version)
+
+                LGDLOG::start << "WARNING : Failed to load the ligid file : New ligid file will be generated." << LGDLOG::end;
+                
+                // Generate new ligid file
                 if(this->writeLigidFile(ligidFilePath)){
+                    
+                    // Read the generated ligid file
                     if(!this->readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
+                        // Can't load the generated ligid file :( 
                         LGDLOG::start << "WARNING : Failed to load the regenerated ligid file : Ligid file will be ignored." << LGDLOG::end;
                     }
+                
                 }
                 else{
+                    // Couldn't generate the new ligid file :(
                     LGDLOG::start << "WARNING : Failed to rewrite the ligid file : Ligid file will be ignored." << LGDLOG::end;
                 }
             }
@@ -133,17 +95,7 @@ bool Project::loadLibraryElements(std::string folderPath, std::string ligidFileP
         
         //Load the brushes
         if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Brushes")){
-            std::cout << "LOAD MODE : BRUSHES" << std::endl;
-            
-            Library::clearBrushes();
-            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Brushes")){
-                std::string brushPath = entry.path().string();
-
-                Brush brush;
-                if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
-                    Library::addBrush(brush, "");
-                }
-            }
+            LOAD_brushes(this->folderPath + UTIL::folderDistinguisher() + "Brushes");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : Brushes folder doesn't exists" << LGDLOG::end;
@@ -151,16 +103,7 @@ bool Project::loadLibraryElements(std::string folderPath, std::string ligidFileP
 
         //Load the filters
         if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Filters")){
-            std::cout << "LOAD MODE : FILTERS" << std::endl;
-
-            Library::clearFilters();
-            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Filters")){
-                std::string filterPath = entry.path().string();
-
-                Filter filter;
-                if(filter.load(filterPath))
-                    Library::addFilter(filter);
-            }
+            LOAD_filters(this->folderPath + UTIL::folderDistinguisher() + "Filters");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : Filters folder doesn't exists" << LGDLOG::end;
@@ -168,16 +111,7 @@ bool Project::loadLibraryElements(std::string folderPath, std::string ligidFileP
 
         //Load the texture packs
         if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Texture Packs")){
-            std::cout << "LOAD MODE : TEXTURE PACKS" << std::endl;
-    
-            Library::clearTexturePacks();
-            for (const auto & entry : std::filesystem::directory_iterator(this->folderPath + UTIL::folderDistinguisher() + "Texture Packs")){
-                std::string filterPath = entry.path().string();
 
-                TexturePack texturePack;
-                texturePack.load(filterPath);
-                Library::addTexturePack(texturePack);
-            }
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : Texture Packs folder doesn't exists" << LGDLOG::end;
@@ -190,6 +124,7 @@ bool Project::loadLibraryElements(std::string folderPath, std::string ligidFileP
     return true;
 }
 
+
 bool Project::loadProject(std::string ligidFilePath){
     
     while(true){
@@ -197,8 +132,6 @@ bool Project::loadProject(std::string ligidFilePath){
             break;
     }
     
-    std::cout << "LOAD MODE : START" << std::endl;
-
     this->projectProcessing = true;
 
     //Return if the ligidFilePath doesn't exists
@@ -216,11 +149,259 @@ bool Project::loadProject(std::string ligidFilePath){
     if(this->folderPath[this->folderPath.size()-1] == '/' || this->folderPath[this->folderPath.size()-1] == '\\') 
         this->folderPath.pop_back();
 
-    //writeLigidFile(meshNodeScene);
-    
     this->loadLibraryElements(this->folderPath, ligidFilePath);
 
     projectUpdatingThreadElements.updateTextures = false;
     this->projectProcessing = false;
     return true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*---------------------- UTILS ------------------------*/
+
+static void LOAD_textures(const std::string textures_folder_path){
+    // Cler the textures
+    Library::clearTextures();
+    
+    // Loop thru all the files in the textures folder
+    for (const auto & entry : std::filesystem::directory_iterator(textures_folder_path)){
+        // Path to the texture file
+        std::string texturePath = entry.path().string();
+
+        // Load the texture
+        Texture texture;
+        if(texture.load(texturePath.c_str())){
+            //Check if the texture is a png file (re-create the texture file if not png)
+            if(UTIL::getFileExtension(texturePath) != "png"){
+                //The texture in the project folder is not a png file
+
+                //Delete the non-png file
+                std::filesystem::remove(texturePath);
+            
+                //Recreate the png file
+                texture.exportTexture(UTIL::removeLastWordBySeparatingWithChar(texturePath, UTIL::folderDistinguisher()), "PNG");
+            }
+            
+            // Add texture to the library
+            Library::addTexture(texture, "");
+        }
+        else{
+            // Can't load the texture file
+            LGDLOG::start << "WARNING! Loading project folder : Can't read a texture file! : " << texturePath << LGDLOG::end;
+        }
+    }
+}
+
+static void LOAD_materials(const std::string materials_folder_path){
+    // Clear materials
+    Library::clearMaterials();
+    
+    // Loop thru all the files in the materials folder
+    for (const auto & entry : std::filesystem::directory_iterator(materials_folder_path)){
+        
+        // Path to the material file
+        std::string materialPath = entry.path().string();
+
+        // If the file is a regular file
+        if(std::filesystem::is_regular_file(materialPath)){
+            
+            // If the extension is lgdmaterial
+            if(UTIL::getFileExtension(materialPath) == "lgdmaterial"){
+                
+                // Read the material
+                Material material("", 0);
+                if(FileHandler::readLGDMATERIALFile(materialPath, material)){
+                    // Add the material to the library if material readen successfuly 
+                    Library::addMaterial(material, "");
+                }
+                else{
+                    // Can't load the material file
+                    LGDLOG::start << "WARNING! Loading project folder : Can't read a material file! : " << materialPath << LGDLOG::end;
+                }
+            
+            }
+            else{
+                // Irrevelant file detected
+                LGDLOG::start << "WARNING! Loading project folder : Unrelevant file detected in materials folder : " << materialPath << LGDLOG::end;
+            }
+
+        }
+        else{
+            // Un-regular file detected
+            LGDLOG::start << "WARNING! Loading project folder : Un-regular file detected : " << materialPath << LGDLOG::end;
+        }
+    }
+}
+
+static void LOAD_brushes(const std::string brushes_folder_path){
+    // Clear brushes
+    Library::clearBrushes();
+    
+    // Loop thru all the files in the brushes folder
+    for (const auto & entry : std::filesystem::directory_iterator(brushes_folder_path)){
+        
+        // Path to the brush file
+        std::string brushPath = entry.path().string();
+
+        // If the file is a regular file
+        if(std::filesystem::is_regular_file(brushPath)){
+            
+            // If the extension is lgdbrush
+            if(UTIL::getFileExtension(brushPath) == "lgdbrush"){
+                
+                // Read the brush
+                Brush brush;
+                if(FileHandler::readLGDBRUSHFile(brushPath, brush)){
+                    // Add the brush to the library if brush readen successfuly 
+                    Library::addBrush(brush, "");
+                }
+                else{
+                    // Can't load the brush file
+                    LGDLOG::start << "WARNING! Loading project folder : Can't read a brush file! : " << brushPath << LGDLOG::end;
+                }
+            
+            }
+            else{
+                // Irrevelant file detected
+                LGDLOG::start << "WARNING! Loading project folder : Unrelevant file detected in brushes folder : " << brushPath << LGDLOG::end;
+            }
+
+        }
+        else{
+            // Un-regular file detected
+            LGDLOG::start << "WARNING! Loading project folder : Un-regular file detected : " << brushPath << LGDLOG::end;
+        }
+    }
+}
+
+static void LOAD_models(const std::string models_folder_path){
+    // Clear models
+    Library::clearModels();
+    
+    // Loop thru all the files in the models folder
+    for (const auto & entry : std::filesystem::directory_iterator(models_folder_path)){
+        
+        // Path to the model file
+        std::string modelPath = entry.path().string();
+
+        // If the file is a regular file
+        if(std::filesystem::is_regular_file(modelPath)){
+            
+            // If the extension is lgdmodel
+            if(UTIL::getFileExtension(modelPath) == "lgdmodel"){
+                
+                // Read the model
+                Model model;
+                if(FileHandler::readLGDMODELFile(modelPath, model)){
+                    if(model.meshes.size()){
+                        // Add the model to the library if model readen successfuly & model has meshes 
+                        Library::addModel(model);
+                    }
+                    else{
+                        // Mesh size is 0
+                        LGDLOG::start << "WARNING! Loading project folder : Can't load model file : Mesh size is 0 : " << modelPath << LGDLOG::end;
+                    }
+                }
+                else{
+                    // Can't load the model file
+                    LGDLOG::start << "WARNING! Loading project folder : Can't read a model file! : " << modelPath << LGDLOG::end;
+                }
+            
+            }
+            else{
+                // Irrevelant file detected
+                LGDLOG::start << "WARNING! Loading project folder : Unrelevant file detected in models folder : " << modelPath << LGDLOG::end;
+            }
+
+        }
+        else{
+            // Un-regular file detected
+            LGDLOG::start << "WARNING! Loading project folder : Un-regular file detected : " << modelPath << LGDLOG::end;
+        }
+    }
+}
+
+static void LOAD_filters(const std::string filters_folder_path){
+    // Clear filters
+    Library::clearFilters();
+    
+    // Loop thru all the files in the filters folder
+    for (const auto & entry : std::filesystem::directory_iterator(filters_folder_path)){
+        
+        // Path to the filter file
+        std::string filterPath = entry.path().string();
+
+        // If the file is a regular file
+        if(std::filesystem::is_regular_file(filterPath)){
+            
+            // If the extension is lgdfilter
+            if(UTIL::getFileExtension(filterPath) == "lgdfilter"){
+                
+                // Read the filter
+                Filter filter;
+                if(filter.load(filterPath)){
+                    // Add the filter to the library if filter readen successfuly 
+                    Library::addFilter(filter);
+                }
+                else{
+                    // Can't load the filter file
+                    LGDLOG::start << "WARNING! Loading project folder : Can't read a filter file! : " << filterPath << LGDLOG::end;
+                }
+            
+            }
+            else{
+                // Irrevelant file detected
+                LGDLOG::start << "WARNING! Loading project folder : Unrelevant file detected in filters folder : " << filterPath << LGDLOG::end;
+            }
+
+        }
+        else{
+            // Un-regular file detected
+            LGDLOG::start << "WARNING! Loading project folder : Un-regular file detected : " << filterPath << LGDLOG::end;
+        }
+    }
+}
+static void LOAD_texturePacks(const std::string texture_packs_folder_path){
+    
+    // Clear texture packs
+    Library::clearTexturePacks();
+    
+    for (const auto & entry : std::filesystem::directory_iterator(texture_packs_folder_path)){
+        std::string texturePackPath = entry.path().string();
+
+        if(std::filesystem::is_directory(texturePackPath)){
+            TexturePack texturePack;
+            texturePack.load(texturePackPath);
+            Library::addTexturePack(texturePack);
+        }
+        else{
+            LGDLOG::start << "WARNING! Loading project folder : A file was located in texture packs folder : " << texturePackPath << LGDLOG::end;
+        }
+    }
 }

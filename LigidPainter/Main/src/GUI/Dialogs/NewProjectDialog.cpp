@@ -261,7 +261,7 @@ void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialo
                                     TDModelPaths  //3D model path
                                  ))
         {
-            project.loadProject(project.ligidFilePath());
+            project.loadProject(project.locateLigidFileInFolder());
 
             startScreen = false;
 
