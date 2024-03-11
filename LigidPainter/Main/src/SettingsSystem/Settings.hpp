@@ -178,6 +178,7 @@ struct Scene{
 
 Scene* getScene();
 Model* getModel();
+void setModel(Model* model);
 Model* getSphereModel();
 Model* getPlaneModel();
 Model* getMaterialDisplayerModel();

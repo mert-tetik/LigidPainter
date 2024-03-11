@@ -119,7 +119,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
 
     if(discardUpdateProjectFlag)
         LGDLOG::start << "INFO : Updating project discarded" << LGDLOG::end;
-    else
+    else if(!multithreadingMode)
         LGDLOG::start << "Project saved successfuly" << LGDLOG::end;
     
     this->projectProcessing = false;

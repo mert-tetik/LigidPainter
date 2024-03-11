@@ -166,7 +166,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             modelInfoDialog.dialogControl.activate();
         }
         else if(ContextMenus::model.contextPanel.sections[0].elements[1].button.clicked){//Clicked to use the model button
-            getModel() = &Library::getModel(ContextMenus::model.selectedElement); //Select the model
+            setModel(Library::getModel(ContextMenus::model.selectedElement)); //Select the model
             getModel()->newModelAdded = true; 
         }
     }

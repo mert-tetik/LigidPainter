@@ -27,7 +27,7 @@ Settings::Properties __settingsProperties;
 Context __context; 
 Context __copyContext; 
 Scene __scene; //3D Scene structure
-Model __model;
+Model* __model = nullptr;
 Model __sphereModel;
 Model __planeModel;
 Model __materialDisplayerModel;
@@ -124,8 +124,16 @@ Context* getCopyContext(){
 Scene* getScene(){
     return &__scene;
 }
+
+static Model emptyModel;
 Model* getModel(){
-    return &__model;
+    if(__model != nullptr)
+        return __model;
+    else
+        return &emptyModel;
+}
+void setModel(Model* model){
+    __model = model;
 }
 Model* getSphereModel(){
     return &__sphereModel;
