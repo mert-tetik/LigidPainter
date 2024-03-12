@@ -32,10 +32,10 @@ void MaterialEditorDialog::activate(){
     dialogControl.activate();
 }
 
-void MaterialEditorDialog::deactivate(TextureSelectionDialog &textureSelectionDialog){
+void MaterialEditorDialog::deactivate(){
     selectedMaterialModifierIndex = 0;
     dialogControl.unActivate();
-    textureSelectionDialog.dialogControl.unActivate();
+    dialog_textureSelection.dialogControl.unActivate();
 }
 
 void MaterialEditorDialog::updateSkyboxTxtr(){
@@ -155,9 +155,9 @@ void MaterialEditorDialog::positioningPanels(){
     displayTxtrResComboBox.pos.x += displayModeComboBox.scale.x + displayTxtrResComboBox.scale.x;
 }
 
-void MaterialEditorDialog::renderSkyboxTxtr(glm::mat4 projection){
+void MaterialEditorDialog::renderSkyboxTxtr(){
     ShaderSystem::textureRenderingShader().use();
-    ShaderSystem::textureRenderingShader().setMat4("projection", projection);
+    ShaderSystem::textureRenderingShader().setMat4("projection", getScene()->gui_projection);
     ShaderSystem::textureRenderingShader().setVec2("scale", this->materialDisplayer.resultScale);
     ShaderSystem::textureRenderingShader().setVec3("pos", this->materialDisplayer.resultPos);
     ShaderSystem::textureRenderingShader().setInt("txtr", 0);

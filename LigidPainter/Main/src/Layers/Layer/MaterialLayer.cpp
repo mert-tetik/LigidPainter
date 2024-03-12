@@ -62,12 +62,12 @@ Panel materialSelectPanel = Panel(
                                     true
                                 );
 
-void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh){
+void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh){
     materialSelectPanel.sections[0].elements[0].button.texture = this->material.displayingTexture;
     
     if(materialSelectPanel.sections[0].elements[0].button.clicked){
-        materialSelectionDialog.material = &this->material;
-        materialSelectionDialog.dialogControl.activate();
+        dialog_materialSelection.material = &this->material;
+        dialog_materialSelection.dialogControl.activate();
     }
     materialSelectPanel.pos = this->layerButton.pos;
     materialSelectPanel.pos.x -= this->layerButton.scale.x + materialSelectPanel.scale.x;
@@ -77,13 +77,13 @@ void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTra
     if(materialSelectPanel.hover)
         __enteredPanelOnce = true;
 
-    if(materialSelectionDialog.dialogControl.isActive())
+    if(dialog_materialSelection.dialogControl.isActive())
         __enteredPanelOnce = false;
 
     if(*Mouse::LPressed())
         __enteredPanelOnce = false;
 
-    if(*Mouse::LClick() && !__enteredPanelOnce && !materialSelectPanel.hover && !materialSelectionDialog.dialogControl.isActive()){
+    if(*Mouse::LClick() && !__enteredPanelOnce && !materialSelectPanel.hover && !dialog_materialSelection.dialogControl.isActive()){
         this->elementSelectionMode = false;
         __enteredPanelOnce = false;
     }

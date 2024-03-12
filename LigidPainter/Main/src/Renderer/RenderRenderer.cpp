@@ -187,7 +187,7 @@ void Renderer::render(){
     Debugger::block("3D Model Object Selection"); // Start
 
     // Check if an object is selected after rendering the mesh
-    if(painter.selectedDisplayingModeIndex == 0 && ((!userInterface.anyPanelHover || userInterface.objectsPanel.hover) && !userInterface.anyDialogActive && !*Mouse::RPressed() && !*Mouse::MPressed()) || userInterface.logDialog.unded) 
+    if(painter.selectedDisplayingModeIndex == 0 && ((!userInterface.anyPanelHover || userInterface.objectsPanel.hover) && !userInterface.anyDialogActive && !*Mouse::RPressed() && !*Mouse::MPressed()) || dialog_log.unded) 
         getModel()->selectObject(this->userInterface.objectsPanel);
 
     Debugger::block("3D Model Object Selection"); // End
@@ -199,7 +199,7 @@ void Renderer::render(){
     getBox()->bindBuffers();
     
     //Update the UI projection using window size
-    userInterface.projection = glm::ortho(0.f,(float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
+    getScene()->gui_projection = glm::ortho(0.f,(float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
     
     Debugger::block("Complete user interface"); // Start
     
@@ -251,7 +251,7 @@ void Renderer::render(){
                         );
 
         //Update the selected texture after painting
-        painter.updateTexture(userInterface.twoDPaintingPanel, userInterface.projection, painter.selectedPaintingModeIndex, userInterface.filterPaintingModeFilterBtn.filter, userInterface.twoDPaintingBox, userInterface.paintingCustomMat);
+        painter.updateTexture(userInterface.twoDPaintingPanel, painter.selectedPaintingModeIndex, userInterface.filterPaintingModeFilterBtn.filter, userInterface.twoDPaintingBox, userInterface.paintingCustomMat);
         
         //Refresh the 2D painting texture
         painter.refreshPainting();
@@ -412,12 +412,12 @@ void Renderer::renderSkyBox(){
     // Render the background image
     getBox()->bindBuffers();
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, userInterface.displayerDialog.panel.sections[0].elements[5].button.texture.ID);
+    glBindTexture(GL_TEXTURE_2D, dialog_displayer.panel.sections[0].elements[5].button.texture.ID);
     ShaderSystem::buttonShader().use();
     ShaderSystem::buttonShader().setVec3("pos", glm::vec3(getContext()->windowScale / glm::ivec2(2), 0.1));
     ShaderSystem::buttonShader().setVec2("scale", getContext()->windowScale / glm::ivec2(2));
     ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
-    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", userInterface.displayerDialog.panel.sections[0].elements[6].rangeBar.value);
+    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", dialog_displayer.panel.sections[0].elements[6].rangeBar.value);
     ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
     ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Renderer::renderSkybox");

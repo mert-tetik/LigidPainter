@@ -32,7 +32,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <iostream>
 #include <vector>
 
-NewProjectDialog::NewProjectDialog(){
+NewProjectDialog::NewProjectDialog(int){
     //Create the panel
     this->panel = Panel(  
                             {
@@ -142,7 +142,7 @@ NewProjectDialog::NewProjectDialog(){
     resolutionCombobox.selectedIndex = 2;
 }
 
-void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen, LogDialog& logDialog){
+void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen){
     
     dialogControl.updateStart();
 
@@ -271,7 +271,7 @@ void NewProjectDialog::render(Timer timer, Project &project, bool &greetingDialo
     }
     
     //Close the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->panel.hover && !logDialog.isHovered() && *Mouse::LClick()) || panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
         if(startScreen)
             greetingDialogActive = true;
         

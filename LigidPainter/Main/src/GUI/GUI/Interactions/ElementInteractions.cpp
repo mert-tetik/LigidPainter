@@ -32,8 +32,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //Forward declarations for the interaction functions defined in the Interactions directory 
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int frameCounter);
-void windowPanelInteraction(Panel &windowPanel, Painter &painter, SettingsDialog &settingsDialog, DisplayerDialog &displayerDialog,ExportDialog &exportDialog,BakingDialog &bakingDialog, MaterialSelectionDialog &materialSelectionDialog);
-void paintingModesPanelInteraction(Panel &paintingModesPanel, Panel& vectorPaintingModePropertyPanel, Panel& smearPaintingModePropertyPanel, Painter &painter, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, float twoDSceneScroll, glm::vec2 twoDScenePos, Button filterPaintingModeFilterBtn, Box twoDPaintingBox, Material& paintingCustomMat, std::vector<TextureField> textureFields, CheckBox vectorPaintingMode2DModeWrapCheckBox);
+void windowPanelInteraction(Panel &windowPanel, Painter &painter);
+void paintingModesPanelInteraction(Panel &paintingModesPanel, Panel& vectorPaintingModePropertyPanel, Panel& smearPaintingModePropertyPanel, Painter &painter, Panel& twoDPaintingPanel, float twoDSceneScroll, glm::vec2 twoDScenePos, Button filterPaintingModeFilterBtn, Box twoDPaintingBox, Material& paintingCustomMat, std::vector<TextureField> textureFields, CheckBox vectorPaintingMode2DModeWrapCheckBox);
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
 double lastSecAnyDialogActiveWasTrue = 0.;
@@ -46,31 +46,32 @@ void UI::elementInteraction(
                             )
 {
     //!Dialog & panel state
-    this->anyDialogActive = 
-                    anyContextMenuActive || 
-                    greetingDialog.dialogControl.isActive() ||
-                    newProjectDialog.dialogControl.isActive() ||
-                    exportDialog.dialogControl.isActive() ||
-                    materialDisplayerDialog.dialogControl.isActive() ||
-                    filterDisplayerDialog.dialogControl.isActive() ||
-                    loadProjectDialog.dialogControl.isActive() ||
-                    materialEditorDialog.dialogControl.isActive() ||
-                    textureSelectionDialog.dialogControl.isActive() ||
-                    bakingDialog.dialogControl.isActive() ||
-                    filterSelectionDialog.dialogControl.isActive() ||
-                    newTextureDialog.dialogControl.isActive() ||
-                    settingsDialog.dialogControl.isActive() ||
-                    displayerDialog.dialogControl.isActive() ||
-                    textureEditorDialog.dialogControl.isActive() ||
-                    objectTexturingDialog.dialogControl.isActive() ||
-                    materialSelectionDialog.dialogControl.isActive() ||
-                    paintingChannelsTextureSelectionPanelActive ||
-                    texturePackEditorDialog.dialogControl.isActive() ||
-                    modelInfoDialog.dialogControl.isActive() ||
-                    painter.paintingoverTextureEditorMode ||
-                    painter.getSelectedMesh()->layerScene.any_dialog_active() ||
-                    dropper.active ||
-                    LigidGL::getTime() - lastSecAnyDialogActiveWasTrue <= 0.6; 
+    // this->anyDialogActive = 
+    //                 anyContextMenuActive || 
+    //                 greetingDialog.dialogControl.isActive() ||
+    //                 newProjectDialog.dialogControl.isActive() ||
+    //                 exportDialog.dialogControl.isActive() ||
+    //                 materialDisplayerDialog.dialogControl.isActive() ||
+    //                 filterDisplayerDialog.dialogControl.isActive() ||
+    //                 loadProjectDialog.dialogControl.isActive() ||
+    //                 materialEditorDialog.dialogControl.isActive() ||
+    //                 textureSelectionDialog.dialogControl.isActive() ||
+    //                 bakingDialog.dialogControl.isActive() ||
+    //                 filterSelectionDialog.dialogControl.isActive() ||
+    //                 newTextureDialog.dialogControl.isActive() ||
+    //                 settingsDialog.dialogControl.isActive() ||
+    //                 displayerDialog.dialogControl.isActive() ||
+    //                 textureEditorDialog.dialogControl.isActive() ||
+    //                 objectTexturingDialog.dialogControl.isActive() ||
+    //                 materialSelectionDialog.dialogControl.isActive() ||
+    //                 projectRecoverDialog.dialogControl.isActive() ||
+    //                 paintingChannelsTextureSelectionPanelActive ||
+    //                 texturePackEditorDialog.dialogControl.isActive() ||
+    //                 modelInfoDialog.dialogControl.isActive() ||
+    //                 painter.paintingoverTextureEditorMode ||
+    //                 painter.getSelectedMesh()->layerScene.any_dialog_active() ||
+    //                 dropper.active ||
+    //                 LigidGL::getTime() - lastSecAnyDialogActiveWasTrue <= 0.6; 
 
     if(this->anyDialogActive && !(LigidGL::getTime() - lastSecAnyDialogActiveWasTrue <= 0.6)){
         lastSecAnyDialogActiveWasTrue = LigidGL::getTime();
@@ -94,7 +95,7 @@ void UI::elementInteraction(
                     paintingOverCheckComboList.hover||
                     colorCheckComboList.hover||
                     mirrorCheckComboList.hover||
-                    logDialog.isHovered() ||
+                    dialog_log.isHovered() ||
                     layersPanel.hover ||
                     meshSelectionButton.hover ||
                     addLayerPanel.hover ||
@@ -119,11 +120,11 @@ void UI::elementInteraction(
     Debugger::block("GUI : Interactions : libraryPanelLeftInteraction"); // End
 
     Debugger::block("GUI : Interactions : windowPanelInteraction"); // Start
-    windowPanelInteraction(windowPanel, painter, this->settingsDialog, this->displayerDialog, this->exportDialog, this->bakingDialog, this->materialSelectionDialog);
+    windowPanelInteraction(windowPanel, painter);
     Debugger::block("GUI : Interactions : windowPanelInteraction"); // End
 
     Debugger::block("GUI : Interactions : paintingModesPanelInteraction"); // Start
-    paintingModesPanelInteraction(this->paintingModesPanel, this->vectorPaintingModePropertyPanel, this->smearPaintingModePropertyPanel, painter, twoDPaintingPanel, this->projection, this->twoDPaintingSceneScroll, this->twoDPaintingScenePos, this->filterPaintingModeFilterBtn, this->twoDPaintingBox, this->paintingCustomMat, this->paintingOverTextureFields, this->vectorPaintingMode2DModeWrapCheckBox);
+    paintingModesPanelInteraction(this->paintingModesPanel, this->vectorPaintingModePropertyPanel, this->smearPaintingModePropertyPanel, painter, twoDPaintingPanel, this->twoDPaintingSceneScroll, this->twoDPaintingScenePos, this->filterPaintingModeFilterBtn, this->twoDPaintingBox, this->paintingCustomMat, this->paintingOverTextureFields, this->vectorPaintingMode2DModeWrapCheckBox);
     Debugger::block("GUI : Interactions : paintingModesPanelInteraction"); // End
 
     Debugger::block("GUI : Interactions : displayingModesPanelInteraction"); // Start

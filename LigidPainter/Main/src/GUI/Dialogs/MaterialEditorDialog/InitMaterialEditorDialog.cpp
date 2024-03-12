@@ -30,7 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-MaterialEditorDialog::MaterialEditorDialog()
+MaterialEditorDialog::MaterialEditorDialog(int)
 {
     //Back side of the dialog
     bgPanel = Panel

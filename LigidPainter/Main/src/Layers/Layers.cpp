@@ -49,7 +49,7 @@ static void moveLayer(int src, int dest, std::vector<Layer*> layers){
         layers.insert(layers.begin() + dest, layer);
 }
 
-void LayerScene::render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
+void LayerScene::render(Timer& timer, Panel &layerPanel, Painter& painter, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     int count = 0;
 
     bool anyBtnClickState1 = false;
@@ -57,7 +57,7 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog
     {
         glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 1.5f); 
         glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
-        int layerMSG = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, materialSelectionDialog, painter, resolution, mesh);
+        int layerMSG = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, painter, resolution, mesh);
         
         if(this->layers[i]->layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
             btnMoving = true;
@@ -99,7 +99,7 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, MaterialSelectionDialog
                     if(copyCount == 0)
                         movingLayers.clear();    
                     movingLayers.push_back(this->layers[cI]);
-                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, materialSelectionDialog, painter, resolution, mesh);
+                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, painter, resolution, mesh);
                     copyCount++;
                 }
             }

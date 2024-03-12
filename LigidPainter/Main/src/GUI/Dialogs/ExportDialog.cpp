@@ -31,7 +31,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <vector>
 #include <filesystem>
 
-ExportDialog::ExportDialog(){
+ExportDialog::ExportDialog(int){
     
     //Create the panel
     this->panel = Panel(
@@ -335,7 +335,7 @@ static void exportLibraryTextures(Panel& propertiesPanel){
 
 
 
-void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogActive, MaterialEditorDialog &materialEditorDialog, LogDialog& logDialog){
+void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogActive){
     
     dialogControl.updateStart();
 
@@ -388,7 +388,7 @@ void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogAct
     }
     
     //Close the dialog (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !logDialog.isHovered() && *Mouse::LClick())){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated)
             this->dialogControl.unActivate();
     }

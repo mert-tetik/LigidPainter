@@ -31,12 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void windowPanelInteraction(
                                 Panel &windowPanel, 
-                                Painter &painter, 
-                                SettingsDialog &settingsDialog, 
-                                DisplayerDialog &displayerDialog,
-                                ExportDialog &exportDialog,
-                                BakingDialog &bakingDialog,
-                                MaterialSelectionDialog &materialSelectionDialog
+                                Painter &painter 
                             )
 {
     //!WINDOW PANEL BUTTONS
@@ -47,19 +42,19 @@ void windowPanelInteraction(
         painter.threeDimensionalMode = false;
     }
     else if(windowPanel.sections[0].elements[2].button.clicked){//Pressed to the export button of the window panel
-        exportDialog.dialogControl.activate();
+        dialog_export.dialogControl.activate();
     }
     else if(windowPanel.sections[0].elements[3].button.clicked){//Pressed to the displayer button of the window panel
-        displayerDialog.dialogControl.activate();
+        dialog_displayer.dialogControl.activate();
     }
     else if(windowPanel.sections[0].elements[4].button.clicked){//Pressed to the settings button of the window panel
-        settingsDialog.dialogControl.activate();
+        dialog_settings.dialogControl.activate();
     }
     else if(windowPanel.sections[0].elements[5].button.clicked){//Pressed to the settings button of the window panel
-        bakingDialog.dialogControl.activate();
+        dialog_baking.dialogControl.activate();
     }
     else if(windowPanel.sections[0].elements[6].button.clicked){//Pressed to the materials button of the window panel
-        materialSelectionDialog.material = nullptr;
-        materialSelectionDialog.dialogControl.activate();
+        dialog_materialSelection.material = nullptr;
+        dialog_materialSelection.dialogControl.activate();
     }
 }

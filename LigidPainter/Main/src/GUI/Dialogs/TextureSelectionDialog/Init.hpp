@@ -70,7 +70,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define subPanelTxtrPack_Select_INDEX 16
 
 
-TextureSelectionDialog::TextureSelectionDialog(){
+TextureSelectionDialog::TextureSelectionDialog(int){
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
     this->textureSelectingPanel = Panel(
                                                     

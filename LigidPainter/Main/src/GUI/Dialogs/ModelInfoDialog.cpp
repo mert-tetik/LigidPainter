@@ -34,7 +34,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
 #include "tinyfiledialogs.h"
 
-ModelInfoDialog::ModelInfoDialog(){
+ModelInfoDialog::ModelInfoDialog(int){
     //Create the panel
     this->panel = Panel(
         
@@ -71,7 +71,7 @@ ModelInfoDialog::ModelInfoDialog(){
     this->panel.sections[0].elements[0].button.textScale = 0.75f;
 }
 
-void ModelInfoDialog::render(Timer& timer, LogDialog& logDialog){
+void ModelInfoDialog::render(Timer& timer){
     
     dialogControl.updateStart();
 
@@ -138,7 +138,7 @@ void ModelInfoDialog::render(Timer& timer, LogDialog& logDialog){
     }
     
     //End the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !logDialog.isHovered() && *Mouse::LClick())){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
             panel.sections[0].elements[0].button.clickState1 = false;
             dialogControl.unActivate();

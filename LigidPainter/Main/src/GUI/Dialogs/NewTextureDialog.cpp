@@ -33,7 +33,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 // Defined in the RenderPanel.cpp
 extern bool updateThePreRenderedPanels;
 
-NewTextureDialog::NewTextureDialog(){
+NewTextureDialog::NewTextureDialog(int){
     //Create the panel
     this->panel = Panel(
         
@@ -103,7 +103,7 @@ void NewTextureDialog::render(Timer timer){
         //Set the text of the texture as the title textbox's text
         txtr.title = panel.sections[0].elements[1].textBox.text;
         
-        showTextureSelectionDialog(txtr, textureRes, true);
+        dialog_textureSelection.show(timer, txtr, textureRes, true);
 
         //Send the created texture to the library
         if(txtr.ID){

@@ -66,7 +66,7 @@ struct CatMSG{
     }
 };
 
-LogDialog::LogDialog(){
+LogDialog::LogDialog(int){
     this->messagesPanel = Panel(
         {
             {
@@ -162,23 +162,6 @@ static std::string lastProjectPath;
 void LogDialog::render(
                             Timer timer, 
                             Painter& painter, 
-                            GreetingDialog& greetingDialog, 
-                            NewProjectDialog& newProjectDialog, 
-                            ExportDialog& exportDialog,
-                            MaterialDisplayerDialog& materialDisplayerDialog,
-                            FilterDisplayerDialog& filterDisplayerDialog,
-                            LoadProjectDialog& loadProjectDialog,
-                            MaterialEditorDialog& materialEditorDialog,
-                            TextureSelectionDialog& textureSelectionDialog,
-                            BakingDialog& bakingDialog,
-                            FilterSelectionDialog& filterSelectionDialog,
-                            NewTextureDialog& newTextureDialog,
-                            SettingsDialog& settingsDialog,
-                            DisplayerDialog& displayerDialog,
-                            TextureEditorDialog& textureEditorDialog,
-                            TexturePackEditorDialog& texturePackEditorDialog,
-                            ProjectRecoverDialog& projectRecoverDialog,
-                            ObjectTexturingDialog& objectTexturingDialog,
                             std::vector<TextureField>& paintingOverTextureFields,
                             Project &project
                         )
@@ -330,7 +313,7 @@ void LogDialog::render(
             }
             messageInfoBtn.text = catMSG;
         }
-        else if(settingsDialog.dialogControl.globalFirstFrameActivated){
+        else if(dialog_settings.dialogControl.globalFirstFrameActivated){
             messageInfoActive = true;
             messageInfoBtnStartTime = timer.seconds;
             if(catMSG == ""){
@@ -355,7 +338,7 @@ void LogDialog::render(
             }
             messageInfoBtn.text = catMSG;
         }
-        else if(bakingDialog.dialogControl.globalFirstFrameActivated){
+        else if(dialog_baking.dialogControl.globalFirstFrameActivated){
             messageInfoActive = true;
             messageInfoBtnStartTime = timer.seconds;
             if(catMSG == ""){
@@ -378,7 +361,7 @@ void LogDialog::render(
             }
             messageInfoBtn.text = catMSG;
         }
-        else if(displayerDialog.dialogControl.globalFirstFrameActivated){
+        else if(dialog_displayer.dialogControl.globalFirstFrameActivated){
             messageInfoActive = true;
             messageInfoBtnStartTime = timer.seconds;
             if(catMSG == ""){
@@ -397,7 +380,7 @@ void LogDialog::render(
             }
             messageInfoBtn.text = catMSG;
         }
-        else if(exportDialog.dialogControl.globalFirstFrameActivated){
+        else if(dialog_export.dialogControl.globalFirstFrameActivated){
             messageInfoActive = true;
             messageInfoBtnStartTime = timer.seconds;
             if(catMSG == ""){
@@ -414,7 +397,7 @@ void LogDialog::render(
             }
             messageInfoBtn.text = catMSG;
         }
-        else if(newTextureDialog.dialogControl.globalFirstFrameActivated){
+        else if(dialog_newTexture.dialogControl.globalFirstFrameActivated){
             messageInfoActive = true;
             messageInfoBtnStartTime = timer.seconds;
             if(catMSG == ""){
@@ -431,7 +414,7 @@ void LogDialog::render(
             }
             messageInfoBtn.text = catMSG;
         }
-        else if(newProjectDialog.dialogControl.globalFirstFrameActivated){
+        else if(dialog_newProject.dialogControl.globalFirstFrameActivated){
             messageInfoActive = true;
             messageInfoBtnStartTime = timer.seconds;
             if(catMSG == ""){
@@ -451,7 +434,7 @@ void LogDialog::render(
             }
             messageInfoBtn.text = catMSG;
         }
-        else if(textureEditorDialog.dialogControl.globalFirstFrameActivated){
+        else if(dialog_textureEditor.dialogControl.globalFirstFrameActivated){
             messageInfoActive = true;
             messageInfoBtnStartTime = timer.seconds;
             if(catMSG == ""){
@@ -517,7 +500,7 @@ void LogDialog::render(
         this->activeHistoryMode = HISTORY_OBJECTSELECTION_MODE;
         otherHistoryBtn.text = "Object Selection History";
     }
-    if(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode){
+    if(painter.faceSelection.editMode || dialog_objectTexturing.faceSelectionMode){
         this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
         otherHistoryBtn.text = "Face Selection History";
     }
@@ -525,7 +508,7 @@ void LogDialog::render(
         this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE;
         otherHistoryBtn.text = "Texture Fields History";
     }
-    if(materialEditorDialog.dialogControl.isActive()){
+    if(dialog_materialEditor.dialogControl.isActive()){
         this->activeHistoryMode = HISTORY_MATERIALEDITOR_MODE; 
         otherHistoryBtn.text = "Material History";
     }
@@ -635,7 +618,7 @@ void LogDialog::render(
     }
 
     // Delete the unrelated history data
-    if(!materialEditorDialog.dialogControl.isActive() || project.folderPath != lastProjectPath){
+    if(!dialog_materialEditor.dialogControl.isActive() || project.folderPath != lastProjectPath){
         for (size_t i = 0; i < actions_MaterialEditor.size(); i++)
         {
             actions_MaterialEditor[i].material.deleteBuffers();
@@ -667,7 +650,7 @@ void LogDialog::render(
         actions_TextureFields.clear();
     }
     
-    if(!(painter.faceSelection.editMode || objectTexturingDialog.faceSelectionMode) || project.folderPath != lastProjectPath){
+    if(!(painter.faceSelection.editMode || dialog_objectTexturing.faceSelectionMode) || project.folderPath != lastProjectPath){
         actions_FaceSelection.clear();
     }
 
@@ -774,7 +757,7 @@ void LogDialog::render(
             shortcuts_CTRL_Z()
         )
     {
-        undo(painter, objectTexturingDialog, paintingOverTextureFields, materialEditorDialog);
+        undo(painter, paintingOverTextureFields);
     }
 
     newLibraryAction = false;

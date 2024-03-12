@@ -34,13 +34,7 @@ extern bool updateThePreRenderedPanels;
 bool __materialEditorDialogESCPressed = false;
 bool __materialEditorDialogESCFirstFramePressed = false;
 
-void MaterialEditorDialog::render
-                                (
-                                    Timer &timer,
-                                    TextureSelectionDialog &textureSelectionDialog,
-                                    LogDialog& logDialog,
-                                    glm::mat4 projection
-                                )
+void MaterialEditorDialog::render(Timer &timer)
 {
     dialogControl.updateStart();
 
@@ -53,7 +47,7 @@ void MaterialEditorDialog::render
         this->material->materialShortcuts[i].updateElement(*this->material, this->material->materialShortcuts[i].modI);
     }
 
-    bool mouseTrackingFlag = !(textureSelectionDialog.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive());
+    bool mouseTrackingFlag = !(dialog_textureSelection.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive());
     
     // Changing / Updating the positions of the panels & scaling them
     this->positioningPanels();
@@ -71,7 +65,7 @@ void MaterialEditorDialog::render
 
     this->renderShortcutPanel(timer, mouseTrackingFlag);
 
-    this->renderSkyboxTxtr(projection);
+    this->renderSkyboxTxtr();
     
     this->materialDisplayer.texture = this->displayingFBO.colorBuffer;
     this->materialDisplayer.render(timer, false);
@@ -81,9 +75,9 @@ void MaterialEditorDialog::render
     this->renderNavPanel(timer, mouseTrackingFlag);
 
     //If texture selection dialog is not active reset the index values used to navigate textures
-    if(!textureSelectionDialog.dialogControl.isActive()){
+    if(!dialog_textureSelection.dialogControl.isActive()){
         textureModifierTextureSelectingButtonIndex = 1000;
-        textureSelectionDialog.selectedTextureIndex = 0;
+        dialog_textureSelection.selectedTextureIndex = 0;
     }
     
     dialogControl.updateEnd(timer,0.15f);
@@ -110,15 +104,15 @@ void MaterialEditorDialog::render
     } 
 
     //Close the dialog
-    if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover && !logDialog.isHovered()) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
-        if(!wasTextureSelectionDialogActive() && !ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
+    if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover && !dialog_log.isHovered()) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
+        if(!ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
             this->displayModeComboBox.selectedIndex = 0;
             // Update the material displaying texture one more time before closing the dialog
             material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, Camera(), 0, false);
 
             updateThePreRenderedPanels = true;
 
-            this->deactivate(textureSelectionDialog);
+            this->deactivate();
         }
     }
 

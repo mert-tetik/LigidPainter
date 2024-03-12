@@ -30,7 +30,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <vector>
 #include <filesystem>
 
-MaterialDisplayerDialog::MaterialDisplayerDialog(){
+MaterialDisplayerDialog::MaterialDisplayerDialog(int){
     
     //Create the panel
     this->panel = Panel(

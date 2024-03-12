@@ -36,7 +36,7 @@ static void renderEyes(Timer& timer, Panel &layerPanel, Material* material, bool
 static void checkShortcutInteraction(Panel& layerPanel, Material* material);
 static void updateLayerPanel(Panel& layerPanel, Material* material);
 static void layerPanelInteractions(Panel& layerPanel, Panel& modifiersPanel, Material* material, int& selectedMaterialModifierIndex, int selectedResultModeIndex, bool& updateTheMaterial);
-static void contextMenuInteractions(Material* material, Panel& modifiersPanel, bool& updateTheMaterial, int& selectedMaterialModifierIndex);
+static void contextMenuInteractions(Material* material, Panel& modifiersPanel, bool& updateTheMaterial, int& selectedMaterialModifierIndex, Timer& timer);
 
 void MaterialEditorDialog::renderLayerPanel(Timer& timer, bool mouseTrackingFlag){
     // Update the elements of the layer panel according to the material's modifiers (if they doesn't match)
@@ -55,7 +55,7 @@ void MaterialEditorDialog::renderLayerPanel(Timer& timer, bool mouseTrackingFlag
     layerPanelInteractions(this->layerPanel, this->modifiersPanel, this->material, this->selectedMaterialModifierIndex, this->selectedResultModeIndex, this->updateTheMaterial);
 
     // Layer panel's context menu interactions (add new modifier & modifier actions)
-    contextMenuInteractions(this->material, this->modifiersPanel, this->updateTheMaterial, this->selectedMaterialModifierIndex);
+    contextMenuInteractions(this->material, this->modifiersPanel, this->updateTheMaterial, this->selectedMaterialModifierIndex, timer);
 }
 
 
@@ -313,7 +313,7 @@ static void moveModifierToBottom(int index, Material* material, int& selectedMat
     }
 }
 
-static void contextMenuInteractions(Material* material, Panel& modifiersPanel, bool& updateTheMaterial, int& selectedMaterialModifierIndex)
+static void contextMenuInteractions(Material* material, Panel& modifiersPanel, bool& updateTheMaterial, int& selectedMaterialModifierIndex, Timer& timer)
 {
     if(ContextMenus::materialModifier.dialogControl.isActive() && ContextMenus::materialModifier.selectedElement < material->materialModifiers.size()){ //If material modifier context menu is active
         
@@ -374,7 +374,7 @@ static void contextMenuInteractions(Material* material, Panel& modifiersPanel, b
         else if(ContextMenus::materialModifier.contextPanel.sections[0].elements[3].button.clicked){ 
             registerMaterialAction("Modifier change mask", *material);
             
-            showTextureSelectionDialog(material->materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture, 128, false);
+            dialog_textureSelection.show(timer, material->materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture, 128, false);
 
             updateTheMaterial = true;
         }

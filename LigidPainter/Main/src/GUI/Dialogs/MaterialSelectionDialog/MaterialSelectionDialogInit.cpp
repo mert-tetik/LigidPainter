@@ -29,7 +29,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <iostream>
 #include <vector>
 
-MaterialSelectionDialog::MaterialSelectionDialog(){
+MaterialSelectionDialog::MaterialSelectionDialog(int){
     this->bgPanel = Panel(
                             
                             {

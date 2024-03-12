@@ -43,60 +43,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 // Defined in the RenderPanel.cpp
 extern bool updateThePreRenderedPanels;
 
-TextureSelectionDialog __texture_selection_dialog;
-FilterSelectionDialog __filter_selection_dialog;
-MeshSelectionDialog __mesh_selection_dialog;
-BrushModificationDialog __brush_modification_dialog;
-TexturePackEditorDialog __texture_Pack_Editor_Dialog;
-ProjectRecoverDialog __project_recover_dialog;
-glm::mat4 __projection;
-Timer __timer; 
-bool __wasTextureSelectionDialogActive = false;
-
-void showTextureSelectionDialog(Texture& txtr, int displayingTextureRes, bool twoDMode){
-    __texture_selection_dialog.show(__timer, __projection, txtr, displayingTextureRes, twoDMode);
-    __wasTextureSelectionDialogActive = true;
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-}
-
-void showFilterSelectionDialog(Filter& filter, int displayingTextureRes){
-    __filter_selection_dialog.show(__timer, __projection, filter, displayingTextureRes);
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-}
-
-void showMeshSelectionDialog(int& selectedMeshI){
-    __mesh_selection_dialog.show(__timer, __projection, selectedMeshI);
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-}
-
-void showBrushModificationDialog(BrushProperties* brushProperties){
-    __brush_modification_dialog.show(__timer, __projection, brushProperties);
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-}
-
-void showTexturePackEditorDialog(TexturePack& texturePack){
-    __texture_Pack_Editor_Dialog.show(__timer, __projection, texturePack);
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-}
-
-void showProjectRecoverDialog(Project &project){
-    __project_recover_dialog.render(__timer, project);
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-}
-
-bool wasTextureSelectionDialogActive(){
-    return __wasTextureSelectionDialogActive;
-}
-
 /* -- Forward declerations -- */
 
-static void renderBrushCursor(float radius, glm::mat4 guiProjection);
+static void renderBrushCursor(float radius);
 
 std::vector<ThreeDPoint> threedPoints;
 
@@ -104,28 +53,21 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     
     Debugger::block("GUI : Start"); // Start
     
-    __texture_selection_dialog = this->textureSelectionDialog;
-    __filter_selection_dialog = this->filterSelectionDialog;
-    __texture_Pack_Editor_Dialog = this->texturePackEditorDialog;
-    __project_recover_dialog = this->projectRecoverDialog;
-    __projection = this->projection;
-    __timer = timer; 
-
     //Set pass less or equal
     glDepthFunc(GL_LEQUAL);
 
     //Give projection to the curve shader        
     ShaderSystem::vectoralCurve().use();
-    ShaderSystem::vectoralCurve().setMat4("projection",this->projection); 
+    ShaderSystem::vectoralCurve().setMat4("projection", getScene()->gui_projection); 
     
     //Give projection to the curve shader        
     ShaderSystem::nodeConnectionCurve().use();
-    ShaderSystem::nodeConnectionCurve().setMat4("projection",this->projection); 
+    ShaderSystem::nodeConnectionCurve().setMat4("projection", getScene()->gui_projection); 
     
 
     //Give projection to the color picker shader !IS NOT USED RN 
     ShaderSystem::colorPicker().use();
-    ShaderSystem::colorPicker().setMat4("projection",this->projection); 
+    ShaderSystem::colorPicker().setMat4("projection", getScene()->gui_projection); 
     
     //Use the related shader 
     ShaderSystem::buttonShader().use();
@@ -134,7 +76,7 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
     //Set the ortho projection     
-    ShaderSystem::buttonShader().setMat4("projection",this->projection); 
+    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection); 
 
     //Calculate the total screen gap
     float screenGap = Settings::videoScale()->x - getContext()->windowScale.x; //Use that value to keep panels on the right side
@@ -195,12 +137,14 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
             !painter.wrapMode
         )
     {
-        renderBrushCursor(painter.brushProperties.radius, this->projection);
+        renderBrushCursor(painter.brushProperties.radius);
     }
-    else if(painter.faceSelection.editMode && painter.faceSelection.selectionModeIndex == 0 && !anyDialogActive && !anyPanelHover)
-        renderBrushCursor(painter.faceSelection.radius / Settings::videoScale()->x, this->projection);
-    else
+    else if(painter.faceSelection.editMode && painter.faceSelection.selectionModeIndex == 0 && !anyDialogActive && !anyPanelHover){
+        renderBrushCursor(painter.faceSelection.radius / Settings::videoScale()->x);
+    }
+    else{
         getContext()->window.setCursorVisibility(true);
+    }
 
 
     frameCounter++;
@@ -208,20 +152,18 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     if(frameCounter > 1000)
         frameCounter = 0;
 
-    __wasTextureSelectionDialogActive = false;
-
 }
 
 
 
 //UTILITY FUNCTIONS
 
-static void renderBrushCursor(float radius, glm::mat4 guiProjection){
+static void renderBrushCursor(float radius){
     /* Use the circle shader */
     ShaderSystem::circleShader().use();
 
     /* Set the transform data & the projection */
-    ShaderSystem::circleShader().setMat4("projection", guiProjection);
+    ShaderSystem::circleShader().setMat4("projection", getScene()->gui_projection);
     ShaderSystem::circleShader().setVec3("pos", glm::vec3(Mouse::cursorPos()->x, Mouse::cursorPos()->y, 1));
     ShaderSystem::circleShader().setVec2("scale", glm::vec2(radius * (Settings::videoScale()->x)));
 
@@ -426,7 +368,7 @@ void UI::render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPe
             glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
 
         //*Vertex
-        ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", this->projection);
+        ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", getScene()->gui_projection);
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("view", glm::mat4(1.));
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("modelMatrix", glm::mat4(1.));
 
@@ -590,7 +532,7 @@ void UI::renderPaintingOverSettings(Timer& timer, Painter& painter, float screen
     if(this->paintingOverSection.elements[2].button.clicked){
         Texture texture;
         texture.proceduralProps = lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties;
-        showTextureSelectionDialog(texture, 512, true);
+        dialog_textureSelection.show(timer, texture, 512, true);
         
         if(texture.ID){
             lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties = texture.proceduralProps;
@@ -705,8 +647,8 @@ void UI::renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc
     }
 
     if(this->colorSection.elements[17].button.clicked){
-        this->materialSelectionDialog.dialogControl.activate();
-        this->materialSelectionDialog.material = &this->paintingCustomMat;
+        dialog_materialSelection.dialogControl.activate();
+        dialog_materialSelection.material = &this->paintingCustomMat;
     }
 
     if(colorSection.elements[2].button.hover && *Mouse::LDoubleClick()){//Pressed to first color button element
@@ -864,7 +806,7 @@ void UI::renderObjectsPanel(Timer& timer, Painter& painter){
         if(!anyObjSelected)
             LGDLOG::start << "WARNING! No object was selected" << LGDLOG::end;
 
-        this->objectTexturingDialog.dialogControl.activate();
+        dialog_objectTexturing.dialogControl.activate();
     }
 
     for (size_t secI = 0; secI < objectsPanel.sections.size(); secI++)
@@ -920,7 +862,7 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", this->projection);
+    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
 
     textureFields_decidingWrapPointsMode = false;
     textureField_alreadyInteracted = false;
@@ -956,10 +898,10 @@ void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
     ShaderSystem::buttonShader().use();   
 }
 
-static void renderDotsToWindow(glm::mat4 projection){
+static void renderDotsToWindow(){
     ShaderSystem::dotsShader().use();
 
-    ShaderSystem::dotsShader().setMat4("projection", projection);
+    ShaderSystem::dotsShader().setMat4("projection", getScene()->gui_projection);
     ShaderSystem::dotsShader().setVec3("pos", glm::vec3(getContext()->windowScale / glm::ivec2(2), 0.5f));
     ShaderSystem::dotsShader().setVec2("scale", getContext()->windowScale / glm::ivec2(2));
 
@@ -984,7 +926,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
 
     if(painter.paintingoverTextureEditorMode){
         Debugger::block("GUI : Rendering dots for the painting over texture fields editor mode"); // Start
-        renderDotsToWindow(this->projection);
+        renderDotsToWindow();
         Debugger::block("GUI : Rendering dots for the painting over texture fields editor mode"); // End
     }
 
@@ -1088,7 +1030,7 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
             this->panelPositioning(screenGapPerc, painter);
     }
 
-    painter.getSelectedMesh()->layerScene.render(timer, layersPanel, this->materialSelectionDialog, painter, !anyDialogActive, painter.layersResolution, *painter.getSelectedMesh());
+    painter.getSelectedMesh()->layerScene.render(timer, layersPanel, painter, !anyDialogActive, painter.layersResolution, *painter.getSelectedMesh());
     
     addLayerPanel.render(timer, !anyDialogActive);
 
@@ -1203,7 +1145,6 @@ void UI::renderPanels(Timer &timer, Painter &painter,  float screenGapPerc){
         painter.applyVectorStrokes(
                                     strokeArray, 
                                     this->twoDPaintingPanel, 
-                                    this->projection, 
                                     painter.selectedPaintingModeIndex, 
                                     this->filterPaintingModeFilterBtn.filter, 
                                     this->twoDPaintingBox, 
@@ -1261,61 +1202,58 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
 }
 
 void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter& painter){
-    if(newProjectDialog.dialogControl.isActive())
-        newProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen, logDialog);
+    if(dialog_newProject.dialogControl.isActive())
+        dialog_newProject.render(timer, project, dialog_greeting.dialogControl.active, dialog_greeting.startScreen);
     
-    if(loadProjectDialog.dialogControl.isActive())
-        loadProjectDialog.render(timer,project,greetingDialog.dialogControl.active,greetingDialog.startScreen, logDialog);    
+    if(dialog_loadProject.dialogControl.isActive())
+        dialog_loadProject.render(timer, project, dialog_greeting.dialogControl.active, dialog_greeting.startScreen);    
 
-    if(greetingDialog.dialogControl.isActive())
-        greetingDialog.render(timer,newProjectDialog,loadProjectDialog);
+    if(dialog_greeting.dialogControl.isActive())
+        dialog_greeting.render(timer);
 
-    if(displayerDialog.dialogControl.isActive())
-        displayerDialog.render(timer,skybox, logDialog);
+    if(dialog_displayer.dialogControl.isActive())
+        dialog_displayer.render(timer,skybox);
     
-    if(modelInfoDialog.dialogControl.isActive())
-        modelInfoDialog.render(timer, logDialog);
+    if(dialog_modelInfo.dialogControl.isActive())
+        dialog_modelInfo.render(timer);
     
-    if(textureEditorDialog.dialogControl.isActive())
-        textureEditorDialog.render(timer,skybox,this->projection, this->textureEditorSelectedTxtr, logDialog);
+    if(dialog_textureEditor.dialogControl.isActive())
+        dialog_textureEditor.render(timer,skybox, this->textureEditorSelectedTxtr);
     
-    if(exportDialog.dialogControl.isActive())
-        exportDialog.render(timer,project,greetingDialog.dialogControl.active,materialEditorDialog, logDialog);
+    if(dialog_export.dialogControl.isActive())
+        dialog_export.render(timer,project,dialog_greeting.dialogControl.active);
     
-    if(newTextureDialog.dialogControl.isActive())
-        newTextureDialog.render(timer);
+    if(dialog_newTexture.dialogControl.isActive())
+        dialog_newTexture.render(timer);
     
-    if(settingsDialog.dialogControl.isActive())
-        settingsDialog.render(timer, painter, logDialog);
+    if(dialog_settings.dialogControl.isActive())
+        dialog_settings.render(timer, painter);
     
-    if(materialDisplayerDialog.dialogControl.isActive())
-        materialDisplayerDialog.render(timer);
+    if(dialog_materialDisplayer.dialogControl.isActive())
+        dialog_materialDisplayer.render(timer);
     
-    if(filterDisplayerDialog.dialogControl.isActive())
-        filterDisplayerDialog.render(timer, projection);
+    if(dialog_filterDisplayer.dialogControl.isActive())
+        dialog_filterDisplayer.render(timer);
     
-    if(bakingDialog.dialogControl.isActive())
-        bakingDialog.render(timer, skybox, logDialog);
+    if(dialog_baking.dialogControl.isActive())
+        dialog_baking.render(timer, skybox);
     
-    if(objectTexturingDialog.dialogControl.isActive() && !materialEditorDialog.dialogControl.active && !materialSelectionDialog.dialogControl.active)
-        objectTexturingDialog.render(timer, this->projection, materialEditorDialog, logDialog, materialSelectionDialog);
+    if(dialog_objectTexturing.dialogControl.isActive() && !dialog_materialEditor.dialogControl.active && !dialog_materialSelection.dialogControl.active)
+        dialog_objectTexturing.render(timer);
     
-    if(materialSelectionDialog.dialogControl.isActive() && !materialEditorDialog.dialogControl.active)
-        materialSelectionDialog.render(timer, materialEditorDialog);
+    if(dialog_materialSelection.dialogControl.isActive() && !dialog_materialEditor.dialogControl.active)
+        dialog_materialSelection.render(timer);
     
-    if(materialEditorDialog.dialogControl.isActive())
-        materialEditorDialog.render(timer, textureSelectionDialog, logDialog, this->projection);
+    if(dialog_materialEditor.dialogControl.isActive())
+        dialog_materialEditor.render(timer);
     
     if(!Settings::properties()->cat_hide){
-        logDialog.render(
-                            timer, painter, greetingDialog, newProjectDialog, exportDialog, materialDisplayerDialog, filterDisplayerDialog,
-                            loadProjectDialog, materialEditorDialog, textureSelectionDialog, bakingDialog, filterSelectionDialog, newTextureDialog, 
-                            settingsDialog, displayerDialog, textureEditorDialog, texturePackEditorDialog, 
-                            projectRecoverDialog, objectTexturingDialog, paintingOverTextureFields, project
+        dialog_log.render(
+                            timer, painter, paintingOverTextureFields, project
                         );
     }
     else
-        logDialog.cryCounter = 5;
+        dialog_log.cryCounter = 5;
     
 }
 

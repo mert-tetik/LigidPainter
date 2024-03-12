@@ -32,7 +32,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <fstream>
 #include <sstream>
 
-LoadProjectDialog::LoadProjectDialog(){
+LoadProjectDialog::LoadProjectDialog(int){
     //Create the bg panel
     this->bgPanel = Panel(
                             
@@ -124,7 +124,7 @@ LoadProjectDialog::LoadProjectDialog(){
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::render(Timer timer, Project &project,bool &greetingDialogActive,bool &startScreen, LogDialog& logDialog){
+void LoadProjectDialog::render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen){
     
     dialogControl.updateStart();
 
@@ -250,7 +250,7 @@ void LoadProjectDialog::render(Timer timer, Project &project,bool &greetingDialo
     }
     
     //Close the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !logDialog.isHovered() && *Mouse::LClick()) || bgPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || bgPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
         
         if(startScreen)
             greetingDialogActive = true;

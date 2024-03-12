@@ -33,7 +33,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
 std::map<std::string, std::vector<Material>> matSelection_materials;
 
-void MaterialSelectionDialog::render(Timer timer, MaterialEditorDialog& materialEditorDialog){
+void MaterialSelectionDialog::render(Timer timer){
     
     dialogControl.updateStart();
 
@@ -75,8 +75,8 @@ void MaterialSelectionDialog::render(Timer timer, MaterialEditorDialog& material
     this->matModePanel.render(timer, true);
 
     if(this->selectedMatPanel.sections[0].elements[3].button.clicked){
-        materialEditorDialog.activate();
-        materialEditorDialog.material = &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex];
+        dialog_materialEditor.activate();
+        dialog_materialEditor.material = &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex];
     }
     else if(this->selectedMatPanel.sections[0].elements[4].button.clicked){
         if(this->material != nullptr){

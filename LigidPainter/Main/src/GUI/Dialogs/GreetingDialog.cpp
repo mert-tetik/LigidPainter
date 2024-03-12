@@ -48,7 +48,7 @@ bool isNumeric(const std::string& str) {
     return true;
 }
 
-GreetingDialog::GreetingDialog(){
+GreetingDialog::GreetingDialog(int){
 
     CURL *curl;
     CURLcode res;
@@ -143,7 +143,7 @@ GreetingDialog::GreetingDialog(){
     this->dialogControl.activate();
 }
 
-void GreetingDialog::render(Timer timer,NewProjectDialog &newProjectDialog,LoadProjectDialog &loadProjectDialog){
+void GreetingDialog::render(Timer timer){
 
     dialogControl.updateStart();
 
@@ -170,13 +170,13 @@ void GreetingDialog::render(Timer timer,NewProjectDialog &newProjectDialog,LoadP
     
     //Show new project dialog if create project button is pressed
     if(createProjectButton.clicked){
-        newProjectDialog.dialogControl.activate();
+        dialog_newProject.dialogControl.activate();
         this->dialogControl.unActivate();
     }
 
     //Show load project dialog if load project button is pressed
     if(loadProjectButton.clicked){
-        loadProjectDialog.dialogControl.activate();
+        dialog_loadProject.dialogControl.activate();
         this->dialogControl.unActivate();
     }
 

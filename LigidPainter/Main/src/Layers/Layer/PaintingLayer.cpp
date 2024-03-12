@@ -40,7 +40,7 @@ void PaintingLayer::render(Painter& painter, const unsigned int resolution, Mesh
     this->updateResultTextureResolutions(resolution, mesh);
 }
 
-void PaintingLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh){
+void PaintingLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh){
     this->elementSelectionMode = false;
     return;
 }

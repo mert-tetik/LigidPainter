@@ -39,7 +39,7 @@ std::vector<VectorStroke3D> lastPainterStrokes;
 
 static Button cancel_editing_vectors_btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(7.f,2.f), "Quit Vector Editing", Texture(), 0.f, false);
 static bool firstFrameActivated = true;
-void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh){
+void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh){
     
     if(firstFrameActivated){
         // Not needed rn
@@ -87,7 +87,6 @@ void VectorLayer::render(Painter& painter, const unsigned int resolution, Mesh& 
     painter.applyVectorStrokes(
                                 {}, 
                                 Panel(), 
-                                glm::mat4(0.f), 
                                 0, 
                                 Filter(), 
                                 Box(), 

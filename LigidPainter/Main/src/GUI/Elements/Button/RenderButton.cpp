@@ -80,15 +80,15 @@ void Button::render(
         if(this->textureSelection3D){
             registerButtonAction(this->text + "button texture changed", Texture(), this, *this);
 
-            showTextureSelectionDialog(this->texture, selectionDialogTxtrRes, false);
+            dialog_textureSelection.show(timer, this->texture, selectionDialogTxtrRes, false);
         }
         if(this->textureSelection2D){
             registerButtonAction(this->text + "button texture changed", Texture(), this, *this);
             
-            showTextureSelectionDialog(this->texture, selectionDialogTxtrRes, true);
+            dialog_textureSelection.show(timer, this->texture, selectionDialogTxtrRes, true);
         }
         if(this->filterSelection){
-            showFilterSelectionDialog(this->filter, selectionDialogTxtrRes);
+            dialog_filterSelection.show(timer, this->filter, selectionDialogTxtrRes);
             
             this->texture.ID = this->filter.displayingTxtr.ID;
         }
@@ -106,14 +106,14 @@ void Button::render(
             }        
         }
         if(this->meshSelection){
-            showMeshSelectionDialog(this->selectedMeshI);
+            dialog_meshSelection.show(timer, this->selectedMeshI);
             if(this->selectedMeshI < getModel()->meshes.size()){
                 this->texture = getModel()->meshes[this->selectedMeshI].displayingTxtr; 
                 this->text = getModel()->meshes[this->selectedMeshI].materialName; 
             }
         }
         if(this->brushModification){
-            showBrushModificationDialog(&this->brushProperties);
+            dialog_brushModification.show(timer, &this->brushProperties);
         }
     }
 

@@ -881,7 +881,7 @@ public:
     /* VECTORS - defined in Vectors.cpp*/
     /**/std::vector<VectorStroke> vectorStrokes;
     /**/std::vector<VectorStroke3D> vectorStrokes3D;
-    /**/void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, 
+    /**/void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, int paintingMode, 
                                 Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat, std::vector<TextureField> textureFields, 
                                 bool twoDWrap);
     /**/void deleteSelectedVectorPoints();
@@ -980,8 +980,8 @@ public:
     * @param scene structure contains matrices related to 3D model rendering & cam pos
     * @param twoDPaintingPanel if the painting mode is 2D use this panel's transform data 
     */
-    void updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat);
-    void updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, glm::vec3 paintingColor, int channelI, float channelStr);
+    void updateTexture(Panel& twoDPaintingPanel, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat);
+    void updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, glm::vec3 paintingColor, int channelI, float channelStr);
 
     
     /*!

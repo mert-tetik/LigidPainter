@@ -30,7 +30,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <vector>
 #include <filesystem>
 
-FilterDisplayerDialog::FilterDisplayerDialog(){
+FilterDisplayerDialog::FilterDisplayerDialog(int){
     
     //Create the panel
     this->panel = Panel(
@@ -61,7 +61,7 @@ FilterDisplayerDialog::FilterDisplayerDialog(){
                         );
 }
 
-void FilterDisplayerDialog::render(Timer timer, glm::mat4 projection){
+void FilterDisplayerDialog::render(Timer timer){
     
     dialogControl.updateStart();
 
@@ -75,7 +75,7 @@ void FilterDisplayerDialog::render(Timer timer, glm::mat4 projection){
     }
 
     ShaderSystem::splitTexturesShader().use();
-    ShaderSystem::splitTexturesShader().setMat4("projection"  ,   projection);
+    ShaderSystem::splitTexturesShader().setMat4("projection"  ,   getScene()->gui_projection);
     ShaderSystem::splitTexturesShader().setVec3("pos"         ,   panel.sections[0].elements[1].button.resultPos);
     ShaderSystem::splitTexturesShader().setVec2("scale"       ,   glm::vec2(std::min(panel.sections[0].elements[1].button.resultScale.x, panel.sections[0].elements[1].button.resultScale.y)));
 

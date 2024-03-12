@@ -36,7 +36,7 @@
 // Defined in the RenderPanel.cpp
 extern bool updateThePreRenderedPanels;
 
-TextureEditorDialog::TextureEditorDialog(){
+TextureEditorDialog::TextureEditorDialog(int){
 
     this->displayingTexture = Texture(nullptr, 512, 512, GL_LINEAR);
 
@@ -426,7 +426,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture& receivedTexture, unsi
     Settings::defaultFramebuffer()->setViewport();
 }
 
-void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projection, Texture receivedTexture, LogDialog& logDialog){
+void TextureEditorDialog::render(Timer timer, Skybox &skybox, Texture receivedTexture){
     
     dialogControl.updateStart();
 
@@ -730,7 +730,7 @@ void TextureEditorDialog::render(Timer timer, Skybox &skybox, glm::mat4 projecti
     }
 
     //End the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !logDialog.isHovered() && *Mouse::LClick())){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
             dialogControl.unActivate();
         }

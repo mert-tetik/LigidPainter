@@ -39,7 +39,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
 ComboBox textureResComboBox = ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(6.f, 2.f), {"256", "512", "1024", "2024", "4048", "8096"}, "Texture Resolution", 4.f);
 
-BakingDialog::BakingDialog(){
+BakingDialog::BakingDialog(int){
 
     this->selectMeshButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(7.f, 12.f), "", Texture(), 6.f, false);
     this->selectMeshButton.meshSelection = true;
@@ -64,7 +64,7 @@ float easeInOut(float t) {
     return 0.5f * (1.0f - std::cos(t * 3.14159265358979323846));
 }
 
-void BakingDialog::render(Timer timer, Skybox skybox, LogDialog& logDialog){
+void BakingDialog::render(Timer timer, Skybox skybox){
     
     dialogControl.updateStart();
 
@@ -94,7 +94,7 @@ void BakingDialog::render(Timer timer, Skybox skybox, LogDialog& logDialog){
     } 
 
     //End the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->isDialogHovered() && !logDialog.isHovered() && *Mouse::LClick())){
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->isDialogHovered() && !dialog_log.isHovered() && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
             dialogControl.unActivate();
         }

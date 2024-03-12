@@ -471,7 +471,7 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     }
 }
 
-void TextureSelectionDialog::renderPanels(Timer& timer, glm::mat4 guiProjection){
+void TextureSelectionDialog::renderPanels(Timer& timer){
     // Background panel
     this->bgPanel.render(timer, true);
 

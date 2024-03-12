@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static const unsigned int brushTextureResolution = 256; 
 
-BrushModificationDialog::BrushModificationDialog(){
+BrushModificationDialog::BrushModificationDialog(int){
     this->bgPanel = Panel(
                             {
                                 Section(
@@ -84,10 +84,10 @@ BrushProperties initialProperties;
 
 Brush displayBrush;
 
-void BrushModificationDialog::show(Timer &timer, glm::mat4 guiProjection, BrushProperties* brushProperties){
+void BrushModificationDialog::show(Timer &timer, BrushProperties* brushProperties){
         
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", guiProjection);
+    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
     Settings::defaultFramebuffer()->setViewport(); 
 
     char whiteTxtr[brushTextureResolution * brushTextureResolution * 4];
@@ -202,7 +202,7 @@ void BrushModificationDialog::show(Timer &timer, glm::mat4 guiProjection, BrushP
             this->inToOut(brushProperties);
             this->updateDisplayingTexture(brushProperties);
             ShaderSystem::buttonShader().use();
-            ShaderSystem::buttonShader().setMat4("projection", guiProjection);  
+            ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);  
         }
 
         dialogControl.updateEnd(timer,0.15f);
@@ -241,7 +241,7 @@ void BrushModificationDialog::show(Timer &timer, glm::mat4 guiProjection, BrushP
     }
 
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", guiProjection);
+    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport(); 
 }

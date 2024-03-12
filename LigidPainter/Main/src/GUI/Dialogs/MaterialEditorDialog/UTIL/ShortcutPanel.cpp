@@ -31,7 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /* Forward Declared Utility Functions */
 static void refreshShortcutPanelSections(Panel& shortcutPanel, Material* material, int shortcutRenamingIndex);
 static void shortcutRenamingPart(Timer& timer, Panel& shortcutPanel, int& shortcutRenamingIndex, TextBox& shortcutRenamingTextbox, Material* material);
-static void shortcutPanelInteractions(Panel& shortcutPanel, Material* material, bool& updateTheMaterial, int& shortcutRenamingIndex, TextBox& shortcutRenamingTextbox);
+static void shortcutPanelInteractions(Panel& shortcutPanel, Material* material, bool& updateTheMaterial, int& shortcutRenamingIndex, TextBox& shortcutRenamingTextbox, Timer& timer);
 
 void MaterialEditorDialog::renderShortcutPanel(Timer& timer, bool mouseTrackingFlag){    
     
@@ -45,7 +45,7 @@ void MaterialEditorDialog::renderShortcutPanel(Timer& timer, bool mouseTrackingF
     shortcutRenamingPart(timer, this->shortcutPanel, this->shortcutRenamingIndex, this->shortcutRenamingTextbox, this->material);
 
     // Mouse interactions with the shortcut panel (if buttons were pressed)
-    shortcutPanelInteractions(this->shortcutPanel, this->material, this->updateTheMaterial, this->shortcutRenamingIndex, this->shortcutRenamingTextbox);
+    shortcutPanelInteractions(this->shortcutPanel, this->material, this->updateTheMaterial, this->shortcutRenamingIndex, this->shortcutRenamingTextbox, timer);
 }
 
 
@@ -139,7 +139,7 @@ static void shortcutRenamingPart(Timer& timer, Panel& shortcutPanel, int& shortc
     }
 }
 
-static void shortcutPanelInteractions(Panel& shortcutPanel, Material* material, bool& updateTheMaterial, int& shortcutRenamingIndex, TextBox& shortcutRenamingTextbox){
+static void shortcutPanelInteractions(Panel& shortcutPanel, Material* material, bool& updateTheMaterial, int& shortcutRenamingIndex, TextBox& shortcutRenamingTextbox, Timer& timer){
     
     // Check all the shortcuts
     for (size_t i = 0; i < material->materialShortcuts.size(); i++){
@@ -171,7 +171,7 @@ static void shortcutPanelInteractions(Panel& shortcutPanel, Material* material, 
         else if(material->materialShortcuts[i].maskTxtr != nullptr){
             // Show the texture selection dialog if clicked to the texture button
             if(shortcutPanel.sections[i + 1].elements[0].button.hover && *Mouse::LClick()){
-                showTextureSelectionDialog(*material->materialShortcuts[i].maskTxtr, 400, false);
+                dialog_textureSelection.show(timer, *material->materialShortcuts[i].maskTxtr, 400, false);
                 updateTheMaterial = true;
             }
 

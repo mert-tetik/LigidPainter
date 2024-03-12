@@ -40,7 +40,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /* Defining the utility functions by including this header file */
 #include "GUI/Dialogs/TextureSelectionDialog/Util.hpp" 
 
-void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture& receivedTexture, int displayingTextureRes, bool twoDMode){
+void TextureSelectionDialog::show(Timer &timer, Texture& receivedTexture, int displayingTextureRes, bool twoDMode){
     
     this->dialogControl.activate();
     
@@ -73,7 +73,7 @@ void TextureSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Texture
         updateTextureSelectingPanelElements(this->textureSelectingPanel, this->selectedTextureMode, this->proceduralDisplayingTextures);
 
         // Rendering all the panels
-        this->renderPanels(timer, guiProjection);
+        this->renderPanels(timer);
         
         // Updating the texture modes panel
         updateTextureModesPanel(twoDMode);

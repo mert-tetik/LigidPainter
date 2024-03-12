@@ -32,10 +32,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Renderer.h"
 #include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "GUI/Dialogs/Dialogs.hpp"
 
 extern bool textureFields_decidingWrapPointsMode;
 
-#define CAM_MOVE_CONDITION ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || painter.paintingoverTextureEditorMode || this->userInterface.objectTexturingDialog.dialogControl.isActive() || this->userInterface.materialEditorDialog.dialogControl.isActive() || this->userInterface.materialDisplayerDialog.dialogControl.isActive()) && /*If there is no active dialog (don't move the camera if a dialog is active)*/\
+#define CAM_MOVE_CONDITION ((!this->userInterface.anyDialogActive && this->painter.threeDimensionalMode) || painter.paintingoverTextureEditorMode || dialog_objectTexturing.dialogControl.isActive() || dialog_materialEditor.dialogControl.isActive() || dialog_materialDisplayer.dialogControl.isActive()) && /*If there is no active dialog (don't move the camera if a dialog is active)*/\
                             !this->userInterface.anyPanelHover && /*Don't move the camera if cursor hover a panel */\
                             !*Mouse::LPressed() &&\
                             !textureFields_decidingWrapPointsMode
@@ -122,11 +123,11 @@ void Renderer::scrollCallback(
 {
     Camera* cam = &getScene()->camera;
 
-    if(this->userInterface.materialEditorDialog.dialogControl.isActive())
-        cam = &this->userInterface.materialEditorDialog.displayerCamera;
+    if(dialog_materialEditor.dialogControl.isActive())
+        cam = &dialog_materialEditor.displayerCamera;
     
-    else if(this->userInterface.objectTexturingDialog.dialogControl.isActive())
-        cam = &this->userInterface.objectTexturingDialog.sceneCam;
+    else if(dialog_objectTexturing.dialogControl.isActive())
+        cam = &dialog_objectTexturing.sceneCam;
 
     if(glm::distance(cam->cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
         cam->originLocked = false;
@@ -192,8 +193,8 @@ void Renderer::cursorPositionCallback(
     const float sensitivity = 0.14f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
     
     Camera* cam = &getScene()->camera;
-    if(this->userInterface.objectTexturingDialog.dialogControl.isActive())
-        cam = &this->userInterface.objectTexturingDialog.sceneCam;
+    if(dialog_objectTexturing.dialogControl.isActive())
+        cam = &dialog_objectTexturing.sceneCam;
 
 
     if (
@@ -270,12 +271,12 @@ void Renderer::cursorPositionCallback(
         getScene()->camera.ZPLocked = false;
         getScene()->camera.ZNLocked = false;
 
-        if(this->userInterface.materialEditorDialog.dialogControl.isActive())
-            cam = &this->userInterface.materialEditorDialog.displayerCamera;
-        else if(this->userInterface.materialDisplayerDialog.dialogControl.isActive())
-            cam = &this->userInterface.materialDisplayerDialog.displayingCam;
-        else if(this->userInterface.materialSelectionDialog.dialogControl.isActive())
-            cam = &this->userInterface.materialSelectionDialog.displayingCam;
+        if(dialog_materialEditor.dialogControl.isActive())
+            cam = &dialog_materialEditor.displayerCamera;
+        else if(dialog_materialDisplayer.dialogControl.isActive())
+            cam = &dialog_materialDisplayer.displayingCam;
+        else if(dialog_materialSelection.dialogControl.isActive())
+            cam = &dialog_materialSelection.displayingCam;
 
         cam->yaw += mouseOffset.x * sensitivity;
         cam->pitch -= mouseOffset.y * sensitivity;

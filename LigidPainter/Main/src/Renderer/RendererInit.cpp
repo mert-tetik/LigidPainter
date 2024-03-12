@@ -43,6 +43,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "tinyfiledialogs.h"
 
+void init_dialogs();
 
 void Renderer::initRenderer(){
     if(!getContext()->window.setWindowIcon(L"./LigidPainter/Resources/Icons/logo-1080x.ico"))
@@ -154,6 +155,12 @@ void Renderer::initRenderer(){
     userInterface.init(websites, painter);
     
     Debugger::block("LOAD : GUI"); //End
+    
+    Debugger::block("LOAD : Dialogs"); //Start
+    
+    init_dialogs();
+    
+    Debugger::block("LOAD : Dialogs"); //End
 
     Debugger::block("LOAD : Cursors"); //Start
     //Load the cursors of the LigidPainter

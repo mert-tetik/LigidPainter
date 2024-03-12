@@ -31,7 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-MeshSelectionDialog::MeshSelectionDialog(){
+MeshSelectionDialog::MeshSelectionDialog(int){
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 5, {}, 20.f, true);
     this->subPanel = Panel(
                             {
@@ -48,10 +48,10 @@ MeshSelectionDialog::MeshSelectionDialog(){
 static void initMeshSelectionDialog(int &selectedTextureMode, Panel& subPanel, int& selectedMeshIndex);
 static void drawBG(unsigned int bgTexture);
 
-void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selectedMeshI){
+void MeshSelectionDialog::show(Timer &timer, int& selectedMeshI){
     
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", guiProjection);
+    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
     Settings::defaultFramebuffer()->setViewport(); 
 
     this->dialogControl.activate();
@@ -150,7 +150,7 @@ void MeshSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, int& selec
     }
 
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", guiProjection);
+    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport(); 
 }

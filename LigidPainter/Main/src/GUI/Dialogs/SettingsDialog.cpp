@@ -61,7 +61,7 @@ static Button* info_txt3_button;
 static Button* info_txt4_button;
 
 
-SettingsDialog::SettingsDialog(){
+SettingsDialog::SettingsDialog(int){
     this->systemSettingsBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "System", appTextures.gearIcon, 0.f, true); 
     this->TDRendererSettingsBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "3D Renderer", appTextures.TDModelIcon, 0.f, true); 
     
@@ -193,7 +193,7 @@ SettingsDialog::SettingsDialog(){
 
 
 
-void SettingsDialog::render(Timer timer, Painter &painter, LogDialog& logDialog){
+void SettingsDialog::render(Timer timer, Painter &painter){
     
     dialogControl.updateStart();   
 
@@ -211,7 +211,7 @@ void SettingsDialog::render(Timer timer, Painter &painter, LogDialog& logDialog)
     //End the dialog
     if  (
             getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Escape key pressed 
-            ((!bgPanel.hover && *Mouse::LClick() && !logDialog.isHovered())) && !dialogControl.firstFrameActivated //Mouse Lclick out of the panel
+            ((!bgPanel.hover && *Mouse::LClick() && !dialog_log.isHovered())) && !dialogControl.firstFrameActivated //Mouse Lclick out of the panel
         )
     {
         dialogControl.unActivate();

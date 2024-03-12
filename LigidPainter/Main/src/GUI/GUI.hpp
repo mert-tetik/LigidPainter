@@ -284,29 +284,6 @@ public:
 
     std::vector<TextureField> paintingOverTextureFields;
 
-    /* -- DIALOGS -- */
-
-    MaterialEditorDialog materialEditorDialog;
-    LogDialog logDialog;
-    GreetingDialog greetingDialog;
-    NewProjectDialog newProjectDialog;
-    ExportDialog exportDialog;
-    MaterialDisplayerDialog materialDisplayerDialog;
-    FilterDisplayerDialog filterDisplayerDialog;
-    LoadProjectDialog loadProjectDialog;
-    TextureSelectionDialog textureSelectionDialog;
-    BakingDialog bakingDialog;
-    FilterSelectionDialog filterSelectionDialog;
-    NewTextureDialog newTextureDialog;
-    SettingsDialog settingsDialog;
-    DisplayerDialog displayerDialog;
-    ModelInfoDialog modelInfoDialog;
-    TextureEditorDialog textureEditorDialog;
-    TexturePackEditorDialog texturePackEditorDialog;
-    ProjectRecoverDialog projectRecoverDialog;
-    ObjectTexturingDialog objectTexturingDialog;
-    MaterialSelectionDialog materialSelectionDialog;
-
     float twoDPaintingSceneScroll = 2.f;
     glm::vec2 twoDPaintingScenePos = glm::vec2(0.f);
     Box twoDPaintingBox;
@@ -320,11 +297,6 @@ public:
     bool anyDialogActive = false;
 
     NodePanel nodePanel;
-
-    //UI Rendering projection
-    //Has the screen resolution
-    //Example : L = 0, R = 1920, B = 1080, T = 0  
-    glm::mat4 projection; 
 
     /*! @brief Default constructor */
     UI();

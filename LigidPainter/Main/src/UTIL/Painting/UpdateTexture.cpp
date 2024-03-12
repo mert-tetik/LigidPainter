@@ -53,7 +53,7 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
     glDeleteTextures(1, &captureTexture);
 }
 
-void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, glm::vec3 paintingColor, int channelI, float channelStr){
+void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, glm::vec3 paintingColor, int channelI, float channelStr){
     glm::vec2 destScale = glm::vec2(txtr.getResolution());
 
     glActiveTexture(GL_TEXTURE0);
@@ -134,7 +134,7 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
 
         //*Vertex
         ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-        ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", windowOrtho);
+        ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getScene()->gui_projection);
         ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
         twoDPaintingBox.bindBuffers();
@@ -155,7 +155,7 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, glm::mat4
 
 }
 
-void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat){
+void Painter::updateTexture(Panel& twoDPaintingPanel, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat){
     
     if(!this->threeDimensionalMode && this->selectedDisplayingModeIndex != 2){
         LGDLOG::start << "ERROR : Painting : Invalid displaying mode for the 2D painting" << LGDLOG::end;
@@ -300,7 +300,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
 
                 if(enableChannel){
                     if(!this->useCustomMaterial)
-                        updateTheTexture(txtr, twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, clr, i, clr.r);
+                        updateTheTexture(txtr, twoDPaintingPanel, paintingMode, filterBtnFilter, twoDPaintingBox, clr, i, clr.r);
                     else{
                         txtr.mix(customMatTxtr, projectedPaintingTexture, true, false, false);
                         if(selectedMeshIndex < getModel()->meshes.size())
@@ -310,7 +310,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, glm::mat4 windowOrtho, int
             }
         }
         else{
-            updateTheTexture(this->selectedTexture, twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, this->getSelectedColor().getRGB_normalized(), 0, 1.f);
+            updateTheTexture(this->selectedTexture, twoDPaintingPanel, paintingMode, filterBtnFilter, twoDPaintingBox, this->getSelectedColor().getRGB_normalized(), 0, 1.f);
         }
     }
 

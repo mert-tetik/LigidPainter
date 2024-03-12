@@ -30,7 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-TexturePackEditorDialog::TexturePackEditorDialog(){
+TexturePackEditorDialog::TexturePackEditorDialog(int){
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
     this->textureSelectingPanel = Panel(
                                                     
@@ -151,7 +151,7 @@ TexturePackEditorDialog::TexturePackEditorDialog(){
 static void drawBG(unsigned int bgTexture);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, TexturePack &receivedTexturePack, int selectedTextureMode);
 
-void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, TexturePack& receivedTexturePack){
+void TexturePackEditorDialog::show(Timer &timer, TexturePack& receivedTexturePack){
     
     this->dialogControl.activate();
 
@@ -273,7 +273,7 @@ void TexturePackEditorDialog::show(Timer &timer, glm::mat4 guiProjection, Textur
             Texture txtr;
             txtr.title = "TextureSelectionDialogRes";
 
-            showTextureSelectionDialog(txtr, 512, true);
+            dialog_textureSelection.show(timer, txtr, 512, true);
 
             //Send the created texture to the library
             if(txtr.ID){

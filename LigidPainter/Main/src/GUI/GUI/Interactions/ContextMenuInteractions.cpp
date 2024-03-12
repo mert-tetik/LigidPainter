@@ -69,7 +69,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         }
         else if(ContextMenus::texture.contextPanel.sections[0].elements[3].button.clicked){//Clicked to edit button
             textureEditorSelectedTxtr = *Library::getTexture(ContextMenus::texture.selectedElement);
-            this->textureEditorDialog.dialogControl.activate();
+            dialog_textureEditor.dialogControl.activate();
         }
         else if(ContextMenus::texture.contextPanel.sections[0].elements[4].button.clicked){//Clicked to delete button
             Library::eraseTexture(ContextMenus::texture.selectedElement);
@@ -79,8 +79,8 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     if(Library::getSelectedElementIndex() == 1 && ContextMenus::material.dialogControl.isActive() && ContextMenus::material.selectedElement < Library::getMaterialArraySize()){ //If material context menu is active
         if(ContextMenus::material.contextPanel.sections[0].elements[0].button.clicked){//Clicked to edit button
             //Select the material that material editor will edit & show the material editor dialog
-            materialEditorDialog.material = Library::getMaterial(ContextMenus::material.selectedElement);
-            materialEditorDialog.activate();
+            dialog_materialEditor.material = Library::getMaterial(ContextMenus::material.selectedElement);
+            dialog_materialEditor.activate();
         }
         else if(ContextMenus::material.contextPanel.sections[0].elements[1].button.clicked){//Clicked to rename button
             renamingTextBox.active = true;
@@ -115,7 +115,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     if(Library::getSelectedElementIndex() == 2 && ContextMenus::brush.dialogControl.isActive() && ContextMenus::brush.selectedElement < Library::getBrushArraySize()){ //If brush context menu is active
         if(ContextMenus::brush.contextPanel.sections[0].elements[0].button.clicked){//Clicked to edit brush button
             registerBrushChangedAction("Edit brush", Texture(), *Library::getBrush(ContextMenus::brush.selectedElement), ContextMenus::brush.selectedElement);
-            showBrushModificationDialog(&Library::getBrush(ContextMenus::brush.selectedElement)->properties);
+            dialog_brushModification.show(timer, &Library::getBrush(ContextMenus::brush.selectedElement)->properties);
         }
         else if(ContextMenus::brush.contextPanel.sections[0].elements[1].button.clicked){//Clicked to rename button
             renamingTextBox.active = true;
@@ -162,8 +162,8 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     }
     if(Library::getSelectedElementIndex() == 3 && ContextMenus::model.dialogControl.isActive() && ContextMenus::model.selectedElement < Library::getBrushArraySize()){ //If brush context menu is active
         if(ContextMenus::model.contextPanel.sections[0].elements[0].button.clicked){//Clicked to model info button
-            modelInfoDialog.model = Library::getModel(ContextMenus::model.selectedElement);
-            modelInfoDialog.dialogControl.activate();
+            dialog_modelInfo.model = Library::getModel(ContextMenus::model.selectedElement);
+            dialog_modelInfo.dialogControl.activate();
         }
         else if(ContextMenus::model.contextPanel.sections[0].elements[1].button.clicked){//Clicked to use the model button
             setModel(Library::getModel(ContextMenus::model.selectedElement)); //Select the model
@@ -183,12 +183,12 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     
     //Create new
     else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[2].button.clicked){
-        newProjectDialog.dialogControl.activate();
+        dialog_newProject.dialogControl.activate();
     }
     
     //Load new
     else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[3].button.clicked){
-        loadProjectDialog.dialogControl.activate();
+        dialog_loadProject.dialogControl.activate();
     }
     
     //Copy path
@@ -203,7 +203,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
 
     //Recover
     else if(ContextMenus::menuBarProject.contextPanel.sections[0].elements[6].button.clicked){
-        showProjectRecoverDialog(project);
+        dialog_projectRecover.show(timer, project);
     }
     
     if(ContextMenus::menuBarHelp.dialogControl.isActive()){ //If help context menu is active
@@ -315,10 +315,10 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         ContextMenus::menuBarHelp.selectedElement = 0;
     }
     
-    if(materialEditorDialog.layerPanel.sections.size()){
-        for (size_t i = 0; i < materialEditorDialog.layerPanel.sections[0].elements.size(); i++)
+    if(dialog_materialEditor.layerPanel.sections.size()){
+        for (size_t i = 0; i < dialog_materialEditor.layerPanel.sections[0].elements.size(); i++)
         {
-            if(materialEditorDialog.layerPanel.sections[0].elements[i].button.hover && *Mouse::RClick() && materialEditorDialog.dialogControl.isActive()){
+            if(dialog_materialEditor.layerPanel.sections[0].elements[i].button.hover && *Mouse::RClick() && dialog_materialEditor.dialogControl.isActive()){
 
                 ContextMenus::materialModifier.dialogControl.activate();
                 ContextMenus::materialModifier.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
@@ -330,7 +330,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
         }
     }
 
-    if(materialEditorDialog.layerPanel.barButtons[0].hover && *Mouse::LClick() && materialEditorDialog.dialogControl.isActive()){
+    if(dialog_materialEditor.layerPanel.barButtons[0].hover && *Mouse::LClick() && dialog_materialEditor.dialogControl.isActive()){
         ContextMenus::addMaterialModifier.dialogControl.activate();
         ContextMenus::addMaterialModifier.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
         ContextMenus::addMaterialModifier.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::materialModifier.contextPanel.scale.y;

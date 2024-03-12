@@ -36,7 +36,6 @@ void paintingModesPanelInteraction(
                                     Panel &smearPaintingModePropertyPanel, 
                                     Painter &painter,
                                     Panel& twoDPaintingPanel, 
-                                    glm::mat4 windowOrtho, 
                                     float twoDSceneScroll, 
                                     glm::vec2 twoDScenePos,
                                     Button filterPaintingModeFilterBtn,
@@ -79,7 +78,6 @@ void paintingModesPanelInteraction(
         painter.applyVectorStrokes(
                                         painter.vectorStrokes, 
                                         twoDPaintingPanel, 
-                                        windowOrtho, 
                                         vectorPaintingModePropertyPanel.sections[0].elements[0].comboBox.selectedIndex, 
                                         filterPaintingModeFilterBtn.filter, 
                                         twoDPaintingBox, 

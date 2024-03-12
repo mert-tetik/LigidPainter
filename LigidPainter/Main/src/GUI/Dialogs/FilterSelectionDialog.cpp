@@ -30,7 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-FilterSelectionDialog::FilterSelectionDialog(){
+FilterSelectionDialog::FilterSelectionDialog(int){
     this->bgPanel = Panel({}, scale, pos, ColorPalette::secondColor, ColorPalette::thirdColor, true, true, false, true, true, 1.f, 15.f, {}, 20.f, true);
     
     this->subPanel = Panel(
@@ -127,7 +127,7 @@ FilterSelectionDialog::FilterSelectionDialog(){
 static void drawBG(unsigned int bgTexture);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel);
 
-void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& receivedFilter, int displayingTextureRes){
+void FilterSelectionDialog::show(Timer &timer, Filter& receivedFilter, int displayingTextureRes){
     
     this->dialogControl.activate();
         
@@ -171,7 +171,7 @@ void FilterSelectionDialog::show(Timer &timer, glm::mat4 guiProjection, Filter& 
         this->selectedTextureDisplayingPanel.render(timer, false);
 
         ShaderSystem::splitTexturesShader().use();
-        ShaderSystem::splitTexturesShader().setMat4("projection"  ,   guiProjection);
+        ShaderSystem::splitTexturesShader().setMat4("projection"  ,   getScene()->gui_projection);
         ShaderSystem::splitTexturesShader().setVec3("pos"         ,   selectedTextureDisplayingPanel.sections[0].elements[0].button.resultPos);
         ShaderSystem::splitTexturesShader().setVec2("scale"       ,   glm::vec2(std::min(selectedTextureDisplayingPanel.sections[0].elements[0].button.resultScale.x, selectedTextureDisplayingPanel.sections[0].elements[0].button.resultScale.y)));
 

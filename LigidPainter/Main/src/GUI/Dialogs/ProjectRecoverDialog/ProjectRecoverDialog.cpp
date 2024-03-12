@@ -52,7 +52,7 @@ static void drawBG(
     ShaderSystem::buttonShader().use();
 }
 
-ProjectRecoverDialog::ProjectRecoverDialog(){
+ProjectRecoverDialog::ProjectRecoverDialog(int){
     //Create the panel
     this->panel = Panel(
                             
@@ -210,7 +210,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(){
 
 static int slot = 1;
 
-void ProjectRecoverDialog::render(Timer timer, Project &project){
+void ProjectRecoverDialog::show(Timer timer, Project &project){
     
 
     this->dialogControl.activate();

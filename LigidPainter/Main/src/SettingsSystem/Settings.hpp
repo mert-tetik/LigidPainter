@@ -102,6 +102,10 @@ struct Scene{
     glm::mat4 viewMatrix;
     glm::mat4 transformMatrix;
 
+    /*! @brief UI Rendering projection
+    L = 0, R = 1920, B = 1080, T = 0  */
+    glm::mat4 gui_projection; 
+
     float fov = 45.f;
     float aNear = 0.1f;
     float aFar = 1000.0f;

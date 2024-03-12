@@ -41,7 +41,7 @@ static bool normalMapHistoryUsed = false;
 static bool heightMapHistoryUsed = false;
 static bool aoHistoryUsed = false;
 
-ObjectTexturingDialog::ObjectTexturingDialog(){
+ObjectTexturingDialog::ObjectTexturingDialog(int){
     //Create the panel
     this->panel = Panel(
         {
@@ -158,11 +158,9 @@ ObjectTexturingDialog::ObjectTexturingDialog(){
 static bool __materialEditBtn = false;
 static bool __materialSelectBtn = false;
 
-void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEditorDialog& materialEditorDialog, LogDialog& logDialog, MaterialSelectionDialog& materialSelectionDialog){
+void ObjectTexturingDialog::render(Timer timer){
     dialogControl.updateStart();
 
-
-    
     if(getModel()->meshes.size() != texturesMesh.size()){
         for (size_t i = 0; i < texturesMesh.size(); i++)
         {
@@ -245,7 +243,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     }
 
     // Update the scene texture
-    updateDisplayingTexture(logDialog);
+    updateDisplayingTexture();
 
     // Modifying the elements    
     this->panel.sections[0].elements[0].button.scale = this->panel.scale;
@@ -314,7 +312,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     this->panel.render(timer, false);
 
     ShaderSystem::textureRenderingShader().use();
-    ShaderSystem::textureRenderingShader().setMat4("projection", projection);
+    ShaderSystem::textureRenderingShader().setMat4("projection", getScene()->gui_projection);
     ShaderSystem::textureRenderingShader().setVec2("scale", this->panel.resultScale);
     ShaderSystem::textureRenderingShader().setVec3("pos", this->panel.resultPos);
     ShaderSystem::textureRenderingShader().setInt("txtr", 0);
@@ -361,8 +359,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
 
     // Element interactions
     if(this->selectMaterialButton.clicked){
-        materialSelectionDialog.dialogControl.activate();
-        materialSelectionDialog.material = &this->material;
+        dialog_materialSelection.dialogControl.activate();
+        dialog_materialSelection.material = &this->material;
         __materialSelectBtn = true;
 
         this->faceSelectionMode = false;
@@ -381,8 +379,8 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         this->faceSelectionMode = false;
     }
     else if(this->editMaterialButton.clicked){
-        materialEditorDialog.material = &this->material;
-        materialEditorDialog.activate();
+        dialog_materialEditor.material = &this->material;
+        dialog_materialEditor.activate();
         __materialEditBtn = true;
 
         this->faceSelectionMode = false;
@@ -588,7 +586,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
     }
     else if(maskViaTexture.clicked){
         
-        showTextureSelectionDialog(this->meshMask, this->getResolution(), false);
+        dialog_textureSelection.show(timer, this->meshMask, this->getResolution(), false);
         
         if(this->meshMask.ID){
             for (size_t i = 0; i < getModel()->meshes.size(); i++)
@@ -640,7 +638,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
         __materialSelectBtn = false;
     }
 
-    if(!this->panel.hover && *Mouse::LClick() && !logDialog.isHovered() || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput) && !this->materialSelection && !this->textureSelection){
+    if(!this->panel.hover && *Mouse::LClick() && !dialog_log.isHovered() || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput) && !this->materialSelection && !this->textureSelection){
         if(!faceSelectionMode)
             this->dialogControl.unActivate();
         else
@@ -684,7 +682,7 @@ void ObjectTexturingDialog::render(Timer timer, glm::mat4 projection, MaterialEd
 
 
 
-void ObjectTexturingDialog::updateDisplayingTexture(LogDialog& logDialog){
+void ObjectTexturingDialog::updateDisplayingTexture(){
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(this->sceneCam.cameraPos, 
                                  this->sceneCam.originPos, 
@@ -753,7 +751,7 @@ void ObjectTexturingDialog::updateDisplayingTexture(LogDialog& logDialog){
         cursorPos -= glm::vec2(*Settings::videoScale() * glm::vec2(0.1f));    
         cursorPos *= glm::vec2(glm::vec2(1.25f));   
         
-        if((*Mouse::LClick() && !logDialog.isHovered()) || shortcuts_CTRL_A()){
+        if((*Mouse::LClick() && !dialog_log.isHovered()) || shortcuts_CTRL_A()){
             std::vector<std::vector<byte>> primitivesArray, prevPrimArray;
 
             for (size_t i = 0; i < faceSelection.size(); i++)

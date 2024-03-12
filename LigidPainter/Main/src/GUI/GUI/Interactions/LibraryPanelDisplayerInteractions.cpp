@@ -77,19 +77,19 @@ void UI::libraryPanelDisplayerInteraction(
         }
         if(Library::getSelectedElementIndex() == 1){ //Materials selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
-                materialDisplayerDialog.dialogControl.activate();
-                materialDisplayerDialog.material = *Library::getMaterial(i);
+                dialog_materialDisplayer.dialogControl.activate();
+                dialog_materialDisplayer.material = *Library::getMaterial(i);
             } 
         }
         if(Library::getSelectedElementIndex() == 6){ //Filters selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
-                filterDisplayerDialog.dialogControl.activate();
-                filterDisplayerDialog.filter = *Library::getFilter(i);
+                dialog_filterDisplayer.dialogControl.activate();
+                dialog_filterDisplayer.filter = *Library::getFilter(i);
             } 
         }
         if(Library::getSelectedElementIndex() == 8){ //Texture Packs selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.clicked){
-                showTexturePackEditorDialog(*Library::getTexturePack(i));
+                dialog_texturePackEditor.show(timer, *Library::getTexturePack(i));
             } 
         }
     }
@@ -104,7 +104,7 @@ void UI::libraryPanelDisplayerInteraction(
     //Add button from the barButtons in the library displayer panel clicked 
     if(libraryPanelDisplayer.barButtons[0].clicked){
         if(Library::getSelectedElementIndex() == 0){//Textures
-            newTextureDialog.dialogControl.activate();
+            dialog_newTexture.dialogControl.activate();
         }
         if(Library::getSelectedElementIndex() == 1){ //Materials
             //Add new material to the library & not the panel

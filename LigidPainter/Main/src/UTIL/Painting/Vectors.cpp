@@ -392,7 +392,6 @@ static std::vector<glm::vec2> calculateBezierCurve(glm::vec2 start, glm::vec2 en
 void Painter::applyVectorStrokes(
                                     std::vector<VectorStroke> vectorStrokes, 
                                     Panel& twoDPaintingPanel, 
-                                    glm::mat4 windowOrtho, 
                                     int paintingMode, 
                                     Filter filterBtnFilter, 
                                     Box twoDPaintingBox, 
@@ -419,7 +418,7 @@ void Painter::applyVectorStrokes(
         }
 
         if(this->vectorStrokes3D.size()){
-            this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
+            this->updateTexture(twoDPaintingPanel, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
 
             this->refreshPainting();
         }        
@@ -472,7 +471,7 @@ void Painter::applyVectorStrokes(
             }
         }
 
-        this->updateTexture(twoDPaintingPanel, windowOrtho, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
+        this->updateTexture(twoDPaintingPanel, paintingMode, filterBtnFilter, twoDPaintingBox, paintingCustomMat);
 
         this->refreshPainting();
 

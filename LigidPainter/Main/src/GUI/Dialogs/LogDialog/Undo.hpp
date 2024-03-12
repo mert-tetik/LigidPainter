@@ -41,7 +41,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 // Defined in Painter/faceSelection.cpp
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 
-void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDialog, std::vector<TextureField>& paintingOverTextureFields, MaterialEditorDialog& materialEditorDialog){
+void LogDialog::undo(Painter& painter, std::vector<TextureField>& paintingOverTextureFields){
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
         if(actions_Vectors[actions_Vectors.size() - 1].ID == VECTOR_ACTION){
             painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;
@@ -86,12 +86,12 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
                 LGDLOG::start << "ERROR : Undo face selection failed - Invalid mesh index" << LGDLOG::end;
         }
         else{
-            if(action.primitivesArray_M.size() == objectTexturingDialog.faceSelection.size() && action.primitivesArray_M.size() == getModel()->meshes.size()){
+            if(action.primitivesArray_M.size() == dialog_objectTexturing.faceSelection.size() && action.primitivesArray_M.size() == getModel()->meshes.size()){
                 for (size_t i = 0; i < action.primitivesArray_M.size(); i++)
                 {
-                    objectTexturingDialog.faceSelection[i].prevPrimArray = action.primitivesArray_M[i];
-                    objectTexturingDialog.faceSelection[i].selectedPrimitiveIDs = action.prevPrimArray_M[i];
-                    updatePrimitivesArrayTexture(objectTexturingDialog.faceSelection[i].selectedFaces, action.primitivesArray_M[i], action.primitivesArray_M[i], getModel()->meshes[i], changedIndices, true);
+                    dialog_objectTexturing.faceSelection[i].prevPrimArray = action.primitivesArray_M[i];
+                    dialog_objectTexturing.faceSelection[i].selectedPrimitiveIDs = action.prevPrimArray_M[i];
+                    updatePrimitivesArrayTexture(dialog_objectTexturing.faceSelection[i].selectedFaces, action.primitivesArray_M[i], action.primitivesArray_M[i], getModel()->meshes[i], changedIndices, true);
                 }
             }
             else{
@@ -134,18 +134,18 @@ void LogDialog::undo(Painter& painter, ObjectTexturingDialog& objectTexturingDia
     }
     if(this->activeHistoryMode == HISTORY_MATERIALEDITOR_MODE && actions_MaterialEditor.size()){
         MaterialEditorAction action = actions_MaterialEditor[actions_MaterialEditor.size() - 1];
-        if(materialEditorDialog.material)
-            materialEditorDialog.material->deleteBuffers();
+        if(dialog_materialEditor.material)
+            dialog_materialEditor.material->deleteBuffers();
 
-        *materialEditorDialog.material = action.material;
-        materialEditorDialog.updateTheMaterial = true;
-        if(materialEditorDialog.selectedMaterialModifierIndex < action.material.materialModifiers.size())
-            materialEditorDialog.modifiersPanel.sections = action.material.materialModifiers[materialEditorDialog.selectedMaterialModifierIndex].sections;
-        materialEditorDialog.material->updateMaterialDisplayingTexture(512, false, materialEditorDialog.displayerCamera, materialEditorDialog.displayModeComboBox.selectedIndex, true);
+        *dialog_materialEditor.material = action.material;
+        dialog_materialEditor.updateTheMaterial = true;
+        if(dialog_materialEditor.selectedMaterialModifierIndex < action.material.materialModifiers.size())
+            dialog_materialEditor.modifiersPanel.sections = action.material.materialModifiers[dialog_materialEditor.selectedMaterialModifierIndex].sections;
+        dialog_materialEditor.material->updateMaterialDisplayingTexture(512, false, dialog_materialEditor.displayerCamera, dialog_materialEditor.displayModeComboBox.selectedIndex, true);
 
-        for (size_t i = 0; i < materialEditorDialog.material->materialShortcuts.size(); i++)
+        for (size_t i = 0; i < dialog_materialEditor.material->materialShortcuts.size(); i++)
         {
-            materialEditorDialog.material->materialShortcuts[i].updateElement(*materialEditorDialog.material, materialEditorDialog.material->materialShortcuts[i].modI);
+            dialog_materialEditor.material->materialShortcuts[i].updateElement(*dialog_materialEditor.material, dialog_materialEditor.material->materialShortcuts[i].modI);
         }
 
         Library::setChanged(true);

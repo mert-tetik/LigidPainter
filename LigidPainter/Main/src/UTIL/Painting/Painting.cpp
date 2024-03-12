@@ -681,7 +681,7 @@ void Painter::projectThePaintingTexture(
 
         //*Vertex
         ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-        //ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", windowOrtho);
+        //ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getScene().gui_projection);
         //ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
         twoDPaintingBox.bindBuffers();

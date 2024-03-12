@@ -94,7 +94,7 @@ public:
         if(ligidPainter_ONLY_INIT)
             return 1;
 
-        while((!renderer.userInterface.logDialog.windowShouldClose && !Settings::properties()->cat_hide) || (!getContext()->window.shouldClose() && Settings::properties()->cat_hide))
+        while((!dialog_log.windowShouldClose && !Settings::properties()->cat_hide) || (!getContext()->window.shouldClose() && Settings::properties()->cat_hide))
         {   
             renderer.render();
             

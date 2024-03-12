@@ -34,7 +34,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
 #include "tinyfiledialogs.h"
 
-DisplayerDialog::DisplayerDialog(){
+DisplayerDialog::DisplayerDialog(int){
     Texture bgTxtr0;
     bgTxtr0.load("./LigidPainter/Resources/Images/BGTexture0.jpg");
     Texture bgTxtr1;
@@ -109,7 +109,7 @@ DisplayerDialog::DisplayerDialog(){
     }
 }
 
-void DisplayerDialog::render(Timer timer, Skybox &skybox, LogDialog& logDialog){
+void DisplayerDialog::render(Timer timer, Skybox &skybox){
     
     dialogControl.updateStart();
 
@@ -202,7 +202,7 @@ void DisplayerDialog::render(Timer timer, Skybox &skybox, LogDialog& logDialog){
     skybox.opacity = panel.sections[0].elements[3].rangeBar.value/100.f;
     
     //End the dialog
-    if((panel.sections[0].elements[2].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !logDialog.isHovered() && *Mouse::LClick())){
+    if((panel.sections[0].elements[2].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
         if(!dialogControl.firstFrameActivated){
             panel.sections[0].elements[0].button.clickState1 = false;
             dialogControl.unActivate();

@@ -78,7 +78,7 @@ Panel textureSelectPanel = Panel(
                                     true
                                 );
 
-void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, MaterialSelectionDialog &materialSelectionDialog, Painter& painter, const unsigned int resolution, Mesh& mesh){
+void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh){
     textureSelectPanel.sections[0].elements[1].button.textureSelection3D = true;
     textureSelectPanel.sections[0].elements[3].button.textureSelection3D = true;
     textureSelectPanel.sections[0].elements[5].button.textureSelection3D = true;
