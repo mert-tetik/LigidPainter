@@ -64,43 +64,50 @@ float easeInOut(float t) {
     return 0.5f * (1.0f - std::cos(t * 3.14159265358979323846));
 }
 
-void BakingDialog::render(Timer timer, Skybox skybox){
+void BakingDialog::show(Timer& timer, Skybox skybox){
     
-    dialogControl.updateStart();
+    dialogControl.activate();
 
-    if(dialogControl.firstFrameActivated){
-        selectMeshButton.selectedMeshI = 0;
-        if(selectMeshButton.selectedMeshI < getModel()->meshes.size()){
-            selectMeshButton.texture = getModel()->meshes[selectMeshButton.selectedMeshI].displayingTxtr; 
-            selectMeshButton.text = getModel()->meshes[selectMeshButton.selectedMeshI].materialName; 
+    while(!getContext()->window.shouldClose()){
+        dialogControl.updateStart();
+
+        if(dialogControl.firstFrameActivated){
+            selectMeshButton.selectedMeshI = 0;
+            if(selectMeshButton.selectedMeshI < getModel()->meshes.size()){
+                selectMeshButton.texture = getModel()->meshes[selectMeshButton.selectedMeshI].displayingTxtr; 
+                selectMeshButton.text = getModel()->meshes[selectMeshButton.selectedMeshI].materialName; 
+            }
         }
-    }
 
-    glm::vec3 pos = glm::vec3(50.f,40.f,0.7f);
-    glm::vec2 scale = glm::vec2(25.f, 25.f / (appTextures.baking_Default.getResolution().x / appTextures.baking_Default.getResolution().y) * (Settings::videoScale()->x / Settings::videoScale()->y));
+        glm::vec3 pos = glm::vec3(50.f,40.f,0.7f);
+        glm::vec2 scale = glm::vec2(25.f, 25.f / (appTextures.baking_Default.getResolution().x / appTextures.baking_Default.getResolution().y) * (Settings::videoScale()->x / Settings::videoScale()->y));
 
-    glm::vec3 resultPos = glm::vec3(UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)), pos.z); 
-    glm::vec2 resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
+        glm::vec3 resultPos = glm::vec3(UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)), pos.z); 
+        glm::vec2 resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
 
-    this->renderElements(timer, pos, scale, resultPos, resultScale);
+        this->renderElements(timer, pos, scale, resultPos, resultScale);
 
-    if(this->bakeButton.clicked && selectMeshButton.selectedMeshI < getModel()->meshes.size()){
-        Texture baked = this->bake(
-                                    skybox, 
-                                    std::stoi(textureResComboBox.texts[textureResComboBox.selectedIndex])
-                                );    
+        if(this->bakeButton.clicked && selectMeshButton.selectedMeshI < getModel()->meshes.size()){
+            Texture baked = this->bake(
+                                        skybox, 
+                                        std::stoi(textureResComboBox.texts[textureResComboBox.selectedIndex])
+                                    );    
 
-        Library::addTexture(baked, "New texture via baking");
-    } 
+            Library::addTexture(baked, "New texture via baking");
+        } 
 
-    //End the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->isDialogHovered() && !dialog_log.isHovered() && *Mouse::LClick())){
-        if(!dialogControl.firstFrameActivated){
-            dialogControl.unActivate();
+        //End the dialog
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->isDialogHovered() && !dialog_log.isHovered() && *Mouse::LClick())){
+            if(!dialogControl.firstFrameActivated){
+                dialogControl.unActivate();
+            }
         }
+        
+        dialogControl.updateEnd(timer,0.15f);
+
+        if(dialogControl.mixVal == 0.f)
+            break;
     }
-    
-    dialogControl.updateEnd(timer,0.15f);
 }
 
 

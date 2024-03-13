@@ -103,7 +103,6 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
         brushProperties->brushTexture = Texture(whiteTxtr, brushTextureResolution, brushTextureResolution);
     }
     
-    this->dialogControl.activate();
 
     this->outToIn(brushProperties);
     this->updateDisplayingTexture(brushProperties);
@@ -111,21 +110,11 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
     initialProperties = *brushProperties;
 
     this->bgPanel.slideVal = 0.f;
+    
+    this->dialogControl.activate();
 
     while (!getContext()->window.shouldClose())
     {
-        getContext()->window.pollEvents();
-        
-        // Prevent rendering the application if the window is minimized
-        while (getContext()->window.isMinimized()){
-            getContext()->window.pollEvents();
-        }
-        
-        glClearColor(0,0,0,0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        drawBG(Settings::defaultFramebuffer()->bgTxtr.ID);
-
         dialogControl.updateStart();
 
         //Render the panel
@@ -205,39 +194,15 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
             ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);  
         }
 
-        dialogControl.updateEnd(timer,0.15f);
-
         //End the dialog
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && !this->libraryBrushSelectionButton.hover && !this->libraryBrushSelectionPanel.hover && !this->brushDisplayBtn.hover && *Mouse::LClick())){
             dialogControl.unActivate();
         }
 
-        if(!this->dialogControl.isActive())
-            break;
-            
         dialogControl.updateEnd(timer,0.15f);
 
-        getContext()->window.swapBuffers();
-
-        //Set mouse states to default
-        *Mouse::LClick() = false;
-        *Mouse::RClick() = false;
-        *Mouse::MClick() = false;
-        *Mouse::LDoubleClick() = false;
-        *Mouse::mouseOffset() = glm::vec2(0);
-        *Mouse::mods() = 0;
-        *Mouse::mouseScroll() = 0;
-        *Mouse::action() = 0;
-        Mouse::updateCursor();  
-
-        //Set keyboard states to default
-        textRenderer.keyInput = false;
-        textRenderer.mods = 0;
-
-        Settings::defaultFramebuffer()->render();    
-        Settings::defaultFramebuffer()->setViewport();   
-
-
+        if(dialogControl.mixVal == 0.f)
+            break;
     }
 
     ShaderSystem::buttonShader().use();
@@ -368,24 +333,4 @@ void BrushModificationDialog::cancelChanges(BrushProperties* brushProperties){
     brushProperties->brushTexture.generateProceduralDisplayingTexture(brushTextureResolution, false);
 
     this->outToIn(brushProperties);
-}
-
-static void drawBG(
-                    unsigned int bgTexture
-                )
-{
-    ShaderSystem::defaultFramebufferShader().use();
-    ShaderSystem::defaultFramebufferShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
-    ShaderSystem::defaultFramebufferShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.6f));
-    ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
-    
-    ShaderSystem::defaultFramebufferShader().setVec2("resolution", Settings::defaultFramebuffer()->resolution);
-    ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, bgTexture);
-
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Mesh selection dialog : DrawBG");
-    
-    ShaderSystem::buttonShader().use();
 }

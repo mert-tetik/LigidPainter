@@ -193,32 +193,39 @@ SettingsDialog::SettingsDialog(int){
 
 
 
-void SettingsDialog::render(Timer timer, Painter &painter){
+void SettingsDialog::show(Timer& timer, Painter& painter){
     
-    dialogControl.updateStart();   
+    dialogControl.activate();
 
-    this->setPropertiesToDialog();
-
-    this->renderPanel(timer);
-    this->updateInfoTexts(painter, timer);
-
-    this->setDialogToProperties();
-
-    getScene()->updateProjectionMatrix(0.f);
-    getScene()->updateViewMatrix();
-    getScene()->updateTransformMatrix();
-
-    //End the dialog
-    if  (
-            getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Escape key pressed 
-            ((!bgPanel.hover && *Mouse::LClick() && !dialog_log.isHovered())) && !dialogControl.firstFrameActivated //Mouse Lclick out of the panel
-        )
+    while (!getContext()->window.shouldClose())
     {
-        dialogControl.unActivate();
-        Settings::defaultFramebuffer()->setResolution(*Settings::videoScale() / Settings::properties()->framebufferResolutionDivier);
-    }
+        dialogControl.updateStart();   
 
-    dialogControl.updateEnd(timer,0.15f);   
+        this->setPropertiesToDialog();
+
+        this->renderPanel(timer);
+        this->updateInfoTexts(painter, timer);
+
+        this->setDialogToProperties();
+
+        getScene()->updateProjectionMatrix(0.f);
+        getScene()->updateViewMatrix();
+        getScene()->updateTransformMatrix();
+
+        //End the dialog
+        if  (
+                getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Escape key pressed 
+                ((!bgPanel.hover && *Mouse::LClick() && !dialog_log.isHovered())) && !dialogControl.firstFrameActivated //Mouse Lclick out of the panel
+            )
+        {
+            dialogControl.unActivate();
+            Settings::defaultFramebuffer()->setResolution(*Settings::videoScale() / Settings::properties()->framebufferResolutionDivier);
+        }
+
+        dialogControl.updateEnd(timer,0.15f);   
+        if(dialogControl.mixVal == 0.f)
+            break;
+    }
 }
 
 

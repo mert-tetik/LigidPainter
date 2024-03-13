@@ -28,6 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "LibrarySystem/Library.hpp"
 #include "MouseSystem/Mouse.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
+#include "SettingsSystem/Settings.hpp"
 
 // System
 #include <string>
@@ -42,28 +43,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void TextureSelectionDialog::show(Timer &timer, Texture& receivedTexture, int displayingTextureRes, bool twoDMode){
     
-    this->dialogControl.activate();
-    
     // Assign the default values
     initTextureSelectionDialog(receivedTexture, twoDMode);
 
-    
+    this->dialogControl.activate();
+
     // Rendering loop
     while (!getContext()->window.shouldClose())
     {
-        // Update window
-        getContext()->window.pollEvents();
-        
-        ShaderSystem::buttonShader().use();
-        ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, (float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f));
-   
-        // Refreshing the framebuffer
-        glClearColor(0,0,0,0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        // Drawing the background 
-        drawBG(Settings::defaultFramebuffer()->bgTxtr.ID);
-
         dialogControl.updateStart();
 
         // Updating the displaying texture
@@ -140,33 +127,9 @@ void TextureSelectionDialog::show(Timer &timer, Texture& receivedTexture, int di
             selectedTextureIndex = 0;
         }
 
-        // Exit from the dialog as the closing animation finishes
-        if(this->dialogControl.mixVal <= 0.05f && !this->dialogControl.isActive())
-            break;
-        
         // Update the dialog control
         dialogControl.updateEnd(timer,0.15f);
-
-        // Update the graphics
-        getContext()->window.swapBuffers();
-
-        // Set mouse states to default
-        *Mouse::LClick() = false;
-        *Mouse::RClick() = false;
-        *Mouse::MClick() = false;
-        *Mouse::LDoubleClick() = false;
-        *Mouse::mouseOffset() = glm::vec2(0);
-        *Mouse::mods() = 0;
-        *Mouse::mouseScroll() = 0;
-        *Mouse::action() = 0;
-        Mouse::updateCursor();  
-
-
-        //Set keyboard states to default
-        textRenderer.keyInput = false;
-        textRenderer.mods = 0;
-
-        Settings::defaultFramebuffer()->render();    
-        Settings::defaultFramebuffer()->setViewport();    
+        if(dialogControl.mixVal == 0.f)
+            break;
     }
 }

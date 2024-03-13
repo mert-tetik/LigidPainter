@@ -33,19 +33,19 @@ static void refreshShortcutPanelSections(Panel& shortcutPanel, Material* materia
 static void shortcutRenamingPart(Timer& timer, Panel& shortcutPanel, int& shortcutRenamingIndex, TextBox& shortcutRenamingTextbox, Material* material);
 static void shortcutPanelInteractions(Panel& shortcutPanel, Material* material, bool& updateTheMaterial, int& shortcutRenamingIndex, TextBox& shortcutRenamingTextbox, Timer& timer);
 
-void MaterialEditorDialog::renderShortcutPanel(Timer& timer, bool mouseTrackingFlag){    
+void MaterialEditorDialog::renderShortcutPanel(Timer& timer, bool mouseTrackingFlag, Material* material){    
     
     // Refresh the sections of the shortcut panel (remove & re-create the shortcut elements)
-    refreshShortcutPanelSections(this->shortcutPanel, this->material, this->shortcutRenamingIndex);
+    refreshShortcutPanelSections(this->shortcutPanel, material, this->shortcutRenamingIndex);
     
     // Rendering the shortcut panel
     shortcutPanel.render(timer, mouseTrackingFlag);
     
     // Render the textbox if needed & rename the shortcut
-    shortcutRenamingPart(timer, this->shortcutPanel, this->shortcutRenamingIndex, this->shortcutRenamingTextbox, this->material);
+    shortcutRenamingPart(timer, this->shortcutPanel, this->shortcutRenamingIndex, this->shortcutRenamingTextbox, material);
 
     // Mouse interactions with the shortcut panel (if buttons were pressed)
-    shortcutPanelInteractions(this->shortcutPanel, this->material, this->updateTheMaterial, this->shortcutRenamingIndex, this->shortcutRenamingTextbox, timer);
+    shortcutPanelInteractions(this->shortcutPanel, material, this->updateTheMaterial, this->shortcutRenamingIndex, this->shortcutRenamingTextbox, timer);
 }
 
 

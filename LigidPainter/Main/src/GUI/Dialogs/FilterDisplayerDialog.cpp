@@ -61,36 +61,44 @@ FilterDisplayerDialog::FilterDisplayerDialog(int){
                         );
 }
 
-void FilterDisplayerDialog::render(Timer timer){
+void FilterDisplayerDialog::show(Timer& timer){
     
-    dialogControl.updateStart();
+    dialogControl.activate();
 
-    //Render the panel
-    panel.render(timer,true);
-     
-    //Close the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){
-        if(!dialogControl.firstFrameActivated)
-            this->dialogControl.unActivate();
+    while (!getContext()->window.shouldClose())
+    {
+        dialogControl.updateStart();
+
+        //Render the panel
+        panel.render(timer,true);
+        
+        //Close the dialog
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){
+            if(!dialogControl.firstFrameActivated)
+                this->dialogControl.unActivate();
+        }
+
+        ShaderSystem::splitTexturesShader().use();
+        ShaderSystem::splitTexturesShader().setMat4("projection"  ,   getScene()->gui_projection);
+        ShaderSystem::splitTexturesShader().setVec3("pos"         ,   panel.sections[0].elements[1].button.resultPos);
+        ShaderSystem::splitTexturesShader().setVec2("scale"       ,   glm::vec2(std::min(panel.sections[0].elements[1].button.resultScale.x, panel.sections[0].elements[1].button.resultScale.y)));
+
+        ShaderSystem::splitTexturesShader().setInt("texture1", 0);
+        ShaderSystem::splitTexturesShader().setInt("texture2", 1);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, appTextures.filterDisplayerImage.ID);
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, filter.displayingTxtr.ID);
+
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter displayer dialog : Rendering the filter");
+
+        ShaderSystem::buttonShader().use();
+        
+        dialogControl.updateEnd(timer,0.15f);
+        if(dialogControl.mixVal == 0.f)
+            break;
     }
-
-    ShaderSystem::splitTexturesShader().use();
-    ShaderSystem::splitTexturesShader().setMat4("projection"  ,   getScene()->gui_projection);
-    ShaderSystem::splitTexturesShader().setVec3("pos"         ,   panel.sections[0].elements[1].button.resultPos);
-    ShaderSystem::splitTexturesShader().setVec2("scale"       ,   glm::vec2(std::min(panel.sections[0].elements[1].button.resultScale.x, panel.sections[0].elements[1].button.resultScale.y)));
-
-    ShaderSystem::splitTexturesShader().setInt("texture1", 0);
-    ShaderSystem::splitTexturesShader().setInt("texture2", 1);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, appTextures.filterDisplayerImage.ID);
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, filter.displayingTxtr.ID);
-
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter displayer dialog : Rendering the filter");
-
-    dialogControl.updateEnd(timer,0.15f);
-
-    ShaderSystem::buttonShader().use();
+    
 }

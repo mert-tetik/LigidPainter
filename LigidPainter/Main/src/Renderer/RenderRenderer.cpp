@@ -337,6 +337,9 @@ void Renderer::render(){
 
     getBox()->unbindBuffers(); //Finish rendering the UI
 
+    if(timer.seconds == 1)
+        dialog_greeting.show(timer, project);
+
     _ligid_renderer_render_first_frame = false;
 
     Debugger::block("Complete rendering"); // End

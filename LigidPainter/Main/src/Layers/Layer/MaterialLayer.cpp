@@ -66,8 +66,7 @@ void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTra
     materialSelectPanel.sections[0].elements[0].button.texture = this->material.displayingTexture;
     
     if(materialSelectPanel.sections[0].elements[0].button.clicked){
-        dialog_materialSelection.material = &this->material;
-        dialog_materialSelection.dialogControl.activate();
+        dialog_materialSelection.show(timer, &this->material); 
     }
     materialSelectPanel.pos = this->layerButton.pos;
     materialSelectPanel.pos.x -= this->layerButton.scale.x + materialSelectPanel.scale.x;

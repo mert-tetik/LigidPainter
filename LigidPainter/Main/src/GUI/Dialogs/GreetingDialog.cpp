@@ -139,52 +139,64 @@ GreetingDialog::GreetingDialog(int){
     this->bgPanel = Panel({},glm::vec2(40),glm::vec3(50.f,50.f,0.8f),ColorPalette::mainColor,ColorPalette::thirdColor,false,true,true,true,true,1.f,1.f,{},0.25f,false);
 
     bgPanel.scale.x = textureDisplayerButton.scale.x;
-
-    this->dialogControl.activate();
 }
 
-void GreetingDialog::render(Timer timer){
+void GreetingDialog::show(Timer& timer, Project& project){
 
-    dialogControl.updateStart();
+    this->dialogControl.activate();
 
-    //Render elements 
-    
-    //Render the texture displayer button 
-    textureDisplayerButton.render(timer,false);
-    if(newVersionMode){
-        newVersionBannerButton.render(timer, false);
-        downloadNewVersionButton.render(timer, dialogControl.isComplete());
+    while(!getContext()->window.shouldClose())
+    {
         
-        if(downloadNewVersionButton.clicked){
-            Website website = Website("https://ligidtools.com/release");
-            website.open();
+        /* code */
+        dialogControl.updateStart();
+
+        //Render elements 
+        
+        //Render the texture displayer button 
+        textureDisplayerButton.render(timer,false);
+        if(newVersionMode){
+            newVersionBannerButton.render(timer, false);
+            downloadNewVersionButton.render(timer, dialogControl.isComplete());
+            
+            if(downloadNewVersionButton.clicked){
+                Website website = Website("https://ligidtools.com/release");
+                website.open();
+            }
         }
-    }
 
-    //bgPanel.render(timer,false);
-    loadProjectButton.render(timer,dialogControl.isComplete());
-    createProjectButton.render(timer,dialogControl.isComplete());
-    
-    //Render text elements
-    // textButton1.render(timer,false);
-    
-    //Show new project dialog if create project button is pressed
-    if(createProjectButton.clicked){
-        dialog_newProject.dialogControl.activate();
-        this->dialogControl.unActivate();
-    }
+        //bgPanel.render(timer,false);
+        loadProjectButton.render(timer,dialogControl.isComplete());
+        createProjectButton.render(timer,dialogControl.isComplete());
+        
+        //Render text elements
+        // textButton1.render(timer,false);
+        
+        //Show new project dialog if create project button is pressed
+        if(createProjectButton.clicked){
+            this->dialogControl.unActivate();
+            this->dialogControl.mixVal = 0.f;
+            dialog_newProject.show(timer, project);
+            break;
+        }
 
-    //Show load project dialog if load project button is pressed
-    if(loadProjectButton.clicked){
-        dialog_loadProject.dialogControl.activate();
-        this->dialogControl.unActivate();
-    }
+        //Show load project dialog if load project button is pressed
+        if(loadProjectButton.clicked){
+            this->dialogControl.unActivate();
+            this->dialogControl.mixVal = 0.f;
+            dialog_loadProject.show(timer, project);
+            break;
+        }
 
-    //Render the decoration texture displayer button without depth testing
-    glDepthFunc(GL_ALWAYS);
-    
-    //Set the depth func back to default (less or equal)
-    glDepthFunc(GL_LEQUAL);
+        //Render the decoration texture displayer button without depth testing
+        glDepthFunc(GL_ALWAYS);
+        
+        //Set the depth func back to default (less or equal)
+        glDepthFunc(GL_LEQUAL);
 
-    dialogControl.updateEnd(timer,0.15f);
+        dialogControl.updateEnd(timer, 2.0f);
+
+        if(dialogControl.mixVal == 0.f)
+            break;
+    }   
 }

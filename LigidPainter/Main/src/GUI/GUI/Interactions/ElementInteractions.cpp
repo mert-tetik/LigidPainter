@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 //Forward declarations for the interaction functions defined in the Interactions directory 
 void updateLibraryPanelDisplayerElements(Panel &libraryPanelDisplayer, int frameCounter);
-void windowPanelInteraction(Panel &windowPanel, Painter &painter);
+void windowPanelInteraction(Panel &windowPanel, Painter &painter, Timer& timer);
 void paintingModesPanelInteraction(Panel &paintingModesPanel, Panel& vectorPaintingModePropertyPanel, Panel& smearPaintingModePropertyPanel, Painter &painter, Panel& twoDPaintingPanel, float twoDSceneScroll, glm::vec2 twoDScenePos, Button filterPaintingModeFilterBtn, Box twoDPaintingBox, Material& paintingCustomMat, std::vector<TextureField> textureFields, CheckBox vectorPaintingMode2DModeWrapCheckBox);
 void displayingModesPanelInteraction(Panel &displayingModesPanel, Painter &painter);
 
@@ -120,7 +120,7 @@ void UI::elementInteraction(
     Debugger::block("GUI : Interactions : libraryPanelLeftInteraction"); // End
 
     Debugger::block("GUI : Interactions : windowPanelInteraction"); // Start
-    windowPanelInteraction(windowPanel, painter);
+    windowPanelInteraction(windowPanel, painter, timer);
     Debugger::block("GUI : Interactions : windowPanelInteraction"); // End
 
     Debugger::block("GUI : Interactions : paintingModesPanelInteraction"); // Start

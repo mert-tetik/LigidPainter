@@ -71,79 +71,86 @@ ModelInfoDialog::ModelInfoDialog(int){
     this->panel.sections[0].elements[0].button.textScale = 0.75f;
 }
 
-void ModelInfoDialog::render(Timer& timer){
+void ModelInfoDialog::show(Timer& timer, Model* model){
     
-    dialogControl.updateStart();
+    dialogControl.activate();
 
-    if(dialogControl.firstFrameActivated){
-        int model_material_size = this->model->meshes.size();
-        int model_total_vertex_array_size = 0;
-        int model_total_index_array_size = 0;
-
-        for (size_t i = 0; i < this->model->meshes.size(); i++)
-        {
-            model_total_vertex_array_size += this->model->meshes[i].vertices.size();
-            model_total_index_array_size += this->model->meshes[i].indices.size();
-        }
-        
-        this->panel.sections[0].elements[0].button.text = "Model title : " + this->model->title;
-        this->panel.sections[0].elements[1].button.text = "Path to the model : " + this->model->path;
-        this->panel.sections[0].elements[2].button.texture = this->model->displayingTxtr;
-        this->panel.sections[0].elements[3].button.text = std::string("Material size : ") + std::to_string(model_material_size) + std::string(" , Total vertex array size : ") + std::to_string(model_total_vertex_array_size) + std::string(" , Total index array size : ") + std::to_string(model_total_index_array_size);
-        
-        if(this->panel.sections.size() > 1)
-            this->panel.sections.erase(this->panel.sections.begin() + 1, this->panel.sections.end());
-
-        for (size_t i = 0; i < model->meshes.size(); i++)
-        {
-            this->panel.sections.push_back(
-                                                Section(
-                                                    Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,0), "",  Texture(), 2.f, true)),
-                                                    {
-                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2), model->meshes[i].materialName,  Texture(), 8.f, false)), 
-                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,10), "",  model->meshes[i].displayingTxtr, 0.f, false)), 
-                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Object count : " + std::to_string(model->meshes[i].objects.size()),  Texture(), 0.f, false)), 
-                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,6), "Texture coordinates Mask",  model->meshes[i].uvMask, 0.f, false)), 
-                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Vertices array size : " + std::to_string(model->meshes[i].vertices.size()),  Texture(), 0.f, false)), 
-                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Indices array size : " + std::to_string(model->meshes[i].indices.size()),  Texture(), 0.f, false)), 
-                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,6), "Material ID Texture",  model->meshes[i].materialIDTxtr, 0.f, false)), 
-                                                        Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2,2), "Add new material ID texture",  Texture(), 0.f, false)), 
-                                                    }
-                                                )
-                                            );
-
-            this->panel.sections[this->panel.sections.size() - 1].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Layers : ",  Texture(), 0.f, false));
-            for (int layerI = model->meshes[i].layerScene.layers.size() - 1; layerI >= 0; layerI--)
-            {
-                this->panel.sections[this->panel.sections.size() - 1].elements.push_back(model->meshes[i].layerScene.layers[layerI]->layerButton);
-            }
-        }
-    }
-    
-
-    //Render the panel
-    panel.render(timer, true);
-
-    for (size_t i = 1; i < panel.sections.size(); i++)
+    while (!getContext()->window.shouldClose())
     {
-        if(panel.sections[i].elements[7].button.clicked){
-            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+        dialogControl.updateStart();
 
-            if(test.size()){   
-                model->meshes[i - 1].materialIDTxtr.load(test.c_str());
-                panel.sections[i].elements[6].button.texture = model->meshes[i - 1].materialIDTxtr;
+        if(dialogControl.firstFrameActivated){
+            int model_material_size = model->meshes.size();
+            int model_total_vertex_array_size = 0;
+            int model_total_index_array_size = 0;
+
+            for (size_t i = 0; i < model->meshes.size(); i++)
+            {
+                model_total_vertex_array_size += model->meshes[i].vertices.size();
+                model_total_index_array_size += model->meshes[i].indices.size();
+            }
+            
+            this->panel.sections[0].elements[0].button.text = "Model title : " + model->title;
+            this->panel.sections[0].elements[1].button.text = "Path to the model : " + model->path;
+            this->panel.sections[0].elements[2].button.texture = model->displayingTxtr;
+            this->panel.sections[0].elements[3].button.text = std::string("Material size : ") + std::to_string(model_material_size) + std::string(" , Total vertex array size : ") + std::to_string(model_total_vertex_array_size) + std::string(" , Total index array size : ") + std::to_string(model_total_index_array_size);
+            
+            if(this->panel.sections.size() > 1)
+                this->panel.sections.erase(this->panel.sections.begin() + 1, this->panel.sections.end());
+
+            for (size_t i = 0; i < model->meshes.size(); i++)
+            {
+                this->panel.sections.push_back(
+                                                    Section(
+                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,0), "",  Texture(), 2.f, true)),
+                                                        {
+                                                            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2), model->meshes[i].materialName,  Texture(), 8.f, false)), 
+                                                            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,10), "",  model->meshes[i].displayingTxtr, 0.f, false)), 
+                                                            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Object count : " + std::to_string(model->meshes[i].objects.size()),  Texture(), 0.f, false)), 
+                                                            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,6), "Texture coordinates Mask",  model->meshes[i].uvMask, 0.f, false)), 
+                                                            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Vertices array size : " + std::to_string(model->meshes[i].vertices.size()),  Texture(), 0.f, false)), 
+                                                            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Indices array size : " + std::to_string(model->meshes[i].indices.size()),  Texture(), 0.f, false)), 
+                                                            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,6), "Material ID Texture",  model->meshes[i].materialIDTxtr, 0.f, false)), 
+                                                            Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2,2), "Add new material ID texture",  Texture(), 0.f, false)), 
+                                                        }
+                                                    )
+                                                );
+
+                this->panel.sections[this->panel.sections.size() - 1].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Layers : ",  Texture(), 0.f, false));
+                for (int layerI = model->meshes[i].layerScene.layers.size() - 1; layerI >= 0; layerI--)
+                {
+                    this->panel.sections[this->panel.sections.size() - 1].elements.push_back(model->meshes[i].layerScene.layers[layerI]->layerButton);
+                }
+            }
+        }
+        
+
+        //Render the panel
+        panel.render(timer, true);
+
+        for (size_t i = 1; i < panel.sections.size(); i++)
+        {
+            if(panel.sections[i].elements[7].button.clicked){
+                std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+
+                if(test.size()){   
+                    model->meshes[i - 1].materialIDTxtr.load(test.c_str());
+                    panel.sections[i].elements[6].button.texture = model->meshes[i - 1].materialIDTxtr;
+                }
+            }
+
+        }
+        
+        //End the dialog
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
+            if(!dialogControl.firstFrameActivated){
+                panel.sections[0].elements[0].button.clickState1 = false;
+                dialogControl.unActivate();
             }
         }
 
+        dialogControl.updateEnd(timer,0.15f);
+        if(dialogControl.mixVal == 0.f)
+            break;
     }
-    
-    //End the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
-        if(!dialogControl.firstFrameActivated){
-            panel.sections[0].elements[0].button.clickState1 = false;
-            dialogControl.unActivate();
-        }
-    }
-
-    dialogControl.updateEnd(timer,0.15f);
 }

@@ -31,7 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void modifiersPanelInteractions(Panel& modifiersPanel, Material* material, int& selectedMaterialModifierIndex, bool& updateTheMaterial, bool firstFrameActivated);
 
 /* Forward Declared Utility Functions */
-void MaterialEditorDialog::renderModifiersPanel(Timer& timer, bool mouseTrackingFlag){
+void MaterialEditorDialog::renderModifiersPanel(Timer& timer, bool mouseTrackingFlag, Material* material){
     
     // Update the sections of the panel
     if(this->selectedMaterialModifierIndex < material->materialModifiers.size())
@@ -47,7 +47,7 @@ void MaterialEditorDialog::renderModifiersPanel(Timer& timer, bool mouseTracking
         material->materialModifiers[this->selectedMaterialModifierIndex].sections = modifiersPanel.sections;
 
     // Handle interaction with the modifier's panel
-    modifiersPanelInteractions(this->modifiersPanel, this->material, this->selectedMaterialModifierIndex, this->updateTheMaterial, this->dialogControl.firstFrameActivated);
+    modifiersPanelInteractions(this->modifiersPanel, material, this->selectedMaterialModifierIndex, this->updateTheMaterial, this->dialogControl.firstFrameActivated);
 }
 
 

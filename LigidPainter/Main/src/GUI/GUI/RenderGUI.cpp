@@ -647,8 +647,7 @@ void UI::renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc
     }
 
     if(this->colorSection.elements[17].button.clicked){
-        dialog_materialSelection.dialogControl.activate();
-        dialog_materialSelection.material = &this->paintingCustomMat;
+        dialog_materialSelection.show(timer, &this->paintingCustomMat);
     }
 
     if(colorSection.elements[2].button.hover && *Mouse::LDoubleClick()){//Pressed to first color button element
@@ -806,7 +805,7 @@ void UI::renderObjectsPanel(Timer& timer, Painter& painter){
         if(!anyObjSelected)
             LGDLOG::start << "WARNING! No object was selected" << LGDLOG::end;
 
-        dialog_objectTexturing.dialogControl.activate();
+        dialog_objectTexturing.show(timer);
     }
 
     for (size_t secI = 0; secI < objectsPanel.sections.size(); secI++)
@@ -1202,50 +1201,6 @@ void UI::renderRenamingTextbox(Timer &timer, Painter &painter){
 }
 
 void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter& painter){
-    if(dialog_newProject.dialogControl.isActive())
-        dialog_newProject.render(timer, project, dialog_greeting.dialogControl.active, dialog_greeting.startScreen);
-    
-    if(dialog_loadProject.dialogControl.isActive())
-        dialog_loadProject.render(timer, project, dialog_greeting.dialogControl.active, dialog_greeting.startScreen);    
-
-    if(dialog_greeting.dialogControl.isActive())
-        dialog_greeting.render(timer);
-
-    if(dialog_displayer.dialogControl.isActive())
-        dialog_displayer.render(timer,skybox);
-    
-    if(dialog_modelInfo.dialogControl.isActive())
-        dialog_modelInfo.render(timer);
-    
-    if(dialog_textureEditor.dialogControl.isActive())
-        dialog_textureEditor.render(timer,skybox, this->textureEditorSelectedTxtr);
-    
-    if(dialog_export.dialogControl.isActive())
-        dialog_export.render(timer,project,dialog_greeting.dialogControl.active);
-    
-    if(dialog_newTexture.dialogControl.isActive())
-        dialog_newTexture.render(timer);
-    
-    if(dialog_settings.dialogControl.isActive())
-        dialog_settings.render(timer, painter);
-    
-    if(dialog_materialDisplayer.dialogControl.isActive())
-        dialog_materialDisplayer.render(timer);
-    
-    if(dialog_filterDisplayer.dialogControl.isActive())
-        dialog_filterDisplayer.render(timer);
-    
-    if(dialog_baking.dialogControl.isActive())
-        dialog_baking.render(timer, skybox);
-    
-    if(dialog_objectTexturing.dialogControl.isActive() && !dialog_materialEditor.dialogControl.active && !dialog_materialSelection.dialogControl.active)
-        dialog_objectTexturing.render(timer);
-    
-    if(dialog_materialSelection.dialogControl.isActive() && !dialog_materialEditor.dialogControl.active)
-        dialog_materialSelection.render(timer);
-    
-    if(dialog_materialEditor.dialogControl.isActive())
-        dialog_materialEditor.render(timer);
     
     if(!Settings::properties()->cat_hide){
         dialog_log.render(

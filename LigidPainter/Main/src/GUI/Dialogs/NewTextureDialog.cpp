@@ -74,105 +74,112 @@ NewTextureDialog::NewTextureDialog(int){
 
 bool __newTxtrDialog_last_texture_selection_dialog_state = false;
 
-void NewTextureDialog::render(Timer timer){
-    
-    int textureRes = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
+void NewTextureDialog::show(Timer& timer){
 
-    dialogControl.updateStart();
-    
-    //Show the color picker dialog if clicked to the color button
-    if(panel.sections[0].elements[0].button.clicked){
-        unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
-        Color clrObj;
-        clrObj.loadRGB_normalized(glm::vec3(panel.sections[0].elements[0].button.color.r, panel.sections[0].elements[0].button.color.g, panel.sections[0].elements[0].button.color.b));
-        std::string hex0Val = clrObj.getHEX();
-        auto check = tinyfd_colorChooser("Select a color",hex0Val.c_str(),defRGB,defRGB);
+    dialogControl.activate();
 
-        if(check){
-            Color clr(check);
-            panel.sections[0].elements[0].button.color = glm::vec4(clr.getRGB_normalized(),1.f);
+    while (!getContext()->window.shouldClose())
+    {
+        dialogControl.updateStart();
+
+        int textureRes = std::stoi(panel.sections[0].elements[2].comboBox.texts[panel.sections[0].elements[2].comboBox.selectedIndex]);
+        
+        //Show the color picker dialog if clicked to the color button
+        if(panel.sections[0].elements[0].button.clicked){
+            unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
+            Color clrObj;
+            clrObj.loadRGB_normalized(glm::vec3(panel.sections[0].elements[0].button.color.r, panel.sections[0].elements[0].button.color.g, panel.sections[0].elements[0].button.color.b));
+            std::string hex0Val = clrObj.getHEX();
+            auto check = tinyfd_colorChooser("Select a color",hex0Val.c_str(),defRGB,defRGB);
+
+            if(check){
+                Color clr(check);
+                panel.sections[0].elements[0].button.color = glm::vec4(clr.getRGB_normalized(),1.f);
+            }
         }
-    }
 
-    //Clicked to the create button
-    if(panel.sections[0].elements[4].button.clicked && !panel.sections[0].elements[2].comboBox.pressed){
-        
-        //Create the texture class
-        Texture txtr;
+        //Clicked to the create button
+        if(panel.sections[0].elements[4].button.clicked && !panel.sections[0].elements[2].comboBox.pressed){
+            
+            //Create the texture class
+            Texture txtr;
 
-        //Set the text of the texture as the title textbox's text
-        txtr.title = panel.sections[0].elements[1].textBox.text;
-        
-        dialog_textureSelection.show(timer, txtr, textureRes, true);
+            //Set the text of the texture as the title textbox's text
+            txtr.title = panel.sections[0].elements[1].textBox.text;
+            
+            dialog_textureSelection.show(timer, txtr, textureRes, true);
 
-        //Send the created texture to the library
-        if(txtr.ID){
-            panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
-            panel.sections[0].elements[1].textBox.text = "NewTexture";
-            dialogControl.unActivate();
-            updateThePreRenderedPanels = true;
-            Library::addTexture(txtr, "New texture via texture selection dialog");
-        }
-    }
-    
-    if(panel.sections[0].elements[3].button.clicked && !panel.sections[0].elements[2].comboBox.pressed){
-        
-        //Create the texture class
-        Texture txtr;
-
-        //Set the text of the texture as the title textbox's text
-        txtr.title = panel.sections[0].elements[1].textBox.text;
-        
-        //Pixels of the texture
-        std::vector<GLubyte> colorData(textureRes * textureRes * 4, 0); // RGBA format
-        
-        //Fill the pixels of the texture array with the selected color value 
-        for (int i = 0; i < textureRes * textureRes; ++i) {
-            colorData[i * 4] = panel.sections[0].elements[0].button.color.r * 255.f;     // Red component
-            colorData[i * 4 + 1] = panel.sections[0].elements[0].button.color.g * 255.f;   // Green component
-            colorData[i * 4 + 2] = panel.sections[0].elements[0].button.color.b * 255.f;   // Blue component
-            colorData[i * 4 + 3] = 255; // Alpha component
-        }
-        
-        //Generate the texture
-        glActiveTexture(GL_TEXTURE0);
-        glGenTextures(1,&txtr.ID);
-        glBindTexture(GL_TEXTURE_2D,txtr.ID);
-
-        //Texture params
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-	    
-        //Write the texture
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, &colorData[0]);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        
-        //Send the created texture to the library
-        Library::addTexture(txtr, "New texture via generation");
-    }
-
-    //End the dialog
-    if((panel.sections[0].elements[3].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
-        if(!(panel.sections[0].elements[4].button.clicked)){
-            if(!panel.sections[0].elements[2].comboBox.pressed){
+            //Send the created texture to the library
+            if(txtr.ID){
                 panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
                 panel.sections[0].elements[1].textBox.text = "NewTexture";
                 dialogControl.unActivate();
                 updateThePreRenderedPanels = true;
+                Library::addTexture(txtr, "New texture via texture selection dialog");
             }
         }
+        
+        if(panel.sections[0].elements[3].button.clicked && !panel.sections[0].elements[2].comboBox.pressed){
+            
+            //Create the texture class
+            Texture txtr;
+
+            //Set the text of the texture as the title textbox's text
+            txtr.title = panel.sections[0].elements[1].textBox.text;
+            
+            //Pixels of the texture
+            std::vector<GLubyte> colorData(textureRes * textureRes * 4, 0); // RGBA format
+            
+            //Fill the pixels of the texture array with the selected color value 
+            for (int i = 0; i < textureRes * textureRes; ++i) {
+                colorData[i * 4] = panel.sections[0].elements[0].button.color.r * 255.f;     // Red component
+                colorData[i * 4 + 1] = panel.sections[0].elements[0].button.color.g * 255.f;   // Green component
+                colorData[i * 4 + 2] = panel.sections[0].elements[0].button.color.b * 255.f;   // Blue component
+                colorData[i * 4 + 3] = 255; // Alpha component
+            }
+            
+            //Generate the texture
+            glActiveTexture(GL_TEXTURE0);
+            glGenTextures(1,&txtr.ID);
+            glBindTexture(GL_TEXTURE_2D,txtr.ID);
+
+            //Texture params
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
+            
+            //Write the texture
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, &colorData[0]);
+            glGenerateMipmap(GL_TEXTURE_2D);
+            
+            //Send the created texture to the library
+            Library::addTexture(txtr, "New texture via generation");
+        }
+
+        //End the dialog
+        if((panel.sections[0].elements[3].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
+            if(!(panel.sections[0].elements[4].button.clicked)){
+                if(!panel.sections[0].elements[2].comboBox.pressed){
+                    panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);
+                    panel.sections[0].elements[1].textBox.text = "NewTexture";
+                    dialogControl.unActivate();
+                    updateThePreRenderedPanels = true;
+                }
+            }
+        }
+
+        __newTxtrDialog_last_texture_selection_dialog_state = panel.sections[0].elements[4].button.clicked;
+
+        //Render the panel
+        panel.render(timer,true);
+        
+        //Invert the text color of the color button
+        panel.sections[0].elements[0].button.textColor = glm::vec4(glm::vec3(1.) - glm::vec3(panel.sections[0].elements[0].button.color),1);
+
+        dialogControl.updateEnd(timer,0.15f);
+        if(dialogControl.mixVal == 0.f)
+            break;
     }
-
-    __newTxtrDialog_last_texture_selection_dialog_state = panel.sections[0].elements[4].button.clicked;
-
-    //Render the panel
-    panel.render(timer,true);
-    
-    //Invert the text color of the color button
-    panel.sections[0].elements[0].button.textColor = glm::vec4(glm::vec3(1.) - glm::vec3(panel.sections[0].elements[0].button.color),1);
-
-    dialogControl.updateEnd(timer,0.15f);
 }

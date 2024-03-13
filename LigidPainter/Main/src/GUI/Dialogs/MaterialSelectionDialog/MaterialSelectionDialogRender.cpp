@@ -33,77 +33,83 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
 std::map<std::string, std::vector<Material>> matSelection_materials;
 
-void MaterialSelectionDialog::render(Timer timer){
+void MaterialSelectionDialog::show(Timer& timer, Material* material){
     
-    dialogControl.updateStart();
-
-    if(dialogControl.firstFrameActivated || !this->matModePanel.sections[0].elements.size()){
-        this->updateMaterialTypes();   
-    }
+    dialogControl.activate();
     
-    if(dialogControl.firstFrameActivated){
-        selectedMatMode = 0;
-        selectedMatIndex = -1;
-        this->selectedMatPanel.sections[0].elements[1].button.text = "Unselected";
-        this->selectedMatPanel.sections[0].elements[0].button.texture.ID = 0;
-    }
+    while (!getContext()->window.shouldClose())
+    {
+        dialogControl.updateStart();
 
-    //Render the panels
-    this->bgPanel.render(timer,true);
-    bool anyMatClicked = this->renderMatDisplayer(timer);
-    if(anyMatClicked){
-        if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1)
-            this->selectedMatPanel.sections[0].elements[0].button.texture = this->displayingFBO.colorBuffer;
-        else if(selectedMatMode < matModePanel.sections[0].elements.size()){
-            if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
-                this->selectedMatPanel.sections[0].elements[0].button.texture = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].displayingTexture;
-            }
+        if(dialogControl.firstFrameActivated || !this->matModePanel.sections[0].elements.size()){
+            this->updateMaterialTypes();   
         }
         
-        if(selectedMatMode < matModePanel.sections[0].elements.size()){
-            if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1)
-                this->selectedMatPanel.sections[0].elements[1].button.text = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].title;
+        if(dialogControl.firstFrameActivated){
+            selectedMatMode = 0;
+            selectedMatIndex = -1;
+            this->selectedMatPanel.sections[0].elements[1].button.text = "Unselected";
+            this->selectedMatPanel.sections[0].elements[0].button.texture.ID = 0;
         }
-    }
 
-    if(this->material == nullptr)
-        this->selectedMatPanel.sections[0].elements[4].scale.y = 0.f;
-    else
-        this->selectedMatPanel.sections[0].elements[4].scale.y = 2.f;
-    
-    this->selectedMatPanel.render(timer,true);
-    this->matModePanel.render(timer, true);
-
-    if(this->selectedMatPanel.sections[0].elements[3].button.clicked){
-        dialog_materialEditor.activate();
-        dialog_materialEditor.material = &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex];
-    }
-    else if(this->selectedMatPanel.sections[0].elements[4].button.clicked){
-        if(this->material != nullptr){
-            this->material->deleteBuffers();
-            *this->material = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].duplicateMaterial();
-        }
-        this->dialogControl.unActivate();
-    }
-    
-    this->updateSelectedMaterialInPanel();
-
-    if(selectedMatMode < matModePanel.sections[0].elements.size()){
-        if(!matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size()){
-            assignMaterialsToMap();
-        }
-        if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
+        //Render the panels
+        this->bgPanel.render(timer,true);
+        bool anyMatClicked = this->renderMatDisplayer(timer);
+        if(anyMatClicked){
             if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1)
-                matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, anyMatClicked, this->displayingCam, 0, true, this->displayingFBO, *getMaterialDisplayerModel(), -1);
+                this->selectedMatPanel.sections[0].elements[0].button.texture = this->displayingFBO.colorBuffer;
+            else if(selectedMatMode < matModePanel.sections[0].elements.size()){
+                if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
+                    this->selectedMatPanel.sections[0].elements[0].button.texture = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].displayingTexture;
+                }
+            }
+            
+            if(selectedMatMode < matModePanel.sections[0].elements.size()){
+                if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1)
+                    this->selectedMatPanel.sections[0].elements[1].button.text = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].title;
+            }
         }
-    }    
 
-    //Close the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && *Mouse::LClick())){
-        if(!dialogControl.firstFrameActivated){
+        if(material == nullptr)
+            this->selectedMatPanel.sections[0].elements[4].scale.y = 0.f;
+        else
+            this->selectedMatPanel.sections[0].elements[4].scale.y = 2.f;
+        
+        this->selectedMatPanel.render(timer,true);
+        this->matModePanel.render(timer, true);
+
+        if(this->selectedMatPanel.sections[0].elements[3].button.clicked){
+            dialog_materialEditor.show(timer, &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex]);
+        }
+        else if(this->selectedMatPanel.sections[0].elements[4].button.clicked){
+            if(material != nullptr){
+                material->deleteBuffers();
+                *material = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].duplicateMaterial();
+            }
             this->dialogControl.unActivate();
         }
-    }
+        
+        this->updateSelectedMaterialInPanel();
 
-    dialogControl.updateEnd(timer, 0.15f);
+        if(selectedMatMode < matModePanel.sections[0].elements.size()){
+            if(!matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size()){
+                assignMaterialsToMap();
+            }
+            if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
+                if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1)
+                    matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, anyMatClicked, this->displayingCam, 0, true, this->displayingFBO, *getMaterialDisplayerModel(), -1);
+            }
+        }    
+
+        //Close the dialog
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && *Mouse::LClick())){
+            if(!dialogControl.firstFrameActivated){
+                this->dialogControl.unActivate();
+            }
+        }
+
+        dialogControl.updateEnd(timer, 0.15f);
+        if(dialogControl.mixVal == 0.f)
+            break;
+    }   
 }

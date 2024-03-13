@@ -124,140 +124,139 @@ LoadProjectDialog::LoadProjectDialog(int){
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen){
+void LoadProjectDialog::show(Timer& timer, Project &project){
     
-    dialogControl.updateStart();
+    dialogControl.activate();
 
-    //Render panels
-    bgPanel.render(timer,dialogControl.isComplete());
-    loadButton.render(timer,dialogControl.isComplete());
-    
-    //Render texts
-    textBtn1.render(timer,false);
-    textBtn2.render(timer,false);
-    textBtn3.render(timer,false);
-    textBtn4.render(timer,false);
-    
+    while(!getContext()->window.shouldClose()){
+        dialogControl.updateStart();
 
-    if(loadButton.clicked){
-        //Select a project file inside of a project folder
-        std::string test = showFileSystemObjectSelectionDialog("Select a ligid file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_LIGID, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
-
-        //If a file is selected        
-        if(test.size()){
-            
-            //Load the project
-            if(project.loadProject(test)){
-                
-                startScreen = false;
-                
-                this->dialogControl.unActivate();
-            
-            }
-            else{
-                showMessageBox(
-                            "Warning!", 
-                            "Error while reading the *.ligid file! Detailed error message is printed to the terminal.", 
-                            MESSAGEBOX_TYPE_WARNING, 
-                            MESSAGEBOX_BUTTON_OK
-                        );
-            }
-        }
+        //Render panels
+        bgPanel.render(timer,dialogControl.isComplete());
+        loadButton.render(timer,dialogControl.isComplete());
         
-    }
-    
-    int counter = 0;
-
-
-    if(!projectsPanel.hover){
-        //Create a new section to give the projects panel    
-        Section projectSection;
-
-        //Clear the elements of the projects panel (will be updated)
-        projectsPanel.sections.clear();
+        //Render texts
+        textBtn1.render(timer,false);
+        textBtn2.render(timer,false);
+        textBtn3.render(timer,false);
+        textBtn4.render(timer,false);
         
-        try
-        {
-            for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter" + UTIL::folderDistinguisher() + "Projects")) {
+
+        if(loadButton.clicked){
+            //Select a project file inside of a project folder
+            std::string test = showFileSystemObjectSelectionDialog("Select a ligid file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_LIGID, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+
+            //If a file is selected        
+            if(test.size()){
                 
-                //Project folder path inside of the ./Projects directory
-                std::string projectPath = entry.path().string();
-                
-                //Create the button for the project path
-                Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),projectPath,Texture(),0.f,false);
-                
-                //Scale the button in x axis
-                btn.scale.x = projectsPanel.scale.x;
-                
-                //If a ligid file is loacted
-                if(project.locateLigidFileInFolder(projectPath).size()){
-                    //Transfer the button to the new section
-                    projectSection.elements.push_back(btn);
-                    counter++;
+                //Load the project
+                if(project.loadProject(test)){
+                    this->dialogControl.unActivate();
                 }
-            }
-        }
-        catch (const std::filesystem::filesystem_error& ex) {
-            LGDLOG::start << "ERROR : Filesystem : Location ID 894682 " << ex.what() << LGDLOG::end;
-        }
-
-        //Give the new section to the projects panel
-        projectsPanel.sections.push_back(projectSection);
-    }
-    
-    //After refreshing the elements render the projects panel
-    projectsPanel.render(timer,dialogControl.isComplete());
-    
-    //Check all the projects element if one them is pressed
-    for (size_t i = 0; i < projectsPanel.sections[0].elements.size(); i++)
-    {
-        //If pressed to the project button
-        if(projectsPanel.sections[0].elements[i].button.clicked){
-            
-            if(std::filesystem::exists(projectsPanel.sections[0].elements[i].button.text)){
-                //Get the ligid file path using the button's text as a project folder path source
-                std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
-                
-                if(ligidFilePath.size()){
-                    //Load the project
-                    if(project.loadProject(ligidFilePath)){                
-                        startScreen = false;
-                        
-                        this->dialogControl.unActivate();
-                        break;
-                    }
-                    else{
-
-                        showMessageBox(
-                                        "Warning!", 
-                                        "Error while reading the ligid file! Detailed error message is printed to the terminal." , 
-                                        MESSAGEBOX_TYPE_WARNING, 
-                                        MESSAGEBOX_BUTTON_OK
-                                    );
-
-                    }
-                }
-            }
-            else{
-                showMessageBox(
-                                "ERROR", 
-                                "Project path is not valid", 
-                                MESSAGEBOX_TYPE_ERROR, 
+                else{
+                    showMessageBox(
+                                "Warning!", 
+                                "Error while reading the *.ligid file! Detailed error message is printed to the terminal.", 
+                                MESSAGEBOX_TYPE_WARNING, 
                                 MESSAGEBOX_BUTTON_OK
                             );
+                }
+            }
+            
+        }
+        
+        int counter = 0;
+
+
+        if(!projectsPanel.hover){
+            //Create a new section to give the projects panel    
+            Section projectSection;
+
+            //Clear the elements of the projects panel (will be updated)
+            projectsPanel.sections.clear();
+            
+            try
+            {
+                for (const auto& entry : std::filesystem::directory_iterator(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter" + UTIL::folderDistinguisher() + "Projects")) {
+                    
+                    //Project folder path inside of the ./Projects directory
+                    std::string projectPath = entry.path().string();
+                    
+                    //Create the button for the project path
+                    Button btn = Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),projectPath,Texture(),0.f,false);
+                    
+                    //Scale the button in x axis
+                    btn.scale.x = projectsPanel.scale.x;
+                    
+                    //If a ligid file is loacted
+                    if(project.locateLigidFileInFolder(projectPath).size()){
+                        //Transfer the button to the new section
+                        projectSection.elements.push_back(btn);
+                        counter++;
+                    }
+                }
+            }
+            catch (const std::filesystem::filesystem_error& ex) {
+                LGDLOG::start << "ERROR : Filesystem : Location ID 894682 " << ex.what() << LGDLOG::end;
+            }
+
+            //Give the new section to the projects panel
+            projectsPanel.sections.push_back(projectSection);
+        }
+        
+        //After refreshing the elements render the projects panel
+        projectsPanel.render(timer,dialogControl.isComplete());
+        
+        //Check all the projects element if one them is pressed
+        for (size_t i = 0; i < projectsPanel.sections[0].elements.size(); i++)
+        {
+            //If pressed to the project button
+            if(projectsPanel.sections[0].elements[i].button.clicked){
+                
+                if(std::filesystem::exists(projectsPanel.sections[0].elements[i].button.text)){
+                    //Get the ligid file path using the button's text as a project folder path source
+                    std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
+                    
+                    if(ligidFilePath.size()){
+                        //Load the project
+                        if(project.loadProject(ligidFilePath)){                
+                            this->dialogControl.unActivate();
+                            break;
+                        }
+                        else{
+
+                            showMessageBox(
+                                            "Warning!", 
+                                            "Error while reading the ligid file! Detailed error message is printed to the terminal." , 
+                                            MESSAGEBOX_TYPE_WARNING, 
+                                            MESSAGEBOX_BUTTON_OK
+                                        );
+
+                        }
+                    }
+                }
+                else{
+                    showMessageBox(
+                                    "ERROR", 
+                                    "Project path is not valid", 
+                                    MESSAGEBOX_TYPE_ERROR, 
+                                    MESSAGEBOX_BUTTON_OK
+                                );
+                }
             }
         }
-    }
-    
-    //Close the dialog
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || bgPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
         
-        if(startScreen)
-            greetingDialogActive = true;
-        
-        this->dialogControl.unActivate();
-    
-    }
+        //Close the dialog
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || bgPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
+            this->dialogControl.unActivate();
+            this->dialogControl.mixVal = 0.f;
+            dialog_greeting.show(timer, project);
+            break;
+        }
 
-    dialogControl.updateEnd(timer,0.15f);
+        dialogControl.updateEnd(timer,0.15f);
+
+        if(dialogControl.mixVal == 0.f)
+            break;
+    }
 }

@@ -48,7 +48,7 @@ public:
    DialogControl(bool active);
    
    void updateStart();
-   void updateEnd(Timer timer,float transitionDuration);
+   void updateEnd(Timer &timer, float transitionDuration);
    void activate();
    void unActivate();
    bool isActive();
@@ -113,7 +113,7 @@ public:
    SettingsDialog(int);
 
    //Public member functions    
-   void render(Timer timer, Painter& painter);
+   void show(Timer& timer, Painter& painter);
 
    /*! @brief Assignes the setting values to elements*/
    void setPropertiesToDialog();
@@ -145,7 +145,7 @@ public:
    NewTextureDialog(int);
     
    //Public member function
-   void render(Timer timer);
+   void show(Timer& timer);
  };
 
 
@@ -170,7 +170,7 @@ public:
    LoadProjectDialog(int);
    
    //Public member functions
-   void render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen);
+   void show(Timer& timer, Project &project);
  };
 
 
@@ -190,7 +190,7 @@ class DisplayerDialog
     DisplayerDialog(int);
     
     //Public member functions
-    void render(Timer timer, Skybox &skybox);
+    void show(Timer& timer, Skybox &skybox);
  };
 
 //!------------------------------ MODEL INFO DIALOG ------------------------------
@@ -201,14 +201,13 @@ public:
    Panel panel;
     
    DialogControl dialogControl;
-   Model* model = nullptr;
 
    //Constructors
    ModelInfoDialog(){}
    ModelInfoDialog(int);
     
    //Public member functions
-   void render(Timer& timer);
+   void show(Timer& timer, Model* model);
 };
 
 
@@ -245,7 +244,7 @@ public:
    BakingDialog(int);
    
    //Public member functions
-   void render(Timer timer, Skybox skybox);
+   void show(Timer& timer, Skybox skybox);
 
    /*! @brief Returns true if the dialog was hovered*/   
    bool isDialogHovered();
@@ -295,9 +294,9 @@ class TextureEditorDialog
    TextureEditorDialog(int);
    
    //Public member functions
-   void render(Timer timer, Skybox &skybox, Texture receivedTexture);
+   void show(Timer& timer, Skybox &skybox, Texture* receivedTexture);
 
-   void updateDisplayingTexture(Texture& receivedTexture, unsigned int destTxtr);
+   void updateDisplayingTexture(Texture* receivedTexture, unsigned int destTxtr);
  };
 
 
@@ -324,7 +323,7 @@ public:
    GreetingDialog(int);
    
    //Public member functions
-   void render(Timer timer);
+   void show(Timer& timer, Project& project);
 };
 
 //!------------------------------MATERIAL EDITOR DIALOG------------------------------
@@ -336,9 +335,9 @@ private:
    //Private member functions
    void checkTextureSelectionDialog(Material &material);
    Model* getDisplayModel();
-   void renderShortcutPanel(Timer& timer, bool mouseTrackingFlag);
-   void renderLayerPanel(Timer& timer, bool mouseTrackingFlag);
-   void renderModifiersPanel(Timer& timer, bool mouseTrackingFlag);
+   void renderShortcutPanel(Timer& timer, bool mouseTrackingFlag, Material* material);
+   void renderLayerPanel(Timer& timer, bool mouseTrackingFlag, Material* material);
+   void renderModifiersPanel(Timer& timer, bool mouseTrackingFlag, Material* material);
    void renderSkyboxTxtr();
    void renderZoomIndicator(Timer& timer, bool mouseTrackingFlag);
    void renderNavPanel(Timer& timer, bool mouseTrackingFlag);
@@ -381,14 +380,12 @@ public:
 
    Camera displayerCamera;
     
-   Material* material = nullptr;
-
    //Constructors
    MaterialEditorDialog(){}
    MaterialEditorDialog(int);
 
    //Public member functions
-   void render(Timer &timer);
+   void show(Timer &timer, Material* material);
    void activate();
    void deactivate();
    void updateSkyboxTxtr();
@@ -431,7 +428,7 @@ public:
    NewProjectDialog(int);
 
    //Public member functions
-   void render(Timer timer, Project &project, bool &greetingDialogActive, bool &startScreen);
+   void show(Timer& timer, Project &project);
  };
 
 
@@ -456,7 +453,7 @@ public:
    ExportDialog(int);
 
    //Public member functions
-   void render(Timer timer,Project &project,bool &greetingDialogActive);
+   void show(Timer& timer, Project &project);
  };
 
 //!------------------------------OBJECT TEXTURING DIALOG------------------------------
@@ -518,7 +515,7 @@ public:
    ObjectTexturingDialog(int);
     
    //Public member function
-   void render(Timer timer);
+   void show(Timer& timer);
    bool anyElementHover();
 
    void updateDisplayingTexture();
@@ -535,7 +532,6 @@ class MaterialDisplayerDialog
    
    DialogControl dialogControl;
    
-   Material material;
    Framebuffer displayingFBO;
    Camera displayingCam;
 
@@ -544,7 +540,7 @@ class MaterialDisplayerDialog
    MaterialDisplayerDialog(int);
 
    //Public member functions
-   void render(Timer timer);
+   void show(Timer& timer, Material material);
  };
 
 //!------------------------------ MATERIAL SELECTION DIALOG ------------------------------
@@ -559,7 +555,6 @@ public:
    
    DialogControl dialogControl;
    
-   Material* material = nullptr;
    Framebuffer displayingFBO;
    Camera displayingCam;
 
@@ -571,7 +566,7 @@ public:
    MaterialSelectionDialog(int);
 
    //Public member functions
-   void render(Timer timer);
+   void show(Timer& timer, Material* material);
 
 private:
    void updateMaterialTypes();
@@ -598,7 +593,7 @@ public:
    FilterDisplayerDialog(int);
 
    //Public member functions
-   void render(Timer timer);
+   void show(Timer& timer);
 };
 
 
@@ -827,7 +822,7 @@ public:
    ProjectRecoverDialog(int);
 
    //Public member functions
-   void show(Timer timer, Project &project);
+   void show(Timer& timer, Project &project);
 };
 
 //!-------------------------------LOG DIALOG--------------------------------

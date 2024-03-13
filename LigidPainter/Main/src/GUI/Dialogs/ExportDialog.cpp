@@ -335,63 +335,71 @@ static void exportLibraryTextures(Panel& propertiesPanel){
 
 
 
-void ExportDialog::render(Timer timer, Project &project, bool &greetingDialogActive){
+void ExportDialog::show(Timer& timer, Project &project){
     
-    dialogControl.updateStart();
+    dialogControl.activate();
 
-    if(this->activeSection == 0)
-        propertiesPanel.sections[0] = libraryTexturesSection;
-    if(this->activeSection == 1)
-        propertiesPanel.sections[0] = libraryMaterialsSection;
-    
-    //Render the panels
-    panel.render(timer,false);
-    subPanel.render(timer,true);
-    propertiesPanel.render(timer,true);
+    while(!getContext()->window.shouldClose()){
 
-    if(this->activeSection == 0)
-         libraryTexturesSection = propertiesPanel.sections[0];
-    if(this->activeSection == 1)
-         libraryMaterialsSection = propertiesPanel.sections[0];
+        dialogControl.updateStart();
 
-    for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++)
-    {
-        if(subPanel.sections[0].elements[i].button.clickState1 && this->activeSection != i){
-            this->activeSection = i;
-            for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
+        if(this->activeSection == 0)
+            propertiesPanel.sections[0] = libraryTexturesSection;
+        if(this->activeSection == 1)
+            propertiesPanel.sections[0] = libraryMaterialsSection;
+        
+        //Render the panels
+        panel.render(timer,false);
+        subPanel.render(timer,true);
+        propertiesPanel.render(timer,true);
+
+        if(this->activeSection == 0)
+            libraryTexturesSection = propertiesPanel.sections[0];
+        if(this->activeSection == 1)
+            libraryMaterialsSection = propertiesPanel.sections[0];
+
+        for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++)
+        {
+            if(subPanel.sections[0].elements[i].button.clickState1 && this->activeSection != i){
+                this->activeSection = i;
+                for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
+                    subPanel.sections[0].elements[i].button.clickState1 = false;
+                }
+            }
+            if(this->activeSection == i){
+                subPanel.sections[0].elements[i].button.clickState1 = true;
+            }
+            else{
                 subPanel.sections[0].elements[i].button.clickState1 = false;
             }
         }
-        if(this->activeSection == i){
-            subPanel.sections[0].elements[i].button.clickState1 = true;
-        }
-        else{
-            subPanel.sections[0].elements[i].button.clickState1 = false;
-        }
-    }
-    
-    //If pressed to the last button of the panel (Export button)
-    if(propertiesPanel.sections[0].elements[propertiesPanel.sections[0].elements.size() - 1].button.clicked){
-
-        while(true){
-            if(!project.projectProcessing)
-                break;
-        }
-        project.projectProcessing = true;
-
-        if(this->activeSection == 0)
-            exportLibraryTextures(this->propertiesPanel);
-        if(this->activeSection == 1)
-            exportLibraryMaterials(this->propertiesPanel);
         
-        project.projectProcessing = false;
-    }
-    
-    //Close the dialog (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
-        if(!dialogControl.firstFrameActivated)
-            this->dialogControl.unActivate();
+        //If pressed to the last button of the panel (Export button)
+        if(propertiesPanel.sections[0].elements[propertiesPanel.sections[0].elements.size() - 1].button.clicked){
+
+            while(true){
+                if(!project.projectProcessing)
+                    break;
+            }
+            project.projectProcessing = true;
+
+            if(this->activeSection == 0)
+                exportLibraryTextures(this->propertiesPanel);
+            if(this->activeSection == 1)
+                exportLibraryMaterials(this->propertiesPanel);
+            
+            project.projectProcessing = false;
+        }
+        
+        //Close the dialog (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
+            if(!dialogControl.firstFrameActivated)
+                this->dialogControl.unActivate();
+        }
+
+        dialogControl.updateEnd(timer,0.15f);
+        if(dialogControl.mixVal == 0.f)
+            break;
     }
 
-    dialogControl.updateEnd(timer,0.15f);
 }

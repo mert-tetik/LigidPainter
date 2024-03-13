@@ -38,24 +38,24 @@ static void updateLayerPanel(Panel& layerPanel, Material* material);
 static void layerPanelInteractions(Panel& layerPanel, Panel& modifiersPanel, Material* material, int& selectedMaterialModifierIndex, int selectedResultModeIndex, bool& updateTheMaterial);
 static void contextMenuInteractions(Material* material, Panel& modifiersPanel, bool& updateTheMaterial, int& selectedMaterialModifierIndex, Timer& timer);
 
-void MaterialEditorDialog::renderLayerPanel(Timer& timer, bool mouseTrackingFlag){
+void MaterialEditorDialog::renderLayerPanel(Timer& timer, bool mouseTrackingFlag, Material* material){
     // Update the elements of the layer panel according to the material's modifiers (if they doesn't match)
-    updateLayerPanel(this->layerPanel, this->material);
+    updateLayerPanel(this->layerPanel, material);
 
     // Rendering the layer panel
     layerPanel.render(timer, mouseTrackingFlag && !anyEyeHover);
 
     // Render the hide - unhide buttons on top of the layer buttons
-    renderEyes(timer, this->layerPanel, this->material, this->updateTheMaterial);
+    renderEyes(timer, this->layerPanel, material, this->updateTheMaterial);
     
     // Check if a layer button got "ctrl shift w r-clicked" (add mask shortcut to the material if so)
-    checkShortcutInteraction(this->layerPanel, this->material);
+    checkShortcutInteraction(this->layerPanel, material);
 
     // Check if a layer button got clicked or pressed (select the modifier if clicked) (move the modifier if pressed)
-    layerPanelInteractions(this->layerPanel, this->modifiersPanel, this->material, this->selectedMaterialModifierIndex, this->selectedResultModeIndex, this->updateTheMaterial);
+    layerPanelInteractions(this->layerPanel, this->modifiersPanel, material, this->selectedMaterialModifierIndex, this->selectedResultModeIndex, this->updateTheMaterial);
 
     // Layer panel's context menu interactions (add new modifier & modifier actions)
-    contextMenuInteractions(this->material, this->modifiersPanel, this->updateTheMaterial, this->selectedMaterialModifierIndex, timer);
+    contextMenuInteractions(material, this->modifiersPanel, this->updateTheMaterial, this->selectedMaterialModifierIndex, timer);
 }
 
 

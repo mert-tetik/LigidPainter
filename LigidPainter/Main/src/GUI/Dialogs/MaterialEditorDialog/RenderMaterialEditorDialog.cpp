@@ -34,93 +34,101 @@ extern bool updateThePreRenderedPanels;
 bool __materialEditorDialogESCPressed = false;
 bool __materialEditorDialogESCFirstFramePressed = false;
 
-void MaterialEditorDialog::render(Timer &timer)
+void MaterialEditorDialog::show(Timer &timer, Material* material)
 {
-    dialogControl.updateStart();
+    this->updateTheMaterial = true;
 
-    if(dialogControl.firstFrameActivated)
-        this->updateTheMaterial = true;
+    dialogControl.activate();
 
-    // Update the shortcut elements of the material
-    for (size_t i = 0; i < this->material->materialShortcuts.size(); i++)
+    while (!getContext()->window.shouldClose())
     {
-        this->material->materialShortcuts[i].updateElement(*this->material, this->material->materialShortcuts[i].modI);
-    }
+        dialogControl.updateStart();
 
-    bool mouseTrackingFlag = !(dialog_textureSelection.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive());
-    
-    // Changing / Updating the positions of the panels & scaling them
-    this->positioningPanels();
+        // Update the shortcut elements of the material
+        for (size_t i = 0; i < material->materialShortcuts.size(); i++)
+        {
+            material->materialShortcuts[i].updateElement(*material, material->materialShortcuts[i].modI);
+        }
 
-    // ------- Rendering the panels -------
-    this->bgPanel.render(timer, mouseTrackingFlag);
+        bool mouseTrackingFlag = !(dialog_textureSelection.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive());
+        
+        // Changing / Updating the positions of the panels & scaling them
+        this->positioningPanels();
 
-    // Render the layer panel and handle it's interactions
-    this->renderLayerPanel(timer, mouseTrackingFlag);
-    
-    // Render the modifier's panel panel and handle it's interactions
-    this->renderModifiersPanel(timer, mouseTrackingFlag);
+        // ------- Rendering the panels -------
+        this->bgPanel.render(timer, mouseTrackingFlag);
 
-    this->barButton.render(timer, mouseTrackingFlag);
+        // Render the layer panel and handle it's interactions
+        this->renderLayerPanel(timer, mouseTrackingFlag, material);
+        
+        // Render the modifier's panel panel and handle it's interactions
+        this->renderModifiersPanel(timer, mouseTrackingFlag, material);
 
-    this->renderShortcutPanel(timer, mouseTrackingFlag);
+        this->barButton.render(timer, mouseTrackingFlag);
 
-    this->renderSkyboxTxtr();
-    
-    this->materialDisplayer.texture = this->displayingFBO.colorBuffer;
-    this->materialDisplayer.render(timer, false);
-    
-    this->renderZoomIndicator(timer, mouseTrackingFlag);
+        this->renderShortcutPanel(timer, mouseTrackingFlag, material);
 
-    this->renderNavPanel(timer, mouseTrackingFlag);
+        this->renderSkyboxTxtr();
+        
+        this->materialDisplayer.texture = this->displayingFBO.colorBuffer;
+        this->materialDisplayer.render(timer, false);
+        
+        this->renderZoomIndicator(timer, mouseTrackingFlag);
 
-    //If texture selection dialog is not active reset the index values used to navigate textures
-    if(!dialog_textureSelection.dialogControl.isActive()){
-        textureModifierTextureSelectingButtonIndex = 1000;
-        dialog_textureSelection.selectedTextureIndex = 0;
-    }
-    
-    dialogControl.updateEnd(timer,0.15f);
+        this->renderNavPanel(timer, mouseTrackingFlag);
 
-    // Update the material if needed
-    if((!this->updateTheMaterial && this->prevUpdateTheMaterial) || displayTxtrResComboBox.selectionDone){
-        // Updating the material textures
-        int specificUpdateI = -1;
-        if(this->selectedResultModeIndex == 1)
-            specificUpdateI = this->selectedMaterialModifierIndex;
-        material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), specificUpdateI);
-    }
-    
-    this->prevUpdateTheMaterial = this->updateTheMaterial;
-    this->updateTheMaterial = false;
+        //If texture selection dialog is not active reset the index values used to navigate textures
+        if(!dialog_textureSelection.dialogControl.isActive()){
+            textureModifierTextureSelectingButtonIndex = 1000;
+            dialog_textureSelection.selectedTextureIndex = 0;
+        }
+        
 
-    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS){
-        if(!__materialEditorDialogESCPressed)
-            __materialEditorDialogESCFirstFramePressed = true;
-        __materialEditorDialogESCPressed = true;
-    }
-    else{
-        __materialEditorDialogESCPressed = false;
-    } 
+        // Update the material if needed
+        if((!this->updateTheMaterial && this->prevUpdateTheMaterial) || displayTxtrResComboBox.selectionDone){
+            // Updating the material textures
+            int specificUpdateI = -1;
+            if(this->selectedResultModeIndex == 1)
+                specificUpdateI = this->selectedMaterialModifierIndex;
+            material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), specificUpdateI);
+        }
+        
+        this->prevUpdateTheMaterial = this->updateTheMaterial;
+        this->updateTheMaterial = false;
 
-    //Close the dialog
-    if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover && !dialog_log.isHovered()) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
-        if(!ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
-            this->displayModeComboBox.selectedIndex = 0;
-            // Update the material displaying texture one more time before closing the dialog
-            material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, Camera(), 0, false);
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS){
+            if(!__materialEditorDialogESCPressed)
+                __materialEditorDialogESCFirstFramePressed = true;
+            __materialEditorDialogESCPressed = true;
+        }
+        else{
+            __materialEditorDialogESCPressed = false;
+        } 
 
-            updateThePreRenderedPanels = true;
+        //Close the dialog
+        if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover && !dialog_log.isHovered()) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
+            if(!ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
+                this->displayModeComboBox.selectedIndex = 0;
+                // Update the material displaying texture one more time before closing the dialog
+                material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, Camera(), 0, false);
 
-            this->deactivate();
+                updateThePreRenderedPanels = true;
+
+                this->deactivate();
+            }
+        }
+
+        __materialEditorDialogESCFirstFramePressed = false; 
+
+
+        // Update the displaying texture
+        material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), -1);
+
+        glClear(GL_DEPTH_BUFFER_BIT);
+        
+        dialogControl.updateEnd(timer,0.15f);
+        if(dialogControl.mixVal == 0.f){
+            break;
         }
     }
-
-    __materialEditorDialogESCFirstFramePressed = false; 
-
-
-    // Update the displaying texture
-    material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), -1);
-
-    glClear(GL_DEPTH_BUFFER_BIT);
 }

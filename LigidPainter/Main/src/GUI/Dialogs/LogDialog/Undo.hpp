@@ -133,7 +133,8 @@ void LogDialog::undo(Painter& painter, std::vector<TextureField>& paintingOverTe
         unded = true;
     }
     if(this->activeHistoryMode == HISTORY_MATERIALEDITOR_MODE && actions_MaterialEditor.size()){
-        MaterialEditorAction action = actions_MaterialEditor[actions_MaterialEditor.size() - 1];
+        
+        /*MaterialEditorAction action = actions_MaterialEditor[actions_MaterialEditor.size() - 1];
         if(dialog_materialEditor.material)
             dialog_materialEditor.material->deleteBuffers();
 
@@ -149,6 +150,7 @@ void LogDialog::undo(Painter& painter, std::vector<TextureField>& paintingOverTe
         }
 
         Library::setChanged(true);
+        */
 
         actions_MaterialEditor.pop_back();
         unded = true;

@@ -210,31 +210,15 @@ ProjectRecoverDialog::ProjectRecoverDialog(int){
 
 static int slot = 1;
 
-void ProjectRecoverDialog::show(Timer timer, Project &project){
+void ProjectRecoverDialog::show(Timer& timer, Project &project){
     
-
     this->dialogControl.activate();
-    dialogControl.updateStart();
 
     while (!getContext()->window.shouldClose())
     {
-        project.discardUpdateProjectFlag = true;
-
-        getContext()->window.pollEvents();
-
-        // Prevent rendering the application if the window is minimized
-        while (getContext()->window.isMinimized()){
-            getContext()->window.pollEvents();
-        }
-        
-        glClearColor(0,0,0,0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        drawBG(Settings::defaultFramebuffer()->bgTxtr.ID);
-        
-        glClear(GL_DEPTH_BUFFER_BIT);
-
         dialogControl.updateStart();
+
+        project.discardUpdateProjectFlag = true;
 
         // Render the background panel
         this->panel.render(timer, false);
@@ -417,32 +401,9 @@ void ProjectRecoverDialog::show(Timer timer, Project &project){
             }
         }
 
-
-        if(!this->dialogControl.isActive())
-            break;
-            
         dialogControl.updateEnd(timer,0.15f);
-
-        getContext()->window.swapBuffers();
-
-        //Set mouse states to default
-        *Mouse::LClick() = false;
-        *Mouse::RClick() = false;
-        *Mouse::MClick() = false;
-        *Mouse::LDoubleClick() = false;
-        *Mouse::mouseOffset() = glm::vec2(0);
-        *Mouse::mods() = 0;
-        *Mouse::mouseScroll() = 0;
-        *Mouse::action() = 0;
-        Mouse::updateCursor();  
-
-
-        //Set keyboard states to default
-        textRenderer.keyInput = false;
-        textRenderer.mods = 0;
-
-        Settings::defaultFramebuffer()->render();    
-        Settings::defaultFramebuffer()->setViewport();   
+        if(dialogControl.mixVal == 0.f)
+            break;
     }
 
     ShaderSystem::buttonShader().use();

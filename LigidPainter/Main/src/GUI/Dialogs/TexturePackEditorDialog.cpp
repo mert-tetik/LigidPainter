@@ -147,31 +147,16 @@ TexturePackEditorDialog::TexturePackEditorDialog(int){
 
 }
 
-//Forward declarations for the utility functions
-static void drawBG(unsigned int bgTexture);
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, TexturePack &receivedTexturePack, int selectedTextureMode);
 
 void TexturePackEditorDialog::show(Timer &timer, TexturePack& receivedTexturePack){
-    
-    this->dialogControl.activate();
-
     this->selectedTextureMode = 0;
     this->selectedTextureIndex = 0;
 
+    this->dialogControl.activate();
+    
     while (!getContext()->window.shouldClose())
     {
-        getContext()->window.pollEvents();
-
-        // Prevent rendering the application if the window is minimized
-        while (getContext()->window.isMinimized()){
-            getContext()->window.pollEvents();
-        }
-        
-        glClearColor(0,0,0,0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        drawBG(Settings::defaultFramebuffer()->bgTxtr.ID);
-
         dialogControl.updateStart();
 
         updateTextureSelectingPanelElements(this->textureSelectingPanel, receivedTexturePack, this->selectedTextureMode);
@@ -311,55 +296,14 @@ void TexturePackEditorDialog::show(Timer &timer, TexturePack& receivedTexturePac
             }
         }
 
-        if(!this->dialogControl.isActive())
-            break;
-            
         dialogControl.updateEnd(timer,0.15f);
 
-        getContext()->window.swapBuffers();
-
-        //Set mouse states to default
-        *Mouse::LClick() = false;
-        *Mouse::RClick() = false;
-        *Mouse::MClick() = false;
-        *Mouse::LDoubleClick() = false;
-        *Mouse::mouseOffset() = glm::vec2(0);
-        *Mouse::mods() = 0;
-        *Mouse::mouseScroll() = 0;
-        *Mouse::action() = 0;
-        Mouse::updateCursor();  
-
-        //Set keyboard states to default
-        textRenderer.keyInput = false;
-        textRenderer.mods = 0;
-
-        Settings::defaultFramebuffer()->render();    
-        Settings::defaultFramebuffer()->setViewport();    
+        if(dialogControl.mixVal == 0.f)
+            break;
     }
 }
 
 
-
-
-static void drawBG(
-                    unsigned int bgTexture 
-                )
-{
-    ShaderSystem::defaultFramebufferShader().use();
-    ShaderSystem::defaultFramebufferShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
-    ShaderSystem::defaultFramebufferShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
-    ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
-    
-    ShaderSystem::defaultFramebufferShader().setVec2("resolution", Settings::defaultFramebuffer()->resolution);
-    ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, bgTexture);
-
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture pack editor dialog : DrawBG");
-    
-    ShaderSystem::buttonShader().use();
-}
 
 static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, TexturePack &receivedTexturePack, int selectedTextureMode){
     textureSelectingPanel.sections.clear();

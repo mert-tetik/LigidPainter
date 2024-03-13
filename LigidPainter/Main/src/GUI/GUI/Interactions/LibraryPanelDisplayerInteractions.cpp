@@ -77,8 +77,7 @@ void UI::libraryPanelDisplayerInteraction(
         }
         if(Library::getSelectedElementIndex() == 1){ //Materials selected
             if(libraryPanelDisplayer.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
-                dialog_materialDisplayer.dialogControl.activate();
-                dialog_materialDisplayer.material = *Library::getMaterial(i);
+                dialog_materialDisplayer.show(timer, Library::getMaterialObj(i));
             } 
         }
         if(Library::getSelectedElementIndex() == 6){ //Filters selected
@@ -104,7 +103,7 @@ void UI::libraryPanelDisplayerInteraction(
     //Add button from the barButtons in the library displayer panel clicked 
     if(libraryPanelDisplayer.barButtons[0].clicked){
         if(Library::getSelectedElementIndex() == 0){//Textures
-            dialog_newTexture.dialogControl.activate();
+            dialog_newTexture.show(timer);
         }
         if(Library::getSelectedElementIndex() == 1){ //Materials
             //Add new material to the library & not the panel

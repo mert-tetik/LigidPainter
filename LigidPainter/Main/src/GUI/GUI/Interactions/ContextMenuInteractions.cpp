@@ -68,8 +68,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
             LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + Library::getTexture(ContextMenus::texture.selectedElement)->title + ".png");
         }
         else if(ContextMenus::texture.contextPanel.sections[0].elements[3].button.clicked){//Clicked to edit button
-            textureEditorSelectedTxtr = *Library::getTexture(ContextMenus::texture.selectedElement);
-            dialog_textureEditor.dialogControl.activate();
+            dialog_textureEditor.show(timer, Skybox(), Library::getTexture(ContextMenus::texture.selectedElement));
         }
         else if(ContextMenus::texture.contextPanel.sections[0].elements[4].button.clicked){//Clicked to delete button
             Library::eraseTexture(ContextMenus::texture.selectedElement);
@@ -79,8 +78,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     if(Library::getSelectedElementIndex() == 1 && ContextMenus::material.dialogControl.isActive() && ContextMenus::material.selectedElement < Library::getMaterialArraySize()){ //If material context menu is active
         if(ContextMenus::material.contextPanel.sections[0].elements[0].button.clicked){//Clicked to edit button
             //Select the material that material editor will edit & show the material editor dialog
-            dialog_materialEditor.material = Library::getMaterial(ContextMenus::material.selectedElement);
-            dialog_materialEditor.activate();
+            dialog_materialEditor.show(timer, Library::getMaterial(ContextMenus::material.selectedElement));
         }
         else if(ContextMenus::material.contextPanel.sections[0].elements[1].button.clicked){//Clicked to rename button
             renamingTextBox.active = true;
@@ -162,8 +160,7 @@ void UI::contextMenuInteraction(Timer &timer, Project& project, Painter &painter
     }
     if(Library::getSelectedElementIndex() == 3 && ContextMenus::model.dialogControl.isActive() && ContextMenus::model.selectedElement < Library::getBrushArraySize()){ //If brush context menu is active
         if(ContextMenus::model.contextPanel.sections[0].elements[0].button.clicked){//Clicked to model info button
-            dialog_modelInfo.model = Library::getModel(ContextMenus::model.selectedElement);
-            dialog_modelInfo.dialogControl.activate();
+            dialog_modelInfo.show(timer, Library::getModel(ContextMenus::model.selectedElement));
         }
         else if(ContextMenus::model.contextPanel.sections[0].elements[1].button.clicked){//Clicked to use the model button
             setModel(Library::getModel(ContextMenus::model.selectedElement)); //Select the model
