@@ -121,6 +121,15 @@ Element::Element(Gizmo gizmo){
     state = 6;
 }
 
+Element::Element(PainterColorSelection painterColorSelection){
+    //Init as gizmo
+    this->painterColorSelection = painterColorSelection;
+    panelOffset = painterColorSelection.panelOffset;
+    pos = painterColorSelection.pos;
+    scale = painterColorSelection.scale;
+    state = 7;
+}
+
 bool Element::isInteracted(){
     if(this->state == 0 && this->button.clicked)
         return true;
@@ -133,6 +142,8 @@ bool Element::isInteracted(){
     if(this->state == 4 && this->textBox.active)
         return true;
     if(this->state == 6 && this->gizmo.interacted)
+        return true;
+    if(this->state == 7 && this->painterColorSelection.isInteracted())
         return true;
         
     return false;
@@ -202,17 +213,24 @@ void Element::render(Timer &timer,bool doMouseTracking){
         else 
             sectionHolder.active = true;
     }
-    if(state == 6){ //Render the textbox
+    if(state == 6){ 
         gizmo.pos = pos;
         gizmo.scale = scale;
         gizmo.panelOffset = panelOffset;
         gizmo.doMouseTracking = doMouseTracking;
         gizmo.render(timer, doMouseTracking);
     }
+    if(state == 7){ 
+        painterColorSelection.pos = pos;
+        painterColorSelection.scale = scale;
+        painterColorSelection.panelOffset = panelOffset;
+        painterColorSelection.doMouseTracking = doMouseTracking;
+        painterColorSelection.render(timer, doMouseTracking);
+    }
 }
 
 Section::Section(){}
-Section::Section(Element header,std::vector<Element> elements){
+Section::Section(Element header, std::vector<Element> elements){
     this->header = header;
     this->elements = elements;
 }

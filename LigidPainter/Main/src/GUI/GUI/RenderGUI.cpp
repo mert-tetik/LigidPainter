@@ -64,11 +64,6 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     ShaderSystem::nodeConnectionCurve().use();
     ShaderSystem::nodeConnectionCurve().setMat4("projection", getScene()->gui_projection); 
     
-
-    //Give projection to the color picker shader !IS NOT USED RN 
-    ShaderSystem::colorPicker().use();
-    ShaderSystem::colorPicker().setMat4("projection", getScene()->gui_projection); 
-    
     //Use the related shader 
     ShaderSystem::buttonShader().use();
 
@@ -110,19 +105,7 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
     elementInteraction(painter, timer, screenGapPerc, project);
 
     Debugger::block("GUI : Element Interaction"); // End
-
     
-    Debugger::block("GUI : Dropper"); // Start
-    
-    //Render the dropper & pick color if mouse left button clicked
-    renderDropper(painter);
-
-    if(dropper.active){
-        Mouse::setCursor(*Mouse::dropperCursor());
-    }
-    
-    Debugger::block("GUI : Dropper"); // End
-
     //Render the brush cursor
     if(
             !this->anyPanelHover && 
@@ -133,7 +116,6 @@ void UI::render(Timer &timer,Project &project, Painter &painter, Skybox &skybox)
             !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) && 
-            !dropper.active &&
             !painter.wrapMode
         )
     {
@@ -571,9 +553,6 @@ void UI::renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc
     colorCheckComboList.panel.sections[0].elements[0].panelOffset = 7.f;
     colorSection = colorCheckComboList.panel.sections[0];
 
-    if(dropper.active)
-        colorCheckComboList.arrowButton.clickState1 = true;
-
     painter.materialPainting = painter.selectedDisplayingModeIndex == 1;
     painter.enableAlbedoChannel = colorSection.elements[1].checkBox.clickState1;
     painter.enableRoughnessChannel = colorSection.elements[6].checkBox.clickState1;
@@ -664,7 +643,7 @@ void UI::renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc
     for (size_t i = 2; i < colorSection.elements.size(); i++)
     {
         if(i == 5) 
-            break; //Don't bring the dropper button
+            break;
         
         if(colorSection.elements[i].button.clickState1){ //If a color button is clicked
             if(painter.selectedColorIndex != i - 2){ //If the clicked button is not selected 
@@ -686,12 +665,6 @@ void UI::renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc
     colorSection.elements[2].button.color = glm::vec4(painter.color1.getRGB_normalized(), 1.f);
     colorSection.elements[3].button.color = glm::vec4(painter.color2.getRGB_normalized(), 1.f);
     colorSection.elements[4].button.color = glm::vec4(painter.color3.getRGB_normalized(), 1.f);
-    
-
-    //If clicked to the dropper button activate the dropper
-    if(colorSection.elements[5].button.clicked){
-        dropper.active = true;
-    }
 }
 
 void UI::renderMirrorSettings(Timer& timer, Painter& painter, float screenGapPerc){
@@ -1211,58 +1184,3 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
         dialog_log.cryCounter = 5;
     
 }
-
-static Color prevClr;
-
-void UI::renderDropper(Painter &painter){
-    if(*Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)){
-        
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)){
-            if(painter.selectedColorIndex == 0)
-                painter.color1 = prevClr;
-            if(painter.selectedColorIndex == 1)
-                painter.color2 = prevClr;
-            if(painter.selectedColorIndex == 2)
-                painter.color3 = prevClr;
-        }
-
-        if(painter.selectedColorIndex == 0)
-            prevClr = painter.color1;
-        if(painter.selectedColorIndex == 1)
-            prevClr = painter.color2;
-        if(painter.selectedColorIndex == 2)
-            prevClr = painter.color3;
-    
-        if(!colorSection.elements[5].button.clicked){
-            dropper.active = false;
-        }
-    }
-
-    if(dropper.active){
-        Settings::defaultFramebuffer()->FBO.bind();
-        Settings::defaultFramebuffer()->setViewport();
-        
-        //Dropper active pick color
-        glm::vec4 cursorHoverPixelRGBData;
-        //Read the cursor position from the default frame buffer
-        glReadPixels(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y, 1, 1, GL_RGBA, GL_FLOAT, &cursorHoverPixelRGBData);
-        
-        dropper.value = cursorHoverPixelRGBData;
-
-        //std::cout << glm::to_string(*Mouse::cursorPos()) << std::endl; 
-    
-        //dropper.active = false;
-        if(painter.selectedColorIndex == 0)
-            painter.color1.loadRGB(dropper.value*glm::vec3(255));
-        if(painter.selectedColorIndex == 1)
-            painter.color2.loadRGB(dropper.value*glm::vec3(255));
-        if(painter.selectedColorIndex == 2)
-            painter.color3.loadRGB(dropper.value*glm::vec3(255));
-        if(painter.selectedColorIndex == 0)
-            painter.color1.loadRGB(dropper.value*glm::vec3(255));
-        if(painter.selectedColorIndex == 1)
-            painter.color2.loadRGB(dropper.value*glm::vec3(255));
-        if(painter.selectedColorIndex == 2)
-            painter.color3.loadRGB(dropper.value*glm::vec3(255));
-    }
-} 

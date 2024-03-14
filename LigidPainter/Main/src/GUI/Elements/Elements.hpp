@@ -503,6 +503,30 @@ public:
     void render(Timer &timer,bool doMouseTracking);
 };
 
+class PainterColorSelection{
+public:
+    glm::vec3 pos;
+    glm::vec2 scale;
+    float panelOffset = 0.f;
+    bool doMouseTracking = false;
+
+    int selectedI = 0;
+
+    Button clr1_Btn;
+    Button clr2_Btn;
+    Button clr3_Btn;
+    
+    Button dropper_btn;
+
+    PainterColorSelection(){}
+    PainterColorSelection(glm::vec2 scale, float panelOffset);
+
+    void render(Timer& timer, bool doMouseTracking);
+
+    bool isInteracted();
+    Button* getSelectedButton();
+
+};
 
 struct Element{
     //The UI Element
@@ -514,6 +538,7 @@ struct Element{
     TextBox textBox;
     SectionHolder sectionHolder;
     Gizmo gizmo;
+    PainterColorSelection painterColorSelection;
 
     /*!
         @brief Decide which GUI element will be used 
@@ -523,7 +548,8 @@ struct Element{
         3 = combobox 
         4 = textbox
         5 = sectionHolder
-        6 = sectionHolder
+        6 = gizmo
+        7 = painterColorSelection
     */
     int state = -1; 
     
@@ -542,6 +568,7 @@ struct Element{
     Element(TextBox textBox);
     Element(SectionHolder sectionHolder);
     Element(Gizmo sectionHolder);
+    Element(PainterColorSelection painterColorSelection);
 
     bool isInteracted();
 

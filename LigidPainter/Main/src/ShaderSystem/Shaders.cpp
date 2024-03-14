@@ -27,7 +27,6 @@ Shader __skyboxBall;
 Shader __buttonShader;
 Shader __prefilteringShader;
 Shader __vectoralCurve;
-Shader __colorPicker;
 Shader __twoDPainting;
 Shader __depth3D;
 Shader __renderModelData;
@@ -99,7 +98,6 @@ void ShaderSystem::initShaderSystem(){
     __buttonShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Button.frag");
     __layersUpdate.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/LayersUpdate.frag");
     __vectoralCurve.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/VectoralCurve.frag");
-    __colorPicker.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/ColorPicker.frag");
     __gizmo.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Gizmo.frag");
     __twoDPainting.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/2DPainting.frag");
     __twoDPaintingModeAreaShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag");
@@ -168,9 +166,6 @@ Shader ShaderSystem::prefilteringShader(){
 }
 Shader ShaderSystem::vectoralCurve(){
     return __vectoralCurve;
-}
-Shader ShaderSystem::colorPicker(){
-    return __colorPicker;
 }
 Shader ShaderSystem::twoDPainting(){
     return __twoDPainting;

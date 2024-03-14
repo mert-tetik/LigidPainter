@@ -70,7 +70,6 @@ void UI::elementInteraction(
     //                 modelInfoDialog.dialogControl.isActive() ||
     //                 painter.paintingoverTextureEditorMode ||
     //                 painter.getSelectedMesh()->layerScene.any_dialog_active() ||
-    //                 dropper.active ||
     //                 LigidGL::getTime() - lastSecAnyDialogActiveWasTrue <= 0.6; 
 
     if(this->anyDialogActive && !(LigidGL::getTime() - lastSecAnyDialogActiveWasTrue <= 0.6)){

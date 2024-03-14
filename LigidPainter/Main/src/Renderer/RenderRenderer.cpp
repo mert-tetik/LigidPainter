@@ -174,7 +174,6 @@ void Renderer::render(){
             !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) && 
-            !userInterface.dropper.active &&
             painter.wrapMode &&
             !*Mouse::RPressed()
         )

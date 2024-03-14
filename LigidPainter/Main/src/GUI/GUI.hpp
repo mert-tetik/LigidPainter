@@ -29,10 +29,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Dialogs/Dialogs.hpp"
 #include "ContextMenuSystem/ContextMenus.hpp"
 
-struct Dropper{
-    glm::vec3 value;
-    bool active = false;
-};
 
 struct NodePanel{
     glm::vec2 position = glm::vec2(0);
@@ -280,8 +276,6 @@ public:
 
     bool anyPanelHover = false;
 
-    Dropper dropper;
-
     std::vector<TextureField> paintingOverTextureFields;
 
     float twoDPaintingSceneScroll = 2.f;
@@ -316,8 +310,6 @@ private:
     void renderRenamingTextbox(Timer &timer, Painter &painter);
 
     void renderDialogs(Timer &timer, Project &project, Skybox &skybox, Painter& painter);
-
-    void renderDropper(Painter &painter);
 
     void contextMenuInteraction(Timer &timer, Project& project, Painter &painter);
 

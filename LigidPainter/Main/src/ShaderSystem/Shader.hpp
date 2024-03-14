@@ -92,7 +92,6 @@ namespace ShaderSystem{
     Shader buttonShader();
     Shader prefilteringShader();
     Shader vectoralCurve();
-    Shader colorPicker();
     Shader twoDPainting();
     Shader depth3D();
     Shader renderModelData();

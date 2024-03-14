@@ -539,7 +539,7 @@ void UI::init
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,4), ""  , Texture(), 7.f, true)), // 0
                                         
                                         Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Albedo Channel"  , 1.f)), //1
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color1"  , Texture(), 1.f, true)), // 2
+                                        Element(PainterColorSelection(glm::vec2(2,2), 1.f)), // 2
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color2"  , Texture(), 1.f, true)), // 3
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color3"  , Texture(), 1.f, true)), // 4
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Dropper"  , Texture(), 1.f, false)), // 5

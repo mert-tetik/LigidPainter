@@ -115,8 +115,9 @@ include(CPack)
 # Set the MacOS version you want to target
 # set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "Minimum macOS version to target")
 
-list(APPEND CMAKE_MODULE_PATH "C:/Users/CASPER/source/repos/assimp-5.2.5/assimp-5.2.5/cmake-modules")
+target_link_options(Ligid PRIVATE "/STACK:2000000")
 
+list(APPEND CMAKE_MODULE_PATH "C:/Users/CASPER/source/repos/assimp-5.2.5/assimp-5.2.5/cmake-modules")
 
 find_package(OpenGL REQUIRED)
 

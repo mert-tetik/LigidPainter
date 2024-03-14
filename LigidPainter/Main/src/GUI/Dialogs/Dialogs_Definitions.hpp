@@ -577,7 +577,7 @@ private:
 };
 
 
-//!------------------------------MATERIAL DISPLAYER------------------------------
+//!------------------------------FILTER DISPLAYER------------------------------
 
 class FilterDisplayerDialog
 {
@@ -594,6 +594,21 @@ public:
 
    //Public member functions
    void show(Timer& timer);
+};
+
+//!------------------------------DROPPER DIALOG------------------------------
+
+class DropperDialog
+{
+public:
+   DialogControl dialogControl;
+
+   //Constructors
+   DropperDialog(){}
+   DropperDialog(int);
+
+   //Public member functions
+   void show(Timer& timer, Color* color);
 };
 
 

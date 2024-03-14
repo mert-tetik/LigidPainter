@@ -23,6 +23,7 @@ extern NewProjectDialog dialog_newProject;
 extern ExportDialog dialog_export;
 extern MaterialDisplayerDialog dialog_materialDisplayer;
 extern FilterDisplayerDialog dialog_filterDisplayer;
+extern DropperDialog dialog_dropper;
 extern LoadProjectDialog dialog_loadProject;
 extern TextureSelectionDialog dialog_textureSelection;
 extern BakingDialog dialog_baking;
