@@ -881,9 +881,7 @@ public:
     /* VECTORS - defined in Vectors.cpp*/
     /**/std::vector<VectorStroke> vectorStrokes;
     /**/std::vector<VectorStroke3D> vectorStrokes3D;
-    /**/void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, Panel& twoDPaintingPanel, int paintingMode, 
-                                Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat, std::vector<TextureField> textureFields, 
-                                bool twoDWrap);
+    /**/void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, int paintingMode, Material& paintingCustomMat, std::vector<TextureField> textureFields, bool twoDWrap);
     /**/void deleteSelectedVectorPoints();
     /**/void clearSelectedVectorPoints();
     /**/void subdivideSelectedPoints();
@@ -944,27 +942,22 @@ public:
     void initPainter();
     
     /*! @brief Painting the strokeLocations */
-    void doPaint(std::vector<glm::vec2> strokeLocations, bool firstStroke, int paintingMode, bool highResMode, 
-                 Box twoDPaintingBox, std::vector<TextureField> textureFields);
+    void doPaint(std::vector<glm::vec2> strokeLocations, bool firstStroke, int paintingMode, bool highResMode, std::vector<TextureField> textureFields);
     
     /*! @brief Painting the cursor location & generating strokeLocations*/
-    void doPaint(bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, 
-                 Box twoDPaintingBox, std::vector<TextureField> textureFields);
+    void doPaint(bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, std::vector<TextureField> textureFields);
     
     /*! @brief Painting the manual point (cursorPos) & generating strokeLocations*/
-    void doPaint(glm::vec2 cursorPos, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, 
-                 Box twoDPaintingBox, std::vector<TextureField> textureFields);
+    void doPaint(glm::vec2 cursorPos, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, std::vector<TextureField> textureFields);
     
     /*! @brief Painting the 3D point & generating strokeLocations*/
-    void doPaint(ThreeDPoint threeDPoint, bool firstStroke, int paintingMode, bool highResMode, 
-                 Box twoDPaintingBox, std::vector<TextureField> textureFields);
+    void doPaint(ThreeDPoint threeDPoint, bool firstStroke, int paintingMode, bool highResMode, std::vector<TextureField> textureFields);
 
     /*! 
     * @brief do painting (paint 2D). Called every frame if painting conditions are set. 
     *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
     */
-    void paintBuffers(std::vector<glm::vec2> strokeLocations, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, 
-                      Box twoDPaintingBox, std::vector<TextureField> textureFields);
+    void paintBuffers(std::vector<glm::vec2> strokeLocations, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, std::vector<TextureField> textureFields);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -978,10 +971,9 @@ public:
     * @param textures textures in the library 
     * @param model the 3D model
     * @param scene structure contains matrices related to 3D model rendering & cam pos
-    * @param twoDPaintingPanel if the painting mode is 2D use this panel's transform data 
     */
-    void updateTexture(Panel& twoDPaintingPanel, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat);
-    void updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, glm::vec3 paintingColor, int channelI, float channelStr);
+    void updateTexture(int paintingMode, Material& paintingCustomMat);
+    void updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintingColor, int channelI, float channelStr);
 
     
     /*!
@@ -1034,14 +1026,14 @@ public:
 private:
     void projectThePaintingTexture(Texture& selectedTexture,  Texture& projectedPaintingTexture,  unsigned int paintingTexture,  unsigned int depthTexture, 
                                             int selectedPaintingModeIndex, float brushPropertiesOpacity, bool threeDimensionalMode, int selectedMeshIndex,
-                                            Box twoDPaintingBox,glm::mat4 viewMat,bool faceSelectionActive, Texture selectedPrimitives, bool wrapMode);
+                                            glm::mat4 viewMat,bool faceSelectionActive, Texture selectedPrimitives, bool wrapMode);
 
     void generateMirroredProjectedPaintingTexture(   
                                                         MirrorSide& oSide, MirrorSide& oXSide, MirrorSide& oYSide, MirrorSide& oXYSide, MirrorSide& oZSide, 
                                                         MirrorSide& oXZSide, MirrorSide& oYZSide, MirrorSide& oXYZSide, float mirrorXOffset, float mirrorYOffset, 
                                                         float mirrorZOffset,Texture paintingTxtrObj, Texture& selectedTexture,  Texture& projectedPaintingTexture,  
                                                         int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode, int selectedMeshIndex, 
-                                                        Box twoDPaintingBox, bool faceSelectionActive, Texture selectedPrimitives, bool highResMode,
+                                                        bool faceSelectionActive, Texture selectedPrimitives, bool highResMode,
                                                         std::vector<TextureField> textureFields, bool firstStroke, bool wrapMode
                                                     );
 };
@@ -1105,6 +1097,9 @@ public:
     unsigned int VBO = 0;
     unsigned int VAO = 0;
 
+    glm::vec3 customPos;
+    glm::vec2 customScale;
+
     /// @brief Default constructor (does nothing) (use @ref init instead to init the OpenGL objects)
     Box();
 
@@ -1154,11 +1149,6 @@ namespace ZIPPER{
     std::vector<double> decompressZlibDouble(const std::vector<char>& compressedData, size_t numDoubles);
     std::vector<long long> decompressZlibLongLong(const std::vector<char>& compressedData, size_t numLongLongs);
     std::vector<int> decompressZlibInt(const std::vector<char>& compressedData, size_t numInts);
-};
-
-struct Websites{
-    Website ligidTools;
-    Website youTube;
 };
 
 /// @brief Fonts will be used in the app

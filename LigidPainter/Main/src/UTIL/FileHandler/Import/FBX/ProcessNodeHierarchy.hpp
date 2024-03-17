@@ -9,9 +9,6 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
-
-    Manage websites & open a website with default browser
-
 */
 
 static long lastMeshIDVal = 0; 

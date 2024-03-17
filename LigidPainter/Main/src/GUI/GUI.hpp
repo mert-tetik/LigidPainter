@@ -203,91 +203,30 @@ public:
 
 class UI{
 private:
-    Websites websites;
-
-    /*Renaming*/
-    /*! @brief Textbox element used to rename library elements */
-    TextBox renamingTextBox; 
-    Button zoomingDisplayingButton;
-    bool renamingTextBoxClosed = false;
-    glm::ivec2 renamingIndices = glm::vec2(0,0); //x for the context menu index, y for the element index
-    std::string lastTitleBeforeRenaming;
-
     bool prevStraightLinePaintingCondition = false;
     glm::vec2 straightLinePaintingStartPos = glm::vec2(50.f);
     glm::vec2 straightLinePaintingDirectionPos = glm::vec2(50.f);
 
-    void renderObjectsPanel(Timer& timer, Painter& painter);
-    void renderPaintingModesPanel(Timer& timer, Painter& painter, float screenGapPerc);
-    void render2DPaintingScene(Timer& timer, Painter& painter, float screenGapPerc);
-    void renderSceneInfoWrapModeCheckbox(Timer& timer, Painter& painter);
-    void renderPaintingPanel(Timer& timer, Painter &painter, float screenGapPerc);
+    void renderPaintingModesPanel(Timer& timer, Painter& painter);
+    void renderPaintingPanel(Timer& timer, Painter &painter);
     void renderPaintingOverTextureFields(Timer& timer, Painter& painter);
-
-    void renderFaceSelectionSettings(Timer& timer, Painter& painter, float screenGapPerc);
-    void renderPaintingOverSettings(Timer& timer, Painter& painter, float screenGapPerc);
-    void renderBrushSettings(Timer& timer, Painter& painter, float screenGapPerc);
-    void renderColorSettings(Timer& timer, Painter& painter, float screenGapPerc);
-    void renderMirrorSettings(Timer& timer, Painter& painter, float screenGapPerc);
 
 public:
     /* -- PANELS -- */
     
-    Panel navigationPanel;
-    Panel layersPanel;
-    Button meshSelectionButton;
-    ComboBox layersResolutionComboBox;
-    Panel addLayerPanel;
-    Panel windowPanel;
-    Panel libraryPanelLeft; 
-    Panel libraryPanelDisplayer; 
-    Panel selectedTextureDisplayer; 
-    Panel twoDPaintingPanel; 
-    Panel paintingModesPanel; 
     Panel vectorPaintingModePropertyPanel; 
     CheckBox vectorPaintingMode2DModeWrapCheckBox;
-    Panel smearPaintingModePropertyPanel;
-    Panel displayingModesPanel; 
-    Button filterPaintingModeFilterBtn;
-    Button textureSelectedObjectsButton;
-    Panel objectsPanel;
 
-    Gizmo sceneGizmo;
-    Button currentModeDisplayer;
-    Button currentModeHintDisplayer;
-    CheckBox wrapModeCheckbox;
-    
-    CheckComboList faceSelectionCheckComboList;
-    CheckComboList paintingOverCheckComboList;
-    CheckComboList colorCheckComboList;
-    CheckComboList mirrorCheckComboList;
-    Button paintingBrushButton;
-    
-    Section colorSection; 
-    Section meshSection; 
-    Section mirrorSection; 
-    Section paintingOverSection; 
-    Section cantBeDisplayedSection; 
     int selectedPaintingPanelMode = 0;
-    Panel paintingChannelsTextureSelectionPanel;
-    bool paintingChannelsTextureSelectionPanelActive = false;
-    Material paintingSectionDisplayMat;
-    Material paintingCustomMat;
 
     bool anyPanelHover = false;
 
     std::vector<TextureField> paintingOverTextureFields;
 
-    float twoDPaintingSceneScroll = 2.f;
-    glm::vec2 twoDPaintingScenePos = glm::vec2(0.f);
-    Box twoDPaintingBox;
-
     int frameCounter = 0; 
 
     Texture textureEditorSelectedTxtr;
     
-    bool anyContextMenuActive = false;
-
     bool anyDialogActive = false;
 
     NodePanel nodePanel;
@@ -296,28 +235,18 @@ public:
     UI();
 
     /*! @brief Initializes all the GUI elements. Creates the panels & stuff. And takes the parameters to the member variables. */
-    void init(Websites websites, Painter& painter);
+    void init(Painter& painter);
     
     /*! @brief Renders all the GUI */
     void render(Timer &timer,Project &project, Painter &painter, Skybox &skybox);
 
 private: 
-    void elementInteraction(Painter &painter,Timer &timer, float screenGapPerc,
-                            Project& project);
 
-    void renderPanels(Timer &timer, Painter &painter, float screenGapPerc);
+    void renderPanels(Timer &timer, Painter &painter, Project& project);
 
     void renderRenamingTextbox(Timer &timer, Painter &painter);
 
     void renderDialogs(Timer &timer, Project &project, Skybox &skybox, Painter& painter);
-
-    void contextMenuInteraction(Timer &timer, Project& project, Painter &painter);
-
-    void libraryPanelLeftInteraction(Panel &libraryPanelLeft);
-    void libraryPanelDisplayerInteraction(Painter &painter, Timer& timer, Project& project);
-
-
-    void panelPositioning(float &screenGapPerc,  Painter &painter);
 };
 
 #endif //LIGID_GUI_HPP

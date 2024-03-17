@@ -114,6 +114,10 @@ void Box::customMeshInit(glm::vec3 pos, glm::vec2 scale){
 }
 
 void Box::customMeshUpdate(glm::vec3 pos, glm::vec2 scale){
+    
+    this->customPos = pos;
+    this->customScale = scale;
+    
     std::vector<float> boxVertices = { 
         // first triangle      
         pos.x + scale.x,   pos.y + scale.y, pos.z      ,      1,0,    0,0,0,   0,0,0,  0,0,0,         // top right

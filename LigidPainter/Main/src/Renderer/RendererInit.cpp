@@ -143,16 +143,11 @@ void Renderer::initRenderer(){
     textRenderer = TextRenderer(fonts.Arial);
     Debugger::block("LOAD : Text Renderer"); //End
     
-    //Init websites
-    Debugger::block("LOAD : Websites"); //Start
-    websites.ligidTools     =   Website("https://ligidtools.com/");
-    websites.youTube        =   Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA");
-    Debugger::block("LOAD : Websites"); //End
 
     Debugger::block("LOAD : GUI"); //Start 143695872 137 MB
     
     //Init the userinterface
-    userInterface.init(websites, painter);
+    userInterface.init(painter);
     
     Debugger::block("LOAD : GUI"); //End
     

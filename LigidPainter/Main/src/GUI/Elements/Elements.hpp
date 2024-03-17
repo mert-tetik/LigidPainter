@@ -120,6 +120,9 @@ public:
     /// @brief Displays brush modification dialog using 
     bool brushModification = false;
     BrushProperties brushProperties;
+    ///
+    bool materialSelection = false;
+    Material material;
 
     int selectionDialogTxtrRes = 512;
     

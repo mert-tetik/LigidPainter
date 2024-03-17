@@ -68,32 +68,50 @@ ContextMenu::ContextMenu(std::vector<std::string> elements){
     contextPanel.scale.y = elements.size();
 }
 
-void ContextMenu::render(Timer &timer){
-    dialogControl.updateStart();
+int ContextMenu::show(Timer &timer){
     
+    dialogControl.activate();
+
     //Update the position of the context panel
-    contextPanel.pos = pos;
+    contextPanel.pos = glm::vec3(
+                                    Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f,
+                                    Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::texture.contextPanel.scale.y,
+                                    0.95f
+                                );
 
-    //Render the context panel
-    contextPanel.render(timer,true);
+    while (!getContext()->window.shouldClose())
+    {
+        dialogControl.updateStart();
+        
+        //Render the context panel
+        contextPanel.render(timer, true);
     
-    dialogControl.updateEnd(timer, 0.15f);
+        bool anyBtnClicked = false;
+        for (size_t i = 0; i < this->contextPanel.sections[0].elements.size(); i++)
+        {
+            if(this->contextPanel.sections[0].elements[i].button.clicked){
+                this->dialogControl.unActivate();
+                this->dialogControl.mixVal = 0.f;
+                return i;
+            }
+        }
 
-    bool anyBtnClicked = false;
-    for (size_t i = 0; i < this->contextPanel.sections[0].elements.size(); i++)
-    {
-        if(this->contextPanel.sections[0].elements[i].button.clicked)
-            anyBtnClicked = true;
+        if (   // Conditions to turn any context menu off
+            anyBtnClicked  || // Mouse left click
+            *Mouse::mouseScroll() || //Mouse middle click
+            getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Pressed to escape key 
+            getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || //Pressed to enter key
+            !this->contextPanel.hover
+        )
+        {
+            this->dialogControl.unActivate(); //Turn the context menu offs
+        }
+        
+        dialogControl.updateEnd(timer, 0.15f);
+
+        if(dialogControl.mixVal == 0.f)
+            break;
     }
 
-    if (   // Conditions to turn any context menu off
-        anyBtnClicked  || // Mouse left click
-        *Mouse::mouseScroll() || //Mouse middle click
-        getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Pressed to escape key 
-        getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || //Pressed to enter key
-        !this->contextPanel.hover
-    )
-    {
-        this->dialogControl.unActivate(); //Turn the context menu offs
-    }
+    return -1;
 }

@@ -45,8 +45,6 @@ public:
 
     Fonts fonts;
 
-    Websites websites;
-
     Project project;
 
     Skybox skybox;

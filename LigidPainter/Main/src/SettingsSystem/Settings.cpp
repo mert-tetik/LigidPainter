@@ -14,6 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
 #include "LibrarySystem/Library.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "MouseSystem/Mouse.hpp"
@@ -233,7 +234,7 @@ namespace Settings{
     }
 };
 
-void Camera::posShortcutInteraction(bool active, Gizmo& sceneGizmo){
+void Camera::posShortcutInteraction(bool active){
     if(active){
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_0) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_0)){
             this->originLocked = true;
@@ -246,7 +247,7 @@ void Camera::posShortcutInteraction(bool active, Gizmo& sceneGizmo){
             this->ZNLocked = false;
         }
 
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_1) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_1) || (sceneGizmo.rHover && *Mouse::LClick())){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_1) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_1) || (gizmo_scene.rHover && *Mouse::LClick())){
             this->XPLocked = true;
             this->XNLocked = false;
             this->YPLocked = false;
@@ -254,7 +255,7 @@ void Camera::posShortcutInteraction(bool active, Gizmo& sceneGizmo){
             this->ZPLocked = false;
             this->ZNLocked = false;
         }
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_2) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_2) || (sceneGizmo.rHoverN && *Mouse::LClick())){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_2) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_2) || (gizmo_scene.rHoverN && *Mouse::LClick())){
             this->XNLocked = true;
             this->XPLocked = false;
             this->YPLocked = false;
@@ -263,7 +264,7 @@ void Camera::posShortcutInteraction(bool active, Gizmo& sceneGizmo){
             this->ZNLocked = false;
             
         }
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_3) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_3) || (sceneGizmo.gHover && *Mouse::LClick())){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_3) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_3) || (gizmo_scene.gHover && *Mouse::LClick())){
             this->YPLocked = true;
             this->XNLocked = false;
             this->XPLocked = false;
@@ -271,7 +272,7 @@ void Camera::posShortcutInteraction(bool active, Gizmo& sceneGizmo){
             this->ZPLocked = false;
             this->ZNLocked = false;
         }
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_4) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_4) || (sceneGizmo.gHoverN && *Mouse::LClick())){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_4) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_4) || (gizmo_scene.gHoverN && *Mouse::LClick())){
             this->YNLocked = true;
             this->XNLocked = false;
             this->YPLocked = false;
@@ -279,7 +280,7 @@ void Camera::posShortcutInteraction(bool active, Gizmo& sceneGizmo){
             this->ZPLocked = false;
             this->ZNLocked = false;
         }
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_5) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_5) || (sceneGizmo.bHover && *Mouse::LClick())){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_5) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_5) || (gizmo_scene.bHover && *Mouse::LClick())){
             this->ZPLocked = true;
             this->XNLocked = false;
             this->YPLocked = false;
@@ -287,7 +288,7 @@ void Camera::posShortcutInteraction(bool active, Gizmo& sceneGizmo){
             this->XPLocked = false;
             this->ZNLocked = false;
         }
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_6) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_6) || (sceneGizmo.bHoverN && *Mouse::LClick())){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_6) || getContext()->window.isKeyPressed(LIGIDGL_KEY_NUMPAD_6) || (gizmo_scene.bHoverN && *Mouse::LClick())){
             this->ZNLocked = true;
             this->XNLocked = false;
             this->YPLocked = false;

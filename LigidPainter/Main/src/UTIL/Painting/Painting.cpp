@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
 #include "3D/ThreeD.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "MouseSystem/Mouse.hpp"
@@ -135,11 +136,10 @@ void Painter::doPaint(
                             bool highResMode, 
                             
                             // Static Constants
-                            Box twoDPaintingBox, 
                             std::vector<TextureField> textureFields
                         )
 {
-    this->paintBuffers(strokeLocations, false, firstStroke, paintingMode, highResMode, twoDPaintingBox, textureFields);
+    this->paintBuffers(strokeLocations, false, firstStroke, paintingMode, highResMode, textureFields);
 }
 
 void Painter::doPaint(      
@@ -151,7 +151,6 @@ void Painter::doPaint(
                             bool highResMode, 
                             
                             // Static Constants
-                            Box twoDPaintingBox, 
                             std::vector<TextureField> textureFields
                         )
 {
@@ -167,7 +166,6 @@ void Painter::doPaint(
                     firstStroke,
                     paintingMode,
                     highResMode,
-                    twoDPaintingBox,
                     textureFields
                 );
 }
@@ -182,7 +180,6 @@ void Painter::doPaint(
                             bool highResMode, 
                             
                             // Static Constants
-                            Box twoDPaintingBox, 
                             std::vector<TextureField> textureFields
                         )
 {
@@ -212,7 +209,6 @@ void Painter::doPaint(
                                 firstStroke,
                                 paintingMode,
                                 highResMode,
-                                twoDPaintingBox,
                                 textureFields
                             );
             }
@@ -221,7 +217,7 @@ void Painter::doPaint(
             delete[] normalData;
         }
         else{
-            this->paintBuffers(this->getCursorSubstitution(this->brushProperties.spacing, cursorPos, lastCursorPos), false, firstStroke, paintingMode, highResMode, twoDPaintingBox, textureFields);
+            this->paintBuffers(this->getCursorSubstitution(this->brushProperties.spacing, cursorPos, lastCursorPos), false, firstStroke, paintingMode, highResMode, textureFields);
         }
     }
 
@@ -237,7 +233,6 @@ void Painter::doPaint(
                             bool highResMode, 
                             
                             // Static Constants
-                            Box twoDPaintingBox, 
                             std::vector<TextureField> textureFields
                         )
 {
@@ -384,7 +379,7 @@ void Painter::doPaint(
     this->paintingFBO.setColorBuffer(paintingTexture, GL_TEXTURE_2D);
     this->paintingFBO.removeRenderbuffer();
     
-    this->paintBuffers(strokeLocations, true, firstStroke, paintingMode, highResMode, twoDPaintingBox, textureFields);
+    this->paintBuffers(strokeLocations, true, firstStroke, paintingMode, highResMode, textureFields);
 
     getScene()->camera.cameraPos = oldCamPos;
     getScene()->camera.originPos = oldCamOrigin;
@@ -403,7 +398,6 @@ void Painter::paintBuffers(
                             bool highResMode, 
                             
                             // Static Constants
-                            Box twoDPaintingBox, 
                             std::vector<TextureField> textureFields
                         )
 {
@@ -485,7 +479,7 @@ void Painter::paintBuffers(
                                                 this->oSide, this->oXSide, this->oYSide, this->oXYSide, this->oZSide, this->oXZSide, this->oYZSide, 
                                                 this->oXYZSide, this->mirrorXOffset, this->mirrorYOffset, this->mirrorZOffset, paintingTxtrObj, this->selectedTexture, 
                                                 this->projectedPaintingTexture, paintingMode, this->brushProperties.opacity, 
-                                                this->threeDimensionalMode, this->selectedMeshIndex, twoDPaintingBox, this->faceSelection.activated, 
+                                                this->threeDimensionalMode, this->selectedMeshIndex, this->faceSelection.activated, 
                                                 this->faceSelection.selectedFaces, highResMode, textureFields, firstStroke, wrapMode
                                             );
 
@@ -579,7 +573,6 @@ void Painter::projectThePaintingTexture(
                                         float brushPropertiesOpacity, 
                                         bool threeDimensionalMode,
                                         int selectedMeshIndex,
-                                        Box twoDPaintingBox,
                                         glm::mat4 viewMat,
                                         bool faceSelectionActive,
                                         Texture selectedPrimitives,
@@ -684,7 +677,7 @@ void Painter::projectThePaintingTexture(
         //ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getScene().gui_projection);
         //ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
-        twoDPaintingBox.bindBuffers();
+        twoD_painting_box.bindBuffers();
         
         ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", 2);
         LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Painting : Projecting painted texture (For 2D Scene)");
@@ -732,7 +725,6 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                                         float brushPropertiesOpacity, 
                                                         bool threeDimensionalMode, 
                                                         int selectedMeshIndex, 
-                                                        Box twoDPaintingBox,
                                                         bool faceSelectionActive,
                                                         Texture selectedPrimitives,
                                                         bool highResMode,
@@ -871,7 +863,7 @@ void Painter::generateMirroredProjectedPaintingTexture(
             }
 
             projectThePaintingTexture(selectedTexture, projectedPaintingtxtr, mirrorSides[i]->mirroredPaintingTexture.ID, mirrorSides[i]->depthTexture.ID, 
-                                            selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, selectedMeshIndex, twoDPaintingBox, 
+                                            selectedPaintingModeIndex, brushPropertiesOpacity, threeDimensionalMode, selectedMeshIndex, 
                                             mirrorSides[i]->getViewMat(glm::vec3(mirrorXOffset,mirrorYOffset,mirrorZOffset)), faceSelectionActive, selectedPrimitives,
                                             wrapMode
                                     );

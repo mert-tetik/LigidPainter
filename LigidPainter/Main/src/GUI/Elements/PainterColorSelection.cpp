@@ -35,7 +35,7 @@ PainterColorSelection::PainterColorSelection(glm::vec2 scale, float panelOffset)
     clr1_Btn = Button(ELEMENT_STYLE_BASIC, scale, "Color 1", Texture(), 0.f, true);
     clr2_Btn = Button(ELEMENT_STYLE_BASIC, scale, "Color 2", Texture(), 0.f, true);
     clr3_Btn = Button(ELEMENT_STYLE_BASIC, scale, "Color 3", Texture(), 0.f, true);
-    dropper_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.7f), "", appTextures.dropperIcon, 0.f, false);
+    dropper_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", appTextures.dropperIcon, 0.f, false);
 
     clr1_Btn.color = glm::vec4(glm::vec3(226,212,186) / glm::vec3(255.f), 1.f);
     clr2_Btn.color = glm::vec4(glm::vec3(175,122,109) / glm::vec3(255.f), 1.f);

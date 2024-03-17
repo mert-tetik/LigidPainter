@@ -794,16 +794,14 @@ private:
     
 public:
     Panel contextPanel;
-    glm::vec3 pos;
-    int selectedElement = 0;
     DialogControl dialogControl; 
     
     //Constructors
     ContextMenu();
     ContextMenu(std::vector<std::string> elements);
     
-    /// @brief Public member function to render the context menu
-    void render(Timer &timer);
+    /// @brief Renders context menu and returns the selected index
+    int show(Timer &timer);
 };
 
 //!------------------------------ PROJECT RECOVER ------------------------------

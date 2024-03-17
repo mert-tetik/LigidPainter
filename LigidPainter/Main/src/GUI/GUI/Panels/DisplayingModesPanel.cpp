@@ -13,47 +13,54 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 #include<glad/glad.h>
+#include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Renderer.h"
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+#include "ShaderSystem/Shader.hpp"
+#include "LibrarySystem/Library.hpp"
+#include "MouseSystem/Mouse.hpp"
 #include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
 #include "Layers/Layers.hpp"
+#include "GUI/Panels.hpp"
 
 #include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-#include <map>
 #include <vector>
-#include <filesystem>
 
-void displayingModesPanelInteraction(
-                                        Panel &displayingModesPanel, 
-                                        Painter &painter
-                                    )
+Panel panel_displaying_modes;
+
+void panel_displaying_modes_render(Timer& timer, Painter& painter, bool doMouseTracking)
 {
+    
+    panel_displaying_modes.render(timer, doMouseTracking);
+    if(panel_displaying_modes.resizingDone){
+        panels_transform();
+    }
+
     //!PAINTING MODES PANEL
-    for (size_t i = 0; i < displayingModesPanel.sections[0].elements.size(); i++)
+    for (size_t i = 0; i < panel_displaying_modes.sections[0].elements.size(); i++)
     {
         if(!painter.getSelectedMesh()->layerScene.any_vector_editing()){
-            if(displayingModesPanel.sections[0].elements[i].button.clickState1){ //Painting mode pressed
+            if(panel_displaying_modes.sections[0].elements[i].button.clickState1){ //Painting mode pressed
                     if(painter.selectedDisplayingModeIndex != i){
-                        displayingModesPanel.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
+                        panel_displaying_modes.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
                         painter.selectedDisplayingModeIndex = i;
                         break;
                     }
             }
         }
         else{
-            displayingModesPanel.sections[0].elements[i].button.clickState1 = false;
+            panel_displaying_modes.sections[0].elements[i].button.clickState1 = false;
         }
 
         if(painter.selectedDisplayingModeIndex == i){
-            displayingModesPanel.sections[0].elements[i].button.clickState1 = true;
+            panel_displaying_modes.sections[0].elements[i].button.clickState1 = true;
         }
     }
 }

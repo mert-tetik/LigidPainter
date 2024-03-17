@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
@@ -157,7 +158,7 @@ void Renderer::render(){
     glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
     
     // Process the shortcut inputs & move the camera gradually if necessary
-    getScene()->camera.posShortcutInteraction(!userInterface.anyContextMenuActive && !userInterface.anyDialogActive, userInterface.sceneGizmo);
+    getScene()->camera.posShortcutInteraction(!userInterface.anyDialogActive);
 
     //Render each mesh
     this->renderMainModel();
@@ -168,7 +169,6 @@ void Renderer::render(){
     if(            
             !userInterface.anyPanelHover && 
             !userInterface.anyDialogActive && 
-            !userInterface.anyContextMenuActive && 
             (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 && painter.selectedPaintingModeIndex != 6 &&
             !painter.paintingoverTextureEditorMode &&
             !painter.faceSelection.editMode &&
@@ -186,8 +186,8 @@ void Renderer::render(){
     Debugger::block("3D Model Object Selection"); // Start
 
     // Check if an object is selected after rendering the mesh
-    if(painter.selectedDisplayingModeIndex == 0 && ((!userInterface.anyPanelHover || userInterface.objectsPanel.hover) && !userInterface.anyDialogActive && !*Mouse::RPressed() && !*Mouse::MPressed()) || dialog_log.unded) 
-        getModel()->selectObject(this->userInterface.objectsPanel);
+    if(painter.selectedDisplayingModeIndex == 0 && ((!userInterface.anyPanelHover || panel_objects.hover) && !userInterface.anyDialogActive && !*Mouse::RPressed() && !*Mouse::MPressed()) || dialog_log.unded) 
+        getModel()->selectObject();
 
     Debugger::block("3D Model Object Selection"); // End
     
@@ -216,7 +216,6 @@ void Renderer::render(){
     //Painting
     if(
             *Mouse::LPressed() && 
-            !userInterface.anyContextMenuActive && 
             !userInterface.anyPanelHover && 
             !userInterface.anyDialogActive && 
             (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 &&
@@ -232,7 +231,6 @@ void Renderer::render(){
                             *Mouse::LClick(),
                             painter.selectedPaintingModeIndex,
                             false || painter.wrapMode,
-                            userInterface.twoDPaintingBox,
                             userInterface.paintingOverTextureFields
                         );
     }
@@ -245,12 +243,11 @@ void Renderer::render(){
                             true,
                             painter.selectedPaintingModeIndex,
                             true,
-                            userInterface.twoDPaintingBox,
                             userInterface.paintingOverTextureFields
                         );
 
         //Update the selected texture after painting
-        painter.updateTexture(userInterface.twoDPaintingPanel, painter.selectedPaintingModeIndex, userInterface.filterPaintingModeFilterBtn.filter, userInterface.twoDPaintingBox, userInterface.paintingCustomMat);
+        painter.updateTexture(painter.selectedPaintingModeIndex, userInterface.paintingCustomMat);
         
         //Refresh the 2D painting texture
         painter.refreshPainting();

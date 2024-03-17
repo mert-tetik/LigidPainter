@@ -107,15 +107,13 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
 
         //Close the dialog
         if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover && !dialog_log.isHovered()) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
-            if(!ContextMenus::materialModifier.dialogControl.isActive() && !ContextMenus::addMaterialModifier.dialogControl.isActive()){
-                this->displayModeComboBox.selectedIndex = 0;
-                // Update the material displaying texture one more time before closing the dialog
-                material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, Camera(), 0, false);
+            this->displayModeComboBox.selectedIndex = 0;
+            // Update the material displaying texture one more time before closing the dialog
+            material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, Camera(), 0, false);
 
-                updateThePreRenderedPanels = true;
+            updateThePreRenderedPanels = true;
 
-                this->deactivate();
-            }
+            this->deactivate();
         }
 
         __materialEditorDialogESCFirstFramePressed = false; 

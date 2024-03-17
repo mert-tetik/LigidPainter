@@ -115,6 +115,9 @@ void Button::render(
         if(this->brushModification){
             dialog_brushModification.show(timer, &this->brushProperties);
         }
+        if(materialSelection){
+            dialog_materialSelection.show(timer, &this->material);
+        }
     }
 
     if(this->meshSelection){

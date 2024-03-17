@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
 #include "3D/ThreeD.hpp"
 #include "MouseSystem/Mouse.hpp"
 
@@ -91,7 +92,7 @@ void Model::updateObjectIDsTexture(){
 
 static int originalOBJI = 0;
 
-void Model::selectObject(Panel& objectsPanel){
+void Model::selectObject(){
     
     int objI = -1;
     int meshI = -1;
@@ -137,13 +138,13 @@ void Model::selectObject(Panel& objectsPanel){
         objI = pxs[0];
         meshI = pxs[1] - 1;
 
-        for (size_t secI = 0; secI < objectsPanel.sections.size(); secI++)
+        for (size_t secI = 0; secI < panel_objects.sections.size(); secI++)
         {
-            for (size_t elI = 0; elI < objectsPanel.sections[secI].elements.size(); elI++){
-                if(objectsPanel.sections[secI].elements[elI].button.hover && !objectsPanel.sliderButton.hover){
+            for (size_t elI = 0; elI < panel_objects.sections[secI].elements.size(); elI++){
+                if(panel_objects.sections[secI].elements[elI].button.hover && !panel_objects.sliderButton.hover){
                     meshI = secI;
                     objI = elI;
-                    objectsPanel.sections[secI].elements[elI].button.hover = false;
+                    panel_objects.sections[secI].elements[elI].button.hover = false;
                 }
             }
         }
@@ -181,7 +182,7 @@ void Model::selectObject(Panel& objectsPanel){
             }
             
             if(*Mouse::LClick()){
-                if(!objectsPanel.hover){
+                if(!panel_objects.hover){
                     if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
                         if(match == -1)
                             this->meshes[meshI].selectedObjectIndices.push_back(objI);

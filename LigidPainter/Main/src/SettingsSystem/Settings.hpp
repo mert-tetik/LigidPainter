@@ -86,7 +86,7 @@ struct Camera{
         this->setCameraPosition(camPos);
     }
 
-    void posShortcutInteraction(bool active, Gizmo& sceneGizmo);
+    void posShortcutInteraction(bool active);
 
     bool XPLocked = false;
     bool XNLocked = false;

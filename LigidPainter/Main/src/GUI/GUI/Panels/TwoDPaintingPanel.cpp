@@ -1,0 +1,189 @@
+/*
+---------------------------------------------------------------------------
+LigidPainter - 3D Model texturing software / Texture generator   
+---------------------------------------------------------------------------
+
+(c) 2024 Mert Tetik. All rights reserved.
+
+Official GitHub Link : https://github.com/mert-tetik/LigidPainter
+Official Web Page : https://ligidtools.com/ligidpainter
+
+---------------------------------------------------------------------------
+*/
+
+#include<glad/glad.h>
+#include "LigidGL/LigidGL.hpp"
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+#include "Renderer.h"
+#include "GUI/GUI.hpp"
+#include "3D/ThreeD.hpp"
+#include "ShaderSystem/Shader.hpp"
+#include "LibrarySystem/Library.hpp"
+#include "MouseSystem/Mouse.hpp"
+#include "SettingsSystem/Settings.hpp"
+#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "Layers/Layers.hpp"
+#include "GUI/Panels.hpp"
+
+#include <string>
+#include <vector>
+
+Panel panel_twoD_painting;
+Box twoD_painting_box;
+
+/*! Scene transform data */
+static float scroll = 2.f;
+static glm::vec2 pos = glm::vec2(0.f);
+
+static void render_barriers();
+static void transform_scene(Painter& painter);
+
+void panel_twoD_painting_render(Timer& timer, Painter& painter, bool doMouseTracking){
+    
+    if(painter.selectedDisplayingModeIndex == 2){
+        transform_scene(painter);
+
+        //Render the 2D painting panel
+        panel_twoD_painting.sections[0].elements[0].button.text = "";
+        panel_twoD_painting.render(timer,false);
+        if(panel_twoD_painting.resizingDone){
+            panels_transform();
+        }
+
+        render_barriers();
+
+        ShaderSystem::twoDPaintingModeAreaShader().use();
+
+        //*Fragment
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("txtr", 5);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingTexture", 6);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", painter.selectedPaintingModeIndex);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", painter.usePaintingOver);
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearTransformStrength", painter.smearTransformStrength);
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearBlurStrength", painter.smearBlurStrength);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("multiChannelsPaintingMod", false);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("channelI", 0);
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("channelStrength", 1.f);
+
+        //* Bind the textures
+        //painted texture
+        glActiveTexture(GL_TEXTURE5);
+        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+
+        // Render the texture as it's pixels can be seen
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        
+        //paintingTexture 
+        glActiveTexture(GL_TEXTURE6);
+        if(painter.selectedDisplayingModeIndex == 0)
+            glBindTexture(GL_TEXTURE_2D, 0);
+        else
+            glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
+
+        //*Vertex
+        ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", getScene()->gui_projection);
+        ShaderSystem::twoDPaintingModeAreaShader().setMat4("view", glm::mat4(1.));
+        ShaderSystem::twoDPaintingModeAreaShader().setMat4("modelMatrix", glm::mat4(1.));
+        
+        twoD_painting_box.bindBuffers();
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "2D Painting scene : painted texture");
+        getBox()->bindBuffers();
+
+        ShaderSystem::buttonShader().use();
+    }
+    else{
+        //Render the 2D painting panel
+        panel_twoD_painting.sections[0].elements[0].button.text = "2D Painting can't be displayed in the current displaying mode";
+        panel_twoD_painting.render(timer, false);
+        if(panel_twoD_painting.resizingDone){
+            panels_transform();
+        }
+    }
+    
+    glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+static void render_barriers(){
+    //Bottom Barrier
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x,   panel_twoD_painting.resultPos.y + panel_twoD_painting.resultScale.y + 5000,   1.f)); 
+    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
+    ShaderSystem::buttonShader().setFloat("properties.radius", 0.f); 
+    ShaderSystem::buttonShader().setInt("outlineExtra" , false); 
+    ShaderSystem::buttonShader().setVec4("properties.color", glm::vec4(0)); //Invisible
+    ShaderSystem::buttonShader().setVec3("properties.outline.color", glm::vec4(0)); //Invisible
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Bottom");
+
+    //Top Barrier
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x,   panel_twoD_painting.resultPos.y - panel_twoD_painting.resultScale.y - 5000,   1.f));
+    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Top");
+    
+    //Left Barrier
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x  - panel_twoD_painting.resultScale.x  - 5000,   panel_twoD_painting.resultPos.y,   1.f));
+    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Left");
+    
+    //Right Barrier
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x  + panel_twoD_painting.resultScale.x  + 5000,   panel_twoD_painting.resultPos.y,   1.f));
+    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Right");
+}
+
+static void transform_scene(Painter& painter){
+    glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
+    glm::vec2 prevScale = destScale * scroll;
+    float scrVal = *Mouse::mouseScroll() / Settings::videoScale()->y * 4.f;
+    if(!panel_twoD_painting.hover)
+        scrVal = 0.f;
+
+    //Calculate the scroll value
+    if(scroll > 1.f)
+        scroll += scrVal;
+    else{
+        if(scrVal < 0)
+            scroll -= scroll / 4.f;
+        if(scrVal > 0)
+            scroll += scroll / 4.f;
+    } 
+    if(scroll < 0.02)
+        scroll = 0.02;
+
+    bool posChanged = false;
+    //Calculate the position value        
+    if(*Mouse::MPressed() && panel_twoD_painting.hover){
+        pos += *Mouse::mouseOffset();
+        posChanged = true;
+    }
+
+    //(Zoom into the cursor)
+    glm::vec2 scaleGap = prevScale - destScale * scroll;
+    pos += (scaleGap) * (((*Mouse::cursorPos() - glm::vec2(panel_twoD_painting.sections[0].elements[0].button.resultPos.x + pos.x, panel_twoD_painting.sections[0].elements[0].button.resultPos.y + pos.y)) + 0.00001f) / (prevScale + 0.00001f));
+
+    if(pos.x > destScale.x * scroll)
+        pos.x = destScale.x * scroll;
+    if(pos.x < -destScale.x * scroll)
+        pos.x = -destScale.x * scroll;
+    
+    if(pos.y > destScale.y * scroll)
+        pos.y = destScale.y * scroll;
+    if(pos.y < -destScale.y * scroll)
+        pos.y = -destScale.y * scroll;
+
+    glm::vec3 boxPos = glm::vec3(
+                                    panel_twoD_painting.sections[0].elements[0].button.resultPos.x + pos.x,
+                                    panel_twoD_painting.sections[0].elements[0].button.resultPos.y + pos.y,
+                                    panel_twoD_painting.sections[0].elements[0].button.resultPos.z
+                                );
+    
+    glm::vec2 boxScale = glm::vec2(destScale * scroll);
+    
+    // If scene transformed update the 2D square buffers
+    if(twoD_painting_box.customPos != boxPos || twoD_painting_box.customScale != boxScale){
+        twoD_painting_box.customMeshUpdate(boxPos, boxScale);
+    }
+}

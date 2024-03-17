@@ -36,7 +36,7 @@ static void renderEyes(Timer& timer, Panel &layerPanel, Material* material, bool
 static void checkShortcutInteraction(Panel& layerPanel, Material* material);
 static void updateLayerPanel(Panel& layerPanel, Material* material);
 static void layerPanelInteractions(Panel& layerPanel, Panel& modifiersPanel, Material* material, int& selectedMaterialModifierIndex, int selectedResultModeIndex, bool& updateTheMaterial);
-static void contextMenuInteractions(Material* material, Panel& modifiersPanel, bool& updateTheMaterial, int& selectedMaterialModifierIndex, Timer& timer);
+static void contextMenuInteractions(Material* material, Panel& modifiersPanel, Panel& layerPanel, bool& updateTheMaterial, int& selectedMaterialModifierIndex, Timer& timer);
 
 void MaterialEditorDialog::renderLayerPanel(Timer& timer, bool mouseTrackingFlag, Material* material){
     // Update the elements of the layer panel according to the material's modifiers (if they doesn't match)
@@ -55,7 +55,7 @@ void MaterialEditorDialog::renderLayerPanel(Timer& timer, bool mouseTrackingFlag
     layerPanelInteractions(this->layerPanel, this->modifiersPanel, material, this->selectedMaterialModifierIndex, this->selectedResultModeIndex, this->updateTheMaterial);
 
     // Layer panel's context menu interactions (add new modifier & modifier actions)
-    contextMenuInteractions(material, this->modifiersPanel, this->updateTheMaterial, this->selectedMaterialModifierIndex, timer);
+    contextMenuInteractions(material, this->modifiersPanel, this->layerPanel, this->updateTheMaterial, this->selectedMaterialModifierIndex, timer);
 }
 
 
@@ -291,7 +291,7 @@ static void moveModifierToTop(int index, Material* material, int& selectedMateri
 }
 
 static void moveModifierToBottom(int index, Material* material, int& selectedMaterialModifierIndex){
-    if(ContextMenus::materialModifier.selectedElement != material->materialModifiers.size()-1){
+    if(index != material->materialModifiers.size()-1){
         registerMaterialAction("Modifier moved to bottom", *material);
         
         MaterialModifier bottomModifier = material->materialModifiers[index + 1];
@@ -313,144 +313,157 @@ static void moveModifierToBottom(int index, Material* material, int& selectedMat
     }
 }
 
-static void contextMenuInteractions(Material* material, Panel& modifiersPanel, bool& updateTheMaterial, int& selectedMaterialModifierIndex, Timer& timer)
+static void contextMenuInteractions(Material* material, Panel& modifiersPanel, Panel& layerPanel, bool& updateTheMaterial, int& selectedMaterialModifierIndex, Timer& timer)
 {
-    if(ContextMenus::materialModifier.dialogControl.isActive() && ContextMenus::materialModifier.selectedElement < material->materialModifiers.size()){ //If material modifier context menu is active
-        
-        // Delete the material modifier button pressed
-        if(ContextMenus::materialModifier.contextPanel.sections[0].elements[0].button.clicked){            
-            registerMaterialAction("Modifier deleted", *material);
+    if(dialog_materialEditor.layerPanel.sections.size()){
+        for (size_t elementI = 0; elementI < dialog_materialEditor.layerPanel.sections[0].elements.size(); elementI++)
+        {
+            if(dialog_materialEditor.layerPanel.sections[0].elements[elementI].button.hover && *Mouse::RClick()){
+                int res = ContextMenus::materialModifier.show(timer);   
+               
+                if( elementI < material->materialModifiers.size()){ //If material modifier context menu is active
+                    
+                    // Delete the material modifier button pressed
+                    if(res == 0){            
+                        registerMaterialAction("Modifier deleted", *material);
 
-            // Delete the related shortcut
-            for (size_t i = 0; i < material->materialShortcuts.size(); i++)
-            {
-                if(material->materialShortcuts[i].modI == ContextMenus::materialModifier.selectedElement){
-                    material->materialShortcuts.erase(material->materialShortcuts.begin() + i);
-                    i--;
+                        // Delete the related shortcut
+                        for (size_t i = 0; i < material->materialShortcuts.size(); i++)
+                        {
+                            if(material->materialShortcuts[i].modI == elementI){
+                                material->materialShortcuts.erase(material->materialShortcuts.begin() + i);
+                                i--;
+                            }
+                        }
+                        
+                        for (size_t i = 0; i < material->materialShortcuts.size(); i++)
+                        {
+                            if(material->materialShortcuts[i].modI > elementI)
+                                material->materialShortcuts[i].updateElement(*material, material->materialShortcuts[i].modI - 1);
+                        }
+                        
+                        // Deleting the mask texture
+                        glDeleteTextures(1, &material->materialModifiers[elementI].maskTexture.ID); 
+
+                        // Deleting the albedo filter's displaying texture
+                        // glDeleteTextures(1, &modifiersPanel.sections[modifiersPanel.sections.size()-1].elements[0].button.texture.ID);
+                        // glDeleteTextures(1, &modifiersPanel.sections[modifiersPanel.sections.size()-1].elements[1].button.texture.ID);
+                        
+                        if(material->materialModifiers[elementI].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
+                            glDeleteTextures(1, &material->materialModifiers[elementI].sections[0].elements[1].button.texture.ID); 
+                            glDeleteTextures(1, &material->materialModifiers[elementI].sections[0].elements[2].button.texture.ID); 
+                            glDeleteTextures(1, &material->materialModifiers[elementI].sections[0].elements[3].button.texture.ID); 
+                            glDeleteTextures(1, &material->materialModifiers[elementI].sections[0].elements[4].button.texture.ID); 
+                            glDeleteTextures(1, &material->materialModifiers[elementI].sections[0].elements[5].button.texture.ID); 
+                            glDeleteTextures(1, &material->materialModifiers[elementI].sections[0].elements[6].button.texture.ID); 
+                        }
+
+                        material->materialModifiers.erase(material->materialModifiers.begin() + elementI);
+                        updateTheMaterial = true;
+                        selectedMaterialModifierIndex = 0;
+                    }
+                    
+                    //Move to top button pressed
+                    else if(res == 1){ 
+                        moveModifierToTop(elementI, material, selectedMaterialModifierIndex);
+                        updateTheMaterial = true;
+
+                    }
+
+                    //Move to bottom button pressed
+                    else if(res == 2){ 
+                        moveModifierToBottom(elementI, material, selectedMaterialModifierIndex);
+                        updateTheMaterial = true;
+                    }
+                    
+                    //Change mask button pressed
+                    else if(res == 3){ 
+                        registerMaterialAction("Modifier change mask", *material);
+                        
+                        dialog_textureSelection.show(timer, material->materialModifiers[elementI].maskTexture, 128, false);
+
+                        updateTheMaterial = true;
+                    }
                 }
             }
-            
-            for (size_t i = 0; i < material->materialShortcuts.size(); i++)
-            {
-                if(material->materialShortcuts[i].modI > ContextMenus::materialModifier.selectedElement)
-                    material->materialShortcuts[i].updateElement(*material, material->materialShortcuts[i].modI - 1);
-            }
-            
-            // Deleting the mask texture
-            glDeleteTextures(1, &material->materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture.ID); 
-
-            // Deleting the albedo filter's displaying texture
-            // glDeleteTextures(1, &modifiersPanel.sections[modifiersPanel.sections.size()-1].elements[0].button.texture.ID);
-            // glDeleteTextures(1, &modifiersPanel.sections[modifiersPanel.sections.size()-1].elements[1].button.texture.ID);
-            
-            if(material->materialModifiers[ContextMenus::materialModifier.selectedElement].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
-                glDeleteTextures(1, &material->materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[1].button.texture.ID); 
-                glDeleteTextures(1, &material->materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[2].button.texture.ID); 
-                glDeleteTextures(1, &material->materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[3].button.texture.ID); 
-                glDeleteTextures(1, &material->materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[4].button.texture.ID); 
-                glDeleteTextures(1, &material->materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[5].button.texture.ID); 
-                glDeleteTextures(1, &material->materialModifiers[ContextMenus::materialModifier.selectedElement].sections[0].elements[6].button.texture.ID); 
-            }
-
-            material->materialModifiers.erase(material->materialModifiers.begin() + ContextMenus::materialModifier.selectedElement);
-            updateTheMaterial = true;
-            selectedMaterialModifierIndex = 0;
-        }
-        
-        //Move to top button pressed
-        else if(ContextMenus::materialModifier.contextPanel.sections[0].elements[1].button.clicked){ 
-            moveModifierToTop(ContextMenus::materialModifier.selectedElement, material, selectedMaterialModifierIndex);
-            updateTheMaterial = true;
-
-        }
-
-        //Move to bottom button pressed
-        else if(ContextMenus::materialModifier.contextPanel.sections[0].elements[2].button.clicked){ 
-            moveModifierToBottom(ContextMenus::materialModifier.selectedElement, material, selectedMaterialModifierIndex);
-            updateTheMaterial = true;
-        }
-        
-        //Change mask button pressed
-        else if(ContextMenus::materialModifier.contextPanel.sections[0].elements[3].button.clicked){ 
-            registerMaterialAction("Modifier change mask", *material);
-            
-            dialog_textureSelection.show(timer, material->materialModifiers[ContextMenus::materialModifier.selectedElement].maskTexture, 128, false);
-
-            updateTheMaterial = true;
         }
     }
 
-    if(ContextMenus::addMaterialModifier.dialogControl.isActive()){ //If material modifier context menu is active
+
+    // If clicked to add material modifier button
+    if(dialog_materialEditor.layerPanel.barButtons[0].clicked){
         
         char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
         
         bool newModifierAdded = false;
 
+        int res = ContextMenus::addMaterialModifier.show(timer);   
+
         // Texture Modifier
-        if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[0].button.clicked){
+        if(res == 0){
             registerMaterialAction("Texture modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(TEXTURE_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Dust Modifier
-        else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[1].button.clicked){
+        else if(res == 1){
             registerMaterialAction("Dust modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(DUST_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Asphalt Modifier
-        else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[2].button.clicked){
+        else if(res == 2){
             registerMaterialAction("Asphalt modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(ASPHALT_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Liquid Modifier
-        else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[3].button.clicked){
+        else if(res == 3){
             registerMaterialAction("Liquid modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(LIQUID_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Moss Modifier
-        else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[4].button.clicked){
+        else if(res == 4){
             registerMaterialAction("Moss modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(MOSS_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Rust Modifier
-        else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[5].button.clicked){
+        else if(res == 5){
             registerMaterialAction("Rust modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(RUST_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Skin Modifier
-        else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[6].button.clicked){
+        else if(res == 6){
             registerMaterialAction("Skin modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(SKIN_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Solid Modifier
-        else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[7].button.clicked){
+        else if(res == 7){
             registerMaterialAction("Solid modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(SOLID_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Wooden Modifier
-        else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[8].button.clicked){
+        else if(res == 8){
             registerMaterialAction("Wooden modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(WOODEN_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
 
         // Math Modifier
-        else if(ContextMenus::addMaterialModifier.contextPanel.sections[0].elements[9].button.clicked){
+        else if(res == 9){
             registerMaterialAction("Math modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(MATH_MATERIAL_MODIFIER));
             newModifierAdded = true;

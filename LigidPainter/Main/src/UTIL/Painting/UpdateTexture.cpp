@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
 #include "ShaderSystem/Shader.hpp"
 #include "LibrarySystem/Library.hpp"
 #include "Layers/Layers.hpp"
@@ -53,7 +54,7 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
     glDeleteTextures(1, &captureTexture);
 }
 
-void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, glm::vec3 paintingColor, int channelI, float channelStr){
+void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintingColor, int channelI, float channelStr){
     glm::vec2 destScale = glm::vec2(txtr.getResolution());
 
     glActiveTexture(GL_TEXTURE0);
@@ -137,7 +138,7 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, int paint
         ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getScene()->gui_projection);
         ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
-        twoDPaintingBox.bindBuffers();
+        twoD_painting_box.bindBuffers();
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Applying painting to the texture");
     }
     
@@ -155,7 +156,7 @@ void Painter::updateTheTexture(Texture txtr, Panel& twoDPaintingPanel, int paint
 
 }
 
-void Painter::updateTexture(Panel& twoDPaintingPanel, int paintingMode, Filter filterBtnFilter, Box twoDPaintingBox, Material& paintingCustomMat){
+void Painter::updateTexture(int paintingMode, Material& paintingCustomMat){
     
     if(!this->threeDimensionalMode && this->selectedDisplayingModeIndex != 2){
         LGDLOG::start << "ERROR : Painting : Invalid displaying mode for the 2D painting" << LGDLOG::end;
@@ -251,7 +252,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, int paintingMode, Filter f
     }
 
     if(paintingMode == 4){
-        filterBtnFilter.applyFilter(this->selectedTexture.ID, this->projectedPaintingTexture, 0);
+        button_painting_filter_mode_filter.filter.applyFilter(this->selectedTexture.ID, this->projectedPaintingTexture, 0);
     }
     else{
         if(this->materialPainting){
@@ -300,7 +301,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, int paintingMode, Filter f
 
                 if(enableChannel){
                     if(!this->useCustomMaterial)
-                        updateTheTexture(txtr, twoDPaintingPanel, paintingMode, filterBtnFilter, twoDPaintingBox, clr, i, clr.r);
+                        updateTheTexture(txtr, paintingMode, clr, i, clr.r);
                     else{
                         txtr.mix(customMatTxtr, projectedPaintingTexture, true, false, false);
                         if(selectedMeshIndex < getModel()->meshes.size())
@@ -310,7 +311,7 @@ void Painter::updateTexture(Panel& twoDPaintingPanel, int paintingMode, Filter f
             }
         }
         else{
-            updateTheTexture(this->selectedTexture, twoDPaintingPanel, paintingMode, filterBtnFilter, twoDPaintingBox, this->getSelectedColor().getRGB_normalized(), 0, 1.f);
+            updateTheTexture(this->selectedTexture, paintingMode, this->getSelectedColor().getRGB_normalized(), 0, 1.f);
         }
     }
 
