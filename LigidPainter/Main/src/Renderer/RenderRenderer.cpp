@@ -247,7 +247,7 @@ void Renderer::render(){
                         );
 
         //Update the selected texture after painting
-        painter.updateTexture(painter.selectedPaintingModeIndex, userInterface.paintingCustomMat);
+        painter.updateTexture(painter.selectedPaintingModeIndex);
         
         //Refresh the 2D painting texture
         painter.refreshPainting();

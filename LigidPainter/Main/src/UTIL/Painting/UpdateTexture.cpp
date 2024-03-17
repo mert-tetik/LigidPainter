@@ -156,7 +156,7 @@ void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintin
 
 }
 
-void Painter::updateTexture(int paintingMode, Material& paintingCustomMat){
+void Painter::updateTexture(int paintingMode){
     
     if(!this->threeDimensionalMode && this->selectedDisplayingModeIndex != 2){
         LGDLOG::start << "ERROR : Painting : Invalid displaying mode for the 2D painting" << LGDLOG::end;
@@ -206,9 +206,11 @@ void Painter::updateTexture(int paintingMode, Material& paintingCustomMat){
             customMatMesh.ambientOcclusion.update(nullptr, res.x, res.y);
         }
 
-        for (int i = paintingCustomMat.materialModifiers.size() - 1; i >= 0; --i)    
+        Material* painting_custom_mat = &checkComboList_painting_color.panel.sections[0].elements[14].button.material;
+
+        for (int i = painting_custom_mat->materialModifiers.size() - 1; i >= 0; --i)    
         {
-            paintingCustomMat.materialModifiers[i].updateMaterialChannels(paintingCustomMat, customMatMesh, res.x, i, appTextures.white, 0, false, *getModel());
+            painting_custom_mat->materialModifiers[i].updateMaterialChannels(*painting_custom_mat, customMatMesh, res.x, i, appTextures.white, 0, false, *getModel());
         }
     }
 

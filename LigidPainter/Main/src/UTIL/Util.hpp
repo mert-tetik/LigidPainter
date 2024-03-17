@@ -626,44 +626,6 @@ private:
 
 };
 
-struct VectorPoint2D{
-    /*! @brief Position of the point (0 - 100 scale) */
-    glm::vec2 pos = glm::vec2(0.f);
-
-    /*! @brief This flag indicates if the point was hovered by the cursor*/
-    bool hover = false;
-    
-    /*! @brief This flag indicates if the point was pressed and ready to move*/
-    bool canMove = false;
-    
-    /*! @brief This flag indicates if the point was pressed and ready to move*/
-    bool active = false;
-    
-    /*! @brief This value gradually becomes 1.f as the hover flag set to true*/
-    float hoverMixVal = 0.f;
-    
-    /*! @brief This value gradually becomes 1.f as the active flag set to true*/
-    float activeMixVal = 0.f;
-
-    void render(Timer& timer, bool doMouseTracking, float scaleDivider, glm::vec4 color);
-};
-
-struct VectorStroke{
-    VectorPoint2D startPoint;
-    VectorPoint2D endPoint;
-    VectorPoint2D offsetPoint;
-
-    VectorStroke(){}
-    VectorStroke(glm::vec2 startPos, glm::vec2 endPos, glm::vec2 offsetPos){
-        this->startPoint.pos = startPos;
-        this->endPoint.pos = endPos;
-        this->offsetPoint.pos = offsetPos;
-    }
-    
-    void renderCurve(float edge, glm::vec2 start, glm::vec2 dest, glm::vec2 offset);
-    void draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke>& strokes, int curI);
-};
-
 struct ThreeDPoint{
     glm::vec3 pos = glm::vec3(0.f);
     glm::vec3 normal = glm::vec3(0.f);
@@ -692,48 +654,6 @@ struct ThreeDPoint{
 
     /*! @return true if the moving conditions of the point is set*/
     bool areMovingConditionsSet(bool canMove);
-};
-
-struct VertexUTIL {
-    // position
-    glm::vec3 Position = glm::vec3(0.f);
-    // texCoords
-    glm::vec2 TexCoords = glm::vec2(0.f);
-    // normal
-    glm::vec3 Normal = glm::vec3(0.f);
-    // tangent
-    glm::vec3 Tangent = glm::vec3(0);
-    // bitangent
-    glm::vec3 Bitangent = glm::vec3(0);
-
-    VertexUTIL(){}
-    VertexUTIL(glm::vec3 Position, glm::vec2 TexCoords, glm::vec3 Normal, glm::vec3 Tangent, glm::vec3 Bitangent){
-        this->Position = Position;
-        this->TexCoords = TexCoords;
-        this->Normal = Normal;
-        this->Tangent = Tangent;
-        this->Bitangent = Bitangent;
-    }
-};
-
-struct VectorStroke3D{
-public:
-    ThreeDPoint startPoint;
-    ThreeDPoint endPoint;
-
-    void updateLinePoints(Painter& painter);
-
-    std::vector<VertexUTIL> lineVertices;
-
-    VectorStroke3D(){}
-    VectorStroke3D(ThreeDPoint startPoint, ThreeDPoint endPoint);
-
-    bool draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke3D>& strokes, int curI, Painter& painter);
-
-private:
-    void projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3 center, Painter& painter);
-    void genLineVertices(); 
-    void renderLine(); 
 };
 
 struct MirrorSide{
@@ -878,22 +798,6 @@ public:
     /// @brief Returns the index of the selected texture inside of the Library
     int getSelectedTextureIndexInLibrary();
 
-    /* VECTORS - defined in Vectors.cpp*/
-    /**/std::vector<VectorStroke> vectorStrokes;
-    /**/std::vector<VectorStroke3D> vectorStrokes3D;
-    /**/void applyVectorStrokes(std::vector<VectorStroke> vectorStrokes, int paintingMode, Material& paintingCustomMat, std::vector<TextureField> textureFields, bool twoDWrap);
-    /**/void deleteSelectedVectorPoints();
-    /**/void clearSelectedVectorPoints();
-    /**/void subdivideSelectedPoints();
-    /**/void render2DVectors(Timer& timer, bool doMouseTracking);
-    /**/void render3DVectors(Timer& timer, bool doMouseTracking);
-    /**/void addNew2DVector();
-    /**/void addNew3DVector();
-    /**/void update3DVectorBuffers();
-    /**/bool isAny2DPointsActive();
-    /**/bool isAnyWrappedPointsActive();
-    
-
     FaceSelection faceSelection;
 
     /*!
@@ -972,7 +876,7 @@ public:
     * @param model the 3D model
     * @param scene structure contains matrices related to 3D model rendering & cam pos
     */
-    void updateTexture(int paintingMode, Material& paintingCustomMat);
+    void updateTexture(int paintingMode);
     void updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintingColor, int channelI, float channelStr);
 
     

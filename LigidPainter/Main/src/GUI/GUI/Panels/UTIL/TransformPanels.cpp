@@ -98,13 +98,6 @@ void panels_transform()
 
     //faceSelectionCheckComboList
     //paintingOverCheckComboList
-
-    vectorPaintingModePropertyPanel.pos.x = libraryPanel.pos.x + libraryPanel.scale.x + vectorPaintingModePropertyPanel.scale.x + 1;
-    vectorPaintingModePropertyPanel.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + vectorPaintingModePropertyPanel.scale.y + 1;
-
-    vectorPaintingMode2DModeWrapCheckBox.scale.x = vectorPaintingModePropertyPanel.scale.x; 
-    vectorPaintingMode2DModeWrapCheckBox.pos = vectorPaintingModePropertyPanel.pos; 
-    vectorPaintingMode2DModeWrapCheckBox.pos.y += vectorPaintingModePropertyPanel.scale.y + vectorPaintingMode2DModeWrapCheckBox.scale.y; 
     
     smearPaintingModePropertyPanel.pos.x = libraryPanel.pos.x + libraryPanel.scale.x + smearPaintingModePropertyPanel.scale.x + 1;
     smearPaintingModePropertyPanel.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + smearPaintingModePropertyPanel.scale.y + 1;

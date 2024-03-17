@@ -154,36 +154,6 @@ std::string __faceSelectionActiveMesh = "";
 int __faceSelectionActiveObjIndex = 0;
 
 
-void UI::renderPaintingModesPanel(Timer& timer, Painter& painter){
-    
-    if(painter.selectedPaintingModeIndex == 5){
-        
-        vectorPaintingModePropertyPanel.render(timer, !anyDialogActive); 
-        
-        if(!painter.wrapMode)
-            vectorPaintingMode2DModeWrapCheckBox.render(timer, !anyDialogActive);
-
-        if(vectorPaintingModePropertyPanel.sections[0].elements[1].button.clicked){
-            painter.subdivideSelectedPoints();
-        }
-        if(vectorPaintingModePropertyPanel.sections[0].elements[2].button.clicked){
-            painter.clearSelectedVectorPoints();
-        }
-        if(vectorPaintingModePropertyPanel.sections[0].elements[3].button.clicked || shortcuts_CTRL_X()){
-            painter.deleteSelectedVectorPoints();
-        }
-        if(vectorPaintingModePropertyPanel.sections[0].elements[4].button.clicked){
-            painter.applyVectorStrokes(
-                                            painter.vectorStrokes, 
-                                            vectorPaintingModePropertyPanel.sections[0].elements[0].comboBox.selectedIndex, 
-                                            paintingColorCheckComboList.panel.sections[0].elements[14].button.material, 
-                                            this->paintingOverTextureFields,
-                                            vectorPaintingMode2DModeWrapCheckBox.clickState1
-                                        );
-        }
-    }
-}
-
 extern bool textureFields_decidingWrapPointsMode;
 /* Defined in the TextureField.cpp */
 extern bool textureField_alreadyInteracted;
@@ -269,17 +239,11 @@ void UI::renderPanels(Timer &timer, Painter &painter, Project& project){
     this->renderPaintingOverTextureFields(timer, painter);
     Debugger::block("GUI : Texture fields"); // End
     
-    Debugger::block("GUI : Texture fields"); // Start
-    // Vectoral painting vectors
+    Debugger::block("GUI : Vectors"); // Start
     if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0 && !painter.paintingoverTextureEditorMode){
-        if(!painter.wrapMode){
-            painter.render2DVectors(timer, !anyDialogActive && !anyPanelHover);
-        }
-        else{
-            painter.render3DVectors(timer, !anyDialogActive && !anyPanelHover);
-        }
+        getVectorScene()->render_scene(timer, !anyDialogActive && !anyPanelHover, checkBox_wrap_mode.clickState1);
     }
-    Debugger::block("GUI : Texture fields"); // End
+    Debugger::block("GUI : Vectors"); // End
     
     Debugger::block("GUI : Panels : Panel rendering"); // Start
     
@@ -353,8 +317,6 @@ void UI::renderPanels(Timer &timer, Painter &painter, Project& project){
             button_painting_filter_mode_filter_render(timer, painter, !anyDialogActive);
             Debugger::block("GUI : Panels : Painting filter mode filter selection button"); // End
         }
-
-        renderPaintingModesPanel(timer, painter);
     }
     else{
         Debugger::block("GUI : Panels : Texture selected objects button"); // Start
@@ -425,15 +387,15 @@ void UI::renderPanels(Timer &timer, Painter &painter, Project& project){
         ShaderSystem::buttonShader().use();
     }
     else if(prevStraightLinePaintingCondition && !painter.faceSelection.editMode){
-        std::vector<VectorStroke> strokeArray;
-        strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
-        painter.applyVectorStrokes(
-                                    strokeArray, 
-                                    painter.selectedPaintingModeIndex, 
-                                    paintingColorCheckComboList.panel.sections[0].elements[14].button.material,
-                                    this->paintingOverTextureFields,
-                                    painter.wrapMode
-                                );
+    /*std::vector<VectorStroke> strokeArray;
+    strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
+    painter.applyVectorStrokes(
+                                strokeArray, 
+                                painter.selectedPaintingModeIndex, 
+                                paintingColorCheckComboList.panel.sections[0].elements[14].button.material,
+                                this->paintingOverTextureFields,
+                                painter.wrapMode
+                            );*/
     }
     
     prevStraightLinePaintingCondition = straightLinePaintingCondition;

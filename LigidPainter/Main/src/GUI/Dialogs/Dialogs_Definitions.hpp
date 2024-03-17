@@ -933,8 +933,8 @@ void registerPaintingAction(const std::string title, const Texture icon, Texture
                             bool aoPainted);
 
 // -- Vector --
-void registerVectorAction(const std::string title, std::vector<VectorStroke> vectorStrokes);
-void registerVectorAction(const std::string title, std::vector<VectorStroke3D> vectorStrokes);
+void registerVectorAction(const std::string title);
+void registerVectorAction(const std::string title);
 
 // -- Object Selection --
 void registerObjectSelectionAction(const std::string title, int meshI, std::vector<int> selectedObjectIndices);

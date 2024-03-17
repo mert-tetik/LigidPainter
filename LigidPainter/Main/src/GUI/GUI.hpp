@@ -30,16 +30,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "ContextMenuSystem/ContextMenus.hpp"
 
 
-struct NodePanel{
-    glm::vec2 position = glm::vec2(0);
-    float scroll = 1.f;
-    glm::vec2 mixVal = glm::vec2(0);
-    bool hitBoundaries = false;
-    int boundaryState = 0;
-
-};
-
-
 /*! @brief Used to render and handle the movable, resizable or rotatable dynamic textures (Used for painting over) 
             WRAP MODE : Texture field is being wrapped around the 3D model in 3D scene instead of being rendered in 2D
 */
@@ -207,16 +197,11 @@ private:
     glm::vec2 straightLinePaintingStartPos = glm::vec2(50.f);
     glm::vec2 straightLinePaintingDirectionPos = glm::vec2(50.f);
 
-    void renderPaintingModesPanel(Timer& timer, Painter& painter);
-    void renderPaintingPanel(Timer& timer, Painter &painter);
     void renderPaintingOverTextureFields(Timer& timer, Painter& painter);
 
 public:
     /* -- PANELS -- */
     
-    Panel vectorPaintingModePropertyPanel; 
-    CheckBox vectorPaintingMode2DModeWrapCheckBox;
-
     int selectedPaintingPanelMode = 0;
 
     bool anyPanelHover = false;
@@ -225,18 +210,11 @@ public:
 
     int frameCounter = 0; 
 
-    Texture textureEditorSelectedTxtr;
-    
     bool anyDialogActive = false;
-
-    NodePanel nodePanel;
 
     /*! @brief Default constructor */
     UI();
 
-    /*! @brief Initializes all the GUI elements. Creates the panels & stuff. And takes the parameters to the member variables. */
-    void init(Painter& painter);
-    
     /*! @brief Renders all the GUI */
     void render(Timer &timer,Project &project, Painter &painter, Skybox &skybox);
 

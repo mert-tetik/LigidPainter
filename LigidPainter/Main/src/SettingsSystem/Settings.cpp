@@ -18,6 +18,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "LibrarySystem/Library.hpp"
 #include "SettingsSystem/Settings.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "VectorScene/VectorScene.hpp"
 
 #include <vector>
 #include <string>
@@ -29,6 +30,7 @@ Context __context;
 Context __copyContext; 
 Scene __scene; //3D Scene structure
 Model* __model = nullptr;
+VectorScene __vectorScene;
 Model __sphereModel;
 Model __planeModel;
 Model __materialDisplayerModel;
@@ -136,6 +138,9 @@ Model* getModel(){
 void setModel(Model* model){
     __model = model;
 }
+VectorScene* getVectorScene(){
+    return &__vectorScene;
+} 
 Model* getSphereModel(){
     return &__sphereModel;
 }

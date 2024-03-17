@@ -30,8 +30,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Elements/Elements.hpp"
 #include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
 #include "UTIL/Util.hpp"
 #include "ShaderSystem/Shader.hpp"
+#include "VectorScene/VectorScene.hpp"
 
 #include "SettingsSystem/Settings.hpp"
 #include "MouseSystem/Mouse.hpp"
@@ -144,26 +146,19 @@ void Renderer::initRenderer(){
     Debugger::block("LOAD : Text Renderer"); //End
     
 
-    Debugger::block("LOAD : GUI"); //Start 143695872 137 MB
-    
-    //Init the userinterface
-    userInterface.init(painter);
-    
-    Debugger::block("LOAD : GUI"); //End
+    Debugger::block("LOAD : Panels"); //Start 143695872 137 MB
+    panels_init();
+    Debugger::block("LOAD : Panels"); //End
     
     Debugger::block("LOAD : Dialogs"); //Start
-    
     init_dialogs();
-    
     Debugger::block("LOAD : Dialogs"); //End
 
     Debugger::block("LOAD : Cursors"); //Start
-    //Load the cursors of the LigidPainter
     Mouse::loadCursors();
     Debugger::block("LOAD : Cursors"); //End
 
     Debugger::block("LOAD : Init painter"); //Start
-    //Init the painter
     painter.initPainter();
     Debugger::block("LOAD : Init painter"); //End
 
@@ -205,9 +200,12 @@ void Renderer::initRenderer(){
     Debugger::block("LOAD : Rest"); //End
 
     Debugger::block("LOAD : SOURCE LIB TEXTURES"); //Start 16916480
-
     // Load the source library textures
     Library::loadSourceLibTextures();
-    
     Debugger::block("LOAD : SOURCE LIB TEXTURES"); //End
+
+    Debugger::block("LOAD : INIT VECTOR SCENE"); //Start
+    *getVectorScene() = VectorScene({}, {}); 
+    Debugger::block("LOAD : INIT VECTOR SCENE"); //End
+
 }
