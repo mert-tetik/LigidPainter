@@ -26,10 +26,10 @@ Official Web Page : https:ligidtools.com/ligidpainter
 
 #include "3D/ThreeD.hpp" 
 #include "GUI/GUI.hpp" 
-#include "MouseSystem/Mouse.hpp" 
-#include "LibrarySystem/Library.hpp" 
-#include "SettingsSystem/Settings.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp" 
+#include "UTIL/Mouse/Mouse.hpp" 
+#include "UTIL/Library/Library.hpp" 
+#include "UTIL/Settings/Settings.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp" 
 
 #include <string>
 #include <iostream>
@@ -41,7 +41,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 // Defined in Painter/faceSelection.cpp
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 
-void LogDialog::undo(Painter& painter, std::vector<TextureField>& paintingOverTextureFields){
+void LogDialog::undo(Painter& painter){
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
         if(actions_Vectors[actions_Vectors.size() - 1].ID == VECTOR_ACTION){
             painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;

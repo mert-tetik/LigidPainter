@@ -21,8 +21,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
-#include "SettingsSystem/Settings.hpp"
-#include "LibrarySystem/Library.hpp"
+#include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Library/Library.hpp"
 
 #include <string>
 #include <fstream>

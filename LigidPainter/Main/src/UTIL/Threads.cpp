@@ -38,8 +38,8 @@ CHAT GPT (GPT-3.5) preview notes :
 #include <vector>
 
 #include "UTIL/Util.hpp"
-#include "LibrarySystem/Library.hpp"
-#include "SettingsSystem/Settings.hpp"
+#include "UTIL/Library/Library.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 ThreadElements projectUpdatingThreadElements;
 

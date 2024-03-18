@@ -28,16 +28,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
 #include "../../thirdparty/include/glm/gtx/string_cast.hpp"
 
-#include "GUI/Elements/Elements.hpp"
+#include "GUI/Elements.hpp"
 #include "GUI/GUI.hpp"
 #include "GUI/Panels.hpp"
 #include "UTIL/Util.hpp"
-#include "ShaderSystem/Shader.hpp"
-#include "VectorScene/VectorScene.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "Toolkit/VectorScene/VectorScene.hpp"
 
-#include "SettingsSystem/Settings.hpp"
-#include "MouseSystem/Mouse.hpp"
-#include "LibrarySystem/Library.hpp"
+#include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/Library/Library.hpp"
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
 

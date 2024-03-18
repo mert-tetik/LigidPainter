@@ -27,10 +27,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
-#include "SettingsSystem/Settings.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 //Forward declarations
-class ContextMenu;
 class LogDialog;
 class TextureField;
 class MaterialSelectionDialog;
@@ -785,24 +784,6 @@ public:
    void show(Timer &timer, TexturePack& receivedTexturePack);
 };
 
-//!------------------------------CONTEXT MENU------------------------------
-
-
-class ContextMenu
-{
-private:
-    
-public:
-    Panel contextPanel;
-    DialogControl dialogControl; 
-    
-    //Constructors
-    ContextMenu();
-    ContextMenu(std::vector<std::string> elements);
-    
-    /// @brief Renders context menu and returns the selected index
-    int show(Timer &timer);
-};
 
 //!------------------------------ PROJECT RECOVER ------------------------------
 

@@ -30,8 +30,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
-#include "ShaderSystem/Shader.hpp"
-#include "SettingsSystem/Settings.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 
 // Function to interpolate between two glm::vec2 points

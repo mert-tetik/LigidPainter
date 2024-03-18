@@ -25,9 +25,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <map>
 
-#include "GUI/Elements/Elements.hpp"
+#include "GUI/Elements.hpp"
 #include "UTIL/Util.hpp"
-#include "ShaderSystem/Shader.hpp"
+#include "UTIL/Shader/Shader.hpp"
 
 /// @brief renders the text
 void TextRenderer::renderText(){

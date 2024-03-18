@@ -19,9 +19,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "UTIL/Util.hpp"
-#include "GUI/Elements/Elements.hpp"
+#include "GUI/Elements.hpp"
 #include "3D/ThreeD.hpp"
-#include "LibrarySystem/Library.hpp"
+#include "UTIL/Library/Library.hpp"
 #include "GUI/GUI.hpp"
 
 #include <string>

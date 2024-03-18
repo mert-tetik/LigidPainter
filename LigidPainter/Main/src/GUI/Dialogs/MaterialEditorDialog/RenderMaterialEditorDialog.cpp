@@ -20,9 +20,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
-#include "SettingsSystem/Settings.hpp"
-#include "MouseSystem/Mouse.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -50,7 +50,7 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
             material->materialShortcuts[i].updateElement(*material, material->materialShortcuts[i].modI);
         }
 
-        bool mouseTrackingFlag = !(dialog_textureSelection.dialogControl.isActive() || ContextMenus::materialModifier.dialogControl.isActive() || ContextMenus::addMaterialModifier.dialogControl.isActive());
+        bool mouseTrackingFlag = true;
         
         // Changing / Updating the positions of the panels & scaling them
         this->positioningPanels();

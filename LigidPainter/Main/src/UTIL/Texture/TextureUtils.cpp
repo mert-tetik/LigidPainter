@@ -27,8 +27,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
-#include "ShaderSystem/Shader.hpp"
-#include "LibrarySystem/Library.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Library/Library.hpp"
 #include "GUI/GUI.hpp"
 
 unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip){

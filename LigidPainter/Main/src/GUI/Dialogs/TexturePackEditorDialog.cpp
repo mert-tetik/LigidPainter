@@ -22,9 +22,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
-#include "LibrarySystem/Library.hpp"
-#include "MouseSystem/Mouse.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "UTIL/Library/Library.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>

@@ -18,10 +18,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "GUI/Elements/Elements.hpp"
-#include "ShaderSystem/Shader.hpp"
-#include "MouseSystem/Mouse.hpp"
-#include "SettingsSystem/Settings.hpp"
+#include "GUI/Elements.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 #include <string>
 #include <fstream>

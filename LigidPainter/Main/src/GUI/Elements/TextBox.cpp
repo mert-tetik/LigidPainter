@@ -18,9 +18,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
-#include "ShaderSystem/Shader.hpp"
-#include "MouseSystem/Mouse.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp"
 
 #include <iostream>
 #include <string>

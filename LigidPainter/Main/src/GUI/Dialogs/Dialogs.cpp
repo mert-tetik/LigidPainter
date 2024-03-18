@@ -16,7 +16,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
  */
 
-#include "GUI/Dialogs/Dialogs.hpp"
+#include "GUI/Dialogs.hpp"
 
 MaterialEditorDialog dialog_materialEditor;
 LogDialog dialog_log;

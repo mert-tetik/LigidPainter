@@ -18,8 +18,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "GUI/Elements/Elements.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "GUI/Elements.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>

@@ -22,15 +22,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
 
-#include "GUI/Elements/Elements.hpp"
+#include "GUI/Elements.hpp"
 #include "GUI/GUI.hpp"
 #include "GUI/Panels.hpp"
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "Renderer.h"
-#include "ShaderSystem/Shader.hpp"
-#include "MouseSystem/Mouse.hpp"
-#include "SettingsSystem/Settings.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 bool _ligid_renderer_render_first_frame = true;
 
@@ -158,7 +158,7 @@ void Renderer::render(){
     glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
     
     // Process the shortcut inputs & move the camera gradually if necessary
-    getScene()->camera.posShortcutInteraction(!userInterface.anyDialogActive);
+    getScene()->camera.posShortcutInteraction();
 
     //Render each mesh
     this->renderMainModel();
@@ -167,8 +167,7 @@ void Renderer::render(){
 
     Debugger::block("3D Brush Cursor"); // Start
     if(            
-            !userInterface.anyPanelHover && 
-            !userInterface.anyDialogActive && 
+            !panels_any_hovered() && 
             (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 && painter.selectedPaintingModeIndex != 6 &&
             !painter.paintingoverTextureEditorMode &&
             !painter.faceSelection.editMode &&
@@ -186,7 +185,7 @@ void Renderer::render(){
     Debugger::block("3D Model Object Selection"); // Start
 
     // Check if an object is selected after rendering the mesh
-    if(painter.selectedDisplayingModeIndex == 0 && ((!userInterface.anyPanelHover || panel_objects.hover) && !userInterface.anyDialogActive && !*Mouse::RPressed() && !*Mouse::MPressed()) || dialog_log.unded) 
+    if(painter.selectedDisplayingModeIndex == 0 && ((!panels_any_hovered() || panel_objects.hover) && !*Mouse::RPressed() && !*Mouse::MPressed()) || dialog_log.unded) 
         getModel()->selectObject();
 
     Debugger::block("3D Model Object Selection"); // End
@@ -216,8 +215,7 @@ void Renderer::render(){
     //Painting
     if(
             *Mouse::LPressed() && 
-            !userInterface.anyPanelHover && 
-            !userInterface.anyDialogActive && 
+            !panels_any_hovered() && 
             (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 &&
             !painter.paintingoverTextureEditorMode &&
             !painter.faceSelection.editMode &&

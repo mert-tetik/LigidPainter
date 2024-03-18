@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 */
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
@@ -26,12 +26,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-#include "GUI/Elements/Elements.hpp"
+#include "GUI/Elements.hpp"
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
-#include "ShaderSystem/Shader.hpp"
-#include "SettingsSystem/Settings.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Settings/Settings.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp"
 
 //0 = albedo
 //1 = roughness

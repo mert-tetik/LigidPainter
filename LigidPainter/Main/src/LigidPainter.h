@@ -21,8 +21,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "../../thirdparty/include/glm/glm.hpp"
 
-#include "SettingsSystem/Settings.hpp"
-#include "ShaderSystem/Shader.hpp"
+#include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Shader/Shader.hpp"
 #include "Renderer.h"
 #include "UTIL/Util.hpp"
 

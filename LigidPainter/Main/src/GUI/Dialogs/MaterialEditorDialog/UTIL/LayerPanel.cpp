@@ -20,9 +20,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
-#include "SettingsSystem/Settings.hpp"
-#include "MouseSystem/Mouse.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>
@@ -319,7 +319,7 @@ static void contextMenuInteractions(Material* material, Panel& modifiersPanel, P
         for (size_t elementI = 0; elementI < dialog_materialEditor.layerPanel.sections[0].elements.size(); elementI++)
         {
             if(dialog_materialEditor.layerPanel.sections[0].elements[elementI].button.hover && *Mouse::RClick()){
-                int res = ContextMenus::materialModifier.show(timer);   
+                int res = show_context_menu(timer, {"Delete", "Move to top", "Move to bottom", "Change mask"});   
                
                 if( elementI < material->materialModifiers.size()){ //If material modifier context menu is active
                     
@@ -397,7 +397,7 @@ static void contextMenuInteractions(Material* material, Panel& modifiersPanel, P
         
         bool newModifierAdded = false;
 
-        int res = ContextMenus::addMaterialModifier.show(timer);   
+        int res = show_context_menu(timer, {"Texture modifier", "Dust modifier", "Asphalt modifier", "Liquid modifier", "Moss modifier", "Rust modifier", "Skin modifier", "Solid modifier", "Wooden modifier", "Math modifier"});
 
         // Texture Modifier
         if(res == 0){

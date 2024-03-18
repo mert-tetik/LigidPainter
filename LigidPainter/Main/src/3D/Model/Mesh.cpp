@@ -22,8 +22,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "3D/ThreeD.hpp"
-#include "ShaderSystem/Shader.hpp"
-#include "SettingsSystem/Settings.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 glm::vec3 Mesh::getCenterPosition(){
     glm::vec3 center = glm::vec3(0.f);

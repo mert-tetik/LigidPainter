@@ -22,10 +22,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
-#include "MouseSystem/Mouse.hpp"
-#include "SettingsSystem/Settings.hpp"
-#include "LibrarySystem/Library.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Library/Library.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp"
 
 #include <string>
 #include <fstream>

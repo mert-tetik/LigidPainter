@@ -28,8 +28,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <map> //std::map
 #include <atomic>
 
-#include "ShaderSystem/Shader.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp"
 
 //forward declerations :
 
@@ -626,36 +626,6 @@ private:
 
 };
 
-struct ThreeDPoint{
-    glm::vec3 pos = glm::vec3(0.f);
-    glm::vec3 normal = glm::vec3(0.f);
-
-    glm::vec4 color = glm::vec4(1.f);
-    glm::vec4 colorActive = ColorPalette::themeColor;
-
-    bool clickState1 = false;
-    
-    bool active = false;
-    bool moving = false;
-
-    int detailI = 0;
-
-    ThreeDPoint(){}
-    ThreeDPoint(glm::vec3 pos){
-        this->pos = pos;
-    }
-    ThreeDPoint(glm::vec3 pos, glm::vec3 normal){
-        this->pos = pos;
-        this->normal = normal;
-    }
-
-    /*! @return true if clicked to the point*/
-    bool render(Timer& timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius, bool canMove);
-
-    /*! @return true if the moving conditions of the point is set*/
-    bool areMovingConditionsSet(bool canMove);
-};
-
 struct MirrorSide{
     bool active = false;
 
@@ -782,7 +752,6 @@ public:
     Texture projectedPaintingTexture8;
     Texture projectedPaintingTexture16f;
 
-    Texture paintingOverTexture;
     bool usePaintingOver = false;
     bool paintingoverTextureEditorMode = false;
     bool paintingOverGrayScale = false;

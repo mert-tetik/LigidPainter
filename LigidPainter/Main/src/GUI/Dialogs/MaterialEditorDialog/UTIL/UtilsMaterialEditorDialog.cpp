@@ -20,8 +20,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
-#include "MouseSystem/Mouse.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp"
 
 #include <string>
 #include <iostream>

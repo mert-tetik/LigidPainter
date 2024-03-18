@@ -27,7 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
-#include "Layers/Layers.hpp"
+#include "Toolkit/Layers/Layers.hpp"
     
 #define WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
                                     LGDLOG::start<< "ERROR : Writing lgdmodel file. Failed to write at : " << loc << LGDLOG::end;\

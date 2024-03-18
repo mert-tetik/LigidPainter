@@ -26,7 +26,7 @@ SceneAxisDisplayer.hpp : Is used to render a single 2D square.
 #include <vector>
 
 #include "UTIL/Util.hpp"
-#include "ShaderSystem/Shader.hpp"
+#include "UTIL/Shader/Shader.hpp"
 #include "3D/ThreeD.hpp"
     
 SceneAxisDisplayer::SceneAxisDisplayer(){}

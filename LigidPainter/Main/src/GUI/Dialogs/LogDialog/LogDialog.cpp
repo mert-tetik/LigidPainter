@@ -24,10 +24,10 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
 #include "3D/ThreeD.hpp" 
 #include "GUI/GUI.hpp" 
-#include "MouseSystem/Mouse.hpp" 
-#include "LibrarySystem/Library.hpp" 
-#include "SettingsSystem/Settings.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp" 
+#include "UTIL/Mouse/Mouse.hpp" 
+#include "UTIL/Library/Library.hpp" 
+#include "UTIL/Settings/Settings.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp" 
 
 #include <string>
 #include <iostream>
@@ -756,7 +756,7 @@ void LogDialog::render(
             shortcuts_CTRL_Z()
         )
     {
-        undo(painter, paintingOverTextureFields);
+        undo(painter);
     }
 
     newLibraryAction = false;

@@ -12,7 +12,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include "3D/Material/Material.hpp"
-#include "Layers/Layers.hpp"
+#include "Toolkit/Layers/Layers.hpp"
 
 #ifndef THREED_HPP
 #define THREED_HPP
@@ -292,6 +292,36 @@ public:
     
     /// @brief Draw the square (is not used) 
     void draw();
+};
+
+struct ThreeDPoint{
+    glm::vec3 pos = glm::vec3(0.f);
+    glm::vec3 normal = glm::vec3(0.f);
+
+    glm::vec4 color = glm::vec4(1.f);
+    glm::vec4 colorActive = ColorPalette::themeColor;
+
+    bool clickState1 = false;
+    
+    bool active = false;
+    bool moving = false;
+
+    int detailI = 0;
+
+    ThreeDPoint(){}
+    ThreeDPoint(glm::vec3 pos){
+        this->pos = pos;
+    }
+    ThreeDPoint(glm::vec3 pos, glm::vec3 normal){
+        this->pos = pos;
+        this->normal = normal;
+    }
+
+    /*! @return true if clicked to the point*/
+    bool render(Timer& timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius, bool canMove);
+
+    /*! @return true if the moving conditions of the point is set*/
+    bool areMovingConditionsSet(bool canMove);
 };
 
 class ThreeDBox

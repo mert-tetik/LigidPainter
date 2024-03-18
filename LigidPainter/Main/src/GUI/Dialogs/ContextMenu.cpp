@@ -18,41 +18,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "GUI/GUI.hpp"
-#include "ColorPaletteSystem/ColorPalette.hpp"
-#include "MouseSystem/Mouse.hpp"
+#include "GUI/Dialogs.hpp"
+#include "GUI/Elements.hpp"
+#include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
 
 #include <string>
 #include <iostream>
 #include <vector>
 
-ContextMenu::ContextMenu(){}
-
-ContextMenu::ContextMenu(std::vector<std::string> elements){
+static Panel create_panel(std::vector<std::string>& elements){
     
-    //Create the context panel
-    contextPanel = Panel(
-        {
-            //Sections
-        },
-        glm::vec2(5.f,5.f), //Scale
-        glm::vec3(50.f,50.f,0.95f), //Pos
-        ColorPalette::mainColor,
-        glm::vec4(0.f),
-        true,
-        true,
-        true,
-        true,
-        true,
-        1.f,
-        1,
-        {},
-        20.f,
-        false
-    );
-
-    contextPanel.solidStyle = true;
-
     //Push the elements taken from parameter into the context panel
     Section section;
     for (size_t i = 0; i < elements.size(); i++)
@@ -64,34 +40,60 @@ ContextMenu::ContextMenu(std::vector<std::string> elements){
         section.elements.push_back(btn);
     }
     
-    contextPanel.sections.push_back(section);
+    //Create the context panel
+    Panel contextPanel = Panel(
+                                {
+                                    section
+                                },
+                                glm::vec2(5.f,5.f), //Scale
+                                glm::vec3(50.f,50.f,0.95f), //Pos
+                                ColorPalette::mainColor,
+                                glm::vec4(0.f),
+                                true,
+                                true,
+                                true,
+                                true,
+                                true,
+                                1.f,
+                                1,
+                                {},
+                                20.f,
+                                false
+                            );
+
     contextPanel.scale.y = elements.size();
+    contextPanel.solidStyle = true;
+
+    return contextPanel;
 }
 
-int ContextMenu::show(Timer &timer){
+static DialogControl contextmenu_dialogControl;
+int show_context_menu(Timer &timer, std::vector<std::string> elements){
     
-    dialogControl.activate();
+    Panel contextPanel = create_panel(elements);
+    
+    contextmenu_dialogControl.activate();
 
     //Update the position of the context panel
     contextPanel.pos = glm::vec3(
                                     Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f,
-                                    Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + ContextMenus::texture.contextPanel.scale.y,
+                                    Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f + contextPanel.scale.y,
                                     0.95f
                                 );
 
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        contextmenu_dialogControl.updateStart();
         
         //Render the context panel
         contextPanel.render(timer, true);
     
         bool anyBtnClicked = false;
-        for (size_t i = 0; i < this->contextPanel.sections[0].elements.size(); i++)
+        for (size_t i = 0; i < contextPanel.sections[0].elements.size(); i++)
         {
-            if(this->contextPanel.sections[0].elements[i].button.clicked){
-                this->dialogControl.unActivate();
-                this->dialogControl.mixVal = 0.f;
+            if(contextPanel.sections[0].elements[i].button.clicked){
+                contextmenu_dialogControl.unActivate();
+                contextmenu_dialogControl.mixVal = 0.f;
                 return i;
             }
         }
@@ -101,15 +103,15 @@ int ContextMenu::show(Timer &timer){
             *Mouse::mouseScroll() || //Mouse middle click
             getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Pressed to escape key 
             getContext()->window.isKeyPressed(LIGIDGL_KEY_ENTER) == LIGIDGL_PRESS || //Pressed to enter key
-            !this->contextPanel.hover
+            !contextPanel.hover
         )
         {
-            this->dialogControl.unActivate(); //Turn the context menu offs
+            contextmenu_dialogControl.unActivate(); //Turn the context menu offs
         }
         
-        dialogControl.updateEnd(timer, 0.15f);
+        contextmenu_dialogControl.updateEnd(timer, 0.15f);
 
-        if(dialogControl.mixVal == 0.f)
+        if(contextmenu_dialogControl.mixVal == 0.f)
             break;
     }
 

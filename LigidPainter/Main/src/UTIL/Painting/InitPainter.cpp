@@ -20,7 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
-#include "SettingsSystem/Settings.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 #include <string>
 #include <fstream>

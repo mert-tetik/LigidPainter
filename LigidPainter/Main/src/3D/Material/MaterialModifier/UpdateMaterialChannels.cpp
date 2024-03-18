@@ -27,11 +27,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-#include "GUI/Elements/Elements.hpp"
+#include "GUI/Elements.hpp"
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
-#include "ShaderSystem/Shader.hpp"
-#include "SettingsSystem/Settings.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 //0 = albedo
 //1 = roughness

@@ -28,7 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <map>
 
-#include "GUI/Elements/Elements.hpp"
+#include "GUI/Elements.hpp"
 #include "UTIL/Util.hpp"
 
 TextRenderer textRenderer;

@@ -16,7 +16,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LGD_MATERIAL_HPP
 
 #include "UTIL/Util.hpp"
-#include "ShaderSystem/Shader.hpp"
+#include "UTIL/Shader/Shader.hpp"
 #include <iostream>
 
 /// @brief Forward decleration for the @ref Section structure
