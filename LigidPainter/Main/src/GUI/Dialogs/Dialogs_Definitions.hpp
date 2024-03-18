@@ -999,11 +999,11 @@ public:
 
    //Public member functions
    void render(
-               Timer timer, Painter& painter, std::vector<TextureField>& paintingOverTextureFields, Project &project
+               Timer timer, Painter& painter, Project &project
             );
 
    bool unded = false;
-   void undo(Painter& painter, std::vector<TextureField>& paintingOverTextureFields);
+   void undo(Painter& painter);
 
    bool isHovered();
 };

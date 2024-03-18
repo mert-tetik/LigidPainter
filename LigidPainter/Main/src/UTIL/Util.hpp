@@ -846,22 +846,22 @@ public:
     void initPainter();
     
     /*! @brief Painting the strokeLocations */
-    void doPaint(std::vector<glm::vec2> strokeLocations, bool firstStroke, int paintingMode, bool highResMode, std::vector<TextureField> textureFields);
+    void doPaint(std::vector<glm::vec2> strokeLocations, bool firstStroke, int paintingMode, bool highResMode);
     
     /*! @brief Painting the cursor location & generating strokeLocations*/
-    void doPaint(bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, std::vector<TextureField> textureFields);
+    void doPaint(bool wrapMode, bool firstStroke, int paintingMode, bool highResMode);
     
     /*! @brief Painting the manual point (cursorPos) & generating strokeLocations*/
-    void doPaint(glm::vec2 cursorPos, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, std::vector<TextureField> textureFields);
+    void doPaint(glm::vec2 cursorPos, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode);
     
     /*! @brief Painting the 3D point & generating strokeLocations*/
-    void doPaint(ThreeDPoint threeDPoint, bool firstStroke, int paintingMode, bool highResMode, std::vector<TextureField> textureFields);
+    void doPaint(ThreeDPoint threeDPoint, bool firstStroke, int paintingMode, bool highResMode);
 
     /*! 
     * @brief do painting (paint 2D). Called every frame if painting conditions are set. 
     *           painting conditions are : mouse left button pressed & cursor not hover any panel etc. 
     */
-    void paintBuffers(std::vector<glm::vec2> strokeLocations, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode, std::vector<TextureField> textureFields);
+    void paintBuffers(std::vector<glm::vec2> strokeLocations, bool wrapMode, bool firstStroke, int paintingMode, bool highResMode);
     
     /*!
     * @brief call that function in a single frame as the painting is completed (Mouse left button released)
@@ -924,7 +924,7 @@ public:
 
     unsigned int getBufferResolutions(int bufferIndex);
 
-    void updatePaintingOverTexture(std::vector<TextureField> textureFields);
+    void updatePaintingOverTexture();
 
 
 private:
@@ -937,8 +937,7 @@ private:
                                                         MirrorSide& oXZSide, MirrorSide& oYZSide, MirrorSide& oXYZSide, float mirrorXOffset, float mirrorYOffset, 
                                                         float mirrorZOffset,Texture paintingTxtrObj, Texture& selectedTexture,  Texture& projectedPaintingTexture,  
                                                         int selectedPaintingModeIndex, float brushPropertiesOpacity,  bool threeDimensionalMode, int selectedMeshIndex, 
-                                                        bool faceSelectionActive, Texture selectedPrimitives, bool highResMode,
-                                                        std::vector<TextureField> textureFields, bool firstStroke, bool wrapMode
+                                                        bool faceSelectionActive, Texture selectedPrimitives, bool highResMod, bool firstStroke, bool wrapMode
                                                     );
 };
 

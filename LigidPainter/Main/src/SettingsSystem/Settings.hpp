@@ -20,6 +20,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
 #include "VectorScene/VectorScene.hpp"
+#include "TextureFieldScene/TextureFieldScene.hpp"
 
 struct Context{
     LigidWindow window;
@@ -190,6 +191,7 @@ Model* getMaterialDisplayerModel();
 Model* getTDBrushCursorModel();
 Box* getBox();
 VectorScene* getVectorScene();
+TextureFieldScene* getTextureFieldScene();
 
 struct AppTextures{ 
     //--Icons

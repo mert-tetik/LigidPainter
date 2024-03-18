@@ -69,9 +69,7 @@ glm::ivec2 Texture::getResolution(){
         return glm::ivec2(1024);
     }
     
-    while (glGetError() != GL_NO_ERROR)
-    {
-    }
+    while (glGetError() != GL_NO_ERROR){}
     
     int w = 0, h = 0;
 

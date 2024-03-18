@@ -154,53 +154,6 @@ std::string __faceSelectionActiveMesh = "";
 int __faceSelectionActiveObjIndex = 0;
 
 
-extern bool textureFields_decidingWrapPointsMode;
-/* Defined in the TextureField.cpp */
-extern bool textureField_alreadyInteracted;
-
-void UI::renderPaintingOverTextureFields(Timer& timer, Painter& painter){
-    
-    getBox()->bindBuffers();
-    glClear(GL_DEPTH_BUFFER_BIT);
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-    ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
-
-    textureFields_decidingWrapPointsMode = false;
-    textureField_alreadyInteracted = false;
-
-    // Rendering all the painting over texture fields
-    if(painter.usePaintingOver && (!anyDialogActive || painter.paintingoverTextureEditorMode)){
-        for (int i = 0; i < this->paintingOverTextureFields.size(); i++)
-        {
-
-            bool anyHover = false;
-            for (int ii = 0; ii < this->paintingOverTextureFields.size(); ii++){
-                if(ii > i){
-                    if(this->paintingOverTextureFields[ii].is2DModeHovered()){
-                        anyHover = true;
-                    }    
-                }
-            }
-
-            if((painter.wrapMode && this->paintingOverTextureFields[i].wrapMode) || !painter.wrapMode || painter.paintingoverTextureEditorMode){
-                this->paintingOverTextureFields[i].render(
-                                                            timer, 
-                                                            painter,
-                                                            this->paintingOverTextureFields, 
-                                                            i, 
-                                                            painter.paintingoverTextureEditorMode, 
-                                                            false, 
-                                                            this->anyPanelHover
-                                                        );
-            }
-        }    
-    }
-
-    ShaderSystem::buttonShader().use();   
-}
-
 static void renderDotsToWindow(){
     ShaderSystem::dotsShader().use();
 
@@ -235,18 +188,19 @@ void UI::renderPanels(Timer &timer, Painter &painter, Project& project){
         Debugger::block("GUI : Rendering dots for the painting over texture fields editor mode"); // End
     }
 
-    Debugger::block("GUI : Texture fields"); // Start
-    this->renderPaintingOverTextureFields(timer, painter);
-    Debugger::block("GUI : Texture fields"); // End
-    
-    Debugger::block("GUI : Vectors"); // Start
-    if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0 && !painter.paintingoverTextureEditorMode){
-        getVectorScene()->render_scene(timer, !anyDialogActive && !anyPanelHover, checkBox_wrap_mode.clickState1);
+    if(painter.usePaintingOver){
+        Debugger::block("GUI : Texture fields"); // Start
+        getTextureFieldScene()->render(timer, painter, !anyPanelHover, checkBox_wrap_mode.clickState1);
+        Debugger::block("GUI : Texture fields"); // End
     }
-    Debugger::block("GUI : Vectors"); // End
+    
+    if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0 && !painter.paintingoverTextureEditorMode){
+        Debugger::block("GUI : Vectors"); // Start
+        getVectorScene()->render_scene(timer, !anyDialogActive && !anyPanelHover, checkBox_wrap_mode.clickState1);
+        Debugger::block("GUI : Vectors"); // End
+    }
     
     Debugger::block("GUI : Panels : Panel rendering"); // Start
-    
     
     Debugger::block("GUI : Panels : Navigation panel"); // Start
     panel_navigation_render(timer, project, !anyDialogActive);
@@ -393,7 +347,6 @@ void UI::renderPanels(Timer &timer, Painter &painter, Project& project){
                                 strokeArray, 
                                 painter.selectedPaintingModeIndex, 
                                 paintingColorCheckComboList.panel.sections[0].elements[14].button.material,
-                                this->paintingOverTextureFields,
                                 painter.wrapMode
                             );*/
     }
@@ -434,7 +387,7 @@ void UI::renderDialogs(Timer &timer,  Project &project, Skybox &skybox, Painter&
     
     if(!Settings::properties()->cat_hide){
         dialog_log.render(
-                            timer, painter, paintingOverTextureFields, project
+                            timer, painter, project
                         );
     }
     else

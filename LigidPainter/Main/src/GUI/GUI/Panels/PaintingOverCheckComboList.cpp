@@ -59,8 +59,8 @@ void checkComboList_painting_over_render(Timer& timer, Painter& painter, bool do
         
         if(texture.ID){
             lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties = texture.proceduralProps;
-            registerTextureFieldAction("New texture field via texture selection dialog", this->paintingOverTextureFields);
-            this->paintingOverTextureFields.push_back(TextureField(texture));
+            registerTextureFieldAction("New texture field via texture selection dialog", getTextureFieldScene());
+            getTextureFieldScene()->add_new(TextureField(texture));
         }
     }
     else if(checkComboList_painting_over.panel.sections[0].elements[3].button.clicked){
@@ -69,8 +69,8 @@ void checkComboList_painting_over_render(Timer& timer, Painter& painter, bool do
         if(test.size()){
             Texture texture;
             texture.load(test.c_str());
-            registerTextureFieldAction("New texture field via path", this->paintingOverTextureFields);
-            this->paintingOverTextureFields.push_back(TextureField(texture));
+            registerTextureFieldAction("New texture field via path", getTextureFieldScene());
+            getTextureFieldScene()->add_new(TextureField(texture));
         }
     }
 }

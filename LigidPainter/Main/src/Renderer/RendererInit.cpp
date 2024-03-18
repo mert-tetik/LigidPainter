@@ -207,5 +207,9 @@ void Renderer::initRenderer(){
     Debugger::block("LOAD : INIT VECTOR SCENE"); //Start
     *getVectorScene() = VectorScene({}, {}); 
     Debugger::block("LOAD : INIT VECTOR SCENE"); //End
+    
+    Debugger::block("LOAD : INIT TEXTURE FIELD SCENE"); //Start
+    *getTextureFieldScene() = TextureFieldScene({}); 
+    Debugger::block("LOAD : INIT TEXTURE FIELD SCENE"); //End
 
 }

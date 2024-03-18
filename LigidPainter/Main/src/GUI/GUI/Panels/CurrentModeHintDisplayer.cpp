@@ -109,7 +109,7 @@ void current_mode_hint_displayer_render(Timer& timer, Painter& painter)
     if(painter.paintingoverTextureEditorMode){
         currentModeDisplayer.text = "Painting Over Edit Mode";
         
-        currentModeHintDisplayer.text = std::to_string(paintingOverTextureFields.size()) + " Textures";
+        currentModeHintDisplayer.text = std::to_string(getTextureFieldScene()->texture_fields.size()) + " Textures";
     }
 
     currentModeDisplayer.pos = panel_displaying_modes.pos;

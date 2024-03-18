@@ -230,8 +230,7 @@ void Renderer::render(){
                             painter.wrapMode,
                             *Mouse::LClick(),
                             painter.selectedPaintingModeIndex,
-                            false || painter.wrapMode,
-                            userInterface.paintingOverTextureFields
+                            false || painter.wrapMode
                         );
     }
 
@@ -242,8 +241,7 @@ void Renderer::render(){
                             painter.wrapMode,
                             true,
                             painter.selectedPaintingModeIndex,
-                            true,
-                            userInterface.paintingOverTextureFields
+                            true
                         );
 
         //Update the selected texture after painting
@@ -543,10 +541,6 @@ void Renderer::renderMainModel(){
         ShaderSystem::tdModelShader().setFloat("ambientOcclusionVal", painter.ambientOcclusionVal);
 
         ShaderSystem::tdModelShader().setInt("paintingMode", painter.refreshable);
-        
-        ShaderSystem::tdModelShader().setInt("paintingOverTexture", 13);
-        glActiveTexture(GL_TEXTURE13);
-        glBindTexture(GL_TEXTURE_2D, painter.paintingOverTexture.ID);
         
         if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);

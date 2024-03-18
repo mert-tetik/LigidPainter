@@ -133,9 +133,6 @@ void Painter::initPainter(){
     this->oXYZSide.projectedPaintingTexture = projectedPaintingTexture8Low;
 
     this->oXYZSide.effectAxis = glm::vec3(1.f, 1.f, 1.f);
-    
-    //--------- init paintingOverTexture --------- 
-    this->paintingOverTexture = Texture(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR);
 
     //--------- init paintingFBO --------- 
     this->paintingFBO = Framebuffer(paintingTexture8, GL_TEXTURE_2D, "Painting feature's FBO");

@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "TextureFieldScene/TextureFieldScene.hpp"
 
 #include <string>
 #include <iostream>
@@ -104,14 +105,14 @@ void TextureField::render(
                             int& srcVectorI, 
                             bool editMode, 
                             bool generatingTextureMode, 
-                            bool anyPanelHover
+                            bool doMouseTracking
                         )
 {
     if(this->wrapMode){
-        this->renderWrappedTextureField(timer, painter, srcVector, srcVectorI, editMode, generatingTextureMode, anyPanelHover);
+        this->renderWrappedTextureField(timer, painter, srcVector, srcVectorI, editMode, generatingTextureMode, doMouseTracking);
     }
 
     else{
-        this->render2DTextureField(timer, painter, srcVector, srcVectorI, editMode, generatingTextureMode, anyPanelHover);
+        this->render2DTextureField(timer, painter, srcVector, srcVectorI, editMode, generatingTextureMode, doMouseTracking);
     }
 }

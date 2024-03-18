@@ -31,6 +31,7 @@ Context __copyContext;
 Scene __scene; //3D Scene structure
 Model* __model = nullptr;
 VectorScene __vectorScene;
+TextureFieldScene __textureFieldScene;
 Model __sphereModel;
 Model __planeModel;
 Model __materialDisplayerModel;
@@ -141,6 +142,9 @@ void setModel(Model* model){
 VectorScene* getVectorScene(){
     return &__vectorScene;
 } 
+TextureFieldScene* getTextureFieldScene(){
+    return &__textureFieldScene;
+}
 Model* getSphereModel(){
     return &__sphereModel;
 }

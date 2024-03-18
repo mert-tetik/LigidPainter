@@ -162,7 +162,6 @@ static std::string lastProjectPath;
 void LogDialog::render(
                             Timer timer, 
                             Painter& painter, 
-                            std::vector<TextureField>& paintingOverTextureFields,
                             Project &project
                         )
 {

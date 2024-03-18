@@ -117,7 +117,7 @@ public:
 
     void render_scene(Timer& timer, bool doMouseTracking, bool threeD);
 
-    void apply_strokes(bool threeD, std::vector<TextureField> textureFields, bool twoDWrap);
+    void apply_strokes(bool threeD, bool twoDWrap);
     void delete_selected_points(bool threeD);
     void clear_points(bool threeD);
     void subdivide_selected_points(bool threeD);

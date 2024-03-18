@@ -74,7 +74,6 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
     if(this->interaction_panel.sections[0].elements[4].button.clicked){
         this->apply_strokes(
                                 threeD,
-                                paintingOverTextureFields,
                                 twoD_mode_wrap_checkBox.clickState1
                             );
     }

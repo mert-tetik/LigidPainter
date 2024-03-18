@@ -121,33 +121,6 @@ glm::mat4 MirrorSide::getViewMat(glm::vec3 offset){
     return getScene()->calculateViewMatrix(camPos, orgOriginPos * -this->effectAxis - offset * 2.f);
 }
 
-void Painter::updatePaintingOverTexture(std::vector<TextureField> textureFields){
-    glm::ivec2 paintingRes = glm::vec2(this->getBufferResolutions(0));
-
-    Framebuffer FBO = Framebuffer(this->paintingOverTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, paintingRes), "update painting over texture");
-    FBO.bind();
-
-    glViewport(0, 0, paintingRes.x, paintingRes.y);
-
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Rendering all the painting over texture fields
-    for (int i = 0; i < textureFields.size(); i++)
-    {
-        if((this->wrapMode && textureFields[i].wrapMode) || !this->wrapMode){
-            textureFields[i].render(Timer(), *this, textureFields, i, false, true, false);
-        }
-    }    
-
-    // Finish
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-
-    // Deleting the OpenGL framebuffer object & the renderbuffer object
-    FBO.deleteBuffers(false, true);
-}
-
 static Mesh emptyMesh;
 Mesh* Painter::getSelectedMesh(){
     if(this->selectedMeshIndex < getModel()->meshes.size())

@@ -133,13 +133,10 @@ void Painter::doPaint(
                             // Dynamic Variables
                             bool firstStroke,
                             int paintingMode, 
-                            bool highResMode, 
-                            
-                            // Static Constants
-                            std::vector<TextureField> textureFields
+                            bool highResMode 
                         )
 {
-    this->paintBuffers(strokeLocations, false, firstStroke, paintingMode, highResMode, textureFields);
+    this->paintBuffers(strokeLocations, false, firstStroke, paintingMode, highResMode);
 }
 
 void Painter::doPaint(      
@@ -149,9 +146,6 @@ void Painter::doPaint(
                             bool firstStroke,
                             int paintingMode, 
                             bool highResMode, 
-                            
-                            // Static Constants
-                            std::vector<TextureField> textureFields
                         )
 {
 
@@ -165,8 +159,7 @@ void Painter::doPaint(
                     wrapMode,
                     firstStroke,
                     paintingMode,
-                    highResMode,
-                    textureFields
+                    highResMode
                 );
 }
 
@@ -177,10 +170,7 @@ void Painter::doPaint(
                             // Dynamic Variables
                             bool firstStroke,
                             int paintingMode, 
-                            bool highResMode, 
-                            
-                            // Static Constants
-                            std::vector<TextureField> textureFields
+                            bool highResMode
                         )
 {
     //First frame the painting is started
@@ -208,8 +198,7 @@ void Painter::doPaint(
                                 ThreeDPoint(glm::vec3(posData[0], posData[1], posData[2]), glm::vec3(normalData[0], normalData[1], normalData[2])),
                                 firstStroke,
                                 paintingMode,
-                                highResMode,
-                                textureFields
+                                highResMode
                             );
             }
 
@@ -217,7 +206,7 @@ void Painter::doPaint(
             delete[] normalData;
         }
         else{
-            this->paintBuffers(this->getCursorSubstitution(this->brushProperties.spacing, cursorPos, lastCursorPos), false, firstStroke, paintingMode, highResMode, textureFields);
+            this->paintBuffers(this->getCursorSubstitution(this->brushProperties.spacing, cursorPos, lastCursorPos), false, firstStroke, paintingMode, highResMode);
         }
     }
 
@@ -230,10 +219,7 @@ void Painter::doPaint(
                             // Dynamic Variables
                             bool firstStroke,
                             int paintingMode, 
-                            bool highResMode, 
-                            
-                            // Static Constants
-                            std::vector<TextureField> textureFields
+                            bool highResMode
                         )
 {
 
@@ -379,7 +365,7 @@ void Painter::doPaint(
     this->paintingFBO.setColorBuffer(paintingTexture, GL_TEXTURE_2D);
     this->paintingFBO.removeRenderbuffer();
     
-    this->paintBuffers(strokeLocations, true, firstStroke, paintingMode, highResMode, textureFields);
+    this->paintBuffers(strokeLocations, true, firstStroke, paintingMode, highResMode);
 
     getScene()->camera.cameraPos = oldCamPos;
     getScene()->camera.originPos = oldCamOrigin;
@@ -395,10 +381,7 @@ void Painter::paintBuffers(
                             bool wrapMode,
                             bool firstStroke,
                             int paintingMode, 
-                            bool highResMode, 
-                            
-                            // Static Constants
-                            std::vector<TextureField> textureFields
+                            bool highResMode 
                         )
 {
     glm::ivec2 paintingRes = glm::ivec2(getBufferResolutions(0));
@@ -480,7 +463,7 @@ void Painter::paintBuffers(
                                                 this->oXYZSide, this->mirrorXOffset, this->mirrorYOffset, this->mirrorZOffset, paintingTxtrObj, this->selectedTexture, 
                                                 this->projectedPaintingTexture, paintingMode, this->brushProperties.opacity, 
                                                 this->threeDimensionalMode, this->selectedMeshIndex, this->faceSelection.activated, 
-                                                this->faceSelection.selectedFaces, highResMode, textureFields, firstStroke, wrapMode
+                                                this->faceSelection.selectedFaces, highResMode, firstStroke, wrapMode
                                             );
 
     if(wrapMode){
@@ -629,7 +612,7 @@ void Painter::projectThePaintingTexture(
 
     // Bind the painting over texture
     glActiveTexture(GL_TEXTURE9);
-    glBindTexture(GL_TEXTURE_2D, this->paintingOverTexture.ID);
+    glBindTexture(GL_TEXTURE_2D, getTextureFieldScene()->painting_over_texture.ID);
     
     // Bind the mesh mask texture
     glActiveTexture(GL_TEXTURE10);
@@ -729,7 +712,6 @@ void Painter::generateMirroredProjectedPaintingTexture(
                                                         Texture selectedPrimitives,
                                                         bool highResMode,
 
-                                                        std::vector<TextureField> textureFields,
                                                         bool firstStroke,
                                                         bool wrapMode
                                                     )
@@ -739,7 +721,7 @@ void Painter::generateMirroredProjectedPaintingTexture(
     if(selectedPaintingModeIndex != 6){
         if((firstStroke && !wrapMode) || wrapMode){
             this->updateDepthTexture();
-            this->updatePaintingOverTexture(textureFields);
+            getTextureFieldScene()->update_painting_over_texture(wrapMode, *this);
         }
 
         std::vector<MirrorSide*> mirrorSides;

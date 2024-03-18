@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "TextureFieldScene/TextureFieldScene.hpp"
 
 #include <string>
 #include <iostream>
@@ -40,7 +41,7 @@ void TextureField::renderWrappedTextureField(
                                                 int& srcVectorI, 
                                                 bool editMode, 
                                                 bool generatingTextureMode, 
-                                                bool anyPanelHover
+                                                bool doMouseTracking
                                             )
 {
     // Get the currently binded framebuffer
@@ -84,7 +85,7 @@ void TextureField::renderWrappedTextureField(
 
         // Render the points
         if(!generatingTextureMode && editMode){
-            this->renderPoints(timer, painter, !anyPanelHover);
+            this->renderPoints(timer, painter, doMouseTracking);
             
             if(getContext()->window.isKeyClicked(LIGIDGL_KEY_G) && this->isAnyWrapPointActive() && !textureField_alreadyInteracted)
                 registerTextureFieldAction("Wrapped texture field - Point moved", srcVector);
@@ -129,7 +130,7 @@ void TextureField::renderWrappedTextureField(
         // Unactivate the texture field if clicked outside of it
         if(
             *Mouse::LClick() && 
-            !anyPanelHover && 
+            doMouseTracking && 
             !wrap_deleteButton.hover && !wrap_flipHorizontalButton.hover && !wrap_flipVerticalButton.hover && !wrap_unwrapModeButton.hover && !wrap_detailModeButton.hover 
         )
             this->active = false;
@@ -137,17 +138,17 @@ void TextureField::renderWrappedTextureField(
 
         if(
                 *Mouse::LClick() && 
-                !anyPanelHover && 
+                doMouseTracking && 
                 !wrap_deleteButton.hover && !wrap_flipHorizontalButton.hover && !wrap_flipVerticalButton.hover && !wrap_unwrapModeButton.hover && !wrap_detailModeButton.hover && 
                 editMode &&
                 !textureField_alreadyInteracted
             )
         {
-            this->checkIfWrappedTextureClicked(bindedFBO, painter, !this->isAnyWrapPointActive());
+            this->checkIfWrappedTextureClicked(bindedFBO, painter, !this->isAnyWrapPointActive() && doMouseTracking);
         }
         
         if(this->active){
-            this->renderWrappedModifyElements(timer, anyPanelHover);
+            this->renderWrappedModifyElements(timer, doMouseTracking);
         
             if(wrap_deleteButton.clicked){
                 registerTextureFieldAction("Texture field deleted", srcVector);
@@ -566,7 +567,7 @@ bool TextureField::didAnyWrapPointMove(){
             detailed_threeDPoint_r5_c4.moving) && wrap_detailModeButton.clickState1);
 }
 
-void TextureField::renderWrappedModifyElements(Timer& timer, bool anyPanelHover){
+void TextureField::renderWrappedModifyElements(Timer& timer, bool doMouseTracking){
     // Prep rendering gui elements
     glClear(GL_DEPTH_BUFFER_BIT);
     ShaderSystem::buttonShader().use();
@@ -586,11 +587,11 @@ void TextureField::renderWrappedModifyElements(Timer& timer, bool anyPanelHover)
     this->wrap_detailModeButton.pos.x += this->wrap_detailModeButton.scale.x + this->wrap_unwrapModeButton.scale.x;
 
     // Rendering the elements
-    this->wrap_deleteButton.render(timer, !anyPanelHover);
-    this->wrap_flipHorizontalButton.render(timer, !anyPanelHover);
-    this->wrap_flipVerticalButton.render(timer, !anyPanelHover);
-    this->wrap_unwrapModeButton.render(timer, !anyPanelHover);
-    this->wrap_detailModeButton.render(timer, !anyPanelHover);
+    this->wrap_deleteButton.render(timer, doMouseTracking);
+    this->wrap_flipHorizontalButton.render(timer, doMouseTracking);
+    this->wrap_flipVerticalButton.render(timer, doMouseTracking);
+    this->wrap_unwrapModeButton.render(timer, doMouseTracking);
+    this->wrap_detailModeButton.render(timer, doMouseTracking);
 }
 
 bool textureFields_decidingWrapPointsMode = false;

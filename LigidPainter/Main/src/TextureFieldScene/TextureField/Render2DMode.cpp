@@ -11,7 +11,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ---------------------------------------------------------------------------
 */
 
-
 #include<glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
@@ -25,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "SettingsSystem/Settings.hpp"
 #include "ColorPaletteSystem/ColorPalette.hpp"
 #include "MouseSystem/Mouse.hpp"
+#include "TextureFieldScene/TextureFieldScene.hpp"
 
 #include <string>
 #include <iostream>
@@ -95,7 +95,7 @@ void TextureField::render2DTextureField(
                                                 int& srcVectorI, 
                                                 bool editMode, 
                                                 bool generatingTextureMode, 
-                                                bool anyPanelHover
+                                                bool doMouseTracking
                                             )
 {
     if(!editMode)
@@ -182,18 +182,18 @@ void TextureField::render2DTextureField(
         }
 
         glDepthFunc(GL_ALWAYS);
-        this->topLeft_ResizeButton.render(timer, true);
-        this->bottomLeft_ResizeButton.render(timer, true);
-        this->topRight_ResizeButton.render(timer, true);
-        this->bottomRight_ResizeButton.render(timer, true); 
-        this->deleteButton.render(timer, true);
-        this->scaleToTextureResolutionButton.render(timer, true);
-        this->flipHorizontalButton.render(timer, true);
-        this->flipVerticalButton.render(timer, true);
-        this->cancelRotationButton.render(timer, true);
+        this->topLeft_ResizeButton.render(timer, doMouseTracking);
+        this->bottomLeft_ResizeButton.render(timer, doMouseTracking);
+        this->topRight_ResizeButton.render(timer, doMouseTracking);
+        this->bottomRight_ResizeButton.render(timer, doMouseTracking); 
+        this->deleteButton.render(timer, doMouseTracking);
+        this->scaleToTextureResolutionButton.render(timer, doMouseTracking);
+        this->flipHorizontalButton.render(timer, doMouseTracking);
+        this->flipVerticalButton.render(timer, doMouseTracking);
+        this->cancelRotationButton.render(timer, doMouseTracking);
         this->rotationAngleDisplayButton.render(timer, false);
-        this->wrapModeButton.render(timer, true);
-        this->rotateBtn.render(timer, true);
+        this->wrapModeButton.render(timer, doMouseTracking);
+        this->rotateBtn.render(timer, doMouseTracking);
         
         if(rotateBtn.clickState1){
             VectorStroke stroke = VectorStroke(rotateBtn.pos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, rotateBtn.pos);

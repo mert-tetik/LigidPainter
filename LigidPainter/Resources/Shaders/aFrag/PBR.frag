@@ -88,8 +88,6 @@ uniform float ambientOcclusionVal;
 
 uniform int primitiveCount;
 
-uniform sampler2D paintingOverTexture;
-
 void main() {
 
     gl_FragDepth = gl_FragCoord.z;
