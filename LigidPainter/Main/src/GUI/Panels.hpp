@@ -106,6 +106,6 @@ void panels_init();
 bool panels_any_hovered();
 
 /*! @brief Renders all the panels (positioning done inside of it via 'panels_transform' function) */
-void panels_render();
+void panels_render(Timer& timer, Project& project, Painter& painter);
 
 #endif

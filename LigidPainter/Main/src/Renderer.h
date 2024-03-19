@@ -34,11 +34,6 @@ class Renderer
 public:
 
     /*!
-        @brief The GUI
-    */
-    UI userInterface; 
-
-    /*!
         @brief Manage time
     */
     Timer timer;    
@@ -64,18 +59,19 @@ private:
     bool previousModelNewModelAdded = false;
 
     void renderSkyBox();
-    void set3DUniforms();
     void renderMainModel();
-    void render3DBrushCursor();
 
     double previousClickTime = 0.0;
     glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset 
     
+    // Callbacks
     void mouseButtonCallback(LigidWindow window, int button, int action, int mods);
     void framebufferSizeCallback(LigidWindow window, int width, int height);
     void scrollCallback(LigidWindow window, double xoffset, double yoffset);
     void cursorPositionCallback(LigidWindow window, double xpos, double ypos);
     void keyCallback(LigidWindow window, int key,int scancode,int action,int mods);
 
+    void start_render();
+    void end_render();
 };
 #endif

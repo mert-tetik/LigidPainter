@@ -97,6 +97,7 @@ void VectorPoint2D::render(Timer& timer, bool doMouseTracking, float scaleDivide
 
 void VectorStroke::renderCurve(float edge, glm::vec2 start, glm::vec2 dest, glm::vec2 offset){
     ShaderSystem::vectoralCurve().use();
+    ShaderSystem::vectoralCurve().setMat4("projection", getScene()->gui_projection); 
     
     ShaderSystem::vectoralCurve().setVec3("pos", glm::vec3(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f, 0.9f));
     ShaderSystem::vectoralCurve().setVec2("scale", glm::vec2(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f));

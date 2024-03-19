@@ -22,17 +22,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/gtx/string_cast.hpp"
 
+#include "Renderer.h"
+
 #include "GUI/Elements.hpp"
 #include "GUI/GUI.hpp"
 #include "GUI/Panels.hpp"
-#include "UTIL/Util.hpp"
+
 #include "3D/ThreeD.hpp"
-#include "Renderer.h"
+
+#include "Toolkit/Toolkits.hpp"
+
+#include "UTIL/Util.hpp"
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
-
-bool _ligid_renderer_render_first_frame = true;
 
 // 3D Point
 extern bool aPointWasAlreadyActivated;
@@ -42,88 +45,13 @@ void Renderer::render(){
     Debugger::block("Started"); // Start
     Debugger::block("Started"); // Start
 
-    Debugger::block("Updating video scale & pollEvents"); // Start
-    glm::ivec2 maxWindowSize;
-    getContext()->window.getMaximizedScreenSize(maxWindowSize.x, maxWindowSize.y);
-    *Settings::videoScale() = maxWindowSize; 
-
-    //Handle user input and interact with the windowing system
-    getContext()->window.pollEvents();
-
-    // Prevent rendering the application if the window is minimized
-    while (getContext()->window.isMinimized()){
-        getContext()->window.pollEvents();
-    }
-    Debugger::block("Updating video scale & pollEvents"); // End
-
-    Debugger::block("Complete rendering"); // Start
-    
     Debugger::block("Prep"); // Start
-    
-    // Update local timer data
-    timer.tick = false;
-    if(timer.runTimer(1.f)){
-        timer.tick = true;
-        std::cout << timer.FPS << std::endl;
-    }
-    
-    if(_ligid_renderer_render_first_frame)
-        getContext()->window.setWindowSize(Settings::videoScale()->x, Settings::videoScale()->y);
-
-    //Update OpenGL viewport every frame
-    Settings::defaultFramebuffer()->setViewport();
-
-    //VSync
-    if(Settings::properties()->VSync)
-        LigidGL::setSwapInterval(1); //Enable VSync
-    else
-        LigidGL::setSwapInterval(0); //Disable VSync
-
-    Settings::defaultFramebuffer()->FBO.bind();
-
-    //Default blending settings
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-    
-    //Refresh the default framebuffer    
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    this->start_render();
     Debugger::block("Prep"); // End
 
-
     Debugger::block("Skybox Rendering"); // Start
-
-    //Render skybox
-    glDisable(GL_CULL_FACE);
     renderSkyBox();
-
     Debugger::block("Skybox Rendering"); // End
-
-    Debugger::block("Prep 3D Rendering"); // Start
-    //Set the uniforms regarding 3D models (mostly vertex shader) 
-    set3DUniforms();
-
-    // Update the 3D model depth texture if necessary last frame camera changed position
-    if(painter.updateTheDepthTexture && !*Mouse::RPressed()){
-        
-        painter.updatePosNormalTexture();
-        
-        //Update the depth texture
-        painter.updateDepthTexture();
-        painter.updateTheDepthTexture = false;
-        
-        // Update the model's object id texture
-        getModel()->updateObjectIDsTexture();
-        
-    }
-
-    // Set backface culling property
-    if(getScene()->backfaceCulling)
-        glEnable(GL_CULL_FACE);
-    else
-        glDisable(GL_CULL_FACE);
-        
-    Debugger::block("Prep 3D Rendering"); // End
 
     Debugger::block("Rendering scene decorations"); // Start
 
@@ -141,54 +69,9 @@ void Renderer::render(){
 
     Debugger::block("Rendering scene decorations"); // End
 
-    Debugger::block("3D Model"); // Start
-    // 3D Model    
-    ShaderSystem::tdModelShader().use();
-
-    //Bind the skybox
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.ID);
-    
-    //Bind the prefiltered skybox
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
-    
-    //Bind the painting texture
-    glActiveTexture(GL_TEXTURE8);
-    glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
-    
-    // Process the shortcut inputs & move the camera gradually if necessary
-    getScene()->camera.posShortcutInteraction();
-
-    //Render each mesh
+    Debugger::block("3D Model"); // Start    
     this->renderMainModel();
-
     Debugger::block("3D Model"); // End
-
-    Debugger::block("3D Brush Cursor"); // Start
-    if(            
-            !panels_any_hovered() && 
-            (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 && painter.selectedPaintingModeIndex != 6 &&
-            !painter.paintingoverTextureEditorMode &&
-            !painter.faceSelection.editMode &&
-            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
-            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) && 
-            painter.wrapMode &&
-            !*Mouse::RPressed()
-        )
-    {
-        render3DBrushCursor();
-    }
-    Debugger::block("3D Brush Cursor"); // End
-
-
-    Debugger::block("3D Model Object Selection"); // Start
-
-    // Check if an object is selected after rendering the mesh
-    if(painter.selectedDisplayingModeIndex == 0 && ((!panels_any_hovered() || panel_objects.hover) && !*Mouse::RPressed() && !*Mouse::MPressed()) || dialog_log.unded) 
-        getModel()->selectObject();
-
-    Debugger::block("3D Model Object Selection"); // End
     
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -196,20 +79,13 @@ void Renderer::render(){
     //Bind 2D square vertex buffers
     getBox()->bindBuffers();
     
-    //Update the UI projection using window size
-    getScene()->gui_projection = glm::ortho(0.f,(float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
+    Debugger::block("Render : Toolkits"); // Start
+    render_toolkits(timer, painter);
+    Debugger::block("Render : Toolkits"); // End
     
-    Debugger::block("Complete user interface"); // Start
-    
-    //Render the UI
-    userInterface.render(   //Params
-                            timer,
-                            project,
-                            painter,
-                            skybox
-                        );
-    
-    Debugger::block("Complete user interface"); // End
+    Debugger::block("Render : Panels"); // Start
+    panels_render(timer, project, painter);
+    Debugger::block("Render : Panels"); // End
 
     Debugger::block("Painting"); // Start
     //Painting
@@ -250,134 +126,35 @@ void Renderer::render(){
 
         painter.refreshable = false;
     }
+
     Debugger::block("Painting"); // End
-
-
-    Debugger::block("Ending"); // Start
-    //Set mouse states to default
-    *Mouse::LClick() = false;
-    *Mouse::RClick() = false;
-    *Mouse::MClick() = false;
-    
-    if(!getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_LEFT))
-        *Mouse::LPressed() = false;
-    if(!getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT))
-        *Mouse::RPressed() = false;
-    if(!getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE))
-        *Mouse::MPressed() = false;
-
-    *Mouse::LDoubleClick() = false;
-    *Mouse::mouseOffset() = glm::vec2(0);
-    *Mouse::mods() = 0;
-    *Mouse::mouseScroll() = 0;
-
-    aPointWasAlreadyActivated = false;
-
-    //Set keyboard states to default
-    textRenderer.keyInput = false;
-    textRenderer.mods = 0;
-    textRenderer.action = 0;
-
-    //Let the getModel()->newModelAdded be true for an another cycle
-    if(previousModelNewModelAdded == true)
-        getModel()->newModelAdded = false;
-
-    previousModelNewModelAdded = getModel()->newModelAdded; 
-
-    //Cursor is changing there
-    //Sets the active cursor (mouse.activeCursor) as the cursor
-    //Than changes the active cursor as default cursor
-    Mouse::updateCursor();  
-    Debugger::block("Ending"); // End
-
-    // ------- Rendering the framebuffer result ------- 
-    if(true){
-
-        Debugger::block("Low resolution framebuffer result"); // Start
-
-        if(Settings::defaultFramebuffer()->FBO.ID != 0)
-            Settings::defaultFramebuffer()->render();
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // Create a framebuffer object (FBO)
-        GLuint framebuffer;
-        glGenFramebuffers(1, &framebuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Settings::defaultFramebuffer()->bgTxtr.ID, 0);
-
-        // Set up the blit
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0); // Bind the default framebuffer as the source
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer); // Bind the FBO as the destination
-        glBlitFramebuffer(0, 0, getContext()->windowScale.x, getContext()->windowScale.y, 0, 0, Settings::defaultFramebuffer()->resolution.x, Settings::defaultFramebuffer()->resolution.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
-        // Unbind the FBO
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // Clean up resources (delete framebuffer and unneeded textures if necessary)
-        glDeleteFramebuffers(1, &framebuffer);
-
-        Debugger::block("Low resolution framebuffer result"); // End
-    }
-
-
-
-
-
-    //Swap the front and back buffers of the window
-    getContext()->window.swapBuffers();
-
-    getBox()->unbindBuffers(); //Finish rendering the UI
-
-    if(timer.seconds == 1)
-        dialog_greeting.show(timer, project);
-
-    _ligid_renderer_render_first_frame = false;
-
-    Debugger::block("Complete rendering"); // End
 }
 
-void Renderer::set3DUniforms(){
-    
-    //3D Model Shader
-    ShaderSystem::tdModelShader().use();
-    //ShaderSystem::tdModelShader().setInt("render2D", 0);
-    ShaderSystem::tdModelShader().setInt("skybox",0);
-    ShaderSystem::tdModelShader().setInt("prefilterMap",1);
-    ShaderSystem::tdModelShader().setInt("albedoTxtr",2);
-    ShaderSystem::tdModelShader().setInt("roughnessTxtr",3);
-    ShaderSystem::tdModelShader().setInt("metallicTxtr",4);
-    ShaderSystem::tdModelShader().setInt("normalMapTxtr",5);
-    ShaderSystem::tdModelShader().setInt("heightMapTxtr",6);
-    ShaderSystem::tdModelShader().setInt("ambientOcclusionTxtr",7);
-    ShaderSystem::tdModelShader().setInt("paintingTexture",8);
-    ShaderSystem::tdModelShader().setInt("selectedPrimitiveIDS", 11);
-    ShaderSystem::tdModelShader().setInt("meshMask", 12);
-    ShaderSystem::tdModelShader().setVec3("viewPos", getScene()->camera.cameraPos);
-    ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
-    ShaderSystem::tdModelShader().setMat4("projection", getScene()->projectionMatrix);
-    ShaderSystem::tdModelShader().setMat4("modelMatrix", getScene()->transformMatrix);
-    ShaderSystem::tdModelShader().setVec3("mirrorState", glm::vec3(this->painter.oXSide.active, this->painter.oYSide.active, this->painter.oZSide.active));
-    ShaderSystem::tdModelShader().setVec3("mirrorOffsets", glm::vec3(this->painter.mirrorXOffset, this->painter.mirrorYOffset, this->painter.mirrorZOffset));
-    ShaderSystem::tdModelShader().setFloat("smearTransformStrength", this->painter.smearTransformStrength);
-    ShaderSystem::tdModelShader().setFloat("smearBlurStrength", this->painter.smearBlurStrength);
-    
-    ShaderSystem::sceneTilesShader().use();
-    ShaderSystem::sceneTilesShader().setMat4("view", getScene()->viewMatrix);
-    ShaderSystem::sceneTilesShader().setMat4("projection", getScene()->projectionMatrix);
-    ShaderSystem::sceneTilesShader().setMat4("modelMatrix",glm::mat4(1));
-    ShaderSystem::sceneTilesShader().setVec3("camPos", getScene()->camera.cameraPos);
 
-    ShaderSystem::sceneAxisDisplayerShader().use();
-    ShaderSystem::sceneAxisDisplayerShader().setMat4("view", getScene()->viewMatrix);
-    ShaderSystem::sceneAxisDisplayerShader().setMat4("projection", getScene()->projectionMatrix);
-    ShaderSystem::sceneAxisDisplayerShader().setMat4("modelMatrix",glm::mat4(1));
-    
-    //Skybox ball shader 
-    ShaderSystem::skyboxBall().use();
-    ShaderSystem::skyboxBall().setMat4("view", getScene()->viewMatrix);
-    ShaderSystem::skyboxBall().setMat4("projection", getScene()->projectionMatrix);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -425,6 +202,52 @@ void Renderer::renderSkyBox(){
 
 void Renderer::renderMainModel(){
     
+    //3D Model Shader
+    ShaderSystem::tdModelShader().use();
+    //ShaderSystem::tdModelShader().setInt("render2D", 0);
+    ShaderSystem::tdModelShader().setInt("skybox",0);
+    ShaderSystem::tdModelShader().setInt("prefilterMap",1);
+    ShaderSystem::tdModelShader().setInt("albedoTxtr",2);
+    ShaderSystem::tdModelShader().setInt("roughnessTxtr",3);
+    ShaderSystem::tdModelShader().setInt("metallicTxtr",4);
+    ShaderSystem::tdModelShader().setInt("normalMapTxtr",5);
+    ShaderSystem::tdModelShader().setInt("heightMapTxtr",6);
+    ShaderSystem::tdModelShader().setInt("ambientOcclusionTxtr",7);
+    ShaderSystem::tdModelShader().setInt("paintingTexture",8);
+    ShaderSystem::tdModelShader().setInt("selectedPrimitiveIDS", 11);
+    ShaderSystem::tdModelShader().setInt("meshMask", 12);
+    ShaderSystem::tdModelShader().setVec3("viewPos", getScene()->camera.cameraPos);
+    ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::tdModelShader().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::tdModelShader().setMat4("modelMatrix", getScene()->transformMatrix);
+    ShaderSystem::tdModelShader().setVec3("mirrorState", glm::vec3(this->painter.oXSide.active, this->painter.oYSide.active, this->painter.oZSide.active));
+    ShaderSystem::tdModelShader().setVec3("mirrorOffsets", glm::vec3(this->painter.mirrorXOffset, this->painter.mirrorYOffset, this->painter.mirrorZOffset));
+    ShaderSystem::tdModelShader().setFloat("smearTransformStrength", this->painter.smearTransformStrength);
+    ShaderSystem::tdModelShader().setFloat("smearBlurStrength", this->painter.smearBlurStrength);
+    
+    ShaderSystem::sceneTilesShader().use();
+    ShaderSystem::sceneTilesShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::sceneTilesShader().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::sceneTilesShader().setMat4("modelMatrix",glm::mat4(1));
+    ShaderSystem::sceneTilesShader().setVec3("camPos", getScene()->camera.cameraPos);
+
+    ShaderSystem::sceneAxisDisplayerShader().use();
+    ShaderSystem::sceneAxisDisplayerShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::sceneAxisDisplayerShader().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::sceneAxisDisplayerShader().setMat4("modelMatrix",glm::mat4(1));
+    
+    //Skybox ball shader 
+    ShaderSystem::skyboxBall().use();
+    ShaderSystem::skyboxBall().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::skyboxBall().setMat4("projection", getScene()->projectionMatrix);
+    
+    // Set backface culling property
+    if(getScene()->backfaceCulling)
+        glEnable(GL_CULL_FACE);
+    else
+        glDisable(GL_CULL_FACE);
+        
+
     for (size_t i = 0; i < getModel()->meshes.size(); i++)
     {   
         /* Albedo */
@@ -539,6 +362,21 @@ void Renderer::renderMainModel(){
         ShaderSystem::tdModelShader().setFloat("ambientOcclusionVal", painter.ambientOcclusionVal);
 
         ShaderSystem::tdModelShader().setInt("paintingMode", painter.refreshable);
+
+        // 3D Model    
+        ShaderSystem::tdModelShader().use();
+
+        //Bind the skybox
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.ID);
+        
+        //Bind the prefiltered skybox
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
+        
+        //Bind the painting texture
+        glActiveTexture(GL_TEXTURE8);
+        glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
         
         if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);
@@ -549,97 +387,25 @@ void Renderer::renderMainModel(){
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
     ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
     ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
-}
 
+    Debugger::block("3D Model Object Selection"); // Start
+    // Check if an object is selected after rendering the mesh
+    if(painter.selectedDisplayingModeIndex == 0 && ((!panels_any_hovered() || panel_objects.hover) && !*Mouse::RPressed() && !*Mouse::MPressed()) || dialog_log.unded) 
+        getModel()->selectObject();
+    Debugger::block("3D Model Object Selection"); // End
 
-void render3DPoints(){
-    /*if(!threeDPointsStencilTexture.ID){
-        threeDPointsStencilTexture = Texture(nullptr, 256, 256);
-        threeDPointsStencilFBO = Framebuffer(threeDPointsStencilTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(256)), "threeDPointsStencilFBO");
-    }
-
-    threeDPointsStencilFBO.bind();
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);    
-
-    glViewport(0, 0, 256, 256);
-
-    ShaderSystem::color3d().use();
-    ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
-    ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
-    ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
-    ShaderSystem::color3d().setVec4("color", glm::vec4(0.f));
-
-    if(painter.selectedMeshIndex < getModel()->meshes.size())
-        getModel()->meshes[painter.selectedMeshIndex].Draw(false);
-
-    for (size_t i = 0; i < threeDPointsPipeline.size(); i++)
-    {
-        threeDPointsPipeline[i]->render(timer, false, this->painter, Framebuffer(), true);
-    }
-    
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-    
-    for (size_t i = 0; i < threeDPointsPipeline.size(); i++)
-    {
-        threeDPointsPipeline[i]->render(timer, false, this->painter, threeDPointsStencilFBO, false);
-    }
-    */
-}
-
-void Renderer::render3DBrushCursor(){
-    glClear(GL_DEPTH_BUFFER_BIT);
-    ShaderSystem::color3d().use();
-    ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
-    ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
-    ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
-    ShaderSystem::color3d().setFloat("depthToleranceValue", 0);
-    
-    float* posData = new float[4]; 
-    float* normalData = new float[4]; 
-
-    painter.getPosNormalValOverPoint(
-                                        glm::vec2(
-                                                    Mouse::cursorPos()->x, 
-                                                    getContext()->windowScale.y - Mouse::cursorPos()->y
-                                                ),
-                                        posData,
-                                        normalData,
-                                        true
-                                    );
-
-    Settings::defaultFramebuffer()->FBO.bind();
-
-    for (size_t i = 0; i < getTDBrushCursorModel()->meshes.size(); i++)
-    {
-        glm::mat4 transform = glm::mat4(1.f);
-        transform = glm::translate(transform, glm::vec3(posData[0], posData[1], posData[2]));
+    // Update the 3D model depth texture if necessary last frame camera changed position
+    if(painter.updateTheDepthTexture && !*Mouse::RPressed()){
         
-        glm::vec3 initialForward(0.0f, 0.0f, 1.0f);
-
-        // Desired normal vector
-        glm::vec3 normalVector(normalData[0], normalData[1], normalData[2]);
-        normalVector = glm::normalize(normalVector); // Ensure it's a unit vector
-
-        // Compute the rotation axis using cross product
-        glm::vec3 rotationAxis = glm::cross(initialForward, normalVector);
-        float rotationAngle = glm::acos(glm::dot(initialForward, normalVector));
-
-        // Create a rotation matrix to align the model's initial forward direction with the normal vector
-        transform = glm::rotate(transform, rotationAngle, rotationAxis);
+        painter.updatePosNormalTexture();
         
-        if(i == 1)
-            transform = glm::scale(transform, glm::vec3(0.05f));
-        else if(i == 0)
-            transform = glm::scale(transform, glm::vec3(0.01f + painter.brushProperties.radius * 4.f));
-                    
-        ShaderSystem::color3d().setMat4("modelMatrix", transform);
-
-        if(posData[3] != 0.f)
-            getTDBrushCursorModel()->meshes[i].Draw(false);
+        //Update the depth texture
+        painter.updateDepthTexture();
+        painter.updateTheDepthTexture = false;
+        
+        // Update the model's object id texture
+        getModel()->updateObjectIDsTexture();
     }
 
-    delete[] posData;
-    delete[] normalData;
+    glDisable(GL_CULL_FACE);
 }

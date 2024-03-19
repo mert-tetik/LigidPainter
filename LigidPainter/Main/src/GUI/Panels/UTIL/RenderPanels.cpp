@@ -24,8 +24,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 #include <vector>
 
+// Defined in the RenderPanel.cpp
+extern bool updateThePreRenderedPanels;
+
 void panels_render(Timer& timer, Project& project, Painter& painter)
 {
+    ShaderSystem::buttonShader().use();
+    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection); 
+    ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
+    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
+
     Debugger::block("GUI : panelPositioning"); // Start
     panels_transform();
     Debugger::block("GUI : panelPositioning"); // End
@@ -131,4 +139,6 @@ void panels_render(Timer& timer, Project& project, Painter& painter)
     }
     else
         dialog_log.cryCounter = 5;
+
+    updateThePreRenderedPanels = false;
 }
