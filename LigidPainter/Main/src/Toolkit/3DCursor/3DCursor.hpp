@@ -14,6 +14,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef THREED_CURSOR_HPP
 #define THREED_CURSOR_HPP
 
+class Painter;
+
 void render_3D_cursor(Painter& painter);
 
 #endif

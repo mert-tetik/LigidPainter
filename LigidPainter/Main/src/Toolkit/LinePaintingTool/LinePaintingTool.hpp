@@ -14,6 +14,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef LINE_PAINTING_TOOL_HPP
 #define LINE_PAINTING_TOOL_HPP
 
+class Timer;
+class Painter;
+
 void line_painting(Timer& timer, Painter& painter, bool applyStroke, bool firstFrame);
 
 #endif

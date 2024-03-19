@@ -60,7 +60,7 @@ void render_toolkits(Timer& timer, Painter& painter){
             !painter.paintingoverTextureEditorMode &&
             !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
-            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT) && 
+            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
         )
     {
         if(!painter.wrapMode){
