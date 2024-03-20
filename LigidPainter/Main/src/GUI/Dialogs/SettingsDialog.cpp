@@ -209,7 +209,7 @@ void SettingsDialog::show(Timer& timer, Painter& painter){
         this->setDialogToProperties();
 
         getScene()->updateProjectionMatrix(0.f);
-        getScene()->updateViewMatrix();
+        getScene()->camera.updateViewMatrix();
         getScene()->updateTransformMatrix();
 
         //End the dialog

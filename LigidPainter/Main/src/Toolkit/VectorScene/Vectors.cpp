@@ -292,7 +292,7 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
         Mouse::setCursor(*Mouse::inkPenCursor());
 
     ShaderSystem::alphaZero3D().use();
-    ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::alphaZero3D().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 

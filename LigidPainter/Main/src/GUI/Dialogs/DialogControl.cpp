@@ -58,6 +58,7 @@ void DialogControl::updateStart(){
     getContext()->window.pollEvents();
 
     getScene()->updateGUIProjectionMatrix(getContext()->windowScale.x, getContext()->windowScale.y);
+    getScene()->updateProjectionMatrix(0.f);
     
     // Prevent rendering the application if the window is minimized
     while (getContext()->window.isMinimized()){
@@ -72,7 +73,7 @@ void DialogControl::updateStart(){
 
     ShaderSystem::buttonShader().use();
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", mixVal);
-    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
+    ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection);
 
     globalFirstFrameActivated = false;
 

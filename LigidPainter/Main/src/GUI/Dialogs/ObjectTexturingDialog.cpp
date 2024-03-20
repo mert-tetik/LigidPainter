@@ -317,7 +317,7 @@ void ObjectTexturingDialog::show(Timer& timer){
         this->panel.render(timer, false);
 
         ShaderSystem::textureRenderingShader().use();
-        ShaderSystem::textureRenderingShader().setMat4("projection", getScene()->gui_projection);
+        ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", this->panel.resultScale);
         ShaderSystem::textureRenderingShader().setVec3("pos", this->panel.resultPos);
         ShaderSystem::textureRenderingShader().setInt("txtr", 0);
@@ -548,7 +548,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                     ShaderSystem::objectTexturingAssign().use();
                     ShaderSystem::objectTexturingAssign().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
                     ShaderSystem::objectTexturingAssign().setMat4("perspectiveProjection", getScene()->projectionMatrix);
-                    ShaderSystem::objectTexturingAssign().setMat4("view", getScene()->viewMatrix);
+                    ShaderSystem::objectTexturingAssign().setMat4("view", getScene()->camera.viewMatrix);
                     ShaderSystem::objectTexturingAssign().setInt("txtr", 0);
                     ShaderSystem::objectTexturingAssign().setInt("selectedPrimitiveIDS", 1);
                     ShaderSystem::objectTexturingAssign().setInt("meshMask", 2);

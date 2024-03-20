@@ -63,7 +63,7 @@ void TextureField::renderWrappedTextureField(
     else{
         // Render the model first with alpha zero to depth test
         ShaderSystem::alphaZero3D().use();
-        ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::alphaZero3D().setMat4("view", getScene()->camera.viewMatrix);
         ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
         ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
@@ -103,7 +103,7 @@ void TextureField::renderWrappedTextureField(
 
         // Render the model first with alpha zero to depth test
         ShaderSystem::alphaZero3D().use();
-        ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::alphaZero3D().setMat4("view", getScene()->camera.viewMatrix);
         ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
         ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
@@ -516,7 +516,7 @@ void TextureField::renderWrappedTextureBox(bool generatingTextureMode){
     ShaderSystem::threeDTextureRenderingShader().use();
     
     // --------------- Set vertex shader data ---------------
-    ShaderSystem::threeDTextureRenderingShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::threeDTextureRenderingShader().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::threeDTextureRenderingShader().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::threeDTextureRenderingShader().setMat4("modelMatrix", glm::mat4(1.f));
     
@@ -700,7 +700,7 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& 
 
     // Render the model first with alpha zero to depth test
     ShaderSystem::alphaZero3D().use();
-    ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::alphaZero3D().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
@@ -722,7 +722,7 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& 
     
     // Then render the wrapped image
     ShaderSystem::color3d().use();
-    ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::color3d().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::color3d().setMat4("modelMatrix", getScene()->transformMatrix);
     ShaderSystem::color3d().setVec4("color", glm::vec4(1.f, 1.f, 1.f, 1.f));

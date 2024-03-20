@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void render_dots(glm::vec2 pos, glm::vec2 scale, glm::vec2 dotPos, float dotSize){
     ShaderSystem::dotsShader().use();
 
-    ShaderSystem::dotsShader().setMat4("projection", getScene()->gui_projection);
+    ShaderSystem::dotsShader().setMat4("projection", getContext()->ortho_projection);
     ShaderSystem::dotsShader().setVec3("pos", glm::vec3(pos, 0.5f));
     ShaderSystem::dotsShader().setVec2("scale", scale);
 

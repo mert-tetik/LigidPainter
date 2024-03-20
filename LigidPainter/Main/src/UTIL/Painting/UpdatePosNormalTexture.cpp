@@ -69,7 +69,7 @@ void Painter::updatePosNormalTexture(){
         
         //Use the depth 3D shader
         ShaderSystem::renderModelData().use();
-        ShaderSystem::renderModelData().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::renderModelData().setMat4("view", getScene()->camera.viewMatrix);
         ShaderSystem::renderModelData().setMat4("projection", getScene()->projectionMatrix);
         ShaderSystem::renderModelData().setMat4("modelMatrix",getScene()->transformMatrix);
         ShaderSystem::renderModelData().setInt("state", i + 1);

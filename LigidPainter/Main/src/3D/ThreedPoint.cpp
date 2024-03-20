@@ -20,10 +20,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
-#include "UTIL/SettingsSystem/Settings.hpp"
+#include "3D/Scene.hpp"
+
 #include "GUI/Elements.hpp"
+
+#include "UTIL/Util.hpp"
+#include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 
@@ -63,7 +66,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         transMat = glm::scale(transMat, glm::vec3(radius));
 
     ShaderSystem::color3d().use();
-    ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::color3d().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::color3d().setMat4("modelMatrix", transMat);
     ShaderSystem::color3d().setFloat("depthToleranceValue", calculateDepthToleranceValue(this->pos));
@@ -108,7 +111,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
             glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)resolution), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)resolution));
 
             ShaderSystem::alphaZero3D().use();
-            ShaderSystem::alphaZero3D().setMat4("view", getScene()->viewMatrix);
+            ShaderSystem::alphaZero3D().setMat4("view", getScene()->camera.viewMatrix);
             ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
             ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
@@ -169,7 +172,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         glm::mat4 transMat = glm::mat4(1.f);
         transMat = glm::translate(transMat, this->pos);
 
-        glm::vec4 screenPos = getScene()->projectionMatrix * getScene()->viewMatrix * transMat * glm::vec4(glm::vec3(0.f), 1.f);
+        glm::vec4 screenPos = getScene()->projectionMatrix * getScene()->camera.viewMatrix * transMat * glm::vec4(glm::vec3(0.f), 1.f);
         screenPos /= screenPos.z;
         screenPos /= screenPos.w;
         

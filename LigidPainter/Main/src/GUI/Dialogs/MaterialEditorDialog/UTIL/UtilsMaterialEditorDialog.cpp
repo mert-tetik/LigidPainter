@@ -157,7 +157,7 @@ void MaterialEditorDialog::positioningPanels(){
 
 void MaterialEditorDialog::renderSkyboxTxtr(){
     ShaderSystem::textureRenderingShader().use();
-    ShaderSystem::textureRenderingShader().setMat4("projection", getScene()->gui_projection);
+    ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
     ShaderSystem::textureRenderingShader().setVec2("scale", this->materialDisplayer.resultScale);
     ShaderSystem::textureRenderingShader().setVec3("pos", this->materialDisplayer.resultPos);
     ShaderSystem::textureRenderingShader().setInt("txtr", 0);

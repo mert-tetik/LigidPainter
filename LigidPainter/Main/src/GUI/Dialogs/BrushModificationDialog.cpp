@@ -87,7 +87,7 @@ Brush displayBrush;
 void BrushModificationDialog::show(Timer &timer, BrushProperties* brushProperties){
         
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
+    ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection);
     Settings::defaultFramebuffer()->setViewport(); 
 
     char whiteTxtr[brushTextureResolution * brushTextureResolution * 4];
@@ -191,7 +191,7 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
             this->inToOut(brushProperties);
             this->updateDisplayingTexture(brushProperties);
             ShaderSystem::buttonShader().use();
-            ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);  
+            ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection);  
         }
 
         //End the dialog
@@ -206,7 +206,7 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
     }
 
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
+    ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection);
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport(); 
 }

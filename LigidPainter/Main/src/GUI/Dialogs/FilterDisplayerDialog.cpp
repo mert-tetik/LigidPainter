@@ -79,7 +79,7 @@ void FilterDisplayerDialog::show(Timer& timer){
         }
 
         ShaderSystem::splitTexturesShader().use();
-        ShaderSystem::splitTexturesShader().setMat4("projection"  ,   getScene()->gui_projection);
+        ShaderSystem::splitTexturesShader().setMat4("projection"  ,   getContext()->ortho_projection);
         ShaderSystem::splitTexturesShader().setVec3("pos"         ,   panel.sections[0].elements[1].button.resultPos);
         ShaderSystem::splitTexturesShader().setVec2("scale"       ,   glm::vec2(std::min(panel.sections[0].elements[1].button.resultScale.x, panel.sections[0].elements[1].button.resultScale.y)));
 

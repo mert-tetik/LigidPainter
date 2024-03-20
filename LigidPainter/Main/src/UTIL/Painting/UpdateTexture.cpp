@@ -124,7 +124,7 @@ void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintin
             //*Vertex
             ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
             ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
-            ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->viewMatrix);
+            ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->camera.viewMatrix);
 
             getModel()->meshes[selectedMeshIndex].Draw(false);         
         }
@@ -135,7 +135,7 @@ void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintin
 
         //*Vertex
         ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-        ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getScene()->gui_projection);
+        ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getContext()->ortho_projection);
         ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
         twoD_painting_box.bindBuffers();

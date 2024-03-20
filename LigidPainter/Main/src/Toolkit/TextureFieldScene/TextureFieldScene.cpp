@@ -40,7 +40,7 @@ void TextureFieldScene::render(Timer& timer, Painter& painter, bool doMouseTrack
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
+    ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection);
 
     textureFields_decidingWrapPointsMode = false;
     textureField_alreadyInteracted = false;

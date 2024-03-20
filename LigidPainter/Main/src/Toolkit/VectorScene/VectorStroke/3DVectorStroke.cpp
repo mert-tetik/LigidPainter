@@ -199,7 +199,7 @@ void VectorStroke3D::renderLine(){
     }
 
     // Set related uniforms
-    ShaderSystem::color3DInstancing().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::color3DInstancing().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::color3DInstancing().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::color3DInstancing().setFloat("depthToleranceValue", 0);
     ShaderSystem::color3DInstancing().setVec4("color", glm::vec4(1.f));

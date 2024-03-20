@@ -51,7 +51,7 @@ static void drawBG(unsigned int bgTexture);
 void MeshSelectionDialog::show(Timer &timer, int& selectedMeshI){
     
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
+    ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection);
     Settings::defaultFramebuffer()->setViewport(); 
 
     this->dialogControl.activate();
@@ -116,7 +116,7 @@ void MeshSelectionDialog::show(Timer &timer, int& selectedMeshI){
     }
 
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection);
+    ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection);
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport(); 
 }

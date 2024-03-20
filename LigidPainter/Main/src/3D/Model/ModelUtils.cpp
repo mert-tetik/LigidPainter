@@ -58,7 +58,7 @@ void Model::updateObjectIDsTexture(){
         
         //Use the depth 3D shader
         ShaderSystem::modelObjectID().use();
-        ShaderSystem::modelObjectID().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::modelObjectID().setMat4("view", getScene()->camera.viewMatrix);
         ShaderSystem::modelObjectID().setMat4("projection", getScene()->projectionMatrix);
         ShaderSystem::modelObjectID().setMat4("modelMatrix",getScene()->transformMatrix);
 

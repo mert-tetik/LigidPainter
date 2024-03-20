@@ -39,7 +39,7 @@ void render_3D_cursor(Painter& painter)
 {
     glClear(GL_DEPTH_BUFFER_BIT);
     ShaderSystem::color3d().use();
-    ShaderSystem::color3d().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::color3d().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::color3d().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
     ShaderSystem::color3d().setFloat("depthToleranceValue", 0);

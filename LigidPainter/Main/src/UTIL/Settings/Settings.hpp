@@ -18,9 +18,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <atomic>
 
 #include "UTIL/Util.hpp"
+
 #include "3D/ThreeD.hpp"
+#include "3D/Scene/Scene.hpp"
+
 #include "Toolkit/VectorScene/VectorScene.hpp"
 #include "Toolkit/TextureFieldScene/TextureFieldScene.hpp"
+
+struct Scene;
 
 struct Context{
     LigidWindow window;
@@ -32,160 +37,6 @@ class Gizmo;
 Context* getContext();
 Context* getCopyContext();
 extern std::atomic<bool> mainThreadUsingCopyContext;
-
-struct Camera{
-    float yaw = -90.f;
-    float pitch = 0.f;
-    glm::vec3 cameraPos = glm::vec3(0,0,-10.f);
-    glm::vec3 originPos = glm::vec3(0,0,0);
-    float radius = 10.f; 
-
-    bool isCamInverted(){
-        return ((int)std::floor((std::abs(this->pitch) + 90.f) / 180.f) % 2 == 1);
-    }
-
-    void setCameraPosition(glm::vec3 pos){
-        
-        this->cameraPos = pos;
-
-        this->radius = glm::distance(this->cameraPos, this->originPos);
-
-        this->pitch = glm::degrees(asin((this->cameraPos.y - this->originPos.y) / -this->radius));
-        this->yaw = glm::degrees(atan2((this->cameraPos.z - this->originPos.z) / (this->radius * cos(glm::radians(this->pitch))),
-                                       (this->cameraPos.x - this->originPos.x) / (this->radius * cos(glm::radians(this->pitch)))));
-    }
-
-    void setCameraRadius(float radius){
-        this->radius = radius;
-        
-        //The distance between the camera & center 
-        float originCameraDistance = glm::distance(this->originPos,this->cameraPos)/10;
-
-        //Zoom in-out
-        this->cameraPos.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch)) * this->radius + this->originPos.x;
-        this->cameraPos.y = sin(glm::radians(this->pitch)) * -this->radius + this->originPos.y;
-        this->cameraPos.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch)) * this->radius + this->originPos.z;
-    }
-
-    void transition(glm::vec3 direction){
-        glm::vec3 camPos;
-        camPos = this->cameraPos;
-
-        camPos.x += (direction.x - this->cameraPos.x) / 20.f;
-        camPos.y += (direction.y - this->cameraPos.y) / 20.f;
-        camPos.z += (direction.z - this->cameraPos.z) / 20.f;
-    
-        this->setCameraPosition(camPos);
-    }
-    
-    void transition(glm::vec3 direction, glm::vec3 originPos){
-        glm::vec3 camPos;
-        camPos = this->cameraPos;
-        
-        this->originPos += (originPos - this->originPos) / 20.f; 
-        
-        camPos += (direction - this->cameraPos) / 20.f;
-        this->setCameraPosition(camPos);
-    }
-
-    void posShortcutInteraction(bool active);
-
-    bool XPLocked = false;
-    bool XNLocked = false;
-    bool YPLocked = false;
-    bool YNLocked = false;
-    bool ZPLocked = false;
-    bool ZNLocked = false;
-    bool originLocked = false;
-};
-
-struct Scene{
-    glm::mat4 projectionMatrix;
-    glm::mat4 viewMatrix;
-    glm::mat4 transformMatrix;
-
-    /*! @brief UI Rendering projection
-    L = 0, R = 1920, B = 1080, T = 0  */
-    glm::mat4 gui_projection; 
-
-    float fov = 45.f;
-    float aNear = 0.1f;
-    float aFar = 1000.0f;
-
-    glm::vec3 transformLocation = glm::vec3(0);
-    glm::vec3 transformRotation = glm::vec3(0);
-
-    bool useOrtho = false;
-
-    void updateGUIProjectionMatrix(float window_width, float window_height){
-        //Update the UI projection using window size
-        this->gui_projection = glm::ortho(0.f, window_width, window_height, 0.f);
-    }
-
-    void updateProjectionMatrix(float ratio){
-        if(getContext()->windowScale.x){
-            if(ratio == 0.f)
-                ratio = (float)getContext()->windowScale.x / (float)getContext()->windowScale.y;
-            if(!useOrtho){
-                this->projectionMatrix = glm::perspective(glm::radians(this->fov), 
-                                                    ratio, //Since the ratio is determined by the window scale, 3D Model won't be stretched by window resizing.
-                                                    this->aNear, 
-                                                    this->aFar);
-            }
-            else{
-                this->projectionMatrix = glm::ortho((-this->fov * ratio)/10.f * this->camera.radius, (this->fov * ratio)/10.f * this->camera.radius, (-this->fov)/10.f * this->camera.radius, (this->fov)/10.f * this->camera.radius, (this->aNear), (this->aFar));
-            }
-        }
-    }
-
-    glm::mat4 calculateViewMatrix(glm::vec3 camPos, glm::vec3 originPos){
-        glm::mat4 viewMat;
-        if(this->camera.isCamInverted()){
-            viewMat = glm::lookAt( 
-                                            camPos, 
-                                            originPos, 
-                                            glm::vec3(0.0, -1.0, 0.0)
-                                        );
-        }
-        else{
-            viewMat = glm::lookAt( 
-                                            camPos, 
-                                            originPos, 
-                                            glm::vec3(0.0, 1.0, 0.0)
-                                        );
-        }
-
-        return viewMat;
-    }
-
-    void updateViewMatrix(glm::vec3 camPos, glm::vec3 originPos){
-        this->viewMatrix = calculateViewMatrix(camPos, originPos);
-    }
-
-    void updateViewMatrix(){
-        updateViewMatrix(this->camera.cameraPos, this->camera.originPos);
-    }
-
-    void updateTransformMatrix(){
-        this->transformMatrix = glm::mat4(1.f);
-        this->transformMatrix = glm::translate(this->transformMatrix, transformLocation);
-        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.x), glm::vec3(0.f, 1.f, 0.f));
-        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.y), glm::vec3(1.f, 0.f, 0.f));
-        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.z), glm::vec3(0.f, 0.f, 1.f));
-    }
-
-    bool renderTiles = true;
-    SceneTiles tiles;
-    
-    bool renderAxisDisplayer = false;
-    SceneAxisDisplayer axisDisplayer;
-
-    bool backfaceCulling = false;
-    bool useHeightMap = false;
-    float heightMapStrength = 0.f;
-
-    Camera camera;
-};
 
 Scene* getScene();
 Model* getModel();

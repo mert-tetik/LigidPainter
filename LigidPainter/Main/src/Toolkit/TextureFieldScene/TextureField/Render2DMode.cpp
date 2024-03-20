@@ -198,7 +198,7 @@ void TextureField::render2DTextureField(
         if(rotateBtn.clickState1){
             VectorStroke stroke = VectorStroke(rotateBtn.pos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, rotateBtn.pos);
             ShaderSystem::vectoralCurve().use();
-            ShaderSystem::vectoralCurve().setMat4("projection", getScene()->gui_projection); 
+            ShaderSystem::vectoralCurve().setMat4("projection", getContext()->ortho_projection); 
         
             ShaderSystem::vectoralCurve().setVec3("pos", glm::vec3(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f, 0.9f));
             ShaderSystem::vectoralCurve().setVec2("scale", glm::vec2(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f));

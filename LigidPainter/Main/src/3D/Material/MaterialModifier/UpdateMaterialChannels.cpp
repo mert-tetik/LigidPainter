@@ -601,7 +601,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                         textureResolution, 
                         curModI, 
                         getScene()->projectionMatrix, 
-                        getScene()->viewMatrix, 
+                        getScene()->camera.viewMatrix, 
                         channelI, 
                         FBO, 
                         currentTexture, 
@@ -633,7 +633,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
             // Vertex shader
             modifierShader.setMat4("orthoProjection", projection);
             modifierShader.setMat4("perspectiveProjection", getScene()->projectionMatrix);
-            modifierShader.setMat4("view", getScene()->viewMatrix);
+            modifierShader.setMat4("view", getScene()->camera.viewMatrix);
             
             // Fragment shader
             setUniforms(

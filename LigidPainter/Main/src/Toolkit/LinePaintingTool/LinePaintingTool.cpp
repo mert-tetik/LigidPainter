@@ -54,7 +54,7 @@ void line_painting(Timer& timer, Painter& painter, bool applyStroke, bool firstF
 
         //ABS
         ShaderSystem::vectoralCurve().use();
-        ShaderSystem::vectoralCurve().setMat4("projection", getScene()->gui_projection); 
+        ShaderSystem::vectoralCurve().setMat4("projection", getContext()->ortho_projection); 
         
         ShaderSystem::vectoralCurve().setVec3("pos", glm::vec3(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f, 0.9f));
         ShaderSystem::vectoralCurve().setVec2("scale", glm::vec2(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f));

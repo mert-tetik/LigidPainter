@@ -465,7 +465,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         ShaderSystem::normalVectorShader().use();
         ShaderSystem::normalVectorShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
         ShaderSystem::normalVectorShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
-        ShaderSystem::normalVectorShader().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::normalVectorShader().setMat4("view", getScene()->camera.viewMatrix);
     
         mesh.Draw(false);
 
@@ -567,7 +567,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         
         ShaderSystem::to2DProcedural().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
         ShaderSystem::to2DProcedural().setMat4("perspectiveProjection", getScene()->projectionMatrix);
-        ShaderSystem::to2DProcedural().setMat4("view", getScene()->viewMatrix);
+        ShaderSystem::to2DProcedural().setMat4("view", getScene()->camera.viewMatrix);
 
         ShaderSystem::to2DProcedural().setInt("proceduralTexture", 1);
         glActiveTexture(GL_TEXTURE1);

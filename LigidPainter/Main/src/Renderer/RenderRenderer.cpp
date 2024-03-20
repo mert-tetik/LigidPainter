@@ -167,7 +167,7 @@ void Renderer::renderSkyBox(){
     
     //Skybox shader
     ShaderSystem::skyboxShader().use();
-    ShaderSystem::skyboxShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::skyboxShader().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::skyboxShader().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::skyboxShader().setMat4("transformMatrix",skybox.transformMatrix);
     ShaderSystem::skyboxShader().setFloat("lod",skybox.lod);
@@ -200,6 +200,8 @@ void Renderer::renderSkyBox(){
     getBox()->unbindBuffers();
 }
 
+static Camera prevCam;
+
 void Renderer::renderMainModel(){
     
     //3D Model Shader
@@ -217,7 +219,7 @@ void Renderer::renderMainModel(){
     ShaderSystem::tdModelShader().setInt("selectedPrimitiveIDS", 11);
     ShaderSystem::tdModelShader().setInt("meshMask", 12);
     ShaderSystem::tdModelShader().setVec3("viewPos", getScene()->camera.cameraPos);
-    ShaderSystem::tdModelShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::tdModelShader().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::tdModelShader().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::tdModelShader().setMat4("modelMatrix", getScene()->transformMatrix);
     ShaderSystem::tdModelShader().setVec3("mirrorState", glm::vec3(this->painter.oXSide.active, this->painter.oYSide.active, this->painter.oZSide.active));
@@ -226,19 +228,19 @@ void Renderer::renderMainModel(){
     ShaderSystem::tdModelShader().setFloat("smearBlurStrength", this->painter.smearBlurStrength);
     
     ShaderSystem::sceneTilesShader().use();
-    ShaderSystem::sceneTilesShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::sceneTilesShader().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::sceneTilesShader().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::sceneTilesShader().setMat4("modelMatrix",glm::mat4(1));
     ShaderSystem::sceneTilesShader().setVec3("camPos", getScene()->camera.cameraPos);
 
     ShaderSystem::sceneAxisDisplayerShader().use();
-    ShaderSystem::sceneAxisDisplayerShader().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::sceneAxisDisplayerShader().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::sceneAxisDisplayerShader().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::sceneAxisDisplayerShader().setMat4("modelMatrix",glm::mat4(1));
     
     //Skybox ball shader 
     ShaderSystem::skyboxBall().use();
-    ShaderSystem::skyboxBall().setMat4("view", getScene()->viewMatrix);
+    ShaderSystem::skyboxBall().setMat4("view", getScene()->camera.viewMatrix);
     ShaderSystem::skyboxBall().setMat4("projection", getScene()->projectionMatrix);
     
     // Set backface culling property
@@ -395,16 +397,22 @@ void Renderer::renderMainModel(){
     Debugger::block("3D Model Object Selection"); // End
 
     // Update the 3D model depth texture if necessary last frame camera changed position
-    if(painter.updateTheDepthTexture && !*Mouse::RPressed()){
-        
+    if(
+            (prevCam.cameraPos != getScene()->camera.cameraPos || 
+            prevCam.originPos != getScene()->camera.originPos || 
+            prevCam.yaw != getScene()->camera.yaw || 
+            prevCam.pitch != getScene()->camera.pitch) && !*Mouse::RPressed()
+        )
+    {
         painter.updatePosNormalTexture();
         
         //Update the depth texture
         painter.updateDepthTexture();
-        painter.updateTheDepthTexture = false;
         
         // Update the model's object id texture
         getModel()->updateObjectIDsTexture();
+    
+        prevCam = getScene()->camera;
     }
 
     glDisable(GL_CULL_FACE);

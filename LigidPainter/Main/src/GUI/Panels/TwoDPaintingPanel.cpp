@@ -86,7 +86,7 @@ void panel_twoD_painting_render(Timer& timer, Painter& painter, bool doMouseTrac
             glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
 
         //*Vertex
-        ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", getScene()->gui_projection);
+        ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("view", glm::mat4(1.));
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("modelMatrix", glm::mat4(1.));
         

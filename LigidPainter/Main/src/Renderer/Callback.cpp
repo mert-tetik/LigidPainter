@@ -105,14 +105,8 @@ void Renderer::framebufferSizeCallback(
     getContext()->windowScale.x = width;
     getContext()->windowScale.y = height;
 
-    //Update the perspective projection matrix to keep the ratio of the 3D model
-    getScene()->updateProjectionMatrix(0.f); 
-
     //And ofc update the OpenGL viewport
     Settings::defaultFramebuffer()->setViewport();
-
-    this->painter.updateTheDepthTexture = true;
-
 }
 
 void Renderer::scrollCallback(
@@ -121,57 +115,11 @@ void Renderer::scrollCallback(
                                 double yoffset
                             )
 {
-    Camera* cam = &getScene()->camera;
-
-    if(dialog_materialEditor.dialogControl.isActive())
-        cam = &dialog_materialEditor.displayerCamera;
-    
-    else if(dialog_objectTexturing.dialogControl.isActive())
-        cam = &dialog_objectTexturing.sceneCam;
-
-    if(glm::distance(cam->cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
-        cam->originLocked = false;
-
-    cam->XPLocked = false;
-    cam->XNLocked = false;
-    cam->YPLocked = false;
-    cam->YNLocked = false;
-    cam->ZPLocked = false;
-    cam->ZNLocked = false;
-
-    //Update the scroll value of the mouse class
+    // Update the scroll value of the mouse class
     *Mouse::mouseScroll() = yoffset;
-    
-    if(
-            CAM_MOVE_CONDITION
-        )
-    {
-        //The distance between the camera & center 
-        float originCameraDistance = glm::distance(cam->originPos,cam->cameraPos)/10;
-
-        //Change the distance between camera & center (radius)
-        if (yoffset > 0) {
-            cam->radius -= originCameraDistance;
-        }
-        else if (yoffset < 0) {
-            cam->radius += originCameraDistance;
-        }
-        
-        //Zoom in-out
-        cam->cameraPos.x = cos(glm::radians(cam->yaw)) * cos(glm::radians(cam->pitch)) * cam->radius + cam->originPos.x;
-        cam->cameraPos.y = sin(glm::radians(cam->pitch)) * -cam->radius + cam->originPos.y;
-        cam->cameraPos.z = sin(glm::radians(cam->yaw)) * cos(glm::radians(cam->pitch)) * cam->radius + cam->originPos.z;
-
-        //Update the view matrix after the camera position is changed
-        getScene()->updateViewMatrix();
-        getScene()->updateTransformMatrix();
-        getScene()->updateProjectionMatrix(0.f);
-
-        //Since the 3D model's position in the screen is changed update the painter's depth texture
-        this->painter.updateTheDepthTexture = true;
-    }
 }
 
+glm::vec2 lastMousePos = glm::vec2(0.f);//This will be used as "last frame's cursor pos" for the cursor offset 
 void Renderer::cursorPositionCallback(
                                         LigidWindow window,
                                         double xpos, //Mouse x position
@@ -186,121 +134,9 @@ void Renderer::cursorPositionCallback(
     Mouse::mouseOffset()->x = Mouse::cursorPos()->x - lastMousePos.x;
     Mouse::mouseOffset()->y = Mouse::cursorPos()->y - lastMousePos.y;
 
-    glm::vec2 mouseOffset = *Mouse::mouseOffset();
-    if(getScene()->camera.isCamInverted())
-        mouseOffset.x *= -1;
-
-    const float sensitivity = 0.14f; //Mouse sensivity (Increase the value to go brrrrrbrbrbrb) (effects the 3D model)
-    
-    Camera* cam = &getScene()->camera;
-    if(dialog_objectTexturing.dialogControl.isActive())
-        cam = &dialog_objectTexturing.sceneCam;
-
-
-    if (
-            ((getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
-            window.isKeyPressed( LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS) || getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_MIDDLE) == LIGIDGL_PRESS) &&  //If pressed to CTRL button
-            CAM_MOVE_CONDITION
-        ) 
-    { 
-        if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
-            getScene()->camera.originLocked = false;
-        getScene()->camera.XPLocked = false;
-        getScene()->camera.XNLocked = false;
-        getScene()->camera.YPLocked = false;
-        getScene()->camera.YNLocked = false;
-        getScene()->camera.ZPLocked = false;
-        getScene()->camera.ZNLocked = false;
-
-        // Straight Movement
-      
-        float straightMovSensivity = glm::distance(getScene()->camera.originPos,getScene()->camera.cameraPos)/10;
-
-        // Calculate half the sensitivity for later use
-        const float half_sensitivity = sensitivity / 2.0f;
-
-        // Calculate sine and cosine of yaw and pitch angles in radians
-        const float sin_yaw = sin(glm::radians(cam->yaw));
-        const float cos_yaw = cos(glm::radians(cam->yaw));
-        const float sin_pitch = sin(glm::radians(cam->pitch));
-        const float cos_pitch = cos(glm::radians(cam->pitch));
-
-        // Calculate the x and z offsets based on yaw angle, mouse movement, sensitivity, and half sensitivity
-        float x_offset = sin_yaw * mouseOffset.x * sensitivity * straightMovSensivity * half_sensitivity;
-        float z_offset = cos_yaw * mouseOffset.x * sensitivity * straightMovSensivity * half_sensitivity;
-
-        // Check if pitch is greater than 60 degrees or less than -60 degrees
-        if (cam->pitch > 60.0f || cam->pitch < -60.0f) {
-            
-            // Add additional x and z offsets based on yaw, pitch, mouse movement, sensitivity, and half sensitivity
-            x_offset += cos_yaw * sin_pitch * mouseOffset.y * sensitivity * straightMovSensivity * half_sensitivity;
-            z_offset -= sin_yaw * sin_pitch * mouseOffset.y * sensitivity * straightMovSensivity * half_sensitivity;
-        }
-
-        // Calculate the y offset based on pitch, mouse movement, sensitivity, and half sensitivity
-        const float y_offset = cos_pitch * mouseOffset.y * sensitivity * straightMovSensivity * half_sensitivity;
-
-        // Update camera's x position and origin position by subtracting x offset
-        cam->cameraPos.x -= x_offset;
-        cam->originPos.x -= x_offset;
-
-        // Update camera's z position and origin position by adding z offset
-        cam->cameraPos.z += z_offset;
-        cam->originPos.z += z_offset;
-
-        // Update camera's y position and origin position by adding y offset
-        cam->cameraPos.y += y_offset;
-        cam->originPos.y += y_offset;
-
-        //Since the 3D model's position in the screen is changed update the painter's depth texture
-        this->painter.updateTheDepthTexture = true;
-    }
-
-
-    else if (
-                getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && //If pressed to right mouse button
-                CAM_MOVE_CONDITION
-            ) 
-    {   
-        if(glm::distance(getScene()->camera.cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
-            getScene()->camera.originLocked = false;
-        getScene()->camera.XPLocked = false;
-        getScene()->camera.XNLocked = false;
-        getScene()->camera.YPLocked = false;
-        getScene()->camera.YNLocked = false;
-        getScene()->camera.ZPLocked = false;
-        getScene()->camera.ZNLocked = false;
-
-        if(dialog_materialEditor.dialogControl.isActive())
-            cam = &dialog_materialEditor.displayerCamera;
-        else if(dialog_materialDisplayer.dialogControl.isActive())
-            cam = &dialog_materialDisplayer.displayingCam;
-        else if(dialog_materialSelection.dialogControl.isActive())
-            cam = &dialog_materialSelection.displayingCam;
-
-        cam->yaw += mouseOffset.x * sensitivity;
-        cam->pitch -= mouseOffset.y * sensitivity;
-
-        //Helical Movement
-        //Rotates the Camera in 3 axis using yaw, pitch & radius values
-        cam->cameraPos.y = sin(glm::radians(cam->pitch)) * -cam->radius + cam->originPos.y;
-        cam->cameraPos.x = cos(glm::radians(cam->yaw)) * cos(glm::radians(cam->pitch)) * cam->radius + cam->originPos.x;
-        cam->cameraPos.z = sin(glm::radians(cam->yaw)) * cos(glm::radians(cam->pitch)) * cam->radius + cam->originPos.z;
-        
-        //Since the 3D model's position in the screen is changed update the painter's depth texture
-        this->painter.updateTheDepthTexture = true;
-    }
-
-
-    //Update the view matrix after the camera position is changed
-    getScene()->updateViewMatrix();
-    getScene()->updateTransformMatrix();
-    getScene()->updateProjectionMatrix(0.f);
-
-    
     //This will be used as "last frame's cursor pos" for the cursor offset
-    this->lastMousePos.x = Mouse::cursorPos()->x;
-    this->lastMousePos.y = Mouse::cursorPos()->y;
+    lastMousePos.x = Mouse::cursorPos()->x;
+    lastMousePos.y = Mouse::cursorPos()->y;
 }
 
 void Renderer::keyCallback(

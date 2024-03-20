@@ -37,7 +37,7 @@ void render_painting_cursor(float radius){
     ShaderSystem::circleShader().use();
 
     /* Set the transform data & the projection */
-    ShaderSystem::circleShader().setMat4("projection", getScene()->gui_projection);
+    ShaderSystem::circleShader().setMat4("projection", getContext()->ortho_projection);
     ShaderSystem::circleShader().setVec3("pos", glm::vec3(Mouse::cursorPos()->x, Mouse::cursorPos()->y, 1));
     ShaderSystem::circleShader().setVec2("scale", glm::vec2(radius * (Settings::videoScale()->x)));
 

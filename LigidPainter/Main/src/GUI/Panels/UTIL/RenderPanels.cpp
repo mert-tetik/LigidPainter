@@ -30,7 +30,7 @@ extern bool updateThePreRenderedPanels;
 void panels_render(Timer& timer, Project& project, Painter& painter)
 {
     ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", getScene()->gui_projection); 
+    ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection); 
     ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
