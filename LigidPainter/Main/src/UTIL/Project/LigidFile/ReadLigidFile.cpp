@@ -119,12 +119,12 @@ bool Project::readLigidFile(
             }
         }
         
-        if(!getModel()->meshes.size())
-            getModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true, false);
+        if(!getScene()->model->meshes.size())
+            getScene()->model->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true, false);
         
         // ---------- Settings ------------
 
-        getModel()->newModelAdded = true;
+        getScene()->model->newModelAdded = true;
 
         return true;
     }

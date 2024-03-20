@@ -55,7 +55,7 @@ void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
 
     button_mesh_selection.render(timer, doMouseTracking);
     painter.selectedMeshIndex = button_mesh_selection.selectedMeshI;
-    if(painter.selectedMeshIndex >= getModel()->meshes.size())
+    if(painter.selectedMeshIndex >= getScene()->model->meshes.size())
         painter.selectedMeshIndex = 0;
     
     Button comboBox_layers_resolutionBG = Button(ELEMENT_STYLE_SOLID, comboBox_layers_resolution.scale, "", Texture(), 0.f, 0);
@@ -64,7 +64,7 @@ void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
     comboBox_layers_resolution.render(timer, doMouseTracking);
     
     painter.layersResolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]);
-    if(getModel()->newModelAdded || lastLayerResolution != painter.layersResolution){
+    if(getScene()->model->newModelAdded || lastLayerResolution != painter.layersResolution){
         if(lastLayerResolution != painter.layersResolution){
             int res = showMessageBox(
                                         "Warning!", 

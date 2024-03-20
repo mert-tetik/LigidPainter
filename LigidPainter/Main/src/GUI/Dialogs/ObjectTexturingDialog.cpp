@@ -166,7 +166,7 @@ void ObjectTexturingDialog::show(Timer& timer){
 
         dialogControl.updateStart();
 
-        if(getModel()->meshes.size() != texturesMesh.size()){
+        if(getScene()->model->meshes.size() != texturesMesh.size()){
             for (size_t i = 0; i < texturesMesh.size(); i++)
             {
                 glDeleteTextures(1, &texturesMesh[i].albedo.ID);
@@ -179,7 +179,7 @@ void ObjectTexturingDialog::show(Timer& timer){
 
             texturesMesh.clear();
 
-            for (size_t i = 0; i < getModel()->meshes.size(); i++)
+            for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
             {
                 Mesh mesh;
                 mesh.albedo = Texture(nullptr, 1024, 1024);
@@ -216,24 +216,24 @@ void ObjectTexturingDialog::show(Timer& timer){
             
             faceSelection.clear();
 
-            for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+            for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
             {
                 faceSelection.push_back(FaceSelection());
-                faceSelection[faceSelection.size()-1].selectedFaces = getModel()->meshes[meshI].selectedObjectPrimitivesTxtr.duplicateTexture();
+                faceSelection[faceSelection.size()-1].selectedFaces = getScene()->model->meshes[meshI].selectedObjectPrimitivesTxtr.duplicateTexture();
                 faceSelection[faceSelection.size()-1].meshMask = appTextures.white.duplicateTexture();
             
-                faceSelection[faceSelection.size()-1].selectedPrimitiveIDs.resize(getModel()->meshes[meshI].indices.size() / 3);
-                for (size_t oI = 0; oI < getModel()->meshes[meshI].objects.size(); oI++)
+                faceSelection[faceSelection.size()-1].selectedPrimitiveIDs.resize(getScene()->model->meshes[meshI].indices.size() / 3);
+                for (size_t oI = 0; oI < getScene()->model->meshes[meshI].objects.size(); oI++)
                 {
                     bool contains = false;
-                        for (size_t i = 0; i < getModel()->meshes[meshI].selectedObjectIndices.size(); i++)
+                        for (size_t i = 0; i < getScene()->model->meshes[meshI].selectedObjectIndices.size(); i++)
                         {
-                            if(getModel()->meshes[meshI].selectedObjectIndices[i] == oI)
+                            if(getScene()->model->meshes[meshI].selectedObjectIndices[i] == oI)
                                 contains = true;
                         }
                     
                     if(contains){
-                        for (size_t i = getModel()->meshes[meshI].objects[oI].vertIndices.x / 3; i < getModel()->meshes[meshI].objects[oI].vertIndices.y / 3; i++)
+                        for (size_t i = getScene()->model->meshes[meshI].objects[oI].vertIndices.x / 3; i < getScene()->model->meshes[meshI].objects[oI].vertIndices.y / 3; i++)
                         {
                             if(i < faceSelection[faceSelection.size()-1].selectedPrimitiveIDs.size()){
                                 faceSelection[faceSelection.size()-1].changedIndices.push_back(i);
@@ -389,7 +389,7 @@ void ObjectTexturingDialog::show(Timer& timer){
             this->faceSelectionMode = false;
         }
         else if(assignRelatedTexturesButton.clicked){
-            for (size_t i = 0; i < getModel()->meshes.size(); i++)
+            for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
             {
                 for (size_t channelI = 0; channelI < 6; channelI++)
                 {
@@ -399,27 +399,27 @@ void ObjectTexturingDialog::show(Timer& timer){
                     Texture colorBuffer;
                     std::string colorBufferChannelTitle = ""; 
                     if(channelI == 0){
-                        colorBuffer = getModel()->meshes[i].albedo.ID;
+                        colorBuffer = getScene()->model->meshes[i].albedo.ID;
                         colorBufferChannelTitle = "albedo";
                     }
                     if(channelI == 1){
-                        colorBuffer = getModel()->meshes[i].roughness.ID;
+                        colorBuffer = getScene()->model->meshes[i].roughness.ID;
                         colorBufferChannelTitle = "roughness";
                     }
                     if(channelI == 2){
-                        colorBuffer = getModel()->meshes[i].metallic.ID;
+                        colorBuffer = getScene()->model->meshes[i].metallic.ID;
                         colorBufferChannelTitle = "metallic";
                     }
                     if(channelI == 3){
-                        colorBuffer = getModel()->meshes[i].normalMap.ID;
+                        colorBuffer = getScene()->model->meshes[i].normalMap.ID;
                         colorBufferChannelTitle = "normalMap";
                     }
                     if(channelI == 4){
-                        colorBuffer = getModel()->meshes[i].heightMap.ID;
+                        colorBuffer = getScene()->model->meshes[i].heightMap.ID;
                         colorBufferChannelTitle = "heightMap";
                     }
                     if(channelI == 5){
-                        colorBuffer = getModel()->meshes[i].ambientOcclusion.ID;
+                        colorBuffer = getScene()->model->meshes[i].ambientOcclusion.ID;
                         colorBufferChannelTitle = "ambientOcclusion";
                     }
 
@@ -442,8 +442,8 @@ void ObjectTexturingDialog::show(Timer& timer){
                     bool prevAlbedoHistoryUsed = albedoHistoryUsed, prevRoughnessHistoryUsed = roughnessHistoryUsed, prevMetallicHistoryUsed = metallicHistoryUsed, prevNormalMapHistoryUsed = normalMapHistoryUsed, prevHeightMapHistoryUsed = heightMapHistoryUsed, prevAoHistoryUsed = aoHistoryUsed;
 
                     {
-                        if(meshTxtrHistory.size() < getModel()->meshes.size()){
-                            while (meshTxtrHistory.size() < getModel()->meshes.size())
+                        if(meshTxtrHistory.size() < getScene()->model->meshes.size()){
+                            while (meshTxtrHistory.size() < getScene()->model->meshes.size())
                             {
                                 Mesh msh;
                                 msh.albedo = Texture(nullptr, 1, 1);
@@ -457,8 +457,8 @@ void ObjectTexturingDialog::show(Timer& timer){
                             }
                         }
                         
-                        else if(meshTxtrHistory.size() > getModel()->meshes.size()){
-                            while (meshTxtrHistory.size() > getModel()->meshes.size()){
+                        else if(meshTxtrHistory.size() > getScene()->model->meshes.size()){
+                            while (meshTxtrHistory.size() > getScene()->model->meshes.size()){
                                 glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].albedo.ID);
                                 glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].roughness.ID);
                                 glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].metallic.ID);
@@ -552,7 +552,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                     ShaderSystem::objectTexturingAssign().setInt("txtr", 0);
                     ShaderSystem::objectTexturingAssign().setInt("selectedPrimitiveIDS", 1);
                     ShaderSystem::objectTexturingAssign().setInt("meshMask", 2);
-                    ShaderSystem::objectTexturingAssign().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);
+                    ShaderSystem::objectTexturingAssign().setInt("primitiveCount", getScene()->model->meshes[i].indices.size() / 3);
 
                     glActiveTexture(GL_TEXTURE0);
                     if(channelI == 0)
@@ -574,7 +574,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                     glActiveTexture(GL_TEXTURE2);
                     glBindTexture(GL_TEXTURE_2D, faceSelection[i].meshMask.ID);
 
-                    getModel()->meshes[i].Draw(false);
+                    getScene()->model->meshes[i].Draw(false);
                     
                     glEnable(GL_DEPTH_TEST);
 
@@ -592,13 +592,13 @@ void ObjectTexturingDialog::show(Timer& timer){
             dialog_textureSelection.show(timer, this->meshMask, this->getResolution(), false);
             
             if(this->meshMask.ID){
-                for (size_t i = 0; i < getModel()->meshes.size(); i++)
+                for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
                 {
                     if(i < this->faceSelection.size()){
                         if(!this->faceSelection[i].meshMask.ID)
                             this->faceSelection[i].meshMask = Texture(nullptr, this->getResolution(), this->getResolution());
                         this->faceSelection[i].meshMask.update(nullptr, this->getResolution(), this->getResolution());
-                        this->meshMask.generateProceduralTexture(getModel()->meshes[i], this->faceSelection[i].meshMask, this->getResolution());
+                        this->meshMask.generateProceduralTexture(getScene()->model->meshes[i], this->faceSelection[i].meshMask, this->getResolution());
                     }
                 }
             }
@@ -606,21 +606,21 @@ void ObjectTexturingDialog::show(Timer& timer){
             this->faceSelectionMode = false;
         }
         else if(undoButton.clicked){
-            for (size_t i = 0; i < getModel()->meshes.size(); i++)
+            for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
             {
                 if(i < meshTxtrHistory.size()){
                     if(albedoHistoryUsed)
-                        meshTxtrHistory[i].albedo.duplicateTexture(getModel()->meshes[i].albedo);
+                        meshTxtrHistory[i].albedo.duplicateTexture(getScene()->model->meshes[i].albedo);
                     if(roughnessHistoryUsed)
-                        meshTxtrHistory[i].roughness.duplicateTexture(getModel()->meshes[i].roughness);
+                        meshTxtrHistory[i].roughness.duplicateTexture(getScene()->model->meshes[i].roughness);
                     if(metallicHistoryUsed)
-                        meshTxtrHistory[i].metallic.duplicateTexture(getModel()->meshes[i].metallic);
+                        meshTxtrHistory[i].metallic.duplicateTexture(getScene()->model->meshes[i].metallic);
                     if(normalMapHistoryUsed)
-                        meshTxtrHistory[i].normalMap.duplicateTexture(getModel()->meshes[i].normalMap);
+                        meshTxtrHistory[i].normalMap.duplicateTexture(getScene()->model->meshes[i].normalMap);
                     if(heightMapHistoryUsed)
-                        meshTxtrHistory[i].heightMap.duplicateTexture(getModel()->meshes[i].heightMap);
+                        meshTxtrHistory[i].heightMap.duplicateTexture(getScene()->model->meshes[i].heightMap);
                     if(aoHistoryUsed)
-                        meshTxtrHistory[i].ambientOcclusion.duplicateTexture(getModel()->meshes[i].ambientOcclusion);
+                        meshTxtrHistory[i].ambientOcclusion.duplicateTexture(getScene()->model->meshes[i].ambientOcclusion);
                 }
             }
             
@@ -720,7 +720,7 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
 
     ShaderSystem::tdModelShader().setInt("displayingMode", this->displayingOptionsComboBox.selectedIndex);
     
-    for (size_t i = 0; i < getModel()->meshes.size(); i++)
+    for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
     {
         //Bind the channels of the material
         glActiveTexture(GL_TEXTURE2);
@@ -739,7 +739,7 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
         ShaderSystem::tdModelShader().setInt("usingMeshSelection", !this->faceSelectionMode);
         ShaderSystem::tdModelShader().setInt("meshSelectionEditing", this->faceSelectionMode);
         ShaderSystem::tdModelShader().setInt("hideUnselected", !this->faceSelectionMode);
-        ShaderSystem::tdModelShader().setInt("primitiveCount", getModel()->meshes[i].indices.size() / 3);
+        ShaderSystem::tdModelShader().setInt("primitiveCount", getScene()->model->meshes[i].indices.size() / 3);
 
         glActiveTexture(GL_TEXTURE11);
         glBindTexture(GL_TEXTURE_2D, faceSelection[i].selectedFaces.ID);
@@ -747,7 +747,7 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
         glActiveTexture(GL_TEXTURE12);
         glBindTexture(GL_TEXTURE_2D, faceSelection[i].meshMask.ID);
     
-        getModel()->meshes[i].Draw(faceSelectionMode);
+        getScene()->model->meshes[i].Draw(faceSelectionMode);
     }
     
     if((*Mouse::LPressed() || shortcuts_CTRL_A()) && this->faceSelectionMode && !this->anyElementHover()){
@@ -769,7 +769,7 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
 
         for (size_t i = 0; i < this->faceSelection.size(); i++)
         {
-            this->faceSelection[i].interaction(getModel()->meshes[i], i, true, view, projectionMatrix, glm::mat4(1), cursorPos, true, false);
+            this->faceSelection[i].interaction(getScene()->model->meshes[i], i, true, view, projectionMatrix, glm::mat4(1), cursorPos, true, false);
         }
     }
 
@@ -794,39 +794,39 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
     getBox()->bindBuffers();
 }
 
-#define MIX_CHANNELS(mask, normalMapMode, invert)   getModel()->meshes[meshI].albedo.mix(albedo, mask, false, normalMapMode, invert);\
-                                                    getModel()->meshes[meshI].roughness.mix(roughness, mask, false, normalMapMode, invert);\
-                                                    getModel()->meshes[meshI].metallic.mix(metallic, mask, false, normalMapMode, invert);\
-                                                    getModel()->meshes[meshI].normalMap.mix(normalMap, mask, false, normalMapMode, invert);\
-                                                    getModel()->meshes[meshI].heightMap.mix(heightMap, mask, false, normalMapMode, invert);\
-                                                    getModel()->meshes[meshI].ambientOcclusion.mix(ambientOcclusion, mask, false, normalMapMode, invert)
+#define MIX_CHANNELS(mask, normalMapMode, invert)   getScene()->model->meshes[meshI].albedo.mix(albedo, mask, false, normalMapMode, invert);\
+                                                    getScene()->model->meshes[meshI].roughness.mix(roughness, mask, false, normalMapMode, invert);\
+                                                    getScene()->model->meshes[meshI].metallic.mix(metallic, mask, false, normalMapMode, invert);\
+                                                    getScene()->model->meshes[meshI].normalMap.mix(normalMap, mask, false, normalMapMode, invert);\
+                                                    getScene()->model->meshes[meshI].heightMap.mix(heightMap, mask, false, normalMapMode, invert);\
+                                                    getScene()->model->meshes[meshI].ambientOcclusion.mix(ambientOcclusion, mask, false, normalMapMode, invert)
 
 static Texture maskDuplicated;
 
 void ObjectTexturingDialog::updateMeshTextures(){
-    for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+    for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
     {
-        Texture albedo = getModel()->meshes[meshI].albedo; 
-        Texture roughness = getModel()->meshes[meshI].roughness; 
-        Texture metallic = getModel()->meshes[meshI].metallic; 
-        Texture normalMap = getModel()->meshes[meshI].normalMap; 
-        Texture heightMap = getModel()->meshes[meshI].heightMap; 
-        Texture ambientOcclusion = getModel()->meshes[meshI].ambientOcclusion; 
+        Texture albedo = getScene()->model->meshes[meshI].albedo; 
+        Texture roughness = getScene()->model->meshes[meshI].roughness; 
+        Texture metallic = getScene()->model->meshes[meshI].metallic; 
+        Texture normalMap = getScene()->model->meshes[meshI].normalMap; 
+        Texture heightMap = getScene()->model->meshes[meshI].heightMap; 
+        Texture ambientOcclusion = getScene()->model->meshes[meshI].ambientOcclusion; 
         
-        getModel()->meshes[meshI].albedo = texturesMesh[meshI].albedo;
-        getModel()->meshes[meshI].roughness = texturesMesh[meshI].roughness;
-        getModel()->meshes[meshI].metallic = texturesMesh[meshI].metallic;
-        getModel()->meshes[meshI].normalMap = texturesMesh[meshI].normalMap;
-        getModel()->meshes[meshI].heightMap = texturesMesh[meshI].heightMap;
-        getModel()->meshes[meshI].ambientOcclusion = texturesMesh[meshI].ambientOcclusion;
+        getScene()->model->meshes[meshI].albedo = texturesMesh[meshI].albedo;
+        getScene()->model->meshes[meshI].roughness = texturesMesh[meshI].roughness;
+        getScene()->model->meshes[meshI].metallic = texturesMesh[meshI].metallic;
+        getScene()->model->meshes[meshI].normalMap = texturesMesh[meshI].normalMap;
+        getScene()->model->meshes[meshI].heightMap = texturesMesh[meshI].heightMap;
+        getScene()->model->meshes[meshI].ambientOcclusion = texturesMesh[meshI].ambientOcclusion;
         
         for (int i = this->material.materialModifiers.size() - 1; i >= 0; --i)    
         {
             if(meshI < this->faceSelection.size())
-                this->material.materialModifiers[i].updateMaterialChannels(this->material, getModel()->meshes[meshI], getResolution(), i, this->faceSelection[meshI].meshMask, this->faceSelection[meshI].selectedFaces, false, *getModel());
+                this->material.materialModifiers[i].updateMaterialChannels(this->material, getScene()->model->meshes[meshI], getResolution(), i, this->faceSelection[meshI].meshMask, this->faceSelection[meshI].selectedFaces, false, *getScene()->model);
         }
         
-        Texture maskMat = maskMaterialBtn.texture.generateProceduralTexture(getModel()->meshes[meshI], this->getResolution());
+        Texture maskMat = maskMaterialBtn.texture.generateProceduralTexture(getScene()->model->meshes[meshI], this->getResolution());
 
         // Mask channels
         MIX_CHANNELS(maskMat, false, false);
@@ -835,26 +835,26 @@ void ObjectTexturingDialog::updateMeshTextures(){
 
         // Mask channels via channel textures
         if(mixOptionsComboBox.selectedIndex == 3){ // Roughness
-            maskTxtr = getModel()->meshes[meshI].roughness; 
+            maskTxtr = getScene()->model->meshes[meshI].roughness; 
         }
         if(mixOptionsComboBox.selectedIndex == 4){ // Metallic
-            maskTxtr = getModel()->meshes[meshI].metallic; 
+            maskTxtr = getScene()->model->meshes[meshI].metallic; 
         }
         if(mixOptionsComboBox.selectedIndex == 5){ // AO
-            maskTxtr = getModel()->meshes[meshI].ambientOcclusion; 
+            maskTxtr = getScene()->model->meshes[meshI].ambientOcclusion; 
         }
         if(mixOptionsComboBox.selectedIndex == 6){ // Height Map
-            maskTxtr = getModel()->meshes[meshI].heightMap; 
+            maskTxtr = getScene()->model->meshes[meshI].heightMap; 
         }
         if(mixOptionsComboBox.selectedIndex == 7 || mixOptionsComboBox.selectedIndex == 8){ // Normal Map
-            maskTxtr = getModel()->meshes[meshI].normalMap; 
+            maskTxtr = getScene()->model->meshes[meshI].normalMap; 
         }
         
         if(mixOptionsComboBox.selectedIndex){
 
             if(mixOptionsComboBox.selectedIndex == 1 || mixOptionsComboBox.selectedIndex == 2){
                 std::vector<Texture> orgTxtrs = {albedo, roughness, metallic, normalMap, heightMap, ambientOcclusion};
-                std::vector<Texture> modifiedTxtrs = {getModel()->meshes[meshI].albedo, getModel()->meshes[meshI].roughness, getModel()->meshes[meshI].metallic, getModel()->meshes[meshI].normalMap, getModel()->meshes[meshI].heightMap, getModel()->meshes[meshI].ambientOcclusion};
+                std::vector<Texture> modifiedTxtrs = {getScene()->model->meshes[meshI].albedo, getScene()->model->meshes[meshI].roughness, getScene()->model->meshes[meshI].metallic, getScene()->model->meshes[meshI].normalMap, getScene()->model->meshes[meshI].heightMap, getScene()->model->meshes[meshI].ambientOcclusion};
             
                 for (size_t i = 0; i < orgTxtrs.size(); i++)
                 {
@@ -889,24 +889,24 @@ void ObjectTexturingDialog::updateMeshTextures(){
         }
 
         if(!albedoChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].albedo.mix(albedo, appTextures.white, false, false, false);
+            getScene()->model->meshes[meshI].albedo.mix(albedo, appTextures.white, false, false, false);
         if(!roughnessChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].roughness.mix(roughness, appTextures.white, false, false, false);
+            getScene()->model->meshes[meshI].roughness.mix(roughness, appTextures.white, false, false, false);
         if(!metallicChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].metallic.mix(metallic, appTextures.white, false, false, false);
+            getScene()->model->meshes[meshI].metallic.mix(metallic, appTextures.white, false, false, false);
         if(!normalMapChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].normalMap.mix(normalMap, appTextures.white, false, false, false);
+            getScene()->model->meshes[meshI].normalMap.mix(normalMap, appTextures.white, false, false, false);
         if(!heightMapChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].heightMap.mix(heightMap, appTextures.white, false, false, false);
+            getScene()->model->meshes[meshI].heightMap.mix(heightMap, appTextures.white, false, false, false);
         if(!aoChannelCheckBox.clickState1)
-            getModel()->meshes[meshI].ambientOcclusion.mix(ambientOcclusion, appTextures.white, false, false, false);
+            getScene()->model->meshes[meshI].ambientOcclusion.mix(ambientOcclusion, appTextures.white, false, false, false);
 
-        getModel()->meshes[meshI].albedo = albedo; 
-        getModel()->meshes[meshI].roughness = roughness; 
-        getModel()->meshes[meshI].metallic = metallic; 
-        getModel()->meshes[meshI].normalMap = normalMap; 
-        getModel()->meshes[meshI].heightMap = heightMap; 
-        getModel()->meshes[meshI].ambientOcclusion = ambientOcclusion; 
+        getScene()->model->meshes[meshI].albedo = albedo; 
+        getScene()->model->meshes[meshI].roughness = roughness; 
+        getScene()->model->meshes[meshI].metallic = metallic; 
+        getScene()->model->meshes[meshI].normalMap = normalMap; 
+        getScene()->model->meshes[meshI].heightMap = heightMap; 
+        getScene()->model->meshes[meshI].ambientOcclusion = ambientOcclusion; 
     }
 }
 
@@ -915,25 +915,25 @@ bool ObjectTexturingDialog::anyElementHover(){
 }
 
 int ObjectTexturingDialog::getResolution(){
-    for (size_t i = 0; i < getModel()->meshes.size(); i++)
+    for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
     {
-        if(getModel()->meshes[i].albedo.ID)
-            return getModel()->meshes[i].albedo.getResolution().x;
+        if(getScene()->model->meshes[i].albedo.ID)
+            return getScene()->model->meshes[i].albedo.getResolution().x;
 
-        else if(getModel()->meshes[i].roughness.ID)
-            return getModel()->meshes[i].roughness.getResolution().x;
+        else if(getScene()->model->meshes[i].roughness.ID)
+            return getScene()->model->meshes[i].roughness.getResolution().x;
 
-        else if(getModel()->meshes[i].metallic.ID)
-            return getModel()->meshes[i].metallic.getResolution().x;
+        else if(getScene()->model->meshes[i].metallic.ID)
+            return getScene()->model->meshes[i].metallic.getResolution().x;
 
-        else if(getModel()->meshes[i].normalMap.ID)
-            return getModel()->meshes[i].normalMap.getResolution().x;
+        else if(getScene()->model->meshes[i].normalMap.ID)
+            return getScene()->model->meshes[i].normalMap.getResolution().x;
 
-        else if(getModel()->meshes[i].heightMap.ID)
-            return getModel()->meshes[i].heightMap.getResolution().x;
+        else if(getScene()->model->meshes[i].heightMap.ID)
+            return getScene()->model->meshes[i].heightMap.getResolution().x;
 
-        else if(getModel()->meshes[i].ambientOcclusion.ID)
-            return getModel()->meshes[i].ambientOcclusion.getResolution().x;
+        else if(getScene()->model->meshes[i].ambientOcclusion.ID)
+            return getScene()->model->meshes[i].ambientOcclusion.getResolution().x;
     
         else
             return 1024;

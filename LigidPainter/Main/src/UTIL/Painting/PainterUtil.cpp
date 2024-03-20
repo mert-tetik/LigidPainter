@@ -123,8 +123,8 @@ glm::mat4 MirrorSide::getViewMat(glm::vec3 offset){
 
 static Mesh emptyMesh;
 Mesh* Painter::getSelectedMesh(){
-    if(this->selectedMeshIndex < getModel()->meshes.size())
-        return &getModel()->meshes[this->selectedMeshIndex];
+    if(this->selectedMeshIndex < getScene()->model->meshes.size())
+        return &getScene()->model->meshes[this->selectedMeshIndex];
 
     return &emptyMesh;
 }

@@ -41,14 +41,18 @@ struct Scene{
     bool renderAxisDisplayer = false;
     SceneAxisDisplayer axisDisplayer;
 
+    Skybox skybox;
+    void render_skybox(Painter& painter);
+    
     bool backfaceCulling = false;
     bool useHeightMap = false;
     float heightMapStrength = 0.f;
+    Model* model = new Model();
+    void render_model(Painter& painter);
+
+    void render_scene(Painter& painter);
     
-    void updateGUIProjectionMatrix(float window_width, float window_height);
-
     void updateProjectionMatrix(float ratio);
-
     void updateTransformMatrix();
 };
 

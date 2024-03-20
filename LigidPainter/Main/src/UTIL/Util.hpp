@@ -687,17 +687,6 @@ private:
 class Painter
 {
 public:
-    
-    /// @brief 1st painting color value in the 3 others, set by the user using the GUI elements (color pickers)
-    Color color1; 
-    /// @brief 2nd painting color value in the 3 others, set by the user using the GUI elements (color pickers)
-    Color color2; 
-    /// @brief 3rd painting color value in the 3 others, set by the user using the GUI elements (color pickers)
-    Color color3; 
-
-    /// @brief which color value is selected (1 , 2 or 3)
-    int selectedColorIndex = 0;
-
     /// @brief indicates which material channel will be painted. 0 : albedo, 1 : roughness, 2 : metallic, 3 : normal map, 4 : height map, 5 : ambient occlusion map
     int selectedPaintingChannelIndex = 0;
     
@@ -755,10 +744,6 @@ public:
     bool usePaintingOver = false;
     bool paintingoverTextureEditorMode = false;
     bool paintingOverGrayScale = false;
-
-    /// @brief Is set to true in the callbacks and is set to false after updating the depth texture
-    ///  (Update the depth texture if set to true)
-    bool updateTheDepthTexture = false;
 
     /// @brief The selected texture selected by user from the library.textures
     /// (This texture's id will be painted) 

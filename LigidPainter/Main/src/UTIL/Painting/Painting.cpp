@@ -42,24 +42,24 @@ glm::ivec2 Painter::getResolution(){
     // The resolution of the selected texture (painted texture)
     glm::vec2 textureRes = selectedTexture.getResolution();
 
-    if(this->materialPainting && this->selectedMeshIndex < getModel()->meshes.size()){
-        if(getModel()->meshes[this->selectedMeshIndex].albedo.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
+    if(this->materialPainting && this->selectedMeshIndex < getScene()->model->meshes.size()){
+        if(getScene()->model->meshes[this->selectedMeshIndex].albedo.ID)
+            textureRes = getScene()->model->meshes[this->selectedMeshIndex].albedo.getResolution();
 
-        else if(getModel()->meshes[this->selectedMeshIndex].roughness.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].roughness.getResolution();
+        else if(getScene()->model->meshes[this->selectedMeshIndex].roughness.ID)
+            textureRes = getScene()->model->meshes[this->selectedMeshIndex].roughness.getResolution();
 
-        else if(getModel()->meshes[this->selectedMeshIndex].metallic.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].metallic.getResolution();
+        else if(getScene()->model->meshes[this->selectedMeshIndex].metallic.ID)
+            textureRes = getScene()->model->meshes[this->selectedMeshIndex].metallic.getResolution();
 
-        else if(getModel()->meshes[this->selectedMeshIndex].normalMap.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].normalMap.getResolution();
+        else if(getScene()->model->meshes[this->selectedMeshIndex].normalMap.ID)
+            textureRes = getScene()->model->meshes[this->selectedMeshIndex].normalMap.getResolution();
 
-        else if(getModel()->meshes[this->selectedMeshIndex].heightMap.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].heightMap.getResolution();
+        else if(getScene()->model->meshes[this->selectedMeshIndex].heightMap.ID)
+            textureRes = getScene()->model->meshes[this->selectedMeshIndex].heightMap.getResolution();
 
-        else if(getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
-            textureRes = getModel()->meshes[this->selectedMeshIndex].ambientOcclusion.getResolution();
+        else if(getScene()->model->meshes[this->selectedMeshIndex].ambientOcclusion.ID)
+            textureRes = getScene()->model->meshes[this->selectedMeshIndex].ambientOcclusion.getResolution();
     
         else
             textureRes = glm::vec2(1024);
@@ -305,9 +305,9 @@ void Painter::doPaint(
     glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
 
     //Draw the selected mesh in 3D
-    if(this->selectedMeshIndex < getModel()->meshes.size()){
-        ShaderSystem::renderModelData().setInt("primitiveCount", getModel()->meshes[this->selectedMeshIndex].indices.size() / 3);
-        getModel()->meshes[this->selectedMeshIndex].Draw(false);
+    if(this->selectedMeshIndex < getScene()->model->meshes.size()){
+        ShaderSystem::renderModelData().setInt("primitiveCount", getScene()->model->meshes[this->selectedMeshIndex].indices.size() / 3);
+        getScene()->model->meshes[this->selectedMeshIndex].Draw(false);
     }
 
     float* pxs = new float[res.x * res.y * 4]; 
@@ -629,7 +629,7 @@ void Painter::projectThePaintingTexture(
         ShaderSystem::projectingPaintedTextureShader().setMat4("view", viewMat);
         
         //Draw the UV of the selected model
-        if(selectedMeshIndex < getModel()->meshes.size()){
+        if(selectedMeshIndex < getScene()->model->meshes.size()){
             
             if(wrapMode){
                 glEnable(GL_BLEND);
@@ -638,8 +638,8 @@ void Painter::projectThePaintingTexture(
                 glBlendEquationSeparate(GL_MAX, GL_MAX);
             }
 
-            ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", getModel()->meshes[selectedMeshIndex].indices.size() / 3);
-            getModel()->meshes[selectedMeshIndex].Draw(false);
+            ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", getScene()->model->meshes[selectedMeshIndex].indices.size() / 3);
+            getScene()->model->meshes[selectedMeshIndex].Draw(false);
             
             if(wrapMode){
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

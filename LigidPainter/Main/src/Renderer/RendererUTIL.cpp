@@ -114,11 +114,11 @@ void Renderer::end_render(){
     textRenderer.mods = 0;
     textRenderer.action = 0;
 
-    //Let the getModel()->newModelAdded be true for an another cycle
+    //Let the getScene()->model->newModelAdded be true for an another cycle
     if(previousModelNewModelAdded == true)
-        getModel()->newModelAdded = false;
+        getScene()->model->newModelAdded = false;
 
-    previousModelNewModelAdded = getModel()->newModelAdded; 
+    previousModelNewModelAdded = getScene()->model->newModelAdded; 
 
     //Cursor is changing there
     //Sets the active cursor (mouse.activeCursor) as the cursor

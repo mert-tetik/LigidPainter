@@ -72,9 +72,9 @@ void BakingDialog::show(Timer& timer, Skybox skybox){
 
         if(dialogControl.firstFrameActivated){
             selectMeshButton.selectedMeshI = 0;
-            if(selectMeshButton.selectedMeshI < getModel()->meshes.size()){
-                selectMeshButton.texture = getModel()->meshes[selectMeshButton.selectedMeshI].displayingTxtr; 
-                selectMeshButton.text = getModel()->meshes[selectMeshButton.selectedMeshI].materialName; 
+            if(selectMeshButton.selectedMeshI < getScene()->model->meshes.size()){
+                selectMeshButton.texture = getScene()->model->meshes[selectMeshButton.selectedMeshI].displayingTxtr; 
+                selectMeshButton.text = getScene()->model->meshes[selectMeshButton.selectedMeshI].materialName; 
             }
         }
 
@@ -86,7 +86,7 @@ void BakingDialog::show(Timer& timer, Skybox skybox){
 
         this->renderElements(timer, pos, scale, resultPos, resultScale);
 
-        if(this->bakeButton.clicked && selectMeshButton.selectedMeshI < getModel()->meshes.size()){
+        if(this->bakeButton.clicked && selectMeshButton.selectedMeshI < getScene()->model->meshes.size()){
             Texture baked = this->bake(
                                         skybox, 
                                         std::stoi(textureResComboBox.texts[textureResComboBox.selectedIndex])
@@ -325,7 +325,7 @@ Texture BakingDialog::bake(Skybox skybox, unsigned int resolution){
     glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
 
     Texture txtr = Texture(nullptr, resolution, resolution);
-    txtr.title = "baked_" + getModel()->meshes[selectMeshButton.selectedMeshI].materialName;
+    txtr.title = "baked_" + getScene()->model->meshes[selectMeshButton.selectedMeshI].materialName;
 
     /* Capturing FBO */
     unsigned int FBO; 
@@ -349,19 +349,19 @@ Texture BakingDialog::bake(Skybox skybox, unsigned int resolution){
     glDepthFunc(GL_LEQUAL);
     
     glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshButton.selectedMeshI].albedo.ID);
+    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].albedo.ID);
     glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshButton.selectedMeshI].roughness.ID);
+    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].roughness.ID);
     glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshButton.selectedMeshI].metallic.ID);
+    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].metallic.ID);
     glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshButton.selectedMeshI].normalMap.ID);
+    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].normalMap.ID);
     glActiveTexture(GL_TEXTURE6);
-    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshButton.selectedMeshI].heightMap.ID);
+    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].heightMap.ID);
     glActiveTexture(GL_TEXTURE7);
-    glBindTexture(GL_TEXTURE_2D, getModel()->meshes[selectMeshButton.selectedMeshI].ambientOcclusion.ID);
+    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].ambientOcclusion.ID);
     
-    getModel()->meshes[selectMeshButton.selectedMeshI].Draw(false);
+    getScene()->model->meshes[selectMeshButton.selectedMeshI].Draw(false);
 
     glDeleteFramebuffers(1, &FBO);
     glDeleteRenderbuffers(1, &RBO);

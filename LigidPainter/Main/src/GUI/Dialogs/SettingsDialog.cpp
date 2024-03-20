@@ -339,9 +339,9 @@ void SettingsDialog::renderPanel(Timer& timer){
     }
 
     if(heightmap_heightmap_strength_rangebar->pointerPressed && !*Mouse::LPressed() && heightmap_apply_heightmap_checkbox->clickState1){
-        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
         {
-            getModel()->meshes[i].processHeightMap();
+            getScene()->model->meshes[i].processHeightMap();
         }
     }
 }

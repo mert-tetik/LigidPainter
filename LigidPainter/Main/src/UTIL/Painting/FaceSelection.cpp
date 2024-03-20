@@ -162,10 +162,10 @@ bool FaceSelection::interaction(Mesh& selectedMesh, int selectedMeshI, bool mous
             selectedMesh.Draw(false);
         }
         else{
-            for (size_t i = 0; i < getModel()->meshes.size(); i++)
+            for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
             {
-                ShaderSystem::primitiveIDShader().setInt("emptyFlag", getModel()->meshes[i].materialName != selectedMesh.materialName);
-                getModel()->meshes[i].Draw(false);
+                ShaderSystem::primitiveIDShader().setInt("emptyFlag", getScene()->model->meshes[i].materialName != selectedMesh.materialName);
+                getScene()->model->meshes[i].Draw(false);
             }
         }
 

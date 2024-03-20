@@ -42,10 +42,10 @@ void panel_objects_render(Timer& timer, bool doMouseTracking){
     {
         for (size_t elI = 0; elI < panel_objects.sections[secI].elements.size(); elI++){
             bool match = false;
-            if(secI < getModel()->meshes.size()){
-                for (size_t i = 0; i < getModel()->meshes[secI].selectedObjectIndices.size(); i++)
+            if(secI < getScene()->model->meshes.size()){
+                for (size_t i = 0; i < getScene()->model->meshes[secI].selectedObjectIndices.size(); i++)
                 {
-                    if(getModel()->meshes[secI].selectedObjectIndices[i] == elI)
+                    if(getScene()->model->meshes[secI].selectedObjectIndices[i] == elI)
                         match = true;
                 }
             }
@@ -63,17 +63,17 @@ void panel_objects_render(Timer& timer, bool doMouseTracking){
     }
 
     // Update the elements according to new mesh
-    if(getModel()->newModelAdded){
+    if(getScene()->model->newModelAdded){
         panel_objects.sections.clear();
         
-        for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+        for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
         {
             Section section;
-            section.header = SectionHolder(ColorPalette::secondColor,0.f,getModel()->meshes[meshI].materialName);
+            section.header = SectionHolder(ColorPalette::secondColor,0.f,getScene()->model->meshes[meshI].materialName);
             section.header.sectionHolder.active = true;
 
-            for (size_t objI = 0; objI < getModel()->meshes[meshI].objects.size(); objI++){
-                Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), getModel()->meshes[meshI].objects[objI].title, Texture(), 0.f, false));
+            for (size_t objI = 0; objI < getScene()->model->meshes[meshI].objects.size(); objI++){
+                Element btn = Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), getScene()->model->meshes[meshI].objects[objI].title, Texture(), 0.f, false));
                 btn.button.color = ColorPalette::mainColor;
                 section.elements.push_back(btn);
             }

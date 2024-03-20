@@ -88,22 +88,22 @@ Model* MaterialEditorDialog::getDisplayModel(){
     if(this->selectedModelModeIndex == 1)
         return getMaterialDisplayerModel();
     if(this->selectedModelModeIndex == 2){
-        if(getModel()->meshes.size() != customModel.meshes.size()){
+        if(getScene()->model->meshes.size() != customModel.meshes.size()){
             customModel.meshes.clear();
 
-            for (size_t i = 0; i < getModel()->meshes.size(); i++){
+            for (size_t i = 0; i < getScene()->model->meshes.size(); i++){
                 customModel.meshes.push_back(Mesh({}, {1,2,3}, "", true));
             }
         }
 
         for (size_t i = 0; i < customModel.meshes.size(); i++)
         {
-            customModel.meshes[i].indices = getModel()->meshes[i].indices;
-            customModel.meshes[i].VBO = getModel()->meshes[i].VBO;
-            customModel.meshes[i].EBO = getModel()->meshes[i].EBO;
-            customModel.meshes[i].VAO = getModel()->meshes[i].VAO;
-            customModel.meshes[i].objects = getModel()->meshes[i].objects;
-            customModel.meshes[i].uvMask = getModel()->meshes[i].uvMask;
+            customModel.meshes[i].indices = getScene()->model->meshes[i].indices;
+            customModel.meshes[i].VBO = getScene()->model->meshes[i].VBO;
+            customModel.meshes[i].EBO = getScene()->model->meshes[i].EBO;
+            customModel.meshes[i].VAO = getScene()->model->meshes[i].VAO;
+            customModel.meshes[i].objects = getScene()->model->meshes[i].objects;
+            customModel.meshes[i].uvMask = getScene()->model->meshes[i].uvMask;
         }
         return &customModel;
     }

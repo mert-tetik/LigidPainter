@@ -32,6 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+static bool prevStraightLinePaintingCondition = false;
 
 void render_toolkits(Timer& timer, Painter& painter){
     
@@ -52,6 +53,25 @@ void render_toolkits(Timer& timer, Painter& painter){
         getVectorScene()->render_scene(timer, !panels_any_hovered(), checkBox_wrap_mode.clickState1);
         Debugger::block("GUI : Vectors"); // End
     }
+
+    bool straightLinePaintingCondition = painter.selectedDisplayingModeIndex != 0 && 
+                                         painter.selectedPaintingModeIndex != 5 && 
+                                         !painter.faceSelection.editMode && 
+                                         (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && 
+                                         *Mouse::LPressed(); 
+
+    if(straightLinePaintingCondition || prevStraightLinePaintingCondition)
+    {
+        Debugger::block("GUI : Line painting"); // Start
+        line_painting(
+                        timer, 
+                        painter, 
+                        prevStraightLinePaintingCondition && !straightLinePaintingCondition, 
+                        !prevStraightLinePaintingCondition && straightLinePaintingCondition
+                    );
+        Debugger::block("GUI : Line painting"); // End
+    }
+    prevStraightLinePaintingCondition = straightLinePaintingCondition;
 
     //Render the brush cursor
     if(
@@ -74,29 +94,4 @@ void render_toolkits(Timer& timer, Painter& painter){
     else{
         getContext()->window.setCursorVisibility(true);
     }
-}
-
-bool prevStraightLinePaintingCondition = false;
-
-void UI::renderPanels(Timer &timer, Painter &painter){
-    
-    Debugger::block("GUI : Panels : Rest"); // Start
-
-    bool straightLinePaintingCondition = painter.selectedDisplayingModeIndex != 0 && 
-                                         painter.selectedPaintingModeIndex != 5 && 
-                                         !painter.faceSelection.editMode && 
-                                         (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && 
-                                         *Mouse::LPressed(); 
-
-    if(straightLinePaintingCondition || prevStraightLinePaintingCondition)
-    {
-        line_painting
-    }
-    else if(prevStraightLinePaintingCondition){
-
-    }
-    
-    prevStraightLinePaintingCondition = straightLinePaintingCondition;
- 
-    Debugger::block("GUI : Panels : Rest"); // End
 }

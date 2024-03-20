@@ -138,9 +138,9 @@ static void initMeshSelectionDialog(
 
     std::vector<Element> meshButtons;
 
-    for (size_t i = 0; i < getModel()->meshes.size(); i++)
+    for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
     {
-        meshButtons.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(10.f), getModel()->meshes[i].materialName, getModel()->meshes[i].displayingTxtr, 0.f, true));
+        meshButtons.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(10.f), getScene()->model->meshes[i].materialName, getScene()->model->meshes[i].displayingTxtr, 0.f, true));
     }
     
 

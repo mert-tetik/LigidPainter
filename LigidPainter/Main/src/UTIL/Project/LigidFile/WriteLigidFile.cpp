@@ -95,7 +95,7 @@ bool Project::wrtLigidFile(std::string path){
     WRITE_BITS(lastOpenedDate, time_t, "");
 
     // ------------- Current model data ------------
-    if(!writeStr(wf, getModel()->title))
+    if(!writeStr(wf, getScene()->model->title))
         return false;
 
     // ------------- Settings ------------

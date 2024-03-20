@@ -464,26 +464,26 @@ void Panel::drawPanel(
                     
                     /* Render the text if rendering library displayer panel*/
                     if(isLibraryDisplayer){
-                        for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+                        for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
                         {
                             std::string channelName = "";
                             unsigned int txtrID = sections[sI].elements[i].button.texture.ID;
 
-                            if(getModel()->meshes[meshI].albedo.ID == txtrID)
+                            if(getScene()->model->meshes[meshI].albedo.ID == txtrID)
                                 channelName = "Albedo";
-                            if(getModel()->meshes[meshI].roughness.ID == txtrID)
+                            if(getScene()->model->meshes[meshI].roughness.ID == txtrID)
                                 channelName = "Roughness";
-                            if(getModel()->meshes[meshI].metallic.ID == txtrID)
+                            if(getScene()->model->meshes[meshI].metallic.ID == txtrID)
                                 channelName = "Metallic";
-                            if(getModel()->meshes[meshI].normalMap.ID == txtrID)
+                            if(getScene()->model->meshes[meshI].normalMap.ID == txtrID)
                                 channelName = "Normal Map";
-                            if(getModel()->meshes[meshI].heightMap.ID == txtrID)
+                            if(getScene()->model->meshes[meshI].heightMap.ID == txtrID)
                                 channelName = "Height Map";
-                            if(getModel()->meshes[meshI].ambientOcclusion.ID == txtrID)
+                            if(getScene()->model->meshes[meshI].ambientOcclusion.ID == txtrID)
                                 channelName = "Ambient Occlusion";
                         
                             if(channelName != ""){
-                                Button materialInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), getModel()->meshes[meshI].materialName, Texture(), 0.f, false);
+                                Button materialInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), getScene()->model->meshes[meshI].materialName, Texture(), 0.f, false);
                                 Button channelInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), channelName, Texture(), 0.f, false);
 
                                 materialInfo.color = ColorPalette::themeColor;

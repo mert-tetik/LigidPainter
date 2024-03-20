@@ -47,10 +47,10 @@ void current_mode_hint_displayer_render(Timer& timer, Painter& painter)
         currentModeDisplayer.text = "Object Selection Mode";
         int selectedObjCount = 0;
         int objCount = 0;
-        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
         {
-            selectedObjCount += getModel()->meshes[i].selectedObjectIndices.size();
-            objCount += getModel()->meshes[i].objects.size();
+            selectedObjCount += getScene()->model->meshes[i].selectedObjectIndices.size();
+            objCount += getScene()->model->meshes[i].objects.size();
         }
         
         currentModeHintDisplayer.text = "Objects " + std::to_string(selectedObjCount) + "/" + std::to_string(objCount);
@@ -99,8 +99,8 @@ void current_mode_hint_displayer_render(Timer& timer, Painter& painter)
     }
     if(painter.faceSelection.editMode){
         currentModeDisplayer.text = "Face Selection Mode (Edit)";
-        if(painter.selectedMeshIndex < getModel()->meshes.size())
-            currentModeHintDisplayer.text = "Faces Total : " + std::to_string(getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
+        if(painter.selectedMeshIndex < getScene()->model->meshes.size())
+            currentModeHintDisplayer.text = "Faces Total : " + std::to_string(getScene()->model->meshes[painter.selectedMeshIndex].indices.size() / 3);
     }
     
     if(painter.usePaintingOver){

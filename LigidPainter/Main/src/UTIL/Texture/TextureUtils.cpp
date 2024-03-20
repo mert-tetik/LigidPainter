@@ -792,7 +792,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         if(displayMode == 1)
             model = *getMaterialDisplayerModel();
         else if(displayMode == 2)
-            model = *getModel();
+            model = *getScene()->model;
 
         for (size_t i = 0; i < model.meshes.size(); i++)
         {

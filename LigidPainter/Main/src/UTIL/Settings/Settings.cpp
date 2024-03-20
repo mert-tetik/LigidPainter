@@ -29,7 +29,6 @@ Settings::Properties __settingsProperties;
 Context __context; 
 Context __copyContext; 
 Scene __scene; //3D Scene structure
-Model* __model = nullptr;
 VectorScene __vectorScene;
 TextureFieldScene __textureFieldScene;
 Model __sphereModel;
@@ -129,16 +128,6 @@ Scene* getScene(){
     return &__scene;
 }
 
-static Model emptyModel;
-Model* getModel(){
-    if(__model != nullptr)
-        return __model;
-    else
-        return &emptyModel;
-}
-void setModel(Model* model){
-    __model = model;
-}
 VectorScene* getVectorScene(){
     return &__vectorScene;
 } 

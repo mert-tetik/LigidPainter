@@ -57,8 +57,8 @@ void LogDialog::undo(Painter& painter){
     if(this->activeHistoryMode == HISTORY_OBJECTSELECTION_MODE && actions_ObjectSelection.size()){
         ObjectSelectionAction action = actions_ObjectSelection[actions_ObjectSelection.size() - 1];
 
-        if(action.meshI < getModel()->meshes.size())
-            getModel()->meshes[action.meshI].selectedObjectIndices = action.selectedObjectIndices;
+        if(action.meshI < getScene()->model->meshes.size())
+            getScene()->model->meshes[action.meshI].selectedObjectIndices = action.selectedObjectIndices;
         else    
             LGDLOG::start << "ERROR : Undo object selection failed - Invalid mesh index" << LGDLOG::end;
 
@@ -71,11 +71,11 @@ void LogDialog::undo(Painter& painter){
         std::vector<int> changedIndices = {};
         
         if(action.ID == FACE_SELECTION_PAINTER_ACTION){
-            if(action.meshI < getModel()->meshes.size()){
+            if(action.meshI < getScene()->model->meshes.size()){
                 if(painter.faceSelection.selectedPrimitiveIDs.size() == action.primitivesArray.size()){
                     painter.faceSelection.prevPrimArray = action.prevPrimArray;
                     painter.faceSelection.selectedPrimitiveIDs = action.primitivesArray;
-                    updatePrimitivesArrayTexture(painter.faceSelection.selectedFaces, action.primitivesArray, action.primitivesArray, getModel()->meshes[action.meshI], changedIndices, true);
+                    updatePrimitivesArrayTexture(painter.faceSelection.selectedFaces, action.primitivesArray, action.primitivesArray, getScene()->model->meshes[action.meshI], changedIndices, true);
                 }
                 else{
                     LGDLOG::start << "ERROR : Undo face selection failed - Mesh data doesn't match" << LGDLOG::end;
@@ -86,12 +86,12 @@ void LogDialog::undo(Painter& painter){
                 LGDLOG::start << "ERROR : Undo face selection failed - Invalid mesh index" << LGDLOG::end;
         }
         else{
-            if(action.primitivesArray_M.size() == dialog_objectTexturing.faceSelection.size() && action.primitivesArray_M.size() == getModel()->meshes.size()){
+            if(action.primitivesArray_M.size() == dialog_objectTexturing.faceSelection.size() && action.primitivesArray_M.size() == getScene()->model->meshes.size()){
                 for (size_t i = 0; i < action.primitivesArray_M.size(); i++)
                 {
                     dialog_objectTexturing.faceSelection[i].prevPrimArray = action.primitivesArray_M[i];
                     dialog_objectTexturing.faceSelection[i].selectedPrimitiveIDs = action.prevPrimArray_M[i];
-                    updatePrimitivesArrayTexture(dialog_objectTexturing.faceSelection[i].selectedFaces, action.primitivesArray_M[i], action.primitivesArray_M[i], getModel()->meshes[i], changedIndices, true);
+                    updatePrimitivesArrayTexture(dialog_objectTexturing.faceSelection[i].selectedFaces, action.primitivesArray_M[i], action.primitivesArray_M[i], getScene()->model->meshes[i], changedIndices, true);
                 }
             }
             else{

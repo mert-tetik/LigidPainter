@@ -53,13 +53,10 @@ public:
     void render();
 private:
     /*!
-        @brief Let the getModel()->newModelAdded be true for an another cycle
+        @brief Let the getScene()->model->newModelAdded be true for an another cycle
                 Ignore pls
     */
     bool previousModelNewModelAdded = false;
-
-    void renderSkyBox();
-    void renderMainModel();
 
     double previousClickTime = 0.0;
     

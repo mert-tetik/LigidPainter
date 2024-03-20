@@ -78,9 +78,9 @@ void TextureField::renderWrappedTextureField(
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
         
-        if(painter.selectedMeshIndex < getModel()->meshes.size()){
-            ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
-            getModel()->meshes[painter.selectedMeshIndex].Draw(false);
+        if(painter.selectedMeshIndex < getScene()->model->meshes.size()){
+            ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->model->meshes[painter.selectedMeshIndex].indices.size() / 3);
+            getScene()->model->meshes[painter.selectedMeshIndex].Draw(false);
         }
 
         // Render the points
@@ -118,9 +118,9 @@ void TextureField::renderWrappedTextureField(
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
 
-        if(painter.selectedMeshIndex < getModel()->meshes.size()){
-            ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
-            getModel()->meshes[painter.selectedMeshIndex].Draw(false);
+        if(painter.selectedMeshIndex < getScene()->model->meshes.size()){
+            ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->model->meshes[painter.selectedMeshIndex].indices.size() / 3);
+            getScene()->model->meshes[painter.selectedMeshIndex].Draw(false);
         }
 
         // Render the wrapped texture
@@ -715,9 +715,9 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
 
-    if(painter.selectedMeshIndex < getModel()->meshes.size()){
-        ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[painter.selectedMeshIndex].indices.size() / 3);
-        getModel()->meshes[painter.selectedMeshIndex].Draw(false);
+    if(painter.selectedMeshIndex < getScene()->model->meshes.size()){
+        ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->model->meshes[painter.selectedMeshIndex].indices.size() / 3);
+        getScene()->model->meshes[painter.selectedMeshIndex].Draw(false);
     }
     
     // Then render the wrapped image

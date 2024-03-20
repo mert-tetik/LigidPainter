@@ -310,15 +310,15 @@ static void exportLibraryTextures(Panel& propertiesPanel){
         
         bool meshMatch = false;
 
-        for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+        for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
         {
             if(
-                    getModel()->meshes[meshI].albedo.ID == Library::getTextureObj(i).ID ||
-                    getModel()->meshes[meshI].roughness.ID == Library::getTextureObj(i).ID ||
-                    getModel()->meshes[meshI].metallic.ID == Library::getTextureObj(i).ID ||
-                    getModel()->meshes[meshI].normalMap.ID == Library::getTextureObj(i).ID ||
-                    getModel()->meshes[meshI].heightMap.ID == Library::getTextureObj(i).ID ||
-                    getModel()->meshes[meshI].ambientOcclusion.ID == Library::getTextureObj(i).ID
+                    getScene()->model->meshes[meshI].albedo.ID == Library::getTextureObj(i).ID ||
+                    getScene()->model->meshes[meshI].roughness.ID == Library::getTextureObj(i).ID ||
+                    getScene()->model->meshes[meshI].metallic.ID == Library::getTextureObj(i).ID ||
+                    getScene()->model->meshes[meshI].normalMap.ID == Library::getTextureObj(i).ID ||
+                    getScene()->model->meshes[meshI].heightMap.ID == Library::getTextureObj(i).ID ||
+                    getScene()->model->meshes[meshI].ambientOcclusion.ID == Library::getTextureObj(i).ID
                 )
             {
                 meshMatch = true;

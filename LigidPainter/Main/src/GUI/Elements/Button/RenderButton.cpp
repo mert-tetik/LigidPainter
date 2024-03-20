@@ -107,9 +107,9 @@ void Button::render(
         }
         if(this->meshSelection){
             dialog_meshSelection.show(timer, this->selectedMeshI);
-            if(this->selectedMeshI < getModel()->meshes.size()){
-                this->texture = getModel()->meshes[this->selectedMeshI].displayingTxtr; 
-                this->text = getModel()->meshes[this->selectedMeshI].materialName; 
+            if(this->selectedMeshI < getScene()->model->meshes.size()){
+                this->texture = getScene()->model->meshes[this->selectedMeshI].displayingTxtr; 
+                this->text = getScene()->model->meshes[this->selectedMeshI].materialName; 
             }
         }
         if(this->brushModification){
@@ -121,12 +121,12 @@ void Button::render(
     }
 
     if(this->meshSelection){
-        if(getModel()->newModelAdded)
+        if(getScene()->model->newModelAdded)
             this->selectedMeshI = 0;
 
-        if(this->selectedMeshI < getModel()->meshes.size()){
-            this->texture = getModel()->meshes[this->selectedMeshI].displayingTxtr; 
-            this->text = getModel()->meshes[this->selectedMeshI].materialName; 
+        if(this->selectedMeshI < getScene()->model->meshes.size()){
+            this->texture = getScene()->model->meshes[this->selectedMeshI].displayingTxtr; 
+            this->text = getScene()->model->meshes[this->selectedMeshI].materialName; 
         }
         else
             this->selectedMeshI = 0;

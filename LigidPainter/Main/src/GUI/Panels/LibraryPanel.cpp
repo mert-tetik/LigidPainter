@@ -220,7 +220,7 @@ static void check_context_menus(Timer& timer, Project& project){
                 //Clicked to use the model button
                 else if(res == 1){
                     setModel(Library::getModel(elementI));
-                    getModel()->newModelAdded = true; 
+                    getScene()->model->newModelAdded = true; 
                 }
             }
         }

@@ -307,9 +307,9 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
     
-    if(this->selectedMeshIndex < getModel()->meshes.size()){
-        ShaderSystem::alphaZero3D().setInt("primitiveCount", getModel()->meshes[this->selectedMeshIndex].indices.size() / 3);
-        getModel()->meshes[this->selectedMeshIndex].Draw(false);
+    if(this->selectedMeshIndex < getScene()->model->meshes.size()){
+        ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->model->meshes[this->selectedMeshIndex].indices.size() / 3);
+        getScene()->model->meshes[this->selectedMeshIndex].Draw(false);
     }
 
     // Render all the vectors

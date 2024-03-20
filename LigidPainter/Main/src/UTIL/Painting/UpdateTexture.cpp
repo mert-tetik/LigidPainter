@@ -119,14 +119,14 @@ void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintin
     
     if(this->threeDimensionalMode){
         //Draw the UV of the selected model
-        if(selectedMeshIndex < getModel()->meshes.size()){
+        if(selectedMeshIndex < getScene()->model->meshes.size()){
 
             //*Vertex
             ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
             ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
             ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->camera.viewMatrix);
 
-            getModel()->meshes[selectedMeshIndex].Draw(false);         
+            getScene()->model->meshes[selectedMeshIndex].Draw(false);         
         }
     }
     else{
@@ -143,8 +143,8 @@ void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintin
     }
     
     if(this->threeDimensionalMode){
-        if(selectedMeshIndex < getModel()->meshes.size())
-            captureTexture.removeSeams(getModel()->meshes[selectedMeshIndex], destScale);
+        if(selectedMeshIndex < getScene()->model->meshes.size())
+            captureTexture.removeSeams(getScene()->model->meshes[selectedMeshIndex], destScale);
     }
 
     //Delete the capture framebuffer
@@ -163,7 +163,7 @@ void Painter::updateTexture(int paintingMode){
         return;
     }
 
-    if(this->selectedMeshIndex >= getModel()->meshes.size()){
+    if(this->selectedMeshIndex >= getScene()->model->meshes.size()){
         LGDLOG::start << "ERROR : Painting : Invalid selected mesh" << LGDLOG::end;
         return;
     }
@@ -182,12 +182,12 @@ void Painter::updateTexture(int paintingMode){
 
     int txtrI = this->getSelectedTextureIndexInLibrary();
     
-    if(this->useCustomMaterial && this->selectedMeshIndex < getModel()->meshes.size()){
-        glm::vec2 res = getModel()->meshes[this->selectedMeshIndex].albedo.getResolution();
-        customMatMesh.EBO = getModel()->meshes[this->selectedMeshIndex].EBO;
-        customMatMesh.VBO = getModel()->meshes[this->selectedMeshIndex].VBO;
-        customMatMesh.VAO = getModel()->meshes[this->selectedMeshIndex].VAO;
-        customMatMesh.indices = getModel()->meshes[this->selectedMeshIndex].indices;
+    if(this->useCustomMaterial && this->selectedMeshIndex < getScene()->model->meshes.size()){
+        glm::vec2 res = getScene()->model->meshes[this->selectedMeshIndex].albedo.getResolution();
+        customMatMesh.EBO = getScene()->model->meshes[this->selectedMeshIndex].EBO;
+        customMatMesh.VBO = getScene()->model->meshes[this->selectedMeshIndex].VBO;
+        customMatMesh.VAO = getScene()->model->meshes[this->selectedMeshIndex].VAO;
+        customMatMesh.indices = getScene()->model->meshes[this->selectedMeshIndex].indices;
         
         if(!customMatMesh.albedo.ID){
             customMatMesh.albedo = Texture(nullptr, res.x, res.y);
@@ -210,7 +210,7 @@ void Painter::updateTexture(int paintingMode){
 
         for (int i = painting_custom_mat->materialModifiers.size() - 1; i >= 0; --i)    
         {
-            painting_custom_mat->materialModifiers[i].updateMaterialChannels(*painting_custom_mat, customMatMesh, res.x, i, appTextures.white, 0, false, *getModel());
+            painting_custom_mat->materialModifiers[i].updateMaterialChannels(*painting_custom_mat, customMatMesh, res.x, i, appTextures.white, 0, false, *getScene()->model);
         }
     }
 
@@ -306,8 +306,8 @@ void Painter::updateTexture(int paintingMode){
                         updateTheTexture(txtr, paintingMode, clr, i, clr.r);
                     else{
                         txtr.mix(customMatTxtr, projectedPaintingTexture, true, false, false);
-                        if(selectedMeshIndex < getModel()->meshes.size())
-                            txtr.removeSeams(getModel()->meshes[selectedMeshIndex], txtr.getResolution());
+                        if(selectedMeshIndex < getScene()->model->meshes.size())
+                            txtr.removeSeams(getScene()->model->meshes[selectedMeshIndex], txtr.getResolution());
                     }
                 }
             }

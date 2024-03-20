@@ -167,19 +167,19 @@ static void updateTextureSelectingPanelElements(Panel& textureSelectingPanel, in
         }
     }
     else if(selectedTextureMode == 6){
-        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
         {
-            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),getModel()->meshes[i].materialName       , getModel()->meshes[i].uvMask, 0.f,false)));
+            sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f),getScene()->model->meshes[i].materialName       , getScene()->model->meshes[i].uvMask, 0.f,false)));
         }
     }
     else if(selectedTextureMode == 7){
-        for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+        for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
         {
-            for (size_t i = 0; i < getModel()->meshes[meshI].materialIDColors.size(); i++)
+            for (size_t i = 0; i < getScene()->model->meshes[meshI].materialIDColors.size(); i++)
             {
-                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f), getModel()->meshes[meshI].materialName, getModel()->meshes[meshI].materialIDColors[i].grayScaleTxtr, 0.f,false)));
+                sectionElements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6.f), getScene()->model->meshes[meshI].materialName, getScene()->model->meshes[meshI].materialIDColors[i].grayScaleTxtr, 0.f,false)));
                 sectionElements[sectionElements.size()-1].button.textureSizeScale = 1.2f;
-                sectionElements[sectionElements.size()-1].button.color = glm::vec4(getModel()->meshes[meshI].materialIDColors[i].color, 1.f);
+                sectionElements[sectionElements.size()-1].button.color = glm::vec4(getScene()->model->meshes[meshI].materialIDColors[i].color, 1.f);
             }
         }
     }
@@ -216,12 +216,12 @@ void TextureSelectionDialog::updateProceduralDisplayingTexturesArray(bool twoDMo
             elementSize = Library::getgetSrcLibTxtrsArraySize();
         }
         else if(selectedTextureMode == 6){
-            elementSize = getModel()->meshes.size();
+            elementSize = getScene()->model->meshes.size();
         }
         else if(selectedTextureMode == 7){
-            for (size_t i = 0; i < getModel()->meshes.size(); i++)
+            for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
             {
-                elementSize += getModel()->meshes[i].materialIDColors.size();
+                elementSize += getScene()->model->meshes[i].materialIDColors.size();
             }
             
         }
@@ -310,17 +310,17 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
     }
     else if(this->selectedTextureMode == 6){
         receivedTexture.proceduralProps.proceduralID = -1;
-        if(selectedTextureIndex < getModel()->meshes.size())
-            receivedTexture.proceduralProps.proceduralTextureID = getModel()->meshes[selectedTextureIndex].uvMask.ID;
+        if(selectedTextureIndex < getScene()->model->meshes.size())
+            receivedTexture.proceduralProps.proceduralTextureID = getScene()->model->meshes[selectedTextureIndex].uvMask.ID;
     }
     else if(this->selectedTextureMode == 7){
         receivedTexture.proceduralProps.proceduralID = -1;
         std::vector<Texture> txtrs;
-        for (size_t meshI = 0; meshI < getModel()->meshes.size(); meshI++)
+        for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
         {
-            for (size_t i = 0; i < getModel()->meshes[meshI].materialIDColors.size(); i++)
+            for (size_t i = 0; i < getScene()->model->meshes[meshI].materialIDColors.size(); i++)
             {
-                txtrs.push_back(getModel()->meshes[meshI].materialIDColors[i].grayScaleTxtr);
+                txtrs.push_back(getScene()->model->meshes[meshI].materialIDColors[i].grayScaleTxtr);
             }
         }
         

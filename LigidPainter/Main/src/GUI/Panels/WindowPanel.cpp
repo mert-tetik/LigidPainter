@@ -51,13 +51,13 @@ void panel_window_render(Timer& timer, Painter& painter, bool doMouseTracking){
         dialog_export.show(timer, Project());
     }
     else if(panel_window.sections[0].elements[3].button.clicked){//Pressed to the displayer button of the window panel
-        dialog_displayer.show(timer, Skybox());
+        dialog_displayer.show(timer, getScene()->skybox);
     }
     else if(panel_window.sections[0].elements[4].button.clicked){//Pressed to the settings button of the window panel
         dialog_settings.show(timer, painter);
     }
     else if(panel_window.sections[0].elements[5].button.clicked){//Pressed to the settings button of the window panel
-        dialog_baking.show(timer, Skybox());
+        dialog_baking.show(timer, getScene()->skybox);
     }
     else if(panel_window.sections[0].elements[6].button.clicked){//Pressed to the materials button of the window panel
         dialog_materialSelection.show(timer, nullptr);

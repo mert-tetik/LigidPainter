@@ -40,9 +40,9 @@ void button_texture_selected_objects_render(Timer& timer, bool doMouseTracking)
 
     if(button_texture_selected_objects.clicked){
         bool anyObjSelected = false;
-        for (size_t i = 0; i < getModel()->meshes.size(); i++)
+        for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
         {
-            if(getModel()->meshes[i].selectedObjectIndices.size())
+            if(getScene()->model->meshes[i].selectedObjectIndices.size())
                 anyObjSelected = true;
         }
         
