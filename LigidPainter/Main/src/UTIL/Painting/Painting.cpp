@@ -261,7 +261,7 @@ void Painter::doPaint(
                                                 posData[2]
                                             );
     
-    getScene()->updateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
+    getScene()->camera.updateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
 
     posData[0] = (posData[0] + 1.f) / 2.f;
     posData[1] = (posData[1] + 1.f) / 2.f;
@@ -284,7 +284,7 @@ void Painter::doPaint(
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glm::mat4 viewMat = getScene()->calculateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
+    glm::mat4 viewMat = getScene()->camera.calculateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
 
     //Use the depth 3D shader
     ShaderSystem::renderModelData().use();
@@ -369,7 +369,7 @@ void Painter::doPaint(
 
     getScene()->camera.cameraPos = oldCamPos;
     getScene()->camera.originPos = oldCamOrigin;
-    getScene()->updateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
+    getScene()->camera.updateViewMatrix(getScene()->camera.cameraPos, getScene()->camera.originPos);
 
 }
 

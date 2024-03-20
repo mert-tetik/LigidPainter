@@ -62,7 +62,6 @@ private:
     void renderMainModel();
 
     double previousClickTime = 0.0;
-    glm::vec2 lastMousePos;//This will be used as "last frame's cursor pos" for the cursor offset 
     
     // Callbacks
     void mouseButtonCallback(LigidWindow window, int button, int action, int mods);

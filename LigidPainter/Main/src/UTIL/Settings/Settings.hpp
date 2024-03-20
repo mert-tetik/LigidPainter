@@ -30,6 +30,12 @@ struct Scene;
 struct Context{
     LigidWindow window;
     glm::ivec2 windowScale;
+    glm::mat4 ortho_projection;
+
+    void updateGUIProjectionMatrix(float window_width, float window_height){
+        //Update the UI projection using window size
+        this->ortho_projection = glm::ortho(0.f, window_width, window_height, 0.f);
+    }
 };
 
 class Gizmo;

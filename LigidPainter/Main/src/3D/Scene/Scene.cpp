@@ -22,11 +22,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
-void Scene::updateGUIProjectionMatrix(float window_width, float window_height){
-    //Update the UI projection using window size
-    this->gui_projection = glm::ortho(0.f, window_width, window_height, 0.f);
-}
-
 void Scene::updateProjectionMatrix(float ratio){
     if(getContext()->windowScale.x){
         if(ratio == 0.f)

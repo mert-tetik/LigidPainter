@@ -118,7 +118,7 @@ glm::mat4 MirrorSide::getViewMat(glm::vec3 offset){
     glm::vec3 orgOriginPos = getScene()->camera.originPos;
     glm::vec3 camPosOriginDistance = orgCamPos - orgOriginPos;
     glm::vec3 camPos = orgOriginPos * -this->effectAxis - camPosOriginDistance * this->effectAxis - offset * 2.f; 
-    return getScene()->calculateViewMatrix(camPos, orgOriginPos * -this->effectAxis - offset * 2.f);
+    return getScene()->camera.calculateViewMatrix(camPos, orgOriginPos * -this->effectAxis - offset * 2.f);
 }
 
 static Mesh emptyMesh;

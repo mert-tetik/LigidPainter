@@ -19,9 +19,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "3D/ThreeD.hpp"
 
-#include "Toolkit/VectorScene/VectorScene.hpp"
-#include "Toolkit/TextureFieldScene/TextureFieldScene.hpp"
-
 struct Camera{
     float yaw = -90.f;
     float pitch = 0.f;

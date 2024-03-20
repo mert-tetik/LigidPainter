@@ -83,6 +83,7 @@ void Renderer::start_render(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     getScene()->updateGUIProjectionMatrix(getContext()->windowScale.x, getContext()->windowScale.y);
+    getScene()->updateProjectionMatrix(0.f);
 
     // Process the shortcut inputs & move the camera gradually if necessary
     getScene()->camera.posShortcutInteraction();

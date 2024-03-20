@@ -103,7 +103,7 @@ void Renderer::initRenderer(){
 
     //Update necessary data before callbacks
     glViewport(0, 0, getContext()->windowScale.x, getContext()->windowScale.y);    
-    getScene()->updateViewMatrix();
+    getScene()->camera.updateViewMatrix();
     getScene()->updateTransformMatrix();
     getScene()->updateProjectionMatrix(0.f);
     Debugger::block("LOAD : Init context"); //End
