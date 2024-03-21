@@ -57,7 +57,7 @@ static void drawBG()
 void DialogControl::updateStart(){
     getContext()->window.pollEvents();
 
-    getScene()->updateGUIProjectionMatrix(getContext()->windowScale.x, getContext()->windowScale.y);
+    getContext()->updateGUIProjectionMatrix(getContext()->windowScale.x, getContext()->windowScale.y);
     getScene()->updateProjectionMatrix(0.f);
     
     // Prevent rendering the application if the window is minimized

@@ -545,87 +545,6 @@ public:
     Texture generateSpriteTexture();
 };
 
-class Project
-{
-public:
-    /// @brief Folder path of the project 
-    ///        (AAA/MyProject)
-    ///         Doesn't have '/' at the end
-    std::string folderPath;
-    std::string absoluteProjectPath();
-
-    std::string recoverSlotPath(int slot);
-
-
-    //Constructor
-    Project(){}
-
-
-    /// @brief Create a project from scratch
-    /// @param destinationPath where the project folder be created
-    /// @param name title of the project
-    /// @return true if success
-    bool createProject(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths);
-    
-    /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
-    void updateProject(bool updateTextures, bool multithreadingMode);
-    
-    /// @brief load an existing project using ligid file path
-    /// @param ligidFilePath path to the ligid file
-    /// @return 
-    bool loadProject(std::string ligidFilePath);
-
-
-
-
-    /// @brief Checks if this->folderPath is valid. If not tries to create the folder into the same path. 
-    ///        If this fails too informs the user and asks for a new path. (Called in updateProject function)
-    /// @return if you're good to go
-    bool folderPathCheck();
-    
-    bool discardUpdateProjectFlag = false;    
-
-    /// @brief Loads each library elements (textures, materials, brushes, models etc.) into the Library
-    bool loadLibraryElements(std::string folderPath, std::string ligidFilePath);
-
-    /// @brief 
-    void addModelToProject(std::string filePath);
-
-    /// @param dstPath where to duplicate
-    void saveAs(std::string dstPath);
-    
-    /// @brief Copies the project path to the clipboard
-    /// @param window 
-    void copyTheProjectPathToTheClipboard();
-
-    /// @brief Locates the ligid file in the folderPath param. Returns "" if there's no ligid file. 
-    std::string locateLigidFileInFolder(const std::string& folderPath);
-    /// @brief Locates the ligid file in this->folderPath. Returns "" if there's no ligid file. 
-    std::string locateLigidFileInFolder();
-    
-    /// @brief Retrieve data from the ligid file
-    /// @param path 
-    /// @param creationDate 
-    /// @param lastOpenedDate 
-    /// @param meshNodeScene 
-    /// @param textureRes 
-    /// @return True if success
-    bool readLigidFile(std::string path,time_t &creationDate,time_t &lastOpenedDate);
-    
-    /// @brief Write ligid file to the project folder
-    bool writeLigidFile(std::string path);
-
-    /// @brief Returns the title of the project
-    ///        (MyProject)
-    std::string projectName();
-
-    std::atomic<bool> projectProcessing = false;
-
-private:
-    bool wrtLigidFile(std::string path);
-
-};
-
 struct MirrorSide{
     bool active = false;
 
@@ -1106,6 +1025,6 @@ struct ThreadElements{
 };
 
 extern ThreadElements projectUpdatingThreadElements; 
-void projectUpdatingThread(Project &project);
+void projectUpdatingThread();
 
 #endif

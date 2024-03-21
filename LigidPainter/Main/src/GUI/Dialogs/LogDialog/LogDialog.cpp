@@ -23,11 +23,14 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "3D/ThreeD.hpp" 
+
 #include "GUI/GUI.hpp" 
+
 #include "UTIL/Mouse/Mouse.hpp" 
 #include "UTIL/Library/Library.hpp" 
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp" 
+#include "UTIL/Project/Project.hpp" 
 
 #include <string>
 #include <iostream>
@@ -161,8 +164,7 @@ static std::string lastProjectPath;
 
 void LogDialog::render(
                             Timer timer, 
-                            Painter& painter, 
-                            Project &project
+                            Painter& painter
                         )
 {
     this->unded = false;
@@ -617,7 +619,7 @@ void LogDialog::render(
     }
 
     // Delete the unrelated history data
-    if(!dialog_materialEditor.dialogControl.isActive() || project.folderPath != lastProjectPath){
+    if(!dialog_materialEditor.dialogControl.isActive() || project_path() != lastProjectPath){
         for (size_t i = 0; i < actions_MaterialEditor.size(); i++)
         {
             actions_MaterialEditor[i].material.deleteBuffers();
@@ -628,7 +630,7 @@ void LogDialog::render(
     prevpPainterDisplayIndex = painter.selectedDisplayingModeIndex;
     prevpPainterSelectedTxtr = painter.selectedTexture.ID;
 
-    if(!painter.paintingoverTextureEditorMode || project.folderPath != lastProjectPath){
+    if(!painter.paintingoverTextureEditorMode || project_path() != lastProjectPath){
         for (size_t i = 0; i < actions_TextureFields.size(); i++)
         {
             for (size_t fieldI = 0; fieldI < actions_TextureFields[i].fields.size(); fieldI++)
@@ -649,11 +651,11 @@ void LogDialog::render(
         actions_TextureFields.clear();
     }
     
-    if(!(painter.faceSelection.editMode || dialog_objectTexturing.faceSelectionMode) || project.folderPath != lastProjectPath){
+    if(!(painter.faceSelection.editMode || dialog_objectTexturing.faceSelectionMode) || project_path() != lastProjectPath){
         actions_FaceSelection.clear();
     }
 
-    if(project.folderPath != lastProjectPath){
+    if(project_path() != lastProjectPath){
         /*
         for (size_t i = 0; i < actions_Library.size(); i++)
         {
@@ -761,7 +763,7 @@ void LogDialog::render(
 
     newLibraryAction = false;
     newOtherAction = false;
-    lastProjectPath = project.folderPath;
+    lastProjectPath = project_path();
 }
 
 bool LogDialog::isHovered(){

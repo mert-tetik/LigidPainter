@@ -18,10 +18,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "UTIL/Util.hpp"
-#include "GUI/Elements.hpp"
 #include "3D/ThreeD.hpp"
+
+#include "UTIL/Util.hpp"
 #include "UTIL/Library/Library.hpp"
+#include "UTIL/Project/ProjectUTIL.hpp"
+
+#include "GUI/Elements.hpp"
 #include "GUI/GUI.hpp"
 
 #include <string>
@@ -39,28 +42,28 @@ static void LOAD_models(const std::string models_folder_path);
 static void LOAD_filters(const std::string filters_folder_path);
 static void LOAD_texturePacks(const std::string texture_packs_folder_path);
 
-bool Project::loadLibraryElements(std::string folderPath, std::string ligidFilePath){
+bool project_load_library_elements(std::string folderPath, std::string ligidFilePath){
     try
     {
         //Load the textures
-        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Textures")){
-            LOAD_textures(this->folderPath + UTIL::folderDistinguisher() + "Textures");
+        if(std::filesystem::exists(project_path() + UTIL::folderDistinguisher() + "Textures")){
+            LOAD_textures(project_path() + UTIL::folderDistinguisher() + "Textures");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : Textures folder doesn't exists" << LGDLOG::end;
         }
 
         //Load the materials
-        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Materials")){
-            LOAD_materials(this->folderPath + UTIL::folderDistinguisher() + "Materials");
+        if(std::filesystem::exists(project_path() + UTIL::folderDistinguisher() + "Materials")){
+            LOAD_materials(project_path() + UTIL::folderDistinguisher() + "Materials");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : Materials folder doesn't exists" << LGDLOG::end;
         }
 
         //Load the 3D models
-        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "3DModels")){
-            LOAD_models(this->folderPath + UTIL::folderDistinguisher() + "3DModels");
+        if(std::filesystem::exists(project_path() + UTIL::folderDistinguisher() + "3DModels")){
+            LOAD_models(project_path() + UTIL::folderDistinguisher() + "3DModels");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : 3DModels folder doesn't exists" << LGDLOG::end;
@@ -71,16 +74,16 @@ bool Project::loadLibraryElements(std::string folderPath, std::string ligidFileP
             time_t lastOpenedDate;
             
             // Read the ligid file
-            if(!this->readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
+            if(!projectUTIL_read_ligid_file(ligidFilePath, creationDate, lastOpenedDate)){
                 // Couldn't read the ligid file (probably cause of version)
 
                 LGDLOG::start << "WARNING : Failed to load the ligid file : New ligid file will be generated." << LGDLOG::end;
                 
                 // Generate new ligid file
-                if(this->writeLigidFile(ligidFilePath)){
+                if(projectUTIL_write_ligid_file(ligidFilePath)){
                     
                     // Read the generated ligid file
-                    if(!this->readLigidFile(ligidFilePath, creationDate, lastOpenedDate)){
+                    if(!projectUTIL_read_ligid_file(ligidFilePath, creationDate, lastOpenedDate)){
                         // Can't load the generated ligid file :( 
                         LGDLOG::start << "WARNING : Failed to load the regenerated ligid file : Ligid file will be ignored." << LGDLOG::end;
                     }
@@ -94,24 +97,24 @@ bool Project::loadLibraryElements(std::string folderPath, std::string ligidFileP
         }
         
         //Load the brushes
-        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Brushes")){
-            LOAD_brushes(this->folderPath + UTIL::folderDistinguisher() + "Brushes");
+        if(std::filesystem::exists(project_path() + UTIL::folderDistinguisher() + "Brushes")){
+            LOAD_brushes(project_path() + UTIL::folderDistinguisher() + "Brushes");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : Brushes folder doesn't exists" << LGDLOG::end;
         }
 
         //Load the filters
-        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Filters")){
-            LOAD_filters(this->folderPath + UTIL::folderDistinguisher() + "Filters");
+        if(std::filesystem::exists(project_path() + UTIL::folderDistinguisher() + "Filters")){
+            LOAD_filters(project_path() + UTIL::folderDistinguisher() + "Filters");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : Filters folder doesn't exists" << LGDLOG::end;
         }
 
         //Load the texture packs
-        if(std::filesystem::exists(this->folderPath + UTIL::folderDistinguisher() + "Texture Packs")){
-
+        if(std::filesystem::exists(project_path() + UTIL::folderDistinguisher() + "Texture Packs")){
+            LOAD_texturePacks(project_path() + UTIL::folderDistinguisher() + "Texture Packs");
         }
         else{
             LGDLOG::start << "WARNING! Loading project folder : Texture Packs folder doesn't exists" << LGDLOG::end;
@@ -125,34 +128,30 @@ bool Project::loadLibraryElements(std::string folderPath, std::string ligidFileP
 }
 
 
-bool Project::loadProject(std::string ligidFilePath){
+bool project_load(std::string ligidFilePath){
     
     while(true){
-        if(!this->projectProcessing)
+        if(!projectUTIL_processing)
             break;
     }
     
-    this->projectProcessing = true;
+    projectUTIL_processing = true;
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
         LGDLOG::start<< "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << LGDLOG::end;
         projectUpdatingThreadElements.updateTextures = false;
-        this->projectProcessing = false;
+        projectUTIL_processing = false;
         return false;
     }
 
     //Remove the file from the path (./myProject/myProject.ligid -> ./myProject/) 
-    this->folderPath = UTIL::removeLastWordBySeparatingWithChar(ligidFilePath, UTIL::folderDistinguisher());
+    projectUTIL_set_path(UTIL::removeLastWordBySeparatingWithChar(ligidFilePath, UTIL::folderDistinguisher()));
 
-    //Make sure folder path doesn't have seperator at the end (./myProject/ -> ./myProject)
-    if(this->folderPath[this->folderPath.size()-1] == '/' || this->folderPath[this->folderPath.size()-1] == '\\') 
-        this->folderPath.pop_back();
-
-    this->loadLibraryElements(this->folderPath, ligidFilePath);
+    project_load_library_elements(project_path(), ligidFilePath);
 
     projectUpdatingThreadElements.updateTextures = false;
-    this->projectProcessing = false;
+    projectUTIL_processing = false;
     return true;
 }
 

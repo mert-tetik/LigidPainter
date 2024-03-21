@@ -45,7 +45,6 @@ Context* getCopyContext();
 extern std::atomic<bool> mainThreadUsingCopyContext;
 
 Scene* getScene();
-void setModel(Model* model);
 Model* getSphereModel();
 Model* getPlaneModel();
 Model* getMaterialDisplayerModel();

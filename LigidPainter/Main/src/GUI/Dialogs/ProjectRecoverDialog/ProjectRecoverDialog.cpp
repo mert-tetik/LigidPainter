@@ -21,11 +21,14 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "3D/ThreeD.hpp" 
+
 #include "GUI/GUI.hpp" 
+
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Library/Library.hpp"
+#include "UTIL/Project/Project.hpp"
 
 #include <string>
 #include <iostream>
@@ -210,7 +213,7 @@ ProjectRecoverDialog::ProjectRecoverDialog(int){
 
 static int slot = 1;
 
-void ProjectRecoverDialog::show(Timer& timer, Project &project){
+void ProjectRecoverDialog::show(Timer& timer){
     
     this->dialogControl.activate();
 
@@ -218,7 +221,7 @@ void ProjectRecoverDialog::show(Timer& timer, Project &project){
     {
         dialogControl.updateStart();
 
-        project.discardUpdateProjectFlag = true;
+        project_discard_update_flag = true;
 
         // Render the background panel
         this->panel.render(timer, false);
@@ -242,9 +245,9 @@ void ProjectRecoverDialog::show(Timer& timer, Project &project){
         this->recover3Btn.pos = this->recover2Btn.pos;
         this->recover3Btn.pos.x += 25.f;
 
-        recover1Btn.locked = !std::filesystem::exists(project.recoverSlotPath(1));
-        recover2Btn.locked = !std::filesystem::exists(project.recoverSlotPath(2));
-        recover3Btn.locked = !std::filesystem::exists(project.recoverSlotPath(3));
+        recover1Btn.locked = !std::filesystem::exists(project_recover_path(1));
+        recover2Btn.locked = !std::filesystem::exists(project_recover_path(2));
+        recover3Btn.locked = !std::filesystem::exists(project_recover_path(3));
 
         recover1Btn.render(timer, !projectSelectionMode);
         recover2Btn.render(timer, !projectSelectionMode);
@@ -273,8 +276,8 @@ void ProjectRecoverDialog::show(Timer& timer, Project &project){
 
             try
             {
-                if(std::filesystem::exists(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Textures")){
-                    for (const auto& entry : std::filesystem::directory_iterator(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Textures")) {
+                if(std::filesystem::exists(project_recover_path(slot) + UTIL::folderDistinguisher() + "Textures")){
+                    for (const auto& entry : std::filesystem::directory_iterator(project_recover_path(slot) + UTIL::folderDistinguisher() + "Textures")) {
                         std::string path = entry.path().string();
 
                         if(std::filesystem::is_regular_file(path)){
@@ -288,8 +291,8 @@ void ProjectRecoverDialog::show(Timer& timer, Project &project){
                         }
                     }            
                 }
-                if(std::filesystem::exists(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Brushes")){
-                    for (const auto& entry : std::filesystem::directory_iterator(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Brushes")) {
+                if(std::filesystem::exists(project_recover_path(slot) + UTIL::folderDistinguisher() + "Brushes")){
+                    for (const auto& entry : std::filesystem::directory_iterator(project_recover_path(slot) + UTIL::folderDistinguisher() + "Brushes")) {
                         std::string path = entry.path().string();
 
                         if(std::filesystem::is_regular_file(path)){
@@ -298,8 +301,8 @@ void ProjectRecoverDialog::show(Timer& timer, Project &project){
                         }
                     }            
                 }
-                if(std::filesystem::exists(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Materials")){
-                    for (const auto& entry : std::filesystem::directory_iterator(project.recoverSlotPath(slot) + UTIL::folderDistinguisher() + "Materials")) {
+                if(std::filesystem::exists(project_recover_path(slot) + UTIL::folderDistinguisher() + "Materials")){
+                    for (const auto& entry : std::filesystem::directory_iterator(project_recover_path(slot) + UTIL::folderDistinguisher() + "Materials")) {
                         std::string path = entry.path().string();
 
                         if(std::filesystem::is_regular_file(path)){
@@ -353,7 +356,7 @@ void ProjectRecoverDialog::show(Timer& timer, Project &project){
         }
 
         if(this->projectPanelFileExplorerBtn.clicked){
-            UTIL::openInFileExplorer(std::filesystem::absolute(project.recoverSlotPath(slot)).string().c_str());
+            UTIL::openInFileExplorer(std::filesystem::absolute(project_recover_path(slot)).string().c_str());
         }
 
         //End the dialog
@@ -387,15 +390,13 @@ void ProjectRecoverDialog::show(Timer& timer, Project &project){
                 if(showMessageBox("WARNING!", "Are you sure you want to recover this project", MESSAGEBOX_TYPE_WARNING, MESSAGEBOX_BUTTON_OKCANCEL)){
                     dialogControl.unActivate();
                     
-                    std::string lgdPath = project.locateLigidFileInFolder(project.recoverSlotPath(slot)); 
+                    std::string lgdPath = project_locate_ligid_file(project_recover_path(slot)); 
                     if(lgdPath.size()){
-                        std::string projectPath = project.folderPath; 
-                        project.loadProject(lgdPath);
-                        project.folderPath = projectPath; 
+                        project_load_library_elements(project_recover_path(slot), lgdPath);
                     }
                     else{
                         LGDLOG::start << "WARNING! No ligid file detected. Only the library elements will be updated." << LGDLOG::end;
-                        project.loadLibraryElements(project.recoverSlotPath(slot), "");
+                        project_load_library_elements(project_recover_path(slot), "");
                     }
                 }
             }
@@ -410,5 +411,5 @@ void ProjectRecoverDialog::show(Timer& timer, Project &project){
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();  
 
-    project.discardUpdateProjectFlag = false;
+    project_discard_update_flag = false;
 }

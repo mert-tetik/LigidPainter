@@ -20,10 +20,13 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "3D/ThreeD.hpp"
+
 #include "GUI/GUI.hpp"
+
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Project/Project.hpp"
  
 #include <string>
 #include <iostream>
@@ -124,7 +127,7 @@ LoadProjectDialog::LoadProjectDialog(int){
     this->textBtn4.textScale = 0.5f;
 }
 
-void LoadProjectDialog::show(Timer& timer, Project &project){
+void LoadProjectDialog::show(Timer& timer){
     
     dialogControl.activate();
 
@@ -150,7 +153,7 @@ void LoadProjectDialog::show(Timer& timer, Project &project){
             if(test.size()){
                 
                 //Load the project
-                if(project.loadProject(test)){
+                if(project_load(test)){
                     this->dialogControl.unActivate();
                 }
                 else{
@@ -189,7 +192,7 @@ void LoadProjectDialog::show(Timer& timer, Project &project){
                     btn.scale.x = projectsPanel.scale.x;
                     
                     //If a ligid file is loacted
-                    if(project.locateLigidFileInFolder(projectPath).size()){
+                    if(project_locate_ligid_file(projectPath).size()){
                         //Transfer the button to the new section
                         projectSection.elements.push_back(btn);
                         counter++;
@@ -215,11 +218,11 @@ void LoadProjectDialog::show(Timer& timer, Project &project){
                 
                 if(std::filesystem::exists(projectsPanel.sections[0].elements[i].button.text)){
                     //Get the ligid file path using the button's text as a project folder path source
-                    std::string ligidFilePath = project.locateLigidFileInFolder(projectsPanel.sections[0].elements[i].button.text);
+                    std::string ligidFilePath = project_locate_ligid_file(projectsPanel.sections[0].elements[i].button.text);
                     
                     if(ligidFilePath.size()){
                         //Load the project
-                        if(project.loadProject(ligidFilePath)){                
+                        if(project_load(ligidFilePath)){                
                             this->dialogControl.unActivate();
                             break;
                         }
@@ -250,7 +253,7 @@ void LoadProjectDialog::show(Timer& timer, Project &project){
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || bgPanel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
             this->dialogControl.unActivate();
             this->dialogControl.mixVal = 0.f;
-            dialog_greeting.show(timer, project);
+            dialog_greeting.show(timer);
             break;
         }
 

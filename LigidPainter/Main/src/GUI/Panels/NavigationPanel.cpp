@@ -19,15 +19,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Renderer.h"
-#include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Project/Project.hpp"
+
 #include "Toolkit/Layers/Layers.hpp"
+
+#include "GUI/GUI.hpp"
 #include "GUI/Panels.hpp"
 
 #include <string>
@@ -35,7 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Panel panel_navigation;
 
-void panel_navigation_render(Timer& timer, Project& project ,bool doMouseTracking)
+void panel_navigation_render(Timer& timer ,bool doMouseTracking)
 {
     panel_navigation.render(timer, doMouseTracking);
     if(panel_navigation.resizingDone){
@@ -44,10 +47,10 @@ void panel_navigation_render(Timer& timer, Project& project ,bool doMouseTrackin
 
     // If shortcuts were used
     if(shortcuts_CTRL_S())
-        project.updateProject(true, false);
+        project_update(true, false);
 
     if(shortcuts_CTRL_SHIFT_S())
-        project.saveAs("");
+        project_save_as("");
 
     //If pressed to "Project" button
     if(panel_navigation.sections[0].elements[1].button.clicked){ 
@@ -57,7 +60,7 @@ void panel_navigation_render(Timer& timer, Project& project ,bool doMouseTrackin
         
         //Save
         if(res == 0){
-            project.updateProject(true, false);
+            project_update(true, false);
         }
         
         //Save as
@@ -76,17 +79,17 @@ void panel_navigation_render(Timer& timer, Project& project ,bool doMouseTrackin
         
         //Copy path
         else if(res == 4){
-            project.copyTheProjectPathToTheClipboard();
+            LigidGL::setClipboardText(project_path());
         }
 
         //Open in file explorer
         else if(res == 5){
-            UTIL::openInFileExplorer(project.absoluteProjectPath().c_str());
+            UTIL::openInFileExplorer(project_path().c_str());
         }
 
         //Recover
         else if(res == 6){
-            dialog_projectRecover.show(timer, project);
+            dialog_projectRecover.show(timer);
         }
     }
     

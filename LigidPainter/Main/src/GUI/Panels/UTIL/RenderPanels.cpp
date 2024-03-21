@@ -27,7 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 // Defined in the RenderPanel.cpp
 extern bool updateThePreRenderedPanels;
 
-void panels_render(Timer& timer, Project& project, Painter& painter)
+void panels_render(Timer& timer, Painter& painter)
 {
     ShaderSystem::buttonShader().use();
     ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection); 
@@ -39,7 +39,7 @@ void panels_render(Timer& timer, Project& project, Painter& painter)
     Debugger::block("GUI : panelPositioning"); // End
 
     Debugger::block("GUI : Panels : Navigation panel"); // Start
-    panel_navigation_render(timer, project, true);
+    panel_navigation_render(timer, true);
     Debugger::block("GUI : Panels : Navigation panel"); // End
 
     Debugger::block("GUI : Panels : Window Panel"); // Start
@@ -51,7 +51,7 @@ void panels_render(Timer& timer, Project& project, Painter& painter)
     Debugger::block("GUI : Panels : Library Modes Panel"); // End
 
     Debugger::block("GUI : Panels : Library Panel"); // End
-    panel_library_render(timer, painter, project, true);
+    panel_library_render(timer, painter, true);
     Debugger::block("GUI : Panels : Library Panel"); // End
     
     Debugger::block("GUI : Panels : Selected Texture Displayer Panel"); // Start
@@ -132,9 +132,7 @@ void panels_render(Timer& timer, Project& project, Painter& painter)
 
     if(!Settings::properties()->cat_hide){
         Debugger::block("GUI : Log Dialog"); // Start
-        dialog_log.render(
-                            timer, painter, project
-                        );
+        dialog_log.render(timer, painter);
         Debugger::block("GUI : Log Dialog"); // End
     }
     else

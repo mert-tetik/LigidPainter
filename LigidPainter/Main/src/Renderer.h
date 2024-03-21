@@ -40,8 +40,6 @@ public:
 
     Fonts fonts;
 
-    Project project;
-
     Skybox skybox;
 
     Painter painter;

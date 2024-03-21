@@ -18,11 +18,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
+
+#include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Library/Library.hpp"
+#include "UTIL/Project/Project.hpp"
+#include "UTIL/Project/ProjectUTIL.hpp"
 
 #include <string>
 #include <fstream>
@@ -58,7 +62,7 @@ int findIndexInLibrary(Texture txtr){
     return -1;
 }
 
-bool Project::wrtLigidFile(std::string path){
+bool wrtLigidFile(std::string path){
     
     // Open writing stream and truncate the file
     std::ofstream wf = std::ofstream(path, std::ios::out | std::ios::binary);
@@ -104,7 +108,7 @@ bool Project::wrtLigidFile(std::string path){
     return true;
 }
 
-bool Project::writeLigidFile(std::string path){
+bool projectUTIL_write_ligid_file(std::string path){
     bool res = wrtLigidFile(path);
     if(!res){
         try

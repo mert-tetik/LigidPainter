@@ -19,15 +19,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Renderer.h"
-#include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Project/Project.hpp"
+
 #include "Toolkit/Layers/Layers.hpp"
+
+#include "GUI/GUI.hpp"
 #include "GUI/Panels.hpp"
 
 #include <string>
@@ -36,17 +39,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 Panel panel_library;
 
 /* Forward declared util functions */
-static void check_context_menus(Timer& timer, Project& project);
+static void check_context_menus(Timer& timer);
 static void element_interactions(Timer& timer, Painter& painter);
-static void bar_buttons_interactions(Timer& timer, Project& project);
+static void bar_buttons_interactions(Timer& timer);
 static void update_elements();
 
 void panel_library_render(
                             Timer& timer, 
                             Painter& painter, 
-                            Project& project, 
                             bool doMouseTracking
-                            )
+                        )
 {
 
     //Update the library displayer panel every time library changed
@@ -58,7 +60,7 @@ void panel_library_render(
     element_interactions(timer, painter);
     
     // If clicked to bar buttons (import & add new)
-    bar_buttons_interactions(timer, project);
+    bar_buttons_interactions(timer);
     
     //Set library changed to false after updating some stuff after library change
     Library::setChanged(false);
@@ -69,7 +71,7 @@ void panel_library_render(
     }
 
     // If right clicked to elements
-    check_context_menus(timer, project);
+    check_context_menus(timer);
 }
 
 
@@ -81,7 +83,7 @@ void panel_library_render(
 
 
 
-static void check_context_menus(Timer& timer, Project& project){
+static void check_context_menus(Timer& timer){
     for (size_t elementI = 0; elementI < panel_library.sections[0].elements.size(); elementI++)
     {
         // Right clicked to an element
@@ -105,7 +107,7 @@ static void check_context_menus(Timer& timer, Project& project){
                 }
                 //Clicked to copy path button
                 else if(res == 2){
-                    LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + Library::getTexture(elementI)->title + ".png");
+                    LigidGL::setClipboardText(project_path() + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + Library::getTexture(elementI)->title + ".png");
                 }
                 //Clicked to edit button
                 else if(res == 3){
@@ -139,7 +141,7 @@ static void check_context_menus(Timer& timer, Project& project){
                 }
                 //Clicked to copy path button
                 else if(res == 3){
-                    LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(elementI)->title + ".lgdmaterial");
+                    LigidGL::setClipboardText(project_path() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(elementI)->title + ".lgdmaterial");
                 }
                 //Clicked to delete button
                 else if(res == 4){
@@ -198,7 +200,7 @@ static void check_context_menus(Timer& timer, Project& project){
                 
                 //Clicked to copy path button
                 else if(res == 3){
-                    LigidGL::setClipboardText(project.absoluteProjectPath() + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + Library::getBrush(elementI)->title + ".lgdfilter");
+                    LigidGL::setClipboardText(project_path() + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + Library::getBrush(elementI)->title + ".lgdfilter");
                 }
                 
                 //Clicked to delete button
@@ -219,7 +221,7 @@ static void check_context_menus(Timer& timer, Project& project){
 
                 //Clicked to use the model button
                 else if(res == 1){
-                    setModel(Library::getModel(elementI));
+                    getScene()->model = Library::getModel(elementI);
                     getScene()->model->newModelAdded = true; 
                 }
             }
@@ -258,7 +260,7 @@ static void element_interactions(Timer& timer, Painter& painter){
     }
 }
 
-static void bar_buttons_interactions(Timer& timer, Project& project){
+static void bar_buttons_interactions(Timer& timer){
     if(panel_library.barButtons[0].clicked){
         if(Library::getSelectedElementIndex() == 0){//Textures
             dialog_newTexture.show(timer);
@@ -300,7 +302,7 @@ static void bar_buttons_interactions(Timer& timer, Project& project){
             
             std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
-                project.addModelToProject(test);
+                project_add_model(test);
             }
         }
         if(Library::getSelectedElementIndex() == 4){ //Fonts
@@ -359,7 +361,7 @@ static void bar_buttons_interactions(Timer& timer, Project& project){
         if(Library::getSelectedElementIndex() == 3){ //3D Models
             std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){
-                project.addModelToProject(test);
+                project_add_model(test);
             }
         }
 

@@ -29,10 +29,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Dialogs.hpp"
 
 extern Panel panel_library;
-void panel_library_render(Timer& timer, Painter& painter, Project& project, bool doMouseTracking);
+void panel_library_render(Timer& timer, Painter& painter, bool doMouseTracking);
 
 extern Panel panel_navigation;
-void panel_navigation_render(Timer& timer, Project& project, bool doMouseTracking);
+void panel_navigation_render(Timer& timer, bool doMouseTracking);
 
 extern Panel panel_window;
 void panel_window_render(Timer& timer, Painter& painter, bool doMouseTracking);
@@ -106,6 +106,6 @@ void panels_init();
 bool panels_any_hovered();
 
 /*! @brief Renders all the panels (positioning done inside of it via 'panels_transform' function) */
-void panels_render(Timer& timer, Project& project, Painter& painter);
+void panels_render(Timer& timer, Painter& painter);
 
 #endif

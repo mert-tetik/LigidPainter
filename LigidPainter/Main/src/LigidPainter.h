@@ -21,10 +21,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "../../thirdparty/include/glm/glm.hpp"
 
+#include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Project/Project.hpp"
+
 #include "Renderer.h"
-#include "UTIL/Util.hpp"
+
 
 extern bool ligidPainter_ONLY_INIT;
 
@@ -55,7 +58,6 @@ public:
 
         //Show the created window
         getContext()->window.show();
-       
 
         //Init GLAD
         if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
@@ -86,7 +88,7 @@ public:
         
         Debugger::block("LOAD : Init other threads"); //Start
         // Start the export thread
-        std::thread projectUpdatingThreadX(projectUpdatingThread, std::ref(renderer.project));
+        std::thread projectUpdatingThreadX(projectUpdatingThread);
         Debugger::block("LOAD : Init other threads"); //End
 
         LGDLOG::start.clear();
@@ -112,7 +114,7 @@ public:
         //projectUpdatingThreadElements.exportCV.notify_one();
         projectUpdatingThreadElements.isRunning = false;
 
-        renderer.project.discardUpdateProjectFlag = true;
+        project_discard_update_flag = true;
 
         // Wait for the projectUpdatingThread to finish
         projectUpdatingThreadX.join();

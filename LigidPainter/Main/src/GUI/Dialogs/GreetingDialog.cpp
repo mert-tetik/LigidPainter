@@ -141,7 +141,7 @@ GreetingDialog::GreetingDialog(int){
     bgPanel.scale.x = textureDisplayerButton.scale.x;
 }
 
-void GreetingDialog::show(Timer& timer, Project& project){
+void GreetingDialog::show(Timer& timer){
 
     this->dialogControl.activate();
 
@@ -176,7 +176,7 @@ void GreetingDialog::show(Timer& timer, Project& project){
         if(createProjectButton.clicked){
             this->dialogControl.unActivate();
             this->dialogControl.mixVal = 0.f;
-            dialog_newProject.show(timer, project);
+            dialog_newProject.show(timer);
             break;
         }
 
@@ -184,7 +184,7 @@ void GreetingDialog::show(Timer& timer, Project& project){
         if(loadProjectButton.clicked){
             this->dialogControl.unActivate();
             this->dialogControl.mixVal = 0.f;
-            dialog_loadProject.show(timer, project);
+            dialog_loadProject.show(timer);
             break;
         }
 

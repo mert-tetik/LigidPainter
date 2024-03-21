@@ -48,7 +48,7 @@ void panel_window_render(Timer& timer, Painter& painter, bool doMouseTracking){
         painter.threeDimensionalMode = false;
     }
     else if(panel_window.sections[0].elements[2].button.clicked){//Pressed to the export button of the window panel
-        dialog_export.show(timer, Project());
+        dialog_export.show(timer);
     }
     else if(panel_window.sections[0].elements[3].button.clicked){//Pressed to the displayer button of the window panel
         dialog_displayer.show(timer, getScene()->skybox);

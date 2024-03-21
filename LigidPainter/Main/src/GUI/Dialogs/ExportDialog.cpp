@@ -20,11 +20,15 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "3D/ThreeD.hpp" 
+
 #include "GUI/GUI.hpp" 
+
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Library/Library.hpp"
+#include "UTIL/Project/Project.hpp"
+#include "UTIL/Project/ProjectUTIL.hpp"
 
 #include <string>
 #include <iostream>
@@ -335,7 +339,7 @@ static void exportLibraryTextures(Panel& propertiesPanel){
 
 
 
-void ExportDialog::show(Timer& timer, Project &project){
+void ExportDialog::show(Timer& timer){
     
     dialogControl.activate();
 
@@ -378,17 +382,17 @@ void ExportDialog::show(Timer& timer, Project &project){
         if(propertiesPanel.sections[0].elements[propertiesPanel.sections[0].elements.size() - 1].button.clicked){
 
             while(true){
-                if(!project.projectProcessing)
+                if(!projectUTIL_processing)
                     break;
             }
-            project.projectProcessing = true;
+            projectUTIL_processing = true;
 
             if(this->activeSection == 0)
                 exportLibraryTextures(this->propertiesPanel);
             if(this->activeSection == 1)
                 exportLibraryMaterials(this->propertiesPanel);
             
-            project.projectProcessing = false;
+            projectUTIL_processing = false;
         }
         
         //Close the dialog (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())

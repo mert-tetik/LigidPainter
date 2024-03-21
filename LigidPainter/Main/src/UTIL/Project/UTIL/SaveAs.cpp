@@ -19,7 +19,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/Project/Project.hpp"
+#include "UTIL/Project/ProjectUTIL.hpp"
+
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
 
 #include <string>
@@ -30,25 +34,25 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-void Project::saveAs(std::string dstPath)
+void project_save_as(std::string dstPath)
 {
     // Save the project before duplicating the project folder    
-    this->updateProject(true, false);
+    project_update(true, false);
     
     while(true){
-        if(!this->projectProcessing)
+        if(!projectUTIL_processing)
             break;
     }
-    this->projectProcessing = true;
+    projectUTIL_processing = true;
 
     // Ask for a destination path from the user if not provided
     if(dstPath == ""){
-        dstPath = showFileSystemObjectSelectionDialog("Select a folder to duplicate the project folder", UTIL::removeLastWordBySeparatingWithChar(this->absoluteProjectPath(), UTIL::folderDistinguisher()), {}, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
+        dstPath = showFileSystemObjectSelectionDialog("Select a folder to duplicate the project folder", UTIL::removeLastWordBySeparatingWithChar(project_path(), UTIL::folderDistinguisher()), {}, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FOLDER);
     }
 
     // If user didn't select a valid path (or the dstPath param is not valid)
     if(dstPath == "" || !std::filesystem::is_directory(dstPath) || !std::filesystem::exists(dstPath)){
-        this->projectProcessing = false;
+        projectUTIL_processing = false;
         return;
     }
 
@@ -58,7 +62,7 @@ void Project::saveAs(std::string dstPath)
     }
 
     // DestinationPath/MyProject
-    std::string dstProjectPath = dstPath + UTIL::folderDistinguisher() + this->projectName();
+    std::string dstProjectPath = dstPath + UTIL::folderDistinguisher() + project_title();
 
     // Get unique name for the destination path
     while (std::filesystem::exists(dstProjectPath))
@@ -69,18 +73,18 @@ void Project::saveAs(std::string dstPath)
     // Create the destination folder
     if(!std::filesystem::create_directories(dstProjectPath)){
         LGDLOG::start << "ERROR : Save as : Can't create the destination folder" << LGDLOG::end;
-        this->projectProcessing = false;
+        projectUTIL_processing = false;
         return;
     }
 
     // Duplicate files and folders from the original path to destination path
-    if(UTIL::duplicateFolder(this->folderPath, dstProjectPath)){
+    if(UTIL::duplicateFolder(project_path(), dstProjectPath)){
         //Update the project path
-        this->folderPath = dstProjectPath;
+        projectUTIL_set_path(dstProjectPath);
     }
     else{
         LGDLOG::start << "ERROR : Save as : Couldn't copy the contents properly and 'save as' action aborted" << LGDLOG::end;
     }
 
-    this->projectProcessing = false;
+    projectUTIL_processing = false;
 }

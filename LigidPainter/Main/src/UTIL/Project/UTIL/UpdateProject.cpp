@@ -18,11 +18,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
+
+#include "UTIL/Util.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Project/Project.hpp"
+#include "UTIL/Project/ProjectUTIL.hpp"
 
 #include <string>
 #include <fstream>
@@ -35,34 +39,34 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static const std::string copyFolderTitle = "Updating_Folder-Remove_if_you_see";
 
 // Forward declared utility functions
-static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode, bool& discardUpdateProjectFlag);
-static void PROJECT_updateMaterials(std::string materialFolderPath, bool& discardUpdateProjectFlag);
-static void PROJECT_updateBrushes(std::string brushFolderPath, bool& discardUpdateProjectFlag);
-static void PROJECT_updateModels(std::string brushFolderPath, bool& discardUpdateProjectFlag);
+static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode);
+static void PROJECT_updateMaterials(std::string materialFolderPath);
+static void PROJECT_updateBrushes(std::string brushFolderPath);
+static void PROJECT_updateModels(std::string brushFolderPath);
 
 // Goes from 1 to 3
 static int currentRecoverSlot = 1;
 
-void Project::updateProject(bool updateTextures, bool multithreadingMode){
+void project_update(bool updateTextures, bool multithreadingMode){
     
     // Multithreading compat
     while(true){
-        if(!this->projectProcessing)
+        if(!projectUTIL_processing)
             break;
     }
-    this->projectProcessing = true;
+    projectUTIL_processing = true;
 
     // Check if the project path is valid
-    if(!this->folderPathCheck()){
-        LGDLOG::start<< "ERROR : CAN'T UPDATE THE PROJECT FOLDER : Project path is not valid : " << this->folderPath << LGDLOG::end;
-        this->projectProcessing = false;
+    if(!projectUTIL_folder_path_check()){
+        LGDLOG::start<< "ERROR : CAN'T UPDATE THE PROJECT FOLDER : Project path is not valid : " << project_path() << LGDLOG::end;
+        projectUTIL_processing = false;
         return;
     }
     
     // Process the destination path
-    std::string destinationPath = this->folderPath;
+    std::string destinationPath = project_path();
     if(multithreadingMode){
-        destinationPath = this->recoverSlotPath(currentRecoverSlot);   
+        destinationPath = project_recover_path(currentRecoverSlot);   
         
         currentRecoverSlot++;
         if(currentRecoverSlot == 4)
@@ -72,44 +76,44 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
     }
 
     //----------------- Textures
-    if(updateTextures && !discardUpdateProjectFlag){
+    if(updateTextures && !project_discard_update_flag){
         std::string textureFolderPath = destinationPath + UTIL::folderDistinguisher() + "Textures";
         UTIL::createFolderIfDoesntExist(textureFolderPath);
-        PROJECT_updateTextures(textureFolderPath, multithreadingMode, this->discardUpdateProjectFlag);
+        PROJECT_updateTextures(textureFolderPath, multithreadingMode);
     }
     
     //----------------- Materials
-    if(!discardUpdateProjectFlag){
+    if(!project_discard_update_flag){
         std::string materialFolderPath = destinationPath + UTIL::folderDistinguisher() + "Materials";
         UTIL::createFolderIfDoesntExist(materialFolderPath);
-        PROJECT_updateMaterials(materialFolderPath, this->discardUpdateProjectFlag);
+        PROJECT_updateMaterials(materialFolderPath);
     }
 
     //----------------- Brushes
-    if(!discardUpdateProjectFlag){
+    if(!project_discard_update_flag){
         std::string brushFolderPath = destinationPath + UTIL::folderDistinguisher() + "Brushes";
         UTIL::createFolderIfDoesntExist(brushFolderPath);
-        PROJECT_updateBrushes(brushFolderPath, this->discardUpdateProjectFlag);
+        PROJECT_updateBrushes(brushFolderPath);
     }
     
     //----------------- Model
-    if(!discardUpdateProjectFlag){
+    if(!project_discard_update_flag){
         std::string modelFolderPath = destinationPath + UTIL::folderDistinguisher() + "3DModels";
         UTIL::createFolderIfDoesntExist(modelFolderPath);
-        PROJECT_updateModels(modelFolderPath, this->discardUpdateProjectFlag);
+        PROJECT_updateModels(modelFolderPath);
     }
 
     //----------------- Ligid
-    if(!discardUpdateProjectFlag){
+    if(!project_discard_update_flag){
 
         // Generate the path to the ligid file
-        std::string lgdPath = locateLigidFileInFolder(destinationPath); 
+        std::string lgdPath = project_locate_ligid_file(destinationPath); 
         if(lgdPath == ""){
-            lgdPath = this->folderPath + UTIL::folderDistinguisher() + this->projectName() + ".ligid";
+            lgdPath = project_path() + UTIL::folderDistinguisher() + project_title() + ".ligid";
         }
 
         // Write the ligid file 
-        if(!this->writeLigidFile(lgdPath)){
+        if(!projectUTIL_write_ligid_file(lgdPath)){
             if(!multithreadingMode)
                 LGDLOG::start << "Saving project folder : Failed to write the ligid file!" << LGDLOG::end; 
             else
@@ -117,13 +121,13 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
         }
     }
 
-    if(discardUpdateProjectFlag)
+    if(project_discard_update_flag)
         LGDLOG::start << "INFO : Updating project discarded" << LGDLOG::end;
     else if(!multithreadingMode)
         LGDLOG::start << "Project saved successfuly" << LGDLOG::end;
     
-    this->projectProcessing = false;
-    this->discardUpdateProjectFlag = false;
+    projectUTIL_processing = false;
+    project_discard_update_flag = false;
 }
 
 
@@ -149,7 +153,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
                                                     return; \
                                                 }
 
-#define PROJECT_UPDATE_PROTOCOL_END(path)   if(!discardUpdateProjectFlag && !error){ \
+#define PROJECT_UPDATE_PROTOCOL_END(path)   if(!project_discard_update_flag && !error){ \
                                                 if(UTIL::deleteFilesInFolder(path)){\
                                                     UTIL::moveFilesToDestination(updateFolderPath, path);\
                                                     std::filesystem::remove_all(updateFolderPath);\
@@ -162,7 +166,7 @@ void Project::updateProject(bool updateTextures, bool multithreadingMode){
                                                 std::filesystem::remove_all(updateFolderPath);\
                                             }
 
-static void PROJECT_updateModels(std::string modelFolderPath, bool& discardUpdateProjectFlag){
+static void PROJECT_updateModels(std::string modelFolderPath){
 
     // Create updating folder 
     PROJECT_UPDATE_PROTOCOL_START(modelFolderPath)
@@ -172,7 +176,7 @@ static void PROJECT_updateModels(std::string modelFolderPath, bool& discardUpdat
     // Write the files to updating folder
     for (size_t i = 0; i < Library::getModelArraySize(); i++)
     {
-        if(!discardUpdateProjectFlag){
+        if(!project_discard_update_flag){
             if(!FileHandler::writeLGDMODELFile(updateFolderPath, *Library::getModel(i))){
                 LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a model file!" << LGDLOG::end;
                 error = true;
@@ -184,7 +188,7 @@ static void PROJECT_updateModels(std::string modelFolderPath, bool& discardUpdat
     PROJECT_UPDATE_PROTOCOL_END(modelFolderPath)
 }
 
-static void PROJECT_updateBrushes(std::string brushFolderPath, bool& discardUpdateProjectFlag){
+static void PROJECT_updateBrushes(std::string brushFolderPath){
     
     // Create updating folder 
     PROJECT_UPDATE_PROTOCOL_START(brushFolderPath)
@@ -194,7 +198,7 @@ static void PROJECT_updateBrushes(std::string brushFolderPath, bool& discardUpda
     // Write the files to updating folder
     for (size_t i = 0; i < Library::getBrushArraySize(); i++)
     {
-        if(!discardUpdateProjectFlag){
+        if(!project_discard_update_flag){
             if(!FileHandler::writeLGDBRUSHFile(updateFolderPath, Library::getBrushObj(i))){
                 LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a brush file!" << LGDLOG::end;
                 error = true;
@@ -206,7 +210,7 @@ static void PROJECT_updateBrushes(std::string brushFolderPath, bool& discardUpda
     PROJECT_UPDATE_PROTOCOL_END(brushFolderPath)
 }
 
-static void PROJECT_updateMaterials(std::string materialFolderPath, bool& discardUpdateProjectFlag){
+static void PROJECT_updateMaterials(std::string materialFolderPath){
     
     // Create updating folder 
     PROJECT_UPDATE_PROTOCOL_START(materialFolderPath)
@@ -216,7 +220,7 @@ static void PROJECT_updateMaterials(std::string materialFolderPath, bool& discar
     // Write the files to updating folder
     for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
     {
-        if(!discardUpdateProjectFlag){
+        if(!project_discard_update_flag){
             if(!FileHandler::writeLGDMATERIALFile(updateFolderPath, Library::getMaterialObj(i))){
                 LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a material file!" << LGDLOG::end;
                 error = true;
@@ -228,7 +232,7 @@ static void PROJECT_updateMaterials(std::string materialFolderPath, bool& discar
     PROJECT_UPDATE_PROTOCOL_END(materialFolderPath)
 }
 
-static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode, bool& discardUpdateProjectFlag){
+static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode){
     
     // Create updating folder 
     PROJECT_UPDATE_PROTOCOL_START(textureFolderPath)
@@ -257,7 +261,7 @@ static void PROJECT_updateTextures(std::string textureFolderPath, bool multithre
                 break;
             }
 
-            if(!discardUpdateProjectFlag){
+            if(!project_discard_update_flag){
                 // Write texture data
                 if(!threadSafeTxtr.exportTexture(updateFolderPath, "PNG")){
                     LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a texture file!" << LGDLOG::end;

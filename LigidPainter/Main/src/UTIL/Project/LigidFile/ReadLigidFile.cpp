@@ -18,12 +18,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "UTIL/Util.hpp"
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
+
+#include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Library/Library.hpp"
+#include "UTIL/Project/Project.hpp"
+#include "UTIL/Project/ProjectUTIL.hpp"
 
 #include <string>
 #include <fstream>
@@ -49,11 +53,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 
 //Returns true if path is a ligid file
-bool Project::readLigidFile(
-                                std::string path,
-                                time_t &creationDate,
-                                time_t &lastOpenedDate
-                            )
+bool projectUTIL_read_ligid_file(
+                                    std::string path,
+                                    time_t &creationDate,
+                                    time_t &lastOpenedDate
+                                )
 { 
     
     if(path.size()){
@@ -115,7 +119,7 @@ bool Project::readLigidFile(
         for (size_t i = 0; i < Library::getModelArraySize(); i++)
         {
             if(Library::getModelObj(i).title == modelTitle){
-                setModel(Library::getModel(i));
+                getScene()->model = Library::getModel(i);
             }
         }
         

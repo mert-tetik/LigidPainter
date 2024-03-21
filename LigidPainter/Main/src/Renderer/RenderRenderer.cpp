@@ -64,7 +64,7 @@ void Renderer::render(){
     Debugger::block("Render : Toolkits"); // End
     
     Debugger::block("Render : Panels"); // Start
-    panels_render(timer, project, painter);
+    panels_render(timer, painter);
     Debugger::block("Render : Panels"); // End
 
     Debugger::block("Painting"); // Start

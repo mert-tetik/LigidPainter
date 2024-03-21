@@ -19,7 +19,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/Project/Project.hpp"
+#include "UTIL/Project/ProjectUTIL.hpp"
+
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
 
 #include <string>
@@ -38,13 +42,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void completeFolder(std::string path, int action);
 
 
-bool Project::createProject(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths){
+bool project_create(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths){
 
     while(true){
-        if(!this->projectProcessing)
+        if(!projectUTIL_processing)
             break;
     }
-    this->projectProcessing = true;
+    projectUTIL_processing = true;
     
     //Make sure destination path doesn't have / at the end
     if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') 
@@ -59,7 +63,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
                             MESSAGEBOX_BUTTON_OK
                         );
                         
-        this->projectProcessing = false;
+        projectUTIL_processing = false;
         
         return false;
     }
@@ -76,7 +80,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
 
         //If pressed the 'no' abort the process
         if(res == 0){
-            this->projectProcessing = false;
+            projectUTIL_processing = false;
             return false;
         }
 
@@ -93,63 +97,63 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
     }
 
     //Update the folder path of the project
-    this->folderPath = destinationPath + UTIL::folderDistinguisher() + name;
+    std::string folderPath = destinationPath + UTIL::folderDistinguisher() + name;
     
     try
     {
         //Create the project folder
-        if(!std::filesystem::create_directory(this->folderPath))
+        if(!std::filesystem::create_directory(folderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << folderPath << LGDLOG::end; 
 
         //Create the saved data folder
-        std::string recoverFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Recover";
+        std::string recoverFolderPath = folderPath + UTIL::folderDistinguisher() + "Recover";
         if(!std::filesystem::create_directory(recoverFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << recoverFolderPath << LGDLOG::end; 
         
         //Create the textures folder
-        std::string textureFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Textures";
+        std::string textureFolderPath = folderPath + UTIL::folderDistinguisher() + "Textures";
         if(!std::filesystem::create_directory(textureFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << textureFolderPath << LGDLOG::end; 
 
         //Materials
-        std::string materialsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Materials";
+        std::string materialsFolderPath = folderPath + UTIL::folderDistinguisher() + "Materials";
         if(!std::filesystem::create_directory(materialsFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << materialsFolderPath << LGDLOG::end; 
         
         //Brushes
-        std::string brushesFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Brushes";
+        std::string brushesFolderPath = folderPath + UTIL::folderDistinguisher() + "Brushes";
         if(!std::filesystem::create_directory(brushesFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << brushesFolderPath << LGDLOG::end; 
         UTIL::duplicateFolder("./LigidPainter/Resources/Brushes", brushesFolderPath);
         
         //Fonts
-        std::string fontsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Fonts";
+        std::string fontsFolderPath = folderPath + UTIL::folderDistinguisher() + "Fonts";
         if(!std::filesystem::create_directory(fontsFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << fontsFolderPath << LGDLOG::end; 
         
         //Scripts
-        std::string scriptsFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Scripts";
+        std::string scriptsFolderPath = folderPath + UTIL::folderDistinguisher() + "Scripts";
         if(!std::filesystem::create_directory(scriptsFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << scriptsFolderPath << LGDLOG::end; 
         
         //Texture Packs
-        std::string texturePacksFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Texture Packs";
+        std::string texturePacksFolderPath = folderPath + UTIL::folderDistinguisher() + "Texture Packs";
         if(!std::filesystem::create_directory(texturePacksFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << texturePacksFolderPath << LGDLOG::end; 
         
         //Filters
-        std::string filtersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Filters";
+        std::string filtersFolderPath = folderPath + UTIL::folderDistinguisher() + "Filters";
         if(!std::filesystem::create_directory(filtersFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << filtersFolderPath << LGDLOG::end; 
         UTIL::duplicateFolder("./LigidPainter/Resources/Filters", filtersFolderPath);
         
         //Layers
-        std::string layersFolderPath = this->folderPath + UTIL::folderDistinguisher() + "Layers";
+        std::string layersFolderPath = folderPath + UTIL::folderDistinguisher() + "Layers";
         if(!std::filesystem::create_directory(layersFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << layersFolderPath << LGDLOG::end; 
         
         //3D Models
-        std::string tdModelFolderPath = this->folderPath + UTIL::folderDistinguisher() + "3DModels";
+        std::string tdModelFolderPath = folderPath + UTIL::folderDistinguisher() + "3DModels";
         if(!std::filesystem::create_directory(tdModelFolderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << tdModelFolderPath << LGDLOG::end; 
         
@@ -159,7 +163,7 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
 
         for (size_t i = 0; i < TDModelPaths.size(); i++)
         {
-            this->addModelToProject(TDModelPaths[i]);
+            project_add_model(TDModelPaths[i]);
         }
         
     }
@@ -168,11 +172,11 @@ bool Project::createProject(std::string destinationPath, std::string name, std::
     }
 
     // Create ligid file
-    if(!writeLigidFile(this->folderPath + UTIL::folderDistinguisher() + this->projectName() + ".ligid")){
+    if(!projectUTIL_write_ligid_file(folderPath + UTIL::folderDistinguisher() + name + ".ligid")){
         LGDLOG::start << "ERROR : Creating project folder : Failed to write ligid file." << LGDLOG::end;
     }
     
-    this->projectProcessing = false;
+    projectUTIL_processing = false;
     return true;
 }
 

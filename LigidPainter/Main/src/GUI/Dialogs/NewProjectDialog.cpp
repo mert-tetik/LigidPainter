@@ -23,10 +23,13 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "3D/ThreeD.hpp" 
+
 #include "GUI/GUI.hpp" 
+
 #include "UTIL/Mouse/Mouse.hpp" 
 #include "UTIL/Settings/Settings.hpp" 
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Project/Project.hpp"
 
 #include <string>
 #include <iostream>
@@ -142,7 +145,7 @@ NewProjectDialog::NewProjectDialog(int){
     resolutionCombobox.selectedIndex = 2;
 }
 
-void NewProjectDialog::show(Timer& timer, Project &project){
+void NewProjectDialog::show(Timer& timer){
     
     dialogControl.activate();
 
@@ -259,13 +262,13 @@ void NewProjectDialog::show(Timer& timer, Project &project){
             }        
 
             //Create the project
-            if(project.createProject(   
+            if(project_create(   
                                         pathTextbox.text, //Destination path
                                         titleTextbox.text, //Title of the project
                                         TDModelPaths  //3D model path
                                     ))
             {
-                project.loadProject(project.locateLigidFileInFolder());
+                project_load(pathTextbox.text + UTIL::folderDistinguisher() + titleTextbox.text + UTIL::folderDistinguisher() + titleTextbox.text + ".ligid");
 
                 this->dialogControl.unActivate();
             }
@@ -276,7 +279,7 @@ void NewProjectDialog::show(Timer& timer, Project &project){
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
             this->dialogControl.unActivate();
             this->dialogControl.mixVal = 0.f;
-            dialog_greeting.show(timer, project);
+            dialog_greeting.show(timer);
             break;
         }
 
