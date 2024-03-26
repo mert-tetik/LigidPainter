@@ -24,7 +24,7 @@ extern std::atomic<bool> projectUTIL_processing;
 /// @brief Checks if this->folderPath is valid. If not tries to create the folder into the same path. 
 ///        If this fails too informs the user and asks for a new path. (Called in updateProject function)
 /// @return if you're good to go
-bool projectUTIL_folder_path_check(){
+static bool projectUTIL_folder_path_check(){
     // Path doesn't exist
     int tries = 0;
     while (!std::filesystem::exists(project_path()))

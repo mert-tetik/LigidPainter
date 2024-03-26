@@ -73,7 +73,7 @@ void Renderer::render(){
             *Mouse::LPressed() && 
             !panels_any_hovered() && 
             (panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2) && panel_painting_modes.selectedElement != 5 &&
-            !painter.paintingoverTextureEditorMode &&
+            !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 &&
             !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)

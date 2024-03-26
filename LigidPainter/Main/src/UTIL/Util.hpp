@@ -545,24 +545,6 @@ public:
     Texture generateSpriteTexture();
 };
 
-struct MirrorSide{
-    bool active = false;
-
-    /// @brief 3D model linearized depth texture (3d model rendered with a depth shader) 
-    Texture depthTexture;
-
-    Texture mirroredPaintingTexture;
-
-    Texture projectedPaintingTexture;
-    Texture projectedPaintingTexture8Low;
-    Texture projectedPaintingTexture16fLow;
-    Texture projectedPaintingTexture8;
-    Texture projectedPaintingTexture16f;
-
-    glm::vec3 effectAxis = glm::vec3(0.);
-
-    glm::mat4 getViewMat();
-};
 
 struct FaceSelection{
 public:

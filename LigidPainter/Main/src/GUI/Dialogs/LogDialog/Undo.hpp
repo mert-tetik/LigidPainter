@@ -212,9 +212,9 @@ void LogDialog::undo(Painter& painter){
             }
         }
         else{
-            if(actions_Painting[painter.selectedTexture.ID].size()){
-                painter.selectedTexture.readTMP("_history_" + std::to_string(actions_Painting[painter.selectedTexture.ID].size() - 1) + "_" + std::to_string(painter.selectedTexture.ID));
-                actions_Painting[painter.selectedTexture.ID].pop_back();
+            if(actions_Painting[panel_library_selected_texture.ID].size()){
+                panel_library_selected_texture.readTMP("_history_" + std::to_string(actions_Painting[panel_library_selected_texture.ID].size() - 1) + "_" + std::to_string(panel_library_selected_texture.ID));
+                actions_Painting[panel_library_selected_texture.ID].pop_back();
             }
         }
     }

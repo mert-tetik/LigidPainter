@@ -141,5 +141,5 @@ void TextureLayer::render(Painter& painter, const unsigned int resolution, Mesh&
     this->channels.heightMap.generateProceduralTexture(mesh, this->result.heightMap, resolution);
     this->channels.ambientOcclusion.generateProceduralTexture(mesh, this->result.ambientOcclusion, resolution);
 
-    painter.getSelectedMesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);
+    getScene()->get_selected_mesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);
 }

@@ -529,7 +529,6 @@ public:
     bool isInteracted();
     Button* getSelectedButton();
     Color getSelectedColor();
-
 };
 
 struct Element{

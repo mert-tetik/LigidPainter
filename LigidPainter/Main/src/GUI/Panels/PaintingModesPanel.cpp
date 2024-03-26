@@ -40,24 +40,4 @@ void panel_painting_modes_render(Timer& timer, Painter& painter, bool doMouseTra
     if(panel_painting_modes.resizingDone){
         panels_transform();
     }
-    
-    // Handle interactions related to painting modes panel (change selected painting mode index & make sure selected index highlighted)
-    for (size_t i = 0; i < panel_painting_modes.sections[0].elements.size(); i++)
-    {
-        if(!painter.getSelectedMesh()->layerScene.any_vector_editing()){
-            if(panel_painting_modes.sections[0].elements[i].button.clickState1){ //Painting mode pressed
-                if(painter.selectedPaintingModeIndex != i){
-                    panel_painting_modes.sections[0].elements[painter.selectedPaintingModeIndex].button.clickState1 = false;
-                    painter.selectedPaintingModeIndex = i;
-                    break;
-                }
-            }
-        }
-        else{
-            panel_painting_modes.sections[0].elements[i].button.clickState1 = false;
-        }
-        if(painter.selectedPaintingModeIndex == i){
-            panel_painting_modes.sections[0].elements[i].button.clickState1 = true;
-        }
-    }
 }

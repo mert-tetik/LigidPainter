@@ -345,7 +345,7 @@ void TextureField::placeFirstPoint(Painter& painter, Framebuffer bindedFBO){
 
     // Get the position value of the 3D model wherever it got clicked
     glm::vec2 currentCursorPos = glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y);
-    painter.getPosNormalValOverPoint(currentCursorPos, posData, normalData, true);
+    getScene()->get_selected_mesh()->getPosNormalOverPoint(currentCursorPos, posData, normalData, true);
     
     // Store the cursor position for the top left point (this data will be used to generate a square for the placeSecondPoint function) 
     threeDPointTopLeftCursorPos = currentCursorPos; 
@@ -369,7 +369,7 @@ void TextureField::placeSecondPoint(Painter& painter, Framebuffer bindedFBO){
 
     // Get the position value of the 3D model wherever it got clicked (for the bottom right point)
     glm::vec2 currentCursorPos = glm::vec2(Mouse::cursorPos()->x, getContext()->windowScale.y - Mouse::cursorPos()->y);
-    painter.getPosNormalValOverPoint(currentCursorPos, posData, normalData, true);
+    getScene()->get_selected_mesh()->getPosNormalOverPoint(currentCursorPos, posData, normalData, true);
     
     // If clicked to the model and not into the space assign the position (for the bottom right point)
     if(posData[3] == 1.f){
@@ -391,7 +391,7 @@ void TextureField::placeSecondPoint(Painter& painter, Framebuffer bindedFBO){
         while ((posData[3] != 1.f || tryCounter == 0)) // Until we find a correct place
         {
             // Write the position data at the generated cursor position to the posData
-            painter.getPosNormalValOverPoint(topRightCursorPos, posData, normalData, true);
+            getScene()->get_selected_mesh()->getPosNormalOverPoint(topRightCursorPos, posData, normalData, true);
             this->threeDPointTopRight.pos = glm::vec3(posData[0], posData[1], posData[2]);
             this->threeDPointTopRight.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
 
@@ -421,7 +421,7 @@ void TextureField::placeSecondPoint(Painter& painter, Framebuffer bindedFBO){
         while ((posData[3] != 1.f || tryCounter == 0) && tryCounter < 50) // Until we find a correct place
         { 
             // Write the position data at the generated cursor position to the posData
-            painter.getPosNormalValOverPoint(bottomLeftCursorPos, posData, normalData, true);
+            getScene()->get_selected_mesh()->getPosNormalOverPoint(bottomLeftCursorPos, posData, normalData, true);
             this->threeDPointBottomLeft.pos = glm::vec3(posData[0], posData[1], posData[2]);
             this->threeDPointBottomLeft.normal = glm::vec3(normalData[0], normalData[1], normalData[2]);
         
@@ -711,10 +711,8 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
 
-    if(painter.selectedMeshIndex < getScene()->model->meshes.size()){
-        ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
-        getScene()->get_selected_mesh()->Draw(false);
-    }
+    ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
+    getScene()->get_selected_mesh()->Draw(false);
     
     // Then render the wrapped image
     ShaderSystem::color3d().use();

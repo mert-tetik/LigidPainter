@@ -78,10 +78,8 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
 
-    if(painter.selectedMeshIndex < getScene()->model->meshes.size()){
-        ShaderSystem::renderModelData().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
-        getScene()->get_selected_mesh()->Draw(false);
-    }    
+    ShaderSystem::renderModelData().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
+    getScene()->get_selected_mesh()->Draw(false);
     
     float* pxs = new float[resolution * resolution * 4]; 
     float* pxsNormal = new float[resolution * resolution * 4]; 
@@ -99,10 +97,8 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
     ShaderSystem::renderModelData().setInt("state", 2);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    if(painter.selectedMeshIndex < getScene()->model->meshes.size()){
-        ShaderSystem::renderModelData().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
-        getScene()->get_selected_mesh()->Draw(false);
-    }    
+    ShaderSystem::renderModelData().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
+    getScene()->get_selected_mesh()->Draw(false);
     
     glReadPixels(
                     0, 

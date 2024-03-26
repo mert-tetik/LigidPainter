@@ -80,10 +80,10 @@ void line_painting(Timer& timer, Painter& painter, bool applyStroke, bool firstF
         std::vector<VectorStroke> strokeArray;
         strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
         painter.applyVectorStrokes(
-                                strokeArray, 
-                                panel_painting_modes.selectedElement, 
-                                checkComboList_painting_color.panel.sections[0].elements[14].button.material,
-                                painter.wrapMode
-                            );
+                                    strokeArray, 
+                                    panel_painting_modes.selectedElement, 
+                                    checkComboList_painting_color.panel.sections[0].elements[14].button.material,
+                                    painter.wrapMode
+                                );
     }
 }

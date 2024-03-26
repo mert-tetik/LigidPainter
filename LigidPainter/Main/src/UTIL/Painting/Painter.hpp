@@ -49,8 +49,6 @@ struct MirrorSide{
 
     /*! @brief Whichever axis this mirror side effects becomes -1 and other axises being set to 1. For instance glm::vec3(-1.f, 1.f, 1.f) effects only the x axis*/
     glm::vec3 effectAxis = glm::vec3(0.);
-
-    glm::mat4 getViewMat();
 };
 
 struct MirrorSettings{

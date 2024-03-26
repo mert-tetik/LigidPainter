@@ -316,7 +316,7 @@ void Painter::updateTexture(int paintingMode){
             }
         }
         else{
-            updateTheTexture(panel_library_selected_texture, paintingMode, checkComboList_painting_color.panel.sections[0].elements[1].painterColorSelection.getSelectedColor().getRGB_normalized(), 0, 1.f);
+            updateTheTexture(panel_library_selected_texture, paintingMode, checkComboList_painting_color.panel.sections[0].elements[2].painterColorSelection.getSelectedColor().getRGB_normalized(), 0, 1.f);
         }
     }
 

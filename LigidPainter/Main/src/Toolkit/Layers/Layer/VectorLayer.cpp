@@ -90,7 +90,7 @@ void VectorLayer::render(Painter& painter, const unsigned int resolution, Mesh& 
                                 false
                             );
         
-    painter.getSelectedMesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);
+    getScene()->get_selected_mesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);
     
     painter.vectorStrokes3D = lastPainterStrokes;
 }

@@ -195,7 +195,7 @@ public:
 
     Texture painting_over_texture;
 
-    void render(Timer& timer, Painter& painter, bool doMouseTracking, bool threeD_only);
+    void render(Timer& timer, Painter& painter, bool doMouseTracking, bool threeD_only, bool editMode);
     void add_new(TextureField texture_field);
     void update_painting_over_texture(bool threeD_only, Painter& painter);
     

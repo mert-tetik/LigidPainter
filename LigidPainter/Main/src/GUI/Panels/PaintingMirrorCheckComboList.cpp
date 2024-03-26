@@ -20,14 +20,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Renderer.h"
-#include "GUI/GUI.hpp"
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+
 #include "Toolkit/Layers/Layers.hpp"
+
+#include "GUI/GUI.hpp"
 #include "GUI/Panels.hpp"
 
 #include <string>

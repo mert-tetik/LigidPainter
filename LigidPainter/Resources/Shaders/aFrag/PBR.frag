@@ -131,7 +131,7 @@ void main() {
     
 
     //Get Metallic
-    if(((paintedTxtrStateIndex == 2 && materialPainting == 0) || (albedo_only == 0 && enableMetallicChannel == 1)) && paintingMode == 1){
+    if(((albedo_only == 0 && enableMetallicChannel == 1)) && paintingMode == 1){
         metallic = getBrushedTexture(metallicTxtr,brushTxtr,paintingTexture,TexCoords, screenPos.xy, brushModeState, smearTransformStrength, smearBlurStrength, albedo_only == 0, 2, metallicVal, usePaintingOver == 1).r;
     }
     else
@@ -139,14 +139,14 @@ void main() {
 
 
     //Get Normal Map
-    if(((paintedTxtrStateIndex == 3 && materialPainting == 0) || (albedo_only == 0 && enableNormalMapChannel == 1)) && paintingMode == 1){  
+    if(((albedo_only == 0 && enableNormalMapChannel == 1)) && paintingMode == 1){  
         normal = getBrushedTexture(normalMapTxtr,brushTxtr,paintingTexture,TexCoords, screenPos.xy, brushModeState, smearTransformStrength, smearBlurStrength, albedo_only == 0, 3, normalMapStrengthVal, usePaintingOver == 1).rgb;
     }
     else
         normal = texture(normalMapTxtr,TexCoords).rgb;
     
     //Get Height
-    if(((paintedTxtrStateIndex == 4 && materialPainting == 0) || (albedo_only == 0 && enableHeightMapChannel == 1)) && paintingMode == 1){
+    if(((albedo_only == 0 && enableHeightMapChannel == 1)) && paintingMode == 1){
         height = getBrushedTexture(heightMapTxtr,brushTxtr,paintingTexture,TexCoords, screenPos.xy, brushModeState, smearTransformStrength, smearBlurStrength, albedo_only == 0, 4, heightMapVal, usePaintingOver == 1).r;
     }
     else
@@ -154,7 +154,7 @@ void main() {
     
 
     //Get Ambient Occlusion
-    if(((paintedTxtrStateIndex == 5 && materialPainting == 0) || (albedo_only == 0 && enableAOChannel == 1)) && paintingMode == 1){
+    if(((albedo_only == 0 && enableAOChannel == 1)) && paintingMode == 1){
         ao = getBrushedTexture(ambientOcclusionTxtr,brushTxtr,paintingTexture,TexCoords, screenPos.xy, brushModeState, smearTransformStrength, smearBlurStrength, albedo_only == 0, 5, ambientOcclusionVal, usePaintingOver == 1).r;
     }
     else

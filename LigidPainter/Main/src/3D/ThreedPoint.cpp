@@ -183,7 +183,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
         float* posData = new float[4];
         float* normalData = new float[4];
 
-        painter.getPosNormalValOverPoint(glm::vec2(screenPos.x + Mouse::mouseOffset()->x, getContext()->windowScale.y - screenPos.y - Mouse::mouseOffset()->y), posData, normalData, true);
+        getScene()->get_selected_mesh()->getPosNormalOverPoint(glm::vec2(screenPos.x + Mouse::mouseOffset()->x, getContext()->windowScale.y - screenPos.y - Mouse::mouseOffset()->y), posData, normalData, true);
         bindedFBO.bind();
 
         if(posData[3] != 0.f){

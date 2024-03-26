@@ -112,5 +112,5 @@ void MaterialLayer::render(Painter& painter, const unsigned int resolution, Mesh
         this->material.materialModifiers[i].updateMaterialChannels(this->material, resMesh, resolution, i, appTextures.white, 0, false, Model());
     }
 
-    painter.getSelectedMesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);
+    getScene()->get_selected_mesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);
 }

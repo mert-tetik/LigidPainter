@@ -46,9 +46,6 @@ void checkComboList_painting_over_render(Timer& timer, Painter& painter, bool do
     if(shortcuts_F2())
         checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 = !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1;
 
-    /*
-    painter.paintingOverGrayScale = checkComboList_painting_over.panel.sections[0].elements[4].checkBox.clickState1;
-    */
 
     if(checkComboList_painting_over.panel.sections[0].elements[2].button.clicked){
         Texture texture;

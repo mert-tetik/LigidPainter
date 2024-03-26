@@ -56,7 +56,7 @@ void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
     int layersResolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]);
 
     // Render the layers
-    painter.getSelectedMesh()->layerScene.render(timer, panel_layers, painter, doMouseTracking, layersResolution, *painter.getSelectedMesh());
+    getScene()->get_selected_mesh()->layerScene.render(timer, panel_layers, painter, doMouseTracking, layersResolution, *getScene()->get_selected_mesh());
     
     button_mesh_selection.render(timer, doMouseTracking);
     
@@ -81,7 +81,7 @@ void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
             }
         }
 
-        painter.getSelectedMesh()->layerScene.update_all_layers(layersResolution, glm::vec3(0.f), painter, *painter.getSelectedMesh());
+        getScene()->get_selected_mesh()->layerScene.update_all_layers(layersResolution, glm::vec3(0.f), painter, *getScene()->get_selected_mesh());
     }
 
     lastLayerResolution = layersResolution;
@@ -93,24 +93,24 @@ void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
     // Add texture layer 
     if(panel_add_layer.sections[0].elements[0].button.clicked){
         TextureLayer* txtrLayer = new TextureLayer(layersResolution);
-        painter.getSelectedMesh()->layerScene.add_new(txtrLayer);
+        getScene()->get_selected_mesh()->layerScene.add_new(txtrLayer);
     }
    
     // Add painting layer 
     if(panel_add_layer.sections[0].elements[1].button.clicked){
         PaintingLayer* paintingLayer = new PaintingLayer(layersResolution);
-        painter.getSelectedMesh()->layerScene.add_new(paintingLayer);
+        getScene()->get_selected_mesh()->layerScene.add_new(paintingLayer);
     }
     
     // Add material layer 
     if(panel_add_layer.sections[0].elements[2].button.clicked){
         MaterialLayer* materialLayer = new MaterialLayer(layersResolution);
-        painter.getSelectedMesh()->layerScene.add_new(materialLayer);
+        getScene()->get_selected_mesh()->layerScene.add_new(materialLayer);
     }
     
     // Add vector layer 
     if(panel_add_layer.sections[0].elements[3].button.clicked){
         VectorLayer* vectorLayer = new VectorLayer(layersResolution);
-        painter.getSelectedMesh()->layerScene.add_new(vectorLayer);
+        getScene()->get_selected_mesh()->layerScene.add_new(vectorLayer);
     }
 }

@@ -44,20 +44,3 @@ void Painter::changeColor(Color &color){
     if(check)
         color.loadHex(check);
 }
-
-glm::mat4 MirrorSide::getViewMat(){
-
-    glm::vec3 offset = glm::vec3(
-                                    checkComboList_painting_mirror.panel.sections[0].elements[1].rangeBar.value,
-                                    checkComboList_painting_mirror.panel.sections[0].elements[3].rangeBar.value,
-                                    checkComboList_painting_mirror.panel.sections[0].elements[5].rangeBar.value
-                                );
-
-    offset *= glm::max(this->effectAxis, 0.f);
-
-    glm::vec3 orgCamPos = getScene()->camera.cameraPos;
-    glm::vec3 orgOriginPos = getScene()->camera.originPos;
-    glm::vec3 camPosOriginDistance = orgCamPos - orgOriginPos;
-    glm::vec3 camPos = orgOriginPos * -this->effectAxis - camPosOriginDistance * this->effectAxis - offset * 2.f; 
-    return getScene()->camera.calculateViewMatrix(camPos, orgOriginPos * -this->effectAxis - offset * 2.f);
-}
