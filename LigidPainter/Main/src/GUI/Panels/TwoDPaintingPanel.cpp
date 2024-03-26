@@ -34,6 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Panel panel_twoD_painting;
 Box twoD_painting_box;
+bool twoD_painting_mode = false;
 
 /*! Scene transform data */
 static float scroll = 2.f;
@@ -44,7 +45,7 @@ static void transform_scene(Painter& painter);
 
 void panel_twoD_painting_render(Timer& timer, Painter& painter, bool doMouseTracking){
     
-    if(painter.selectedDisplayingModeIndex == 2){
+    if(panel_displaying_modes.selectedElement == 2){
         transform_scene(painter);
 
         //Render the 2D painting panel
@@ -61,10 +62,10 @@ void panel_twoD_painting_render(Timer& timer, Painter& painter, bool doMouseTrac
         //*Fragment
         ShaderSystem::twoDPaintingModeAreaShader().setInt("txtr", 5);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingTexture", 6);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", painter.selectedPaintingModeIndex);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", painter.usePaintingOver);
-        ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearTransformStrength", painter.smearTransformStrength);
-        ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearBlurStrength", painter.smearBlurStrength);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", panel_painting_modes.selectedElement);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1);
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearTransformStrength", panel_smear_painting_properties.sections[0].elements[0].rangeBar.value);
+        ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearBlurStrength", panel_smear_painting_properties.sections[0].elements[1].rangeBar.value);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("multiChannelsPaintingMod", false);
         ShaderSystem::twoDPaintingModeAreaShader().setInt("channelI", 0);
         ShaderSystem::twoDPaintingModeAreaShader().setFloat("channelStrength", 1.f);
@@ -72,7 +73,7 @@ void panel_twoD_painting_render(Timer& timer, Painter& painter, bool doMouseTrac
         //* Bind the textures
         //painted texture
         glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, panel_library_selected_texture.ID);
 
         // Render the texture as it's pixels can be seen
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -80,10 +81,7 @@ void panel_twoD_painting_render(Timer& timer, Painter& painter, bool doMouseTrac
         
         //paintingTexture 
         glActiveTexture(GL_TEXTURE6);
-        if(painter.selectedDisplayingModeIndex == 0)
-            glBindTexture(GL_TEXTURE_2D, 0);
-        else
-            glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
 
         //*Vertex
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", getContext()->ortho_projection);
@@ -135,7 +133,7 @@ static void render_barriers(){
 }
 
 static void transform_scene(Painter& painter){
-    glm::vec2 destScale = glm::vec2(glm::vec2(painter.selectedTexture.getResolution()));
+    glm::vec2 destScale = glm::vec2(glm::vec2(panel_library_selected_texture.getResolution()));
     glm::vec2 prevScale = destScale * scroll;
     float scrVal = *Mouse::mouseScroll() / Settings::videoScale()->y * 4.f;
     if(!panel_twoD_painting.hover)

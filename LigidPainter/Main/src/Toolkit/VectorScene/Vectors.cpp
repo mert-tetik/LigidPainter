@@ -307,10 +307,8 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
     
-    if(this->selectedMeshIndex < getScene()->model->meshes.size()){
-        ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->model->meshes[this->selectedMeshIndex].indices.size() / 3);
-        getScene()->model->meshes[this->selectedMeshIndex].Draw(false);
-    }
+    ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
+    getScene()->get_selected_mesh()->Draw(false);
 
     // Render all the vectors
     int clickedPointI = -1; 
@@ -377,25 +375,25 @@ void VectorScene::addNew2DVector(){
 void VectorScene::addNew3DVector(){
 
     // Point on top of the cursor is not valid 
-    if(this->getCurrentPosNormalDataOverCursor().pos == glm::vec3(-1000.f))
+    if(getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor().pos == glm::vec3(-1000.f))
         return;
 
     VectorStroke3D vecStroke;
     if(!this->strokes_3D.size()){
         registerVectorAction("First wrapped point created", this->strokes_3D);
-        vecStroke.startPoint = this->getCurrentPosNormalDataOverCursor(); 
+        vecStroke.startPoint = getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor(); 
         vecStroke.endPoint = vecStroke.startPoint;
         this->strokes_3D.push_back(vecStroke);
     }
     else{
         if(this->strokes_3D[this->strokes_3D.size() - 1].endPoint.pos == this->strokes_3D[this->strokes_3D.size() - 1].startPoint.pos){
             registerVectorAction("New wrapped point", this->strokes_3D);
-            this->strokes_3D[this->strokes_3D.size() - 1].endPoint = this->getCurrentPosNormalDataOverCursor();
+            this->strokes_3D[this->strokes_3D.size() - 1].endPoint = getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor();
         }
         else{
             registerVectorAction("New wrapped point", this->strokes_3D);
             vecStroke.startPoint = this->strokes_3D[this->strokes_3D.size() - 1].endPoint; 
-            vecStroke.endPoint = this->getCurrentPosNormalDataOverCursor();
+            vecStroke.endPoint = getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor();
             this->strokes_3D.push_back(vecStroke);
         }
     }

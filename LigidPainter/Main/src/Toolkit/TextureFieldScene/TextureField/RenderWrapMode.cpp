@@ -78,10 +78,8 @@ void TextureField::renderWrappedTextureField(
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
         
-        if(painter.selectedMeshIndex < getScene()->model->meshes.size()){
-            ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->model->meshes[painter.selectedMeshIndex].indices.size() / 3);
-            getScene()->model->meshes[painter.selectedMeshIndex].Draw(false);
-        }
+        ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
+        getScene()->get_selected_mesh()->Draw(false);
 
         // Render the points
         if(!generatingTextureMode && editMode){
@@ -118,10 +116,8 @@ void TextureField::renderWrappedTextureField(
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
 
-        if(painter.selectedMeshIndex < getScene()->model->meshes.size()){
-            ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->model->meshes[painter.selectedMeshIndex].indices.size() / 3);
-            getScene()->model->meshes[painter.selectedMeshIndex].Draw(false);
-        }
+        ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
+        getScene()->get_selected_mesh()->Draw(false);
 
         // Render the wrapped texture
         if(this->threeDPointTopLeft.pos != glm::vec3(0.f) && this->threeDPointBottomRight.pos != glm::vec3(0.f))
@@ -716,8 +712,8 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& 
     glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
 
     if(painter.selectedMeshIndex < getScene()->model->meshes.size()){
-        ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->model->meshes[painter.selectedMeshIndex].indices.size() / 3);
-        getScene()->model->meshes[painter.selectedMeshIndex].Draw(false);
+        ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
+        getScene()->get_selected_mesh()->Draw(false);
     }
     
     // Then render the wrapped image

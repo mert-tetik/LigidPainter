@@ -45,10 +45,6 @@ void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTrack
         painter.vectorStrokes3D = this->strokes;
     }
     
-    painter.wrapMode = true;
-    painter.selectedDisplayingModeIndex = 1;
-    painter.selectedPaintingModeIndex = 5;
-    
     lastPainterStrokes = painter.vectorStrokes3D;
 
     cancel_editing_vectors_btn.pos = glm::vec3(50.f, 20.f, 0.8f);

@@ -241,6 +241,7 @@ void panels_init(){
     
     panel_displaying_modes.preRenderingMode = true;
     panel_displaying_modes.solidStyle = true; 
+    panel_displaying_modes.elementSelectionMode = true; 
 
     // ---------------------------------------------------
     
@@ -373,6 +374,7 @@ void panels_init(){
 
     panel_painting_modes.solidStyle = true;
     panel_painting_modes.preRenderingMode = true;
+    panel_painting_modes.elementSelectionMode = true;
 
     // ---------------------------------------------------
 

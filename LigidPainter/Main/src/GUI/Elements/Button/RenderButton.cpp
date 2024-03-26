@@ -107,10 +107,6 @@ void Button::render(
         }
         if(this->meshSelection){
             dialog_meshSelection.show(timer, this->selectedMeshI);
-            if(this->selectedMeshI < getScene()->model->meshes.size()){
-                this->texture = getScene()->model->meshes[this->selectedMeshI].displayingTxtr; 
-                this->text = getScene()->model->meshes[this->selectedMeshI].materialName; 
-            }
         }
         if(this->brushModification){
             dialog_brushModification.show(timer, &this->brushProperties);

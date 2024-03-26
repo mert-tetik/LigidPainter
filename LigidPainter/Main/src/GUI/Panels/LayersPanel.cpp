@@ -48,24 +48,22 @@ void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
     if(panel_layers.resizingDone){
         panels_transform();
     }
-
-    // Render the layers
-    painter.getSelectedMesh()->layerScene.render(timer, panel_layers, painter, doMouseTracking, painter.layersResolution, *painter.getSelectedMesh());
-    
-
-    button_mesh_selection.render(timer, doMouseTracking);
-    painter.selectedMeshIndex = button_mesh_selection.selectedMeshI;
-    if(painter.selectedMeshIndex >= getScene()->model->meshes.size())
-        painter.selectedMeshIndex = 0;
     
     Button comboBox_layers_resolutionBG = Button(ELEMENT_STYLE_SOLID, comboBox_layers_resolution.scale, "", Texture(), 0.f, 0);
     comboBox_layers_resolutionBG.pos = comboBox_layers_resolution.pos;
     comboBox_layers_resolutionBG.render(timer, false);
     comboBox_layers_resolution.render(timer, doMouseTracking);
+    int layersResolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]);
+
+    // Render the layers
+    painter.getSelectedMesh()->layerScene.render(timer, panel_layers, painter, doMouseTracking, layersResolution, *painter.getSelectedMesh());
     
-    painter.layersResolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]);
-    if(getScene()->model->newModelAdded || lastLayerResolution != painter.layersResolution){
-        if(lastLayerResolution != painter.layersResolution){
+    button_mesh_selection.render(timer, doMouseTracking);
+    
+    
+
+    if(getScene()->model->newModelAdded || lastLayerResolution != layersResolution){
+        if(lastLayerResolution != layersResolution){
             int res = showMessageBox(
                                         "Warning!", 
                                         "You are altering the resolution value of the layers!" 
@@ -79,14 +77,14 @@ void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
             // Pressed to no
             if(res == 0){
                 comboBox_layers_resolution.selectedIndex = std::log2(lastLayerResolution / 256); 
-                painter.layersResolution = lastLayerResolution;
+                layersResolution = lastLayerResolution;
             }
         }
 
-        painter.getSelectedMesh()->layerScene.update_all_layers(painter.layersResolution, glm::vec3(0.f), painter, *painter.getSelectedMesh());
+        painter.getSelectedMesh()->layerScene.update_all_layers(layersResolution, glm::vec3(0.f), painter, *painter.getSelectedMesh());
     }
 
-    lastLayerResolution = painter.layersResolution;
+    lastLayerResolution = layersResolution;
     
     
     // Render the add layer panel
@@ -94,25 +92,25 @@ void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
     
     // Add texture layer 
     if(panel_add_layer.sections[0].elements[0].button.clicked){
-        TextureLayer* txtrLayer = new TextureLayer(painter.layersResolution);
+        TextureLayer* txtrLayer = new TextureLayer(layersResolution);
         painter.getSelectedMesh()->layerScene.add_new(txtrLayer);
     }
+   
     // Add painting layer 
     if(panel_add_layer.sections[0].elements[1].button.clicked){
-        PaintingLayer* paintingLayer = new PaintingLayer(painter.layersResolution);
+        PaintingLayer* paintingLayer = new PaintingLayer(layersResolution);
         painter.getSelectedMesh()->layerScene.add_new(paintingLayer);
     }
     
     // Add material layer 
     if(panel_add_layer.sections[0].elements[2].button.clicked){
-        MaterialLayer* materialLayer = new MaterialLayer(painter.layersResolution);
+        MaterialLayer* materialLayer = new MaterialLayer(layersResolution);
         painter.getSelectedMesh()->layerScene.add_new(materialLayer);
     }
     
     // Add vector layer 
     if(panel_add_layer.sections[0].elements[3].button.clicked){
-        VectorLayer* vectorLayer = new VectorLayer(painter.layersResolution);
+        VectorLayer* vectorLayer = new VectorLayer(layersResolution);
         painter.getSelectedMesh()->layerScene.add_new(vectorLayer);
     }
-    
 }

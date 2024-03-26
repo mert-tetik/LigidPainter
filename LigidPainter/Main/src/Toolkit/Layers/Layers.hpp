@@ -26,17 +26,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "GUI/Elements.hpp"
+#include "3D/Material/Material.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
-
-/*! @brief Channel textures of a material */
-struct MaterialChannels{
-    Texture albedo;
-    Texture roughness;
-    Texture metallic;
-    Texture normalMap;
-    Texture heightMap;
-    Texture ambientOcclusion;
-};
 
 // Forward declerations
 class MaterialSelectionDialog; 

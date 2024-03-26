@@ -90,6 +90,7 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
     
     prevPrimArray = primitivesArray;
 }
+
 bool FaceSelection::interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel, bool registerHistory){
 
     // Scale of the window

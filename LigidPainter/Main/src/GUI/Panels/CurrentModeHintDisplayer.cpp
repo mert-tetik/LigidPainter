@@ -43,7 +43,7 @@ void current_mode_hint_displayer_render(Timer& timer, Painter& painter)
     currentModeHintDisplayer.color = glm::vec4(0.f);
     currentModeHintDisplayer.outline = false;
 
-    if(painter.selectedDisplayingModeIndex == 0){
+    if(panel_displaying_modes.selectedElement == 0){
         currentModeDisplayer.text = "Object Selection Mode";
         int selectedObjCount = 0;
         int objCount = 0;
@@ -55,11 +55,11 @@ void current_mode_hint_displayer_render(Timer& timer, Painter& painter)
         
         currentModeHintDisplayer.text = "Objects " + std::to_string(selectedObjCount) + "/" + std::to_string(objCount);
     }
-    else if(painter.selectedDisplayingModeIndex == 1){
+    else if(panel_displaying_modes.selectedElement == 1){
         currentModeDisplayer.text = "Material Painting mode";
         currentModeHintDisplayer.text = "Regular Painting";
     }
-    else if(painter.selectedDisplayingModeIndex == 2){
+    else if(panel_displaying_modes.selectedElement == 2){
         currentModeDisplayer.text = "Single Texture Painting mode";
         currentModeHintDisplayer.text = "Regular Painting";
     }
@@ -68,27 +68,31 @@ void current_mode_hint_displayer_render(Timer& timer, Painter& painter)
         currentModeHintDisplayer.text = "Unknown mode";
     }
 
-    if(painter.oXSide.active || painter.oYSide.active || painter.oZSide.active){
+    bool mirror_X = checkComboList_painting_mirror.panel.sections[0].elements[0].checkBox.clickState1;
+    bool mirror_Y = checkComboList_painting_mirror.panel.sections[0].elements[2].checkBox.clickState1;
+    bool mirror_Z = checkComboList_painting_mirror.panel.sections[0].elements[4].checkBox.clickState1;
+
+    if(mirror_X || mirror_Y || mirror_Z){
         
-        if(painter.oXSide.active && painter.oYSide.active && painter.oZSide.active)
+        if(mirror_X && mirror_Y && mirror_Z)
             currentModeHintDisplayer.text = "Mirror XYZ";
         
-        else if(painter.oXSide.active && painter.oYSide.active)
+        else if(mirror_X && mirror_Y)
             currentModeHintDisplayer.text = "Mirror XY";
         
-        else if(painter.oYSide.active && painter.oZSide.active)
+        else if(mirror_Y && mirror_Z)
             currentModeHintDisplayer.text = "Mirror YZ";
         
-        else if(painter.oXSide.active && painter.oZSide.active)
+        else if(mirror_X && mirror_Z)
             currentModeHintDisplayer.text = "Mirror XZ";
         
-        else if(painter.oXSide.active)
+        else if(mirror_X)
             currentModeHintDisplayer.text = "Mirror X";
         
-        else if(painter.oYSide.active)
+        else if(mirror_Y)
             currentModeHintDisplayer.text = "Mirror Y";
         
-        else if(painter.oZSide.active)
+        else if(mirror_Z)
             currentModeHintDisplayer.text = "Mirror Z";
 
     }
@@ -99,14 +103,13 @@ void current_mode_hint_displayer_render(Timer& timer, Painter& painter)
     }
     if(painter.faceSelection.editMode){
         currentModeDisplayer.text = "Face Selection Mode (Edit)";
-        if(painter.selectedMeshIndex < getScene()->model->meshes.size())
-            currentModeHintDisplayer.text = "Faces Total : " + std::to_string(getScene()->model->meshes[painter.selectedMeshIndex].indices.size() / 3);
+        currentModeHintDisplayer.text = "Faces Total : " + std::to_string(getScene()->get_selected_mesh()->indices.size() / 3);
     }
     
-    if(painter.usePaintingOver){
+    if(checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1){
         currentModeHintDisplayer.text = "Painting Over Mode";
     }
-    if(painter.paintingoverTextureEditorMode){
+    if(checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
         currentModeDisplayer.text = "Painting Over Edit Mode";
         
         currentModeHintDisplayer.text = std::to_string(getTextureFieldScene()->texture_fields.size()) + " Textures";

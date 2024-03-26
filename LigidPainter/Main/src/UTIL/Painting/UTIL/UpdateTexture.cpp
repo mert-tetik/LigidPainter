@@ -100,10 +100,10 @@ void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintin
     ShaderSystem::textureUpdatingShader().setInt("txtr", 5);
     ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6);
     ShaderSystem::textureUpdatingShader().setInt("brushModeState", paintingMode);
-    ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", this->usePaintingOver);
-    ShaderSystem::textureUpdatingShader().setFloat("smearTransformStrength", this->smearTransformStrength);
-    ShaderSystem::textureUpdatingShader().setFloat("smearBlurStrength", this->smearBlurStrength);
-    ShaderSystem::textureUpdatingShader().setInt("multiChannelsPaintingMod", this->materialPainting);
+    ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1);
+    ShaderSystem::textureUpdatingShader().setFloat("smearTransformStrength", panel_smear_painting_properties.sections[0].elements[0].rangeBar.value);
+    ShaderSystem::textureUpdatingShader().setFloat("smearBlurStrength", panel_smear_painting_properties.sections[0].elements[1].rangeBar.value);
+    ShaderSystem::textureUpdatingShader().setInt("multiChannelsPaintingMod", panel_displaying_modes.selectedElement == 1);
     ShaderSystem::textureUpdatingShader().setInt("channelI", channelI);
     ShaderSystem::textureUpdatingShader().setFloat("channelStrength", channelStr);
 
@@ -117,16 +117,15 @@ void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintin
     glBindTexture(GL_TEXTURE_2D, this->projectedPaintingTexture.ID);
     
     
-    if(this->threeDimensionalMode){
+    if(!twoD_painting_mode){
         //Draw the UV of the selected model
-        if(selectedMeshIndex < getScene()->model->meshes.size()){
-
+        {
             //*Vertex
             ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
             ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
             ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->camera.viewMatrix);
 
-            getScene()->model->meshes[selectedMeshIndex].Draw(false);         
+            getScene()->get_selected_mesh()->Draw(false);         
         }
     }
     else{
@@ -142,9 +141,8 @@ void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintin
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Applying painting to the texture");
     }
     
-    if(this->threeDimensionalMode){
-        if(selectedMeshIndex < getScene()->model->meshes.size())
-            captureTexture.removeSeams(getScene()->model->meshes[selectedMeshIndex], destScale);
+    if(!twoD_painting_mode){
+        captureTexture.removeSeams(*getScene()->get_selected_mesh(), destScale);
     }
 
     //Delete the capture framebuffer
@@ -158,36 +156,42 @@ void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintin
 
 void Painter::updateTexture(int paintingMode){
     
-    if(!this->threeDimensionalMode && this->selectedDisplayingModeIndex != 2){
+    if(twoD_painting_mode && panel_displaying_modes.selectedElement != 2){
         LGDLOG::start << "ERROR : Painting : Invalid displaying mode for the 2D painting" << LGDLOG::end;
         return;
     }
 
-    if(this->selectedMeshIndex >= getScene()->model->meshes.size()){
+    if(button_mesh_selection.selectedMeshI >= getScene()->model->meshes.size()){
         LGDLOG::start << "ERROR : Painting : Invalid selected mesh" << LGDLOG::end;
         return;
     }
     
-    if(this->selectedDisplayingModeIndex == 2 && (!this->selectedTexture.ID || glIsTexture(this->selectedTexture.ID) == GL_FALSE)){
+    if(panel_displaying_modes.selectedElement == 2 && (!panel_library_selected_texture.ID || glIsTexture(panel_library_selected_texture.ID) == GL_FALSE)){
         LGDLOG::start << "ERROR : Painting : Selected texture is invalid" << LGDLOG::end;
         return;
     }
 
     bool channelsSuccesss;
-    MaterialChannels channels = this->getSelectedMesh()->layerScene.get_painting_channels(&channelsSuccesss);
-    if(this->selectedDisplayingModeIndex == 1 && !channelsSuccesss){
+    MaterialChannels channels = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&channelsSuccesss);
+    if(panel_displaying_modes.selectedElement == 1 && !channelsSuccesss){
         LGDLOG::start << "ERROR : Painting : Select a painting layer to paint" << LGDLOG::end;
         return;
     }
 
-    int txtrI = this->getSelectedTextureIndexInLibrary();
+    // Selected texture index in the library
+    int txtrI = -1;
+    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+    {
+        if(panel_library_selected_texture.ID == Library::getTexture(i)->ID)
+            txtrI = i;
+    }
     
-    if(this->useCustomMaterial && this->selectedMeshIndex < getScene()->model->meshes.size()){
-        glm::vec2 res = getScene()->model->meshes[this->selectedMeshIndex].albedo.getResolution();
-        customMatMesh.EBO = getScene()->model->meshes[this->selectedMeshIndex].EBO;
-        customMatMesh.VBO = getScene()->model->meshes[this->selectedMeshIndex].VBO;
-        customMatMesh.VAO = getScene()->model->meshes[this->selectedMeshIndex].VAO;
-        customMatMesh.indices = getScene()->model->meshes[this->selectedMeshIndex].indices;
+    if(checkComboList_painting_color.panel.sections[0].elements[13].checkBox.clickState1){
+        glm::vec2 res = getScene()->get_selected_mesh()->albedo.getResolution();
+        customMatMesh.EBO = getScene()->get_selected_mesh()->EBO;
+        customMatMesh.VBO = getScene()->get_selected_mesh()->VBO;
+        customMatMesh.VAO = getScene()->get_selected_mesh()->VAO;
+        customMatMesh.indices = getScene()->get_selected_mesh()->indices;
         
         if(!customMatMesh.albedo.ID){
             customMatMesh.albedo = Texture(nullptr, res.x, res.y);
@@ -214,16 +218,16 @@ void Painter::updateTexture(int paintingMode){
         }
     }
 
-    if(this->materialPainting){
+    if(panel_displaying_modes.selectedElement == 1){
         registerPaintingAction(
                                     "Multi-channel painting", 
                                     Texture(), 
-                                    channels.albedo, this->enableAlbedoChannel, 
-                                    channels.roughness, this->enableRoughnessChannel,
-                                    channels.metallic, this->enableMetallicChannel,
-                                    channels.normalMap, this->enableNormalMapChannel,
-                                    channels.heightMap, this->enableHeightMapChannel,
-                                    channels.ambientOcclusion, this->enableAOChannel
+                                    channels.albedo, checkComboList_painting_color.panel.sections[0].elements[1].checkBox.clickState1, 
+                                    channels.roughness, checkComboList_painting_color.panel.sections[0].elements[3].checkBox.clickState1,
+                                    channels.metallic, checkComboList_painting_color.panel.sections[0].elements[5].checkBox.clickState1,
+                                    channels.normalMap, checkComboList_painting_color.panel.sections[0].elements[7].checkBox.clickState1,
+                                    channels.heightMap, checkComboList_painting_color.panel.sections[0].elements[9].checkBox.clickState1,
+                                    channels.ambientOcclusion, checkComboList_painting_color.panel.sections[0].elements[11].checkBox.clickState1
                                 );
     }
     else if(txtrI != -1){
@@ -244,7 +248,7 @@ void Painter::updateTexture(int paintingMode){
         registerPaintingAction(
                                     actionTitle, 
                                     Texture(), 
-                                    this->selectedTexture, true, 
+                                    panel_library_selected_texture, true, 
                                     Texture(), false,
                                     Texture(), false,
                                     Texture(), false,
@@ -254,10 +258,10 @@ void Painter::updateTexture(int paintingMode){
     }
 
     if(paintingMode == 4){
-        button_painting_filter_mode_filter.filter.applyFilter(this->selectedTexture.ID, this->projectedPaintingTexture, 0);
+        button_painting_filter_mode_filter.filter.applyFilter(panel_library_selected_texture.ID, this->projectedPaintingTexture, 0);
     }
     else{
-        if(this->materialPainting){
+        if(panel_displaying_modes.selectedElement == 1){
             for (size_t i = 0; i < 6; i++)
             {
                 glm::vec3 clr;
@@ -265,55 +269,54 @@ void Painter::updateTexture(int paintingMode){
                 Texture txtr;
                 Texture customMatTxtr;
                 if(i == 0){
-                    clr = this->getSelectedColor().getRGB_normalized();
-                    enableChannel = this->enableAlbedoChannel;
+                    clr = checkComboList_painting_color.panel.sections[0].elements[2].painterColorSelection.getSelectedColor().getRGB_normalized();
+                    enableChannel = checkComboList_painting_color.panel.sections[0].elements[1].checkBox.clickState1;
                     txtr = channels.albedo;
                     customMatTxtr = customMatMesh.albedo;
                 }
                 if(i == 1){
-                    clr = glm::vec3(this->roughnessVal);
-                    enableChannel = this->enableRoughnessChannel;
+                    clr = glm::vec3(checkComboList_painting_color.panel.sections[0].elements[4].rangeBar.value);
+                    enableChannel = checkComboList_painting_color.panel.sections[0].elements[3].checkBox.clickState1;
                     txtr = channels.roughness;
                     customMatTxtr = customMatMesh.roughness;
                 }
                 if(i == 2){
-                    clr = glm::vec3(this->metallicVal);
-                    enableChannel = this->enableMetallicChannel;
+                    clr = glm::vec3(checkComboList_painting_color.panel.sections[0].elements[6].rangeBar.value);
+                    enableChannel = checkComboList_painting_color.panel.sections[0].elements[5].checkBox.clickState1;
                     txtr = channels.metallic;
                     customMatTxtr = customMatMesh.metallic;
                 }
                 if(i == 3){
-                    clr = glm::vec3(this->normalMapStrengthVal);
-                    enableChannel = this->enableNormalMapChannel;
+                    clr = glm::vec3(checkComboList_painting_color.panel.sections[0].elements[8].rangeBar.value);
+                    enableChannel = checkComboList_painting_color.panel.sections[0].elements[7].checkBox.clickState1;
                     txtr = channels.normalMap;
                     customMatTxtr = customMatMesh.normalMap;
                 }
                 if(i == 4){
-                    clr = glm::vec3(this->heightMapVal);
-                    enableChannel = this->enableHeightMapChannel;
+                    clr = glm::vec3(checkComboList_painting_color.panel.sections[0].elements[10].rangeBar.value);
+                    enableChannel = checkComboList_painting_color.panel.sections[0].elements[9].checkBox.clickState1;
                     txtr = channels.heightMap;
                     customMatTxtr = customMatMesh.heightMap;
                 }
                 if(i == 5){
-                    clr = glm::vec3(this->ambientOcclusionVal);
-                    enableChannel = this->enableAOChannel;
+                    clr = glm::vec3(checkComboList_painting_color.panel.sections[0].elements[12].rangeBar.value);
+                    enableChannel = checkComboList_painting_color.panel.sections[0].elements[11].checkBox.clickState1;
                     txtr = channels.ambientOcclusion;
                     customMatTxtr = customMatMesh.ambientOcclusion;
                 }
 
                 if(enableChannel){
-                    if(!this->useCustomMaterial)
+                    if(!checkComboList_painting_color.panel.sections[0].elements[13].checkBox.clickState1)
                         updateTheTexture(txtr, paintingMode, clr, i, clr.r);
                     else{
                         txtr.mix(customMatTxtr, projectedPaintingTexture, true, false, false);
-                        if(selectedMeshIndex < getScene()->model->meshes.size())
-                            txtr.removeSeams(getScene()->model->meshes[selectedMeshIndex], txtr.getResolution());
+                            txtr.removeSeams(*getScene()->get_selected_mesh(), txtr.getResolution());
                     }
                 }
             }
         }
         else{
-            updateTheTexture(this->selectedTexture, paintingMode, this->getSelectedColor().getRGB_normalized(), 0, 1.f);
+            updateTheTexture(panel_library_selected_texture, paintingMode, checkComboList_painting_color.panel.sections[0].elements[1].painterColorSelection.getSelectedColor().getRGB_normalized(), 0, 1.f);
         }
     }
 

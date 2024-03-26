@@ -72,7 +72,7 @@ void Renderer::render(){
     if(
             *Mouse::LPressed() && 
             !panels_any_hovered() && 
-            (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 &&
+            (panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2) && panel_painting_modes.selectedElement != 5 &&
             !painter.paintingoverTextureEditorMode &&
             !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
@@ -83,23 +83,23 @@ void Renderer::render(){
         painter.doPaint(    
                             painter.wrapMode,
                             *Mouse::LClick(),
-                            painter.selectedPaintingModeIndex,
+                            panel_painting_modes.selectedElement,
                             false || painter.wrapMode
                         );
     }
 
     //Painting done (refresh)
-    if(((painter.refreshable && !*Mouse::LPressed()) || (painter.refreshable && (*Mouse::RClick() || *Mouse::MClick()))) && painter.selectedPaintingModeIndex != 5){ //Last frame painting done or once mouse right click or mouse wheel click
+    if(((painter.refreshable && !*Mouse::LPressed()) || (painter.refreshable && (*Mouse::RClick() || *Mouse::MClick()))) && panel_painting_modes.selectedElement != 5){ //Last frame painting done or once mouse right click or mouse wheel click
         //Paint
         painter.doPaint(    
                             painter.wrapMode,
                             true,
-                            painter.selectedPaintingModeIndex,
+                            panel_painting_modes.selectedElement,
                             true
                         );
 
         //Update the selected texture after painting
-        painter.updateTexture(painter.selectedPaintingModeIndex);
+        painter.updateTexture(panel_painting_modes.selectedElement);
         
         //Refresh the 2D painting texture
         painter.refreshPainting();

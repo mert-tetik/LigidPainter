@@ -528,6 +528,7 @@ public:
 
     bool isInteracted();
     Button* getSelectedButton();
+    Color getSelectedColor();
 
 };
 
@@ -654,6 +655,9 @@ public:
 
     /*! @brief Sharp corners if true */
     bool solidStyle = false;
+
+    bool elementSelectionMode = false;
+    int selectedElement = 0;
     
     /*! 
         @brief Indicates how many elements can be in a row 

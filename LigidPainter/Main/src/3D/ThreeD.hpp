@@ -166,6 +166,9 @@ public:
 
     Texture displayingTxtr;
 
+    Texture meshPosTxtr;
+    Texture meshNormalTxtr;
+
     std::vector<int> selectedObjectIndices;
     Texture selectedObjectPrimitivesTxtr;
 
@@ -200,6 +203,13 @@ public:
     glm::vec3 getMostDistantPointFromAPoint(glm::vec3 point);
 
     float getBiggestFloatValue(glm::vec3 origin);
+
+    void getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData, bool readNormal);
+    /*! @brief Returns the 3D point value of the model on the cursor
+               Returns the pos & normal value -1000 if the point is not valid
+    */
+    ThreeDPoint getCurrentPosNormalDataOverCursor();
+    void updatePosNormalTexture();    
 
 private:
     /*! @brief initializes all the buffer objects/arrays */

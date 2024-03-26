@@ -81,8 +81,8 @@ void line_painting(Timer& timer, Painter& painter, bool applyStroke, bool firstF
         strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
         painter.applyVectorStrokes(
                                 strokeArray, 
-                                painter.selectedPaintingModeIndex, 
-                                paintingColorCheckComboList.panel.sections[0].elements[14].button.material,
+                                panel_painting_modes.selectedElement, 
+                                checkComboList_painting_color.panel.sections[0].elements[14].button.material,
                                 painter.wrapMode
                             );
     }

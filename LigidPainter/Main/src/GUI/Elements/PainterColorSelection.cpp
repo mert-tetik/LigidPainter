@@ -145,3 +145,7 @@ Button* PainterColorSelection::getSelectedButton(){
 
     return nullptr;
 }
+
+Color PainterColorSelection::getSelectedColor(){
+    return Color(glm::vec3(this->getSelectedButton()->color.r * 255.f, this->getSelectedButton()->color.g * 255.f, this->getSelectedButton()->color.b * 255.f));
+}

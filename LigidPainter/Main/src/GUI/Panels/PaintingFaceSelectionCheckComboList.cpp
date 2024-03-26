@@ -12,23 +12,25 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Renderer.h"
 #include "GUI/GUI.hpp"
-#include "3D/ThreeD.hpp"
+#include "GUI/Panels.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+
 #include "Toolkit/Layers/Layers.hpp"
-#include "GUI/Panels.hpp"
+
+#include "3D/ThreeD.hpp"
 
 #include <string>
 #include <vector>
@@ -56,13 +58,13 @@ void checkComboList_painting_face_selection_render(Timer& timer, Painter& painte
     
     // Generate mesh mask 
     if(checkComboList_painting_face_selection.panel.sections[0].elements[5].button.clicked){            
-        checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralTexture(*painter.getSelectedMesh(), painter.faceSelection.meshMask, 1024); 
+        checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralTexture(*getScene()->get_selected_mesh(), painter.faceSelection.meshMask, 1024); 
     }
     
     if(checkComboList_painting_face_selection.panel.sections[0].elements[6].button.clicked || !checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.ID){
         checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.proceduralProps.proceduralID = 24;
         checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.proceduralProps.proceduralnverted = false;
-        checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralTexture(*painter.getSelectedMesh(), painter.faceSelection.meshMask, 1024); 
+        checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralTexture(*getScene()->get_selected_mesh(), painter.faceSelection.meshMask, 1024); 
         checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralDisplayingTexture(512, 1);
     }
 

@@ -37,30 +37,8 @@ Panel panel_displaying_modes;
 
 void panel_displaying_modes_render(Timer& timer, Painter& painter, bool doMouseTracking)
 {
-    
     panel_displaying_modes.render(timer, doMouseTracking);
     if(panel_displaying_modes.resizingDone){
         panels_transform();
-    }
-
-    //!PAINTING MODES PANEL
-    for (size_t i = 0; i < panel_displaying_modes.sections[0].elements.size(); i++)
-    {
-        if(!painter.getSelectedMesh()->layerScene.any_vector_editing()){
-            if(panel_displaying_modes.sections[0].elements[i].button.clickState1){ //Painting mode pressed
-                    if(painter.selectedDisplayingModeIndex != i){
-                        panel_displaying_modes.sections[0].elements[painter.selectedDisplayingModeIndex].button.clickState1 = false;
-                        painter.selectedDisplayingModeIndex = i;
-                        break;
-                    }
-            }
-        }
-        else{
-            panel_displaying_modes.sections[0].elements[i].button.clickState1 = false;
-        }
-
-        if(painter.selectedDisplayingModeIndex == i){
-            panel_displaying_modes.sections[0].elements[i].button.clickState1 = true;
-        }
     }
 }

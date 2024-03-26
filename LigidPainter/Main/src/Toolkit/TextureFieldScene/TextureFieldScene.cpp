@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 extern bool textureFields_decidingWrapPointsMode;
 extern bool textureField_alreadyInteracted;
 
-void TextureFieldScene::render(Timer& timer, Painter& painter, bool doMouseTracking, bool threeD_only){
+void TextureFieldScene::render(Timer& timer, Painter& painter, bool doMouseTracking, bool threeD_only, bool editMode){
     
     getBox()->bindBuffers();
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -57,13 +57,13 @@ void TextureFieldScene::render(Timer& timer, Painter& painter, bool doMouseTrack
             }
         }
 
-        if((painter.wrapMode && this->texture_fields[i].wrapMode) || !painter.wrapMode || painter.paintingoverTextureEditorMode){
+        if((painter.wrapMode && this->texture_fields[i].wrapMode) || !painter.wrapMode || editMode){
             this->texture_fields[i].render(
                                                 timer, 
                                                 painter,
                                                 this->texture_fields, 
                                                 i, 
-                                                painter.paintingoverTextureEditorMode, 
+                                                editMode, 
                                                 false, 
                                                 doMouseTracking
                                             );

@@ -47,10 +47,20 @@ void Scene::render_model(Painter& painter){
     ShaderSystem::tdModelShader().setMat4("view", this->camera.viewMatrix);
     ShaderSystem::tdModelShader().setMat4("projection", this->projectionMatrix);
     ShaderSystem::tdModelShader().setMat4("modelMatrix", this->transformMatrix);
-    ShaderSystem::tdModelShader().setVec3("mirrorState", glm::vec3(painter.oXSide.active, painter.oYSide.active, painter.oZSide.active));
-    ShaderSystem::tdModelShader().setVec3("mirrorOffsets", glm::vec3(painter.mirrorXOffset, painter.mirrorYOffset, painter.mirrorZOffset));
-    ShaderSystem::tdModelShader().setFloat("smearTransformStrength", painter.smearTransformStrength);
-    ShaderSystem::tdModelShader().setFloat("smearBlurStrength", painter.smearBlurStrength);
+    ShaderSystem::tdModelShader().setVec3("mirrorState", glm::vec3(
+                                                                        checkComboList_painting_mirror.panel.sections[0].elements[0].checkBox.clickState1, 
+                                                                        checkComboList_painting_mirror.panel.sections[0].elements[2].checkBox.clickState1, 
+                                                                        checkComboList_painting_mirror.panel.sections[0].elements[4].checkBox.clickState1
+                                                                    ));
+                                                                    
+    ShaderSystem::tdModelShader().setVec3("mirrorOffsets", glm::vec3(
+                                                                        checkComboList_painting_mirror.panel.sections[0].elements[1].rangeBar.value, 
+                                                                        checkComboList_painting_mirror.panel.sections[0].elements[3].rangeBar.value, 
+                                                                        checkComboList_painting_mirror.panel.sections[0].elements[5].rangeBar.value
+                                                                    ));
+
+    ShaderSystem::tdModelShader().setFloat("smearTransformStrength", panel_smear_painting_properties.sections[0].elements[0].rangeBar.value);
+    ShaderSystem::tdModelShader().setFloat("smearBlurStrength", panel_smear_painting_properties.sections[0].elements[1].rangeBar.value);
     
     ShaderSystem::sceneTilesShader().use();
     ShaderSystem::sceneTilesShader().setMat4("view", this->camera.viewMatrix);
@@ -119,20 +129,18 @@ void Scene::render_model(Painter& painter){
         else
             glBindTexture(GL_TEXTURE_2D, appTextures.materialChannelMissingTexture.ID);
 
-        ShaderSystem::tdModelShader().setInt("paintedTxtrStateIndex", painter.selectedPaintingChannelIndex);
         
-        if(painter.selectedDisplayingModeIndex == 2){
-            ShaderSystem::tdModelShader().setInt("paintedTxtrStateIndex", 0);
-            ShaderSystem::tdModelShader().setInt("displayingMode", 1);
+        if(panel_displaying_modes.selectedElement == 2){
+            ShaderSystem::tdModelShader().setInt("albedo_only", 1);
             glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, painter.selectedTexture.ID);
+            glBindTexture(GL_TEXTURE_2D, panel_library_selected_texture.ID);
         }
         else{
-            ShaderSystem::tdModelShader().setInt("displayingMode", 0);
+            ShaderSystem::tdModelShader().setInt("albedo_only", 0);
         }
         
-        if(painter.selectedDisplayingModeIndex == 2 || painter.selectedDisplayingModeIndex == 1){
-            if(painter.selectedMeshIndex == i)
+        if(panel_displaying_modes.selectedElement == 2 || panel_displaying_modes.selectedElement == 1){
+            if(button_mesh_selection.selectedMeshI == i)
                 ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
             else{
                 if(!painter.faceSelection.hideUnselected)
@@ -144,8 +152,8 @@ void Scene::render_model(Painter& painter){
         else
             ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
-        if(painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2){
-            if(i == painter.selectedMeshIndex){
+        if(panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2){
+            if(i == button_mesh_selection.selectedMeshI){
                 ShaderSystem::tdModelShader().setInt("usingMeshSelection", painter.faceSelection.activated);
                 ShaderSystem::tdModelShader().setInt("meshSelectionEditing", painter.faceSelection.editMode);
                 ShaderSystem::tdModelShader().setInt("hideUnselected", painter.faceSelection.hideUnselected);
@@ -175,18 +183,22 @@ void Scene::render_model(Painter& painter){
         }
         
         
-        ShaderSystem::tdModelShader().setInt("materialPainting", painter.materialPainting);
-        ShaderSystem::tdModelShader().setInt("enableAlbedoChannel", painter.enableAlbedoChannel);
-        ShaderSystem::tdModelShader().setInt("enableRoughnessChannel", painter.enableRoughnessChannel);
-        ShaderSystem::tdModelShader().setFloat("roughnessVal", painter.roughnessVal);
-        ShaderSystem::tdModelShader().setInt("enableMetallicChannel", painter.enableMetallicChannel);
-        ShaderSystem::tdModelShader().setFloat("metallicVal", painter.metallicVal);
-        ShaderSystem::tdModelShader().setInt("enableNormalMapChannel", painter.enableNormalMapChannel);
-        ShaderSystem::tdModelShader().setFloat("normalMapStrengthVal", painter.normalMapStrengthVal);
-        ShaderSystem::tdModelShader().setInt("enableHeightMapChannel", painter.enableHeightMapChannel);
-        ShaderSystem::tdModelShader().setFloat("heightMapVal", painter.heightMapVal);
-        ShaderSystem::tdModelShader().setInt("enableAOChannel", painter.enableAOChannel);
-        ShaderSystem::tdModelShader().setFloat("ambientOcclusionVal", painter.ambientOcclusionVal);
+        ShaderSystem::tdModelShader().setInt("enableAlbedoChannel", checkComboList_painting_color.panel.sections[0].elements[1].checkBox.clickState1);
+        
+        ShaderSystem::tdModelShader().setInt("enableRoughnessChannel", checkComboList_painting_color.panel.sections[0].elements[3].checkBox.clickState1);
+        ShaderSystem::tdModelShader().setFloat("roughnessVal", checkComboList_painting_color.panel.sections[0].elements[4].rangeBar.value);
+        
+        ShaderSystem::tdModelShader().setInt("enableMetallicChannel", checkComboList_painting_color.panel.sections[0].elements[5].checkBox.clickState1);
+        ShaderSystem::tdModelShader().setFloat("metallicVal", checkComboList_painting_color.panel.sections[0].elements[6].rangeBar.value);
+        
+        ShaderSystem::tdModelShader().setInt("enableNormalMapChannel", checkComboList_painting_color.panel.sections[0].elements[7].checkBox.clickState1);
+        ShaderSystem::tdModelShader().setFloat("normalMapStrengthVal", checkComboList_painting_color.panel.sections[0].elements[8].rangeBar.value);
+        
+        ShaderSystem::tdModelShader().setInt("enableHeightMapChannel", checkComboList_painting_color.panel.sections[0].elements[9].checkBox.clickState1);
+        ShaderSystem::tdModelShader().setFloat("heightMapVal", checkComboList_painting_color.panel.sections[0].elements[10].rangeBar.value);
+        
+        ShaderSystem::tdModelShader().setInt("enableAOChannel", checkComboList_painting_color.panel.sections[0].elements[11].checkBox.clickState1);
+        ShaderSystem::tdModelShader().setFloat("ambientOcclusionVal", checkComboList_painting_color.panel.sections[0].elements[12].rangeBar.value);
 
         ShaderSystem::tdModelShader().setInt("paintingMode", painter.refreshable);
 
@@ -205,9 +217,9 @@ void Scene::render_model(Painter& painter){
         glActiveTexture(GL_TEXTURE8);
         glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
         
-        if(!(i != painter.selectedMeshIndex && painter.faceSelection.hideUnselected)){
+        if(!(i != button_mesh_selection.selectedMeshI && painter.faceSelection.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", this->model->meshes[i].indices.size() / 3);
-            this->model->meshes[i].Draw(painter.faceSelection.editMode && i == painter.selectedMeshIndex && painter.selectedDisplayingModeIndex != 0);
+            this->model->meshes[i].Draw(painter.faceSelection.editMode && i == button_mesh_selection.selectedMeshI && panel_displaying_modes.selectedElement != 0);
         }
     }
     
@@ -217,7 +229,7 @@ void Scene::render_model(Painter& painter){
 
     Debugger::block("3D Model Object Selection"); // Start
     // Check if an object is selected after rendering the mesh
-    if(painter.selectedDisplayingModeIndex == 0 && ((!panels_any_hovered() || panel_objects.hover) && !*Mouse::RPressed() && !*Mouse::MPressed()) || dialog_log.unded) 
+    if(panel_displaying_modes.selectedElement == 0 && ((!panels_any_hovered() || panel_objects.hover) && !*Mouse::RPressed() && !*Mouse::MPressed()) || dialog_log.unded) 
         this->model->selectObject();
     Debugger::block("3D Model Object Selection"); // End
 
@@ -229,7 +241,7 @@ void Scene::render_model(Painter& painter){
             prevCam.pitch != this->camera.pitch) && !*Mouse::RPressed()
         )
     {
-        painter.updatePosNormalTexture();
+        getScene()->get_selected_mesh()->updatePosNormalTexture();
         
         //Update the depth texture
         painter.updateDepthTexture();

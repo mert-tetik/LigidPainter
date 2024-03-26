@@ -489,15 +489,15 @@ void LogDialog::render(
 
     lastMessagesSize = messages.size();
 
-    if(painter.selectedDisplayingModeIndex != 0){
+    if(panel_displaying_modes.selectedElement != 0){
         this->activeHistoryMode = HISTORY_PAINTING_MODE;
         otherHistoryBtn.text = "Painting History";
     }
-    if(painter.selectedPaintingModeIndex == 5){
+    if(panel_painting_modes.selectedElement == 5){
         this->activeHistoryMode = HISTORY_VECTORS_MODE;
         otherHistoryBtn.text = "Vectors History";
     }
-    if(painter.selectedDisplayingModeIndex == 0){
+    if(panel_displaying_modes.selectedElement == 0){
         this->activeHistoryMode = HISTORY_OBJECTSELECTION_MODE;
         otherHistoryBtn.text = "Object Selection History";
     }
@@ -505,7 +505,7 @@ void LogDialog::render(
         this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
         otherHistoryBtn.text = "Face Selection History";
     }
-    if(painter.paintingoverTextureEditorMode){
+    if(checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
         this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE;
         otherHistoryBtn.text = "Texture Fields History";
     }
@@ -534,14 +534,14 @@ void LogDialog::render(
         actions_MaterialEditor.erase(actions_MaterialEditor.begin());
     }
 
-    if(painter.selectedDisplayingModeIndex != 1)
+    if(panel_displaying_modes.selectedElement != 1)
         actions_MultiChannelPainting.clear();
 
     std::vector<PaintingAction>* paintingActions;
-    if(painter.materialPainting)
+    if(panel_displaying_modes.selectedElement == 1)
         paintingActions = &actions_MultiChannelPainting;
     else
-        paintingActions = &actions_Painting[painter.selectedTexture.ID];
+        paintingActions = &actions_Painting[panel_library_selected_texture.ID];
 
     if(actions_MultiChannelPainting.size() > MAX_PAINTING_HISTORY){
         actions_MultiChannelPainting.erase(actions_MultiChannelPainting.begin());
@@ -627,10 +627,10 @@ void LogDialog::render(
         actions_MaterialEditor.clear();
     }
 
-    prevpPainterDisplayIndex = painter.selectedDisplayingModeIndex;
-    prevpPainterSelectedTxtr = painter.selectedTexture.ID;
+    prevpPainterDisplayIndex = panel_displaying_modes.selectedElement;
+    prevpPainterSelectedTxtr = panel_library_selected_texture.ID;
 
-    if(!painter.paintingoverTextureEditorMode || project_path() != lastProjectPath){
+    if(!checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 || project_path() != lastProjectPath){
         for (size_t i = 0; i < actions_TextureFields.size(); i++)
         {
             for (size_t fieldI = 0; fieldI < actions_TextureFields[i].fields.size(); fieldI++)

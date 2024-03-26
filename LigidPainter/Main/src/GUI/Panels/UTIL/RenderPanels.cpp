@@ -12,7 +12,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
@@ -78,43 +78,42 @@ void panels_render(Timer& timer, Painter& painter)
     panel_displaying_modes_render(timer, painter, true);
     Debugger::block("GUI : Panels : Displaying modes panel"); // End
     
-    if(!painter.threeDimensionalMode){
+    if(twoD_painting_mode){
         Debugger::block("GUI : Panels : 2D painting panel"); // Start
         panel_twoD_painting_render(timer, painter, true);
         Debugger::block("GUI : Panels : 2D painting panel"); // End
     }
 
-    if(painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2){
+    if(panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2){
         Debugger::block("GUI : Panels : Painting modes panel"); // Start
         panel_painting_modes_render(timer, painter, true);
         Debugger::block("GUI : Panels : Painting modes panel"); // End
 
         Debugger::block("GUI : Panels : Painting color check combo list"); // Start
-        checkComboList_painting_color_render(timer, true || painter.paintingoverTextureEditorMode);
+        checkComboList_painting_color_render(timer, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
         Debugger::block("GUI : Panels : Painting color check combo list"); // End
         
         Debugger::block("GUI : Panels : Painting face selection check combo list"); // Start
-        checkComboList_painting_face_selection_render(timer, painter, true || painter.paintingoverTextureEditorMode);
+        checkComboList_painting_face_selection_render(timer, painter, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
         Debugger::block("GUI : Panels : Painting face selection check combo list"); // End
         
         Debugger::block("GUI : Panels : Painting mirror check combo list"); // Start
-        checkComboList_painting_mirror_render(timer, painter, true || painter.paintingoverTextureEditorMode);
+        checkComboList_painting_mirror_render(timer, painter, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
         Debugger::block("GUI : Panels : Painting mirror check combo list"); // End
         
         Debugger::block("GUI : Panels : Painting over check combo list"); // Start
-        checkComboList_painting_over_render(timer, painter, true || painter.paintingoverTextureEditorMode);
+        checkComboList_painting_over_render(timer, painter, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
         Debugger::block("GUI : Panels : Painting over check combo list"); // End
         
         Debugger::block("GUI : Panels : Painting brush button"); // Start
         button_painting_brush_render(timer, painter, true);
         Debugger::block("GUI : Panels : Painting brush button"); // End
 
-        if(painter.selectedPaintingModeIndex == 4){
+        if(panel_painting_modes.selectedElement == 4){
             Debugger::block("GUI : Panels : Smear painting properties panel"); // Start
             panel_smear_painting_properties_render(timer, painter, true);
             Debugger::block("GUI : Panels : Smear painting properties panel"); // End
-        }
-        if(painter.selectedPaintingModeIndex == 4){
+           
             Debugger::block("GUI : Panels : Painting filter mode filter selection button"); // Start
             button_painting_filter_mode_filter_render(timer, painter, true);
             Debugger::block("GUI : Panels : Painting filter mode filter selection button"); // End

@@ -42,7 +42,7 @@ void panel_window_render(Timer& timer, Painter& painter, bool doMouseTracking){
     }
 
     if(panel_window.sections[0].elements[0].button.clicked){//Pressed to the 3D painting button of the window panel
-        painter.threeDimensionalMode = true;
+        twoD_painting_mode = true;
     }
     else if(panel_window.sections[0].elements[1].button.clicked){//Pressed to the 2D painting button of the window panel
         painter.threeDimensionalMode = false;

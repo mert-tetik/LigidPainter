@@ -37,6 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 Panel panel_library;
+Texture panel_library_selected_texture;
 
 /* Forward declared util functions */
 static void check_context_menus(Timer& timer);
@@ -72,6 +73,9 @@ void panel_library_render(
 
     // If right clicked to elements
     check_context_menus(timer);
+
+    if(glIsTexture(panel_library_selected_texture.ID) == GL_FALSE)
+        panel_library_selected_texture.ID = false;
 }
 
 
@@ -235,10 +239,10 @@ static void element_interactions(Timer& timer, Painter& painter){
     {
         if(Library::getSelectedElementIndex() == 0){ //Textures selected
             if(panel_library.sections[0].elements[i].button.clicked){
-                painter.selectedTexture = *Library::getTexture(i); //Select the texture 
+                panel_library_selected_texture = *Library::getTexture(i); //Select the texture 
             } 
         
-            if(Library::getTexture(i)->ID == painter.selectedTexture.ID) //Highlight the selected texture
+            if(Library::getTexture(i)->ID == panel_library_selected_texture.ID) //Highlight the selected texture
                 panel_library.sections[0].elements[i].button.clickState1 = true;
         }
         if(Library::getSelectedElementIndex() == 1){ //Materials selected

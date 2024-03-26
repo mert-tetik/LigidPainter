@@ -34,6 +34,16 @@ class Mesh;
 /// @brief Forward decleration for the @ref Material class
 class Material;
 
+/*! @brief Channel textures of a material */
+struct MaterialChannels{
+    Texture albedo;
+    Texture roughness;
+    Texture metallic;
+    Texture normalMap;
+    Texture heightMap;
+    Texture ambientOcclusion;
+};
+
 //-------------- MATERIAL MODIFIER ------------
 
 #define TEXTURE_MATERIAL_MODIFIER 0

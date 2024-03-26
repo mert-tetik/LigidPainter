@@ -36,26 +36,26 @@ static bool prevStraightLinePaintingCondition = false;
 
 void render_toolkits(Timer& timer, Painter& painter){
     
-    if(painter.paintingoverTextureEditorMode){
+    if(checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
         Debugger::block("GUI : Rendering dotes"); // Start
         render_dots();
         Debugger::block("GUI : Rendering dotes"); // End
     }
 
-    if(painter.usePaintingOver){
+    if(checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1){
         Debugger::block("GUI : Texture fields"); // Start
-        getTextureFieldScene()->render(timer, painter, !panels_any_hovered(), checkBox_wrap_mode.clickState1);
+        getTextureFieldScene()->render(timer, painter, !panels_any_hovered(), checkBox_wrap_mode.clickState1, checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
         Debugger::block("GUI : Texture fields"); // End
     }
     
-    if(painter.selectedPaintingModeIndex == 5 && painter.selectedDisplayingModeIndex != 0 && !painter.paintingoverTextureEditorMode){
+    if(panel_painting_modes.selectedElement == 5 && panel_displaying_modes.selectedElement != 0 && !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
         Debugger::block("GUI : Vectors"); // Start
         getVectorScene()->render_scene(timer, !panels_any_hovered(), checkBox_wrap_mode.clickState1);
         Debugger::block("GUI : Vectors"); // End
     }
 
-    bool straightLinePaintingCondition = painter.selectedDisplayingModeIndex != 0 && 
-                                         painter.selectedPaintingModeIndex != 5 && 
+    bool straightLinePaintingCondition = panel_displaying_modes.selectedElement != 0 && 
+                                         panel_painting_modes.selectedElement != 5 && 
                                          !painter.faceSelection.editMode && 
                                          (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && 
                                          *Mouse::LPressed(); 
@@ -76,8 +76,8 @@ void render_toolkits(Timer& timer, Painter& painter){
     //Render the brush cursor
     if(
             !panels_any_hovered() && 
-            (painter.selectedDisplayingModeIndex == 1 || painter.selectedDisplayingModeIndex == 2) && painter.selectedPaintingModeIndex != 5 && painter.selectedPaintingModeIndex != 6 &&
-            !painter.paintingoverTextureEditorMode &&
+            (panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2) && panel_painting_modes.selectedElement != 5 && panel_painting_modes.selectedElement != 6 &&
+            !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 &&
             !painter.faceSelection.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)

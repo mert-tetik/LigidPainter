@@ -157,7 +157,7 @@ void LogDialog::undo(Painter& painter){
     }
     
     if(this->activeHistoryMode == HISTORY_PAINTING_MODE){
-        if(painter.materialPainting){
+        if(panel_displaying_modes.selectedElement == 1){
             if(actions_MultiChannelPainting.size()){
                 
                 if(actions_MultiChannelPainting[actions_MultiChannelPainting.size() - 1].albedoPainted){

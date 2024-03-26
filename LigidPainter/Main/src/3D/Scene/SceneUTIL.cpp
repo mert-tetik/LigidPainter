@@ -22,6 +22,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
+#include "GUI/Panels.hpp"
+
 void Scene::updateProjectionMatrix(float ratio){
     if(getContext()->windowScale.x){
         if(ratio == 0.f)
@@ -45,4 +47,12 @@ void Scene::updateTransformMatrix(){
     this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.x), glm::vec3(0.f, 1.f, 0.f));
     this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.y), glm::vec3(1.f, 0.f, 0.f));
     this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(transformRotation.z), glm::vec3(0.f, 0.f, 1.f));
+}
+
+static Mesh empty_mesh;
+Mesh* Scene::get_selected_mesh(){
+    if(button_mesh_selection.selectedMeshI < this->model->meshes.size())
+        return &this->model->meshes[button_mesh_selection.selectedMeshI];
+
+    return &empty_mesh;
 }

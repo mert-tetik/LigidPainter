@@ -48,6 +48,7 @@ struct Scene{
     bool useHeightMap = false;
     float heightMapStrength = 0.f;
     Model* model = new Model();
+    Mesh* get_selected_mesh();
     void render_model(Painter& painter);
 
     void render_scene(Painter& painter);

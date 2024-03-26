@@ -40,17 +40,20 @@ void checkComboList_painting_color_render(Timer& timer, bool doMouseTracking){
     checkComboList_painting_color.checkButton.clickState1 = true;
     checkComboList_painting_color.render(timer, doMouseTracking);
 
-    /*painter.materialPainting = painter.selectedDisplayingModeIndex == 1;
-    painter.enableAlbedoChannel = colorSection.elements[1].checkBox.clickState1;
-    painter.enableRoughnessChannel = colorSection.elements[6].checkBox.clickState1;
-    painter.roughnessVal = colorSection.elements[7].rangeBar.value;
-    painter.enableMetallicChannel = colorSection.elements[8].checkBox.clickState1;
-    painter.metallicVal = colorSection.elements[9].rangeBar.value;
-    painter.enableNormalMapChannel = colorSection.elements[10].checkBox.clickState1;
-    painter.normalMapStrengthVal = colorSection.elements[11].rangeBar.value;
-    painter.enableHeightMapChannel = colorSection.elements[12].checkBox.clickState1;
-    painter.heightMapVal = colorSection.elements[13].rangeBar.value;
-    painter.enableAOChannel = colorSection.elements[14].checkBox.clickState1;
-    painter.ambientOcclusionVal = colorSection.elements[15].rangeBar.value;
-    painter.useCustomMaterial = colorSection.elements[16].checkBox.clickState1;*/
+    painter.enableRoughnessChannel = checkComboList_painting_color.panel.sections[0].elements[3].checkBox.clickState1;
+    painter.roughnessVal = checkComboList_painting_color.panel.sections[0].elements[4].rangeBar.value;
+    
+    painter.enableMetallicChannel = checkComboList_painting_color.panel.sections[0].elements[5].checkBox.clickState1;
+    painter.metallicVal = checkComboList_painting_color.panel.sections[0].elements[6].rangeBar.value;
+
+    painter.enableNormalMapChannel = checkComboList_painting_color.panel.sections[0].elements[7].checkBox.clickState1;
+    painter.normalMapStrengthVal = checkComboList_painting_color.panel.sections[0].elements[8].rangeBar.value;
+
+    painter.enableHeightMapChannel = checkComboList_painting_color.panel.sections[0].elements[9].checkBox.clickState1;
+    painter.heightMapVal = checkComboList_painting_color.panel.sections[0].elements[10].rangeBar.value;
+
+    painter.enableAOChannel = checkComboList_painting_color.panel.sections[0].elements[11].checkBox.clickState1;
+    painter.ambientOcclusionVal = checkComboList_painting_color.panel.sections[0].elements[12].rangeBar.value;
+
+    painter.useCustomMaterial = checkComboList_painting_color.panel.sections[0].elements[13].checkBox.clickState1;
 }

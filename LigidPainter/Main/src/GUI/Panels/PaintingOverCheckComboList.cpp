@@ -47,8 +47,6 @@ void checkComboList_painting_over_render(Timer& timer, Painter& painter, bool do
         checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 = !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1;
 
     /*
-    painter.usePaintingOver = checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1;
-    painter.paintingoverTextureEditorMode = checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1;
     painter.paintingOverGrayScale = checkComboList_painting_over.panel.sections[0].elements[4].checkBox.clickState1;
     */
 

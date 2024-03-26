@@ -47,15 +47,15 @@ void render_3D_cursor(Painter& painter)
     float* posData = new float[4]; 
     float* normalData = new float[4]; 
 
-    painter.getPosNormalValOverPoint(
-                                        glm::vec2(
-                                                    Mouse::cursorPos()->x, 
-                                                    getContext()->windowScale.y - Mouse::cursorPos()->y
-                                                ),
-                                        posData,
-                                        normalData,
-                                        true
-                                    );
+    getScene()->get_selected_mesh()->getPosNormalOverPoint(
+                                                            glm::vec2(
+                                                                        Mouse::cursorPos()->x, 
+                                                                        getContext()->windowScale.y - Mouse::cursorPos()->y
+                                                                    ),
+                                                            posData,
+                                                            normalData,
+                                                            true
+                                                        );
 
     Settings::defaultFramebuffer()->FBO.bind();
 

@@ -194,10 +194,8 @@ void ThreeDBox::projectToModel(std::vector<Vertex>& vertices, glm::vec3 center, 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
 
-    if(painter.selectedMeshIndex < getScene()->model->meshes.size()){
-        ShaderSystem::renderModelData().setInt("primitiveCount", getScene()->model->meshes[painter.selectedMeshIndex].indices.size() / 3);
-        getScene()->model->meshes[painter.selectedMeshIndex].Draw(false);
-    }    
+    ShaderSystem::renderModelData().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
+    getScene()->get_selected_mesh()->Draw(false);
     
     float* pxs = new float[resolution * resolution * 4]; 
     

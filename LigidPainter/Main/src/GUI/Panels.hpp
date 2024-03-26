@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Dialogs.hpp"
 
 extern Panel panel_library;
+extern Texture panel_library_selected_texture;
 void panel_library_render(Timer& timer, Painter& painter, bool doMouseTracking);
 
 extern Panel panel_navigation;
@@ -78,6 +79,7 @@ void checkComboList_painting_over_render(Timer& timer, Painter& painter, bool do
 
 extern Panel panel_twoD_painting;
 extern Box twoD_painting_box;
+extern bool twoD_painting_mode;
 void panel_twoD_painting_render(Timer& timer, Painter& painter, bool doMouseTracking);
 
 extern Button button_painting_brush;
