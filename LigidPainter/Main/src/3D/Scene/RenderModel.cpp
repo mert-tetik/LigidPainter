@@ -139,48 +139,33 @@ void Scene::render_model(Painter& painter){
             ShaderSystem::tdModelShader().setInt("albedo_only", 0);
         }
         
-        if(panel_displaying_modes.selectedElement == 2 || panel_displaying_modes.selectedElement == 1){
-            if(button_mesh_selection.selectedMeshI == i)
-                ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
-            else{
-                if(!painter.faceSelection.hideUnselected)
-                    ShaderSystem::tdModelShader().setFloat("opacity", 0.2f);
-                else
-                    ShaderSystem::tdModelShader().setFloat("opacity", 0.0f);
-            }
-        }
-        else
-            ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
 
-        if(panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2){
-            if(i == button_mesh_selection.selectedMeshI){
-                ShaderSystem::tdModelShader().setInt("usingMeshSelection", painter.faceSelection.activated);
-                ShaderSystem::tdModelShader().setInt("meshSelectionEditing", painter.faceSelection.editMode);
-                ShaderSystem::tdModelShader().setInt("hideUnselected", painter.faceSelection.hideUnselected);
-            }
-            else{
-                ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
-                ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
-                ShaderSystem::tdModelShader().setInt("hideUnselected", false);
-            }
-            
-            glActiveTexture(GL_TEXTURE11);
-            glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
-        
-            glActiveTexture(GL_TEXTURE12);
-            glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
+        if(i == button_mesh_selection.selectedMeshI){
+            ShaderSystem::tdModelShader().setInt("usingMeshSelection", this->model->meshes[i].face_selection_data.activated);
+            ShaderSystem::tdModelShader().setInt("meshSelectionEditing", this->model->meshes[i].face_selection_data.editMode);
+            ShaderSystem::tdModelShader().setInt("hideUnselected", this->model->meshes[i].face_selection_data.hideUnselected);
         }
         else{
             ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
-            ShaderSystem::tdModelShader().setInt("meshSelectionEditing", true);
+            ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
             ShaderSystem::tdModelShader().setInt("hideUnselected", false);
-        
-            glActiveTexture(GL_TEXTURE11);
-            glBindTexture(GL_TEXTURE_2D, this->model->meshes[i].selectedObjectPrimitivesTxtr.ID);
-        
-            glActiveTexture(GL_TEXTURE12);
-            glBindTexture(GL_TEXTURE_2D, appTextures.white.ID);
         }
+        
+        if(button_mesh_selection.selectedMeshI == i)
+            ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
+        else{
+            if(!this->model->meshes[i].face_selection_data.hideUnselected)
+                ShaderSystem::tdModelShader().setFloat("opacity", 0.2f);
+            else
+                ShaderSystem::tdModelShader().setFloat("opacity", 0.0f);
+        }
+        
+        glActiveTexture(GL_TEXTURE11);
+        glBindTexture(GL_TEXTURE_2D, this->model->meshes[i].face_selection_data.selectedFaces.ID);
+    
+        glActiveTexture(GL_TEXTURE12);
+        glBindTexture(GL_TEXTURE_2D, this->model->meshes[i].face_selection_data.meshMask.ID);
+        
         
         
         ShaderSystem::tdModelShader().setInt("enableAlbedoChannel", checkComboList_painting_color.panel.sections[0].elements[1].checkBox.clickState1);
@@ -217,9 +202,9 @@ void Scene::render_model(Painter& painter){
         glActiveTexture(GL_TEXTURE8);
         glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
         
-        if(!(i != button_mesh_selection.selectedMeshI && painter.faceSelection.hideUnselected)){
+        if(!(i != button_mesh_selection.selectedMeshI && this->model->meshes[i].face_selection_data.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", this->model->meshes[i].indices.size() / 3);
-            this->model->meshes[i].Draw(painter.faceSelection.editMode && i == button_mesh_selection.selectedMeshI && panel_displaying_modes.selectedElement != 0);
+            this->model->meshes[i].Draw(this->model->meshes[i].face_selection_data.editMode && i == button_mesh_selection.selectedMeshI && panel_displaying_modes.selectedElement != 0);
         }
     }
     

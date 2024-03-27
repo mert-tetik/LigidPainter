@@ -42,6 +42,20 @@ extern MirrorSide XZ_side;
 extern MirrorSide YZ_side;
 extern MirrorSide XYZ_side;
 
+static std::vector<Renderbuffer> renderbuffers;
+static Renderbuffer get_renderbuffer_for_texture(Texture texture){
+    for (Renderbuffer rbo : renderbuffers)
+    {
+        if(rbo.getResolution() == texture.getResolution()){
+            return rbo;
+        }
+    }
+    
+    Renderbuffer rbo = Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(texture.getResolution()));
+    renderbuffers.push_back(rbo);
+    return rbo;
+}
+
 static void set_brush_properties (
                                     BrushProperties brushProperties
                                 )
@@ -82,14 +96,19 @@ static void set_brush_properties (
                                                 data = {};
 
 static Texture painting_BG_texture;
-Framebuffer painting_act_1_FBO;
-
-static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> strokes, Brush brush, int frame_count){
+static Framebuffer window_paint_FBO;
+static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> strokes, Brush brush, int frame_count, bool paint_offset_value){
+    if(!window_paint_FBO.ID){
+        window_paint_FBO = Framebuffer(*window_paint_texture, GL_TEXTURE_2D, "window_paint");
+    }
+    else{
+        window_paint_FBO.setColorBuffer(*window_paint_texture, GL_TEXTURE_2D);
+    }
+    
     //Bind the painting texture to the painting framebuffer
-    painting_act_1_FBO.bind();
-    prep painting_act_1_FBO;
+    window_paint_FBO.colorBuffer.duplicateTexture(painting_BG_texture);
 
-    O_side.paintingBuffers.painting_texture.duplicateTexture(painting_BG_texture);
+    window_paint_FBO.bind();
 
     float resolution = 0;
 
@@ -109,7 +128,7 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     ShaderSystem::twoDPainting().setVec2("videoScale", getContext()->windowScale); 
     ShaderSystem::twoDPainting().setInt("frame", frame_count);
     ShaderSystem::twoDPainting().setInt("bgTxtr", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, painting_BG_texture.ID);
-    ShaderSystem::twoDPainting().setInt("redChannelOnly", !(settings.painting_mode == 2));
+    ShaderSystem::twoDPainting().setInt("redChannelOnly", !paint_offset_value);
     ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(0.));
     
     //Set brush properties
@@ -171,6 +190,7 @@ static std::vector<MirrorSide*> get_selected_mirror_sides(bool mirror_X, bool mi
     return mirrorSides;
 }
 
+static Framebuffer project_window_painting_texture_FBO;
 static void project_window_painting_texture(
                                                 // Textures
                                                 Texture* projected_painting_texture, 
@@ -178,7 +198,9 @@ static void project_window_painting_texture(
                                                 Texture depth_texture,
                                                 
                                                 Camera cam,
-                                                Mesh* mesh,
+                                                PaintSettings::PaintVertexBuffer vertex_buffer_data,
+                                                PaintSettings::PaintingOverData painting_over_data,
+                                                glm::vec3 paint_color,
                                                 
                                                 // Painting data
                                                 int painting_mode, 
@@ -186,17 +208,24 @@ static void project_window_painting_texture(
                                                 bool wrapMode
                                             )
 {
+    // Create FBO
+    if(!project_window_painting_texture_FBO.ID){
+        project_window_painting_texture_FBO = Framebuffer(*projected_painting_texture, GL_TEXTURE_2D, get_renderbuffer_for_texture(*projected_painting_texture), "project_window_painting_texture_FBO");
+    }
+
+    // Update color buffer
+    else{
+        project_window_painting_texture_FBO.setColorBuffer(*projected_painting_texture, GL_TEXTURE_2D);
+    }
+
+    // Update renderbuffer
+    if(projected_painting_texture->getResolution() != project_window_painting_texture_FBO.renderBuffer.getResolution()){
+        project_window_painting_texture_FBO.setRenderbuffer(get_renderbuffer_for_texture(*projected_painting_texture));
+    }
+
     glDisable(GL_BLEND);
 
-    glm::ivec2 projectedPaintingTextureRes = projectedPaintingTexture.getResolution();
-
-
-    // Generate and bind the capturing framebuffer
-    // TODO Don't create the render buffer there
-    paintingFBO.setRenderbuffer(depthRBOcustom);
-    paintingFBO.setColorBuffer(projectedPaintingTexture, GL_TEXTURE_2D);
-    paintingFBO.bind();
-    depthRBOcustom.update(GL_DEPTH_COMPONENT32F, GL_DEPTH_ATTACHMENT, glm::ivec2(projectedPaintingTextureRes));
+    project_window_painting_texture_FBO.bind();
     
     glClearColor(0, 0, 0, 0);
     
@@ -205,46 +234,24 @@ static void project_window_painting_texture(
     else
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glViewport(0,0,projectedPaintingTextureRes.x,projectedPaintingTextureRes.y);
+    glViewport(0, 0, projected_painting_texture->getResolution().x, projected_painting_texture->getResolution().y);
 
     // Bind the related shader program
     ShaderSystem::projectingPaintedTextureShader().use();
 
     //*Fragment
-    ShaderSystem::projectingPaintedTextureShader().setInt("paintingTexture", 6);
-    ShaderSystem::projectingPaintedTextureShader().setInt("depthTexture", 7);
+    ShaderSystem::projectingPaintedTextureShader().setInt("paintingTexture", 6); glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, window_painting_texture.ID);
+    ShaderSystem::projectingPaintedTextureShader().setInt("depthTexture", 7); glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, depth_texture.ID);
     ShaderSystem::projectingPaintedTextureShader().setFloat("paintingOpacity", brush_opacity);
-    ShaderSystem::projectingPaintedTextureShader().setInt("usingMeshSelection", faceSelectionActive);
-    ShaderSystem::projectingPaintedTextureShader().setInt("selectedPrimitiveIDS", 8);
-    ShaderSystem::projectingPaintedTextureShader().setInt("meshMask", 10);
-    ShaderSystem::projectingPaintedTextureShader().setInt("selectedPaintingModeIndex", selectedPaintingModeIndex);
+    ShaderSystem::projectingPaintedTextureShader().setInt("selectedPaintingModeIndex", painting_mode);
     
-    ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverTexture", 9);
-    ShaderSystem::projectingPaintedTextureShader().setInt("usePaintingOver", this->usePaintingOver);
-    ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverGrayScale", checkComboList_painting_over.panel.sections[0].elements[4].checkBox.clickState1);
-    ShaderSystem::projectingPaintedTextureShader().setVec3("paintingColor", checkComboList_painting_color.panel.sections[0].elements[2].painterColorSelection.getSelectedColor().getRGB_normalized());
-    
-    // Bind the painting texture
-    glActiveTexture(GL_TEXTURE6);
-    glBindTexture(GL_TEXTURE_2D, window_painting_texture.ID);
-    
-    // Bind the depth texture for the depth testing
-    glActiveTexture(GL_TEXTURE7);
-    glBindTexture(GL_TEXTURE_2D, depth_texture.ID);
-    
-    glActiveTexture(GL_TEXTURE8);
-    glBindTexture(GL_TEXTURE_2D, selectedPrimitives.ID);
+    ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverTexture", 9); glActiveTexture(GL_TEXTURE9); glBindTexture(GL_TEXTURE_2D, painting_over_data.texture_field_scene->painting_over_texture.ID);
+    ShaderSystem::projectingPaintedTextureShader().setInt("usePaintingOver", painting_over_data.active);
+    ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverGrayScale", painting_over_data.gray_scale);
+    ShaderSystem::projectingPaintedTextureShader().setVec3("paintingColor", paint_color);
 
-    // Bind the painting over texture
-    glActiveTexture(GL_TEXTURE9);
-    glBindTexture(GL_TEXTURE_2D, getTextureFieldScene()->painting_over_texture.ID);
-    
-    // Bind the mesh mask texture
-    glActiveTexture(GL_TEXTURE10);
-    glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
-    
     // Painting a 3D model
-    if(!twoD_painting_mode){
+    if(!vertex_buffer_data.paint_model){
         //*Fragment
         ShaderSystem::projectingPaintedTextureShader().setInt("doDepthTest", 1);
         
@@ -252,6 +259,11 @@ static void project_window_painting_texture(
         ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
         ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
         ShaderSystem::projectingPaintedTextureShader().setMat4("view", cam.viewMatrix);
+
+        ShaderSystem::projectingPaintedTextureShader().setInt("usingMeshSelection", vertex_buffer_data.model_mesh->face_selection_data.activated);
+        ShaderSystem::projectingPaintedTextureShader().setInt("selectedPrimitiveIDS", 8); glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, vertex_buffer_data.model_mesh->face_selection_data.selectedFaces.ID);
+        ShaderSystem::projectingPaintedTextureShader().setInt("meshMask", 10); glActiveTexture(GL_TEXTURE10); glBindTexture(GL_TEXTURE_2D, vertex_buffer_data.model_mesh->face_selection_data.meshMask.ID);
+
         
         //Draw the UV of the selected model
         {    
@@ -262,8 +274,8 @@ static void project_window_painting_texture(
                 glBlendEquationSeparate(GL_MAX, GL_MAX);
             }
 
-            ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
-            getScene()->get_selected_mesh()->Draw(false);
+            ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", vertex_buffer_data.model_mesh->indices.size() / 3);
+            vertex_buffer_data.model_mesh->Draw(false);
             
             if(wrapMode){
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -281,16 +293,16 @@ static void project_window_painting_texture(
 
         //*Vertex
         ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-        //ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getScene().gui_projection);
-        //ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
+        ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getContext()->ortho_projection);
+        ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
-        twoD_painting_box.bindBuffers();
+        ShaderSystem::projectingPaintedTextureShader().setInt("usingMeshSelection", false);
+        
+        vertex_buffer_data.box->bindBuffers();
         
         ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", 2);
         LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Painting : Projecting painted texture (For 2D Scene)");
     }
-
-    this->paintingFBO.removeRenderbuffer();
 
     glEnable(GL_BLEND);
 }
@@ -330,15 +342,49 @@ std::vector<glm::vec2> getCursorSubstitution(float spacing, glm::vec2 start, glm
     return holdLocations;
 }
  
-void process_3D_point(      
+static glm::vec2 findPos(glm::ivec2 res, float* posData, float* pxs){
+    for (size_t y = 0; y < res.y; y++)
+    {
+        for (size_t x = 0; x < res.x; x++){
+            int index = (y * res.x + x) * 4;
+
+            if(true){
+                float tolerance = 0.005f;
+
+                if(index + 3 >= res.x * res.y * 4)
+                    return glm::vec2(-1.f);
+
+                if(pxs[index + 3] != 0.f){
+                    if(pxs[index] >= posData[0] - tolerance && pxs[index] <= posData[0] + tolerance){
+                        if(pxs[index + 1] >= posData[1] - tolerance && pxs[index + 1] <= posData[1] + tolerance){
+                            if(pxs[index + 2] >= posData[2] - tolerance && pxs[index + 2] <= posData[2] + tolerance){
+                                
+                                glm::vec2 crsPos = glm::vec2((float)Settings::videoScale()->x / ((float)res.x / (float)x), (float)Settings::videoScale()->y / ((float)res.y / (float)y));
+                                
+                                return crsPos;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return glm::vec2(-1.f);
+}
+
+static glm::vec4 process_3D_point_lastpos;
+static Framebuffer process3DPointFBO;
+static void process_3D_point(      
                             ThreeDPoint threeDPoint, 
     
                             // Return params
                             Camera* cam, 
-                            std::vector<glm::vec2>* strokes, 
+                            std::vector<glm::vec2>* strokes,
+                            Mesh* mesh, 
 
                             // Dynamic Variables
-                            bool first_stroke
+                            bool first_stroke,
+                            float spacing
                         )
 {
     float* posData = new float[4]; 
@@ -376,19 +422,15 @@ void process_3D_point(
     posData[2] = (posData[2] + 1.f) / 2.f;
     
     const unsigned int resolution = 512; 
+    //res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
 
-    glm::ivec2 res = glm::ivec2(resolution);
-    res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
+    if(!process3DPointFBO.ID){
+        process3DPointFBO = Framebuffer(Texture(nullptr, resolution, resolution), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "process3DPointFBO");
+    }
 
-    if(!posTxtr.ID)
-        posTxtr = Texture(nullptr, resolution, resolution);
+    process3DPointFBO.bind();
 
-    paintingFBO.setRenderbuffer(depthRBO512);
-    paintingFBO.setColorBuffer(posTxtr, GL_TEXTURE_2D);
-    paintingFBO.bind();
-
-    //Clear the depth texture
-    glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)res.x), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)res.y));
+    glViewport(0, 0, resolution, resolution);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -399,43 +441,35 @@ void process_3D_point(
     ShaderSystem::renderModelData().setMat4("modelMatrix", getScene()->transformMatrix);
     ShaderSystem::renderModelData().setInt("state", 1);
 
-    ShaderSystem::renderModelData().setInt("usingMeshSelection", this->faceSelection.activated);
-    ShaderSystem::renderModelData().setInt("hideUnselected", this->faceSelection.hideUnselected);
-    ShaderSystem::renderModelData().setInt("selectedPrimitiveIDS", 0);
-    ShaderSystem::renderModelData().setInt("meshMask", 1);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, this->faceSelection.selectedFaces.ID);
-    
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
+    ShaderSystem::renderModelData().setInt("usingMeshSelection", mesh->face_selection_data.activated);
+    ShaderSystem::renderModelData().setInt("hideUnselected", mesh->face_selection_data.hideUnselected);
+    ShaderSystem::renderModelData().setInt("selectedPrimitiveIDS", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, mesh->face_selection_data.selectedFaces.ID);
+    ShaderSystem::renderModelData().setInt("meshMask", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, mesh->face_selection_data.meshMask.ID);
 
     //Draw the selected mesh in 3D
-    ShaderSystem::renderModelData().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
-    getScene()->get_selected_mesh()->Draw(false);
+    ShaderSystem::renderModelData().setInt("primitiveCount", mesh->indices.size() / 3);
+    mesh->Draw(false);
 
-    float* pxs = new float[res.x * res.y * 4]; 
+    float* pxs = new float[resolution * resolution * 4]; 
     
     glReadPixels(
                     0, 
                     0, 
-                    res.x, 
-                    res.y,
+                    resolution, 
+                    resolution,
                     GL_RGBA,
                     GL_FLOAT,
                     pxs
                 );
 
-
-
     float* lastPosP = new float[4]; 
-    lastPosP[0] = lastPos.x;
-    lastPosP[1] = lastPos.y;
-    lastPosP[2] = lastPos.z;
-    lastPosP[3] = lastPos.w;
+    lastPosP[0] = process_3D_point_lastpos.x;
+    lastPosP[1] = process_3D_point_lastpos.y;
+    lastPosP[2] = process_3D_point_lastpos.z;
+    lastPosP[3] = process_3D_point_lastpos.w;
 
-    glm::vec2 crsPos = findPos(res, posData, pxs);
-    glm::vec2 lastCrsPos = findPos(res, lastPosP, pxs);
+    glm::vec2 crsPos = findPos(glm::ivec2(resolution), posData, pxs);
+    glm::vec2 lastCrsPos = findPos(glm::ivec2(resolution), lastPosP, pxs);
     
     if(crsPos != glm::vec2(-1.f) && lastCrsPos != glm::vec2(-1.f)){
         glm::vec2 lastDest;
@@ -445,7 +479,7 @@ void process_3D_point(
         if(first_stroke)  
             lastDest = crsPos;
 
-        *strokes = getCursorSubstitution(this->brushProperties.spacing, crsPos, lastDest);
+        *strokes = getCursorSubstitution(spacing, crsPos, lastDest);
     }
     else if(crsPos != glm::vec2(-1.f))
         strokes->push_back(crsPos);
@@ -453,10 +487,10 @@ void process_3D_point(
     //std::cout << posData[0] << ", " << posData[1] << ", " << posData[2] << ", " << posData[3] << std::endl;
     //std::cout << lastPosP[0] << ", " << lastPosP[1] << ", " << lastPosP[2] << ", " << lastPosP[3] << std::endl;
 
-    lastPos.x = posData[0];
-    lastPos.y = posData[1];
-    lastPos.z = posData[2];
-    lastPos.w = posData[3];
+    process_3D_point_lastpos.x = posData[0];
+    process_3D_point_lastpos.y = posData[1];
+    process_3D_point_lastpos.z = posData[2];
+    process_3D_point_lastpos.w = posData[3];
 
     delete[] posData;
     delete[] lastPosP;
@@ -465,9 +499,6 @@ void process_3D_point(
 
     getBox()->bindBuffers();
     ShaderSystem::twoDPainting().use();
-    this->paintingFBO.bind();
-    this->paintingFBO.setColorBuffer(paintingTexture, GL_TEXTURE_2D);
-    this->paintingFBO.removeRenderbuffer();
 }
 
 glm::vec2 last_point = glm::vec2(0.f);
@@ -491,21 +522,28 @@ void process_2D_point(
     last_point = point;
 }
 
-void update_depth_texture(Texture depth_texture, Camera cam, Mesh& mesh){
+static Framebuffer update_depth_texture_FBO;
+void update_depth_texture(Texture depth_texture, Camera cam, Mesh* mesh){
+    // Create FBO
+    if(!update_depth_texture_FBO.ID){
+        update_depth_texture_FBO = Framebuffer(depth_texture, GL_TEXTURE_2D, get_renderbuffer_for_texture(depth_texture), "update_depth_texture_FBO");
+    }
+
+    // Update color buffer
+    else{
+        update_depth_texture_FBO.setColorBuffer(depth_texture, GL_TEXTURE_2D);
+    }
+
+    // Update renderbuffer
+    if(depth_texture.getResolution() != update_depth_texture_FBO.renderBuffer.getResolution()){
+        update_depth_texture_FBO.setRenderbuffer(get_renderbuffer_for_texture(depth_texture));
+    }
+    
     glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
     
-    glm::ivec2 resolution = depth_texture.getResolution();
-
-    //Bind the capture framebuffer
-    paintingFBO.setRenderbuffer(depthRBO1024);
-    paintingFBO.bind();
-
-    //Bind the depth texture (Painter class public member variable)
-    paintingFBO.setColorBuffer(depth_texture, GL_TEXTURE_2D);
-
     //Clear the depth texture
-    glViewport(0, 0, resolution.x, resolution.y);
+    glViewport(0, 0, depth_texture.getResolution().x, depth_texture.getResolution().y);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -514,20 +552,18 @@ void update_depth_texture(Texture depth_texture, Camera cam, Mesh& mesh){
     ShaderSystem::depth3D().setMat4("view", cam.viewMatrix);
     ShaderSystem::depth3D().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::depth3D().setMat4("modelMatrix", getScene()->transformMatrix);
-    ShaderSystem::depth3D().setInt("usingMeshSelection", this->faceSelection.activated);
-    ShaderSystem::depth3D().setInt("hideUnselected", this->faceSelection.hideUnselected);
-    ShaderSystem::depth3D().setInt("selectedPrimitiveIDS", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->faceSelection.selectedFaces.ID);
-    ShaderSystem::depth3D().setInt("meshMask", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
+    ShaderSystem::depth3D().setInt("usingMeshSelection", mesh->face_selection_data.activated);
+    ShaderSystem::depth3D().setInt("hideUnselected", mesh->face_selection_data.hideUnselected);
+    ShaderSystem::depth3D().setInt("selectedPrimitiveIDS", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, mesh->face_selection_data.selectedFaces.ID);
+    ShaderSystem::depth3D().setInt("meshMask", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, mesh->face_selection_data.meshMask.ID);
 
     //Draw the selected mesh in 3D
-    ShaderSystem::depth3D().setInt("primitiveCount", mesh.indices.size() / 3);
-    mesh.Draw(false);
+    ShaderSystem::depth3D().setInt("primitiveCount", mesh->indices.size() / 3);
+    mesh->Draw(false);
 
     //!Finished
     //Set back to default shader
     ShaderSystem::buttonShader().use();
-
-    this->paintingFBO.removeRenderbuffer();
 
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();

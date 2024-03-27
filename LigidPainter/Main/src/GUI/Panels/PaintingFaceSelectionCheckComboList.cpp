@@ -48,28 +48,21 @@ void checkComboList_painting_face_selection_render(Timer& timer, Painter& painte
     if(shortcuts_F4())
         checkComboList_painting_face_selection.panel.sections[0].elements[1].checkBox.clickState1 = !checkComboList_painting_face_selection.panel.sections[0].elements[1].checkBox.clickState1;
 
-    /*
-    painter.faceSelection.activated = meshSection.elements[0].checkBox.clickState1;
-    painter.faceSelection.editMode = meshSection.elements[1].checkBox.clickState1;
-    painter.faceSelection.selectionModeIndex = meshSection.elements[2].comboBox.selectedIndex;
-    painter.faceSelection.radius = meshSection.elements[3].rangeBar.value;
-    painter.faceSelection.hideUnselected = meshSection.elements[7].checkBox.clickState1;
-    */
+    getScene()->get_selected_mesh()->face_selection_data.activated = meshSection.elements[0].checkBox.clickState1;
+    getScene()->get_selected_mesh()->face_selection_data.editMode = meshSection.elements[1].checkBox.clickState1;
+    getScene()->get_selected_mesh()->face_selection_data.selectionModeIndex = meshSection.elements[2].comboBox.selectedIndex;
+    getScene()->get_selected_mesh()->face_selection_data.radius = meshSection.elements[3].rangeBar.value;
+    getScene()->get_selected_mesh()->face_selection_data.hideUnselected = meshSection.elements[7].checkBox.clickState1;
     
     // Generate mesh mask 
     if(checkComboList_painting_face_selection.panel.sections[0].elements[5].button.clicked){            
-        checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralTexture(*getScene()->get_selected_mesh(), painter.faceSelection.meshMask, 1024); 
+        checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralTexture(*getScene()->get_selected_mesh(), getScene()->get_selected_mesh()->face_selection_data.meshMask, 1024); 
     }
     
     if(checkComboList_painting_face_selection.panel.sections[0].elements[6].button.clicked || !checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.ID){
         checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.proceduralProps.proceduralID = 24;
         checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.proceduralProps.proceduralnverted = false;
-        checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralTexture(*getScene()->get_selected_mesh(), painter.faceSelection.meshMask, 1024); 
+        checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralTexture(*getScene()->get_selected_mesh(), getScene()->get_selected_mesh()->face_selection_data.meshMask, 1024); 
         checkComboList_painting_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralDisplayingTexture(512, 1);
     }
-
-    bool applyBoxSelection = false;
-    if(doMouseTracking && painter.faceSelection.editMode && painter.faceSelection.selectionModeIndex == 1)
-        applyBoxSelection = painter.faceSelection.boxSelectionInteraction(timer);
-
 }

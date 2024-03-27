@@ -501,7 +501,7 @@ void LogDialog::render(
         this->activeHistoryMode = HISTORY_OBJECTSELECTION_MODE;
         otherHistoryBtn.text = "Object Selection History";
     }
-    if(painter.faceSelection.editMode || dialog_objectTexturing.faceSelectionMode){
+    if(getScene()->get_selected_mesh()->face_selection_data.editMode){
         this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
         otherHistoryBtn.text = "Face Selection History";
     }
@@ -651,7 +651,7 @@ void LogDialog::render(
         actions_TextureFields.clear();
     }
     
-    if(!(painter.faceSelection.editMode || dialog_objectTexturing.faceSelectionMode) || project_path() != lastProjectPath){
+    if(!(getScene()->get_selected_mesh()->face_selection_data.editMode) || project_path() != lastProjectPath){
         actions_FaceSelection.clear();
     }
 

@@ -567,7 +567,7 @@ static Texture albedoFilterMaskTexture_procedural;
 static Texture previousTexture;
 static Texture prevDepthTexture;
 
-void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr, bool noPrevTxtrMode, Model& model){
+void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, bool noPrevTxtrMode, Model& model){
     
     if(this->hide)
         return;

@@ -67,16 +67,16 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
     ShaderSystem::renderModelData().setMat4("modelMatrix",getScene()->transformMatrix);
     ShaderSystem::renderModelData().setInt("state", 1);
 
-    ShaderSystem::renderModelData().setInt("usingMeshSelection", painter.faceSelection.activated);
-    ShaderSystem::renderModelData().setInt("hideUnselected", painter.faceSelection.hideUnselected);
+    ShaderSystem::renderModelData().setInt("usingMeshSelection", getScene()->get_selected_mesh()->face_selection_data.activated);
+    ShaderSystem::renderModelData().setInt("hideUnselected", getScene()->get_selected_mesh()->face_selection_data.hideUnselected);
     ShaderSystem::renderModelData().setInt("selectedPrimitiveIDS", 0);
     ShaderSystem::renderModelData().setInt("meshMask", 1);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, painter.faceSelection.selectedFaces.ID);
+    glBindTexture(GL_TEXTURE_2D, getScene()->get_selected_mesh()->face_selection_data.selectedFaces.ID);
     
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, painter.faceSelection.meshMask.ID);
+    glBindTexture(GL_TEXTURE_2D, getScene()->get_selected_mesh()->face_selection_data.meshMask.ID);
 
     ShaderSystem::renderModelData().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
     getScene()->get_selected_mesh()->Draw(false);

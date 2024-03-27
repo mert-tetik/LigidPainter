@@ -150,8 +150,6 @@ void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintin
 
     //Copy capture texture into the source texture (painted texture)
     captureTxtrToSourceTxtr(captureTexture.ID, destScale, txtr.ID);
-
-
 }
 
 void Painter::updateTexture(int paintingMode){
@@ -214,7 +212,7 @@ void Painter::updateTexture(int paintingMode){
 
         for (int i = painting_custom_mat->materialModifiers.size() - 1; i >= 0; --i)    
         {
-            painting_custom_mat->materialModifiers[i].updateMaterialChannels(*painting_custom_mat, customMatMesh, res.x, i, appTextures.white, 0, false, *getScene()->model);
+            painting_custom_mat->materialModifiers[i].updateMaterialChannels(*painting_custom_mat, customMatMesh, res.x, i, false, *getScene()->model);
         }
     }
 

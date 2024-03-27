@@ -74,7 +74,6 @@ struct PaintSettings{
     struct DrawMode{
         /*! @brief This brush will be used for the strokes;*/
         Brush stroke_brush;
-        ColorBuffer stroke_color_buffer;
     };
     struct SoftenMode{
         /*! @brief This brush will be used for the strokes;*/
@@ -99,7 +98,6 @@ struct PaintSettings{
     };
     struct BucketMode{
         glm::vec2 click_location;
-        ColorBuffer bucket_color_buffer;
     };
 
     struct PaintVertexBuffer{
@@ -120,6 +118,16 @@ struct PaintSettings{
         bool use_3D = false;
     };
 
+    struct PaintingOverData{
+        bool active = false;
+        bool gray_scale = false;
+        TextureFieldScene* texture_field_scene;
+    };
+
+    PaintingOverData painting_over_data;
+    
+    /*! @brief This color values will be used for painting (draw mode & bucket mode : directly paint this color, any other modes : Multiply the stroke value with these colors (black : no effect, white : full effect))*/
+    ColorBuffer color_buffer;
 
     /*! @brief Paint painting_channels if set to true. Paint painting_texture if set to false*/
     bool material_painting = false;
@@ -138,6 +146,7 @@ struct PaintSettings{
 
     /*! @brief 0 : Draw Mode, 1 : Soften Mode, 2 : Smear Mode, 3 : Normal Mode, 4 : Filter Mode, 5 Bucket Mode, */ 
     int painting_mode;
+    
     DrawMode draw_mode;
     SoftenMode soften_mode;
     SmearMode smear_mode;
@@ -159,8 +168,6 @@ public:
     Texture projectedPaintingTexture16fLow;
     Texture projectedPaintingTexture8;
     Texture projectedPaintingTexture16f;
-
-    FaceSelection faceSelection;
 
     /// @brief To avoid refreshing every frame in RendererRender.cpp
     /// Refreshing : Update the selected texture & clean the capturing framebuffer

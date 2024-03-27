@@ -151,6 +151,24 @@ void Renderbuffer::update(unsigned int internalformat, unsigned int attachment, 
     Debugger::block("Update RenderBuffer"); // End
 }
 
+glm::ivec2 Renderbuffer::getResolution(){
+    glm::ivec2 resolution;
+
+    GLint currentRenderbufferId;
+    glGetIntegerv(GL_RENDERBUFFER_BINDING, &currentRenderbufferId);
+
+    // Bind the renderbuffer
+    glBindRenderbuffer(GL_RENDERBUFFER, this->ID);
+
+    // Get the width
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &resolution.x);
+
+    // Get the height
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &resolution.y);
+
+    // Unbind the renderbuffer
+    glBindRenderbuffer(GL_RENDERBUFFER, currentRenderbufferId);
+}
 
 
 // ------------ Framebuffer -------------

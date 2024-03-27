@@ -74,7 +74,7 @@ void Renderer::render(){
             !panels_any_hovered() && 
             (panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2) && panel_painting_modes.selectedElement != 5 &&
             !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 &&
-            !painter.faceSelection.editMode &&
+            !getScene()->get_selected_mesh()->face_selection_data.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
         )

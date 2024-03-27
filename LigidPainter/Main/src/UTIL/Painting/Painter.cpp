@@ -52,14 +52,14 @@ void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
     
     if(first_frame){
         frame_counter = 0;
-        getTextureFieldScene()->update_painting_over_texture(wrapMode, *this);
+        settings.painting_over_data.texture_field_scene->update_painting_over_texture(settings.point.use_3D);
     }
 
     Brush stroke_brush;
     GET_DATA_FROM_PAINT_MODE(stroke_brush, stroke_brush);
 
     if(settings.painting_mode == 5){
-        bucket_paint_texture(projected_painting_FBO.colorBuffer, Color(settings.bucket_mode.bucket_color_buffer.stroke_albedo_color), stroke_brush.properties.opacity);
+        bucket_paint_texture(projected_painting_FBO.colorBuffer, Color(settings.color_buffer.stroke_albedo_color), stroke_brush.properties.opacity);
         return;
     } 
 
@@ -80,18 +80,21 @@ void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
 
             std::vector<glm::vec2> strokes;
             Camera cam;
-            process_3D_point(des_point, &cam, &strokes, first_frame);
+            process_3D_point(des_point, &cam, &strokes, settings.vertex_buffer.model_mesh, first_frame, stroke_brush.properties.spacing);
         
             // Perform window painting
-            window_paint(&mirrorSide->paintingBuffers.window_painting_texture, strokes, stroke_brush, frame_counter);
+            window_paint(&mirrorSide->paintingBuffers.window_painting_texture, strokes, stroke_brush, frame_counter, settings.painting_mode == 2);
 
-            update_depth_texture(mirrorSide->paintingBuffers.depth_texture, cam, *settings.vertex_buffer.model_mesh);
+            update_depth_texture(mirrorSide->paintingBuffers.depth_texture, cam, settings.vertex_buffer.model_mesh);
 
             project_window_painting_texture(
                                                 &mirrorSide->paintingBuffers.projected_painting_texture, 
                                                 mirrorSide->paintingBuffers.window_painting_texture, 
                                                 mirrorSide->paintingBuffers.depth_texture.ID, 
                                                 cam,
+                                                settings.vertex_buffer,
+                                                settings.painting_over_data,
+                                                settings.color_buffer.stroke_albedo_color.getRGB_normalized(),
                                                 settings.painting_mode, 
                                                 stroke_brush.properties.opacity, 
                                                 true
@@ -103,7 +106,7 @@ void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
         process_2D_point(settings.point.point_2D, &strokes, first_frame, stroke_brush.properties.spacing);
         
         // Perform window painting
-        window_paint(&O_side.paintingBuffers.window_painting_texture, strokes, stroke_brush, frame_counter);
+        window_paint(&O_side.paintingBuffers.window_painting_texture, strokes, stroke_brush, frame_counter, settings.painting_mode == 2);
         
         for (MirrorSide* mirrorSide : mirrorSides){
             Camera cam = getScene()->camera;
@@ -115,7 +118,7 @@ void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
             }
 
             if(first_frame)
-                update_depth_texture(mirrorSide->paintingBuffers.depth_texture, cam, *settings.vertex_buffer.model_mesh);
+                update_depth_texture(mirrorSide->paintingBuffers.depth_texture, cam, settings.vertex_buffer.model_mesh);
 
             Texture* projected_painting_texture = &mirrorSide->paintingBuffers.projected_painting_texture_low; 
             if(last_frame)
@@ -126,6 +129,9 @@ void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
                                                 mirrorSide->paintingBuffers.window_painting_texture, 
                                                 mirrorSide->paintingBuffers.depth_texture.ID, 
                                                 cam,
+                                                settings.vertex_buffer,
+                                                settings.painting_over_data,
+                                                settings.color_buffer.stroke_albedo_color.getRGB_normalized(),
                                                 settings.painting_mode, 
                                                 stroke_brush.properties.opacity, 
                                                 false
@@ -136,4 +142,8 @@ void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
     generate_projected_painting_texture(&projected_painting_FBO, settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z, !last_frame && !settings.point.use_3D);
         
     frame_counter++;
+
+    if(last_frame){
+        
+    }
 }

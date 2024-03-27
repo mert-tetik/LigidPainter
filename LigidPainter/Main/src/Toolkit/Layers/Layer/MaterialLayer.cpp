@@ -109,7 +109,7 @@ void MaterialLayer::render(Painter& painter, const unsigned int resolution, Mesh
 
     for (int i = this->material.materialModifiers.size() - 1; i >= 0; --i)    
     {
-        this->material.materialModifiers[i].updateMaterialChannels(this->material, resMesh, resolution, i, appTextures.white, 0, false, Model());
+        this->material.materialModifiers[i].updateMaterialChannels(this->material, resMesh, resolution, i, false, Model());
     }
 
     getScene()->get_selected_mesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);

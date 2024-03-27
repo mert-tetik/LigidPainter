@@ -76,7 +76,7 @@ public:
 
     Texture maskTexture;
 
-    void updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, Texture meshMask, Texture selectedObjectPrimitivesTxtr, bool noPrevTxtrMode, Model& model);
+    void updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, bool noPrevTxtrMode, Model& model);
 
     //Constructors
     MaterialModifier();

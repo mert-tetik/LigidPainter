@@ -98,10 +98,10 @@ void current_mode_hint_displayer_render(Timer& timer, Painter& painter)
     }
 
 
-    if(painter.faceSelection.activated){
+    if(getScene()->get_selected_mesh()->face_selection_data.activated){
         currentModeHintDisplayer.text = "Masking To Selected Mesh";
     }
-    if(painter.faceSelection.editMode){
+    if(getScene()->get_selected_mesh()->face_selection_data.editMode){
         currentModeDisplayer.text = "Face Selection Mode (Edit)";
         currentModeHintDisplayer.text = "Faces Total : " + std::to_string(getScene()->get_selected_mesh()->indices.size() / 3);
     }

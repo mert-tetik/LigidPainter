@@ -43,8 +43,6 @@ void Painter::initPainter(){
     glm::ivec2 depthRes = glm::vec2(getBufferResolutions(1));
     glm::ivec2 lowResTxtrRes = glm::vec2(getBufferResolutions(2));
 
-    //--------- init mesh mask ---------
-    this->faceSelection.meshMask = Texture(nullptr, 1024, 1024);
 
     //--------- init paintingTexture8 ---------
     paintingTexture8 = Texture(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR, GL_RGBA, GL_RGBA8); 

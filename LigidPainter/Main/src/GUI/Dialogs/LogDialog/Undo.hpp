@@ -72,10 +72,10 @@ void LogDialog::undo(Painter& painter){
         
         if(action.ID == FACE_SELECTION_PAINTER_ACTION){
             if(action.meshI < getScene()->model->meshes.size()){
-                if(painter.faceSelection.selectedPrimitiveIDs.size() == action.primitivesArray.size()){
-                    painter.faceSelection.prevPrimArray = action.prevPrimArray;
-                    painter.faceSelection.selectedPrimitiveIDs = action.primitivesArray;
-                    updatePrimitivesArrayTexture(painter.faceSelection.selectedFaces, action.primitivesArray, action.primitivesArray, getScene()->model->meshes[action.meshI], changedIndices, true);
+                if(getScene()->get_selected_mesh()->face_selection_data.selectedPrimitiveIDs.size() == action.primitivesArray.size()){
+                    getScene()->get_selected_mesh()->face_selection_data.prevPrimArray = action.prevPrimArray;
+                    getScene()->get_selected_mesh()->face_selection_data.selectedPrimitiveIDs = action.primitivesArray;
+                    updatePrimitivesArrayTexture(getScene()->get_selected_mesh()->face_selection_data.selectedFaces, action.primitivesArray, action.primitivesArray, getScene()->model->meshes[action.meshI], changedIndices, true);
                 }
                 else{
                     LGDLOG::start << "ERROR : Undo face selection failed - Mesh data doesn't match" << LGDLOG::end;
@@ -85,20 +85,6 @@ void LogDialog::undo(Painter& painter){
             else    
                 LGDLOG::start << "ERROR : Undo face selection failed - Invalid mesh index" << LGDLOG::end;
         }
-        else{
-            if(action.primitivesArray_M.size() == dialog_objectTexturing.faceSelection.size() && action.primitivesArray_M.size() == getScene()->model->meshes.size()){
-                for (size_t i = 0; i < action.primitivesArray_M.size(); i++)
-                {
-                    dialog_objectTexturing.faceSelection[i].prevPrimArray = action.primitivesArray_M[i];
-                    dialog_objectTexturing.faceSelection[i].selectedPrimitiveIDs = action.prevPrimArray_M[i];
-                    updatePrimitivesArrayTexture(dialog_objectTexturing.faceSelection[i].selectedFaces, action.primitivesArray_M[i], action.primitivesArray_M[i], getScene()->model->meshes[i], changedIndices, true);
-                }
-            }
-            else{
-                LGDLOG::start << "ERROR : Undo face selection failed - Mesh data doesn't match" << LGDLOG::end;
-            }
-        }
-
 
         actions_FaceSelection.pop_back();
         unded = true;

@@ -25,7 +25,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
+
 #include "GUI/GUI.hpp"
+
+#include "ThreeD/ThreeD.hpp"
 
 // System
 #include <string>
@@ -91,7 +94,9 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
     prevPrimArray = primitivesArray;
 }
 
-bool FaceSelection::interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel, bool registerHistory){
+bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel, bool registerHistory){
+
+    vertices.push_back(Vertex());
 
     // Scale of the window
     glm::vec2 windowSize = getContext()->windowScale;
@@ -296,7 +301,7 @@ bool FaceSelection::interaction(Mesh& selectedMesh, int selectedMeshI, bool mous
 
 static bool __lastMousePressState = false;
 
-bool FaceSelection::boxSelectionInteraction(Timer &timer){
+bool boxSelectionInteraction(Timer &timer){
     
     glClear(GL_DEPTH_BUFFER_BIT);
 

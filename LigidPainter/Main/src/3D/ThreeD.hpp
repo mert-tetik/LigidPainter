@@ -141,7 +141,36 @@ struct MaterialIDColor{
 
 class Mesh {
 public:
-    
+    struct FaceSelection{
+        /// @brief Painting the selected mesh mode activated flag 
+        bool activated = false;
+        /// @brief Selecting faces mode flag 
+        bool editMode = false;
+        /// @brief 0 : circle | 1 : box  
+        int selectionModeIndex = 0;
+        /// @brief radius value of the circle selection mode
+        int radius = 10;
+        /*! @brief Unselected faces will not be rendered in the scene */
+        bool hideUnselected = false;
+
+        /// @brief Contains the indices of the selected faces
+        ///        Being processed in the PBR shader
+        std::vector<byte> selectedPrimitiveIDs;
+        /*! @brief This Texture is used for masking the mesh using a texture and not primitive IDs*/
+        Texture meshMask;
+
+        /*! @brief Contains selected face data to be intercepted in shaders
+                    Resolution : x = sqrt(mesh's indices size), y = sqrt(mesh's indices size)      
+                    If a primitive is selected corresponding pixel is set to white
+        */
+        Texture selectedFaces;
+
+        /// @brief 3D model rendered with primitive ID rendering shader
+        Texture modelPrimitives;
+    };
+
+    std::vector<byte> prevPrimArray;
+
     /*----- Channels of the material -----
 
         Only manipulated by the material 
@@ -159,6 +188,8 @@ public:
     Texture materialIDTxtr;
     std::vector<MaterialIDColor> materialIDColors;
     std::string materialIDTxtrPath;
+
+    FaceSelection face_selection_data;
 
     LayerScene layerScene;
 

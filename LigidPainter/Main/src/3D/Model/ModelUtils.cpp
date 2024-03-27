@@ -29,10 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/ThreeD.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 
-// Defined in Painter/faceSelection.cpp
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
-
-
 
 void Model::updateObjectIDsTexture(){
     glDepthFunc(GL_LESS);

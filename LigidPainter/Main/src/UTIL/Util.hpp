@@ -461,6 +461,8 @@ public:
 
     void update(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution);
     void update(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution, int samples);
+
+    glm::ivec2 getResolution();
 };
 
 class Framebuffer{
@@ -544,47 +546,6 @@ public:
     /// @brief Generates a single sprite texture using the this->textures
     Texture generateSpriteTexture();
 };
-
-
-struct FaceSelection{
-public:
-    /// @brief Painting the selected mesh mode activated flag 
-    bool activated = false;
-    /// @brief Selecting mesh mode activated flag 
-    bool editMode = false;
-    /// @brief 0 : circle | 1 : box  
-    int selectionModeIndex = 0;
-    /// @brief radius value of the circle selection mode
-    int radius = 10;
-
-    bool hideUnselected = false;
-    
-    Framebuffer FBO;
-
-    glm::vec2 boxSelectionStart = glm::vec2(0.f);
-    glm::vec2 boxSelectionEnd = glm::vec2(0.f);
-    bool boxSelectionInteraction(Timer &timer);
-
-    /// @brief Contains the indices of the selected faces
-    ///        Being processed in the PBR shader
-    std::vector<byte> selectedPrimitiveIDs;
-    std::vector<int> changedIndices;
-
-    Texture selectedFaces;
-    Texture meshMask;
-
-    /// @brief 3D model rendered with primitive ID renderin shader
-    Texture modelPrimitives;
-
-    bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, glm::mat4 viewMatrix, 
-                    glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel, 
-                    bool registerHistory);
-
-    std::vector<byte> prevPrimArray;
-private:
-    glm::vec2 lastMousePos;
-};
-
 
 /// @brief A single char
 struct character { 

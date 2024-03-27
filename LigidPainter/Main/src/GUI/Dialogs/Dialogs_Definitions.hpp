@@ -435,14 +435,7 @@ public:
      
    DialogControl dialogControl;
 
-   Button maskViaFaceSelection;
-   Button maskViaTexture;
-   Button cancelMasks;
-
    Button maskMaterialBtn;
-   
-   Button ctrlInfoBtn;
-   Button shiftInfoBtn;
    
    Button assignRelatedTexturesButton;
    Button undoButton;
@@ -468,9 +461,6 @@ public:
    Framebuffer displayingFBO;
 
    Texture meshMask;
-
-   bool faceSelectionMode = false;
-   std::vector<FaceSelection> faceSelection;
 
    std::vector<Mesh> texturesMesh;
 

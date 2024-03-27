@@ -179,11 +179,13 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
         this->normalMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
         this->heightMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
         this->ambientOcclusion = Texture(nullptr, 1024, 1024, GL_LINEAR);
+        this->face_selection_data.meshMask = Texture(nullptr, 1024, 1024);
     }
 
     this->vertices = vertices;
     this->indices = indices;
     this->materialName = materialName;
+
 
     setupMesh();
 
@@ -437,16 +439,16 @@ void Mesh::updatePosNormalTexture(){
         ShaderSystem::renderModelData().setMat4("modelMatrix",getScene()->transformMatrix);
         ShaderSystem::renderModelData().setInt("state", i + 1);
 
-        ShaderSystem::renderModelData().setInt("usingMeshSelection",this->faceSelection.activated);
-        ShaderSystem::renderModelData().setInt("hideUnselected",this->faceSelection.hideUnselected);
+        ShaderSystem::renderModelData().setInt("usingMeshSelection", this->face_selection_data.activated);
+        ShaderSystem::renderModelData().setInt("hideUnselected", this->face_selection_data.hideUnselected);
         ShaderSystem::renderModelData().setInt("selectedPrimitiveIDS", 0);
         ShaderSystem::renderModelData().setInt("meshMask", 1);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->faceSelection.selectedFaces.ID);
+        glBindTexture(GL_TEXTURE_2D, this->face_selection_data.selectedFaces.ID);
         
         glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, this->faceSelection.meshMask.ID);
+        glBindTexture(GL_TEXTURE_2D, this->face_selection_data.meshMask.ID);
 
         //Draw the selected mesh in 3D
         ShaderSystem::renderModelData().setInt("primitiveCount", this->indices.size() / 3);

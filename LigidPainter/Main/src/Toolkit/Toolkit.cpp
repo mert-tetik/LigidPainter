@@ -56,7 +56,7 @@ void render_toolkits(Timer& timer, Painter& painter){
 
     bool straightLinePaintingCondition = panel_displaying_modes.selectedElement != 0 && 
                                          panel_painting_modes.selectedElement != 5 && 
-                                         !painter.faceSelection.editMode && 
+                                         !getScene()->get_selected_mesh()->face_selection_data.editMode && 
                                          (getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) || getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)) && 
                                          *Mouse::LPressed(); 
 
@@ -78,7 +78,7 @@ void render_toolkits(Timer& timer, Painter& painter){
             !panels_any_hovered() && 
             (panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2) && panel_painting_modes.selectedElement != 5 && panel_painting_modes.selectedElement != 6 &&
             !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 &&
-            !painter.faceSelection.editMode &&
+            !getScene()->get_selected_mesh()->face_selection_data.editMode &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
         )

@@ -88,35 +88,6 @@ static void sendPainterDataToThe3DModelShaderProgram(
                                                         int selectedPaintingModeIndex, bool usePaintingOver, bool paintingOverGrayScale
                                                      );
 
-static glm::vec2 findPos(glm::ivec2 res, float* posData, float* pxs){
-    for (size_t y = 0; y < res.y; y++)
-    {
-        for (size_t x = 0; x < res.x; x++){
-            int index = (y * res.x + x) * 4;
-
-            if(true){
-                float tolerance = 0.005f;
-
-                if(index + 3 >= res.x * res.y * 4)
-                    return glm::vec2(-1.f);
-
-                if(pxs[index + 3] != 0.f){
-                    if(pxs[index] >= posData[0] - tolerance && pxs[index] <= posData[0] + tolerance){
-                        if(pxs[index + 1] >= posData[1] - tolerance && pxs[index + 1] <= posData[1] + tolerance){
-                            if(pxs[index + 2] >= posData[2] - tolerance && pxs[index + 2] <= posData[2] + tolerance){
-                                
-                                glm::vec2 crsPos = glm::vec2((float)Settings::videoScale()->x / ((float)res.x / (float)x), (float)Settings::videoScale()->y / ((float)res.y / (float)y));
-                                
-                                return crsPos;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return glm::vec2(-1.f);
-}
 
 Texture posTxtr;
 
