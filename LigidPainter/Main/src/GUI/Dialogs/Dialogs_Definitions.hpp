@@ -462,7 +462,7 @@ public:
 
    Texture meshMask;
 
-   std::vector<Mesh> texturesMesh;
+   std::vector<MaterialChannels> result_channels;
 
    bool materialSelection = false;
    bool textureSelection = false;

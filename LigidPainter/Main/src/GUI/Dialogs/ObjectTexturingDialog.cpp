@@ -153,30 +153,30 @@ void ObjectTexturingDialog::show(Timer& timer){
 
         dialogControl.updateStart();
 
-        if(getScene()->model->meshes.size() != texturesMesh.size()){
-            for (size_t i = 0; i < texturesMesh.size(); i++)
+        if(getScene()->model->meshes.size() != result_channels.size()){
+            for (size_t i = 0; i < result_channels.size(); i++)
             {
-                glDeleteTextures(1, &texturesMesh[i].albedo.ID);
-                glDeleteTextures(1, &texturesMesh[i].roughness.ID);
-                glDeleteTextures(1, &texturesMesh[i].metallic.ID);
-                glDeleteTextures(1, &texturesMesh[i].normalMap.ID);
-                glDeleteTextures(1, &texturesMesh[i].heightMap.ID);
-                glDeleteTextures(1, &texturesMesh[i].ambientOcclusion.ID);
+                glDeleteTextures(1, &result_channels[i].albedo.ID);
+                glDeleteTextures(1, &result_channels[i].roughness.ID);
+                glDeleteTextures(1, &result_channels[i].metallic.ID);
+                glDeleteTextures(1, &result_channels[i].normalMap.ID);
+                glDeleteTextures(1, &result_channels[i].heightMap.ID);
+                glDeleteTextures(1, &result_channels[i].ambientOcclusion.ID);
             }
 
-            texturesMesh.clear();
+            result_channels.clear();
 
             for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
             {
-                Mesh mesh;
-                mesh.albedo = Texture(nullptr, 1024, 1024);
-                mesh.roughness = Texture(nullptr, 1024, 1024);
-                mesh.metallic = Texture(nullptr, 1024, 1024);
-                mesh.normalMap = Texture(nullptr, 1024, 1024);
-                mesh.heightMap = Texture(nullptr, 1024, 1024);
-                mesh.ambientOcclusion = Texture(nullptr, 1024, 1024);
+                MaterialChannels channel;
+                channel.albedo = Texture(nullptr, 1024, 1024);
+                channel.roughness = Texture(nullptr, 1024, 1024);
+                channel.metallic = Texture(nullptr, 1024, 1024);
+                channel.normalMap = Texture(nullptr, 1024, 1024);
+                channel.heightMap = Texture(nullptr, 1024, 1024);
+                channel.ambientOcclusion = Texture(nullptr, 1024, 1024);
             
-                texturesMesh.push_back(mesh);
+                result_channels.push_back(channel);
             }
         }
 
@@ -465,17 +465,17 @@ void ObjectTexturingDialog::show(Timer& timer){
 
                     glActiveTexture(GL_TEXTURE0);
                     if(channelI == 0)
-                        glBindTexture(GL_TEXTURE_2D, texturesMesh[i].albedo.ID);
+                        glBindTexture(GL_TEXTURE_2D, result_channels[i].albedo.ID);
                     if(channelI == 1)
-                        glBindTexture(GL_TEXTURE_2D, texturesMesh[i].roughness.ID);
+                        glBindTexture(GL_TEXTURE_2D, result_channels[i].roughness.ID);
                     if(channelI == 2)
-                        glBindTexture(GL_TEXTURE_2D, texturesMesh[i].metallic.ID);
+                        glBindTexture(GL_TEXTURE_2D, result_channels[i].metallic.ID);
                     if(channelI == 3)
-                        glBindTexture(GL_TEXTURE_2D, texturesMesh[i].normalMap.ID);
+                        glBindTexture(GL_TEXTURE_2D, result_channels[i].normalMap.ID);
                     if(channelI == 4)
-                        glBindTexture(GL_TEXTURE_2D, texturesMesh[i].heightMap.ID);
+                        glBindTexture(GL_TEXTURE_2D, result_channels[i].heightMap.ID);
                     if(channelI == 5)
-                        glBindTexture(GL_TEXTURE_2D, texturesMesh[i].ambientOcclusion.ID);
+                        glBindTexture(GL_TEXTURE_2D, result_channels[i].ambientOcclusion.ID);
                     
                     glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[i].face_selection_data.selectedFaces.ID);
@@ -594,7 +594,7 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    getScene()->render_model();
+    getScene()->render_model(result_channels);
 
     // 190 - 1727
     // 114 - 967
@@ -632,12 +632,12 @@ void ObjectTexturingDialog::updateMeshTextures(){
         Texture heightMap = getScene()->model->meshes[meshI].heightMap; 
         Texture ambientOcclusion = getScene()->model->meshes[meshI].ambientOcclusion; 
         
-        getScene()->model->meshes[meshI].albedo = texturesMesh[meshI].albedo;
-        getScene()->model->meshes[meshI].roughness = texturesMesh[meshI].roughness;
-        getScene()->model->meshes[meshI].metallic = texturesMesh[meshI].metallic;
-        getScene()->model->meshes[meshI].normalMap = texturesMesh[meshI].normalMap;
-        getScene()->model->meshes[meshI].heightMap = texturesMesh[meshI].heightMap;
-        getScene()->model->meshes[meshI].ambientOcclusion = texturesMesh[meshI].ambientOcclusion;
+        getScene()->model->meshes[meshI].albedo = result_channels[meshI].albedo;
+        getScene()->model->meshes[meshI].roughness = result_channels[meshI].roughness;
+        getScene()->model->meshes[meshI].metallic = result_channels[meshI].metallic;
+        getScene()->model->meshes[meshI].normalMap = result_channels[meshI].normalMap;
+        getScene()->model->meshes[meshI].heightMap = result_channels[meshI].heightMap;
+        getScene()->model->meshes[meshI].ambientOcclusion = result_channels[meshI].ambientOcclusion;
         
         for (int i = this->material.materialModifiers.size() - 1; i >= 0; --i)    
         {

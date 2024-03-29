@@ -154,6 +154,9 @@ public:
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial();
 
+    bool operator==(const Material& other) const;
+    bool operator!=(const Material& other) const;
+
     /// @brief Deletes all the OpenGL buffer objects inside of the material
     void deleteBuffers();
 

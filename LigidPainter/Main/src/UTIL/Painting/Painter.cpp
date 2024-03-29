@@ -28,12 +28,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Painting/Painter.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Painting/Painting_UTIL.hpp"
+#include "UTIL/Library/Library.hpp"
 
 #include "3D/Material/Material.hpp"
 
 #include "GUI/Panels.hpp"
 
-#include "UTIL/Painting/Painting_UTIL.hpp"
 
 Framebuffer projected_painting_FBO;
 
@@ -45,6 +46,53 @@ MirrorSide Z_side;
 MirrorSide XZ_side;
 MirrorSide YZ_side;
 MirrorSide XYZ_side;
+
+struct PaintedBufferData{
+    glm::vec3 clr;
+    Texture txtr;
+    Texture corresponding_custom_material_channel;
+};
+
+std::vector<PaintedBufferData> get_painted_buffers(PaintSettings settings){
+    std::vector<PaintedBufferData> result;
+    
+    for (size_t i = 0; i < 6; i++)
+    {
+        PaintedBufferData data;
+        if(i == 0 && settings.painted_buffers.material_channel_albedo_active){
+            data.clr = settings.color_buffer.stroke_albedo_color.getRGB_normalized();
+            data.txtr = settings.painted_buffers.material_channel_albedo;
+            data.corresponding_custom_material_channel = customMatMesh.albedo;
+        }
+        if(i == 1 && settings.painted_buffers.material_channel_roughness_active){
+            data.clr = glm::vec3(settings.color_buffer.stroke_roughness_color);
+            data.txtr = settings.painted_buffers.material_channel_roughness;
+            data.corresponding_custom_material_channel = customMatMesh.roughness;
+        }
+        if(i == 2 && settings.painted_buffers.material_channel_metallic_active){
+            data.clr = glm::vec3(settings.color_buffer.stroke_metallic_color);
+            data.txtr = settings.painted_buffers.material_channel_metallic;
+            data.corresponding_custom_material_channel = customMatMesh.metallic;
+        }
+        if(i == 3 && settings.painted_buffers.material_channel_normalMap_active){
+            data.clr = glm::vec3(settings.color_buffer.stroke_normalMap_color);
+            data.txtr = settings.painted_buffers.material_channel_normalMap;
+            data.corresponding_custom_material_channel = customMatMesh.normalMap;
+        }
+        if(i == 4 && settings.painted_buffers.material_channel_heightMap_active){
+            data.clr = glm::vec3(settings.color_buffer.stroke_heightMap_color);
+            data.txtr = settings.painted_buffers.material_channel_heightMap;
+            data.corresponding_custom_material_channel = customMatMesh.heightMap;
+        }
+        if(i == 5 && settings.painted_buffers.material_channel_ao_active){
+            data.clr = glm::vec3(settings.color_buffer.stroke_ao_color);
+            data.txtr = settings.painted_buffers.material_channel_ao;
+            data.corresponding_custom_material_channel = customMatMesh.ambientOcclusion;
+        }
+    }
+
+    return result;
+}
 
 static int frame_counter = 0;
 
@@ -144,6 +192,45 @@ void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
     frame_counter++;
 
     if(last_frame){
+        if(twoD_painting_mode && panel_displaying_modes.selectedElement != 2){
+            LGDLOG::start << "ERROR : Painting : Invalid displaying mode for the 2D painting" << LGDLOG::end;
+            return;
+        }
+
+        if(button_mesh_selection.selectedMeshI >= getScene()->model->meshes.size()){
+            LGDLOG::start << "ERROR : Painting : Invalid selected mesh" << LGDLOG::end;
+            return;
+        }
         
+        if(settings.color_buffer.use_custom_material){
+           update_custom_material_mesh(settings.color_buffer, settings.vertex_buffer, (settings.painted_buffers.material_painting) ? settings.painted_buffers.material_channel_albedo.getResolution() : settings.painted_buffers.solid_painted_texture.getResolution()); 
+        }
+
+        register_history_actions(settings.painting_mode, settings.painted_buffers);
+
+        if(settings.painting_mode == 4){
+            //button_painting_filter_mode_filter.filter.applyFilter(panel_library_selected_texture.ID, this->projectedPaintingTexture, 0);
+        }
+        else{
+            for (PaintedBufferData painted_buffer : get_painted_buffers(settings))
+            {
+                updateTheTexture(painted_buffer.txtr, paintingMode, painted_buffer.clr, i, painted_buffer.clr.r);
+                
+                /*
+                txtr.mix(customMatTxtr, projectedPaintingTexture, true, false, false);
+                txtr.removeSeams(*getScene()->get_selected_mesh(), txtr.getResolution());
+                */
+
+                for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+                {
+                    if(painted_buffer.txtr.ID == Library::getTexture(i)->ID){
+                        Library::getTexture(i)->copyDataToTheCopyContext();
+                        projectUpdatingThreadElements.updateTextures = true;
+                    }
+                }
+            }
+        }
+
+        updateThePreRenderedPanels = true;
     }
 }

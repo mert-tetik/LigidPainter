@@ -38,120 +38,6 @@ extern bool updateThePreRenderedPanels;
 
 static Mesh customMatMesh;
 
-static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 textureRes, unsigned int &selectedTextureID){
-    //Bind the capture texture
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, captureTexture);
-    
-    //Get the pixels of the capture texture
-    char* pixels = new char[textureRes.x * textureRes.y * 4];
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
-    
-    Texture selectedTextureOBJ = Texture(selectedTextureID);
-    selectedTextureOBJ.update(pixels, textureRes.x, textureRes.y);
-
-    delete[] pixels; //Remove the capture texture's pixels out of the memory
-    glDeleteTextures(1, &captureTexture);
-}
-
-void Painter::updateTheTexture(Texture txtr, int paintingMode, glm::vec3 paintingColor, int channelI, float channelStr){
-    glm::vec2 destScale = glm::vec2(txtr.getResolution());
-
-    glActiveTexture(GL_TEXTURE0);
-
-    Texture captureTexture = Texture(nullptr, destScale.x, destScale.y, GL_LINEAR);
-    Framebuffer captureFBO = Framebuffer(captureTexture, GL_TEXTURE_2D, "Painter::updateTheTexture");
-    
-    captureFBO.bind();
-
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    //Bind the selected texture (painted texture) to the albedo channel (to paint over that texture)
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, txtr.ID);
-
-    //Set the viewport to the resolution of the texture
-    glViewport(0,0,destScale.x,destScale.y);
-    
-    //Since the UV is between 0 - 1
-    glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
-
-    ShaderSystem::buttonShader().use();
-    
-    ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, destScale.x, destScale.y, 0.f));
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(destScale.x  / 2.f, destScale.y / 2.f, 0.1));
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(destScale / 2.f));
-    ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
-    ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
-    ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
-    ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, txtr.ID);
-    
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Rendering the original texture (background)");
-
-    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
-
-    ShaderSystem::textureUpdatingShader().use();
-
-    //*Fragment
-    ShaderSystem::textureUpdatingShader().setInt("txtr", 5);
-    ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6);
-    ShaderSystem::textureUpdatingShader().setInt("brushModeState", paintingMode);
-    ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1);
-    ShaderSystem::textureUpdatingShader().setFloat("smearTransformStrength", panel_smear_painting_properties.sections[0].elements[0].rangeBar.value);
-    ShaderSystem::textureUpdatingShader().setFloat("smearBlurStrength", panel_smear_painting_properties.sections[0].elements[1].rangeBar.value);
-    ShaderSystem::textureUpdatingShader().setInt("multiChannelsPaintingMod", panel_displaying_modes.selectedElement == 1);
-    ShaderSystem::textureUpdatingShader().setInt("channelI", channelI);
-    ShaderSystem::textureUpdatingShader().setFloat("channelStrength", channelStr);
-
-    //* Bind the textures
-    //painted texture
-    glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, txtr.ID);
-    
-    ///@ref paintingTexture 
-    glActiveTexture(GL_TEXTURE6);
-    glBindTexture(GL_TEXTURE_2D, this->projectedPaintingTexture.ID);
-    
-    
-    if(!twoD_painting_mode){
-        //Draw the UV of the selected model
-        {
-            //*Vertex
-            ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
-            ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
-            ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->camera.viewMatrix);
-
-            getScene()->get_selected_mesh()->Draw(false);         
-        }
-    }
-    else{
-        //*Fragment
-        ShaderSystem::projectingPaintedTextureShader().setInt("doDepthTest", 0);
-
-        //*Vertex
-        ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-        ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getContext()->ortho_projection);
-        ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
-        
-        twoD_painting_box.bindBuffers();
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Applying painting to the texture");
-    }
-    
-    if(!twoD_painting_mode){
-        captureTexture.removeSeams(*getScene()->get_selected_mesh(), destScale);
-    }
-
-    //Delete the capture framebuffer
-    captureFBO.deleteBuffers(false, false);
-
-    //Copy capture texture into the source texture (painted texture)
-    captureTxtrToSourceTxtr(captureTexture.ID, destScale, txtr.ID);
-}
-
 void Painter::updateTexture(int paintingMode){
     
     if(twoD_painting_mode && panel_displaying_modes.selectedElement != 2){
@@ -259,7 +145,8 @@ void Painter::updateTexture(int paintingMode){
         button_painting_filter_mode_filter.filter.applyFilter(panel_library_selected_texture.ID, this->projectedPaintingTexture, 0);
     }
     else{
-        if(panel_displaying_modes.selectedElement == 1){
+        if(panel_displaying_modes.selectedElement == 1)
+        {
             for (size_t i = 0; i < 6; i++)
             {
                 glm::vec3 clr;
@@ -308,7 +195,7 @@ void Painter::updateTexture(int paintingMode){
                         updateTheTexture(txtr, paintingMode, clr, i, clr.r);
                     else{
                         txtr.mix(customMatTxtr, projectedPaintingTexture, true, false, false);
-                            txtr.removeSeams(*getScene()->get_selected_mesh(), txtr.getResolution());
+                        txtr.removeSeams(*getScene()->get_selected_mesh(), txtr.getResolution());
                     }
                 }
             }
@@ -324,7 +211,6 @@ void Painter::updateTexture(int paintingMode){
     }
 
     updateThePreRenderedPanels = true;
-
 }
 
 //Clear the painting texture

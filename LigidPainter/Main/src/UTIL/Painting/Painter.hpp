@@ -70,6 +70,9 @@ struct PaintSettings{
         float stroke_normalMap_color = 0.f;
         float stroke_heightMap_color = 0.f;
         float stroke_ao_color = 0.f;
+
+        Material material;
+        bool use_custom_material = false;
     };
     struct DrawMode{
         /*! @brief This brush will be used for the strokes;*/
@@ -123,20 +126,34 @@ struct PaintSettings{
         bool gray_scale = false;
         TextureFieldScene* texture_field_scene;
     };
+    struct PaintedBuffers{
+        /*! @brief Paint material_channel textures if set to true. Paint solid_painted_texture if set to false*/
+        bool material_painting = false;
+
+        bool material_channel_albedo_active = false;
+        Texture material_channel_albedo;
+        bool material_channel_roughness_active = false;
+        Texture material_channel_roughness;
+        bool material_channel_metallic_active = false;
+        Texture material_channel_metallic;
+        bool material_channel_normalMap_active = false;
+        Texture material_channel_normalMap;
+        bool material_channel_heightMap_active = false;
+        Texture material_channel_heightMap;
+        bool material_channel_ao_active = false;
+        Texture material_channel_ao;
+
+        /*! @brief Only this texture will be painted if material_painting flag set to false*/
+        Texture solid_painted_texture;
+    };
 
     PaintingOverData painting_over_data;
     
     /*! @brief This color values will be used for painting (draw mode & bucket mode : directly paint this color, any other modes : Multiply the stroke value with these colors (black : no effect, white : full effect))*/
     ColorBuffer color_buffer;
 
-    /*! @brief Paint painting_channels if set to true. Paint painting_texture if set to false*/
-    bool material_painting = false;
-
-    /*! @brief These textures will be painted if material_painting flag set to true*/
-    MaterialChannels painting_channels;
-
-    /*! @brief These texture will be painted if material_painting flag set to false*/
-    Texture painting_texture;
+    /*! @brief Set which textures will be painted*/
+    PaintedBuffers painted_buffers;
 
     MirrorSettings mirror_settings;
 
@@ -146,7 +163,7 @@ struct PaintSettings{
 
     /*! @brief 0 : Draw Mode, 1 : Soften Mode, 2 : Smear Mode, 3 : Normal Mode, 4 : Filter Mode, 5 Bucket Mode, */ 
     int painting_mode;
-    
+
     DrawMode draw_mode;
     SoftenMode soften_mode;
     SmearMode smear_mode;

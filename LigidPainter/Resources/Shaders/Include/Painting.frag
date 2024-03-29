@@ -89,6 +89,7 @@ vec4 getSoftenedTexture(
                             sampler2D txtr, //The texture that will be painted
                             vec4 brushTxtr, //Brush value (painted texture value)
                             vec2 TexCoords //The texture coordinates
+                            float channelStrength
                         )
 { //Intensity from the painted texture
     const float width = 1024;
@@ -110,7 +111,7 @@ vec4 getSoftenedTexture(
     return mix(
                 texture(txtr,TexCoords), //Original value
                 O.rgba / O.a, //Blurred value
-                brushTxtr.a //The brush value
+                brushTxtr.a * channelStrength //The brush value
             );
 }
 
@@ -137,12 +138,13 @@ vec4 getSmearedTexture(
                         vec4 brushTxtr, //Brush value (painted texture value)
                         vec2 TexCoords,  //The texture coordinates
                         float smearTransformStrength, 
-                        float smearBlurStrength
+                        float smearBlurStrength,
+                        float channelStrength
                     )
 {
     
     
-    float intensity = brushTxtr.a/2.;
+    float intensity = brushTxtr.a/2. * channelStrength;
     
     //Get the direction value from the painted texture (which direction the painting made in the current texture coordinates)
     vec2 Direction = brushTxtr.rg;
@@ -334,11 +336,11 @@ vec4 getBrushedTexture (
 
     //Apply painting with softening
     if(brushModeState == 1)
-        return getSoftenedTexture(txtr,brushTxtrVal,TexCoords);
+        return getSoftenedTexture(txtr,brushTxtrVal,TexCoords, channelStrength);
 
     //Apply painting with smearing
     if(brushModeState == 2)
-        return getSmearedTexture(txtr,brushTxtrVal,TexCoords, smearTransformStrength, smearBlurStrength);
+        return getSmearedTexture(txtr,brushTxtrVal,TexCoords, smearTransformStrength, smearBlurStrength, channelStrength);
     
     //Apply painting with painting texture color data
     if(brushModeState == 3)
@@ -346,7 +348,7 @@ vec4 getBrushedTexture (
     
     //Apply painting with inverted texture color
     if(brushModeState == 4)
-        return getPaintedTextureFilterDisplayingMode(txtr, brushTxtrVal, TexCoords);
+        return getPaintedTextureFilterDisplayingMode(txtr, brushTxtrVal, TexCoords, channelStrength);
     
     if(brushModeState == 5)
         return texture(txtr, TexCoords);

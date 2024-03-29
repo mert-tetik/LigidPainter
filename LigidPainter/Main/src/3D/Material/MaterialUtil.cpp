@@ -116,3 +116,53 @@ void MaterialShortcut::updateElement(Material &material, int newModI){
         this->maskTxtr = &material.materialModifiers[newModI].maskTexture;
     }
 }
+
+bool Material::operator==(const Material& material) const{
+    if(this->materialModifiers.size() != material.materialModifiers.size()){
+        return false;
+    }
+
+    for (size_t modI = 0; modI < this->materialModifiers.size(); modI++)
+    {
+        if(this->materialModifiers[modI].maskTexture.ID != material.materialModifiers[modI].maskTexture.ID){
+            return false;
+        }
+
+        if(this->materialModifiers[modI].maskTexture.proceduralProps != material.materialModifiers[modI].maskTexture.proceduralProps){
+            return false;
+        }
+        
+        if(this->materialModifiers[modI].modifierIndex != material.materialModifiers[modI].modifierIndex){
+            return false;
+        }
+        
+        if(this->materialModifiers[modI].shader.ID != material.materialModifiers[modI].shader.ID){
+            return false;
+        }
+        
+        if(this->materialModifiers[modI].shader.ID != material.materialModifiers[modI].shader.ID){
+            return false;
+        }
+        
+        if(this->materialModifiers[modI].hide != material.materialModifiers[modI].hide){
+            return false;
+        }
+        
+        if(this->materialModifiers[modI].sections.size() != material.materialModifiers[modI].sections.size()){
+            return false;
+        }
+
+        for (size_t secI = 0; secI < this->materialModifiers[modI].sections.size(); secI++)
+        {
+            if(this->materialModifiers[modI].sections[secI] != material.materialModifiers[modI].sections[secI]){
+                return false;
+            }
+        }   
+    }
+
+    return true;
+}
+
+bool Material::operator!=(const Material& material) const{
+    return !(*this == material);
+}

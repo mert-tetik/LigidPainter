@@ -277,6 +277,36 @@ struct ProceduralProperties{
 
     int textureSelectionDialog_selectedTextureIndex = 0;
     int textureSelectionDialog_selectedMode = 0;
+
+    bool operator==(const ProceduralProperties& props) const{
+        return 
+            this->proceduralID == props.proceduralID && 
+            this->proceduralScale == props.proceduralScale && 
+            this->proceduralStretch == props.proceduralStretch && 
+            this->proceduralScaleModelPos == props.proceduralScaleModelPos && 
+            this->proceduralMirroredRepeat == props.proceduralMirroredRepeat && 
+            this->proceduralnverted == props.proceduralnverted && 
+            this->proceduralNormalMap == props.proceduralNormalMap && 
+            this->proceduralNormalGrayScale == props.proceduralNormalGrayScale && 
+            this->proceduralNormalStrength == props.proceduralNormalStrength && 
+            this->proceduralTextureID == props.proceduralTextureID && 
+            this->proceduralUseTexCoords == props.proceduralUseTexCoords && 
+            this->proceduralGrayScale == props.proceduralGrayScale && 
+            this->proceduralBrightness == props.proceduralBrightness && 
+            this->smartProperties == props.smartProperties && 
+            this->txtrPackScale == props.txtrPackScale && 
+            this->txtrPackCount == props.txtrPackCount && 
+            this->txtrPackRotation_Jitter == props.txtrPackRotation_Jitter && 
+            this->txtrPackSize_Jitter == props.txtrPackSize_Jitter && 
+            this->txtrPackOpacity_Jitter == props.txtrPackOpacity_Jitter && 
+            this->txtrPackScatter == props.txtrPackScatter &&
+            this->textureSelectionDialog_selectedTextureIndex == props.textureSelectionDialog_selectedTextureIndex &&
+            this->textureSelectionDialog_selectedMode == props.textureSelectionDialog_selectedMode;
+    }
+    
+    bool operator!=(const ProceduralProperties& props) const{
+        return !(*this == props); 
+    }
 };
 
 class Texture

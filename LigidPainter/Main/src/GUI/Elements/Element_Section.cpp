@@ -201,8 +201,118 @@ void Element::render(Timer &timer,bool doMouseTracking){
     }
 }
 
+bool Element::operator==(const Element& element) const{
+    if(this->state != element.state)
+        return false;
+
+    if(state == 0){ //Render the button
+        if(this->button.text != element.button.text)
+            return false;
+        if(this->button.clickState1 != element.button.clickState1)
+            return false;
+        if(this->button.textureSelection2D != element.button.textureSelection2D)
+            return false;
+        if(this->button.textureSelection3D != element.button.textureSelection3D)
+            return false;
+        if(this->button.colorSelection != element.button.colorSelection)
+            return false;
+        if(this->button.meshSelection != element.button.meshSelection)
+            return false;
+        if(this->button.materialSelection != element.button.materialSelection)
+            return false;
+        if(this->button.filterSelection != element.button.filterSelection)
+            return false;
+        if(this->button.keepPressingState != element.button.keepPressingState)
+            return false;
+    }
+    if(state == 1){ //Render the rangeBar
+        if(this->rangeBar.text != element.rangeBar.text)
+            return false;
+        if(this->rangeBar.value != element.rangeBar.value)
+            return false;
+        if(this->rangeBar.maxValue != element.rangeBar.maxValue)
+            return false;
+        if(this->rangeBar.minValue != element.rangeBar.minValue)
+            return false;
+        if(this->rangeBar.isNumeric != element.rangeBar.isNumeric)
+            return false;
+        if(this->rangeBar.constructValue != element.rangeBar.constructValue)
+            return false;
+    }
+    if(state == 2){ //Render the checkBox
+        if(this->checkBox.clickState1 != element.checkBox.clickState1)
+            return false;
+        if(this->checkBox.text != element.checkBox.text)
+            return false;
+    }
+    if(state == 3){ //Render the comboxBox
+        if(this->comboBox.text != element.comboBox.text)
+            return false;
+        if(this->comboBox.texts.size() != element.comboBox.texts.size())
+            return false;
+
+        for (size_t i = 0; i < this->comboBox.texts.size(); i++)
+        {
+            if(this->comboBox.texts[i] != element.comboBox.texts[i])
+                return false;
+        }
+        
+        if(this->comboBox.selectedIndex != element.comboBox.selectedIndex)
+            return false;
+    }
+    if(state == 4){ //Render the textbox
+        if(this->textBox.text != element.textBox.text)
+            return false;
+    }
+    if(state == 5){ //Render the sectionHolder
+        if(this->sectionHolder.text != element.sectionHolder.text)
+            return false;
+        if(this->sectionHolder.containerColor != element.sectionHolder.containerColor)
+            return false;
+        if(this->sectionHolder.textColor != element.sectionHolder.textColor)
+            return false;
+    }
+    if(state == 6){ 
+        if(this->gizmo.pitch != element.gizmo.pitch)
+            return false;
+        if(this->gizmo.yaw != element.gizmo.yaw)
+            return false;
+    }
+    if(state == 7){ 
+        if(this->painterColorSelection.clr1_Btn.color != element.painterColorSelection.clr1_Btn.color)
+            return false;
+        if(this->painterColorSelection.clr2_Btn.color != element.painterColorSelection.clr2_Btn.color)
+            return false;
+        if(this->painterColorSelection.clr3_Btn.color != element.painterColorSelection.clr3_Btn.color)
+            return false;
+    }
+}   
+
+bool Element::operator!=(const Element& element) const{
+    return !(*this == element);
+}
+
 Section::Section(){}
 Section::Section(Element header, std::vector<Element> elements){
     this->header = header;
     this->elements = elements;
+}
+
+bool Section::operator==(const Section& section) const{
+    
+    if(this->elements.size() != section.elements.size()) {
+        return false;
+    }
+
+    for (size_t i = 0; i < section.elements.size(); i++)
+    {
+        if(this->elements[i] != section.elements[i])
+            return false;
+    }    
+    
+    return true;
+}
+
+bool Section::operator!=(const Section& section) const{
+    return !(*this == section);
 }

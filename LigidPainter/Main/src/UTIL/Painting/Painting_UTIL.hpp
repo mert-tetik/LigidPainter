@@ -734,3 +734,195 @@ void bucket_paint_texture(Texture texture, Color color, float opacity){
 
     delete[] pxs;
 }
+
+void register_history_actions(int painting_mode, PaintSettings::PaintedBuffers painted_buffers){
+    std::string actionTitle = "Unknown painting mode";
+    
+    if(painting_mode == 0)
+        actionTitle = "Painting";
+    if(painting_mode == 1)
+        actionTitle = "Softening";
+    if(painting_mode == 2)
+        actionTitle = "Smearing";
+    if(painting_mode == 3)
+        actionTitle = "Normal map painting";
+    if(painting_mode == 4)
+        actionTitle = "Filter painting";
+    if(painting_mode == 5)
+        actionTitle = "Bucket painting";
+    
+    if(painted_buffers.material_painting){
+        registerPaintingAction(
+                                    "Multi-channel painting", 
+                                    Texture(), 
+                                    painted_buffers.material_channel_albedo, painted_buffers.material_channel_albedo_active, 
+                                    painted_buffers.material_channel_roughness, painted_buffers.material_channel_roughness_active,
+                                    painted_buffers.material_channel_metallic, painted_buffers.material_channel_metallic_active,
+                                    painted_buffers.material_channel_normalMap, painted_buffers.material_channel_normalMap_active,
+                                    painted_buffers.material_channel_heightMap, painted_buffers.material_channel_heightMap_active,
+                                    painted_buffers.material_channel_ao, painted_buffers.material_channel_ao_active
+                                );
+    }
+    else{
+        registerPaintingAction(
+                                    actionTitle, 
+                                    Texture(), 
+                                    painted_buffers.solid_painted_texture, true, 
+                                    Texture(), false,
+                                    Texture(), false,
+                                    Texture(), false,
+                                    Texture(), false,
+                                    Texture(), false
+                                );
+    }
+}
+
+static Mesh customMatMesh;
+static Material prevCustomMaterial;
+static int prevMeshVBO = 0;
+static int prevMeshIndicesSize = 0;
+static void update_custom_material_mesh(PaintSettings::ColorBuffer color_buffer, Mesh* mesh, glm::ivec2 resolution){
+    if(prevCustomMaterial != color_buffer.material || prevMeshVBO != mesh->VBO || prevMeshIndicesSize != mesh->indices.size()){
+        customMatMesh.EBO = mesh->EBO;
+        customMatMesh.VBO = mesh->VBO;
+        customMatMesh.VAO = mesh->VAO;
+        customMatMesh.indices = mesh->indices;
+        
+        if(!customMatMesh.albedo.ID){
+            customMatMesh.albedo = Texture(nullptr, resolution.x, resolution.y);
+            customMatMesh.roughness = Texture(nullptr, resolution.x, resolution.y);
+            customMatMesh.metallic = Texture(nullptr, resolution.x, resolution.y);
+            customMatMesh.normalMap = Texture(nullptr, resolution.x, resolution.y);
+            customMatMesh.heightMap = Texture(nullptr, resolution.x, resolution.y);
+            customMatMesh.ambientOcclusion = Texture(nullptr, resolution.x, resolution.y);
+        }
+        else{
+            customMatMesh.albedo.update(nullptr, resolution.x, resolution.y);
+            customMatMesh.roughness.update(nullptr, resolution.x, resolution.y);
+            customMatMesh.metallic.update(nullptr, resolution.x, resolution.y);
+            customMatMesh.normalMap.update(nullptr, resolution.x, resolution.y);
+            customMatMesh.heightMap.update(nullptr, resolution.x, resolution.y);
+            customMatMesh.ambientOcclusion.update(nullptr, resolution.x, resolution.y);
+        }
+
+        for (int i = color_buffer.material.materialModifiers.size() - 1; i >= 0; --i)    
+        {
+            color_buffer.material.materialModifiers[i].updateMaterialChannels(color_buffer.material, customMatMesh, resolution.x, i, false, *getScene()->model);
+        }
+    }
+
+    prevCustomMaterial = color_buffer.material;
+    prevMeshVBO = mesh->VBO;
+    prevMeshIndicesSize = mesh->indices.size();
+}
+
+static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 textureRes, unsigned int &selectedTextureID){
+    //Bind the capture texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, captureTexture);
+    
+    //Get the pixels of the capture texture
+    char* pixels = new char[textureRes.x * textureRes.y * 4];
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
+    
+    Texture selectedTextureOBJ = Texture(selectedTextureID);
+    selectedTextureOBJ.update(pixels, textureRes.x, textureRes.y);
+
+    delete[] pixels; //Remove the capture texture's pixels out of the memory
+    glDeleteTextures(1, &captureTexture);
+}
+
+static void updateTheTexture(
+                                Texture txtr, 
+                                int channelI,
+                                float channel_strength, 
+                                PaintSettings settings ,
+                                Framebuffer projected_painting_FBO
+                            )
+{
+    glm::vec2 destScale = glm::vec2(txtr.getResolution());
+
+    glActiveTexture(GL_TEXTURE0);
+
+    Texture captureTexture = Texture(nullptr, destScale.x, destScale.y, GL_LINEAR);
+    Framebuffer captureFBO = Framebuffer(captureTexture, GL_TEXTURE_2D, "Painter::updateTheTexture");
+    
+    captureFBO.bind();
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    //Bind the selected texture (painted texture) to the albedo channel (to paint over that texture)
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, txtr.ID);
+
+    //Set the viewport to the resolution of the texture
+    glViewport(0,0,destScale.x,destScale.y);
+    
+    //Since the UV is between 0 - 1
+    glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
+
+    ShaderSystem::buttonShader().use();
+    
+    ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, destScale.x, destScale.y, 0.f));
+    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(destScale.x  / 2.f, destScale.y / 2.f, 0.1));
+    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(destScale / 2.f));
+    ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
+    ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
+    ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
+    ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, txtr.ID);
+    
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Rendering the original texture (background)");
+
+    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
+
+    ShaderSystem::textureUpdatingShader().use();
+
+    //*Fragment
+    ShaderSystem::textureUpdatingShader().setInt("txtr", 5); glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, txtr.ID);
+    ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6); glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, projected_painting_FBO.colorBuffer.ID);
+    ShaderSystem::textureUpdatingShader().setInt("brushModeState", settings.painting_mode);
+    ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", settings.painting_over_data.active);
+    ShaderSystem::textureUpdatingShader().setFloat("smearTransformStrength", settings.smear_mode.smear_direction);
+    ShaderSystem::textureUpdatingShader().setFloat("smearBlurStrength", settings.smear_mode.smear_strength);
+    ShaderSystem::textureUpdatingShader().setInt("multiChannelsPaintingMod", panel_displaying_modes.selectedElement == 1);
+    ShaderSystem::textureUpdatingShader().setInt("channelI", channelI);
+    ShaderSystem::textureUpdatingShader().setFloat("channelStrength", channel_strength);
+
+    if(settings.vertex_buffer.paint_model){
+        //Draw the UV of the selected model
+        {
+            //*Vertex
+            ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
+            ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
+            ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->camera.viewMatrix);
+
+            settings.vertex_buffer.model_mesh->Draw(false);         
+        }
+    }
+    else{
+        //*Fragment
+        ShaderSystem::projectingPaintedTextureShader().setInt("doDepthTest", 0);
+
+        //*Vertex
+        ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
+        ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getContext()->ortho_projection);
+        ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
+        
+        settings.vertex_buffer.box->bindBuffers();
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Applying painting to the texture");
+    }
+    
+    if(!twoD_painting_mode){
+        captureTexture.removeSeams(*getScene()->get_selected_mesh(), destScale);
+    }
+
+    //Delete the capture framebuffer
+    captureFBO.deleteBuffers(false, false);
+
+    //Copy capture texture into the source texture (painted texture)
+    captureTxtrToSourceTxtr(captureTexture.ID, destScale, txtr.ID);
+}

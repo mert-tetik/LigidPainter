@@ -577,7 +577,11 @@ struct Element{
 
     //Public member function
     void render(Timer &timer, bool doMouseTracking);
+
+    bool operator==(const Element& element) const;
+    bool operator!=(const Element& element) const;
 };
+
 struct Section{ //Sections seperates the elements in the panel
     
     // Header element (After pressing that button you can display other elements in that section)
@@ -589,6 +593,9 @@ struct Section{ //Sections seperates the elements in the panel
     //Constructors
     Section();
     Section(Element header,std::vector<Element> elements);
+
+    bool operator==(const Section& section) const; 
+    bool operator!=(const Section& section) const; 
 };
 
 
