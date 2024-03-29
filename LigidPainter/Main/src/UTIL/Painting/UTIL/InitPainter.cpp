@@ -50,17 +50,6 @@ void Painter::initPainter(){
 
     //--------- init paintingTexture16f --------- 
     paintingTexture16f = Texture(nullptr, paintingRes.x, paintingRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F); 
-
-    //--------- init depthTextures --------- 
-    this->oSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    this->oSide.mirroredPaintingTexture = Texture(nullptr, paintingRes.x, paintingRes.y);
-    this->oSide.projectedPaintingTexture8Low = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR);
-    this->oSide.projectedPaintingTexture16fLow = Texture(nullptr, lowResTxtrRes.x, lowResTxtrRes.y, GL_LINEAR, GL_RGBA, GL_RGBA16F);
-    this->oSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
-    this->oSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
-    this->oSide.projectedPaintingTexture = projectedPaintingTexture8Low;
-
-    this->oSide.effectAxis = glm::vec3(-1.f, -1.f, -1.f);
     
     this->oXSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
     this->oXSide.mirroredPaintingTexture = Texture(nullptr, paintingRes.x, paintingRes.y);
@@ -69,7 +58,6 @@ void Painter::initPainter(){
     this->oXSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
     this->oXSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
     this->oXSide.projectedPaintingTexture = projectedPaintingTexture8Low;
-
     this->oXSide.effectAxis = glm::vec3(1.f, -1.f, -1.f);
     
     this->oYSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
@@ -79,7 +67,6 @@ void Painter::initPainter(){
     this->oYSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
     this->oYSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
     this->oYSide.projectedPaintingTexture = projectedPaintingTexture8Low;
-
     this->oYSide.effectAxis = glm::vec3(-1.f, 1.f, -1.f);
     
     this->oXYSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
@@ -89,7 +76,6 @@ void Painter::initPainter(){
     this->oXYSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
     this->oXYSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
     this->oXYSide.projectedPaintingTexture = projectedPaintingTexture8Low;
-
     this->oXYSide.effectAxis = glm::vec3(1.f, 1.f, -1.f);
     
     this->oZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
@@ -99,7 +85,6 @@ void Painter::initPainter(){
     this->oZSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
     this->oZSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
     this->oZSide.projectedPaintingTexture = projectedPaintingTexture8Low;
-
     this->oZSide.effectAxis = glm::vec3(-1.f, -1.f, 1.f);
     
     this->oXZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
@@ -109,7 +94,6 @@ void Painter::initPainter(){
     this->oXZSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
     this->oXZSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
     this->oXZSide.projectedPaintingTexture = projectedPaintingTexture8Low;
-
     this->oXZSide.effectAxis = glm::vec3(1.f, -1.f, 1.f);
     
     this->oYZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
@@ -119,7 +103,6 @@ void Painter::initPainter(){
     this->oYZSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
     this->oYZSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
     this->oYZSide.projectedPaintingTexture = projectedPaintingTexture8Low;
-
     this->oYZSide.effectAxis = glm::vec3(-1.f, 1.f, 1.f);
     
     this->oXYZSide.depthTexture = Texture(nullptr, depthRes.x, depthRes.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
@@ -129,7 +112,6 @@ void Painter::initPainter(){
     this->oXYZSide.projectedPaintingTexture8 = Texture(nullptr, 1, 1, GL_LINEAR);
     this->oXYZSide.projectedPaintingTexture16f = Texture(nullptr, 1, 1, GL_LINEAR, GL_RGBA, GL_RGBA16F);
     this->oXYZSide.projectedPaintingTexture = projectedPaintingTexture8Low;
-
     this->oXYZSide.effectAxis = glm::vec3(1.f, 1.f, 1.f);
 
     //--------- init paintingFBO --------- 

@@ -9,6 +9,9 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+TODO : Update color buffer resolutions
+
 */
 
 //OpenGL & window 
@@ -35,6 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Panels.hpp"
 
+extern bool updateThePreRenderedPanels;
 
 Framebuffer painting_projected_painting_FBO;
 
@@ -47,53 +51,6 @@ static MirrorSide XZ_side;
 static MirrorSide YZ_side;
 static MirrorSide XYZ_side;
 
-struct PaintedBufferData{
-    glm::vec3 clr;
-    Texture txtr;
-    Texture corresponding_custom_material_channel;
-};
-
-std::vector<PaintedBufferData> get_painted_buffers(PaintSettings settings){
-    std::vector<PaintedBufferData> result;
-    
-    for (size_t i = 0; i < 6; i++)
-    {
-        PaintedBufferData data;
-        if(i == 0 && settings.painted_buffers.material_channel_albedo_active){
-            data.clr = settings.color_buffer.stroke_albedo_color.getRGB_normalized();
-            data.txtr = settings.painted_buffers.material_channel_albedo;
-            data.corresponding_custom_material_channel = customMatMesh.albedo;
-        }
-        if(i == 1 && settings.painted_buffers.material_channel_roughness_active){
-            data.clr = glm::vec3(settings.color_buffer.stroke_roughness_color);
-            data.txtr = settings.painted_buffers.material_channel_roughness;
-            data.corresponding_custom_material_channel = customMatMesh.roughness;
-        }
-        if(i == 2 && settings.painted_buffers.material_channel_metallic_active){
-            data.clr = glm::vec3(settings.color_buffer.stroke_metallic_color);
-            data.txtr = settings.painted_buffers.material_channel_metallic;
-            data.corresponding_custom_material_channel = customMatMesh.metallic;
-        }
-        if(i == 3 && settings.painted_buffers.material_channel_normalMap_active){
-            data.clr = glm::vec3(settings.color_buffer.stroke_normalMap_color);
-            data.txtr = settings.painted_buffers.material_channel_normalMap;
-            data.corresponding_custom_material_channel = customMatMesh.normalMap;
-        }
-        if(i == 4 && settings.painted_buffers.material_channel_heightMap_active){
-            data.clr = glm::vec3(settings.color_buffer.stroke_heightMap_color);
-            data.txtr = settings.painted_buffers.material_channel_heightMap;
-            data.corresponding_custom_material_channel = customMatMesh.heightMap;
-        }
-        if(i == 5 && settings.painted_buffers.material_channel_ao_active){
-            data.clr = glm::vec3(settings.color_buffer.stroke_ao_color);
-            data.txtr = settings.painted_buffers.material_channel_ao;
-            data.corresponding_custom_material_channel = customMatMesh.ambientOcclusion;
-        }
-    }
-
-    return result;
-}
-
 static int frame_counter = 0;
 
 void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
@@ -101,6 +58,10 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
     if(first_frame){
         frame_counter = 0;
         settings.painting_over_data.texture_field_scene->update_painting_over_texture(settings.point.use_3D);
+
+        if(!painting_projected_painting_FBO.ID){
+            init_buffers(&painting_projected_painting_FBO);
+        }
     }
 
     Brush stroke_brush;
@@ -214,7 +175,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
         else{
             for (PaintedBufferData painted_buffer : get_painted_buffers(settings))
             {
-                updateTheTexture(painted_buffer.txtr, paintingMode, painted_buffer.clr, i);
+                updateTheTexture(painted_buffer.txtr, painted_buffer.channel_index, painted_buffer.clr.r, settings, painting_projected_painting_FBO);
                 
                 /*
                 txtr.mix(customMatTxtr, projectedPaintingTexture, true, false, false);

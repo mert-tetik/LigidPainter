@@ -926,3 +926,72 @@ static void updateTheTexture(
     //Copy capture texture into the source texture (painted texture)
     captureTxtrToSourceTxtr(captureTexture.ID, destScale, txtr.ID);
 }
+
+struct PaintedBufferData{
+    glm::vec3 clr;
+    Texture txtr;
+    Texture corresponding_custom_material_channel;
+    int channel_index = 0;
+};
+
+static std::vector<PaintedBufferData> get_painted_buffers(PaintSettings settings){
+    std::vector<PaintedBufferData> result;
+    
+    for (size_t i = 0; i < 6; i++)
+    {
+        PaintedBufferData data;
+        if(i == 0 && settings.painted_buffers.material_channel_albedo_active){
+            data.clr = settings.color_buffer.stroke_albedo_color.getRGB_normalized();
+            data.txtr = settings.painted_buffers.material_channel_albedo;
+            data.corresponding_custom_material_channel = customMatMesh.albedo;
+        }
+        if(i == 1 && settings.painted_buffers.material_channel_roughness_active){
+            data.clr = glm::vec3(settings.color_buffer.stroke_roughness_color);
+            data.txtr = settings.painted_buffers.material_channel_roughness;
+            data.corresponding_custom_material_channel = customMatMesh.roughness;
+        }
+        if(i == 2 && settings.painted_buffers.material_channel_metallic_active){
+            data.clr = glm::vec3(settings.color_buffer.stroke_metallic_color);
+            data.txtr = settings.painted_buffers.material_channel_metallic;
+            data.corresponding_custom_material_channel = customMatMesh.metallic;
+        }
+        if(i == 3 && settings.painted_buffers.material_channel_normalMap_active){
+            data.clr = glm::vec3(settings.color_buffer.stroke_normalMap_color);
+            data.txtr = settings.painted_buffers.material_channel_normalMap;
+            data.corresponding_custom_material_channel = customMatMesh.normalMap;
+        }
+        if(i == 4 && settings.painted_buffers.material_channel_heightMap_active){
+            data.clr = glm::vec3(settings.color_buffer.stroke_heightMap_color);
+            data.txtr = settings.painted_buffers.material_channel_heightMap;
+            data.corresponding_custom_material_channel = customMatMesh.heightMap;
+        }
+        if(i == 5 && settings.painted_buffers.material_channel_ao_active){
+            data.clr = glm::vec3(settings.color_buffer.stroke_ao_color);
+            data.txtr = settings.painted_buffers.material_channel_ao;
+            data.corresponding_custom_material_channel = customMatMesh.ambientOcclusion;
+        }
+
+        data.channel_index = i;
+    }
+
+    return result;
+}
+
+#define INIT_MIRROR_SIDE(mirror_side, axis) mirror_side.paintingBuffers.depth_texture  = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);\
+                                            mirror_side.paintingBuffers.window_painting_texture  = Texture(nullptr, 1024, 1024);\
+                                            mirror_side.paintingBuffers.projected_painting_texture  = Texture(nullptr, 1024, 1024, GL_LINEAR);\
+                                            mirror_side.paintingBuffers.projected_painting_texture_low  = Texture(nullptr, 512, 512, GL_LINEAR, GL_RGBA, GL_RGBA16F);\
+                                            mirror_side.effectAxis = axis;
+
+static void init_buffers(Framebuffer* projected_painting_FBO){
+    *projected_painting_FBO = Framebuffer(Texture(nullptr, 1024, 1024), GL_TEXTURE_2D, "projected_painting_FBO");
+    
+    INIT_MIRROR_SIDE(O_side, glm::vec3(-1.f, -1.f, -1.f))
+    INIT_MIRROR_SIDE(X_side, glm::vec3(1.f, -1.f, -1.f));
+    INIT_MIRROR_SIDE(Y_side, glm::vec3(-1.f, 1.f, -1.f));
+    INIT_MIRROR_SIDE(XY_side, glm::vec3(1.f, 1.f, -1.f));
+    INIT_MIRROR_SIDE(Z_side, glm::vec3(-1.f, -1.f, 1.f));
+    INIT_MIRROR_SIDE(XZ_side, glm::vec3(1.f, -1.f, 1.f));
+    INIT_MIRROR_SIDE(YZ_side, glm::vec3(-1.f, 1.f, 1.f));
+    INIT_MIRROR_SIDE(XYZ_side, glm::vec3(1.f, 1.f, 1.f));
+}
