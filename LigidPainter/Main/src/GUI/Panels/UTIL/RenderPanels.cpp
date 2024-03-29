@@ -27,7 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 // Defined in the RenderPanel.cpp
 extern bool updateThePreRenderedPanels;
 
-void panels_render(Timer& timer, Painter& painter)
+void panels_render(Timer& timer)
 {
     ShaderSystem::buttonShader().use();
     ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection); 
@@ -43,7 +43,7 @@ void panels_render(Timer& timer, Painter& painter)
     Debugger::block("GUI : Panels : Navigation panel"); // End
 
     Debugger::block("GUI : Panels : Window Panel"); // Start
-    panel_window_render(timer, painter, true);
+    panel_window_render(timer, true);
     Debugger::block("GUI : Panels : Window Panel"); // End
 
     Debugger::block("GUI : Panels : Library Modes Panel"); // Start
@@ -51,11 +51,11 @@ void panels_render(Timer& timer, Painter& painter)
     Debugger::block("GUI : Panels : Library Modes Panel"); // End
 
     Debugger::block("GUI : Panels : Library Panel"); // End
-    panel_library_render(timer, painter, true);
+    panel_library_render(timer, true);
     Debugger::block("GUI : Panels : Library Panel"); // End
     
     Debugger::block("GUI : Panels : Selected Texture Displayer Panel"); // Start
-    panel_selected_texture_display_render(timer, painter, true);
+    panel_selected_texture_display_render(timer, true);
     Debugger::block("GUI : Panels : Selected Texture Displayer Panel"); // End
     
     Debugger::block("GUI : Panels : Scene Gizmo"); // Start
@@ -67,55 +67,55 @@ void panels_render(Timer& timer, Painter& painter)
     Debugger::block("GUI : Panels : Wrap Mode Checkbox"); // End
     
     Debugger::block("GUI : Panels : Current mode hint displayer"); // Start
-    current_mode_hint_displayer_render(timer, painter);
+    current_mode_hint_displayer_render(timer);
     Debugger::block("GUI : Panels : Current mode hint displayer"); // End
 
     Debugger::block("GUI : Panels : Layers Panel"); // Start
-    panel_layers_render(timer, painter, true);
+    panel_layers_render(timer, true);
     Debugger::block("GUI : Panels : Layers Panel"); // End
 
     Debugger::block("GUI : Panels : Displaying modes panel"); // Start
-    panel_displaying_modes_render(timer, painter, true);
+    panel_displaying_modes_render(timer, true);
     Debugger::block("GUI : Panels : Displaying modes panel"); // End
     
     if(twoD_painting_mode){
         Debugger::block("GUI : Panels : 2D painting panel"); // Start
-        panel_twoD_painting_render(timer, painter, true);
+        panel_twoD_painting_render(timer, true);
         Debugger::block("GUI : Panels : 2D painting panel"); // End
     }
 
+    Debugger::block("GUI : Panels : Painting face selection check combo list"); // Start
+    checkComboList_painting_face_selection_render(timer, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
+    Debugger::block("GUI : Panels : Painting face selection check combo list"); // End
+
     if(panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2){
         Debugger::block("GUI : Panels : Painting modes panel"); // Start
-        panel_painting_modes_render(timer, painter, true);
+        panel_painting_modes_render(timer, true);
         Debugger::block("GUI : Panels : Painting modes panel"); // End
 
         Debugger::block("GUI : Panels : Painting color check combo list"); // Start
         checkComboList_painting_color_render(timer, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
-        Debugger::block("GUI : Panels : Painting color check combo list"); // End
-        
-        Debugger::block("GUI : Panels : Painting face selection check combo list"); // Start
-        checkComboList_painting_face_selection_render(timer, painter, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
-        Debugger::block("GUI : Panels : Painting face selection check combo list"); // End
+        Debugger::block("GUI : Panels : Painting color check combo list"); // End        
         
         Debugger::block("GUI : Panels : Painting mirror check combo list"); // Start
-        checkComboList_painting_mirror_render(timer, painter, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
+        checkComboList_painting_mirror_render(timer, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
         Debugger::block("GUI : Panels : Painting mirror check combo list"); // End
         
         Debugger::block("GUI : Panels : Painting over check combo list"); // Start
-        checkComboList_painting_over_render(timer, painter, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
+        checkComboList_painting_over_render(timer, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
         Debugger::block("GUI : Panels : Painting over check combo list"); // End
         
         Debugger::block("GUI : Panels : Painting brush button"); // Start
-        button_painting_brush_render(timer, painter, true);
+        button_painting_brush_render(timer, true);
         Debugger::block("GUI : Panels : Painting brush button"); // End
 
         if(panel_painting_modes.selectedElement == 4){
             Debugger::block("GUI : Panels : Smear painting properties panel"); // Start
-            panel_smear_painting_properties_render(timer, painter, true);
+            panel_smear_painting_properties_render(timer, true);
             Debugger::block("GUI : Panels : Smear painting properties panel"); // End
            
             Debugger::block("GUI : Panels : Painting filter mode filter selection button"); // Start
-            button_painting_filter_mode_filter_render(timer, painter, true);
+            button_painting_filter_mode_filter_render(timer, true);
             Debugger::block("GUI : Panels : Painting filter mode filter selection button"); // End
         }
     }
@@ -131,7 +131,7 @@ void panels_render(Timer& timer, Painter& painter)
 
     if(!Settings::properties()->cat_hide){
         Debugger::block("GUI : Log Dialog"); // Start
-        dialog_log.render(timer, painter);
+        dialog_log.render(timer);
         Debugger::block("GUI : Log Dialog"); // End
     }
     else

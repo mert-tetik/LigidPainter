@@ -35,11 +35,11 @@ PaintingLayer::PaintingLayer(const unsigned int resolution){
     this->contextMenu.sections[0].elements.pop_back();
 }
 
-void PaintingLayer::render(Painter& painter, const unsigned int resolution, Mesh& mesh){
+void PaintingLayer::render(const unsigned int resolution, Mesh& mesh){
     this->updateResultTextureResolutions(resolution, mesh);
 }
 
-void PaintingLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh){
+void PaintingLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     this->elementSelectionMode = false;
     return;
 }

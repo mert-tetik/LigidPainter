@@ -38,7 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static Texture projectToModelTxtr;
 static Framebuffer projectToModelFBO;
 
-void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3 center, Painter& painter){
+void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3 center){
     
     if(!vertices.size())
         return;
@@ -167,12 +167,12 @@ void VectorStroke3D::genLineVertices(){
     }
 }
 
-void VectorStroke3D::updateLinePoints(Painter& painter){
+void VectorStroke3D::updateLinePoints(){
     
     LigidGL::cleanGLErrors();
 
     this->genLineVertices();
-    this->projectToModel(this->lineVertices, (startPoint.pos + endPoint.pos) / 2.f, painter);
+    this->projectToModel(this->lineVertices, (startPoint.pos + endPoint.pos) / 2.f);
 }
 
 VectorStroke3D::VectorStroke3D(ThreeDPoint startPoint, ThreeDPoint endPoint){
@@ -215,7 +215,7 @@ void VectorStroke3D::renderLine(){
     }
 }
 
-bool VectorStroke3D::draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke3D>& strokes, int curI, Painter& painter){
+bool VectorStroke3D::draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke3D>& strokes, int curI){
     
     bool clicked = false;
 
@@ -238,16 +238,16 @@ bool VectorStroke3D::draw(Timer& timer, float edge, bool doMouseTracking, std::v
     this->startPoint.color = startClr;
     this->endPoint.color = endClr;
 
-    if(this->startPoint.render(timer, doMouseTracking, painter, false, 0.015f, true))
+    if(this->startPoint.render(timer, doMouseTracking, false, 0.015f, true))
         clicked = true;
     
     if(curI == strokes.size() - 1){
-        if(this->endPoint.render(timer, doMouseTracking, painter, false, 0.015f, true))
+        if(this->endPoint.render(timer, doMouseTracking, false, 0.015f, true))
             clicked = true;
     }
     
     if(this->startPoint.moving || this->endPoint.moving){
-        this->updateLinePoints(painter);
+        this->updateLinePoints();
     }
 
     this->renderLine();

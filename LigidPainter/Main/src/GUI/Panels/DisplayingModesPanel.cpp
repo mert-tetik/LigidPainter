@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Panel panel_displaying_modes;
 
-void panel_displaying_modes_render(Timer& timer, Painter& painter, bool doMouseTracking)
+void panel_displaying_modes_render(Timer& timer, bool doMouseTracking)
 {
     panel_displaying_modes.render(timer, doMouseTracking);
     if(panel_displaying_modes.resizingDone){

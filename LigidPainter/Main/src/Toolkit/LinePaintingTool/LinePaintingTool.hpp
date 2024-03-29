@@ -17,6 +17,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 class Timer;
 class Painter;
 
-void line_painting(Timer& timer, Painter& painter, bool applyStroke, bool firstFrame);
+void line_painting(Timer& timer, bool applyStroke, bool firstFrame);
 
 #endif

@@ -52,7 +52,7 @@ static float calculateDepthToleranceValue(glm::vec3 origin){
     return 0.0001f;
 }
 
-bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, bool stencilTest, float radius, bool canMove){
+bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, float radius, bool canMove){
 
     Framebuffer bindedFBO;
     bindedFBO.makeCurrentlyBindedFBO();
@@ -129,7 +129,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, Painter& painter, b
             ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
             getScene()->get_selected_mesh()->Draw(false);
 
-            this->render(timer, false, painter, true, radius, false);
+            this->render(timer, false, true, radius, false);
 
             unsigned char* stencilData = new unsigned char[4];
 

@@ -34,7 +34,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static bool prevStraightLinePaintingCondition = false;
 
-void render_toolkits(Timer& timer, Painter& painter){
+void render_toolkits(Timer& timer){
     
     if(checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
         Debugger::block("GUI : Rendering dotes"); // Start
@@ -44,7 +44,7 @@ void render_toolkits(Timer& timer, Painter& painter){
 
     if(checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1){
         Debugger::block("GUI : Texture fields"); // Start
-        getTextureFieldScene()->render(timer, painter, !panels_any_hovered(), checkBox_wrap_mode.clickState1, checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
+        getTextureFieldScene()->render(timer, !panels_any_hovered(), checkBox_wrap_mode.clickState1, checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
         Debugger::block("GUI : Texture fields"); // End
     }
     
@@ -65,7 +65,6 @@ void render_toolkits(Timer& timer, Painter& painter){
         Debugger::block("GUI : Line painting"); // Start
         line_painting(
                         timer, 
-                        painter, 
                         prevStraightLinePaintingCondition && !straightLinePaintingCondition, 
                         !prevStraightLinePaintingCondition && straightLinePaintingCondition
                     );
@@ -87,7 +86,7 @@ void render_toolkits(Timer& timer, Painter& painter){
             render_painting_cursor(painter.brushProperties.radius);
         }
         else{
-            render_3D_cursor(painter);
+            render_3D_cursor();
         }
         
     }

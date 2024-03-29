@@ -51,7 +51,7 @@ public:
     TextureField(Texture texture);
 
     /*! @brief Render the texture field*/
-    void render(Timer& timer, Painter& painter, std::vector<TextureField>& srcVector, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
+    void render(Timer& timer, std::vector<TextureField>& srcVector, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
 
     
     /*------------------------------- 2D TEXTURE FIELD  -------------------------------*/
@@ -95,7 +95,7 @@ public:
 
 
     /*! @brief Render the 2D texture field */
-    void render2DTextureField(Timer& timer, Painter& painter, std::vector<TextureField>& srcVector, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
+    void render2DTextureField(Timer& timer, std::vector<TextureField>& srcVector, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
     
     /*------------------------------- WRAP MODE  -------------------------------*/
 
@@ -131,22 +131,22 @@ public:
     /**/ThreeDPoint detailed_threeDPoint_r5_c4;
     
     /*! @brief Auto-Generates new position values for the detail points (according to 4 main points)*/
-    void setDetailedWrapPoints(Painter& painter);
+    void setDetailedWrapPoints();
     
     /*! @brief Sets the positions of the points to 0*/
     void unplaceWrapPoints();
 
     /*! @brief Places the first (top left) point on the 3D model 
         (Call if mouse click & edit mode) */
-    void placeFirstPoint(Painter& painter, Framebuffer bindedFBO);
+    void placeFirstPoint(Framebuffer bindedFBO);
     
     /*! @brief Places the second (bottom right) point on the 3D model.
                 Then auto-places rest of the points in a way to form a square 
         (Call if mouse click & edit mode) */
-    void placeSecondPoint(Painter& painter, Framebuffer bindedFBO);
+    void placeSecondPoint(Framebuffer bindedFBO);
 
     /*! @brief Renders all the points (detailed points too if detail mode is active)*/
-    void renderPoints(Timer& timer,Painter& painter, bool doMouseTracking);
+    void renderPoints(Timer& timer,bool doMouseTracking);
 
     /*! @brief Returns true if any of the points moved */
     bool didAnyWrapPointMove();
@@ -163,11 +163,11 @@ public:
     
     /*! @brief Checks if the cursor is located on top of the wrapped texture
         (called if mouse left button clicked & other conditions are set like no panel was hovered too)*/
-    void checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& painter, bool doMouseTracking);
+    void checkIfWrappedTextureClicked(Framebuffer bindedFBO, bool doMouseTracking);
 
 
     /*! Updates the threeDWrapBox */
-    void updateWrapBox(Painter& painter);
+    void updateWrapBox();
     
     /* These buttons are being rendered if the wrapped texture field is active and lets you modify it*/
     /**/Button wrap_deleteButton; // Deletes the texture field
@@ -180,7 +180,7 @@ public:
     void renderWrappedModifyElements(Timer& timer, bool doMouseTracking);
 
     /*! @brief Render the wrapped texture field */
-    void renderWrappedTextureField(Timer& timer, Painter& painter, std::vector<TextureField>& srcVector, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
+    void renderWrappedTextureField(Timer& timer, std::vector<TextureField>& srcVector, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
 
     /*! @brief Renders info texts about placing first points of the wrapped texture field
                Only called if top left and bottom right points set to vec3(0)
@@ -195,9 +195,9 @@ public:
 
     Texture painting_over_texture;
 
-    void render(Timer& timer, Painter& painter, bool doMouseTracking, bool threeD_only, bool editMode);
+    void render(Timer& timer, bool doMouseTracking, bool threeD_only, bool editMode);
     void add_new(TextureField texture_field);
-    void update_painting_over_texture(bool threeD_only, Painter& painter);
+    void update_painting_over_texture(bool threeD_only);
     
     TextureFieldScene(){}
     

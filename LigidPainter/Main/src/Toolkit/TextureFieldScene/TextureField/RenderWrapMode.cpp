@@ -36,7 +36,6 @@ extern bool textureField_alreadyInteracted;
 
 void TextureField::renderWrappedTextureField(                            
                                                 Timer& timer, 
-                                                Painter& painter, 
                                                 std::vector<TextureField>& srcVector, 
                                                 int& srcVectorI, 
                                                 bool editMode, 
@@ -54,11 +53,11 @@ void TextureField::renderWrappedTextureField(
     
     if(this->threeDPointTopLeft.pos == glm::vec3(0.f) && this->threeDPointBottomRight.pos == glm::vec3(0.f) && *Mouse::LClick() && editMode){
         // If no point is selected
-        this->placeFirstPoint(painter, bindedFBO);
+        this->placeFirstPoint(bindedFBO);
     }
     else if(this->threeDPointBottomRight.pos == glm::vec3(0.f) && *Mouse::LClick() && editMode){
         // If the start point is selected
-        this->placeSecondPoint(painter, bindedFBO);
+        this->placeSecondPoint(bindedFBO);
     }
     else{
         // Render the model first with alpha zero to depth test
@@ -83,7 +82,7 @@ void TextureField::renderWrappedTextureField(
 
         // Render the points
         if(!generatingTextureMode && editMode){
-            this->renderPoints(timer, painter, doMouseTracking);
+            this->renderPoints(timer, doMouseTracking);
             
             if(getContext()->window.isKeyClicked(LIGIDGL_KEY_G) && this->isAnyWrapPointActive() && !textureField_alreadyInteracted)
                 registerTextureFieldAction("Wrapped texture field - Point moved", srcVector);
@@ -91,7 +90,7 @@ void TextureField::renderWrappedTextureField(
             // Update the wrap box if any of the points moved & register move action
             if(this->didAnyWrapPointMove())
             {
-                this->updateWrapBox(painter);
+                this->updateWrapBox();
 
                 textureField_alreadyInteracted = true;
             }
@@ -140,7 +139,7 @@ void TextureField::renderWrappedTextureField(
                 !textureField_alreadyInteracted
             )
         {
-            this->checkIfWrappedTextureClicked(bindedFBO, painter, !this->isAnyWrapPointActive() && doMouseTracking);
+            this->checkIfWrappedTextureClicked(bindedFBO, !this->isAnyWrapPointActive() && doMouseTracking);
         }
         
         if(this->active){
@@ -155,13 +154,13 @@ void TextureField::renderWrappedTextureField(
                 registerTextureFieldAction("Wrapped texture field - flip in x axis", srcVector);
                 this->threeDWrapBox.flipX = !this->threeDWrapBox.flipX;
 
-                this->updateWrapBox(painter);
+                this->updateWrapBox();
             }
             else if(wrap_flipVerticalButton.clicked){
                 registerTextureFieldAction("Wrapped texture field - flip in y axis", srcVector);
                 this->threeDWrapBox.flipY = !this->threeDWrapBox.flipY;
 
-                this->updateWrapBox(painter);
+                this->updateWrapBox();
             }
             else if(wrap_unwrapModeButton.clicked){
                 registerTextureFieldAction("Texture field - Unwrapped", srcVector);
@@ -172,7 +171,7 @@ void TextureField::renderWrappedTextureField(
             }
             else if(wrap_detailModeButton.hover && *Mouse::LClick()){
                 registerTextureFieldAction("Wrapped Texture field - Detail mode activated", srcVector);
-                this->setDetailedWrapPoints(painter);
+                this->setDetailedWrapPoints();
             }
         }
     }
@@ -221,7 +220,7 @@ void TextureField::renderWrappedTextureField(
 
 
 
-void TextureField::setDetailedWrapPoints(Painter& painter){
+void TextureField::setDetailedWrapPoints(){
     this->threeDWrapBox.getDetailedVertices(
                                                 &detailed_threeDPoint_r1_c2.pos, &detailed_threeDPoint_r1_c2.detailI,
                                                 &detailed_threeDPoint_r1_c3.pos, &detailed_threeDPoint_r1_c3.detailI,
@@ -247,14 +246,13 @@ void TextureField::setDetailedWrapPoints(Painter& painter){
 
                                                 &detailed_threeDPoint_r5_c2.pos, &detailed_threeDPoint_r5_c2.detailI,
                                                 &detailed_threeDPoint_r5_c3.pos, &detailed_threeDPoint_r5_c3.detailI,
-                                                &detailed_threeDPoint_r5_c4.pos, &detailed_threeDPoint_r5_c4.detailI,
-                                                painter
+                                                &detailed_threeDPoint_r5_c4.pos, &detailed_threeDPoint_r5_c4.detailI
                                             );
 
-    this->updateWrapBox(painter);
+    this->updateWrapBox();
 }
 
-void TextureField::updateWrapBox(Painter& painter){
+void TextureField::updateWrapBox(){
     
     if(!this->threeDWrapBox.VBO)
         return;
@@ -288,15 +286,13 @@ void TextureField::updateWrapBox(Painter& painter){
 
                                                 detailed_threeDPoint_r5_c2.pos, detailed_threeDPoint_r5_c2.detailI,
                                                 detailed_threeDPoint_r5_c3.pos, detailed_threeDPoint_r5_c3.detailI,
-                                                detailed_threeDPoint_r5_c4.pos, detailed_threeDPoint_r5_c4.detailI,
-                                                painter
+                                                detailed_threeDPoint_r5_c4.pos, detailed_threeDPoint_r5_c4.detailI
                                             );
     }
     else{
         this->threeDWrapBox.update(
                                 threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
-                                (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f,
-                                painter
+                                (threeDPointTopLeft.normal +threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
                             );        
     }
 }
@@ -338,7 +334,7 @@ void TextureField::unplaceWrapPoints(){
 
 glm::vec2 threeDPointTopLeftCursorPos;
 
-void TextureField::placeFirstPoint(Painter& painter, Framebuffer bindedFBO){
+void TextureField::placeFirstPoint(Framebuffer bindedFBO){
     // Retrieve the position value of the 3D model here
     float* posData = new float[4]; 
     float* normalData = new float[4]; 
@@ -362,7 +358,7 @@ void TextureField::placeFirstPoint(Painter& painter, Framebuffer bindedFBO){
     delete[] normalData;
 }
 
-void TextureField::placeSecondPoint(Painter& painter, Framebuffer bindedFBO){
+void TextureField::placeSecondPoint(Framebuffer bindedFBO){
     // Retrieve the position values of the 3D model here
     float* posData = new float[4]; 
     float* normalData = new float[4]; 
@@ -445,12 +441,11 @@ void TextureField::placeSecondPoint(Painter& painter, Framebuffer bindedFBO){
         if(!this->threeDWrapBox.VBO){
             this->threeDWrapBox.init(
                                     threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
-                                    (threeDPointTopLeft.normal + threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f,
-                                    painter
+                                    (threeDPointTopLeft.normal + threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
                                 );
         }
         else{
-            this->updateWrapBox(painter);
+            this->updateWrapBox();
         }
 
     }
@@ -461,36 +456,36 @@ void TextureField::placeSecondPoint(Painter& painter, Framebuffer bindedFBO){
     delete[] normalData;
 }
 
-void TextureField::renderPoints(Timer& timer, Painter& painter, bool doMouseTracking){
+void TextureField::renderPoints(Timer& timer, bool doMouseTracking){
     // Render 4 main points
-    this->threeDPointTopLeft.render(timer, doMouseTracking, painter, false, 0.015f, !textureField_alreadyInteracted);
-    this->threeDPointTopRight.render(timer, doMouseTracking, painter, false, 0.015f, !textureField_alreadyInteracted);
-    this->threeDPointBottomLeft.render(timer, doMouseTracking, painter, false, 0.015f, !textureField_alreadyInteracted);
-    this->threeDPointBottomRight.render(timer, doMouseTracking, painter, false, 0.015f, !textureField_alreadyInteracted);
+    this->threeDPointTopLeft.render(timer, doMouseTracking, false, 0.015f, !textureField_alreadyInteracted);
+    this->threeDPointTopRight.render(timer, doMouseTracking, false, 0.015f, !textureField_alreadyInteracted);
+    this->threeDPointBottomLeft.render(timer, doMouseTracking, false, 0.015f, !textureField_alreadyInteracted);
+    this->threeDPointBottomRight.render(timer, doMouseTracking, false, 0.015f, !textureField_alreadyInteracted);
 
     if(wrap_detailModeButton.clickState1 && (threeDPointBottomLeft.pos != glm::vec3(0.f) || threeDPointBottomRight.pos != glm::vec3(0.f))){
         // Render detailed points
-        this->detailed_threeDPoint_r1_c2.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r1_c3.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r1_c4.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r2_c1.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r2_c2.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r2_c3.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r2_c4.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r2_c5.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r3_c1.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r3_c2.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r3_c3.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r3_c4.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r3_c5.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r4_c1.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r4_c2.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r4_c3.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r4_c4.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r4_c5.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r5_c2.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r5_c3.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
-        this->detailed_threeDPoint_r5_c4.render(timer, doMouseTracking, painter, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r1_c2.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r1_c3.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r1_c4.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r2_c1.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r2_c2.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r2_c3.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r2_c4.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r2_c5.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r3_c1.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r3_c2.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r3_c3.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r3_c4.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r3_c5.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r4_c1.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r4_c2.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r4_c3.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r4_c4.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r4_c5.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r5_c2.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r5_c3.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
+        this->detailed_threeDPoint_r5_c4.render(timer, doMouseTracking, false, 0.005f, !textureField_alreadyInteracted);
     }
 }
 
@@ -662,7 +657,7 @@ bool TextureField::isAnyWrapPointActive(){
 static Texture threeDPointsStencilTexture;
 static Framebuffer threeDPointsStencilFBO;
 
-void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, Painter& painter, bool doMouseTracking){
+void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, bool doMouseTracking){
     // Positioning the first modifying button (delete button) (other modifying buttons labeled with wrap_ will be positioned according to this)
     wrap_deleteButton.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f; 
     wrap_deleteButton.pos.x -= (wrap_deleteButton.scale.x + wrap_flipHorizontalButton.scale.x + wrap_flipVerticalButton.scale.x + wrap_unwrapModeButton.scale.x + wrap_detailModeButton.scale.x) / 1.5f; 

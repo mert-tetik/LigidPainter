@@ -34,6 +34,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Button button_painting_filter_mode_filter;
 
-void button_painting_filter_mode_filter_render(Timer& timer, Painter& painter, bool doMouseTracking){
+void button_painting_filter_mode_filter_render(Timer& timer, bool doMouseTracking){
     button_painting_filter_mode_filter.render(timer, doMouseTracking);
 }

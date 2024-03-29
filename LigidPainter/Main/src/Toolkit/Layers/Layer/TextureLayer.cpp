@@ -77,7 +77,7 @@ Panel textureSelectPanel = Panel(
                                     true
                                 );
 
-void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh){
+void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     textureSelectPanel.sections[0].elements[1].button.textureSelection3D = true;
     textureSelectPanel.sections[0].elements[3].button.textureSelection3D = true;
     textureSelectPanel.sections[0].elements[5].button.textureSelection3D = true;
@@ -112,7 +112,7 @@ void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTrac
         textureSelectPanel.sections[0].elements[9].button.clicked ||
         textureSelectPanel.sections[0].elements[11].button.clicked 
     )
-        this->render(painter, resolution, mesh);
+        this->render(resolution, mesh);
 
     if(textureSelectPanel.hover)
         __enteredPanelOnce = true;
@@ -131,7 +131,7 @@ void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTrac
     }
 }
 
-void TextureLayer::render(Painter& painter, const unsigned int resolution, Mesh& mesh){
+void TextureLayer::render(const unsigned int resolution, Mesh& mesh){
     this->updateResultTextureResolutions(resolution, mesh);
     
     this->channels.albedo.generateProceduralTexture(mesh, this->result.albedo, resolution);

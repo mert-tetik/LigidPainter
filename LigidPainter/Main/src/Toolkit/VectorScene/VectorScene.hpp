@@ -91,17 +91,17 @@ public:
     ThreeDPoint startPoint;
     ThreeDPoint endPoint;
 
-    void updateLinePoints(Painter& painter);
+    void updateLinePoints();
 
     std::vector<VertexUTIL> lineVertices;
 
     VectorStroke3D(){}
     VectorStroke3D(ThreeDPoint startPoint, ThreeDPoint endPoint);
 
-    bool draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke3D>& strokes, int curI, Painter& painter);
+    bool draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke3D>& strokes, int curI);
 
 private:
-    void projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3 center, Painter& painter);
+    void projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3 center);
     void genLineVertices(); 
     void renderLine(); 
 };

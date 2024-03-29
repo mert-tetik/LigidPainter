@@ -50,7 +50,7 @@ void Renderer::render(){
     Debugger::block("Prep"); // End
 
     Debugger::block("Render : Scene"); // Start
-    getScene()->render_scene(painter);
+    getScene()->render_scene();
     Debugger::block("Render : Scene"); // End
     
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
@@ -60,11 +60,11 @@ void Renderer::render(){
     getBox()->bindBuffers();
     
     Debugger::block("Render : Toolkits"); // Start
-    render_toolkits(timer, painter);
+    render_toolkits(timer);
     Debugger::block("Render : Toolkits"); // End
     
     Debugger::block("Render : Panels"); // Start
-    panels_render(timer, painter);
+    panels_render(timer);
     Debugger::block("Render : Panels"); // End
 
     Debugger::block("Painting"); // Start

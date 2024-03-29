@@ -41,7 +41,7 @@ ComboBox comboBox_layers_resolution;
 
 static int lastLayerResolution = 1024;
 
-void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
+void panel_layers_render(Timer& timer, bool doMouseTracking)
 {
     // Render the layers panel
     panel_layers.render(timer, doMouseTracking);
@@ -56,7 +56,7 @@ void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
     int layersResolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]);
 
     // Render the layers
-    getScene()->get_selected_mesh()->layerScene.render(timer, panel_layers, painter, doMouseTracking, layersResolution, *getScene()->get_selected_mesh());
+    getScene()->get_selected_mesh()->layerScene.render(timer, panel_layers, doMouseTracking, layersResolution, *getScene()->get_selected_mesh());
     
     button_mesh_selection.render(timer, doMouseTracking);
     
@@ -81,7 +81,7 @@ void panel_layers_render(Timer& timer, Painter& painter, bool doMouseTracking)
             }
         }
 
-        getScene()->get_selected_mesh()->layerScene.update_all_layers(layersResolution, glm::vec3(0.f), painter, *getScene()->get_selected_mesh());
+        getScene()->get_selected_mesh()->layerScene.update_all_layers(layersResolution, glm::vec3(0.f), *getScene()->get_selected_mesh());
     }
 
     lastLayerResolution = layersResolution;

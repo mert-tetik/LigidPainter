@@ -22,7 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
-void Scene::render_scene(Painter& painter){
+void Scene::render_scene(){
 
     Debugger::block("Skybox Rendering"); // Start
     this->render_skybox();

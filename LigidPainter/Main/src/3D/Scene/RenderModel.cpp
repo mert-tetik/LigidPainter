@@ -16,6 +16,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Painting/Painter.hpp"
 
 #include "3D/ThreeD.hpp"
 #include "3D/Camera/Camera.hpp"
@@ -27,7 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static Camera prevCam;
 
-void Scene::render_model(Painter& painter){
+void Scene::render_model(){
     
     //3D Model Shader
     ShaderSystem::tdModelShader().use();
@@ -200,7 +201,7 @@ void Scene::render_model(Painter& painter){
         
         //Bind the painting texture
         glActiveTexture(GL_TEXTURE8);
-        glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, painting_projected_painting_FBO.colorBuffer.ID);
         
         if(!(i != button_mesh_selection.selectedMeshI && this->model->meshes[i].face_selection_data.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", this->model->meshes[i].indices.size() / 3);
@@ -227,9 +228,6 @@ void Scene::render_model(Painter& painter){
         )
     {
         getScene()->get_selected_mesh()->updatePosNormalTexture();
-        
-        //Update the depth texture
-        painter.updateDepthTexture();
         
         // Update the model's object id texture
         this->model->updateObjectIDsTexture();

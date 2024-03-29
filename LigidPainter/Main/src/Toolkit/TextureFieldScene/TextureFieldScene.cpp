@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 extern bool textureFields_decidingWrapPointsMode;
 extern bool textureField_alreadyInteracted;
 
-void TextureFieldScene::render(Timer& timer, Painter& painter, bool doMouseTracking, bool threeD_only, bool editMode){
+void TextureFieldScene::render(Timer& timer, bool doMouseTracking, bool threeD_only, bool editMode){
     
     getBox()->bindBuffers();
     glClear(GL_DEPTH_BUFFER_BIT);
@@ -60,7 +60,6 @@ void TextureFieldScene::render(Timer& timer, Painter& painter, bool doMouseTrack
         if((painter.wrapMode && this->texture_fields[i].wrapMode) || !painter.wrapMode || editMode){
             this->texture_fields[i].render(
                                                 timer, 
-                                                painter,
                                                 this->texture_fields, 
                                                 i, 
                                                 editMode, 
@@ -77,7 +76,7 @@ void TextureFieldScene::add_new(TextureField texture_field){
     this->texture_fields.push_back(texture_field);
 }
 
-void TextureFieldScene::update_painting_over_texture(bool threeD_only, Painter& painter){
+void TextureFieldScene::update_painting_over_texture(bool threeD_only){
     if(!this->FBO.ID || glIsFramebuffer(this->FBO.ID) == GL_FALSE){
         LGDLOG::start << "ERROR : Texture field scene : Updating painting over texture : Invalid framebuffer ID" << LGDLOG::end;
         return;
@@ -102,7 +101,7 @@ void TextureFieldScene::update_painting_over_texture(bool threeD_only, Painter& 
     for (int i = 0; i < this->texture_fields.size(); i++)
     {
         if((threeD_only && this->texture_fields[i].wrapMode) || !threeD_only){
-            this->texture_fields[i].render(Timer(), painter, this->texture_fields, i, false, true, false);
+            this->texture_fields[i].render(Timer(), this->texture_fields, i, false, true, false);
         }
     }    
 

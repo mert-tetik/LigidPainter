@@ -38,7 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 CheckComboList checkComboList_painting_mirror;
 
-void checkComboList_painting_mirror_render(Timer& timer, Painter& painter, bool doMouseTracking){
+void checkComboList_painting_mirror_render(Timer& timer, bool doMouseTracking){
     
     checkComboList_painting_mirror.checkButton.color2 = checkComboList_painting_mirror.checkButton.color;
     checkComboList_painting_mirror.checkButton.clickState1 = true;
@@ -63,16 +63,4 @@ void checkComboList_painting_mirror_render(Timer& timer, Painter& painter, bool 
     if(checkComboList_painting_mirror.panel.sections[0].elements[4].checkBox.clickState1 && !checkComboList_painting_mirror.arrowButton.clickState1)
         btnZ.render(timer, false);
 
-    // Updating the depth texture if interacted with the gui elements related to mirroring
-    if( 
-        checkComboList_painting_mirror.panel.sections[0].elements[0].isInteracted() || 
-        checkComboList_painting_mirror.panel.sections[0].elements[1].isInteracted() || 
-        checkComboList_painting_mirror.panel.sections[0].elements[2].isInteracted() || 
-        checkComboList_painting_mirror.panel.sections[0].elements[3].isInteracted() || 
-        checkComboList_painting_mirror.panel.sections[0].elements[4].isInteracted() || 
-        checkComboList_painting_mirror.panel.sections[0].elements[5].isInteracted()
-    ) 
-    {
-        painter.updateDepthTexture();
-    }
 }

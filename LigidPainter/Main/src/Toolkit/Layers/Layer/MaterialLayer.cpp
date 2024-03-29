@@ -61,7 +61,7 @@ Panel materialSelectPanel = Panel(
                                     true
                                 );
 
-void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh){
+void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     materialSelectPanel.sections[0].elements[0].button.texture = this->material.displayingTexture;
     
     if(materialSelectPanel.sections[0].elements[0].button.clicked){
@@ -92,11 +92,11 @@ void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTra
     }
 
     if(!this->elementSelectionMode){
-        this->render(painter, resolution, mesh);
+        this->render(resolution, mesh);
     }
 }
 
-void MaterialLayer::render(Painter& painter, const unsigned int resolution, Mesh& mesh){
+void MaterialLayer::render(const unsigned int resolution, Mesh& mesh){
     this->updateResultTextureResolutions(resolution, mesh);
     
     Mesh resMesh = mesh;

@@ -36,7 +36,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Button button_painting_brush;
 
-void button_painting_brush_render(Timer& timer, Painter& painter, bool doMouseTracking){
+void button_painting_brush_render(Timer& timer, bool doMouseTracking){
     button_painting_brush.render(timer, doMouseTracking);
-    painter.brushProperties = button_painting_brush.brushProperties; 
 }

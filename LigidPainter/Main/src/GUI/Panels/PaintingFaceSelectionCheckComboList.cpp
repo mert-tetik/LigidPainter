@@ -37,7 +37,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 CheckComboList checkComboList_painting_face_selection;
 
-void checkComboList_painting_face_selection_render(Timer& timer, Painter& painter, bool doMouseTracking){
+void checkComboList_painting_face_selection_render(Timer& timer, bool doMouseTracking){
     checkComboList_painting_face_selection.checkButton.clickState1 = true;
     checkComboList_painting_face_selection.checkButton.color2 = checkComboList_painting_face_selection.checkButton.color;
 

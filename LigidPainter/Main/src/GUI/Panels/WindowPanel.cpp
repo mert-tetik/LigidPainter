@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Panel panel_window;
 
-void panel_window_render(Timer& timer, Painter& painter, bool doMouseTracking){
+void panel_window_render(Timer& timer, bool doMouseTracking){
     panel_window.render(timer, doMouseTracking);
     if(panel_window.resizingDone){
         panels_transform();
@@ -54,7 +54,7 @@ void panel_window_render(Timer& timer, Painter& painter, bool doMouseTracking){
         dialog_displayer.show(timer, getScene()->skybox);
     }
     else if(panel_window.sections[0].elements[4].button.clicked){//Pressed to the settings button of the window panel
-        dialog_settings.show(timer, painter);
+        dialog_settings.show(timer);
     }
     else if(panel_window.sections[0].elements[5].button.clicked){//Pressed to the settings button of the window panel
         dialog_baking.show(timer, getScene()->skybox);

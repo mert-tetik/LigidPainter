@@ -90,7 +90,6 @@ void TextureField::position2DElements(){
 
 void TextureField::render2DTextureField(                            
                                                 Timer& timer, 
-                                                Painter& painter, 
                                                 std::vector<TextureField>& srcVector, 
                                                 int& srcVectorI, 
                                                 bool editMode, 

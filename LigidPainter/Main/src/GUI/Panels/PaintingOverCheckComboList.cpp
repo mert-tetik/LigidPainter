@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 CheckComboList checkComboList_painting_over;
 
 ProceduralProperties lastPaintingOverTextureFieldAddViaTextureSelectionDialogProceduralProperties;
-void checkComboList_painting_over_render(Timer& timer, Painter& painter, bool doMouseTracking){    
+void checkComboList_painting_over_render(Timer& timer, bool doMouseTracking){    
 
     checkComboList_painting_over.checkButton.clickState1 = true;
     checkComboList_painting_over.checkButton.color2 = checkComboList_painting_over.checkButton.color;

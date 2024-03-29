@@ -41,14 +41,14 @@ Official Web Page : https:ligidtools.com/ligidpainter
 // Defined in Painter/faceSelection.cpp
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 
-void LogDialog::undo(Painter& painter){
+void LogDialog::undo(){
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
         if(actions_Vectors[actions_Vectors.size() - 1].ID == VECTOR_ACTION){
-            painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;
+            //painter.vectorStrokes = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes;
             actions_Vectors.pop_back();
         }
         else if(actions_Vectors[actions_Vectors.size() - 1].ID == VECTOR_ACTION_3D){
-            painter.vectorStrokes3D = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes3D;
+            //painter.vectorStrokes3D = actions_Vectors[actions_Vectors.size() - 1].vectorStrokes3D;
             actions_Vectors.pop_back();
         }
         
@@ -111,7 +111,7 @@ void LogDialog::undo(Painter& painter){
 
         for (size_t i = 0; i < paintingOverTextureFields.size(); i++)
         {
-            paintingOverTextureFields[i].updateWrapBox(painter);
+            paintingOverTextureFields[i].updateWrapBox();
         }
         
 

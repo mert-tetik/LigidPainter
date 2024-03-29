@@ -48,7 +48,7 @@ static void moveLayer(int src, int dest, std::vector<Layer*> layers){
         layers.insert(layers.begin() + dest, layer);
 }
 
-void LayerScene::render(Timer& timer, Panel &layerPanel, Painter& painter, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
+void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     int count = 0;
 
     bool anyBtnClickState1 = false;
@@ -56,7 +56,7 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, Painter& painter, bool 
     {
         glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 1.5f); 
         glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
-        int layerMSG = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, painter, resolution, mesh);
+        int layerMSG = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, resolution, mesh);
         
         if(this->layers[i]->layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
             btnMoving = true;
@@ -98,7 +98,7 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, Painter& painter, bool 
                     if(copyCount == 0)
                         movingLayers.clear();    
                     movingLayers.push_back(this->layers[cI]);
-                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, painter, resolution, mesh);
+                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, resolution, mesh);
                     copyCount++;
                 }
             }
@@ -303,10 +303,10 @@ MaterialChannels LayerScene::get_painting_channels(bool* success){
     return MaterialChannels();
 }
 
-void LayerScene::update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Painter& painter, Mesh& mesh){
+void LayerScene::update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Mesh& mesh){
     for (size_t i = 0; i < this->layers.size(); i++)
     {
-        this->layers[i]->render(painter, resolution, mesh);
+        this->layers[i]->render(resolution, mesh);
     }
     this->update_result(resolution, baseColor, mesh);
 }

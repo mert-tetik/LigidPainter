@@ -32,7 +32,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Panel panel_smear_painting_properties;
 
-void panel_smear_painting_properties_render(Timer& timer, Painter& painter, bool doMouseTracking)
+void panel_smear_painting_properties_render(Timer& timer, bool doMouseTracking)
 {
     panel_smear_painting_properties.render(timer, doMouseTracking); 
 }

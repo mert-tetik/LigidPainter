@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Panel panel_selected_texture_display;
 
-void panel_selected_texture_display_render(Timer& timer, Painter& painter, bool doMouseTracking){
+void panel_selected_texture_display_render(Timer& timer, bool doMouseTracking){
     panel_selected_texture_display.sections[0].elements[0].button.texture = panel_library_selected_texture;
     
     panel_selected_texture_display.render(timer, doMouseTracking);

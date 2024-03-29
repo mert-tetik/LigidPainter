@@ -36,16 +36,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Panels.hpp"
 
 
-Framebuffer projected_painting_FBO;
+Framebuffer painting_projected_painting_FBO;
 
-MirrorSide O_side;
-MirrorSide X_side;
-MirrorSide Y_side;
-MirrorSide XY_side;
-MirrorSide Z_side;
-MirrorSide XZ_side;
-MirrorSide YZ_side;
-MirrorSide XYZ_side;
+static MirrorSide O_side;
+static MirrorSide X_side;
+static MirrorSide Y_side;
+static MirrorSide XY_side;
+static MirrorSide Z_side;
+static MirrorSide XZ_side;
+static MirrorSide YZ_side;
+static MirrorSide XYZ_side;
 
 struct PaintedBufferData{
     glm::vec3 clr;
@@ -96,7 +96,7 @@ std::vector<PaintedBufferData> get_painted_buffers(PaintSettings settings){
 
 static int frame_counter = 0;
 
-void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
+void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
     
     if(first_frame){
         frame_counter = 0;
@@ -107,7 +107,7 @@ void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
     GET_DATA_FROM_PAINT_MODE(stroke_brush, stroke_brush);
 
     if(settings.painting_mode == 5){
-        bucket_paint_texture(projected_painting_FBO.colorBuffer, Color(settings.color_buffer.stroke_albedo_color), stroke_brush.properties.opacity);
+        bucket_paint_texture(painting_projected_painting_FBO.colorBuffer, Color(settings.color_buffer.stroke_albedo_color), stroke_brush.properties.opacity);
         return;
     } 
 
@@ -187,7 +187,7 @@ void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
         }
     }
     
-    generate_projected_painting_texture(&projected_painting_FBO, settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z, !last_frame && !settings.point.use_3D);
+    generate_projected_painting_texture(&painting_projected_painting_FBO, settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z, !last_frame && !settings.point.use_3D);
         
     frame_counter++;
 

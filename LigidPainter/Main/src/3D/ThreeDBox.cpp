@@ -154,7 +154,7 @@ void subdivideMesh(std::vector<Vertex>& meshData, std::vector<unsigned int>& mes
 Framebuffer projectToModelFBO;
 Texture projectToModelTxtr;
 
-void ThreeDBox::projectToModel(std::vector<Vertex>& vertices, glm::vec3 center, Painter& painter){
+void ThreeDBox::projectToModel(std::vector<Vertex>& vertices, glm::vec3 center){
     
     if(!vertices.size())
         return;
@@ -287,15 +287,14 @@ void ThreeDBox::getDetailedVertices(
                                         glm::vec3* detailed_threeDPoint_r4_c5, int* detailed_threeDPoint_r4_c5_index, 
                                         glm::vec3* detailed_threeDPoint_r5_c2, int* detailed_threeDPoint_r5_c2_index, 
                                         glm::vec3* detailed_threeDPoint_r5_c3, int* detailed_threeDPoint_r5_c3_index, 
-                                        glm::vec3* detailed_threeDPoint_r5_c4, int* detailed_threeDPoint_r5_c4_index,
-                                        Painter& painter
+                                        glm::vec3* detailed_threeDPoint_r5_c4, int* detailed_threeDPoint_r5_c4_index
                                     )
 {
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     initMeshData(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, normal, vertices, indices, this->flipX, this->flipY);
     subdivideMesh(vertices, indices, 2);
-    projectToModel(vertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f, painter);
+    projectToModel(vertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
 
     glm::vec3 pos_topLeft = vertices[0].Position;
     glm::vec3 pos_topRight = vertices[9].Position;
@@ -344,7 +343,7 @@ void ThreeDBox::getDetailedVertices(
 }
 
 
-void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal, Painter& painter){
+void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal){
     
     this->pos_topLeft = pos_topLeft;
     this->pos_topRight = pos_topRight;
@@ -356,7 +355,7 @@ void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 po
 
     initMeshData(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, normal, this->boxVertices, this->boxIndices, this->flipX, this->flipY);
     subdivideMesh(this->boxVertices, this->boxIndices, 4);    
-    projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f, painter);
+    projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
 
     //Generate vertex objects
     glGenVertexArrays(1, &VAO);
@@ -421,7 +420,7 @@ void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 po
     LigidGL::testGLError("ThreeDBox::init : Binding default VAO");
 }
 
-void ThreeDBox::update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal, Painter& painter){
+void ThreeDBox::update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal){
     
     this->pos_topLeft = pos_topLeft;
     this->pos_topRight = pos_topRight;
@@ -433,7 +432,7 @@ void ThreeDBox::update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 
 
     initMeshData(pos_topLeft, pos_topRight, pos_bottomLeft, pos_bottomRight, normal, this->boxVertices, this->boxIndices, this->flipX, this->flipY);
     subdivideMesh(this->boxVertices, this->boxIndices, 4);    
-    projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f, painter);
+    projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
 
     glBindVertexArray(VAO);
     LigidGL::testGLError("ThreeDBox::update : Binding VAO");
@@ -477,8 +476,7 @@ void ThreeDBox::updateDetailed(
                                 glm::vec3 detailed_threeDPoint_r4_c5, int detailed_threeDPoint_r4_c5_index, 
                                 glm::vec3 detailed_threeDPoint_r5_c2, int detailed_threeDPoint_r5_c2_index, 
                                 glm::vec3 detailed_threeDPoint_r5_c3, int detailed_threeDPoint_r5_c3_index, 
-                                glm::vec3 detailed_threeDPoint_r5_c4, int detailed_threeDPoint_r5_c4_index,
-                                Painter& painter
+                                glm::vec3 detailed_threeDPoint_r5_c4, int detailed_threeDPoint_r5_c4_index
                             )
 {
     
@@ -537,7 +535,7 @@ void ThreeDBox::updateDetailed(
 
     subdivideMesh(this->boxVertices, this->boxIndices, 2);        
     
-    projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f, painter);
+    projectToModel(this->boxVertices, (pos_topLeft + pos_topRight + pos_bottomLeft + pos_bottomRight) / 4.f);
     
     glBindVertexArray(VAO);
     LigidGL::testGLError("ThreeDBox::update : Binding VAO");

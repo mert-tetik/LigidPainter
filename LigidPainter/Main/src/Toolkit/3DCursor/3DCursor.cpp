@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-void render_3D_cursor(Painter& painter)
+void render_3D_cursor()
 {
     glClear(GL_DEPTH_BUFFER_BIT);
     ShaderSystem::color3d().use();

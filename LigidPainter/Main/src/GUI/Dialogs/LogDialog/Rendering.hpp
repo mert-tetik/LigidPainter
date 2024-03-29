@@ -54,7 +54,6 @@ void rendering(
                         bool& actionHistoryActive, 
                         DialogControl& dialogControl,
                         Timer& timer,
-                        Painter& painter,
                         bool sleepingCat,
                         Texture msgFace,
                         int dizzyCounter,

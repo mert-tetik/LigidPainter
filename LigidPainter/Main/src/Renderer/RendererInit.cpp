@@ -158,10 +158,6 @@ void Renderer::initRenderer(){
     Mouse::loadCursors();
     Debugger::block("LOAD : Cursors"); //End
 
-    Debugger::block("LOAD : Init painter"); //Start
-    painter.initPainter();
-    Debugger::block("LOAD : Init painter"); //End
-
     Debugger::block("LOAD : Rest"); //Start
     
     try

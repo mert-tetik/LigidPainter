@@ -162,10 +162,7 @@ static int prevpPainterDisplayIndex = 0;
 static unsigned int prevpPainterSelectedTxtr = 0;
 static std::string lastProjectPath;
 
-void LogDialog::render(
-                            Timer timer, 
-                            Painter& painter
-                        )
+void LogDialog::render(Timer timer)
 {
     this->unded = false;
 
@@ -182,7 +179,7 @@ void LogDialog::render(
                 this->messagesPanel, this->historyPanel, this->logBtn, this->logBtnR, this->logBtnL, this->messageInfoBtn, this->yesBtn, this->noBtn,
                 this->messageInfoBtnMixVal, this->messageInfoActive, this->pos, this->messagesPanelXAxisMixVal, this->messagesPanelYAxisMixVal, 
                 this->historyPanelXAxisMixVal, this->historyPanelYAxisMixVal, this->messagesActive, this->actionHistoryActive, this->dialogControl, 
-                timer, painter, sleepingCat, msgFace, dizzyCounter, this->cryCounter, this->libraryHistoryBtn, this->otherHistoryBtn
+                timer, sleepingCat, msgFace, dizzyCounter, this->cryCounter, this->libraryHistoryBtn, this->otherHistoryBtn
             );
 
 
@@ -758,7 +755,7 @@ void LogDialog::render(
             shortcuts_CTRL_Z()
         )
     {
-        undo(painter);
+        undo();
     }
 
     newLibraryAction = false;

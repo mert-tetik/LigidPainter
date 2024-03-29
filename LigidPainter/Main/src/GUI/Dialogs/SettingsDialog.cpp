@@ -20,10 +20,13 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Renderer.h"
+
 #include "GUI/GUI.hpp"
+
 #include "UTIL/Mouse/Mouse.hpp" 
 #include "UTIL/Settings/Settings.hpp" 
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Painting/Painter.hpp"
 
 #include <string>
 #include <iostream>
@@ -193,7 +196,7 @@ SettingsDialog::SettingsDialog(int){
 
 
 
-void SettingsDialog::show(Timer& timer, Painter& painter){
+void SettingsDialog::show(Timer& timer){
     
     dialogControl.activate();
 
@@ -204,7 +207,7 @@ void SettingsDialog::show(Timer& timer, Painter& painter){
         this->setPropertiesToDialog();
 
         this->renderPanel(timer);
-        this->updateInfoTexts(painter, timer);
+        this->updateInfoTexts(timer);
 
         this->setDialogToProperties();
 
@@ -346,8 +349,8 @@ void SettingsDialog::renderPanel(Timer& timer){
     }
 }
 
-void SettingsDialog::updateInfoTexts(Painter& painter, Timer& timer){
-    info_txt0_button->text = "Painting resolution : " + std::to_string(painter.paintingTexture.getResolution().x) + "x" + std::to_string(painter.paintingTexture.getResolution().y);
+void SettingsDialog::updateInfoTexts(Timer& timer){
+    info_txt0_button->text = "Painting framebuffer resolution : " + std::to_string(painting_projected_painting_FBO.colorBuffer.getResolution().x) + "x" + std::to_string(painting_projected_painting_FBO.colorBuffer.getResolution().y);
     
     info_txt1_button->text = "Video scale : " + std::to_string(Settings::videoScale()->x) + "x" + std::to_string(Settings::videoScale()->y);
     

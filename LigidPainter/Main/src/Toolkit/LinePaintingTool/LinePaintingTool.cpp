@@ -36,7 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static glm::vec2 straightLinePaintingStartPos;
 static glm::vec2 straightLinePaintingDirectionPos;
 
-void line_painting(Timer& timer, Painter& painter, bool applyStroke, bool firstFrame){
+void line_painting(Timer& timer, bool applyStroke, bool firstFrame){
     if(!applyStroke){
         if(firstFrame){
             straightLinePaintingStartPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;

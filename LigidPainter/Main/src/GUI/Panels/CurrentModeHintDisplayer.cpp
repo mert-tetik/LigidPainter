@@ -33,7 +33,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 #include <vector>
 
-void current_mode_hint_displayer_render(Timer& timer, Painter& painter)
+void current_mode_hint_displayer_render(Timer& timer)
 {
     Button currentModeDisplayer(ELEMENT_STYLE_SOLID, glm::vec2(6.f, 1.f), ""  , Texture(), 0.f, true);
     currentModeDisplayer.color = glm::vec4(0.f);

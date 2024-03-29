@@ -42,8 +42,6 @@ public:
 
     Skybox skybox;
 
-    Painter painter;
-
     Renderer();
 
     void initRenderer();

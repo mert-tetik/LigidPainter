@@ -82,7 +82,7 @@ public:
    SettingsDialog(int);
 
    //Public member functions    
-   void show(Timer& timer, Painter& painter);
+   void show(Timer& timer);
 
    /*! @brief Assignes the setting values to elements*/
    void setPropertiesToDialog();
@@ -91,7 +91,7 @@ public:
 
 private:
    void renderPanel(Timer& timer);
-   void updateInfoTexts(Painter& painter, Timer& timer);
+   void updateInfoTexts(Timer& timer);
 
 };
 
@@ -939,10 +939,10 @@ public:
    LogDialog(int);
 
    //Public member functions
-   void render(Timer timer, Painter& painter);
+   void render(Timer timer);
 
    bool unded = false;
-   void undo(Painter& painter);
+   void undo();
 
    bool isHovered();
 };

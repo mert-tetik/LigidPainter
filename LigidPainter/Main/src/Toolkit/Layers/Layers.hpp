@@ -116,15 +116,15 @@ public:
     void renderInfoPanel(Timer& timer, bool doMouseTracking);
 
     /*! @brief Generate result textures for the layer */
-    virtual void render(Painter& painter, const unsigned int resolution, Mesh& mesh) = 0;
-    virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh) = 0;
+    virtual void render(const unsigned int resolution, Mesh& mesh) = 0;
+    virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) = 0;
     virtual void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) = 0;
 
     /*! 
         @brief Renders GUI elements for the layer
         @return 0 : No msg | 1 : Delete this layer | 2 : layer selected
     */
-    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, Painter& painter, const unsigned int resolution, Mesh& mesh);
+    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh);
 
     /*! @brief Generates the this->layerButton from scratch using this->title, this->layerIcon*/
     void updateLayerButton();
@@ -145,8 +145,8 @@ public:
 
     TextureLayer(const unsigned int resolution);
     
-    void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void render(const unsigned int resolution, Mesh& mesh) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
     void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
         *materialChannels = &this->channels;
     }
@@ -159,8 +159,8 @@ class PaintingLayer : public Layer {
 public:
     PaintingLayer(const unsigned int resolution);
     
-    void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void render(const unsigned int resolution, Mesh& mesh) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
     void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
         return;
     }
@@ -175,8 +175,8 @@ public:
 
     MaterialLayer(const unsigned int resolution);
     
-    void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void render(const unsigned int resolution, Mesh& mesh) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
     void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
         *material = &this->material; 
     }
@@ -191,8 +191,8 @@ public:
 
     VectorLayer(const unsigned int resolution);
 
-    void render(Painter& painter, const unsigned int resolution, Mesh& mesh) override;
-    void render_element_selection_panel(Timer& timer, bool doMouseTracking, Painter& painter, const unsigned int resolution, Mesh& mesh) override;
+    void render(const unsigned int resolution, Mesh& mesh) override;
+    void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
     void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
         *strokes = &this->strokes; 
     }
@@ -206,13 +206,13 @@ public:
 
     std::vector<Layer*> layers;
 
-    void render(Timer& timer, Panel &layerPanel, Painter& painter, bool doMouseTracking, const unsigned int resolution, Mesh& mesh);
+    void render(Timer& timer, Panel &layerPanel, bool doMouseTracking, const unsigned int resolution, Mesh& mesh);
     void add_new(Layer* layer);
     void update_result(unsigned int resolution, glm::vec3 baseColor, Mesh& mesh);
     bool any_dialog_active();
     bool any_vector_editing();
     MaterialChannels get_painting_channels(bool* success);
-    void update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Painter& painter, Mesh& mesh);
+    void update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Mesh& mesh);
 };
 
 #endif // LIGID_LAYERS_HPP

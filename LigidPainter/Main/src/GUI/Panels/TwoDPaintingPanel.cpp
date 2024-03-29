@@ -18,15 +18,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Renderer.h"
-#include "GUI/GUI.hpp"
-#include "3D/ThreeD.hpp"
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Painting/Painter.hpp"
+
+#include "3D/ThreeD.hpp"
+
 #include "Toolkit/Layers/Layers.hpp"
+
+#include "GUI/GUI.hpp"
 #include "GUI/Panels.hpp"
 
 #include <string>
@@ -41,12 +44,12 @@ static float scroll = 2.f;
 static glm::vec2 pos = glm::vec2(0.f);
 
 static void render_barriers();
-static void transform_scene(Painter& painter);
+static void transform_scene();
 
-void panel_twoD_painting_render(Timer& timer, Painter& painter, bool doMouseTracking){
+void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
     
     if(panel_displaying_modes.selectedElement == 2){
-        transform_scene(painter);
+        transform_scene();
 
         //Render the 2D painting panel
         panel_twoD_painting.sections[0].elements[0].button.text = "";
@@ -81,7 +84,7 @@ void panel_twoD_painting_render(Timer& timer, Painter& painter, bool doMouseTrac
         
         //paintingTexture 
         glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, painter.projectedPaintingTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, painting_projected_painting_FBO.colorBuffer.ID);
 
         //*Vertex
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", getContext()->ortho_projection);
@@ -132,7 +135,7 @@ static void render_barriers(){
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Right");
 }
 
-static void transform_scene(Painter& painter){
+static void transform_scene(){
     glm::vec2 destScale = glm::vec2(glm::vec2(panel_library_selected_texture.getResolution()));
     glm::vec2 prevScale = destScale * scroll;
     float scrVal = *Mouse::mouseScroll() / Settings::videoScale()->y * 4.f;

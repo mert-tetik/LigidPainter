@@ -41,13 +41,12 @@ Texture panel_library_selected_texture;
 
 /* Forward declared util functions */
 static void check_context_menus(Timer& timer);
-static void element_interactions(Timer& timer, Painter& painter);
+static void element_interactions(Timer& timer);
 static void bar_buttons_interactions(Timer& timer);
 static void update_elements();
 
 void panel_library_render(
                             Timer& timer, 
-                            Painter& painter, 
                             bool doMouseTracking
                         )
 {
@@ -58,7 +57,7 @@ void panel_library_render(
     }
 
     // If *clicked / double clicked / etc.* to elements  
-    element_interactions(timer, painter);
+    element_interactions(timer);
     
     // If clicked to bar buttons (import & add new)
     bar_buttons_interactions(timer);
@@ -233,7 +232,7 @@ static void check_context_menus(Timer& timer){
     }
 }
 
-static void element_interactions(Timer& timer, Painter& painter){
+static void element_interactions(Timer& timer){
     //Update the selected texture
     for (size_t i = 0; i < panel_library.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
     {
