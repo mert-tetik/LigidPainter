@@ -214,7 +214,7 @@ void paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
         else{
             for (PaintedBufferData painted_buffer : get_painted_buffers(settings))
             {
-                updateTheTexture(painted_buffer.txtr, paintingMode, painted_buffer.clr, i, painted_buffer.clr.r);
+                updateTheTexture(painted_buffer.txtr, paintingMode, painted_buffer.clr, i);
                 
                 /*
                 txtr.mix(customMatTxtr, projectedPaintingTexture, true, false, false);
