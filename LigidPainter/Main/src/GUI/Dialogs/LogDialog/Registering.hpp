@@ -14,7 +14,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 ---------------------------------------------------------------------------
 */
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>

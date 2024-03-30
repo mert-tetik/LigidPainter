@@ -954,7 +954,9 @@ public:
    LogDialog(int);
 
    //Public member functions
-   void render(Timer timer);
+   void render(Timer& timer);
+
+   void render_elements(Timer& timer);
 
    bool unded = false;
    void undo();
