@@ -130,7 +130,7 @@ void MaterialSelectionDialog::assignMaterialsToMap(){
             title = UTIL::removeLastWordBySeparatingWithChar(title, '_');
 
             if(title == matModePanel.sections[0].elements[selectedMatMode].button.text){
-                Material mat = Material(UTIL::getLastWordBySeparatingWithChar(entry.path().string(), UTIL::folderDistinguisher()), 0);
+                Material mat = Material(UTIL::getLastWordBySeparatingWithChar(entry.path().string(), UTIL::folderDistinguisher()), {});
                 FileHandler::readLGDMATERIALFile(entry.path().string(), mat);
                 matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].push_back(mat);
             }    

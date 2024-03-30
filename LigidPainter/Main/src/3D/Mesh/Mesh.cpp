@@ -21,7 +21,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 #include <vector>
 
-#include "3D/ThreeD.hpp"
+#include "3D/Mesh/Mesh.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Settings/Settings.hpp"
 

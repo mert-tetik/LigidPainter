@@ -23,7 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "UTIL/Util.hpp"
-#include "3D/ThreeD.hpp"
+#include "3D/Model/Model.hpp"
 
 using namespace std;
     

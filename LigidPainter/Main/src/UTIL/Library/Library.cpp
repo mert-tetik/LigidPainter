@@ -168,12 +168,9 @@ void Library::addMaterial(Material material, const std::string actionTitle){
     if(actionTitle != "")
         registerMaterialAdditionAction(actionTitle, Texture(), material, __materials.size());
     
-    material.uniqueID = 0; 
-
     //Give unique ID to the material
 
     __materials.push_back(material);
-    Library::materialGiveUniqueId(__materials.size() - 1);
     
     Library::nameControl();
 }
@@ -590,17 +587,6 @@ void Library::textureGiveUniqueId(int index){
 	UTIL::giveUniqueId(__textures[index].uniqueId, IDArray);
 }
 
-void Library::materialGiveUniqueId(int index){
-	std::vector<int> IDArray;
-
-	for (size_t i = 0; i < __materials.size(); i++)
-	{
-		IDArray.push_back(__materials[i].uniqueID);
-	}
-
-	UTIL::giveUniqueId(__materials[index].uniqueID, IDArray);
-}
-
 std::vector<Texture>* Library::getTextureVectorPointer(){
     return &__textures;
 }
@@ -631,14 +617,4 @@ SourceLibTexture Library::getSrcLibTxtr(int index){
 
 int Library::getgetSrcLibTxtrsArraySize(){
     return __sourceLibTextures.size();
-}
-
-Material Library::findMaterialViaUniqueID(int uniqueID){
-    for (size_t i = 0; i < __materials.size(); i++)
-    {
-        if(__materials[i].uniqueID == uniqueID)
-            return __materials[i];
-    }
-
-    return Material();
 }

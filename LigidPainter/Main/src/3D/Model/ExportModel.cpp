@@ -30,8 +30,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
-#include "3D/ThreeD.hpp"
 #include "GUI/GUI.hpp"
+
+#include "3D/Model/Model.hpp"
 
 // dae
 // collada

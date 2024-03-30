@@ -53,7 +53,8 @@ bool FileHandler::writeMaterialData(std::ofstream& wf, Material& material){
     LGDMATERIAL_WRITEBITS(versionNumber, uint32_t, "Version number");
     
     //ID
-    LGDMATERIAL_WRITEBITS(material.uniqueID, int, "Material ID");
+    int empty_ID = 0;
+    LGDMATERIAL_WRITEBITS(empty_ID, int, "Material ID");
 
     //!Modifiers
     uint64_t materialModifierSize = material.materialModifiers.size();

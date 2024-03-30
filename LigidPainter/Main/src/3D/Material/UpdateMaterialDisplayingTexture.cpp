@@ -28,6 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+static Framebuffer material_displaying_FBO;
 void Material::updateMaterialDisplayingTexture(
                                                 float textureRes,
                                                 bool updateMaterial,
@@ -36,7 +37,11 @@ void Material::updateMaterialDisplayingTexture(
                                                 bool useCustomCam
                                             )
 {
-    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, this->displayingFBO, *getMaterialDisplayerModel(), -1);
+    // Init displaying capture framebuffer
+    if(!material_displaying_FBO.ID)
+        material_displaying_FBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(128)), "Material displaying fbo");
+
+    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, material_displaying_FBO, *getMaterialDisplayerModel(), -1);
 }
 
 void Material::updateMaterialDisplayingTexture(
@@ -97,12 +102,7 @@ void Material::updateMaterialDisplayingTexture(
             glm::ivec2 ambientOcclusionRes = displayModel.meshes[meshI].ambientOcclusion.getResolution(); 
             displayModel.meshes[meshI].ambientOcclusion.update(nullptr, ambientOcclusionRes.x, ambientOcclusionRes.y);
 
-
-            for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
-            {
-                if(i == specificUpdateI || specificUpdateI == -1)
-                    this->materialModifiers[i].updateMaterialChannels(*this, displayModel.meshes[meshI], textureRes, i, specificUpdateI != -1, displayModel);
-            }
+            this->apply_material(displayModel, displayModel.meshes[meshI], textureRes, specificUpdateI != -1);
         }
     }
     

@@ -9,9 +9,6 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
-
-    Read *.lgdmaterial file
-
 */
 
 #include<glad/glad.h>
@@ -32,7 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Material Material::duplicateMaterial(){
     
-    Material duplicatedMat(this->title + "_duplicated", 0);
+    Material duplicatedMat(this->title + "_duplicated", {});
 
     duplicatedMat.materialModifiers = this->materialModifiers;
     duplicatedMat.materialShortcuts = this->materialShortcuts;
@@ -70,7 +67,6 @@ Material Material::duplicateMaterial(){
 }
 
 void Material::deleteBuffers(){
-    this->displayingFBO.deleteBuffers(true, true);
     glDeleteTextures(1, &this->displayingTexture.ID);
     
     for (size_t i = 0; i < this->materialModifiers.size(); i++)
@@ -165,4 +161,11 @@ bool Material::operator==(const Material& material) const{
 
 bool Material::operator!=(const Material& material) const{
     return !(*this == material);
+}
+
+void Material::apply_material(Model& model, Mesh &mesh, int textureResolution, bool noPrevTxtrMode){
+    for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
+    {
+        this->materialModifiers[i].updateMaterialChannels(*this, i, model, mesh, textureResolution, noPrevTxtrMode);
+    }
 }

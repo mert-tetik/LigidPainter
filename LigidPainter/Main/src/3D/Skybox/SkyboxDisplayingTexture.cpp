@@ -26,7 +26,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "UTIL/Util.hpp"
-#include "3D/ThreeD.hpp"
+#include "UTIL/Settings/Settings.hpp"
+
+#include "3D/Skybox/Skybox.hpp"
+#include "3D/Model/Model.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Settings/Settings.hpp"
 

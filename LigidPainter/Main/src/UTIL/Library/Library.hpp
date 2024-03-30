@@ -151,8 +151,6 @@ namespace Library{
 
     /// @brief Generates a unique id for the corresponding element in the textures array (used in the @ref addTexture function)
     void textureGiveUniqueId(int index);
-    /// @brief Generates a unique id for the corresponding element in the textures array (used in the @ref addMaterials function)
-    void materialGiveUniqueId(int index);
 
     //--------------- Source Lib Textures ---------------
     /// @brief Called single time as the program starts
@@ -163,8 +161,6 @@ namespace Library{
 
     /// @brief Returns the size of the Source Lib Textures array
     int getgetSrcLibTxtrsArraySize();
-
-    Material findMaterialViaUniqueID(int uniqueID);
 };
 
 #endif

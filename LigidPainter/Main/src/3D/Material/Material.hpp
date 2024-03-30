@@ -76,12 +76,14 @@ public:
 
     Texture maskTexture;
 
-    void updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, bool noPrevTxtrMode, Model& model);
+    void updateMaterialChannels(Material &material, int curModI, Model& model, Mesh &mesh, int textureResolution, bool noPrevTxtrMode);
 
     //Constructors
     MaterialModifier();
     MaterialModifier(int modifierIndex);
 
+
+private:
     //Public member functions
     std::vector<Section> createTextureModifier();
     std::vector<Section> createDustModifier();
@@ -122,22 +124,18 @@ struct MaterialShortcut{
 
 class Material 
 {
+private:
 public:
+    /// @brief Material modifiers of the material
+    /// Assigned by the material editor dialog
+    std::vector<MaterialModifier> materialModifiers;
+    std::vector<MaterialShortcut> materialShortcuts;
+    
     /// @brief title of the material (myMaterial_0)
     std::string title;
 
     /// @brief texture used to render the material to display
     Texture displayingTexture;
-
-    /// @brief Framebuffer & Renderbuffer objects used to render the material to display
-    Framebuffer displayingFBO;
-    
-    /// @brief Unique id to distinguish the materials & connect them to the nodes 
-    int uniqueID;
-    
-    /// @brief Material modifiers of the material
-    /// Assigned by the material editor dialog
-    std::vector<MaterialModifier> materialModifiers;
 
     /// @brief Default constructor
     Material();
@@ -145,11 +143,13 @@ public:
     /// @brief Init the channel textures of the material + displayingTexture + assign the unique ID value
     /// @param title Title of the material
     /// @param ID Generated unique ID for the material (Unique to other materials in the libray.materials)
-    Material(std::string title,int ID);
+    Material(std::string title, std::vector<MaterialModifier> materialModifiers);
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
     void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam);
     void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam, Framebuffer customFBO, Model &displayModel, int specificUpdateI);
+
+    void apply_material(Model& model, Mesh &mesh, int textureResolution, bool noPrevTxtrMode);
 
     /// @brief Returns a new material with the same material modifiers and different OpenGL texture objects 
     Material duplicateMaterial();
@@ -160,7 +160,6 @@ public:
     /// @brief Deletes all the OpenGL buffer objects inside of the material
     void deleteBuffers();
 
-    std::vector<MaterialShortcut> materialShortcuts;
 };
 
 #endif 

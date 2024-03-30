@@ -81,7 +81,8 @@ bool FileHandler::readMaterialData(std::ifstream& rf, Material& material){
     }
 
     //ID
-    LGDMATERIAL_READBITS(material.uniqueID, int, "Material ID");
+    int empty = 0;
+    LGDMATERIAL_READBITS(empty, int, "Material ID");
 
     //!Modifiers
 

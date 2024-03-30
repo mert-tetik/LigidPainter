@@ -26,7 +26,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "UTIL/Util.hpp"
-#include "3D/ThreeD.hpp"
+
+#include "3D/Skybox/Skybox.hpp"
 
 void Skybox::draw(bool bindTxtr){ //Draw the skybox
 	LigidGL::cleanGLErrors();
@@ -35,7 +36,7 @@ void Skybox::draw(bool bindTxtr){ //Draw the skybox
 	if(bindTxtr){
 		glActiveTexture(GL_TEXTURE0);
 		LigidGL::testGLError("Skybox::draw : Activate the texture slot 0");
-		glBindTexture(GL_TEXTURE_CUBE_MAP,IDPrefiltered);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, IDPrefiltered);
 		LigidGL::testGLError("Skybox::draw : Binding texture");
 	}
 

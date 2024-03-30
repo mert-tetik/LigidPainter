@@ -24,10 +24,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+
 #include "GUI/GUI.hpp"
 #include "GUI/Panels.hpp"
-#include "3D/ThreeD.hpp"
-#include "UTIL/Mouse/Mouse.hpp"
+
+#include "3D/Model/Model.hpp"
+
 
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
 

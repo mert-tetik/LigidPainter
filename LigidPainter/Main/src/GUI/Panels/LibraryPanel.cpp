@@ -271,7 +271,7 @@ static void bar_buttons_interactions(Timer& timer){
         if(Library::getSelectedElementIndex() == 1){ //Materials
             //Add new material to the library & not the panel
             //Will be displayed right after library panel is updated
-            Library::addMaterial(Material("NewMaterial", 0), "New blank material");
+            Library::addMaterial(Material("NewMaterial", {}), "New blank material");
         }
         if(Library::getSelectedElementIndex() == 2){ //Brushes
             Texture whiteProceduralTxtr;

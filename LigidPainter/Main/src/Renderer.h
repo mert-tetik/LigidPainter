@@ -40,8 +40,6 @@ public:
 
     Fonts fonts;
 
-    Skybox skybox;
-
     Renderer();
 
     void initRenderer();

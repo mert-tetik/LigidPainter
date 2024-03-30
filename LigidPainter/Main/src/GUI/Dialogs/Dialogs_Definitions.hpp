@@ -896,6 +896,21 @@ void registerNodeAction(const std::string title, const Texture icon);
 
 class LogDialog
 {
+private:
+   size_t lastMessagesSize = 0;
+
+   std::string quitMSG = "";
+   std::string catMSG = "";
+   
+   /*! @brief Face of the cat*/
+   Texture msgFace;
+
+   float petPoints = 0.f; 
+   bool sleepingCat = false;
+   size_t sleepingCounter = 0;
+   int flipCount = 0;
+   int dizzyCounter = 0;
+
 public:
    Panel messagesPanel;
    Panel historyPanel;

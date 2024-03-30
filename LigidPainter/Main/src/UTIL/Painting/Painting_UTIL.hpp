@@ -805,10 +805,7 @@ static void update_custom_material_mesh(PaintSettings::ColorBuffer color_buffer,
             customMatMesh.ambientOcclusion.update(nullptr, resolution.x, resolution.y);
         }
 
-        for (int i = color_buffer.material.materialModifiers.size() - 1; i >= 0; --i)    
-        {
-            color_buffer.material.materialModifiers[i].updateMaterialChannels(color_buffer.material, customMatMesh, resolution.x, i, false, *getScene()->model);
-        }
+        color_buffer.material.apply_material(*getScene()->model, customMatMesh, resolution.x, false);
     }
 
     prevCustomMaterial = color_buffer.material;

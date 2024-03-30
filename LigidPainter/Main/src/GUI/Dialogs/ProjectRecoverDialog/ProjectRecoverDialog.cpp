@@ -306,7 +306,7 @@ void ProjectRecoverDialog::show(Timer& timer){
                         std::string path = entry.path().string();
 
                         if(std::filesystem::is_regular_file(path)){
-                            Material mat = Material("", 0);
+                            Material mat = Material("", {});
                             FileHandler::readLGDMATERIALFile(path, mat);
 
                             std::string title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));

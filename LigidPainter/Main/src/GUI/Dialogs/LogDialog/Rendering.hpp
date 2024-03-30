@@ -34,33 +34,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
-void rendering(
-                        Panel& messagesPanel, 
-                        Panel& historyPanel, 
-                        Button& logBtn, 
-                        Button& logBtnR, 
-                        Button& logBtnL, 
-                        Button& messageInfoBtn, 
-                        Button& yesBtn,
-                        Button& noBtn,
-                        float messageInfoBtnMixVal, 
-                        bool& messageInfoActive,
-                        glm::vec2& pos, 
-                        float& messagesPanelXAxisMixVal, 
-                        float& messagesPanelYAxisMixVal, 
-                        float& historyPanelXAxisMixVal, 
-                        float& historyPanelYAxisMixVal, 
-                        bool& messagesActive, 
-                        bool& actionHistoryActive, 
-                        DialogControl& dialogControl,
-                        Timer& timer,
-                        bool sleepingCat,
-                        Texture msgFace,
-                        int dizzyCounter,
-                        int cryCounter,
-                        Button& libraryHistoryBtn,
-                        Button& otherHistoryBtn
-                    )
+void LogDialog::render_elements(Timer& timer)
 {
     // Move to the center
     if(getContext()->window.shouldClose()){

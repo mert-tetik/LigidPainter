@@ -567,8 +567,8 @@ static Texture albedoFilterMaskTexture_procedural;
 static Texture previousTexture;
 static Texture prevDepthTexture;
 
-void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, int textureResolution, int curModI, bool noPrevTxtrMode, Model& model){
-    
+void MaterialModifier::updateMaterialChannels(Material &material, int curModI, Model& model, Mesh &mesh, int textureResolution, bool noPrevTxtrMode)
+{
     if(this->hide)
         return;
 
@@ -647,8 +647,8 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                             prevDepthTexture,
                             textureModifierSelectedTexture_procedural.ID,
                             mesh,
-                            meshMask,
-                            selectedObjectPrimitivesTxtr,
+                            mesh.face_selection_data.meshMask,
+                            mesh.face_selection_data.selectedFaces,
                             noPrevTxtrMode
                         );
             
@@ -792,8 +792,8 @@ void MaterialModifier::updateMaterialChannels(Material &material, Mesh &mesh, in
                 genAmbientOcclusion(
                                     mesh.ambientOcclusion, 
                                     mesh, 
-                                    meshMask, 
-                                    selectedObjectPrimitivesTxtr, 
+                                    mesh.face_selection_data.meshMask, 
+                                    mesh.face_selection_data.selectedFaces, 
                                     model,
                                     material.materialModifiers[curModI].sections[sections.size() - 1].elements[1].checkBox.clickState1,
                                     material.materialModifiers[curModI].sections[sections.size() - 1].elements[2].checkBox.clickState1,

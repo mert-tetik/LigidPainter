@@ -27,9 +27,10 @@ Box.hpp : Is used to render a single 2D square.
 #include <vector>
 
 #include "UTIL/Util.hpp"
-#include "3D/ThreeD.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Shader/Shader.hpp"
+
+#include "3D/ThreeDBox/ThreeDBox.hpp"
     
 ThreeDBox::ThreeDBox(){}
 

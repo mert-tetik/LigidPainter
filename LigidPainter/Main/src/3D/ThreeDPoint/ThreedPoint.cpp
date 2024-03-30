@@ -20,8 +20,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/string_cast.hpp>
 
-#include "3D/ThreeD.hpp"
-#include "3D/Scene.hpp"
+#include "3D/ThreeDPoint/ThreeDPoint.hpp"
+#include "3D/Scene/Scene.hpp"
+#include "3D/Model/Model.hpp"
 
 #include "GUI/Elements.hpp"
 
@@ -29,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Project/Project.hpp"
 
 #include <string>
 #include <iostream>

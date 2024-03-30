@@ -133,13 +133,7 @@ ObjectTexturingDialog::ObjectTexturingDialog(int){
     this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
     this->sceneCam.radius = 3.5f;
 
-    this->material = Material("ObjectTexturingMaterial", 0);
-    this->material.materialModifiers.push_back(MaterialModifier(SOLID_MATERIAL_MODIFIER));
-    char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
-    material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-    material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
-    this->material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
-    this->material.displayingTexture.title = "ObjectTexturingMaterial_DisplayingTexture";
+    this->material = Material("ObjectTexturingMaterial_DisplayingTexture", {MaterialModifier(SOLID_MATERIAL_MODIFIER)});
 }
 
 static bool __materialEditBtn = false;
@@ -284,13 +278,7 @@ void ObjectTexturingDialog::show(Timer& timer){
         }
         else if(this->defaultMaterialButton.clicked){
             this->material.deleteBuffers();
-            this->material = Material("ObjectTexturingMaterial", 0);
-            this->material.materialModifiers.push_back(MaterialModifier(SOLID_MATERIAL_MODIFIER));
-            char whitePixel[] = { 127, 127, 127, 127 }; // 1 pixel, RGBA format (white)
-            material.materialModifiers[0].maskTexture = Texture(whitePixel, 1, 1, GL_NEAREST);
-            material.materialModifiers[0].maskTexture.proceduralProps.proceduralID = 24;
-            this->material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
-            this->material.displayingTexture.title = "ObjectTexturingMaterial_DisplayingTexture";
+            this->material = Material("ObjectTexturingMaterial_DisplayingTexture", {MaterialModifier(SOLID_MATERIAL_MODIFIER)});
             this->updateMeshTextures();
         }
         else if(this->editMaterialButton.clicked){
@@ -639,11 +627,8 @@ void ObjectTexturingDialog::updateMeshTextures(){
         getScene()->model->meshes[meshI].heightMap = result_channels[meshI].heightMap;
         getScene()->model->meshes[meshI].ambientOcclusion = result_channels[meshI].ambientOcclusion;
         
-        for (int i = this->material.materialModifiers.size() - 1; i >= 0; --i)    
-        {
-            this->material.materialModifiers[i].updateMaterialChannels(this->material, getScene()->model->meshes[meshI], getResolution(), i, false, *getScene()->model);
-        }
-        
+        this->material.apply_material(*getScene()->model, getScene()->model->meshes[meshI], getResolution(), false);
+
         Texture maskMat = maskMaterialBtn.texture.generateProceduralTexture(getScene()->model->meshes[meshI], this->getResolution());
 
         // Mask channels
