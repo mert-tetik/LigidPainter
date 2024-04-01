@@ -39,6 +39,10 @@ class Material;
 class Brush;
 /// @brief Forward declared Model class 
 class Model;
+/// @brief Forward declared Filter class 
+class Filter;
+/// @brief Forward declared TexturePack class 
+class TexturePack;
 
 /// @brief Responsible of holding textures, materials, 3D models, brushes etc. created/imported by the user
 namespace Library{

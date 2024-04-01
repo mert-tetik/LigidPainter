@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-void render_3D_cursor()
+void render_3D_cursor(float radius)
 {
     glClear(GL_DEPTH_BUFFER_BIT);
     ShaderSystem::color3d().use();
@@ -80,7 +80,7 @@ void render_3D_cursor()
         if(i == 1)
             transform = glm::scale(transform, glm::vec3(0.05f));
         else if(i == 0)
-            transform = glm::scale(transform, glm::vec3(0.01f + painter.brushProperties.radius * 4.f));
+            transform = glm::scale(transform, glm::vec3(0.01f + radius * 4.f));
                     
         ShaderSystem::color3d().setMat4("modelMatrix", transform);
 

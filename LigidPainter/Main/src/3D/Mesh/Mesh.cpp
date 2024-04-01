@@ -355,17 +355,21 @@ void Mesh::setupMesh()
     LigidGL::testGLError("Mesh::setupMesh : glVertexAttribPointer 4");
 }
 
+static Framebuffer getPosNormalOverPoint_FBO;
 void Mesh::getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData, bool readNormal){
         
-    const unsigned int resolution = this->getBufferResolutions(1); 
+    const unsigned int resolution = 1024; 
     glm::ivec2 res = glm::ivec2(resolution);
     res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
 
     pointPos.x /= (Settings::videoScale()->x / res.x); 
     pointPos.y /= (Settings::videoScale()->y / res.y); 
     
-    paintingFBO.setColorBuffer(this->meshPosTxtr, GL_TEXTURE_2D);
-    paintingFBO.bind();
+    if(!getPosNormalOverPoint_FBO.ID)
+        getPosNormalOverPoint_FBO.generate();
+
+    getPosNormalOverPoint_FBO.setColorBuffer(this->meshPosTxtr, GL_TEXTURE_2D);
+    getPosNormalOverPoint_FBO.bind();
     
     glReadPixels(
                     pointPos.x, 
@@ -377,7 +381,7 @@ void Mesh::getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& no
                     posData
                 );
 
-    paintingFBO.setColorBuffer(this->meshNormalTxtr, GL_TEXTURE_2D);
+    getPosNormalOverPoint_FBO.setColorBuffer(this->meshNormalTxtr, GL_TEXTURE_2D);
 
     if(readNormal){
         glReadPixels(
@@ -400,24 +404,28 @@ void Mesh::getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& no
     posData[2] = posData[2] * 2.f - 1.f;
 }
 
+static Framebuffer updatePosNormalTexture_FBO;
 void Mesh::updatePosNormalTexture(){
     
     glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
     
-    unsigned int resolution = this->getBufferResolutions(1); 
+    unsigned int resolution = 1024; 
 
     glm::ivec2 res = glm::ivec2(resolution);
     res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
 
-    //Bind the capture framebuffer
-    paintingFBO.setRenderbuffer(depthRBO1024);
-    paintingFBO.bind();
 
     if(!this->meshPosTxtr.ID)
         this->meshPosTxtr = Texture(nullptr, res.x, res.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
     if(!this->meshNormalTxtr.ID)
         this->meshNormalTxtr = Texture(nullptr, res.x, res.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
+    
+    if(!updatePosNormalTexture_FBO.ID){
+        updatePosNormalTexture_FBO = Framebuffer(this->meshPosTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, res), "updatePosNormalTexture_FBO");
+    }
+    
+    updatePosNormalTexture_FBO.bind();
 
     for (size_t i = 0; i < 2; i++)
     {
@@ -426,7 +434,7 @@ void Mesh::updatePosNormalTexture(){
             txtr = this->meshNormalTxtr;
 
         //Bind the texture (Painter class public member variable)
-        paintingFBO.setColorBuffer(txtr, GL_TEXTURE_2D);
+        updatePosNormalTexture_FBO.setColorBuffer(txtr, GL_TEXTURE_2D);
 
         //Clear the texture
         glViewport(0, 0, getContext()->windowScale.x / (Settings::videoScale()->x / res.x), getContext()->windowScale.y / (Settings::videoScale()->y / res.y));
@@ -460,8 +468,6 @@ void Mesh::updatePosNormalTexture(){
 
     //Set back to default shader
     ShaderSystem::buttonShader().use();
-
-    this->paintingFBO.removeRenderbuffer();
 
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();

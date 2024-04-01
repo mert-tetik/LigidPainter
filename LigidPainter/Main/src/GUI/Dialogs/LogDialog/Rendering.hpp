@@ -23,11 +23,14 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "3D/ThreeD.hpp" 
+
 #include "GUI/GUI.hpp" 
+
 #include "UTIL/Mouse/Mouse.hpp" 
 #include "UTIL/Library/Library.hpp" 
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp" 
+#include "UTIL/Painting/Painter.hpp" 
 
 #include <string>
 #include <iostream>
@@ -162,9 +165,9 @@ void LogDialog::render_elements(Timer& timer)
     //    logBtn.texture = appTextures.mascotCat_crying;
     //else if(sleepingCat)
     //    logBtn.texture = appTextures.mascotCat_sleeping;
-    else if(messageInfoActive && !painter.refreshable)
-        logBtn.texture = msgFace;
-    else if((logBtn.hover) || painter.refreshable)
+    else if(messageInfoActive && !painting_paint_condition())
+        logBtn.texture = this->msgFace;
+    else if((logBtn.hover) || painting_paint_condition())
         logBtn.texture = appTextures.mascotCat_smile;
     else if(messagesActive || actionHistoryActive)
         logBtn.texture = appTextures.mascotCat_relaxed;

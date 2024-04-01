@@ -92,14 +92,14 @@ void LogDialog::undo(){
     if(this->activeHistoryMode == HISTORY_TEXTUREFIELDS_MODE && actions_TextureFields.size()){
         TextureFieldsAction action = actions_TextureFields[actions_TextureFields.size() - 1];
         
-        if(action.fields.size() == paintingOverTextureFields.size()){
+        if(action.fields.size() == getTextureFieldScene()->texture_fields.size()){
             for (size_t i = 0; i < action.fields.size(); i++)
             {
-                if(action.fields[i].flippedH != paintingOverTextureFields[i].flippedH){
+                if(action.fields[i].flippedH != getTextureFieldScene()->texture_fields[i].flippedH){
                     action.fields[i].texture.flipTexture(true, false);
                     Settings::defaultFramebuffer()->FBO.bind();
                 }
-                if(action.fields[i].flippedV != paintingOverTextureFields[i].flippedV){
+                if(action.fields[i].flippedV != getTextureFieldScene()->texture_fields[i].flippedV){
                     action.fields[i].texture.flipTexture(false, true);
                     Settings::defaultFramebuffer()->FBO.bind();
                 }
@@ -107,11 +107,11 @@ void LogDialog::undo(){
         }
         
         
-        paintingOverTextureFields = action.fields;
+        getTextureFieldScene()->texture_fields = action.fields;
 
-        for (size_t i = 0; i < paintingOverTextureFields.size(); i++)
+        for (size_t i = 0; i < getTextureFieldScene()->texture_fields.size(); i++)
         {
-            paintingOverTextureFields[i].updateWrapBox();
+            getTextureFieldScene()->texture_fields[i].updateWrapBox();
         }
         
 

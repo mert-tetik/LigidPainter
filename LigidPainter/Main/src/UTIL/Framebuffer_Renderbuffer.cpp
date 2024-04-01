@@ -168,6 +168,8 @@ glm::ivec2 Renderbuffer::getResolution(){
 
     // Unbind the renderbuffer
     glBindRenderbuffer(GL_RENDERBUFFER, currentRenderbufferId);
+
+    return resolution;
 }
 
 

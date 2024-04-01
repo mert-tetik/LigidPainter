@@ -38,7 +38,7 @@ void render_toolkits(Timer& timer){
     
     if(checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
         Debugger::block("GUI : Rendering dotes"); // Start
-        render_dots();
+        render_dots(*Settings::videoScale() / 2.f, *Settings::videoScale() / 2.f, glm::vec2(0.f), 1.f);
         Debugger::block("GUI : Rendering dotes"); // End
     }
 
@@ -82,11 +82,11 @@ void render_toolkits(Timer& timer){
             !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
         )
     {
-        if(!painter.wrapMode){
-            render_painting_cursor(painter.brushProperties.radius);
+        if(!checkBox_wrap_mode.clickState1){
+            render_painting_cursor(button_painting_brush.brushProperties.radius);
         }
         else{
-            render_3D_cursor();
+            render_3D_cursor(button_painting_brush.brushProperties.radius);
         }
         
     }

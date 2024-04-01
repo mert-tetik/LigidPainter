@@ -11,6 +11,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ---------------------------------------------------------------------------
 
 TODO : Update color buffer resolutions
+TODO : Refresh painting buffers
 
 */
 
@@ -29,8 +30,8 @@ TODO : Update color buffer resolutions
 #include <atomic>
 
 #include "UTIL/Util.hpp"
-#include "UTIL/Painting/Painter.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Painting/Painter.hpp"
 #include "UTIL/Painting/Painting_UTIL.hpp"
 #include "UTIL/Library/Library.hpp"
 
@@ -164,7 +165,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
         }
         
         if(settings.color_buffer.use_custom_material){
-           update_custom_material_mesh(settings.color_buffer, settings.vertex_buffer, (settings.painted_buffers.material_painting) ? settings.painted_buffers.material_channel_albedo.getResolution() : settings.painted_buffers.solid_painted_texture.getResolution()); 
+           update_custom_material_mesh(settings.color_buffer, settings.vertex_buffer.model_mesh, (settings.painted_buffers.material_painting) ? settings.painted_buffers.material_channel_albedo.getResolution() : settings.painted_buffers.solid_painted_texture.getResolution()); 
         }
 
         register_history_actions(settings.painting_mode, settings.painted_buffers);
@@ -194,4 +195,27 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
 
         updateThePreRenderedPanels = true;
     }
+}
+
+
+
+
+
+
+
+
+
+
+bool painting_paintable_condition()
+{
+    return !panels_any_hovered() && 
+            (panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2) && panel_painting_modes.selectedElement != 5 &&
+            !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 &&
+            !getScene()->get_selected_mesh()->face_selection_data.editMode &&
+            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
+            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT);
+}
+
+bool painting_paint_condition(){
+    return painting_paintable_condition() && *Mouse::LPressed();
 }

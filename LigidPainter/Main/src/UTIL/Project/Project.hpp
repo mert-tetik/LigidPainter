@@ -45,7 +45,7 @@ bool project_load_library_elements(std::string folderPath, std::string ligidFile
 void project_add_model(std::string filePath);
 
 /// @brief Locates the ligid file in the folderPath param. Returns "" if there's no ligid file. 
-std::string project_locate_ligid_file(const std::string& folderPath);
+std::string project_locate_ligid_file(std::string folderPath);
 /// @brief Locates the ligid file in this->folderPath. Returns "" if there's no ligid file. 
 std::string project_locate_ligid_file();
 

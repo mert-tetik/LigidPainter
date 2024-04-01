@@ -344,7 +344,7 @@ static void bar_buttons_interactions(Timer& timer){
             std::string test = showFileSystemObjectSelectionDialog("Select a material file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
 
             if(test.size()){
-                Material importedMaterial("", 0);
+                Material importedMaterial("", {});
                 if(FileHandler::readLGDMATERIALFile(test, importedMaterial))
                     Library::addMaterial(importedMaterial, "New material via importing");
             }

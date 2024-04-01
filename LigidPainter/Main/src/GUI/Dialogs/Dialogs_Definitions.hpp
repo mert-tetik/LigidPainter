@@ -911,6 +911,8 @@ private:
    int flipCount = 0;
    int dizzyCounter = 0;
 
+   void talking(Timer& timer);
+
 public:
    Panel messagesPanel;
    Panel historyPanel;

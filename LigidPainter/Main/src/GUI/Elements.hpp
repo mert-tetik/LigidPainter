@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector> //std::vector
 
 #include "UTIL/Util.hpp"
+#include "3D/Material/Material.hpp"
 
 /// @brief Represent a side of a panel (Left Side, Bottom Side etc.)
 struct PanelSide{ 

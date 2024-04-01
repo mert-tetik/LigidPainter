@@ -36,6 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static std::string path;
 std::atomic<bool> projectUTIL_processing = false;
+bool project_discard_update_flag = false;
 
 std::string project_path(){
     std::string res = std::filesystem::absolute(path).string();

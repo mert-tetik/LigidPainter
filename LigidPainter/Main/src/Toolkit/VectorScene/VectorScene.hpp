@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "GUI/Elements.hpp"
+#include "3D/ThreeDPoint/ThreeDPoint.hpp"
 
 struct VectorPoint2D{
     /*! @brief Position of the point (0 - 100 scale) */

@@ -39,6 +39,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 bool _ligid_renderer_render_first_frame = true;
 
+// 3D Point
+extern bool aPointWasAlreadyActivated;
+
 void Renderer::start_render(){
     glm::ivec2 maxWindowSize;
     getContext()->window.getMaximizedScreenSize(maxWindowSize.x, maxWindowSize.y);
@@ -86,7 +89,7 @@ void Renderer::start_render(){
     getScene()->updateProjectionMatrix(0.f);
 
     // Process the shortcut inputs & move the camera gradually if necessary
-    getScene()->camera.posShortcutInteraction();
+    getScene()->camera.posShortcutInteraction(true);
 }
 
 void Renderer::end_render(){

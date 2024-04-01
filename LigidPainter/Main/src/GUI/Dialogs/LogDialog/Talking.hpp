@@ -23,11 +23,14 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "3D/ThreeD.hpp" 
+
 #include "GUI/GUI.hpp" 
+
 #include "UTIL/Mouse/Mouse.hpp" 
 #include "UTIL/Library/Library.hpp" 
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp" 
+#include "UTIL/Painting/Painter.hpp" 
 
 #include <string>
 #include <iostream>
@@ -63,7 +66,7 @@ extern std::string catMSG = "";
 extern float petPoints = 0.f; 
 extern Texture msgFace;
 
-void talking(Timer& timer){
+void LogDialog::talking(Timer& timer){
     if(petPoints > 300.f){
         petPoints = 0.f;
         messageInfoActive = true;
@@ -82,7 +85,7 @@ void talking(Timer& timer){
         
         messageInfoBtn.text = catMSG;
     }
-    else if(painter.refreshable){
+    else if(painting_paint_condition()){
         messageInfoActive = true;
         messageInfoBtnStartTime = timer.seconds;
         if(catMSG == ""){

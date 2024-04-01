@@ -132,7 +132,7 @@ std::string lastProjectPath;
 bool newLibraryAction = false;
 bool newOtherAction = false;
 
-void LogDialog::render(Timer timer)
+void LogDialog::render(Timer& timer)
 {
     this->unded = false;
 
@@ -215,7 +215,7 @@ void LogDialog::render(Timer timer)
                                         });
 
                 quitMSG = msg.text;
-                msgFace = msg.face;
+                this->msgFace = msg.face;
             }
 
             messageInfoBtn.text = quitMSG;
@@ -242,7 +242,7 @@ void LogDialog::render(Timer timer)
         messageInfoBtnStartTime = timer.seconds;
         if(messages.size()){
             messageInfoBtn.text = messages[messages.size()-1];
-            msgFace = appTextures.mascotCat_rock;
+            this->msgFace = appTextures.mascotCat_rock;
         }
     }
     
@@ -417,9 +417,9 @@ void LogDialog::render(Timer timer)
             {
                 bool match = false;
 
-                for (size_t cI = 0; cI < paintingOverTextureFields.size(); cI++)
+                for (size_t cI = 0; cI < getTextureFieldScene()->texture_fields.size(); cI++)
                 {
-                    if(paintingOverTextureFields[cI].texture.ID == actions_TextureFields[i].fields[fieldI].texture.ID)
+                    if(getTextureFieldScene()->texture_fields[cI].texture.ID == actions_TextureFields[i].fields[fieldI].texture.ID)
                         match = true;
                 }
                 

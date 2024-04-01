@@ -472,6 +472,8 @@ public:
           float rotationJitter, float alphaJitter, bool individualTexture, bool sinWavePattern, 
           std::string title, Texture texture);
     
+    Brush(BrushProperties brushProperties, std::string title);
+    
     void update(float displayRadius, float spacing, float hardness, float sizeJitter, float scatter, float fade, float rotation, 
           float rotationJitter, float alphaJitter, bool individualTexture, bool sinWavePattern, 
           Texture texture);

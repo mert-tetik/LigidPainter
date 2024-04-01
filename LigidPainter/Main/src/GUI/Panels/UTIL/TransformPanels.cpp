@@ -34,90 +34,90 @@ void panels_transform()
 
     //!Positioning the panels
 
-    windowPanel.scale.y = 50.f - navigationPanel.scale.y;
+    panel_window.scale.y = 50.f - panel_navigation.scale.y;
 
-    windowPanel.pos.x = 100.f - windowPanel.scale.x - screenGapPerc; //Keep on the right side
-    panel_library.pos.x = libraryModesPanel.pos.x + libraryModesPanel.scale.x + panel_library.scale.x; //Keep on the left side of the window panel 
+    panel_window.pos.x = 100.f - panel_window.scale.x - screenGapPerc; //Keep on the right side
+    panel_library.pos.x = panel_library_modes.pos.x + panel_library_modes.scale.x + panel_library.scale.x; //Keep on the left side of the window panel 
     
-    windowPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
-    windowPanel.scale.y = 50.f - navigationPanel.scale.y; //Keep beneath the navigation bar
+    panel_window.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_window.scale.y; //Keep beneath the navigation bar
+    panel_window.scale.y = 50.f - panel_navigation.scale.y; //Keep beneath the navigation bar
     
-    layersPanel.pos = windowPanel.pos;
-    layersPanel.pos.x -= windowPanel.scale.x + layersPanel.scale.x;
-    layersPanel.pos.y += addLayerPanel.scale.y + meshSelectionButton.scale.y + layersResolutionComboBox.scale.y;
-    layersPanel.scale.y = windowPanel.scale.y - addLayerPanel.scale.y - meshSelectionButton.scale.y - layersResolutionComboBox.scale.y;
+    panel_layers.pos = panel_window.pos;
+    panel_layers.pos.x -= panel_window.scale.x + panel_layers.scale.x;
+    panel_layers.pos.y += panel_add_layer.scale.y + button_mesh_selection.scale.y + comboBox_layers_resolution.scale.y;
+    panel_layers.scale.y = panel_window.scale.y - panel_add_layer.scale.y - button_mesh_selection.scale.y - comboBox_layers_resolution.scale.y;
 
-    meshSelectionButton.scale.x = layersPanel.scale.x;
-    meshSelectionButton.pos = layersPanel.pos;
-    meshSelectionButton.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + meshSelectionButton.scale.y;
+    button_mesh_selection.scale.x = panel_layers.scale.x;
+    button_mesh_selection.pos = panel_layers.pos;
+    button_mesh_selection.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + button_mesh_selection.scale.y;
     
-    layersResolutionComboBox.scale.x = layersPanel.scale.x;
-    layersResolutionComboBox.pos = meshSelectionButton.pos;
-    layersResolutionComboBox.pos.y = meshSelectionButton.pos.y + meshSelectionButton.scale.y + layersResolutionComboBox.scale.y;
+    comboBox_layers_resolution.scale.x = panel_layers.scale.x;
+    comboBox_layers_resolution.pos = button_mesh_selection.pos;
+    comboBox_layers_resolution.pos.y = button_mesh_selection.pos.y + button_mesh_selection.scale.y + comboBox_layers_resolution.scale.y;
     
-    addLayerPanel.scale.x = layersPanel.scale.x;
-    addLayerPanel.pos = layersResolutionComboBox.pos;
-    addLayerPanel.pos.y = layersResolutionComboBox.pos.y + layersResolutionComboBox.scale.y + addLayerPanel.scale.y;
+    panel_add_layer.scale.x = panel_layers.scale.x;
+    panel_add_layer.pos = comboBox_layers_resolution.pos;
+    panel_add_layer.pos.y = comboBox_layers_resolution.pos.y + comboBox_layers_resolution.scale.y + panel_add_layer.scale.y;
     
-    libraryModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + windowPanel.scale.y; //Keep beneath the navigation bar
-    libraryPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanel.scale.y; //Keep beneath the navigation bar
-    libraryPanel.scale.y = 50 - navigationPanel.scale.y - selectedTextureDisplayer.scale.y;
-    libraryModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + libraryPanel.scale.y; //Keep beneath the navigation bar
-    libraryModesPanel.scale.y = 50 - navigationPanel.scale.y - selectedTextureDisplayer.scale.y;
-    selectedTextureDisplayer.pos.x = libraryPanel.pos.x - libraryModesPanel.pos.x;
-    selectedTextureDisplayer.scale.x = libraryPanel.scale.x + libraryModesPanel.scale.x; 
+    panel_library_modes.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_window.scale.y; //Keep beneath the navigation bar
+    panel_library.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_library.scale.y; //Keep beneath the navigation bar
+    panel_library.scale.y = 50 - panel_navigation.scale.y - panel_selected_texture_display.scale.y;
+    panel_library_modes.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_library.scale.y; //Keep beneath the navigation bar
+    panel_library_modes.scale.y = 50 - panel_navigation.scale.y - panel_selected_texture_display.scale.y;
+    panel_selected_texture_display.pos.x = panel_library.pos.x - panel_library_modes.pos.x;
+    panel_selected_texture_display.scale.x = panel_library.scale.x + panel_library_modes.scale.x; 
     
-    twoDPaintingPanel.scale.x = 50 - screenGapPerc/2.f - selectedTextureDisplayer.scale.x - (windowPanel.scale.x);
-    twoDPaintingPanel.scale.y = 50 - navigationPanel.scale.y;
-    twoDPaintingPanel.pos.x = windowPanel.pos.x - windowPanel.scale.x - twoDPaintingPanel.scale.x; //Keep on the left side of the window panel 
-    twoDPaintingPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + twoDPaintingPanel.scale.y; //Keep beneath the navigation bar
-    paintingModesPanel.pos.x = libraryPanel.pos.x + libraryPanel.scale.x + paintingModesPanel.scale.x + 1;
-    paintingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + paintingModesPanel.scale.y;
+    panel_twoD_painting.scale.x = 50 - screenGapPerc/2.f - panel_selected_texture_display.scale.x - (panel_window.scale.x);
+    panel_twoD_painting.scale.y = 50 - panel_navigation.scale.y;
+    panel_twoD_painting.pos.x = panel_window.pos.x - panel_window.scale.x - panel_twoD_painting.scale.x; //Keep on the left side of the window panel 
+    panel_twoD_painting.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_twoD_painting.scale.y; //Keep beneath the navigation bar
+    panel_painting_modes.pos.x = panel_library.pos.x + panel_library.scale.x + panel_painting_modes.scale.x + 1;
+    panel_painting_modes.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_painting_modes.scale.y;
 
-    faceSelectionCheckComboList.pos = paintingModesPanel.pos;
-    faceSelectionCheckComboList.pos.x += paintingModesPanel.scale.x + faceSelectionCheckComboList.scale.x + 0.5f;
-    faceSelectionCheckComboList.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + faceSelectionCheckComboList.scale.y;
-    paintingOverCheckComboList.pos = faceSelectionCheckComboList.pos;  
-    paintingOverCheckComboList.pos.x += faceSelectionCheckComboList.scale.x + paintingOverCheckComboList.scale.x + 0.25f;  
-    paintingColorCheckComboList.pos = paintingOverCheckComboList.pos;  
-    paintingColorCheckComboList.pos.x += paintingOverCheckComboList.scale.x + paintingColorCheckComboList.scale.x + 0.25f;  
-    mirrorCheckComboList.pos = paintingColorCheckComboList.pos;  
-    mirrorCheckComboList.pos.x += paintingColorCheckComboList.scale.x + mirrorCheckComboList.scale.x + 0.25f;  
-    paintingBrushButton.scale.y = mirrorCheckComboList.scale.y;  
-    paintingBrushButton.pos = mirrorCheckComboList.pos;  
-    paintingBrushButton.pos.x += mirrorCheckComboList.scale.x + paintingBrushButton.scale.x + 0.25f;  
+    checkComboList_painting_face_selection.pos = panel_painting_modes.pos;
+    checkComboList_painting_face_selection.pos.x += panel_painting_modes.scale.x + checkComboList_painting_face_selection.scale.x + 0.5f;
+    checkComboList_painting_face_selection.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + checkComboList_painting_face_selection.scale.y;
+    checkComboList_painting_over.pos = checkComboList_painting_face_selection.pos;  
+    checkComboList_painting_over.pos.x += checkComboList_painting_face_selection.scale.x + checkComboList_painting_over.scale.x + 0.25f;  
+    checkComboList_painting_color.pos = checkComboList_painting_over.pos;  
+    checkComboList_painting_color.pos.x += checkComboList_painting_over.scale.x + checkComboList_painting_color.scale.x + 0.25f;  
+    checkComboList_painting_mirror.pos = checkComboList_painting_color.pos;  
+    checkComboList_painting_mirror.pos.x += checkComboList_painting_color.scale.x + checkComboList_painting_mirror.scale.x + 0.25f;  
+    button_painting_brush.scale.y = checkComboList_painting_mirror.scale.y;  
+    button_painting_brush.pos = checkComboList_painting_mirror.pos;  
+    button_painting_brush.pos.x += checkComboList_painting_mirror.scale.x + button_painting_brush.scale.x + 0.25f;  
 
-    //faceSelectionCheckComboList
-    //paintingOverCheckComboList
+    //checkComboList_painting_face_selection
+    //checkComboList_painting_over
     
-    smearPaintingModePropertyPanel.pos.x = libraryPanel.pos.x + libraryPanel.scale.x + smearPaintingModePropertyPanel.scale.x + 1;
-    smearPaintingModePropertyPanel.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + smearPaintingModePropertyPanel.scale.y + 1;
+    panel_smear_painting_properties.pos.x = panel_library.pos.x + panel_library.scale.x + panel_smear_painting_properties.scale.x + 1;
+    panel_smear_painting_properties.pos.y = panel_painting_modes.pos.y + panel_painting_modes.scale.y + panel_smear_painting_properties.scale.y + 1;
     
-    filterPaintingModeFilterBtn.pos.x = libraryPanel.pos.x + libraryPanel.scale.x + filterPaintingModeFilterBtn.scale.x + 1;
-    filterPaintingModeFilterBtn.pos.y = paintingModesPanel.pos.y + paintingModesPanel.scale.y + filterPaintingModeFilterBtn.scale.y + 1;
-    filterPaintingModeFilterBtn.pos.z = libraryPanel.pos.z;
+    button_painting_filter_mode_filter.pos.x = panel_library.pos.x + panel_library.scale.x + button_painting_filter_mode_filter.scale.x + 1;
+    button_painting_filter_mode_filter.pos.y = panel_painting_modes.pos.y + panel_painting_modes.scale.y + button_painting_filter_mode_filter.scale.y + 1;
+    button_painting_filter_mode_filter.pos.z = panel_library.pos.z;
     
-    textureSelectedObjectsButton.pos.x = libraryPanel.pos.x + libraryPanel.scale.x + textureSelectedObjectsButton.scale.x + 1;
-    textureSelectedObjectsButton.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + textureSelectedObjectsButton.scale.y + 1;
-    textureSelectedObjectsButton.pos.z = libraryPanel.pos.z;
+    button_texture_selected_objects.pos.x = panel_library.pos.x + panel_library.scale.x + button_texture_selected_objects.scale.x + 1;
+    button_texture_selected_objects.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + button_texture_selected_objects.scale.y + 1;
+    button_texture_selected_objects.pos.z = panel_library.pos.z;
     
-    objectsPanel.pos = textureSelectedObjectsButton.pos;
-    objectsPanel.pos.x = libraryPanel.pos.x + libraryPanel.scale.x + objectsPanel.scale.x + 1;
-    objectsPanel.pos.y += textureSelectedObjectsButton.scale.y + objectsPanel.scale.y + 1.f;
+    panel_objects.pos = button_texture_selected_objects.pos;
+    panel_objects.pos.x = panel_library.pos.x + panel_library.scale.x + panel_objects.scale.x + 1;
+    panel_objects.pos.y += button_texture_selected_objects.scale.y + panel_objects.scale.y + 1.f;
 
-    displayingModesPanel.pos.x = layersPanel.pos.x - layersPanel.scale.x - displayingModesPanel.scale.x - 0.5f;
-    displayingModesPanel.pos.y = navigationPanel.pos.y + navigationPanel.scale.y + displayingModesPanel.scale.y;
+    panel_displaying_modes.pos.x = panel_layers.pos.x - panel_layers.scale.x - panel_displaying_modes.scale.x - 0.5f;
+    panel_displaying_modes.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_displaying_modes.scale.y;
     
-    wrapModeCheckbox.pos = currentModeHintDisplayer.pos;
-    wrapModeCheckbox.pos.x = layersPanel.pos.x - layersPanel.scale.x - wrapModeCheckbox.scale.x * 2.f;
-    wrapModeCheckbox.pos.y += currentModeHintDisplayer.scale.y + wrapModeCheckbox.scale.y;
+    checkBox_wrap_mode.pos = panel_displaying_modes.pos;
+    checkBox_wrap_mode.pos.x = panel_layers.pos.x - panel_layers.scale.x - checkBox_wrap_mode.scale.x * 2.f;
+    checkBox_wrap_mode.pos.y += panel_displaying_modes.scale.y + checkBox_wrap_mode.scale.y + 4.f;
 
-    sceneGizmo.pos = wrapModeCheckbox.pos;
-    sceneGizmo.pos.x = displayingModesPanel.pos.x;
-    sceneGizmo.pos.y += wrapModeCheckbox.scale.y + sceneGizmo.scale.y + 1.f;
+    gizmo_scene.pos = checkBox_wrap_mode.pos;
+    gizmo_scene.pos.x = panel_displaying_modes.pos.x;
+    gizmo_scene.pos.y += checkBox_wrap_mode.scale.y + gizmo_scene.scale.y + 1.f;
 
-    selectedTextureDisplayer.sections[0].elements[0].scale.y = selectedTextureDisplayer.scale.y;
+    panel_selected_texture_display.sections[0].elements[0].scale.y = panel_selected_texture_display.scale.y;
 
-    twoDPaintingPanel.sections[0].elements[0].scale.y = twoDPaintingPanel.scale.y;
+    panel_twoD_painting.sections[0].elements[0].scale.y = panel_twoD_painting.scale.y;
 
 }

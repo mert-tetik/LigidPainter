@@ -88,7 +88,7 @@ float gaussian(
 vec4 getSoftenedTexture(
                             sampler2D txtr, //The texture that will be painted
                             vec4 brushTxtr, //Brush value (painted texture value)
-                            vec2 TexCoords //The texture coordinates
+                            vec2 TexCoords, //The texture coordinates
                             float channelStrength
                         )
 { //Intensity from the painted texture
@@ -283,7 +283,8 @@ vec3 getPaintedTextureTxtrClr(
 vec4 getPaintedTextureFilterDisplayingMode( 
                                             sampler2D txtr, //The texture that will be painted  
                                             vec4 brushTxtr, //Brush value (painted texture value)
-                                            vec2 TexCoords  //The texture coordinates
+                                            vec2 TexCoords,  //The texture coordinates
+                                            float channelStrength
                                         )
 {
 
@@ -295,7 +296,7 @@ vec4 getPaintedTextureFilterDisplayingMode(
     return mix  (
                     texture(txtr,TexCoords),
                     destColor, //paintingColor
-                    intensity
+                    intensity * channelStrength
                 );
 }
 

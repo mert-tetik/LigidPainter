@@ -22,7 +22,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
-void Scene::render_scene(){
+void Scene::render_scene(Timer& timer){
 
     Debugger::block("Skybox Rendering"); // Start
     this->render_skybox();
@@ -45,6 +45,6 @@ void Scene::render_scene(){
     Debugger::block("Rendering scene decorations"); // End
 
     Debugger::block("3D Model"); // Start    
-    this->render_model();
+    this->render_model(timer);
     Debugger::block("3D Model"); // End
 }

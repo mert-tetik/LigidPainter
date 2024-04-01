@@ -36,6 +36,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <unordered_set>
 
+static bool boxSelectionInteraction(Timer &timer, Model* model, int meshI);
+
 void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll){
 
     glm::ivec2 prevRes = primitivesArrayTexture.getResolution();
@@ -94,9 +96,10 @@ void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<b
     prevPrimArray = primitivesArray;
 }
 
-bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, glm::mat4 viewMatrix, glm::mat4 projectionMatrix, glm::mat4 transformMatrix, glm::vec2 cursorPos, bool renderAllModel, bool registerHistory){
+static Framebuffer capture_FBO;
+static glm::vec2 lastMousePos;
 
-    vertices.push_back(Vertex());
+bool face_selection_interaction(Timer& timer, Model* model, int meshI, Camera cam, glm::vec2 cursorPos, bool renderAllModel, bool registerHistory){
 
     // Scale of the window
     glm::vec2 windowSize = getContext()->windowScale;
@@ -104,51 +107,52 @@ bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, g
     // Scale of the user's primary monitor
     glm::vec2 videoScale = *Settings::videoScale();
     
-    if(this->selectedPrimitiveIDs.size() != selectedMesh.indices.size() / 3){
-        this->selectedPrimitiveIDs.resize(selectedMesh.indices.size() / 3);
+    if(model->meshes[meshI].face_selection_data.selectedPrimitiveIDs.size() != model->meshes[meshI].indices.size() / 3){
+        model->meshes[meshI].face_selection_data.selectedPrimitiveIDs.resize(model->meshes[meshI].indices.size() / 3);
     }
 
     // Generating the model primitives texture
-    if(!this->modelPrimitives.ID)
-        glGenTextures(1, &this->modelPrimitives.ID);
+    if(!model->meshes[meshI].face_selection_data.modelPrimitives.ID)
+        glGenTextures(1, &model->meshes[meshI].face_selection_data.modelPrimitives.ID);
     
-    if(!this->selectedFaces.ID)
-        glGenTextures(1, &this->selectedFaces.ID);
+    if(!model->meshes[meshI].face_selection_data.selectedFaces.ID)
+        glGenTextures(1, &model->meshes[meshI].face_selection_data.selectedFaces.ID);
     
     // Updating the model primitives texture
-    this->modelPrimitives.update(nullptr, windowSize.x, windowSize.y, GL_NEAREST, GL_RED, GL_R32F);
+    model->meshes[meshI].face_selection_data.modelPrimitives.update(nullptr, windowSize.x, windowSize.y, GL_NEAREST, GL_RED, GL_R32F);
     
     if(*Mouse::LClick()){
         lastMousePos = cursorPos;
     }
 
-
     bool changesMade = false;
     
     if(shortcuts_CTRL_A()){
         if(registerHistory)
-            registerFaceSelectionAction("Select all the faces - Painting", selectedPrimitiveIDs, prevPrimArray, selectedMeshI);
+            registerFaceSelectionAction("Select all the faces - Painting", model->meshes[meshI].face_selection_data.selectedPrimitiveIDs, model->meshes[meshI].face_selection_data.prevPrimArray, meshI);
 
-        std::fill(this->selectedPrimitiveIDs.begin(), this->selectedPrimitiveIDs.end(), 2);
+        std::fill(model->meshes[meshI].face_selection_data.selectedPrimitiveIDs.begin(), model->meshes[meshI].face_selection_data.selectedPrimitiveIDs.end(), 2);
         
-        changedIndices.clear();
-        for (size_t i = 0; i < this->selectedPrimitiveIDs.size(); i++)
+        model->meshes[meshI].face_selection_data.changedIndices.clear();
+        for (size_t i = 0; i < model->meshes[meshI].face_selection_data.selectedPrimitiveIDs.size(); i++)
         {
-            changedIndices.push_back(i);
+            model->meshes[meshI].face_selection_data.changedIndices.push_back(i);
         }
         
         changesMade = true;
     }
 
-    if(mouseInteraction && !shortcuts_CTRL_A()){
+    else if(*Mouse::LPressed()){
         if(*Mouse::LClick() && registerHistory)
-            registerFaceSelectionAction("Face selection - Painting", selectedPrimitiveIDs, prevPrimArray, selectedMeshI);
+            registerFaceSelectionAction("Face selection - Painting", model->meshes[meshI].face_selection_data.selectedPrimitiveIDs, model->meshes[meshI].face_selection_data.prevPrimArray, meshI);
        
         // Generate & bind the framebuffer object to render the model primitives into the modelPrimitives texture
-        if(!this->FBO.ID)
-            this->FBO = Framebuffer(this->modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, windowSize), "Face selection");
-            
-        this->FBO.bind();
+        if(!capture_FBO.ID)
+            capture_FBO = Framebuffer(model->meshes[meshI].face_selection_data.modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, *Settings::videoScale()), "Face selection");
+        else
+            capture_FBO.setColorBuffer(model->meshes[meshI].face_selection_data.modelPrimitives, GL_TEXTURE_2D);
+
+        capture_FBO.bind();
 
         glClearColor(0.,0.,0.,0.);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -157,20 +161,20 @@ bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, g
 
         // Seting the primitive ID rendering shader 
         ShaderSystem::primitiveIDShader().use();
-        ShaderSystem::primitiveIDShader().setMat4("view", viewMatrix);
-        ShaderSystem::primitiveIDShader().setMat4("projection", projectionMatrix);
-        ShaderSystem::primitiveIDShader().setMat4("modelMatrix", transformMatrix);
+        ShaderSystem::primitiveIDShader().setMat4("view", cam.viewMatrix);
+        ShaderSystem::primitiveIDShader().setMat4("projection", getScene()->projectionMatrix);
+        ShaderSystem::primitiveIDShader().setMat4("modelMatrix", getScene()->transformMatrix);
         
         glDepthFunc(GL_LESS);
 
         if(!renderAllModel){
             ShaderSystem::primitiveIDShader().setInt("emptyFlag", false);
-            selectedMesh.Draw(false);
+            model->meshes[meshI].Draw(false);
         }
         else{
             for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
             {
-                ShaderSystem::primitiveIDShader().setInt("emptyFlag", getScene()->model->meshes[i].materialName != selectedMesh.materialName);
+                ShaderSystem::primitiveIDShader().setInt("emptyFlag", getScene()->model->meshes[i].materialName != model->meshes[meshI].materialName);
                 getScene()->model->meshes[i].Draw(false);
             }
         }
@@ -182,16 +186,16 @@ bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, g
             glm::vec2 scale;
             glm::vec2 pos;
 
-            if(this->selectionModeIndex == 0){
-                pos.x = (lastMousePos.x + (cursorPos.x - lastMousePos.x) / mouseFillQuality * distI) - this->radius/2;
-                pos.y = (windowSize.y - (lastMousePos.y + (cursorPos.y - lastMousePos.y) / mouseFillQuality * distI)) - this->radius/2;
-                scale = glm::vec2(radius);
+            if(model->meshes[meshI].face_selection_data.selectionModeIndex == 0){
+                pos.x = (lastMousePos.x + (cursorPos.x - lastMousePos.x) / mouseFillQuality * distI) - model->meshes[meshI].face_selection_data.radius/2;
+                pos.y = (windowSize.y - (lastMousePos.y + (cursorPos.y - lastMousePos.y) / mouseFillQuality * distI)) - model->meshes[meshI].face_selection_data.radius/2;
+                scale = glm::vec2(model->meshes[meshI].face_selection_data.radius);
             }
             
-            else if(this->selectionModeIndex == 1){
+            else if(model->meshes[meshI].face_selection_data.selectionModeIndex == 1){
                 
-                glm::vec2 boxSelectionStartSc = this->boxSelectionStart / 100.f * *Settings::videoScale();
-                glm::vec2 boxSelectionEndSc = this->boxSelectionEnd / 100.f * *Settings::videoScale();
+                glm::vec2 boxSelectionStartSc = model->meshes[meshI].face_selection_data.boxSelectionStart / 100.f * *Settings::videoScale();
+                glm::vec2 boxSelectionEndSc = model->meshes[meshI].face_selection_data.boxSelectionEnd / 100.f * *Settings::videoScale();
         
                 boxSelectionStartSc.y = (windowSize.y - boxSelectionStartSc.y);
                 boxSelectionEndSc.y = (windowSize.y - boxSelectionEndSc.y);
@@ -210,7 +214,7 @@ bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, g
             }
             
             float* pxs = new float[(int)scale.x * (int)scale.y]; 
-            this->FBO.bind();
+            capture_FBO.bind();
             
             if(pos.x + scale.x < windowSize.x && pos.y + scale.y < windowSize.y){
                 glReadPixels(
@@ -225,15 +229,15 @@ bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, g
             }
 
                     
-            if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && (*Mouse::LClick() || this->selectionModeIndex == 1)){
+            if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && (*Mouse::LClick() || model->meshes[meshI].face_selection_data.selectionModeIndex == 1)){
                 changesMade = true;
                 
-                std::fill(this->selectedPrimitiveIDs.begin(), this->selectedPrimitiveIDs.end(), false);
+                std::fill(model->meshes[meshI].face_selection_data.selectedPrimitiveIDs.begin(), model->meshes[meshI].face_selection_data.selectedPrimitiveIDs.end(), false);
                 
-                changedIndices.clear();
-                for (size_t i = 0; i < this->selectedPrimitiveIDs.size(); i++)
+                model->meshes[meshI].face_selection_data.changedIndices.clear();
+                for (size_t i = 0; i < model->meshes[meshI].face_selection_data.selectedPrimitiveIDs.size(); i++)
                 {
-                    changedIndices.push_back(i);
+                    model->meshes[meshI].face_selection_data.changedIndices.push_back(i);
                 }
             }
             
@@ -243,18 +247,18 @@ bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, g
                         true
                     )
                 {
-                    if(pxs[i] < this->selectedPrimitiveIDs.size() && pxs[i] >= 0){
+                    if(pxs[i] < model->meshes[meshI].face_selection_data.selectedPrimitiveIDs.size() && pxs[i] >= 0){
                         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
-                            if(this->selectedPrimitiveIDs[pxs[i]] == 0){
-                                this->selectedPrimitiveIDs[pxs[i]] = 2;
-                                changedIndices.push_back(pxs[i]);
+                            if(model->meshes[meshI].face_selection_data.selectedPrimitiveIDs[pxs[i]] == 0){
+                                model->meshes[meshI].face_selection_data.selectedPrimitiveIDs[pxs[i]] = 2;
+                                model->meshes[meshI].face_selection_data.changedIndices.push_back(pxs[i]);
                                 changesMade = true;
                             }
                         }
                         else{
-                            if(this->selectedPrimitiveIDs[pxs[i]] == 2){
-                                this->selectedPrimitiveIDs[pxs[i]] = 0;
-                                changedIndices.push_back(pxs[i]);
+                            if(model->meshes[meshI].face_selection_data.selectedPrimitiveIDs[pxs[i]] == 2){
+                                model->meshes[meshI].face_selection_data.selectedPrimitiveIDs[pxs[i]] = 0;
+                                model->meshes[meshI].face_selection_data.changedIndices.push_back(pxs[i]);
                                 changesMade = true;
                             }
                         }
@@ -271,18 +275,19 @@ bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, g
     }
     
     if(changesMade){
-        const int fragmentCount = selectedMesh.indices.size() / 3; 
+        const int fragmentCount = model->meshes[meshI].indices.size() / 3; 
 
         updatePrimitivesArrayTexture(
-                                        this->selectedFaces, 
-                                        this->selectedPrimitiveIDs, 
-                                        this->prevPrimArray, 
-                                        selectedMesh, 
-                                        changedIndices,
+                                        model->meshes[meshI].face_selection_data.selectedFaces, 
+                                        model->meshes[meshI].face_selection_data.selectedPrimitiveIDs, 
+                                        model->meshes[meshI].face_selection_data.prevPrimArray, 
+                                        model->meshes[meshI], 
+                                        model->meshes[meshI].face_selection_data.changedIndices,
                                         true
                                     );
     }
 
+    boxSelectionInteraction(timer, model, meshI);
 
     // Set back to default
     Settings::defaultFramebuffer()->FBO.bind();
@@ -301,33 +306,33 @@ bool interaction(Mesh& selectedMesh, int selectedMeshI, bool mouseInteraction, g
 
 static bool __lastMousePressState = false;
 
-bool boxSelectionInteraction(Timer &timer){
+bool boxSelectionInteraction(Timer &timer, Model* model, int meshI){
     
     glClear(GL_DEPTH_BUFFER_BIT);
 
     if(*Mouse::LClick()){
-        this->boxSelectionStart = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+        model->meshes[meshI].face_selection_data.boxSelectionStart = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
         lastMousePos = *Mouse::cursorPos();
     }
 
-    this->boxSelectionEnd = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+    model->meshes[meshI].face_selection_data.boxSelectionEnd = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
     
-    glm::vec2 btnScale = (this->boxSelectionEnd - this->boxSelectionStart) / 2.f;
+    glm::vec2 btnScale = (model->meshes[meshI].face_selection_data.boxSelectionEnd - model->meshes[meshI].face_selection_data.boxSelectionStart) / 2.f;
 
-    if(this->boxSelectionStart.x > this->boxSelectionEnd.x){
-        btnScale.x = (this->boxSelectionStart.x - this->boxSelectionEnd.x) / 2.f;
+    if(model->meshes[meshI].face_selection_data.boxSelectionStart.x > model->meshes[meshI].face_selection_data.boxSelectionEnd.x){
+        btnScale.x = (model->meshes[meshI].face_selection_data.boxSelectionStart.x - model->meshes[meshI].face_selection_data.boxSelectionEnd.x) / 2.f;
     } 
-    if(this->boxSelectionStart.y > this->boxSelectionEnd.y){
-        btnScale.y = (this->boxSelectionStart.y - this->boxSelectionEnd.y) / 2.f;
+    if(model->meshes[meshI].face_selection_data.boxSelectionStart.y > model->meshes[meshI].face_selection_data.boxSelectionEnd.y){
+        btnScale.y = (model->meshes[meshI].face_selection_data.boxSelectionStart.y - model->meshes[meshI].face_selection_data.boxSelectionEnd.y) / 2.f;
     } 
 
     Button btn = Button(ELEMENT_STYLE_SOLID, btnScale, "", Texture(), 0.f, false);
-    btn.pos = glm::vec3(this->boxSelectionStart + btn.scale, 0.9f); 
+    btn.pos = glm::vec3(model->meshes[meshI].face_selection_data.boxSelectionStart + btn.scale, 0.9f); 
     
-    if(this->boxSelectionStart.x > this->boxSelectionEnd.x)
-        btn.pos.x = this->boxSelectionEnd.x + btn.scale.x;
-    if(this->boxSelectionStart.y > this->boxSelectionEnd.y)
-        btn.pos.y = this->boxSelectionEnd.y + btn.scale.y;
+    if(model->meshes[meshI].face_selection_data.boxSelectionStart.x > model->meshes[meshI].face_selection_data.boxSelectionEnd.x)
+        btn.pos.x = model->meshes[meshI].face_selection_data.boxSelectionEnd.x + btn.scale.x;
+    if(model->meshes[meshI].face_selection_data.boxSelectionStart.y > model->meshes[meshI].face_selection_data.boxSelectionEnd.y)
+        btn.pos.y = model->meshes[meshI].face_selection_data.boxSelectionEnd.y + btn.scale.y;
     
     if(*Mouse::LPressed())
         btn.render(timer, false); 

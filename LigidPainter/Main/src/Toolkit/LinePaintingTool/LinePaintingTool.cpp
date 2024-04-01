@@ -77,6 +77,7 @@ void line_painting(Timer& timer, bool applyStroke, bool firstFrame){
         ShaderSystem::buttonShader().use();
     }
     else{
+        /*        
         std::vector<VectorStroke> strokeArray;
         strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
         painter.applyVectorStrokes(
@@ -85,5 +86,6 @@ void line_painting(Timer& timer, bool applyStroke, bool firstFrame){
                                     checkComboList_painting_color.panel.sections[0].elements[14].button.material,
                                     painter.wrapMode
                                 );
+        */
     }
 }

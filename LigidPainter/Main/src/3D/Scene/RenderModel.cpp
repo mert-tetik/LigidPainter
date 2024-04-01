@@ -27,8 +27,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
 static Camera prevCam;
+bool face_selection_interaction(Timer& timer, Model* model, int meshI, Camera cam, glm::vec2 cursorPos, bool renderAllModel, bool registerHistory);
 
-void Scene::render_model(){
+void Scene::render_model(Timer& timer){
     
     //3D Model Shader
     ShaderSystem::tdModelShader().use();
@@ -186,7 +187,7 @@ void Scene::render_model(){
         ShaderSystem::tdModelShader().setInt("enableAOChannel", checkComboList_painting_color.panel.sections[0].elements[11].checkBox.clickState1);
         ShaderSystem::tdModelShader().setFloat("ambientOcclusionVal", checkComboList_painting_color.panel.sections[0].elements[12].rangeBar.value);
 
-        ShaderSystem::tdModelShader().setInt("paintingMode", painter.refreshable);
+        ShaderSystem::tdModelShader().setInt("paintingMode", painting_paint_condition());
 
         // 3D Model    
         ShaderSystem::tdModelShader().use();
@@ -208,6 +209,12 @@ void Scene::render_model(){
             this->model->meshes[i].Draw(this->model->meshes[i].face_selection_data.editMode && i == button_mesh_selection.selectedMeshI && panel_displaying_modes.selectedElement != 0);
         }
     }
+
+    for (size_t i = 0; i < this->model->meshes.size(); i++)
+    {
+        face_selection_interaction(timer, this->model, i, this->camera, *Mouse::cursorPos(), true, true);
+    }
+    
     
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
     ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);

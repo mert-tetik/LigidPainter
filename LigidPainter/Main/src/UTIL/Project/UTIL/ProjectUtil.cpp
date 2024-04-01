@@ -36,7 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 
-std::string project_locate_ligid_file(std::string& folderPath)
+std::string project_locate_ligid_file(std::string folderPath)
 {
     if(!std::filesystem::is_directory(folderPath) || !std::filesystem::exists(folderPath)){
         LGDLOG::start << "ERROR : Locating Ligid file in a folder : " << folderPath << " is not a folder!"  << LGDLOG::end;

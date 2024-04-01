@@ -17,8 +17,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <atomic>
 
-#include "3D/ThreeD.hpp"
+#include "3D/Model/Model.hpp"
+#include "3D/Skybox/Skybox.hpp"
+#include "3D/SceneAxisDisplayer/SceneAxisDisplayer.hpp"
 #include "3D/Camera/Camera.hpp"
+#include "3D/SceneTiles/SceneTiles.hpp"
 
 struct Scene{
     glm::mat4 projectionMatrix;
@@ -49,9 +52,9 @@ struct Scene{
     float heightMapStrength = 0.f;
     Model* model = new Model();
     Mesh* get_selected_mesh();
-    void render_model();
+    void render_model(Timer& timer);
 
-    void render_scene();
+    void render_scene(Timer& timer);
     
     void updateProjectionMatrix(float ratio);
     void updateTransformMatrix();

@@ -26,8 +26,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "GUI/Elements.hpp"
+
 #include "3D/Material/Material.hpp"
+
 #include "UTIL/Mouse/Mouse.hpp"
+
+#include "Toolkit/VectorScene/VectorScene.hpp"
 
 // Forward declerations
 class MaterialSelectionDialog; 

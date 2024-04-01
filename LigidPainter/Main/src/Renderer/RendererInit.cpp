@@ -125,11 +125,11 @@ void Renderer::initRenderer(){
     Debugger::block("LOAD : Skybox"); //Start 305233920 291.12 MB
     
     //Init the skybox    
-    skybox.init();
+    getScene()->skybox.init();
     //Load the default skybox
-    skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox's itself
-    skybox.createPrefilterMap(); //Create prefiltered skybox
-    skybox.createDisplayingTxtr(); //Create displaying texture
+    getScene()->skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox's itself
+    getScene()->skybox.createPrefilterMap(); //Create prefiltered skybox
+    getScene()->skybox.createDisplayingTxtr(); //Create displaying texture
     
     Debugger::block("LOAD : Skybox"); //End 
     
@@ -205,7 +205,7 @@ void Renderer::initRenderer(){
     Debugger::block("LOAD : INIT VECTOR SCENE"); //End
     
     Debugger::block("LOAD : INIT TEXTURE FIELD SCENE"); //Start
-    *getTextureFieldScene() = TextureFieldScene({}); 
+    *getTextureFieldScene() = TextureFieldScene(std::vector<TextureField>{}); 
     Debugger::block("LOAD : INIT TEXTURE FIELD SCENE"); //End
 
 }

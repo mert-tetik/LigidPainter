@@ -57,7 +57,7 @@ void TextureFieldScene::render(Timer& timer, bool doMouseTracking, bool threeD_o
             }
         }
 
-        if((painter.wrapMode && this->texture_fields[i].wrapMode) || !painter.wrapMode || editMode){
+        if((checkBox_wrap_mode.clickState1 && this->texture_fields[i].wrapMode) || !checkBox_wrap_mode.clickState1 || editMode){
             this->texture_fields[i].render(
                                                 timer, 
                                                 this->texture_fields, 

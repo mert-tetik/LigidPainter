@@ -883,8 +883,8 @@ static void updateTheTexture(
     ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6); glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, projected_painting_FBO.colorBuffer.ID);
     ShaderSystem::textureUpdatingShader().setInt("brushModeState", settings.painting_mode);
     ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", settings.painting_over_data.active);
-    ShaderSystem::textureUpdatingShader().setFloat("smearTransformStrength", settings.smear_mode.smear_direction);
-    ShaderSystem::textureUpdatingShader().setFloat("smearBlurStrength", settings.smear_mode.smear_strength);
+    ShaderSystem::textureUpdatingShader().setFloat("smearTransformStrength", settings.smear_mode.smear_transform_strength);
+    ShaderSystem::textureUpdatingShader().setFloat("smearBlurStrength", settings.smear_mode.smear_blur_strength);
     ShaderSystem::textureUpdatingShader().setInt("multiChannelsPaintingMod", panel_displaying_modes.selectedElement == 1);
     ShaderSystem::textureUpdatingShader().setInt("channelI", channelI);
     ShaderSystem::textureUpdatingShader().setFloat("channelStrength", channel_strength);

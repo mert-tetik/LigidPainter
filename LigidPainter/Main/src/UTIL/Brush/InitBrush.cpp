@@ -67,6 +67,12 @@ Brush::Brush(
     this->updateDisplayTexture(displayRadius);
 }
 
+Brush::Brush(BrushProperties brushProperties, std::string title){
+    this->properties = brushProperties;
+    this->title = title;
+}
+
+
 void Brush::update(
         float displayRadius,
         float spacing,

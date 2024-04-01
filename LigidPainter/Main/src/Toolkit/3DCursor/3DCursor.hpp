@@ -16,6 +16,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 class Painter;
 
-void render_3D_cursor();
+void render_3D_cursor(float radius);
 
 #endif

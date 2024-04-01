@@ -48,11 +48,11 @@ void checkComboList_painting_face_selection_render(Timer& timer, bool doMouseTra
     if(shortcuts_F4())
         checkComboList_painting_face_selection.panel.sections[0].elements[1].checkBox.clickState1 = !checkComboList_painting_face_selection.panel.sections[0].elements[1].checkBox.clickState1;
 
-    getScene()->get_selected_mesh()->face_selection_data.activated = meshSection.elements[0].checkBox.clickState1;
-    getScene()->get_selected_mesh()->face_selection_data.editMode = meshSection.elements[1].checkBox.clickState1;
-    getScene()->get_selected_mesh()->face_selection_data.selectionModeIndex = meshSection.elements[2].comboBox.selectedIndex;
-    getScene()->get_selected_mesh()->face_selection_data.radius = meshSection.elements[3].rangeBar.value;
-    getScene()->get_selected_mesh()->face_selection_data.hideUnselected = meshSection.elements[7].checkBox.clickState1;
+    getScene()->get_selected_mesh()->face_selection_data.activated = checkComboList_painting_face_selection.panel.sections[0].elements[0].checkBox.clickState1;
+    getScene()->get_selected_mesh()->face_selection_data.editMode = checkComboList_painting_face_selection.panel.sections[0].elements[1].checkBox.clickState1;
+    getScene()->get_selected_mesh()->face_selection_data.selectionModeIndex = checkComboList_painting_face_selection.panel.sections[0].elements[2].comboBox.selectedIndex;
+    getScene()->get_selected_mesh()->face_selection_data.radius = checkComboList_painting_face_selection.panel.sections[0].elements[3].rangeBar.value;
+    getScene()->get_selected_mesh()->face_selection_data.hideUnselected = checkComboList_painting_face_selection.panel.sections[0].elements[7].checkBox.clickState1;
     
     // Generate mesh mask 
     if(checkComboList_painting_face_selection.panel.sections[0].elements[5].button.clicked){            

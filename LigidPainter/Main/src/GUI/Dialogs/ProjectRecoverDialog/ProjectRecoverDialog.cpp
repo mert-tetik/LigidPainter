@@ -313,7 +313,6 @@ void ProjectRecoverDialog::show(Timer& timer){
                             project_materialsPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 3.f), title, mat.displayingTexture, 0.f, false));
                             project_materialsPanel.sections[0].elements[project_materialsPanel.sections[0].elements.size() - 1].button.textureSizeScale = 0.98f;
                         
-                            mat.displayingFBO.deleteBuffers(false, true);
                             for (size_t modI = 0; modI < mat.materialModifiers.size(); modI++)
                             {
                                 for (size_t secI = 0; secI < mat.materialModifiers[modI].sections.size(); secI++)
