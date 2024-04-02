@@ -22,9 +22,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
-void Scene::render_scene(Timer& timer){
+#include "GUI/Panels.hpp"
 
-    this->camera.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
+void Scene::render_scene(Timer& timer){
+    if(!panels_any_hovered())
+        this->camera.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
 
     Debugger::block("Skybox Rendering"); // Start
     this->render_skybox();

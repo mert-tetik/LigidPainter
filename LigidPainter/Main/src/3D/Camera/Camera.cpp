@@ -52,6 +52,8 @@ void Camera::setCameraRadius(float radius){
 void Camera::interaction(float scroll, glm::vec2 mouseOffset){
     const float sensitivity = 0.14f; //Mouse sensivity 
 
+    std::cout << scroll << std::endl;
+
     bool moved = false;
 
     bool mouseR_CTRL = getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS; 
@@ -112,7 +114,7 @@ void Camera::interaction(float scroll, glm::vec2 mouseOffset){
             this->pitch -= mouseOffset.y * sensitivity;
         }
         
-        if(scroll)
+        if(scroll != 0.f)
         {
             moved = true;
 
@@ -120,10 +122,10 @@ void Camera::interaction(float scroll, glm::vec2 mouseOffset){
             float originCameraDistance = glm::distance(this->originPos, this->cameraPos) / 10;
 
             //Change the distance between camera & center (radius)
-            if (mouseOffset.x > 0) {
+            if (scroll > 0) {
                 this->radius -= originCameraDistance;
             }
-            else if (mouseOffset.y < 0) {
+            else if (scroll < 0) {
                 this->radius += originCameraDistance;
             }
         }
