@@ -571,6 +571,24 @@ public:
 };
 
 
+//!------------------------------RENAMING DIALOG------------------------------
+
+class RenamingDialog
+{
+private:
+   TextBox rename_textbox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,1.5f), "", 0.f, false);
+public:
+   DialogControl dialogControl;
+
+   //Constructors
+   RenamingDialog(){}
+   RenamingDialog(int);
+
+   //Public member functions
+   void show(Timer& timer, glm::vec2 pos, float width, std::string* title);
+};
+
+
 //!------------------------------TEXTURE SELECTION DIALOG------------------------------
 
 class TextureSelectionDialog

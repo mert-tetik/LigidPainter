@@ -24,6 +24,7 @@ extern ExportDialog dialog_export;
 extern MaterialDisplayerDialog dialog_materialDisplayer;
 extern FilterDisplayerDialog dialog_filterDisplayer;
 extern DropperDialog dialog_dropper;
+extern RenamingDialog dialog_renaming;
 extern LoadProjectDialog dialog_loadProject;
 extern TextureSelectionDialog dialog_textureSelection;
 extern BakingDialog dialog_baking;

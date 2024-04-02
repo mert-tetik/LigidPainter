@@ -158,6 +158,163 @@ void panel_library_render(
             btn->button.textureSizeScale = 1.5f;
             if(btn->pos.y - btn->scale.y < (panel_library.pos.y + panel_library.scale.y) && btn->pos.y + btn->scale.y > (panel_library.pos.y - panel_library.scale.y))
                 btn->render(timer, true);
+
+                glm::vec4 textColor = glm::vec4(1) - btn->button.color;
+                textColor.a = 1.;
+                ShaderSystem::buttonShader().setVec4("properties.color"  ,    textColor      ); //Default button color
+
+                textRenderer.loadTextData(
+                                            btn->button.text,
+                                            glm::vec3(btn->button.resultPos.x,btn->button.resultPos.y + btn->button.resultScale.y/1.4f,btn->button.resultPos.z),
+                                            false,
+                                            0.25f, //TODO Change with a dynamic value
+                                            btn->button.resultPos.x - btn->button.resultScale.x,
+                                            btn->button.resultPos.x + btn->button.resultScale.x,
+                                            TEXTRENDERER_ALIGNMENT_MID
+                                        );
+
+                textRenderer.renderText();
+
+            // Right clicked to an element
+            if(btn->button.hover && *Mouse::RClick()){ 
+                
+                //To a texture
+                if(Library::getSelectedElementIndex() == 0){
+                    // Show texture context menu
+                    int res = show_context_menu(timer, {"Rename", "Duplicate", "Copy path", "Edit", "Delete"});
+                    
+                    //Clicked to rename button
+                    if(res == 0){
+                        dialog_renaming.show(timer, glm::vec2(btn->pos.x, btn->pos.y + btn->scale.y/1.4f), btn->scale.x * 1.5f, &Library::getTexture(i)->title);
+                    }
+                    //Clicked to duplicate button
+                    else if(res == 1){
+                        Texture duplicatedTexture = *Library::getTexture(i);
+                        duplicatedTexture.ID = Library::getTexture(i)->duplicateTexture();
+                        duplicatedTexture.title += "_duplicated";
+                        Library::addTexture(duplicatedTexture, "New texture via duplication");
+                    }
+                    //Clicked to copy path button
+                    else if(res == 2){
+                        LigidGL::setClipboardText(project_path() + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + Library::getTexture(i)->title + ".png");
+                    }
+                    //Clicked to edit button
+                    else if(res == 3){
+                        dialog_textureEditor.show(timer, Skybox(), Library::getTexture(i));
+                    }
+                    //Clicked to delete button
+                    else if(res == 4){
+                        Library::eraseTexture(i);
+                    }
+                    
+                }
+                
+                //To a material
+                if(Library::getSelectedElementIndex() == 1){
+                    // Show material context menu
+                    int res = show_context_menu(timer, {"Edit", "Rename", "Duplicate", "Copy path", "Delete", "Export"});
+                
+                    //Clicked to edit button
+                    if(res == 0){
+                        //Select the material that material editor will edit & show the material editor dialog
+                        dialog_materialEditor.show(timer, Library::getMaterial(i));
+                    }
+                    //Clicked to rename button
+                    else if(res == 1){
+                        dialog_renaming.show(timer, glm::vec2(btn->pos.x, btn->pos.y + btn->scale.y/1.4f), btn->scale.x * 1.5f, &Library::getMaterial(i)->title);
+                    }
+                    //Clicked to duplicate button
+                    else if(res == 2){
+                        Material duplicatedMaterial = Library::getMaterial(i)->duplicateMaterial();
+                        Library::addMaterial(duplicatedMaterial, "New material via duplication");
+                    }
+                    //Clicked to copy path button
+                    else if(res == 3){
+                        LigidGL::setClipboardText(project_path() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(i)->title + ".lgdmaterial");
+                    }
+                    //Clicked to delete button
+                    else if(res == 4){
+                        //Delete the material
+                        Library::eraseMaterial(i);
+                    }
+                    //Clicked to export button
+                    else if(res == 5){
+                        std::string exportingPath = showFileSystemObjectSelectionDialog("Export the lgdmaterial file", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE);
+                        if(exportingPath.size())
+                            FileHandler::writeLGDMATERIALFile(exportingPath, *Library::getMaterial(i));
+                    }
+                }
+                
+                //To a brush
+                if(Library::getSelectedElementIndex() == 2){
+                    
+                    // Show brush context menu
+                    int res = show_context_menu(timer, {"Edit", "Rename", "Duplicate", "Copy Path", "Delete"});
+                    
+                    //Clicked to edit brush button
+                    if(res == 0){
+                        registerBrushChangedAction("Edit brush", Texture(), *Library::getBrush(i), i);
+                        dialog_brushModification.show(timer, &Library::getBrush(i)->properties);
+                    }
+                    
+                    //Clicked to rename button
+                    else if(res == 1){
+                        dialog_renaming.show(timer, glm::vec2(btn->pos.x, btn->pos.y + btn->scale.y/1.4f), btn->scale.x * 1.5f, &Library::getBrush(i)->title);
+                    }
+                    
+                    //Clicked to duplicate button
+                    else if(res == 2 && i < Library::getBrushArraySize()){
+                        Brush selectedBrush = *Library::getBrush(i);
+                        Texture dupTxtr = selectedBrush.properties.brushTexture.duplicateTexture();
+                        dupTxtr.proceduralProps = selectedBrush.properties.brushTexture.proceduralProps;
+                        Library::addBrush(
+                                            Brush(
+                                                    0.1f,
+                                                    selectedBrush.properties.spacing,
+                                                    selectedBrush.properties.hardness,
+                                                    selectedBrush.properties.sizeJitter,
+                                                    selectedBrush.properties.scatter,
+                                                    selectedBrush.properties.fade,
+                                                    selectedBrush.properties.rotation,
+                                                    selectedBrush.properties.rotationJitter,
+                                                    selectedBrush.properties.alphaJitter,
+                                                    selectedBrush.properties.individualTexture,
+                                                    selectedBrush.properties.sinWavePattern,
+                                                    selectedBrush.title + "_duplicated",
+                                                    dupTxtr                     
+                                                ),
+                                                "New brush via duplication"
+                                        );
+                    }
+                    
+                    //Clicked to copy path button
+                    else if(res == 3){
+                        LigidGL::setClipboardText(project_path() + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + Library::getBrush(i)->title + ".lgdfilter");
+                    }
+                    
+                    //Clicked to delete button
+                    else if(res == 4){
+                        Library::eraseBrush(i);
+                    }
+                }
+
+                //To a model
+                if(Library::getSelectedElementIndex() == 3){
+                    // Show brush context menu
+                    int res = show_context_menu(timer, {"Model Info", "Use Model"});
+
+                    //Clicked to model info button
+                    if(res == 0){
+                        dialog_modelInfo.show(timer, Library::getModel(i));
+                    }
+
+                    //Clicked to use the model button
+                    else if(res == 1){
+                        getScene()->model = Library::getModel(i);
+                        getScene()->model->newModelAdded = true; 
+                    }
+                }
+            }
         }
 
         add_btn.render(timer, true);
@@ -166,230 +323,11 @@ void panel_library_render(
     
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    // If right clicked to elements
-    check_context_menus(timer);
-
     if(glIsTexture(panel_library_selected_texture.ID) == GL_FALSE)
         panel_library_selected_texture.ID = false;
 }
 
 
-/*
-
-if(isLibraryDisplayer){
-                        for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
-                        {
-                            std::string channelName = "";
-                            unsigned int txtrID = sections[sI].elements[i].button.texture.ID;
-
-                            if(getScene()->model->meshes[meshI].albedo.ID == txtrID)
-                                channelName = "Albedo";
-                            if(getScene()->model->meshes[meshI].roughness.ID == txtrID)
-                                channelName = "Roughness";
-                            if(getScene()->model->meshes[meshI].metallic.ID == txtrID)
-                                channelName = "Metallic";
-                            if(getScene()->model->meshes[meshI].normalMap.ID == txtrID)
-                                channelName = "Normal Map";
-                            if(getScene()->model->meshes[meshI].heightMap.ID == txtrID)
-                                channelName = "Height Map";
-                            if(getScene()->model->meshes[meshI].ambientOcclusion.ID == txtrID)
-                                channelName = "Ambient Occlusion";
-                        
-                            if(channelName != ""){
-                                Button materialInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), getScene()->model->meshes[meshI].materialName, Texture(), 0.f, false);
-                                Button channelInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), channelName, Texture(), 0.f, false);
-
-                                materialInfo.color = ColorPalette::themeColor;
-                                channelInfo.color = ColorPalette::themeColor;
-                                
-                                materialInfo.outlineExtra = false;
-                                materialInfo.outline = false;
-
-                                channelInfo.outlineExtra = false;
-                                channelInfo.outline = false;
-
-                                if(materialInfo.scale.y < 0.5f){
-                                    materialInfo.text = "";
-                                    channelInfo.text = "";
-                                }
-
-                                materialInfo.pos = sections[sI].elements[i].button.pos;
-                                materialInfo.pos.y -= sections[sI].elements[i].button.scale.y - materialInfo.scale.y;
-                                materialInfo.pos.z += 0.1f;
-                                channelInfo.pos = materialInfo.pos;
-                                channelInfo.pos.y += channelInfo.scale.y + materialInfo.scale.y;
-                            
-                                materialInfo.render(timer, false);
-                                channelInfo.render(timer, false);
-                            }
-                        }
-                        
-
-                        glm::vec4 textColor = glm::vec4(1) - sections[sI].elements[i].button.color;
-                        textColor.a = 1.;
-                        ShaderSystem::buttonShader().setVec4("properties.color"  ,    textColor      ); //Default button color
-
-                        textRenderer.loadTextData(
-                                                    sections[sI].elements[i].button.text,
-                                                    glm::vec3(sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z),
-                                                    false,
-                                                    0.25f, //TODO Change with a dynamic value
-                                                    sections[sI].elements[i].button.resultPos.x - sections[sI].elements[i].button.resultScale.x,
-                                                    sections[sI].elements[i].button.resultPos.x + sections[sI].elements[i].button.resultScale.x,
-                                                    TEXTRENDERER_ALIGNMENT_MID
-                                                );
-
-                        textRenderer.renderText();
-                    }
-
-
-*/
-
-static void check_context_menus(Timer& timer){
-    for (size_t elementI = 0; elementI < panel_library.sections[0].elements.size(); elementI++)
-    {
-        // Right clicked to an element
-        if(panel_library.sections[0].elements[elementI].button.hover && *Mouse::RClick()){ 
-            
-            //To a texture
-            if(Library::getSelectedElementIndex() == 0){
-                // Show texture context menu
-                int res = show_context_menu(timer, {"Rename", "Duplicate", "Copy path", "Edit", "Delete"});
-                
-                //Clicked to rename button
-                if(res == 0){
-
-                }
-                //Clicked to duplicate button
-                else if(res == 1){
-                    Texture duplicatedTexture = *Library::getTexture(elementI);
-                    duplicatedTexture.ID = Library::getTexture(elementI)->duplicateTexture();
-                    duplicatedTexture.title += "_duplicated";
-                    Library::addTexture(duplicatedTexture, "New texture via duplication");
-                }
-                //Clicked to copy path button
-                else if(res == 2){
-                    LigidGL::setClipboardText(project_path() + UTIL::folderDistinguisher() + "Textures" + UTIL::folderDistinguisher() + Library::getTexture(elementI)->title + ".png");
-                }
-                //Clicked to edit button
-                else if(res == 3){
-                    dialog_textureEditor.show(timer, Skybox(), Library::getTexture(elementI));
-                }
-                //Clicked to delete button
-                else if(res == 4){
-                    Library::eraseTexture(elementI);
-                }
-                
-            }
-            
-            //To a material
-            if(Library::getSelectedElementIndex() == 1){
-                // Show material context menu
-                int res = show_context_menu(timer, {"Rename", "Duplicate", "Copy path", "Delete", "Export"});
-               
-                //Clicked to edit button
-                if(res == 0){
-                    //Select the material that material editor will edit & show the material editor dialog
-                    dialog_materialEditor.show(timer, Library::getMaterial(elementI));
-                }
-                //Clicked to rename button
-                else if(res == 1){
-                    
-                }
-                //Clicked to duplicate button
-                else if(res == 2){
-                    Material duplicatedMaterial = Library::getMaterial(elementI)->duplicateMaterial();
-                    Library::addMaterial(duplicatedMaterial, "New material via duplication");
-                }
-                //Clicked to copy path button
-                else if(res == 3){
-                    LigidGL::setClipboardText(project_path() + UTIL::folderDistinguisher() + "Materials" + UTIL::folderDistinguisher() + Library::getMaterial(elementI)->title + ".lgdmaterial");
-                }
-                //Clicked to delete button
-                else if(res == 4){
-                    //Delete the material
-                    Library::eraseMaterial(elementI);
-                }
-                //Clicked to export button
-                else if(res == 5){
-                    std::string exportingPath = showFileSystemObjectSelectionDialog("Export the lgdmaterial file", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MATERIAL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_EXPORT_FILE);
-                    if(exportingPath.size())
-                        FileHandler::writeLGDMATERIALFile(exportingPath, *Library::getMaterial(elementI));
-                }
-            }
-            
-            //To a brush
-            if(Library::getSelectedElementIndex() == 2){
-                
-                // Show brush context menu
-                int res = show_context_menu(timer, {"Edit", "Rename", "Duplicate", "Copy Path", "Delete"});
-                
-                //Clicked to edit brush button
-                if(res == 0){
-                    registerBrushChangedAction("Edit brush", Texture(), *Library::getBrush(elementI), elementI);
-                    dialog_brushModification.show(timer, &Library::getBrush(elementI)->properties);
-                }
-                
-                //Clicked to rename button
-                else if(res == 1){
-                    
-                }
-                
-                //Clicked to duplicate button
-                else if(res == 2 && elementI < Library::getBrushArraySize()){
-                    Brush selectedBrush = *Library::getBrush(elementI);
-                    Texture dupTxtr = selectedBrush.properties.brushTexture.duplicateTexture();
-                    dupTxtr.proceduralProps = selectedBrush.properties.brushTexture.proceduralProps;
-                    Library::addBrush(
-                                        Brush(
-                                                0.1f,
-                                                selectedBrush.properties.spacing,
-                                                selectedBrush.properties.hardness,
-                                                selectedBrush.properties.sizeJitter,
-                                                selectedBrush.properties.scatter,
-                                                selectedBrush.properties.fade,
-                                                selectedBrush.properties.rotation,
-                                                selectedBrush.properties.rotationJitter,
-                                                selectedBrush.properties.alphaJitter,
-                                                selectedBrush.properties.individualTexture,
-                                                selectedBrush.properties.sinWavePattern,
-                                                selectedBrush.title + "_duplicated",
-                                                dupTxtr                     
-                                            ),
-                                            "New brush via duplication"
-                                    );
-                }
-                
-                //Clicked to copy path button
-                else if(res == 3){
-                    LigidGL::setClipboardText(project_path() + UTIL::folderDistinguisher() + "Brushes" + UTIL::folderDistinguisher() + Library::getBrush(elementI)->title + ".lgdfilter");
-                }
-                
-                //Clicked to delete button
-                else if(res == 4){
-                    Library::eraseBrush(elementI);
-                }
-            }
-
-            //To a model
-            if(Library::getSelectedElementIndex() == 3){
-                // Show brush context menu
-                int res = show_context_menu(timer, {"Model Info", "Use Model"});
-
-                //Clicked to model info button
-                if(res == 0){
-                    dialog_modelInfo.show(timer, Library::getModel(elementI));
-                }
-
-                //Clicked to use the model button
-                else if(res == 1){
-                    getScene()->model = Library::getModel(elementI);
-                    getScene()->model->newModelAdded = true; 
-                }
-            }
-        }
-    }
-}
 
 static void element_interactions(Timer& timer){
     //Update the selected texture

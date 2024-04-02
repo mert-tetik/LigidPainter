@@ -9,6 +9,9 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+
+    TODO Remove nullptrs
+
 */
 
 #include <iostream>

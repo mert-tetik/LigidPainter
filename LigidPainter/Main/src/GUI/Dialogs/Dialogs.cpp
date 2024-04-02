@@ -26,6 +26,7 @@ ExportDialog dialog_export;
 MaterialDisplayerDialog dialog_materialDisplayer;
 FilterDisplayerDialog dialog_filterDisplayer;
 DropperDialog dialog_dropper;
+RenamingDialog dialog_renaming;
 LoadProjectDialog dialog_loadProject;
 TextureSelectionDialog dialog_textureSelection;
 BakingDialog dialog_baking;
@@ -51,6 +52,7 @@ void init_dialogs(){
    dialog_materialDisplayer = MaterialDisplayerDialog(0);
    dialog_filterDisplayer = FilterDisplayerDialog(0);
    dialog_dropper = DropperDialog(0);
+   dialog_renaming = RenamingDialog(0);
    dialog_loadProject = LoadProjectDialog(0);
    dialog_textureSelection = TextureSelectionDialog(0);
    dialog_baking = BakingDialog(0);
