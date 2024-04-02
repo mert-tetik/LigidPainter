@@ -41,6 +41,8 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
     {
         dialogControl.updateStart();
 
+        this->displayingCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
+
         if(dialogControl.firstFrameActivated || !this->matModePanel.sections[0].elements.size()){
             this->updateMaterialTypes();   
         }

@@ -39,6 +39,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 Panel panel_library;
 Texture panel_library_selected_texture;
 
+static Button add_btn(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), "Add", Texture(), 0.f, false);
+static Button import_btn(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), "Import", Texture(), 0.f, false);
+
 /* Forward declared util functions */
 static void check_context_menus(Timer& timer);
 static void element_interactions(Timer& timer);
@@ -52,9 +55,6 @@ void panel_library_render(
 {
 
     //Update the library displayer panel every time library changed
-    if(Library::isChanged()){
-        update_elements();
-    }
 
     // If *clicked / double clicked / etc.* to elements  
     element_interactions(timer);
@@ -64,11 +64,107 @@ void panel_library_render(
     
     //Set library changed to false after updating some stuff after library change
     Library::setChanged(false);
-    
-    panel_library.render(timer, doMouseTracking);
-    if(panel_library.resizingDone){
-        panels_transform();
+
+    {
+        std::vector<Element> elements;
+
+        if(Library::getSelectedElementIndex() == 0){//Update textures
+            for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+            {
+                //Push texture elements into the section
+                elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getTexture(i)->title       , *Library::getTexture(i), 0.f,false))) ;
+            }
+        }
+        else if(Library::getSelectedElementIndex() == 1){ //Update materials
+            for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
+            {
+                //Push texture elements into the section
+                elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getMaterial(i)->title       , Library::getMaterial(i)->displayingTexture, 0.f,false))) ;
+            }
+        }
+        else if(Library::getSelectedElementIndex() == 2){ //Update materials
+            for (size_t i = 0; i < Library::getBrushArraySize(); i++)
+            {
+                //Push texture elements into the section
+                elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getBrush(i)->title       , Library::getBrush(i)->displayingTexture, 0.f,false))) ;
+            }
+        }
+        else if(Library::getSelectedElementIndex() == 3){ //Update tdmodels
+            for (size_t i = 0; i < Library::getModelArraySize(); i++)
+            {
+                //Push texture elements into the section
+                elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getModel(i)->title       , Library::getModel(i)->displayingTxtr, 0.f,false))) ;
+            }
+        }
+        else if(Library::getSelectedElementIndex() == 4){ //Fonts
+        
+        }
+        else if(Library::getSelectedElementIndex() == 5){ //Scripts
+        
+        }
+        else if(Library::getSelectedElementIndex() == 6){ //Filters
+            for (size_t i = 0; i < Library::getFilterArraySize(); i++)
+            {
+                //Push texture elements into the section
+                elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getFilter(i)->title, Library::getFilter(i)->displayingTxtr, 0.f,false))) ;
+            }
+        }
+        else if(Library::getSelectedElementIndex() == 8){ //Texture packs
+            for (size_t i = 0; i < Library::getTexturePackArraySize(); i++)
+            {
+                //Push texture elements into the section
+                elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getTexturePack(i)->title, appTextures.packageIcon, 0.f,false))) ;
+            }
+        }
+
+        const float btn_scale = 4.f;
+        int row_count = 3;
+        panel_library.sections[0].elements[0].scale.y = std::floor(elements.size() / row_count) * btn_scale + add_btn.scale.y;
+
+        panel_library.render(timer, doMouseTracking);
+        if(panel_library.resizingDone){
+            panels_transform();
+        }
+
+        add_btn.scale.x = panel_library.scale.x / 2.f;
+        add_btn.pos = glm::vec3(
+                                    panel_library.pos.x  - panel_library.scale.x + add_btn.scale.x, 
+                                    panel_library.pos.y - panel_library.scale.y + add_btn.scale.y, 
+                                    panel_library.pos.z
+                                );
+
+        import_btn.scale.x = add_btn.scale.x;
+        import_btn.pos = add_btn.pos;
+        import_btn.pos.x += import_btn.scale.x * 2.f;
+
+        for (size_t i = 0; i < elements.size(); i++)
+        {
+            Element* btn = &elements[i];
+
+            if(panel_library.slideRatio < 1)
+                btn->scale.x = (panel_library.scale.x - panel_library.sliderButton.scale.x) / row_count; 
+            else
+                btn->scale.x = (panel_library.scale.x) / row_count; 
+            
+            btn->scale.y = btn_scale;
+
+            btn->pos.x = (panel_library.pos.x - panel_library.scale.x + btn->scale.x) + (btn->scale.x * 2.f * (i % row_count));
+            btn->pos.y = (panel_library.pos.y - panel_library.scale.y + btn->scale.y) + (btn->scale.y * 2.f * std::floor(i / row_count));
+            btn->pos.y += add_btn.scale.y * 2.f;
+            btn->pos.y -= panel_library.slideVal;
+            btn->pos.z = 0.7f;
+
+            btn->button.textureStickToTop = true;
+            btn->button.textureSizeScale = 1.5f;
+            if(btn->pos.y - btn->scale.y < (panel_library.pos.y + panel_library.scale.y) && btn->pos.y + btn->scale.y > (panel_library.pos.y - panel_library.scale.y))
+                btn->render(timer, true);
+        }
+
+        add_btn.render(timer, true);
+        import_btn.render(timer, true);
     }
+    
+    glClear(GL_DEPTH_BUFFER_BIT);
 
     // If right clicked to elements
     check_context_menus(timer);
@@ -78,13 +174,76 @@ void panel_library_render(
 }
 
 
+/*
+
+if(isLibraryDisplayer){
+                        for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
+                        {
+                            std::string channelName = "";
+                            unsigned int txtrID = sections[sI].elements[i].button.texture.ID;
+
+                            if(getScene()->model->meshes[meshI].albedo.ID == txtrID)
+                                channelName = "Albedo";
+                            if(getScene()->model->meshes[meshI].roughness.ID == txtrID)
+                                channelName = "Roughness";
+                            if(getScene()->model->meshes[meshI].metallic.ID == txtrID)
+                                channelName = "Metallic";
+                            if(getScene()->model->meshes[meshI].normalMap.ID == txtrID)
+                                channelName = "Normal Map";
+                            if(getScene()->model->meshes[meshI].heightMap.ID == txtrID)
+                                channelName = "Height Map";
+                            if(getScene()->model->meshes[meshI].ambientOcclusion.ID == txtrID)
+                                channelName = "Ambient Occlusion";
+                        
+                            if(channelName != ""){
+                                Button materialInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), getScene()->model->meshes[meshI].materialName, Texture(), 0.f, false);
+                                Button channelInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), channelName, Texture(), 0.f, false);
+
+                                materialInfo.color = ColorPalette::themeColor;
+                                channelInfo.color = ColorPalette::themeColor;
+                                
+                                materialInfo.outlineExtra = false;
+                                materialInfo.outline = false;
+
+                                channelInfo.outlineExtra = false;
+                                channelInfo.outline = false;
+
+                                if(materialInfo.scale.y < 0.5f){
+                                    materialInfo.text = "";
+                                    channelInfo.text = "";
+                                }
+
+                                materialInfo.pos = sections[sI].elements[i].button.pos;
+                                materialInfo.pos.y -= sections[sI].elements[i].button.scale.y - materialInfo.scale.y;
+                                materialInfo.pos.z += 0.1f;
+                                channelInfo.pos = materialInfo.pos;
+                                channelInfo.pos.y += channelInfo.scale.y + materialInfo.scale.y;
+                            
+                                materialInfo.render(timer, false);
+                                channelInfo.render(timer, false);
+                            }
+                        }
+                        
+
+                        glm::vec4 textColor = glm::vec4(1) - sections[sI].elements[i].button.color;
+                        textColor.a = 1.;
+                        ShaderSystem::buttonShader().setVec4("properties.color"  ,    textColor      ); //Default button color
+
+                        textRenderer.loadTextData(
+                                                    sections[sI].elements[i].button.text,
+                                                    glm::vec3(sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z),
+                                                    false,
+                                                    0.25f, //TODO Change with a dynamic value
+                                                    sections[sI].elements[i].button.resultPos.x - sections[sI].elements[i].button.resultScale.x,
+                                                    sections[sI].elements[i].button.resultPos.x + sections[sI].elements[i].button.resultScale.x,
+                                                    TEXTRENDERER_ALIGNMENT_MID
+                                                );
+
+                        textRenderer.renderText();
+                    }
 
 
-
-
-
-
-
+*/
 
 static void check_context_menus(Timer& timer){
     for (size_t elementI = 0; elementI < panel_library.sections[0].elements.size(); elementI++)
@@ -264,7 +423,7 @@ static void element_interactions(Timer& timer){
 }
 
 static void bar_buttons_interactions(Timer& timer){
-    if(panel_library.barButtons[0].clicked){
+    if(add_btn.clicked){
         if(Library::getSelectedElementIndex() == 0){//Textures
             dialog_newTexture.show(timer);
         }
@@ -330,7 +489,7 @@ static void bar_buttons_interactions(Timer& timer){
             Library::addTexturePack(texturePack);
         }
     }
-    if(panel_library.barButtons[1].clicked){ //Import button
+    if(import_btn.clicked){ //Import button
         if(Library::getSelectedElementIndex() == 0){//Textures  
             std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             if(test.size()){

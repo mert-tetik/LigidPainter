@@ -144,6 +144,8 @@ void Camera::interaction(float scroll, glm::vec2 mouseOffset){
         this->YNLocked = false;
         this->ZPLocked = false;
         this->ZNLocked = false;
+
+        this->updateViewMatrix();
     }
 
 }

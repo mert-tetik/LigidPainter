@@ -71,9 +71,14 @@ void panels_init(){
 
     // ---------------------------------------------------
 
-    panel_library  = Panel(
+    panel_library = Panel(
                             {
-                                {}
+                                Section(
+                                    Element(),
+                                    {
+                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(5.f), "", Texture(), 0.f, false))
+                                    }
+                                )
                             },
                             
                             glm::vec2(7,48), //Initial scale value
@@ -86,17 +91,15 @@ void panels_init(){
                             false,
                             true,
                             1.f,
-                            3,
+                            1,
                             {
-                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Add"        , Texture(), 0.f,false),
-                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1.5f),"Import"        , Texture(), 0.f,false)
                             },
                             11.f,
                             true
                         );
 
-    panel_library.isLibraryDisplayer = true;
-    panel_library.preRenderingMode = true;
+    panel_library.dontRenderElements = true;
+    panel_library.clearDepthBuffer = false;
     panel_library.solidStyle = true;
 
     // ---------------------------------------------------

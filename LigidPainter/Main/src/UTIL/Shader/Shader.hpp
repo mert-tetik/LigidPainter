@@ -132,6 +132,7 @@ namespace ShaderSystem{
     Shader twoPassBlur();
     Shader gizmo();
     Shader color3d();
+    Shader color2d();
     Shader threeDTextureRenderingShader();
     Shader alphaZero3D();
     Shader color3DInstancing();

@@ -76,6 +76,8 @@ void MaterialDisplayerDialog::show(Timer& timer, Material material){
     {
         this->dialogControl.updateStart();
 
+        this->displayingCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
+
         //Render the panel
         this->panel.sections[0].elements[1].button.texture = this->displayingFBO.colorBuffer;
         panel.render(timer,true);

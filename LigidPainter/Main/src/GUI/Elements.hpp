@@ -606,7 +606,6 @@ struct Section{ //Sections seperates the elements in the panel
 class Panel
 {
 private:
-    float slideRatio = 1.f;
     
     void mouseTracking();
     void resizeThePanel();
@@ -616,6 +615,8 @@ private:
     void drawPanel(glm::vec3 resultPos,glm::vec2 resultScale,Timer &timer); //Draws the panel and it's elements
 
 public:
+    float slideRatio = 1.f;
+    
     /*! 
         @brief Sections of the panel 
     
@@ -665,6 +666,8 @@ public:
 
     bool elementSelectionMode = false;
     int selectedElement = 0;
+
+    bool dontRenderElements = false;
     
     /*! 
         @brief Indicates how many elements can be in a row 
@@ -719,9 +722,6 @@ public:
     
     /*! @brief Set to false if the panel is locked or smt*/
     bool doMouseTracking;
-    
-    /*! @brief Is true (special for the library displayer panel)*/
-    bool isLibraryDisplayer = false;
     
     /*! @brief Indicate if the panel will use a slider if elements overflows */
     bool hasSlider = false;

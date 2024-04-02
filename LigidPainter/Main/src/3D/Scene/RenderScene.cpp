@@ -24,6 +24,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Scene::render_scene(Timer& timer){
 
+    this->camera.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
+
     Debugger::block("Skybox Rendering"); // Start
     this->render_skybox();
     Debugger::block("Skybox Rendering"); // End

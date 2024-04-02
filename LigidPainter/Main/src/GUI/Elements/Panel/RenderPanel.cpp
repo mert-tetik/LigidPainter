@@ -277,33 +277,33 @@ static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::v
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Draw the panel");
 }
 
-static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale, bool isLibraryDisplayer){
-    
+static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale){
+    ShaderSystem::color2d().use();
+
     //Bottom
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x,   resultPos.y + resultScale.y + 2000,   1.f)); 
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
-    ShaderSystem::buttonShader().setFloat("properties.radius", 0.f); 
-    ShaderSystem::buttonShader().setInt("outlineExtra" , false); 
-    ShaderSystem::buttonShader().setVec4("properties.color", glm::vec4(0)); //Invisible
-    ShaderSystem::buttonShader().setVec3("properties.outline.color", glm::vec4(0)); //Invisible
+    ShaderSystem::color2d().setMat4("projection", getContext()->ortho_projection);
+    ShaderSystem::color2d().setVec3("pos", glm::vec3(resultPos.x,   resultPos.y + resultScale.y + resultScale.y * 2.f,   1.f)); 
+    ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale.y * 2.f));
+    ShaderSystem::color2d().setVec4("color" , glm::vec4(0.f)); 
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier bottom");
     
     //Top
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x, resultPos.y - resultScale.y - 2000,   1.f));
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
+    ShaderSystem::color2d().setVec3("pos", glm::vec3(resultPos.x, resultPos.y - resultScale.y - resultScale.y * 2.f,   1.f));
+    ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale.y * 2.f));
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier top");
 
-    if(isLibraryDisplayer){
+    if(false){
         //Left
-        ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x - resultScale.x - 2000, resultPos.y,   1.f));
-        ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
+        ShaderSystem::color2d().setVec3("pos", glm::vec3(resultPos.x - resultScale.x - resultScale.x * 2.f, resultPos.y,   1.f));
+        ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale.x * 2.f));
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier left");
         
         //Right
-        ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x + resultScale.x + 2000, resultPos.y,   1.f));
-        ShaderSystem::buttonShader().setVec2("scale", glm::vec2(2000));
+        ShaderSystem::color2d().setVec3("pos", glm::vec3(resultPos.x + resultScale.x + resultScale.x * 2.f, resultPos.y,   1.f));
+        ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale.x * 2.f));
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier right");
     }
+    ShaderSystem::buttonShader().use();
 }
 
 static float calculateElementStartingPosition(bool vertical, std::vector<Section> sections, glm::vec3 pos, glm::vec2 scale){
@@ -382,10 +382,7 @@ void Panel::drawPanel(
 
 
     /*Render the barriers if the depth texture of the framebuffer will be refreshed at the end of the panel rendering process*/
-    if(clearDepthBuffer)
-    {
-        drawTheBarriers(resultPos, resultScale, this->isLibraryDisplayer);
-    }
+    drawTheBarriers(resultPos, resultScale);
 
     //Starting pos
     float elementStartPos = calculateElementStartingPosition(this->vertical, this->sections, this->pos + this->additionalPos, this->scale);
@@ -466,85 +463,14 @@ void Panel::drawPanel(
                         prepDrawBtnHorizontally(sections[sI].elements[i], prevElement, elementPos,btnCounter);
 
                 }
-                if(isLibraryDisplayer){
-                    sections[sI].elements[i].button.textureStickToTop = true;
-                    sections[sI].elements[i].button.textureSizeScale = 1.5f;
-                }
                 
                 lastElementScale = sections[sI].elements[i].scale.y; 
                 
                 //Don't render the unshown elements
                 if(this->sections[sI].elements[i].pos.y - this->sections[sI].elements[i].scale.y < (this->pos.y + this->additionalPos.y + this->scale.y) && this->sections[sI].elements[i].pos.y + this->sections[sI].elements[i].scale.y > (this->pos.y + this->additionalPos.y - this->scale.y)){
-                    
-                    if(sections[sI].elements[i].scale.x && sections[sI].elements[i].scale.y)
+                    if(sections[sI].elements[i].scale.x && sections[sI].elements[i].scale.y && !this->dontRenderElements)
                         sections[sI].elements[i].render(timer,doMouseTracking && !sliderButton.hover);
                     
-                    /* Render the text if rendering library displayer panel*/
-                    if(isLibraryDisplayer){
-                        for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
-                        {
-                            std::string channelName = "";
-                            unsigned int txtrID = sections[sI].elements[i].button.texture.ID;
-
-                            if(getScene()->model->meshes[meshI].albedo.ID == txtrID)
-                                channelName = "Albedo";
-                            if(getScene()->model->meshes[meshI].roughness.ID == txtrID)
-                                channelName = "Roughness";
-                            if(getScene()->model->meshes[meshI].metallic.ID == txtrID)
-                                channelName = "Metallic";
-                            if(getScene()->model->meshes[meshI].normalMap.ID == txtrID)
-                                channelName = "Normal Map";
-                            if(getScene()->model->meshes[meshI].heightMap.ID == txtrID)
-                                channelName = "Height Map";
-                            if(getScene()->model->meshes[meshI].ambientOcclusion.ID == txtrID)
-                                channelName = "Ambient Occlusion";
-                        
-                            if(channelName != ""){
-                                Button materialInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), getScene()->model->meshes[meshI].materialName, Texture(), 0.f, false);
-                                Button channelInfo = Button(ELEMENT_STYLE_SOLID, glm::vec2(sections[sI].elements[i].button.scale.x, sections[sI].elements[i].button.hoverMixVal + 0.05), channelName, Texture(), 0.f, false);
-
-                                materialInfo.color = ColorPalette::themeColor;
-                                channelInfo.color = ColorPalette::themeColor;
-                                
-                                materialInfo.outlineExtra = false;
-                                materialInfo.outline = false;
-
-                                channelInfo.outlineExtra = false;
-                                channelInfo.outline = false;
-
-                                if(materialInfo.scale.y < 0.5f){
-                                    materialInfo.text = "";
-                                    channelInfo.text = "";
-                                }
-
-                                materialInfo.pos = sections[sI].elements[i].button.pos;
-                                materialInfo.pos.y -= sections[sI].elements[i].button.scale.y - materialInfo.scale.y;
-                                materialInfo.pos.z += 0.1f;
-                                channelInfo.pos = materialInfo.pos;
-                                channelInfo.pos.y += channelInfo.scale.y + materialInfo.scale.y;
-                            
-                                materialInfo.render(timer, false);
-                                channelInfo.render(timer, false);
-                            }
-                        }
-                        
-
-                        glm::vec4 textColor = glm::vec4(1) - sections[sI].elements[i].button.color;
-                        textColor.a = 1.;
-                        ShaderSystem::buttonShader().setVec4("properties.color"  ,    textColor      ); //Default button color
-
-                        textRenderer.loadTextData(
-                                                    sections[sI].elements[i].button.text,
-                                                    glm::vec3(sections[sI].elements[i].button.resultPos.x,sections[sI].elements[i].button.resultPos.y + sections[sI].elements[i].button.resultScale.y/1.4f,sections[sI].elements[i].button.resultPos.z),
-                                                    false,
-                                                    0.25f, //TODO Change with a dynamic value
-                                                    sections[sI].elements[i].button.resultPos.x - sections[sI].elements[i].button.resultScale.x,
-                                                    sections[sI].elements[i].button.resultPos.x + sections[sI].elements[i].button.resultScale.x,
-                                                    TEXTRENDERER_ALIGNMENT_MID
-                                                );
-
-                        textRenderer.renderText();
-                    }
                 }
                 btnCounter++; //Indexing buttons to position them
             }

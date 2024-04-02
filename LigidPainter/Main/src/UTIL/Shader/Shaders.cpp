@@ -77,6 +77,7 @@ Shader __AOGen;
 Shader __twoPassBlur;
 Shader __gizmo;
 Shader __color3d;
+Shader __color2d;
 Shader __threeDTextureRenderingShader;
 Shader __alphaZero3D;
 Shader __color3DInstancing;
@@ -101,12 +102,13 @@ void ShaderSystem::initShaderSystem(){
     __gizmo.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Gizmo.frag");
     __twoDPainting.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/2DPainting.frag");
     __twoDPaintingModeAreaShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag");
-    __circleShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Circle.frag");
+    __circleShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniformsßß.vert", "LigidPainter/Resources/Shaders/aFrag/Circle.frag");
     __dotsShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Dots.frag");
     __heightToNormalMap.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/HeightToNormal.frag");
     __boundaryExpandingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag");
     __uvMaskShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/Color.frag");
     __color3d.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/Color.frag");
+    __color2d.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Color.frag");
     __bluringShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/SinglePassBlur.frag");
     __twoPassBlur.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/TwoPassBlur.frag");
     __proceduralDisplayerShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/TextureSelectionProceduralDisplayer.frag");
@@ -320,6 +322,9 @@ Shader ShaderSystem::gizmo(){
 }
 Shader ShaderSystem::color3d(){
     return __color3d;
+}
+Shader ShaderSystem::color2d(){
+    return __color2d;
 }
 Shader ShaderSystem::alphaZero3D(){
     return __alphaZero3D;
