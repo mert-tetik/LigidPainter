@@ -52,8 +52,6 @@ void Camera::setCameraRadius(float radius){
 void Camera::interaction(float scroll, glm::vec2 mouseOffset){
     const float sensitivity = 0.14f; //Mouse sensivity 
 
-    std::cout << scroll << std::endl;
-
     bool moved = false;
 
     bool mouseR_CTRL = getContext()->window.isMouseButtonPressed(LIGIDGL_MOUSE_BUTTON_RIGHT) == LIGIDGL_PRESS && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) == LIGIDGL_PRESS; 

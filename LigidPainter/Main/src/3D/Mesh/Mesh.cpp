@@ -173,6 +173,12 @@ void Mesh::generateUVMask(){
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, bool initTxtrs)
 {
+    this->vertices = vertices;
+    this->indices = indices;
+    this->materialName = materialName;
+
+    setupMesh();
+
     if(initTxtrs){
         this->albedo = Texture(nullptr, 1024, 1024, GL_LINEAR);
         this->roughness = Texture(nullptr, 1024, 1024, GL_LINEAR);
@@ -180,16 +186,22 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
         this->normalMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
         this->heightMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
         this->ambientOcclusion = Texture(nullptr, 1024, 1024, GL_LINEAR);
-        this->face_selection_data.meshMask = Texture(nullptr, 1024, 1024);
+        this->objectIDs = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RG, GL_RG32F);
+        this->face_selection_data.modelPrimitives = Texture(nullptr, 1024, 1024, GL_NEAREST, GL_RED, GL_R32F);
+
+        char whitePx[] = {127, 127, 127, 127};
+        this->face_selection_data.meshMask = Texture(whitePx, 1, 1, GL_NEAREST);
+
+        this->face_selection_data.selectedPrimitiveIDs.resize(this->indices.size() / 3);
+        std::fill(this->face_selection_data.selectedPrimitiveIDs.begin(), this->face_selection_data.selectedPrimitiveIDs.end(), 0);
+
+        glGenTextures(1, &this->face_selection_data.selectedFaces.ID);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, this->face_selection_data.selectedFaces.ID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size())), std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size())), 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+        glGenerateMipmap(GL_TEXTURE_2D);
     }
-
-    this->vertices = vertices;
-    this->indices = indices;
-    this->materialName = materialName;
-
-
-    setupMesh();
-
+    
     generateUVMask();
 
     generateDisplayingTexture();
@@ -502,4 +514,81 @@ ThreeDPoint Mesh::getCurrentPosNormalDataOverCursor(){
     delete[] normalData;
 
     return point;
+}
+
+static Framebuffer updateObjectIDsTexture_FBO;
+void Mesh::updateObjectIDsTexture(){
+    glDepthFunc(GL_LESS);
+    
+    const unsigned int resolution = this->objectIDs.getResolution().x;
+
+    if(!updateObjectIDsTexture_FBO.ID)
+        updateObjectIDsTexture_FBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "updateObjectIDsTexture");
+    
+    updateObjectIDsTexture_FBO.bind();
+    
+    //Clear the object ids texture
+    glViewport(0, 0, resolution, resolution);
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    {    
+        //Use the depth 3D shader
+        ShaderSystem::modelObjectID().use();
+        ShaderSystem::modelObjectID().setMat4("view", getScene()->camera.viewMatrix);
+        ShaderSystem::modelObjectID().setMat4("projection", getScene()->projectionMatrix);
+        ShaderSystem::modelObjectID().setMat4("modelMatrix",getScene()->transformMatrix);
+
+        ShaderSystem::modelObjectID().setInt("objIndicesArraySize", this->objects.size());
+        
+        for (size_t objI = 0; objI < this->objects.size(); objI++)
+        {
+            ShaderSystem::modelObjectID().setVec2("objIndices[" + std::to_string(objI) + "]", this->objects[objI].vertIndices / glm::ivec2(3));
+        }
+        
+        this->Draw(false);
+    }
+    
+    //!Finished
+
+    //Set back to default shader
+    ShaderSystem::buttonShader().use();
+
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
+
+    glDepthFunc(GL_LEQUAL);
+}
+
+static Framebuffer updateModelPrimitivesTexture_FBO;
+void Mesh::updateModelPrimitivesTexture(){
+    // Generate & bind the framebuffer object to render the model primitives into the modelPrimitives texture
+    if(!updateModelPrimitivesTexture_FBO.ID)
+        updateModelPrimitivesTexture_FBO = Framebuffer(this->face_selection_data.modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, this->face_selection_data.modelPrimitives.getResolution()), "Face selection");
+
+    updateModelPrimitivesTexture_FBO.bind();
+
+    glClearColor(0.,0.,0.,0.);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glViewport(0, 0, this->face_selection_data.modelPrimitives.getResolution().x, this->face_selection_data.modelPrimitives.getResolution().y);
+
+    // Seting the primitive ID rendering shader 
+    ShaderSystem::primitiveIDShader().use();
+    ShaderSystem::primitiveIDShader().setMat4("view", getScene()->camera.viewMatrix);
+    ShaderSystem::primitiveIDShader().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::primitiveIDShader().setMat4("modelMatrix", getScene()->transformMatrix);
+    
+    glDepthFunc(GL_LESS);
+
+    ShaderSystem::primitiveIDShader().setInt("emptyFlag", false);
+    this->Draw(false);
+
+    //Set back to default shader
+    ShaderSystem::buttonShader().use();
+
+    Settings::defaultFramebuffer()->FBO.bind();
+    Settings::defaultFramebuffer()->setViewport();
+
+    glDepthFunc(GL_LEQUAL);
 }

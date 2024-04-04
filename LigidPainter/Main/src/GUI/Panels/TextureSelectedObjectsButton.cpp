@@ -39,16 +39,6 @@ void button_texture_selected_objects_render(Timer& timer, bool doMouseTracking)
     button_texture_selected_objects.render(timer, doMouseTracking);
 
     if(button_texture_selected_objects.clicked){
-        bool anyObjSelected = false;
-        for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
-        {
-            if(getScene()->model->meshes[i].selectedObjectIndices.size())
-                anyObjSelected = true;
-        }
-        
-        if(!anyObjSelected)
-            LGDLOG::start << "WARNING! No object was selected" << LGDLOG::end;
-
         dialog_objectTexturing.show(timer);
     }
 }

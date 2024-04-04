@@ -194,44 +194,26 @@ struct VectorsAction{
     }
 };
 
-struct ObjectSelectionAction{
-    std::string title;
-    std::vector<int> selectedObjectIndices;
-    int meshI;
-
-    ObjectSelectionAction(){}
-
-    ObjectSelectionAction(std::string title, int meshI, std::vector<int> selectedObjectIndices){
-        this->title = title;
-        this->meshI = meshI;
-        this->selectedObjectIndices = selectedObjectIndices;
-    }
-};
-
 struct FaceSelectionAction{
     std::string title;
     std::vector<byte> primitivesArray;
-    std::vector<byte> prevPrimArray;
     std::vector<std::vector<byte>> primitivesArray_M;
-    std::vector<std::vector<byte>> prevPrimArray_M;
     int meshI;
     unsigned int ID;
 
     FaceSelectionAction(){}
 
-    FaceSelectionAction(std::string title, unsigned int ID, std::vector<byte> primitivesArray, std::vector<byte> prevPrimArray, int meshI){
+    FaceSelectionAction(std::string title, unsigned int ID, std::vector<byte> primitivesArray, int meshI){
         this->title = title;
         this->ID = ID;
         this->primitivesArray = primitivesArray;
-        this->prevPrimArray = prevPrimArray;
         this->meshI = meshI;
     }
     
-    FaceSelectionAction(std::string title, unsigned int ID, std::vector<std::vector<byte>> primitivesArray_M, std::vector<std::vector<byte>> prevPrimArray_M){
+    FaceSelectionAction(std::string title, unsigned int ID, std::vector<std::vector<byte>> primitivesArray_M){
         this->title = title;
         this->ID = ID;
         this->primitivesArray_M = primitivesArray_M;
-        this->prevPrimArray_M = prevPrimArray_M;
     }
 };
 
@@ -263,7 +245,6 @@ extern std::vector<LibraryAction> actions_Library;
 extern std::map<unsigned int, std::vector<PaintingAction>> actions_Painting;
 extern std::vector<PaintingAction> actions_MultiChannelPainting;
 extern std::vector<VectorsAction> actions_Vectors;
-extern std::vector<ObjectSelectionAction> actions_ObjectSelection;
 extern std::vector<FaceSelectionAction> actions_FaceSelection;
 extern std::vector<TextureFieldsAction> actions_TextureFields;
 extern std::vector<MaterialEditorAction> actions_MaterialEditor;
@@ -376,18 +357,13 @@ void registerVectorAction(const std::string title, std::vector<VectorStroke3D> v
     newOtherAction = true;
 }
 
-void registerObjectSelectionAction(const std::string title, int meshI, std::vector<int> selectedObjectIndices){
-    actions_ObjectSelection.push_back(ObjectSelectionAction(title, meshI, selectedObjectIndices));
+void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, int meshI){
+    actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_PAINTER_ACTION, primitivesArray, meshI));
     newOtherAction = true;
 }
 
-void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, std::vector<byte> prevPrimArray, int meshI){
-    actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_PAINTER_ACTION, primitivesArray, prevPrimArray, meshI));
-    newOtherAction = true;
-}
-
-void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray, std::vector<std::vector<byte>> prevPrimArray){
-    actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_OBJECTTEXTURING_ACTION, primitivesArray, prevPrimArray));
+void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray){
+    actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_OBJECTTEXTURING_ACTION, primitivesArray));
     newOtherAction = true;
 }
 

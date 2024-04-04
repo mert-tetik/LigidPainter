@@ -38,8 +38,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 
 #include "GUI/Dialogs/LogDialog/Registering.hpp"
 
-// Defined in Painter/faceSelection.cpp
-void updatePrimitivesArrayTexture(Texture& primitivesArrayTexture, std::vector<byte> primitivesArray, std::vector<byte>& prevPrimArray, Mesh& selectedMesh, std::vector<int>& changedIndices, bool updateAll);
+void updatePrimitivesArrayTexture(Mesh* selectedMesh);
 
 void LogDialog::undo(){
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
@@ -54,17 +53,6 @@ void LogDialog::undo(){
         
         unded = true;
     }
-    if(this->activeHistoryMode == HISTORY_OBJECTSELECTION_MODE && actions_ObjectSelection.size()){
-        ObjectSelectionAction action = actions_ObjectSelection[actions_ObjectSelection.size() - 1];
-
-        if(action.meshI < getScene()->model->meshes.size())
-            getScene()->model->meshes[action.meshI].selectedObjectIndices = action.selectedObjectIndices;
-        else    
-            LGDLOG::start << "ERROR : Undo object selection failed - Invalid mesh index" << LGDLOG::end;
-
-        actions_ObjectSelection.pop_back();
-        unded = true;
-    }
     if(this->activeHistoryMode == HISTORY_FACESELECTION_MODE && actions_FaceSelection.size()){
         FaceSelectionAction action = actions_FaceSelection[actions_FaceSelection.size() - 1];
 
@@ -73,9 +61,8 @@ void LogDialog::undo(){
         if(action.ID == FACE_SELECTION_PAINTER_ACTION){
             if(action.meshI < getScene()->model->meshes.size()){
                 if(getScene()->get_selected_mesh()->face_selection_data.selectedPrimitiveIDs.size() == action.primitivesArray.size()){
-                    getScene()->get_selected_mesh()->face_selection_data.prevPrimArray = action.prevPrimArray;
                     getScene()->get_selected_mesh()->face_selection_data.selectedPrimitiveIDs = action.primitivesArray;
-                    updatePrimitivesArrayTexture(getScene()->get_selected_mesh()->face_selection_data.selectedFaces, action.primitivesArray, action.primitivesArray, getScene()->model->meshes[action.meshI], changedIndices, true);
+                    updatePrimitivesArrayTexture(&getScene()->model->meshes[action.meshI]);
                 }
                 else{
                     LGDLOG::start << "ERROR : Undo face selection failed - Mesh data doesn't match" << LGDLOG::end;

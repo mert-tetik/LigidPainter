@@ -27,7 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
 static Camera prevCam;
-bool face_selection_interaction(Timer& timer, Model* model, int meshI, Camera cam, glm::vec2 cursorPos, bool renderAllModel, bool registerHistory);
+bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool registerHistory);
 
 void Scene::render_model(Timer& timer){
     
@@ -85,7 +85,8 @@ void Scene::render_model(Timer& timer){
         glEnable(GL_CULL_FACE);
     else
         glDisable(GL_CULL_FACE);
-        
+
+    ShaderSystem::tdModelShader().use();
 
     for (size_t i = 0; i < this->model->meshes.size(); i++)
     {   
@@ -153,8 +154,9 @@ void Scene::render_model(Timer& timer){
             ShaderSystem::tdModelShader().setInt("hideUnselected", false);
         }
         
-        if(button_mesh_selection.selectedMeshI == i)
+        if(button_mesh_selection.selectedMeshI == i){
             ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
+        }
         else{
             if(!this->model->meshes[i].face_selection_data.hideUnselected)
                 ShaderSystem::tdModelShader().setFloat("opacity", 0.2f);
@@ -166,7 +168,10 @@ void Scene::render_model(Timer& timer){
         glBindTexture(GL_TEXTURE_2D, this->model->meshes[i].face_selection_data.selectedFaces.ID);
     
         glActiveTexture(GL_TEXTURE12);
-        glBindTexture(GL_TEXTURE_2D, this->model->meshes[i].face_selection_data.meshMask.ID);
+        if(this->model->meshes[i].face_selection_data.editMode)
+            glBindTexture(GL_TEXTURE_2D, appTextures.white.ID);
+        else
+            glBindTexture(GL_TEXTURE_2D, this->model->meshes[i].face_selection_data.meshMask.ID);
         
         
         
@@ -189,9 +194,6 @@ void Scene::render_model(Timer& timer){
 
         ShaderSystem::tdModelShader().setInt("paintingMode", painting_paint_condition());
 
-        // 3D Model    
-        ShaderSystem::tdModelShader().use();
-
         //Bind the skybox
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.ID);
@@ -206,25 +208,16 @@ void Scene::render_model(Timer& timer){
         
         if(!(i != button_mesh_selection.selectedMeshI && this->model->meshes[i].face_selection_data.hideUnselected)){
             ShaderSystem::tdModelShader().setInt("primitiveCount", this->model->meshes[i].indices.size() / 3);
-            this->model->meshes[i].Draw(this->model->meshes[i].face_selection_data.editMode && i == button_mesh_selection.selectedMeshI && panel_displaying_modes.selectedElement != 0);
+            this->model->meshes[i].Draw(this->model->meshes[i].face_selection_data.editMode && i == button_mesh_selection.selectedMeshI);
         }
-    }
+    }   
 
-    for (size_t i = 0; i < this->model->meshes.size(); i++)
-    {
-        face_selection_interaction(timer, this->model, i, this->camera, *Mouse::cursorPos(), true, true);
-    }
-    
+    if(this->get_selected_mesh()->face_selection_data.editMode && !panels_any_hovered())    
+        face_selection_interaction(timer, this->model, button_mesh_selection.selectedMeshI, true);    
     
     ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
     ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
     ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
-
-    Debugger::block("3D Model Object Selection"); // Start
-    // Check if an object is selected after rendering the mesh
-    if(panel_displaying_modes.selectedElement == 0 && ((!panels_any_hovered() || panel_objects.hover) && !*Mouse::RPressed() && !*Mouse::MPressed()) || dialog_log.unded) 
-        this->model->selectObject();
-    Debugger::block("3D Model Object Selection"); // End
 
     // Update the 3D model depth texture if necessary last frame camera changed position
     if(
@@ -236,9 +229,6 @@ void Scene::render_model(Timer& timer){
     {
         getScene()->get_selected_mesh()->updatePosNormalTexture();
         
-        // Update the model's object id texture
-        this->model->updateObjectIDsTexture();
-    
         prevCam = this->camera;
     }
 

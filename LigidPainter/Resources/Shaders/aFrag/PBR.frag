@@ -85,8 +85,9 @@ void main() {
 
     gl_FragDepth = gl_FragCoord.z;
 
-    float prim = texelFetch(selectedPrimitiveIDS, ivec2(gl_PrimitiveID % int(ceil(sqrt(primitiveCount))), gl_PrimitiveID / int(ceil(sqrt(primitiveCount)))), 0).r;
-
+    float prim_txtr_res = int(ceil(sqrt(primitiveCount)));
+    float prim_height = floor(float(gl_PrimitiveID) / prim_txtr_res);
+    float prim = texelFetch(selectedPrimitiveIDS, ivec2(float(gl_PrimitiveID) - (prim_height * prim_txtr_res) , prim_height), 0).r;
     bool selectedPrim = prim > 0.9 && texture(meshMask, TexCoords).r > 0.5;
     bool hoveredPrim = prim > 0.3 && prim < 0.9;
 
@@ -196,7 +197,7 @@ void main() {
     }
 
     if(hoveredPrim && meshSelectionEditing == 1)
-        fragColor.rgb /= 1.25;
+        fragColor.rgb += 0.25;
 
     float mirrorDisplayerLineThickness = 0.005;
     if(mirrorState.x == 1.){

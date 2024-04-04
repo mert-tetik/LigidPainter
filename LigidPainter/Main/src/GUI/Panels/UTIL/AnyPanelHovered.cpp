@@ -31,7 +31,6 @@ bool panels_any_hovered(){
             panel_library_modes.hover ||
             panel_selected_texture_display.hover ||
             panel_displaying_modes.hover ||
-            panel_objects.hover ||
             button_texture_selected_objects.hover ||
             gizmo_scene.hover ||
             panel_layers.hover ||

@@ -34,6 +34,8 @@ void panels_render(Timer& timer)
     ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
+    getBox()->bindBuffers();
+
     Debugger::block("GUI : panelPositioning"); // Start
     panels_transform();
     Debugger::block("GUI : panelPositioning"); // End
@@ -123,10 +125,6 @@ void panels_render(Timer& timer)
         Debugger::block("GUI : Panels : Texture selected objects button"); // Start
         button_texture_selected_objects_render(timer, true);
         Debugger::block("GUI : Panels : Texture selected objects button"); // End
-
-        Debugger::block("GUI : Panels : Objects panel"); // Start
-        panel_objects_render(timer, true);
-        Debugger::block("GUI : Panels : Objects panel"); // End
     }
 
     if(!Settings::properties()->cat_hide){

@@ -46,7 +46,6 @@ static std::vector<LibraryAction> actions_Library;
 static std::map<unsigned int, std::vector<PaintingAction>> actions_Painting;
 static std::vector<PaintingAction> actions_MultiChannelPainting;
 static std::vector<VectorsAction> actions_Vectors;
-static std::vector<ObjectSelectionAction> actions_ObjectSelection;
 static std::vector<FaceSelectionAction> actions_FaceSelection;
 static std::vector<TextureFieldsAction> actions_TextureFields;
 static std::vector<MaterialEditorAction> actions_MaterialEditor;
@@ -277,10 +276,6 @@ void LogDialog::render(Timer& timer)
         this->activeHistoryMode = HISTORY_VECTORS_MODE;
         otherHistoryBtn.text = "Vectors History";
     }
-    if(panel_displaying_modes.selectedElement == 0){
-        this->activeHistoryMode = HISTORY_OBJECTSELECTION_MODE;
-        otherHistoryBtn.text = "Object Selection History";
-    }
     if(getScene()->get_selected_mesh()->face_selection_data.editMode){
         this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
         otherHistoryBtn.text = "Face Selection History";
@@ -492,12 +487,6 @@ void LogDialog::render(Timer& timer)
             for (size_t i = 0; i < actions_Vectors.size(); i++)
             {
                 logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), actions_Vectors[i].title, Texture(), 0., false));
-            }
-        }
-        if(this->activeHistoryMode == HISTORY_OBJECTSELECTION_MODE){
-            for (size_t i = 0; i < actions_ObjectSelection.size(); i++)
-            {
-                logSections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), actions_ObjectSelection[i].title, Texture(), 0., false));
             }
         }
         if(this->activeHistoryMode == HISTORY_FACESELECTION_MODE){

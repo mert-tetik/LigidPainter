@@ -296,8 +296,6 @@ void Library::eraseModel     (int index){
 
         glDeleteTextures(1, &__TDModels[index].meshes[mshI].uvMask.ID);
         glDeleteTextures(1, &__TDModels[index].meshes[mshI].displayingTxtr.ID);
-
-        glDeleteTextures(1, &__TDModels[index].meshes[mshI].selectedObjectPrimitivesTxtr.ID);
     }
 
     __TDModels.erase(__TDModels.begin() + index);
@@ -401,8 +399,6 @@ void Library::clearModels     (){
             
             glDeleteTextures(1, &__TDModels[i].meshes[mshI].uvMask.ID);
             glDeleteTextures(1, &__TDModels[i].meshes[mshI].displayingTxtr.ID);
-            
-            glDeleteTextures(1, &__TDModels[i].meshes[mshI].selectedObjectPrimitivesTxtr.ID);
         }
     }
 

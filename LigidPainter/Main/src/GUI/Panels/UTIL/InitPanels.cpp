@@ -246,29 +246,6 @@ void panels_init(){
     panel_displaying_modes.solidStyle = true; 
     panel_displaying_modes.elementSelectionMode = true; 
 
-    // ---------------------------------------------------
-    
-    panel_objects = Panel(
-                        {
-                        },
-                        
-                        glm::vec2(6.f ,10.f), //Initial scale value
-                        glm::vec3(50 ,50 ,0.1f),  //Initial position value
-                        ColorPalette::mainColor, //Color of the panel
-                        ColorPalette::thirdColor, //Color of the panel
-                        true,
-                        true,
-                        true,
-                        true,
-                        true,
-                        1.f,
-                        1,
-                        {},
-                        20.f,
-                        false
-                    );
-    
-    panel_objects.preRenderingMode = true;
     
     // ---------------------------------------------------
 

@@ -869,7 +869,6 @@ namespace LGDLOG {
 #define HISTORY_LIBRARY_MODE 0
 #define HISTORY_PAINTING_MODE 1
 #define HISTORY_VECTORS_MODE 2
-#define HISTORY_OBJECTSELECTION_MODE 3
 #define HISTORY_FACESELECTION_MODE 4
 #define HISTORY_TEXTUREFIELDS_MODE 5
 #define HISTORY_MATERIALEDITOR_MODE 6 
@@ -895,12 +894,9 @@ void registerPaintingAction(const std::string title, const Texture icon, Texture
 void registerVectorAction(const std::string title);
 void registerVectorAction(const std::string title);
 
-// -- Object Selection --
-void registerObjectSelectionAction(const std::string title, int meshI, std::vector<int> selectedObjectIndices);
-
 // -- Face Selection -- 
-void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, std::vector<byte> prevPrimArray, int meshI);
-void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray, std::vector<std::vector<byte>> prevPrimArray);
+void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, int meshI);
+void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray);
 
 // -- Texture Field --
 void registerTextureFieldAction(const std::string title, std::vector<TextureField> fields);

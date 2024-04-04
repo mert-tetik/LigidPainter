@@ -389,3 +389,12 @@ bool UTIL::createFolderIfDoesntExist(const std::string path){
 
     return true;
 }
+
+float UTIL::new_value_range(float value, float min, float max, float new_min, float new_max) {
+    // Calculate the ratio of the value's position in the original range
+    // to the size of the original range
+    float ratio = (value - min) / (max - min);
+    
+    // Map the ratio to the new range and return the result
+    return new_min + ratio * (new_max - new_min);
+}

@@ -44,16 +44,7 @@ void current_mode_hint_displayer_render(Timer& timer)
     currentModeHintDisplayer.outline = false;
 
     if(panel_displaying_modes.selectedElement == 0){
-        currentModeDisplayer.text = "Object Selection Mode";
-        int selectedObjCount = 0;
-        int objCount = 0;
-        for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
-        {
-            selectedObjCount += getScene()->model->meshes[i].selectedObjectIndices.size();
-            objCount += getScene()->model->meshes[i].objects.size();
-        }
-        
-        currentModeHintDisplayer.text = "Objects " + std::to_string(selectedObjCount) + "/" + std::to_string(objCount);
+        currentModeDisplayer.text = "Solid Mode";
     }
     else if(panel_displaying_modes.selectedElement == 1){
         currentModeDisplayer.text = "Material Painting mode";

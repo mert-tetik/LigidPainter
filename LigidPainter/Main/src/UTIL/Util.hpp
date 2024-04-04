@@ -118,6 +118,9 @@ namespace UTIL{
     /// @return CCC/Dest.tmp
     std::string rmvPath(std::string startingPath, std::string fullPath);
     
+    /// @brief Maps a value from one range to another.
+    float new_value_range(float value, float min, float max, float new_min, float new_max);
+    
     /// @brief opens the path param in the file explorer
     /// @param path a path to a directory
     void openInFileExplorer(const char* path);

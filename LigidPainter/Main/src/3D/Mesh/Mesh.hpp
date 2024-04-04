@@ -81,13 +81,12 @@ public:
         /*! @brief Unselected faces will not be rendered in the scene */
         bool hideUnselected = false;
 
-        glm::vec2 boxSelectionStart;
-        glm::vec2 boxSelectionEnd;
+        glm::vec2 boxSelectionStart = glm::vec2(0.f);
+        glm::vec2 boxSelectionEnd = glm::vec2(0.f);
 
         /// @brief Contains the indices of the selected faces
         ///        Being processed in the PBR shader
         std::vector<byte> selectedPrimitiveIDs;
-        std::vector<byte> prevPrimArray;
         std::vector<int> changedIndices;
 
         /*! @brief This Texture is used for masking the mesh using a texture and not primitive IDs*/
@@ -102,8 +101,6 @@ public:
         /// @brief 3D model rendered with primitive ID rendering shader
         Texture modelPrimitives;
     };
-
-    std::vector<byte> prevPrimArray;
 
     /*----- Channels of the material -----
 
@@ -126,7 +123,7 @@ public:
     FaceSelection face_selection_data;
 
     LayerScene layerScene;
-
+    
     Texture uvMask;
 
     Texture displayingTxtr;
@@ -134,8 +131,10 @@ public:
     Texture meshPosTxtr;
     Texture meshNormalTxtr;
 
-    std::vector<int> selectedObjectIndices;
-    Texture selectedObjectPrimitivesTxtr;
+    Texture objectIDs;
+    void updateObjectIDsTexture();
+    void updateModelPrimitivesTexture();
+
 
     std::vector<MeshObject> objects;
 

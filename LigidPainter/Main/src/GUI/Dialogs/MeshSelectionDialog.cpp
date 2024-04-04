@@ -46,7 +46,6 @@ MeshSelectionDialog::MeshSelectionDialog(int){
 
 //Forward declarations for the utility functions
 static void initMeshSelectionDialog(int &selectedTextureMode, Panel& subPanel, int& selectedMeshIndex);
-static void drawBG(unsigned int bgTexture);
 
 void MeshSelectionDialog::show(Timer &timer, int& selectedMeshI){
     
@@ -100,8 +99,6 @@ void MeshSelectionDialog::show(Timer &timer, int& selectedMeshI){
             if(this->bgPanel.sections[0].elements[i].button.clickState1 == false && i == this->selectedMeshIndex)
                 this->bgPanel.sections[0].elements[i].button.clickState1 = true;
         }
-
-        dialogControl.updateEnd(timer,0.15f);
 
         //End the dialog
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && !this->subPanel.hover && *Mouse::LClick())){
