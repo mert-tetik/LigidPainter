@@ -34,6 +34,8 @@ void panels_render(Timer& timer)
     ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
+    glDepthFunc(GL_LEQUAL);
+
     getBox()->bindBuffers();
 
     Debugger::block("GUI : panelPositioning"); // Start

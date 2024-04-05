@@ -152,6 +152,9 @@ void Scene::render_model(Timer& timer){
             ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
             ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
             ShaderSystem::tdModelShader().setInt("hideUnselected", false);
+
+            this->model->meshes[i].face_selection_data.activated = false;
+            this->model->meshes[i].face_selection_data.editMode = false;
         }
         
         if(button_mesh_selection.selectedMeshI == i){
@@ -221,16 +224,13 @@ void Scene::render_model(Timer& timer){
 
     // Update the 3D model depth texture if necessary last frame camera changed position
     if(
-            (prevCam.cameraPos != this->camera.cameraPos || 
-            prevCam.originPos != this->camera.originPos || 
-            prevCam.yaw != this->camera.yaw || 
-            prevCam.pitch != this->camera.pitch) && !*Mouse::RPressed()
+            (prevCam != this->camera) && !*Mouse::RPressed()
         )
     {
         getScene()->get_selected_mesh()->updatePosNormalTexture();
-        
-        prevCam = this->camera;
     }
+    
+    prevCam = this->camera;
 
     glDisable(GL_CULL_FACE);
 }

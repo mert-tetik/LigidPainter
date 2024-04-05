@@ -102,7 +102,7 @@ void ShaderSystem::initShaderSystem(){
     __gizmo.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Gizmo.frag");
     __twoDPainting.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/2DPainting.frag");
     __twoDPaintingModeAreaShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/UpdatingTexture.frag");
-    __circleShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniformsßß.vert", "LigidPainter/Resources/Shaders/aFrag/Circle.frag");
+    __circleShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Circle.frag");
     __dotsShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/Dots.frag");
     __heightToNormalMap.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/HeightToNormal.frag");
     __boundaryExpandingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/BoundaryExpanding.frag");

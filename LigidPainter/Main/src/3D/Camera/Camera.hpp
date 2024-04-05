@@ -51,6 +51,9 @@ struct Camera{
     bool ZPLocked = false;
     bool ZNLocked = false;
     bool originLocked = false;
+
+    bool operator==(const Camera& otherCam) const;
+    bool operator!=(const Camera& otherCam) const;
 };
 
 #endif

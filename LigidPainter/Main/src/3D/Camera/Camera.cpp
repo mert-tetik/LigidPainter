@@ -293,3 +293,15 @@ void Camera::updateViewMatrix(glm::vec3 camPos, glm::vec3 originPos){
 void Camera::updateViewMatrix(){
     updateViewMatrix(this->cameraPos, this->originPos);
 }
+
+bool Camera::operator==(const Camera& otherCam) const{
+    return this->cameraPos == otherCam.cameraPos && 
+            this->originPos == otherCam.originPos && 
+            this->yaw == otherCam.yaw &&
+            this->pitch == otherCam.pitch &&
+            this->viewMatrix == otherCam.viewMatrix;
+}
+
+bool Camera::operator!=(const Camera& otherCam) const{
+    return !(*this == otherCam);
+}
