@@ -73,7 +73,12 @@ static void set_brush_properties (
     ShaderSystem::twoDPainting().setInt("brush.sinWavePattern", brushProperties.sinWavePattern);
     
     //Bind the texture of the brush
-    ShaderSystem::twoDPainting().setFloat("brush.txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, brushProperties.brushTexture.ID);
+    if(brushProperties.brushTexture.ID){
+        ShaderSystem::twoDPainting().setFloat("brush.txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, brushProperties.brushTexture.ID);
+    }
+    else{
+        ShaderSystem::twoDPainting().setFloat("brush.txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, appTextures.white.ID);   
+    }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
@@ -92,14 +97,15 @@ static void set_brush_properties (
                                                 data = settings.normal_mode.src;\
                                             if(settings.painting_mode == 4)\
                                                 data = settings.filter_mode.src;\
-                                            if(settings.painting_mode == 5)\
-                                                data = {};
+                                            if(settings.painting_mode == 6)\
+                                                data = settings.filter_mode.src;
 
 static Texture painting_BG_texture;
 static Framebuffer window_paint_FBO;
 static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> strokes, Brush brush, int frame_count, bool paint_offset_value){
     if(!window_paint_FBO.ID){
         window_paint_FBO = Framebuffer(*window_paint_texture, GL_TEXTURE_2D, "window_paint");
+        painting_BG_texture = Texture(nullptr, 1, 1);
     }
     else{
         window_paint_FBO.setColorBuffer(*window_paint_texture, GL_TEXTURE_2D);
@@ -110,13 +116,14 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
 
     window_paint_FBO.bind();
 
-    float resolution = 0;
+    float resolution = window_paint_texture->getResolution().x;
 
-    //Cover the whole monitor (since we are painting to the screen)
     glViewport(0, 0, resolution, resolution);
-    
+    //glClearColor(0,0,0,0);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
     glm::vec2 scale = glm::vec2(0.5f);
-    glm::vec3 pos = glm::vec3(0.5f, 0.5f, 1.f);
+    glm::vec3 pos = glm::vec3(0.5f, 0.5f, 0.9f);
     glm::mat4 projection = glm::ortho(0.f, 1.f, 0.f, 1.f);
     
     //Prepeare the 2D painting shader
@@ -124,6 +131,7 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     ShaderSystem::twoDPainting().setVec2("scale", scale); //Cover the screen
     ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
     ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
+
     ShaderSystem::twoDPainting().setVec2("paintingRes", glm::vec2(resolution)); 
     ShaderSystem::twoDPainting().setVec2("videoScale", getContext()->windowScale); 
     ShaderSystem::twoDPainting().setInt("frame", frame_count);
@@ -251,7 +259,7 @@ static void project_window_painting_texture(
     ShaderSystem::projectingPaintedTextureShader().setVec3("paintingColor", paint_color);
 
     // Painting a 3D model
-    if(!vertex_buffer_data.paint_model){
+    if(vertex_buffer_data.paint_model){
         //*Fragment
         ShaderSystem::projectingPaintedTextureShader().setInt("doDepthTest", 1);
         
@@ -264,7 +272,6 @@ static void project_window_painting_texture(
         ShaderSystem::projectingPaintedTextureShader().setInt("selectedPrimitiveIDS", 8); glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, vertex_buffer_data.model_mesh->face_selection_data.selectedFaces.ID);
         ShaderSystem::projectingPaintedTextureShader().setInt("meshMask", 10); glActiveTexture(GL_TEXTURE10); glBindTexture(GL_TEXTURE_2D, vertex_buffer_data.model_mesh->face_selection_data.meshMask.ID);
 
-        
         //Draw the UV of the selected model
         {    
             if(wrapMode){
@@ -748,7 +755,7 @@ void register_history_actions(int painting_mode, PaintSettings::PaintedBuffers p
         actionTitle = "Normal map painting";
     if(painting_mode == 4)
         actionTitle = "Filter painting";
-    if(painting_mode == 5)
+    if(painting_mode == 6)
         actionTitle = "Bucket painting";
     
     if(painted_buffers.material_painting){
@@ -934,41 +941,53 @@ struct PaintedBufferData{
 static std::vector<PaintedBufferData> get_painted_buffers(PaintSettings settings){
     std::vector<PaintedBufferData> result;
     
-    for (size_t i = 0; i < 6; i++)
-    {
-        PaintedBufferData data;
-        if(i == 0 && settings.painted_buffers.material_channel_albedo_active){
-            data.clr = settings.color_buffer.stroke_albedo_color.getRGB_normalized();
-            data.txtr = settings.painted_buffers.material_channel_albedo;
-            data.corresponding_custom_material_channel = customMatMesh.albedo;
-        }
-        if(i == 1 && settings.painted_buffers.material_channel_roughness_active){
-            data.clr = glm::vec3(settings.color_buffer.stroke_roughness_color);
-            data.txtr = settings.painted_buffers.material_channel_roughness;
-            data.corresponding_custom_material_channel = customMatMesh.roughness;
-        }
-        if(i == 2 && settings.painted_buffers.material_channel_metallic_active){
-            data.clr = glm::vec3(settings.color_buffer.stroke_metallic_color);
-            data.txtr = settings.painted_buffers.material_channel_metallic;
-            data.corresponding_custom_material_channel = customMatMesh.metallic;
-        }
-        if(i == 3 && settings.painted_buffers.material_channel_normalMap_active){
-            data.clr = glm::vec3(settings.color_buffer.stroke_normalMap_color);
-            data.txtr = settings.painted_buffers.material_channel_normalMap;
-            data.corresponding_custom_material_channel = customMatMesh.normalMap;
-        }
-        if(i == 4 && settings.painted_buffers.material_channel_heightMap_active){
-            data.clr = glm::vec3(settings.color_buffer.stroke_heightMap_color);
-            data.txtr = settings.painted_buffers.material_channel_heightMap;
-            data.corresponding_custom_material_channel = customMatMesh.heightMap;
-        }
-        if(i == 5 && settings.painted_buffers.material_channel_ao_active){
-            data.clr = glm::vec3(settings.color_buffer.stroke_ao_color);
-            data.txtr = settings.painted_buffers.material_channel_ao;
-            data.corresponding_custom_material_channel = customMatMesh.ambientOcclusion;
-        }
+    if(settings.painted_buffers.material_painting){
 
-        data.channel_index = i;
+        for (size_t i = 0; i < 6; i++)
+        {
+            PaintedBufferData data;
+            if(i == 0 && settings.painted_buffers.material_channel_albedo_active){
+                data.clr = settings.color_buffer.stroke_albedo_color.getRGB_normalized();
+                data.txtr = settings.painted_buffers.material_channel_albedo;
+                data.corresponding_custom_material_channel = customMatMesh.albedo;
+            }
+            if(i == 1 && settings.painted_buffers.material_channel_roughness_active){
+                data.clr = glm::vec3(settings.color_buffer.stroke_roughness_color);
+                data.txtr = settings.painted_buffers.material_channel_roughness;
+                data.corresponding_custom_material_channel = customMatMesh.roughness;
+            }
+            if(i == 2 && settings.painted_buffers.material_channel_metallic_active){
+                data.clr = glm::vec3(settings.color_buffer.stroke_metallic_color);
+                data.txtr = settings.painted_buffers.material_channel_metallic;
+                data.corresponding_custom_material_channel = customMatMesh.metallic;
+            }
+            if(i == 3 && settings.painted_buffers.material_channel_normalMap_active){
+                data.clr = glm::vec3(settings.color_buffer.stroke_normalMap_color);
+                data.txtr = settings.painted_buffers.material_channel_normalMap;
+                data.corresponding_custom_material_channel = customMatMesh.normalMap;
+            }
+            if(i == 4 && settings.painted_buffers.material_channel_heightMap_active){
+                data.clr = glm::vec3(settings.color_buffer.stroke_heightMap_color);
+                data.txtr = settings.painted_buffers.material_channel_heightMap;
+                data.corresponding_custom_material_channel = customMatMesh.heightMap;
+            }
+            if(i == 5 && settings.painted_buffers.material_channel_ao_active){
+                data.clr = glm::vec3(settings.color_buffer.stroke_ao_color);
+                data.txtr = settings.painted_buffers.material_channel_ao;
+                data.corresponding_custom_material_channel = customMatMesh.ambientOcclusion;
+            }
+
+            data.channel_index = i;
+            result.push_back(data);
+        }
+    }
+    else{
+        PaintedBufferData data;
+        data.clr = glm::vec3(settings.color_buffer.stroke_albedo_color.getRGB_normalized());
+        data.txtr = settings.painted_buffers.solid_painted_texture;
+        data.corresponding_custom_material_channel = customMatMesh.albedo;
+        data.channel_index = 0;
+        result.push_back(data);
     }
 
     return result;
@@ -991,4 +1010,88 @@ static void init_buffers(Framebuffer* projected_painting_FBO){
     INIT_MIRROR_SIDE(XZ_side, glm::vec3(1.f, -1.f, 1.f));
     INIT_MIRROR_SIDE(YZ_side, glm::vec3(-1.f, 1.f, 1.f));
     INIT_MIRROR_SIDE(XYZ_side, glm::vec3(1.f, 1.f, 1.f));
+}
+
+Framebuffer refresh_FBO;
+static void refresh_buffers(Framebuffer* projected_painting_FBO){
+    if(!refresh_FBO.ID)
+        refresh_FBO = Framebuffer(projected_painting_FBO->colorBuffer.ID, GL_TEXTURE_2D, "Refresh buffers fbo");
+    
+    refresh_FBO.bind();
+
+    refresh_FBO.setColorBuffer(projected_painting_FBO->colorBuffer, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    refresh_FBO.setColorBuffer(O_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(O_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(O_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(O_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    refresh_FBO.setColorBuffer(X_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(X_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(X_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(X_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    refresh_FBO.setColorBuffer(Y_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(Y_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(Y_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(Y_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    refresh_FBO.setColorBuffer(XY_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(XY_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(XY_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(XY_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    refresh_FBO.setColorBuffer(Z_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(Z_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(Z_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(Z_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    refresh_FBO.setColorBuffer(XZ_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(XZ_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(XZ_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(XZ_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    refresh_FBO.setColorBuffer(YZ_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(YZ_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(YZ_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(YZ_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    refresh_FBO.setColorBuffer(XYZ_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(XYZ_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(XYZ_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    refresh_FBO.setColorBuffer(XYZ_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
 }

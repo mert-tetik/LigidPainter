@@ -25,7 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Panels.hpp"
 
 void Scene::render_scene(Timer& timer){
-    if(!panels_any_hovered())
+    if(!panels_any_hovered() && !*Mouse::LPressed())
         this->camera.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
 
     Debugger::block("Skybox Rendering"); // Start
@@ -36,12 +36,19 @@ void Scene::render_scene(Timer& timer){
 
     if(this->renderTiles){
         ShaderSystem::sceneTilesShader().use();
+        ShaderSystem::sceneTilesShader().setMat4("view", this->camera.viewMatrix);
+        ShaderSystem::sceneTilesShader().setMat4("projection", this->projectionMatrix);
+        ShaderSystem::sceneTilesShader().setMat4("modelMatrix",glm::mat4(1));
+        ShaderSystem::sceneTilesShader().setVec3("camPos", this->camera.cameraPos);
         this->tiles.draw();
         glClear(GL_DEPTH_BUFFER_BIT);
     }
     
     if(this->renderAxisDisplayer){
         ShaderSystem::sceneAxisDisplayerShader().use();
+        ShaderSystem::sceneAxisDisplayerShader().setMat4("view", this->camera.viewMatrix);
+        ShaderSystem::sceneAxisDisplayerShader().setMat4("projection", this->projectionMatrix);
+        ShaderSystem::sceneAxisDisplayerShader().setMat4("modelMatrix",glm::mat4(1));
         this->axisDisplayer.draw();
         glClear(GL_DEPTH_BUFFER_BIT);
     }

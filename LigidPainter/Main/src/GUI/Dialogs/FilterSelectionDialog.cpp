@@ -173,8 +173,6 @@ void FilterSelectionDialog::show(Timer &timer, Filter& receivedFilter, int displ
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter selection dialog : Split filters");
 
-        dialogControl.updateEnd(timer,0.15f);
-
         ShaderSystem::buttonShader().use();
 
 

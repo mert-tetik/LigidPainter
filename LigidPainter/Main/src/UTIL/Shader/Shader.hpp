@@ -86,6 +86,7 @@ private:
 
 namespace ShaderSystem{
     Shader tdModelShader();
+    Shader PBRDisplayOnly();
     Shader skyboxShader();
     Shader skyboxModelShader();
     Shader skyboxBall();
@@ -137,6 +138,7 @@ namespace ShaderSystem{
     Shader alphaZero3D();
     Shader color3DInstancing();
     Shader layersUpdate();
+    Shader solidPaintingShader();
 
     
     Shader textureModifierShader();

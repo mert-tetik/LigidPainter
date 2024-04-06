@@ -117,16 +117,20 @@ void Material::updateMaterialDisplayingTexture(
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Use the 3D model rendering shader
-    ShaderSystem::tdModelShader().use();
-
-    //Throw the camera data to the shader
-    ShaderSystem::tdModelShader().setInt("displayingMode", displayingMode);
-    ShaderSystem::tdModelShader().setVec3("viewPos",matCam.cameraPos);
-    ShaderSystem::tdModelShader().setMat4("view",view);
-    ShaderSystem::tdModelShader().setMat4("projection",projectionMatrix);
-    ShaderSystem::tdModelShader().setInt("usingMeshSelection", false);
-    ShaderSystem::tdModelShader().setInt("meshSelectionEditing", false);
-    ShaderSystem::tdModelShader().setInt("hideUnselected", false);
+    ShaderSystem::PBRDisplayOnly().use();
+    ShaderSystem::PBRDisplayOnly().setMat4("view",view);
+    ShaderSystem::PBRDisplayOnly().setMat4("projection",projectionMatrix);
+    
+    ShaderSystem::PBRDisplayOnly().setVec3("viewPos",matCam.cameraPos);
+    ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.ID);
+    ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.IDPrefiltered);
+    ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", 2);
+    ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", 3);
+    ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", 4);
+    ShaderSystem::PBRDisplayOnly().setInt("normalMapTxtr", 5);
+    ShaderSystem::PBRDisplayOnly().setInt("heightMapTxtr", 6);
+    ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", 7);
+    ShaderSystem::PBRDisplayOnly().setInt("displayingMode", displayingMode);
     
     for (size_t i = 0; i < displayModel.meshes.size(); i++)
     {

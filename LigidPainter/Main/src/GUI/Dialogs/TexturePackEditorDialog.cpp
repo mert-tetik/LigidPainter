@@ -219,8 +219,6 @@ void TexturePackEditorDialog::show(Timer &timer, TexturePack& receivedTexturePac
             }
         }
 
-        dialogControl.updateEnd(timer,0.15f);
-
         ShaderSystem::buttonShader().use();
 
         //If pressed any of the texture select the texture

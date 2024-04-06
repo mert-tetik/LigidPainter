@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Shader/Shader.hpp"
     
 Shader __tdModelShader;
+Shader __PBRDisplayOnly;
 Shader __skyboxShader;
 Shader __skyboxModelShader;
 Shader __skyboxBall;
@@ -82,9 +83,11 @@ Shader __threeDTextureRenderingShader;
 Shader __alphaZero3D;
 Shader __color3DInstancing;
 Shader __layersUpdate;
+Shader __solidPaintingShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
+    __PBRDisplayOnly.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBRDisplayOnly.frag");
     __depth3D.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag");
     __alphaZero3D.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/AlphaZero3D.frag");
     __renderModelData.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/RenderModelData.frag");
@@ -126,6 +129,7 @@ void ShaderSystem::initShaderSystem(){
     __txtrEditorColoringShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/TextureEditor/Coloring.frag");
     __splitTexturesShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/SplitTextures.frag");
     __solidShadingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/SolidShading.frag");
+    __solidPaintingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/SolidPainting.frag");
     __textureRenderingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/TextureRendering.frag");
     __threeDTextureRenderingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/TextureRendering.frag");
     __edgeWearShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/EdgeWear.frag");
@@ -150,6 +154,9 @@ void ShaderSystem::initShaderSystem(){
 
 Shader ShaderSystem::tdModelShader(){
     return __tdModelShader;
+}
+Shader ShaderSystem::PBRDisplayOnly(){
+    return __PBRDisplayOnly;
 }
 Shader ShaderSystem::skyboxShader(){
     return __skyboxShader;
@@ -334,4 +341,7 @@ Shader ShaderSystem::color3DInstancing(){
 }
 Shader ShaderSystem::layersUpdate(){
     return __layersUpdate;
+}
+Shader ShaderSystem::solidPaintingShader(){
+    return __solidPaintingShader;
 }

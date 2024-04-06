@@ -74,6 +74,15 @@ void Renderer::render(){
             painting_paint_condition() || last_painting_condition
         )
     {
+        bool success = false;
+        Texture albedo = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).albedo;  
+        Texture roughness = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).roughness;  
+        Texture metallic = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).metallic;  
+        Texture normalMap = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).normalMap;  
+        Texture heightMap = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).heightMap;  
+        Texture ambientOcclusion = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).ambientOcclusion;  
+
+        if(success || panel_displaying_modes.selectedElement != 1)
         painting_paint_buffers(PaintSettings(
                                                 PaintSettings::PaintingOverData(
                                                                                     checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1,
@@ -81,7 +90,7 @@ void Renderer::render(){
                                                                                     getTextureFieldScene()
                                                                                 ),
                                                 PaintSettings::ColorBuffer(
-                                                                                checkComboList_painting_color.panel.sections[0].elements[2].painterColorSelection.getSelectedColor().getRGB_normalized(),
+                                                                                checkComboList_painting_color.panel.sections[0].elements[2].painterColorSelection.getSelectedColor(),
                                                                                 checkComboList_painting_color.panel.sections[0].elements[4].rangeBar.value,
                                                                                 checkComboList_painting_color.panel.sections[0].elements[6].rangeBar.value,
                                                                                 checkComboList_painting_color.panel.sections[0].elements[8].rangeBar.value,
@@ -94,17 +103,17 @@ void Renderer::render(){
                                                                                     panel_displaying_modes.selectedElement == 1,
                                                                                     panel_library_selected_texture,
                                                                                     checkComboList_painting_color.panel.sections[0].elements[1].checkBox.clickState1,
-                                                                                    getScene()->get_selected_mesh()->layerScene.get_painting_channels(nullptr).albedo,
+                                                                                    albedo,
                                                                                     checkComboList_painting_color.panel.sections[0].elements[3].checkBox.clickState1,
-                                                                                    getScene()->get_selected_mesh()->layerScene.get_painting_channels(nullptr).roughness,
+                                                                                    roughness,
                                                                                     checkComboList_painting_color.panel.sections[0].elements[5].checkBox.clickState1,
-                                                                                    getScene()->get_selected_mesh()->layerScene.get_painting_channels(nullptr).metallic,
+                                                                                    metallic,
                                                                                     checkComboList_painting_color.panel.sections[0].elements[7].checkBox.clickState1,
-                                                                                    getScene()->get_selected_mesh()->layerScene.get_painting_channels(nullptr).normalMap,
+                                                                                    normalMap,
                                                                                     checkComboList_painting_color.panel.sections[0].elements[9].checkBox.clickState1,
-                                                                                    getScene()->get_selected_mesh()->layerScene.get_painting_channels(nullptr).heightMap,
+                                                                                    heightMap,
                                                                                     checkComboList_painting_color.panel.sections[0].elements[11].checkBox.clickState1,
-                                                                                    getScene()->get_selected_mesh()->layerScene.get_painting_channels(nullptr).ambientOcclusion
+                                                                                    ambientOcclusion
                                                                                 ),
                                                 PaintSettings::MirrorSettings(
                                                                                 checkComboList_painting_mirror.panel.sections[0].elements[0].checkBox.clickState1,
@@ -117,7 +126,7 @@ void Renderer::render(){
                                                 PaintSettings::PaintVertexBuffer(
                                                                                     getScene()->get_selected_mesh(),
                                                                                     &twoD_painting_box,
-                                                                                    twoD_painting_mode
+                                                                                    !twoD_painting_mode
                                                                                 ),
                                                 PaintSettings::PointData(
                                                                             *Mouse::cursorPos(),
@@ -146,7 +155,7 @@ void Renderer::render(){
                                                                             button_painting_filter_mode_filter.filter
                                                                         ),
                                                 PaintSettings::BucketMode(
-                                                                            
+                                                                            Brush(button_painting_brush.brushProperties, "")
                                                                         )
 
                                             ), !last_painting_condition && painting_paint_condition(), last_painting_condition && !painting_paint_condition());

@@ -48,8 +48,14 @@ static void transform_scene();
 
 void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
     
+
     if(panel_displaying_modes.selectedElement == 2){
         transform_scene();
+        
+        Settings::defaultFramebuffer()->FBO.bind();
+        Settings::defaultFramebuffer()->setViewport();
+        ShaderSystem::buttonShader().use();
+        getBox()->bindBuffers();
 
         //Render the 2D painting panel
         panel_twoD_painting.sections[0].elements[0].button.text = "";

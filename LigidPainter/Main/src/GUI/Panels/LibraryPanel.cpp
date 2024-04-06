@@ -43,10 +43,7 @@ static Button add_btn(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), "Add", Texture(), 
 static Button import_btn(ELEMENT_STYLE_SOLID, glm::vec2(2,1.5f), "Import", Texture(), 0.f, false);
 
 /* Forward declared util functions */
-static void check_context_menus(Timer& timer);
-static void element_interactions(Timer& timer);
 static void bar_buttons_interactions(Timer& timer);
-static void update_elements();
 
 void panel_library_render(
                             Timer& timer, 
@@ -55,9 +52,6 @@ void panel_library_render(
 {
 
     //Update the library displayer panel every time library changed
-
-    // If *clicked / double clicked / etc.* to elements  
-    element_interactions(timer);
     
     // If clicked to bar buttons (import & add new)
     bar_buttons_interactions(timer);
@@ -156,6 +150,10 @@ void panel_library_render(
 
             btn->button.textureStickToTop = true;
             btn->button.textureSizeScale = 1.5f;
+
+            if(btn->button.texture.ID == panel_library_selected_texture.ID) //Highlight the selected texture
+                btn->button.color = ColorPalette::themeColor;
+
             if(btn->pos.y - btn->scale.y < (panel_library.pos.y + panel_library.scale.y) && btn->pos.y + btn->scale.y > (panel_library.pos.y - panel_library.scale.y))
                 btn->render(timer, true);
 
@@ -174,6 +172,28 @@ void panel_library_render(
                                         );
 
                 textRenderer.renderText();
+
+                if(Library::getSelectedElementIndex() == 0){ //Textures selected
+                    if(btn->button.hover && *Mouse::LClick()){
+                        panel_library_selected_texture = *Library::getTexture(i); //Select the texture 
+                    } 
+                }
+                if(Library::getSelectedElementIndex() == 1){ //Materials selected
+                    if(panel_library.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
+                        dialog_materialDisplayer.show(timer, Library::getMaterialObj(i));
+                    } 
+                }
+                if(Library::getSelectedElementIndex() == 6){ //Filters selected
+                    if(panel_library.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
+                        dialog_filterDisplayer.dialogControl.activate();
+                        dialog_filterDisplayer.filter = *Library::getFilter(i);
+                    } 
+                }
+                if(Library::getSelectedElementIndex() == 8){ //Texture Packs selected
+                    if(panel_library.sections[0].elements[i].button.clicked){
+                        dialog_texturePackEditor.show(timer, *Library::getTexturePack(i));
+                    } 
+                }
 
             // Right clicked to an element
             if(btn->button.hover && *Mouse::RClick()){ 
@@ -324,40 +344,7 @@ void panel_library_render(
     glClear(GL_DEPTH_BUFFER_BIT);
 
     if(glIsTexture(panel_library_selected_texture.ID) == GL_FALSE)
-        panel_library_selected_texture.ID = false;
-}
-
-
-
-static void element_interactions(Timer& timer){
-    //Update the selected texture
-    for (size_t i = 0; i < panel_library.sections[0].elements.size(); i++) //Check all the texture button elements from the library displayer panel
-    {
-        if(Library::getSelectedElementIndex() == 0){ //Textures selected
-            if(panel_library.sections[0].elements[i].button.clicked){
-                panel_library_selected_texture = *Library::getTexture(i); //Select the texture 
-            } 
-        
-            if(Library::getTexture(i)->ID == panel_library_selected_texture.ID) //Highlight the selected texture
-                panel_library.sections[0].elements[i].button.clickState1 = true;
-        }
-        if(Library::getSelectedElementIndex() == 1){ //Materials selected
-            if(panel_library.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
-                dialog_materialDisplayer.show(timer, Library::getMaterialObj(i));
-            } 
-        }
-        if(Library::getSelectedElementIndex() == 6){ //Filters selected
-            if(panel_library.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
-                dialog_filterDisplayer.dialogControl.activate();
-                dialog_filterDisplayer.filter = *Library::getFilter(i);
-            } 
-        }
-        if(Library::getSelectedElementIndex() == 8){ //Texture Packs selected
-            if(panel_library.sections[0].elements[i].button.clicked){
-                dialog_texturePackEditor.show(timer, *Library::getTexturePack(i));
-            } 
-        }
-    }
+        panel_library_selected_texture.ID = 0;
 }
 
 static void bar_buttons_interactions(Timer& timer){
@@ -492,65 +479,3 @@ static void bar_buttons_interactions(Timer& timer){
         }
     }
 }
-
-static void update_elements(){
-    
-    //Remove all the elements of the library panel displayer
-    panel_library.sections.clear(); 
-        
-    //Create a new section
-    Section libSection;
-    libSection.header = Element(Button()); //Has no section button
-    //Fill the elements of the section using the data in the library structure
-    if(Library::getSelectedElementIndex() == 0){//Update textures
-        for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-        {
-            //Push texture elements into the section
-            libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getTexture(i)->title       , *Library::getTexture(i), 0.f,false))) ;
-        }
-    }
-    else if(Library::getSelectedElementIndex() == 1){ //Update materials
-        for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
-        {
-            //Push texture elements into the section
-            libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getMaterial(i)->title       , Library::getMaterial(i)->displayingTexture, 0.f,false))) ;
-        }
-    }
-    else if(Library::getSelectedElementIndex() == 2){ //Update materials
-        for (size_t i = 0; i < Library::getBrushArraySize(); i++)
-        {
-            //Push texture elements into the section
-            libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getBrush(i)->title       , Library::getBrush(i)->displayingTexture, 0.f,false))) ;
-        }
-    }
-    else if(Library::getSelectedElementIndex() == 3){ //Update tdmodels
-        for (size_t i = 0; i < Library::getModelArraySize(); i++)
-        {
-            //Push texture elements into the section
-            libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getModel(i)->title       , Library::getModel(i)->displayingTxtr, 0.f,false))) ;
-        }
-    }
-    else if(Library::getSelectedElementIndex() == 4){ //Fonts
-    
-    }
-    else if(Library::getSelectedElementIndex() == 5){ //Scripts
-    
-    }
-    else if(Library::getSelectedElementIndex() == 6){ //Filters
-        for (size_t i = 0; i < Library::getFilterArraySize(); i++)
-        {
-            //Push texture elements into the section
-            libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getFilter(i)->title, Library::getFilter(i)->displayingTxtr, 0.f,false))) ;
-        }
-    }
-    else if(Library::getSelectedElementIndex() == 8){ //Texture packs
-        for (size_t i = 0; i < Library::getTexturePackArraySize(); i++)
-        {
-            //Push texture elements into the section
-            libSection.elements.push_back(Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4.f),Library::getTexturePack(i)->title, appTextures.packageIcon, 0.f,false))) ;
-        }
-    }
-
-    //Give the section
-    panel_library.sections.push_back(Section(Element(Button()),libSection.elements));
-} 

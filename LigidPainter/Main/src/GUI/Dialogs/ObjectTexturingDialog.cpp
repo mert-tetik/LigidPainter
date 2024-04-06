@@ -584,7 +584,7 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    getScene()->render_model(Timer()); //result_channels
+    getScene()->render_scene(Timer()); //result_channels
 
     // 190 - 1727
     // 114 - 967

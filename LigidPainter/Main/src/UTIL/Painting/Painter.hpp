@@ -188,7 +188,14 @@ struct PaintSettings{
         }
     };
     struct BucketMode{
+        /*! @brief This brush will be used for the opacity value*/
+        Brush stroke_brush;
+        
         BucketMode(){}
+
+        BucketMode(Brush stroke_brush){
+            this->stroke_brush = stroke_brush;
+        }
     };
 
     struct PaintVertexBuffer{
@@ -298,7 +305,7 @@ struct PaintSettings{
     
     PointData point;
 
-    /*! @brief 0 : Draw Mode, 1 : Soften Mode, 2 : Smear Mode, 3 : Normal Mode, 4 : Filter Mode, 5 Bucket Mode, */ 
+    /*! @brief 0 : Draw Mode, 1 : Soften Mode, 2 : Smear Mode, 3 : Normal Mode, 4 : Filter Mode, 5 : Vector(empty), 6 : bucket */ 
     int painting_mode;
 
     DrawMode draw_mode;
