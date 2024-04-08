@@ -28,20 +28,24 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "../../thirdparty/include/glm/gtc/type_ptr.hpp"
 #include "../../thirdparty/include/glm/gtx/string_cast.hpp"
 
-#include "GUI/Elements.hpp"
-#include "GUI/GUI.hpp"
-#include "GUI/Panels.hpp"
-#include "UTIL/Util.hpp"
-#include "UTIL/Shader/Shader.hpp"
-#include "Toolkit/VectorScene/VectorScene.hpp"
-
-#include "UTIL/Settings/Settings.hpp"
-#include "UTIL/Mouse/Mouse.hpp"
-#include "UTIL/Library/Library.hpp"
-#include "3D/ThreeD.hpp"
 #include "Renderer.h"
 
 #include "LigidGL/LigidGL.hpp"
+
+#include "UTIL/Util.hpp"
+#include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/Library/Library.hpp"
+#include "UTIL/Painting/Painter.hpp"
+
+#include "GUI/Elements.hpp"
+#include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
+
+#include "Toolkit/VectorScene/VectorScene.hpp"
+
+#include "3D/ThreeD.hpp"
 
 #include "tinyfiledialogs.h"
 
@@ -208,4 +212,5 @@ void Renderer::initRenderer(){
     *getTextureFieldScene() = TextureFieldScene(std::vector<TextureField>{}); 
     Debugger::block("LOAD : INIT TEXTURE FIELD SCENE"); //End
 
+    painting_init_buffers();
 }

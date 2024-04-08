@@ -459,9 +459,6 @@ static void process_3D_point(
     else if(crs_pos != glm::vec2(-1.f))
         strokes->push_back(crs_pos);
 
-    std::cout << glm::to_string(crs_pos) << std::endl;
-    std::cout << glm::to_string(crs_pos_2) << std::endl;
-
     getBox()->bindBuffers();
     ShaderSystem::twoDPainting().use();
 }
@@ -949,25 +946,6 @@ static std::vector<PaintedBufferData> get_painted_buffers(PaintSettings settings
     }
 
     return result;
-}
-
-#define INIT_MIRROR_SIDE(mirror_side, axis) mirror_side.paintingBuffers.depth_texture  = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);\
-                                            mirror_side.paintingBuffers.window_painting_texture  = Texture(nullptr, 1024, 1024);\
-                                            mirror_side.paintingBuffers.projected_painting_texture  = Texture(nullptr, 1024, 1024, GL_LINEAR);\
-                                            mirror_side.paintingBuffers.projected_painting_texture_low  = Texture(nullptr, 512, 512, GL_LINEAR, GL_RGBA, GL_RGBA16F);\
-                                            mirror_side.effectAxis = axis;
-
-static void init_buffers(Framebuffer* projected_painting_FBO){
-    *projected_painting_FBO = Framebuffer(Texture(nullptr, 1024, 1024), GL_TEXTURE_2D, "projected_painting_FBO");
-    
-    INIT_MIRROR_SIDE(O_side, glm::vec3(-1.f, -1.f, -1.f))
-    INIT_MIRROR_SIDE(X_side, glm::vec3(1.f, -1.f, -1.f));
-    INIT_MIRROR_SIDE(Y_side, glm::vec3(-1.f, 1.f, -1.f));
-    INIT_MIRROR_SIDE(XY_side, glm::vec3(1.f, 1.f, -1.f));
-    INIT_MIRROR_SIDE(Z_side, glm::vec3(-1.f, -1.f, 1.f));
-    INIT_MIRROR_SIDE(XZ_side, glm::vec3(1.f, -1.f, 1.f));
-    INIT_MIRROR_SIDE(YZ_side, glm::vec3(-1.f, 1.f, 1.f));
-    INIT_MIRROR_SIDE(XYZ_side, glm::vec3(1.f, 1.f, 1.f));
 }
 
 Framebuffer refresh_FBO;

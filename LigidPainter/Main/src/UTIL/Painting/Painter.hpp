@@ -349,4 +349,6 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
 
 std::vector<MirrorSide*> painting_get_selected_mirror_sides(bool mirror_X, bool mirror_Y, bool mirror_Z);
 
+void painting_init_buffers();
+
 #endif
