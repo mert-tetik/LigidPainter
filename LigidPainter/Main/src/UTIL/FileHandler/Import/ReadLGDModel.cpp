@@ -290,5 +290,7 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
     model.newModelAdded = true;
     model.generateDisplayingTexture();
 
+    model.resize_meshes();
+
     return true;
 }

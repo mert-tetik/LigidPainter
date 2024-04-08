@@ -585,3 +585,27 @@ void Mesh::updateModelPrimitivesTexture(){
 
     glDepthFunc(GL_LEQUAL);
 }
+
+void Mesh::update_vertex_buffers(){
+    if(!vertices.size())
+        vertices.push_back(Vertex());
+
+    if(!indices.size())
+        indices.push_back(0);
+
+    LigidGL::cleanGLErrors();
+    
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    LigidGL::testGLError("Mesh::update_vertex_buffers : Binding VBO");
+    glBindVertexArray(VAO);
+    LigidGL::testGLError("Mesh::update_vertex_buffers : Binding VAO");
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), &vertices[0]);  
+    LigidGL::testGLError("Mesh::update_vertex_buffers : GL_ARRAY_BUFFER data");
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    LigidGL::testGLError("Mesh::update_vertex_buffers : Binding EBO");
+
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(unsigned int), &indices[0]);  
+    LigidGL::testGLError("Mesh::update_vertex_buffers : GL_ELEMENT_ARRAY_BUFFER data");
+}

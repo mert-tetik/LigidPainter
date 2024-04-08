@@ -53,7 +53,6 @@ struct AssimpObject{
 // Forward declerations for the utility functions
 static AssimpObject processMesh(aiMesh *mesh, std::string title);
 static void processNode(aiNode *node, const aiScene *scene, std::vector<AssimpObject> &meshes);
-static void resizeObjects(std::vector<AssimpObject> &objects);
 static void parseMeshData(std::vector<AssimpObject> &objects, std::vector<Mesh> &meshes, const aiScene* scene, bool initTxtrs);
 
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
@@ -88,15 +87,14 @@ bool Model::loadModel(std::string const &path, bool triangulate, bool initTxtrs)
     // process ASSIMP's root node recursively
     processNode(scene->mRootNode, scene, assimpObjects);
 
-    // Resizes the vertex positions of the meshes to the (-1 - 1) range
-    resizeObjects(assimpObjects);
-
     // Applies the objects to the this->meshes according to the material data
     parseMeshData(assimpObjects, this->meshes, scene, initTxtrs);
 
     this->newModelAdded = true;
 
     this->generateDisplayingTexture();
+
+    this->resize_meshes();
 
     return true;
 }
@@ -181,70 +179,6 @@ static void processNode(aiNode *node, const aiScene *scene, std::vector<AssimpOb
     for(unsigned int i = 0; i < node->mNumChildren; i++)
     {
         processNode(node->mChildren[i], scene, meshes);
-    }
-}
-
-static void resizeObjects(std::vector<AssimpObject> &objects){
-    float big = 0.f;
-    glm::vec3 center = glm::vec3(0.f);
-    int counter = 0;
-    for (size_t i = 0; i < objects.size(); i++)
-    {
-        for (size_t vi = 0; vi < objects[i].vertices.size(); vi++)
-        {
-            if(big < abs(objects[i].vertices[vi].Position.x))
-                big = abs(objects[i].vertices[vi].Position.x);
-            
-            if(big < abs(objects[i].vertices[vi].Position.y))
-                big = abs(objects[i].vertices[vi].Position.y);
-            
-            if(big < abs(objects[i].vertices[vi].Position.z))
-                big = abs(objects[i].vertices[vi].Position.z);
-        
-            center += objects[i].vertices[vi].Position;
-
-            counter++;
-        }
-    }
-
-    center /= counter;
-    center /= big;
-    
-    for (size_t i = 0; i < objects.size(); i++){
-        for (size_t vi = 0; vi < objects[i].vertices.size(); vi++)
-        {
-            objects[i].vertices[vi].Position.x = objects[i].vertices[vi].Position.x / big;
-            objects[i].vertices[vi].Position.y = objects[i].vertices[vi].Position.y / big;
-            objects[i].vertices[vi].Position.z = objects[i].vertices[vi].Position.z / big;
-
-            objects[i].vertices[vi].Position -= center;
-        }
-    }
-    
-    big = 0.f;
-
-    for (size_t i = 0; i < objects.size(); i++)
-    {
-        for (size_t vi = 0; vi < objects[i].vertices.size(); vi++)
-        {
-            if(big < abs(objects[i].vertices[vi].Position.x))
-                big = abs(objects[i].vertices[vi].Position.x);
-            
-            if(big < abs(objects[i].vertices[vi].Position.y))
-                big = abs(objects[i].vertices[vi].Position.y);
-            
-            if(big < abs(objects[i].vertices[vi].Position.z))
-                big = abs(objects[i].vertices[vi].Position.z);
-        }
-    }
-
-    for (size_t i = 0; i < objects.size(); i++){
-        for (size_t vi = 0; vi < objects[i].vertices.size(); vi++)
-        {
-            objects[i].vertices[vi].Position.x = objects[i].vertices[vi].Position.x / big;
-            objects[i].vertices[vi].Position.y = objects[i].vertices[vi].Position.y / big;
-            objects[i].vertices[vi].Position.z = objects[i].vertices[vi].Position.z / big;
-        }
     }
 }
 

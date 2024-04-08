@@ -175,6 +175,8 @@ public:
     ThreeDPoint getCurrentPosNormalDataOverCursor();
     void updatePosNormalTexture();    
 
+    void update_vertex_buffers();
+
 private:
     /*! @brief initializes all the buffer objects/arrays */
     void setupMesh();

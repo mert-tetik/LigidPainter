@@ -98,3 +98,86 @@ void Model::generateDisplayingTexture(){
     /* Delete the framebuffer & the renderbuffer*/
     FBO.deleteBuffers(false, true);
 }
+
+static float getBig(glm::vec3 vec){
+    float minVal = std::min(vec.x, std::min(vec.y, vec.z));
+    float maxVal = std::max(vec.x, std::max(vec.y, vec.z));
+    
+    if (vec.x != minVal && vec.x != maxVal) {
+        return vec.x;
+    } 
+    else if (vec.y != minVal && vec.y != maxVal) {
+        return vec.y;
+    } 
+    else {
+        return vec.z;
+    }
+}
+
+void Model::resize_meshes(){
+    glm::vec3 big = glm::vec3(0.f);
+    glm::vec3 center = glm::vec3(0.f);
+    int counter = 0;
+    for (size_t i = 0; i < meshes.size(); i++)
+    {
+        for (size_t vi = 0; vi < meshes[i].vertices.size(); vi++)
+        {
+            if(big.x < abs(meshes[i].vertices[vi].Position.x))
+                big.x = abs(meshes[i].vertices[vi].Position.x);
+            
+            if(big.y < abs(meshes[i].vertices[vi].Position.y))
+                big.y = abs(meshes[i].vertices[vi].Position.y);
+            
+            if(big.z < abs(meshes[i].vertices[vi].Position.z))
+                big.z = abs(meshes[i].vertices[vi].Position.z);
+        
+            center += meshes[i].vertices[vi].Position;
+
+            counter++;
+        }
+    }
+
+    center /= counter;
+    center /= big;
+    
+    for (size_t i = 0; i < meshes.size(); i++){
+        for (size_t vi = 0; vi < meshes[i].vertices.size(); vi++)
+        {
+            meshes[i].vertices[vi].Position.x = meshes[i].vertices[vi].Position.x / getBig(big);
+            meshes[i].vertices[vi].Position.y = meshes[i].vertices[vi].Position.y / getBig(big);
+            meshes[i].vertices[vi].Position.z = meshes[i].vertices[vi].Position.z / getBig(big);
+
+            meshes[i].vertices[vi].Position -= center;
+        }
+    }
+    
+    big = glm::vec3(0.f);
+
+    for (size_t i = 0; i < meshes.size(); i++)
+    {
+        for (size_t vi = 0; vi < meshes[i].vertices.size(); vi++)
+        {
+            if(big.x < abs(meshes[i].vertices[vi].Position.x))
+                big.x = abs(meshes[i].vertices[vi].Position.x);
+            
+            if(big.y < abs(meshes[i].vertices[vi].Position.y))
+                big.y = abs(meshes[i].vertices[vi].Position.y);
+            
+            if(big.z < abs(meshes[i].vertices[vi].Position.z))
+                big.z = abs(meshes[i].vertices[vi].Position.z);
+        }
+    }
+
+    for (size_t i = 0; i < meshes.size(); i++){
+        for (size_t vi = 0; vi < meshes[i].vertices.size(); vi++)
+        {
+            meshes[i].vertices[vi].Position.x = meshes[i].vertices[vi].Position.x / getBig(big);
+            meshes[i].vertices[vi].Position.y = meshes[i].vertices[vi].Position.y / getBig(big);
+            meshes[i].vertices[vi].Position.z = meshes[i].vertices[vi].Position.z / getBig(big);
+        }
+    }
+
+    for (size_t i = 0; i < meshes.size(); i++){
+        meshes[i].update_vertex_buffers();
+    }
+}
