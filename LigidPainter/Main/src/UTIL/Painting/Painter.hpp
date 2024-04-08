@@ -347,4 +347,6 @@ bool painting_paintable_condition();
 
 void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_frame);
 
+std::vector<MirrorSide*> painting_get_selected_mirror_sides(bool mirror_X, bool mirror_Y, bool mirror_Z);
+
 #endif

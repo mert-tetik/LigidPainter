@@ -170,34 +170,6 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     glDepthFunc(GL_LESS);
 }
 
-static std::vector<MirrorSide*> get_selected_mirror_sides(bool mirror_X, bool mirror_Y, bool mirror_Z){
-    std::vector<MirrorSide*> mirrorSides;
-    
-    bool mirror_XY = mirror_X && mirror_Y;     
-    bool mirror_XZ = mirror_X && mirror_Z; 
-    bool mirror_YZ = mirror_Y && mirror_Z; 
-    bool mirror_XYZ = mirror_X && mirror_Y && mirror_Z; 
-    
-    if(true)
-        mirrorSides.push_back(&O_side); // 0
-    if(mirror_X)
-        mirrorSides.push_back(&X_side); // 1
-    if(mirror_Y)
-        mirrorSides.push_back(&Y_side); // 2
-    if(mirror_XY)
-        mirrorSides.push_back(&XY_side); // 3
-    if(mirror_Z)
-        mirrorSides.push_back(&Z_side); // 4
-    if(mirror_XZ)
-        mirrorSides.push_back(&XZ_side); // 5
-    if(mirror_YZ)
-        mirrorSides.push_back(&YZ_side); // 6
-    if(mirror_XYZ)
-        mirrorSides.push_back(&XYZ_side); // 7
-
-    return mirrorSides;
-}
-
 static Framebuffer project_window_painting_texture_FBO;
 static void project_window_painting_texture(
                                                 // Textures
@@ -366,7 +338,7 @@ static glm::vec2 findPos(glm::ivec2 res, float* posData, float* pxs){
                         if(pxs[index + 1] >= posData[1] - tolerance && pxs[index + 1] <= posData[1] + tolerance){
                             if(pxs[index + 2] >= posData[2] - tolerance && pxs[index + 2] <= posData[2] + tolerance){
                                 
-                                glm::vec2 crsPos = glm::vec2((float)Settings::videoScale()->x / ((float)res.x / (float)x), (float)Settings::videoScale()->y / ((float)res.y / (float)y));
+                                glm::vec2 crsPos = glm::vec2((float)getContext()->windowScale.x / ((float)res.x / (float)x), (float)getContext()->windowScale.y / ((float)res.y / (float)y));
                                 
                                 return crsPos;
                             }
@@ -379,62 +351,25 @@ static glm::vec2 findPos(glm::ivec2 res, float* posData, float* pxs){
     return glm::vec2(-1.f);
 }
 
-static glm::vec4 process_3D_point_lastpos;
 static Framebuffer process3DPointFBO;
-static void process_3D_point(      
-                            ThreeDPoint threeDPoint, 
-    
-                            // Return params
-                            Camera* cam, 
-                            std::vector<glm::vec2>* strokes,
-                            Mesh* mesh, 
 
-                            // Dynamic Variables
-                            bool first_stroke,
-                            float spacing
-                        )
-{
-    float* posData = new float[4]; 
-    float* normalData = new float[4]; 
-    
-    posData[0] = threeDPoint.pos.x;
-    posData[1] = threeDPoint.pos.y;
-    posData[2] = threeDPoint.pos.z;
-    posData[3] = 1.f;
-    
-    normalData[0] = threeDPoint.normal.x;
-    normalData[1] = threeDPoint.normal.y;
-    normalData[2] = threeDPoint.normal.z;
-    normalData[3] = 1.f;
-
-    glm::vec3 oldCamPos = getScene()->camera.cameraPos;
-    glm::vec3 oldCamOrigin = getScene()->camera.originPos;
-    
+static void process_3D_point_calculate_cam(Camera* cam, ThreeDPoint threeDPoint){
     cam->cameraPos = glm::vec3(
-                                                posData[0] + normalData[0] * 5.1f, 
-                                                posData[1] + normalData[1] * 5.f, 
-                                                posData[2] + normalData[2] * 5.f
-                                            );
+                                            threeDPoint.pos[0] + threeDPoint.normal[0] * 5.1f, 
+                                            threeDPoint.pos[1] + threeDPoint.normal[1] * 5.f, 
+                                            threeDPoint.pos[2] + threeDPoint.normal[2] * 5.f
+                                        );
 
     cam->originPos = glm::vec3(
-                                                posData[0], 
-                                                posData[1], 
-                                                posData[2]
+                                                threeDPoint.pos[0], 
+                                                threeDPoint.pos[1], 
+                                                threeDPoint.pos[2]
                                             );
     
     cam->updateViewMatrix(cam->cameraPos, cam->originPos);
+}
 
-    posData[0] = (posData[0] + 1.f) / 2.f;
-    posData[1] = (posData[1] + 1.f) / 2.f;
-    posData[2] = (posData[2] + 1.f) / 2.f;
-    
-    const unsigned int resolution = 512; 
-    //res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
-
-    if(!process3DPointFBO.ID){
-        process3DPointFBO = Framebuffer(Texture(nullptr, resolution, resolution), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "process3DPointFBO");
-    }
-
+static glm::vec2 process_3D_point_calculate_2D_location(Camera cam, ThreeDPoint threeDPoint, const unsigned int resolution, Mesh* mesh){
     process3DPointFBO.bind();
 
     glViewport(0, 0, resolution, resolution);
@@ -443,7 +378,7 @@ static void process_3D_point(
     
     //Use the depth 3D shader
     ShaderSystem::renderModelData().use();
-    ShaderSystem::renderModelData().setMat4("view", cam->viewMatrix);
+    ShaderSystem::renderModelData().setMat4("view", cam.viewMatrix);
     ShaderSystem::renderModelData().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::renderModelData().setMat4("modelMatrix", getScene()->transformMatrix);
     ShaderSystem::renderModelData().setInt("state", 1);
@@ -468,41 +403,64 @@ static void process_3D_point(
                     GL_FLOAT,
                     pxs
                 );
-
-    float* lastPosP = new float[4]; 
-    lastPosP[0] = process_3D_point_lastpos.x;
-    lastPosP[1] = process_3D_point_lastpos.y;
-    lastPosP[2] = process_3D_point_lastpos.z;
-    lastPosP[3] = process_3D_point_lastpos.w;
-
-    glm::vec2 crsPos = findPos(glm::ivec2(resolution), posData, pxs);
-    glm::vec2 lastCrsPos = findPos(glm::ivec2(resolution), lastPosP, pxs);
     
-    if(crsPos != glm::vec2(-1.f) && lastCrsPos != glm::vec2(-1.f)){
-        glm::vec2 lastDest;
-        lastDest.x = crsPos.x - (crsPos.x - lastCrsPos.x);
-        lastDest.y = crsPos.y + (crsPos.y - lastCrsPos.y);
-        
-        if(first_stroke)  
-            lastDest = crsPos;
+    float posData[4];
+    
+    posData[0] = threeDPoint.pos.x;
+    posData[1] = threeDPoint.pos.y;
+    posData[2] = threeDPoint.pos.z;
+    posData[3] = 1.f;
 
-        *strokes = getCursorSubstitution(spacing, crsPos, lastDest);
-    }
-    else if(crsPos != glm::vec2(-1.f))
-        strokes->push_back(crsPos);
+    posData[0] = (posData[0] + 1.f) / 2.f;
+    posData[1] = (posData[1] + 1.f) / 2.f;
+    posData[2] = (posData[2] + 1.f) / 2.f;
 
-    //std::cout << posData[0] << ", " << posData[1] << ", " << posData[2] << ", " << posData[3] << std::endl;
-    //std::cout << lastPosP[0] << ", " << lastPosP[1] << ", " << lastPosP[2] << ", " << lastPosP[3] << std::endl;
+    glm::vec2 res = findPos(glm::ivec2(resolution), posData, pxs);
 
-    process_3D_point_lastpos.x = posData[0];
-    process_3D_point_lastpos.y = posData[1];
-    process_3D_point_lastpos.z = posData[2];
-    process_3D_point_lastpos.w = posData[3];
-
-    delete[] posData;
-    delete[] lastPosP;
-    delete[] normalData;
     delete[] pxs;
+
+    return res;
+}
+
+static void process_3D_point(      
+                            ThreeDPoint threeDPoint, 
+                            ThreeDPoint threeDPoint2, 
+                            MirrorSide mirrorSide,
+
+                            // Return params
+                            Camera* cam, 
+                            std::vector<glm::vec2>* strokes,
+                            Mesh* mesh, 
+
+                            // Dynamic Variables
+                            bool first_stroke,
+                            float spacing
+                        )
+{
+    process_3D_point_calculate_cam(cam, threeDPoint);
+    
+    const unsigned int resolution = 512; 
+    if(!process3DPointFBO.ID){
+        process3DPointFBO = Framebuffer(Texture(nullptr, resolution, resolution), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "process3DPointFBO");
+    }
+
+    glm::vec2 crs_pos = process_3D_point_calculate_2D_location(*cam, threeDPoint, resolution, mesh);
+    ThreeDPoint center;
+    center.pos = (threeDPoint.pos + threeDPoint2.pos) / 2.f;
+    center.normal = (threeDPoint.normal + threeDPoint2.normal) / 2.f;
+    Camera centerCam;
+    process_3D_point_calculate_cam(&centerCam, center);
+    glm::vec2 crs_pos_2 = process_3D_point_calculate_2D_location(*cam, threeDPoint2, resolution, mesh);
+
+    if(crs_pos != glm::vec2(-1.f) && crs_pos_2 != glm::vec2(-1.f)){
+        crs_pos_2.y = getContext()->windowScale.y - crs_pos_2.y;
+        *strokes = getCursorSubstitution(spacing, crs_pos, crs_pos_2);
+    }
+    else if(crs_pos != glm::vec2(-1.f))
+        strokes->push_back(crs_pos);
+
+    std::cout << glm::to_string(crs_pos) << std::endl;
+    std::cout << glm::to_string(crs_pos_2) << std::endl;
 
     getBox()->bindBuffers();
     ShaderSystem::twoDPainting().use();

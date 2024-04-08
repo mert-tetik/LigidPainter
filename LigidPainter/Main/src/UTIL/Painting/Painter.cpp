@@ -54,6 +54,8 @@ MirrorSide XYZ_side;
 
 static int frame_counter = 0;
 
+static ThreeDPoint last_threeD_point;
+
 void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
     
     if(first_frame){
@@ -70,7 +72,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
     Brush stroke_brush;
     GET_DATA_FROM_PAINT_MODE(stroke_brush, stroke_brush);
 
-    std::vector<MirrorSide*> mirrorSides = get_selected_mirror_sides(settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z);
+    std::vector<MirrorSide*> mirrorSides = painting_get_selected_mirror_sides(settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z);
     
     if(settings.painting_mode == 6){
         Debugger::block("Painting : Bucket painting"); // Start
@@ -90,13 +92,20 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
 
             offset *= glm::max(mirrorSide->effectAxis, 0.f);
 
-            ThreeDPoint des_point = ThreeDPoint(glm::vec3(settings.point.point_3D.pos * mirrorSide->effectAxis - offset * 2.f), glm::vec3(settings.point.point_3D.normal * mirrorSide->effectAxis));
+            if(first_frame && mirrorSide->effectAxis == O_side.effectAxis)
+                last_threeD_point = settings.point.point_3D;
+            
+            ThreeDPoint des_point = ThreeDPoint(glm::vec3(settings.point.point_3D.pos * (mirrorSide->effectAxis * -1.f) - offset * 2.f), glm::vec3(settings.point.point_3D.normal * (mirrorSide->effectAxis * -1.f)));
+            ThreeDPoint last_des_point = ThreeDPoint(glm::vec3(last_threeD_point.pos * (mirrorSide->effectAxis * -1.f) - offset * 2.f), glm::vec3(last_threeD_point.normal * (mirrorSide->effectAxis * -1.f)));
 
             Debugger::block("Painting : Process 3D point"); // Start
             std::vector<glm::vec2> strokes;
             Camera cam;
-            process_3D_point(des_point, &cam, &strokes, settings.vertex_buffer.model_mesh, first_frame, stroke_brush.properties.spacing);
+            process_3D_point(des_point, last_des_point, *mirrorSide, &cam, &strokes, settings.vertex_buffer.model_mesh, first_frame, stroke_brush.properties.spacing);
             Debugger::block("Painting : Process 3D point"); // End
+            
+            if(first_frame && mirrorSide->effectAxis == O_side.effectAxis)
+                last_threeD_point = settings.point.point_3D;
         
             Debugger::block("Painting : 3D Paint : Paint window"); // Start
             // Perform window painting
@@ -252,4 +261,32 @@ bool painting_paintable_condition()
 
 bool painting_paint_condition(){
     return painting_paintable_condition() && *Mouse::LPressed();
+}
+
+std::vector<MirrorSide*> painting_get_selected_mirror_sides(bool mirror_X, bool mirror_Y, bool mirror_Z){
+    std::vector<MirrorSide*> mirrorSides;
+    
+    bool mirror_XY = mirror_X && mirror_Y;     
+    bool mirror_XZ = mirror_X && mirror_Z; 
+    bool mirror_YZ = mirror_Y && mirror_Z; 
+    bool mirror_XYZ = mirror_X && mirror_Y && mirror_Z; 
+    
+    if(true)
+        mirrorSides.push_back(&O_side); // 0
+    if(mirror_X)
+        mirrorSides.push_back(&X_side); // 1
+    if(mirror_Y)
+        mirrorSides.push_back(&Y_side); // 2
+    if(mirror_XY)
+        mirrorSides.push_back(&XY_side); // 3
+    if(mirror_Z)
+        mirrorSides.push_back(&Z_side); // 4
+    if(mirror_XZ)
+        mirrorSides.push_back(&XZ_side); // 5
+    if(mirror_YZ)
+        mirrorSides.push_back(&YZ_side); // 6
+    if(mirror_XYZ)
+        mirrorSides.push_back(&XYZ_side); // 7
+
+    return mirrorSides;
 }

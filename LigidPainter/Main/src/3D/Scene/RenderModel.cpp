@@ -146,12 +146,13 @@ void Scene::render_model(Timer& timer){
     
     // Update the 3D model depth texture if necessary last frame camera changed position
     if(
-            (prevCam != this->camera) && !*Mouse::RPressed()
+            (prevCam != this->camera) && !*Mouse::RPressed() ||
+            getScene()->get_selected_mesh()->face_selection_data.editMode    
         )
     {
         getScene()->get_selected_mesh()->updatePosNormalTexture();
+        prevCam = this->camera;
     }
-    prevCam = this->camera;
 
     glDisable(GL_CULL_FACE);
 }

@@ -189,6 +189,9 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
         this->objectIDs = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RG, GL_RG32F);
         this->face_selection_data.modelPrimitives = Texture(nullptr, 1024, 1024, GL_NEAREST, GL_RED, GL_R32F);
 
+        this->meshPosTxtr = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);
+        this->meshNormalTxtr = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);
+
         char whitePx[] = {127, 127, 127, 127};
         this->face_selection_data.meshMask = Texture(whitePx, 1, 1, GL_NEAREST);
 
@@ -370,13 +373,11 @@ void Mesh::setupMesh()
 static Framebuffer getPosNormalOverPoint_FBO;
 void Mesh::getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData, bool readNormal){
         
-    const unsigned int resolution = 1024; 
-    glm::ivec2 res = glm::ivec2(resolution);
-    res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
+    const unsigned int resolution = this->meshPosTxtr.getResolution().x; 
 
-    pointPos.x /= (Settings::videoScale()->x / res.x); 
-    pointPos.y /= (Settings::videoScale()->y / res.y); 
-    
+    pointPos.x = UTIL::new_value_range(pointPos.x, 0, getContext()->windowScale.x, 0, resolution);
+    pointPos.y = UTIL::new_value_range(pointPos.y, 0, getContext()->windowScale.y, 0, resolution);
+
     if(!getPosNormalOverPoint_FBO.ID)
         getPosNormalOverPoint_FBO.generate();
 
@@ -419,22 +420,14 @@ void Mesh::getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& no
 static Framebuffer updatePosNormalTexture_FBO;
 void Mesh::updatePosNormalTexture(){
     
+    glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
     
-    unsigned int resolution = 1024; 
-
-    glm::ivec2 res = glm::ivec2(resolution);
-    res.y /= Settings::videoScale()->x / Settings::videoScale()->y;
-
-
-    if(!this->meshPosTxtr.ID)
-        this->meshPosTxtr = Texture(nullptr, res.x, res.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-    if(!this->meshNormalTxtr.ID)
-        this->meshNormalTxtr = Texture(nullptr, res.x, res.y, GL_LINEAR, GL_RGBA, GL_RGBA32F);
+    unsigned int resolution = this->meshPosTxtr.getResolution().x; 
     
     if(!updatePosNormalTexture_FBO.ID){
-        updatePosNormalTexture_FBO = Framebuffer(this->meshPosTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, res), "updatePosNormalTexture_FBO");
+        updatePosNormalTexture_FBO = Framebuffer(this->meshPosTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "updatePosNormalTexture_FBO");
     }
     
     updatePosNormalTexture_FBO.bind();
@@ -449,7 +442,7 @@ void Mesh::updatePosNormalTexture(){
         updatePosNormalTexture_FBO.setColorBuffer(txtr, GL_TEXTURE_2D);
 
         //Clear the texture
-        glViewport(0, 0, getContext()->windowScale.x / (Settings::videoScale()->x / res.x), getContext()->windowScale.y / (Settings::videoScale()->y / res.y));
+        glViewport(0, 0, resolution, resolution);
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
