@@ -1,5 +1,7 @@
 #version 400 core
 
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Painting.frag)
+
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 Pos;
@@ -26,7 +28,6 @@ struct Light {
 
 //Position of the camera
 uniform vec3 viewPos;
-uniform sampler2D txtr;
 
 uniform int primitiveCount;
 uniform int wireframeMode = 0;
@@ -35,6 +36,10 @@ uniform int hideUnselected = 0;
 uniform int usingMeshSelection = 0;
 uniform sampler2D selectedPrimitiveIDS;
 uniform sampler2D meshMask;
+
+uniform int paintingMode;
+
+uniform PaintingData painting_data;
 
 //Fragment shader output
 out vec4 fragColor;
@@ -63,7 +68,14 @@ void main() {
     Light light;
     Material material;
 
-    vec3 color = texture2D(txtr, TexCoords).rgb;
+    vec3 color;
+    //Get Albedo
+    if(paintingMode == 1){
+        color = getBrushedTexture(painting_data, 0, TexCoords).rgb;
+    }
+    else
+        color = texture(painting_data.painting_buffers.albedo_txtr, TexCoords).rgb;
+
 
     material.ambient = vec3(color);
     material.diffuse = vec3(color);

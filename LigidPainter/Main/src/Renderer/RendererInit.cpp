@@ -212,5 +212,7 @@ void Renderer::initRenderer(){
     *getTextureFieldScene() = TextureFieldScene(std::vector<TextureField>{}); 
     Debugger::block("LOAD : INIT TEXTURE FIELD SCENE"); //End
 
+    Debugger::block("LOAD : INIT PAINTER"); //Start
     painting_init_buffers();
+    Debugger::block("LOAD : INIT PAINTER"); //End
 }

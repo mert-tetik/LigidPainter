@@ -37,22 +37,54 @@ void Scene::render_model(Timer& timer){
     else
         glDisable(GL_CULL_FACE);
 
+    const bool multi_channel_mode = panel_displaying_modes.selectedElement != 2; 
 
-    if(panel_displaying_modes.selectedElement != 2){
+
+    if(multi_channel_mode){
 
         for (size_t i = 0; i < this->model->meshes.size(); i++)
         {   
             //3D Model Shader
             ShaderSystem::tdModelShader().use();
-            ShaderSystem::tdModelShader().setInt("skybox",0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.ID);
-            ShaderSystem::tdModelShader().setInt("prefilterMap",1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
-            ShaderSystem::tdModelShader().setInt("albedoTxtr",2);glActiveTexture(GL_TEXTURE2);  glBindTexture(GL_TEXTURE_2D, (this->model->meshes[i].albedo.ID && glIsTexture(this->model->meshes[i].albedo.ID) == GL_TRUE) ? this->model->meshes[i].albedo.ID : appTextures.materialChannelMissingTexture.ID);
-            ShaderSystem::tdModelShader().setInt("roughnessTxtr",3);glActiveTexture(GL_TEXTURE3);  glBindTexture(GL_TEXTURE_2D, (this->model->meshes[i].roughness.ID && glIsTexture(this->model->meshes[i].roughness.ID) == GL_TRUE) ? this->model->meshes[i].roughness.ID : appTextures.materialChannelMissingTexture.ID);
-            ShaderSystem::tdModelShader().setInt("metallicTxtr",4);glActiveTexture(GL_TEXTURE4);  glBindTexture(GL_TEXTURE_2D, (this->model->meshes[i].metallic.ID && glIsTexture(this->model->meshes[i].metallic.ID) == GL_TRUE) ? this->model->meshes[i].metallic.ID : appTextures.materialChannelMissingTexture.ID);
-            ShaderSystem::tdModelShader().setInt("normalMapTxtr",5);glActiveTexture(GL_TEXTURE5);  glBindTexture(GL_TEXTURE_2D, (this->model->meshes[i].normalMap.ID && glIsTexture(this->model->meshes[i].normalMap.ID) == GL_TRUE) ? this->model->meshes[i].normalMap.ID : appTextures.materialChannelMissingTexture.ID);
-            ShaderSystem::tdModelShader().setInt("heightMapTxtr",6);glActiveTexture(GL_TEXTURE6);  glBindTexture(GL_TEXTURE_2D, (this->model->meshes[i].heightMap.ID && glIsTexture(this->model->meshes[i].heightMap.ID) == GL_TRUE) ? this->model->meshes[i].heightMap.ID : appTextures.materialChannelMissingTexture.ID);
-            ShaderSystem::tdModelShader().setInt("ambientOcclusionTxtr",7);glActiveTexture(GL_TEXTURE7);  glBindTexture(GL_TEXTURE_2D, (this->model->meshes[i].ambientOcclusion.ID && glIsTexture(this->model->meshes[i].ambientOcclusion.ID) == GL_TRUE) ? this->model->meshes[i].ambientOcclusion.ID : appTextures.materialChannelMissingTexture.ID);
-            ShaderSystem::tdModelShader().setInt("paintingTexture",8); glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, painting_projected_painting_FBO.colorBuffer.ID);
+            
+            ShaderUTIL::set_shader_struct_painting_data(
+                                                            ShaderSystem::tdModelShader(),
+                                                            ShaderUTIL::PaintingData(
+                                                                                        ShaderUTIL::PaintingData::PaintingBuffers(
+                                                                                                                                    GL_TEXTURE0,
+                                                                                                                                    this->model->meshes[i].albedo,
+                                                                                                                                    GL_TEXTURE1,
+                                                                                                                                    this->model->meshes[i].roughness,
+                                                                                                                                    GL_TEXTURE2,
+                                                                                                                                    this->model->meshes[i].metallic,
+                                                                                                                                    GL_TEXTURE3,
+                                                                                                                                    this->model->meshes[i].normalMap,
+                                                                                                                                    GL_TEXTURE4,
+                                                                                                                                    this->model->meshes[i].heightMap,
+                                                                                                                                    GL_TEXTURE5,
+                                                                                                                                    this->model->meshes[i].ambientOcclusion,
+                                                                                                                                    GL_TEXTURE8,
+                                                                                                                                    painting_projected_painting_FBO.colorBuffer
+                                                                                                                                ),   
+                                                                                        ShaderUTIL::PaintingData::PaintingSmearData(
+                                                                                                                                        panel_smear_painting_properties.sections[0].elements[0].rangeBar.value,
+                                                                                                                                        panel_smear_painting_properties.sections[0].elements[1].rangeBar.value
+                                                                                                                                    ),   
+                                                                                        ShaderUTIL::PaintingData::ChannelData(
+                                                                                                                                checkComboList_painting_color.panel.sections[0].elements[4].rangeBar.value,
+                                                                                                                                checkComboList_painting_color.panel.sections[0].elements[6].rangeBar.value,
+                                                                                                                                checkComboList_painting_color.panel.sections[0].elements[8].rangeBar.value,
+                                                                                                                                checkComboList_painting_color.panel.sections[0].elements[10].rangeBar.value,
+                                                                                                                                checkComboList_painting_color.panel.sections[0].elements[12].rangeBar.value
+                                                                                                                            ),
+                                                                                        panel_painting_modes.selectedElement,
+                                                                                        checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1                            
+                                                                                    )
+                                                        );
+            
+            ShaderSystem::tdModelShader().setInt("skybox",6); glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.ID);
+            ShaderSystem::tdModelShader().setInt("prefilterMap",7); glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
+            
             ShaderSystem::tdModelShader().setInt("selectedPrimitiveIDS", 11); glActiveTexture(GL_TEXTURE11);glBindTexture(GL_TEXTURE_2D, this->model->meshes[i].face_selection_data.selectedFaces.ID);
             ShaderSystem::tdModelShader().setInt("meshMask", 12); glActiveTexture(GL_TEXTURE12); glBindTexture(GL_TEXTURE_2D, (this->get_selected_mesh()->face_selection_data.editMode) ? appTextures.white.ID : this->get_selected_mesh()->face_selection_data.meshMask.ID);
             ShaderSystem::tdModelShader().setVec3("viewPos", this->camera.cameraPos);
@@ -71,9 +103,6 @@ void Scene::render_model(Timer& timer){
                                                                                 checkComboList_painting_mirror.panel.sections[0].elements[5].rangeBar.value
                                                                             ));
 
-            ShaderSystem::tdModelShader().setFloat("smearTransformStrength", panel_smear_painting_properties.sections[0].elements[0].rangeBar.value);
-            ShaderSystem::tdModelShader().setFloat("smearBlurStrength", panel_smear_painting_properties.sections[0].elements[1].rangeBar.value);
-            
             ShaderSystem::tdModelShader().setInt("wireframeMode", 0);
 
             if(i != button_mesh_selection.selectedMeshI){
@@ -99,19 +128,14 @@ void Scene::render_model(Timer& timer){
             ShaderSystem::tdModelShader().setInt("enableAlbedoChannel", checkComboList_painting_color.panel.sections[0].elements[1].checkBox.clickState1);
             
             ShaderSystem::tdModelShader().setInt("enableRoughnessChannel", checkComboList_painting_color.panel.sections[0].elements[3].checkBox.clickState1);
-            ShaderSystem::tdModelShader().setFloat("roughnessVal", checkComboList_painting_color.panel.sections[0].elements[4].rangeBar.value);
             
             ShaderSystem::tdModelShader().setInt("enableMetallicChannel", checkComboList_painting_color.panel.sections[0].elements[5].checkBox.clickState1);
-            ShaderSystem::tdModelShader().setFloat("metallicVal", checkComboList_painting_color.panel.sections[0].elements[6].rangeBar.value);
             
             ShaderSystem::tdModelShader().setInt("enableNormalMapChannel", checkComboList_painting_color.panel.sections[0].elements[7].checkBox.clickState1);
-            ShaderSystem::tdModelShader().setFloat("normalMapStrengthVal", checkComboList_painting_color.panel.sections[0].elements[8].rangeBar.value);
             
             ShaderSystem::tdModelShader().setInt("enableHeightMapChannel", checkComboList_painting_color.panel.sections[0].elements[9].checkBox.clickState1);
-            ShaderSystem::tdModelShader().setFloat("heightMapVal", checkComboList_painting_color.panel.sections[0].elements[10].rangeBar.value);
             
             ShaderSystem::tdModelShader().setInt("enableAOChannel", checkComboList_painting_color.panel.sections[0].elements[11].checkBox.clickState1);
-            ShaderSystem::tdModelShader().setFloat("ambientOcclusionVal", checkComboList_painting_color.panel.sections[0].elements[12].rangeBar.value);
 
             ShaderSystem::tdModelShader().setInt("paintingMode", painting_paint_condition());
 
@@ -123,20 +147,56 @@ void Scene::render_model(Timer& timer){
     }
     else{
         ShaderSystem::solidPaintingShader().use();
-        ShaderSystem::solidPaintingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, panel_library_selected_texture.ID);
+
+        ShaderUTIL::set_shader_struct_painting_data(
+                                                        ShaderSystem::solidPaintingShader(),
+                                                        ShaderUTIL::PaintingData(
+                                                                                    ShaderUTIL::PaintingData::PaintingBuffers(
+                                                                                                                                GL_TEXTURE0,
+                                                                                                                                panel_library_selected_texture.ID,
+                                                                                                                                0,
+                                                                                                                                0,
+                                                                                                                                0,
+                                                                                                                                0,
+                                                                                                                                0,
+                                                                                                                                0,
+                                                                                                                                0,
+                                                                                                                                0,
+                                                                                                                                0,
+                                                                                                                                0,
+                                                                                                                                GL_TEXTURE1,
+                                                                                                                                painting_projected_painting_FBO.colorBuffer
+                                                                                                                            ),   
+                                                                                    ShaderUTIL::PaintingData::PaintingSmearData(
+                                                                                                                                    panel_smear_painting_properties.sections[0].elements[0].rangeBar.value,
+                                                                                                                                    panel_smear_painting_properties.sections[0].elements[1].rangeBar.value
+                                                                                                                                ),   
+                                                                                    ShaderUTIL::PaintingData::ChannelData(
+                                                                                                                            0.f,
+                                                                                                                            0.f,
+                                                                                                                            0.f,
+                                                                                                                            0.f,
+                                                                                                                            0.f
+                                                                                                                        ),
+                                                                                    panel_painting_modes.selectedElement,
+                                                                                    checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1                            
+                                                                                )
+                                                );
+
         ShaderSystem::solidPaintingShader().setVec3("viewPos", this->camera.cameraPos);
         
         ShaderSystem::solidPaintingShader().setMat4("view", this->camera.viewMatrix);
         ShaderSystem::solidPaintingShader().setMat4("projection", this->projectionMatrix);
         ShaderSystem::solidPaintingShader().setMat4("modelMatrix", this->transformMatrix);
 
+        ShaderSystem::solidPaintingShader().setInt("paintingMode", painting_paint_condition());
         ShaderSystem::solidPaintingShader().setInt("primitiveCount", this->get_selected_mesh()->indices.size());
         ShaderSystem::solidPaintingShader().setInt("wireframeMode", 0);
         ShaderSystem::solidPaintingShader().setInt("meshSelectionEditing", this->get_selected_mesh()->face_selection_data.editMode);
         ShaderSystem::solidPaintingShader().setInt("hideUnselected", this->get_selected_mesh()->face_selection_data.hideUnselected);
         ShaderSystem::solidPaintingShader().setInt("usingMeshSelection", this->get_selected_mesh()->face_selection_data.activated);
-        ShaderSystem::solidPaintingShader().setInt("selectedPrimitiveIDS", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, this->get_selected_mesh()->face_selection_data.selectedFaces.ID);
-        ShaderSystem::solidPaintingShader().setInt("meshMask", 2); glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, (this->get_selected_mesh()->face_selection_data.editMode) ? appTextures.white.ID : this->get_selected_mesh()->face_selection_data.meshMask.ID);
+        ShaderSystem::solidPaintingShader().setInt("selectedPrimitiveIDS", 2); glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->get_selected_mesh()->face_selection_data.selectedFaces.ID);
+        ShaderSystem::solidPaintingShader().setInt("meshMask", 3); glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, (this->get_selected_mesh()->face_selection_data.editMode) ? appTextures.white.ID : this->get_selected_mesh()->face_selection_data.meshMask.ID);
 
         this->get_selected_mesh()->Draw(this->get_selected_mesh()->face_selection_data.editMode);
     }

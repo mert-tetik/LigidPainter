@@ -172,9 +172,11 @@ namespace UTIL{
     /// @brief Checks if the folder located at the path exists and creates the folder if does not.
     /// @return Returns false if can't create the folder or faced with a filesystem error (automatically prints the error message to the terminal too) 
     bool createFolderIfDoesntExist(const std::string path);
+
+    /// @brief Returns 10 for GL_TEXTURE10
+    unsigned int get_texture_slot_index(unsigned int slot);
+
 }
-
-
 
 /// @brief Manages color.
 /// Definitions are in the : UTIL/Color
@@ -794,5 +796,93 @@ struct ThreadElements{
 
 extern ThreadElements projectUpdatingThreadElements; 
 void projectUpdatingThread();
+
+
+namespace ShaderUTIL{
+    
+    struct PaintingData{
+        struct PaintingBuffers{
+            unsigned int albedo_txtr_slot;
+            Texture albedo_txtr; 
+            unsigned int roughness_txtr_slot;
+            Texture roughness_txtr;
+            unsigned int metallic_txtr_slot;
+            Texture metallic_txtr;
+            unsigned int normal_map_txtr_slot;
+            Texture normal_map_txtr;
+            unsigned int height_map_txtr_slot;
+            Texture height_map_txtr;
+            unsigned int ao_txtr_slot;
+            Texture ao_txtr;
+            
+            unsigned int brush_txtr_slot;
+            Texture brush_txtr; // This texture contains the projected brush strokes
+        
+            PaintingBuffers(){}
+            PaintingBuffers(unsigned int albedo_txtr_slot, Texture albedo_txtr,  unsigned int roughness_txtr_slot, Texture roughness_txtr, unsigned int metallic_txtr_slot, Texture metallic_txtr, unsigned int normal_map_txtr_slot, Texture normal_map_txtr, unsigned int height_map_txtr_slot, Texture height_map_txtr, unsigned int ao_txtr_slot, Texture ao_txtr,unsigned int brush_txtr_slot, Texture brush_txtr){
+
+                this->albedo_txtr_slot = albedo_txtr_slot;
+                this->albedo_txtr = albedo_txtr; 
+                this->roughness_txtr_slot = roughness_txtr_slot;
+                this->roughness_txtr = roughness_txtr;
+                this->metallic_txtr_slot = metallic_txtr_slot;
+                this->metallic_txtr = metallic_txtr;
+                this->normal_map_txtr_slot = normal_map_txtr_slot;
+                this->normal_map_txtr = normal_map_txtr;
+                this->height_map_txtr_slot = height_map_txtr_slot;
+                this->height_map_txtr = height_map_txtr;
+                this->ao_txtr_slot = ao_txtr_slot;
+                this->ao_txtr = ao_txtr;
+
+                this->brush_txtr_slot = brush_txtr_slot; 
+                this->brush_txtr = brush_txtr; 
+            }
+        };
+
+        struct PaintingSmearData{
+            float transform_strength;
+            float blur_strength;
+
+            PaintingSmearData(){}
+            PaintingSmearData(float transform_strength, float blur_strength){
+                this->transform_strength = transform_strength;
+                this->blur_strength = blur_strength;
+            }
+        };
+
+        struct ChannelData{
+            float roughness_strength;
+            float metallic_strength;
+            float normal_map_strength;
+            float height_map_strength;
+            float ao_strength;
+
+            ChannelData(){}
+            ChannelData(float roughness_strength, float metallic_strength, float normal_map_strength, float height_map_strength, float ao_strength){
+                this->roughness_strength = roughness_strength;
+                this->metallic_strength = metallic_strength;
+                this->normal_map_strength = normal_map_strength;
+                this->height_map_strength = height_map_strength;
+                this->ao_strength = ao_strength;
+            }
+        };
+      
+        PaintingBuffers painting_buffers;
+        PaintingSmearData smear_data;
+        ChannelData channel_data;
+        int brush_mode; // Drawing 0, softening 1, smearing 2, normal map painting 3, filter painting 4, vector painting 5, bucket painting 6
+        bool painting_over_active;
+    
+        PaintingData(PaintingBuffers painting_buffers, PaintingSmearData smear_data, ChannelData channel_data, int brush_mode, bool painting_over_active){
+            this->painting_buffers = painting_buffers;
+            this->smear_data = smear_data;
+            this->channel_data = channel_data;
+            this->brush_mode = brush_mode;
+            this->painting_over_active = painting_over_active;
+        };
+    };
+
+    void set_shader_struct_painting_data(Shader shader, PaintingData painting_data);
+};
 
 #endif

@@ -20,14 +20,19 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Renderer.h"
-#include "GUI/GUI.hpp"
-#include "3D/ThreeD.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Painting/Painter.hpp"
+
+#include "3D/ThreeD.hpp"
+
 #include "Toolkit/Layers/Layers.hpp"
+
+#include "GUI/GUI.hpp"
 #include "GUI/Panels.hpp"
 
 #include <string>
@@ -35,8 +40,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 Panel panel_selected_texture_display;
 
+extern MirrorSide O_side;
+
 void panel_selected_texture_display_render(Timer& timer, bool doMouseTracking){
-    panel_selected_texture_display.sections[0].elements[0].button.texture = getScene()->get_selected_mesh()->meshPosTxtr;
+    panel_selected_texture_display.sections[0].elements[0].button.texture = panel_library_selected_texture;
     
     panel_selected_texture_display.render(timer, doMouseTracking);
     if(panel_selected_texture_display.resizingDone){

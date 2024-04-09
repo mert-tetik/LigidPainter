@@ -68,30 +68,44 @@ void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
 
         ShaderSystem::twoDPaintingModeAreaShader().use();
 
-        //*Fragment
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("txtr", 5);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("paintingTexture", 6);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("brushModeState", panel_painting_modes.selectedElement);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("usePaintingOver", checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1);
-        ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearTransformStrength", panel_smear_painting_properties.sections[0].elements[0].rangeBar.value);
-        ShaderSystem::twoDPaintingModeAreaShader().setFloat("smearBlurStrength", panel_smear_painting_properties.sections[0].elements[1].rangeBar.value);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("multiChannelsPaintingMod", false);
-        ShaderSystem::twoDPaintingModeAreaShader().setInt("channelI", 0);
-        ShaderSystem::twoDPaintingModeAreaShader().setFloat("channelStrength", 1.f);
+        ShaderUTIL::set_shader_struct_painting_data(
+                                                    ShaderSystem::twoDPaintingModeAreaShader(), 
+                                                    ShaderUTIL::PaintingData(
+                                                                                ShaderUTIL::PaintingData::PaintingBuffers(
+                                                                                                                            GL_TEXTURE5,
+                                                                                                                            panel_library_selected_texture,
+                                                                                                                            0,
+                                                                                                                            0,
+                                                                                                                            0,
+                                                                                                                            0,
+                                                                                                                            0,
+                                                                                                                            0,
+                                                                                                                            0,
+                                                                                                                            0,
+                                                                                                                            0,
+                                                                                                                            0,
+                                                                                                                            GL_TEXTURE6,
+                                                                                                                            painting_projected_painting_FBO.colorBuffer
+                                                                                                                        ),   
+                                                                                ShaderUTIL::PaintingData::PaintingSmearData(
+                                                                                                                                panel_smear_painting_properties.sections[0].elements[0].rangeBar.value,
+                                                                                                                                panel_smear_painting_properties.sections[0].elements[1].rangeBar.value
+                                                                                                                            ),   
+                                                                                ShaderUTIL::PaintingData::ChannelData(
+                                                                                                                        1.f,
+                                                                                                                        1.f,
+                                                                                                                        1.f,
+                                                                                                                        1.f,
+                                                                                                                        1.f
+                                                                                                                    ),
+                                                                                panel_painting_modes.selectedElement,
+                                                                                checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1                            
+                                                                            )
+                                                );
 
-        //* Bind the textures
-        //painted texture
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, panel_library_selected_texture.ID);
 
-        // Render the texture as it's pixels can be seen
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        ShaderSystem::twoDPaintingModeAreaShader().setInt("channel_index", 0);
         
-        //paintingTexture 
-        glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, painting_projected_painting_FBO.colorBuffer.ID);
-
         //*Vertex
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("view", glm::mat4(1.));

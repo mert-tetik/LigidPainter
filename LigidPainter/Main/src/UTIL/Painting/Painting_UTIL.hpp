@@ -156,7 +156,6 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     
     //Prepeare painting
     glDepthFunc(GL_ALWAYS);
-    glDisable(GL_BLEND);
     glBlendFunc(GL_ONE,GL_ONE);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
@@ -164,7 +163,6 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted");
     
     //Finish
-    glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
     glDepthFunc(GL_LESS);
@@ -202,8 +200,6 @@ static void project_window_painting_texture(
     if(projected_painting_texture->getResolution() != project_window_painting_texture_FBO.renderBuffer.getResolution()){
         project_window_painting_texture_FBO.setRenderbuffer(get_renderbuffer_for_texture(*projected_painting_texture));
     }
-
-    glDisable(GL_BLEND);
 
     project_window_painting_texture_FBO.bind();
     
@@ -257,10 +253,10 @@ static void project_window_painting_texture(
             vertex_buffer_data.model_mesh->Draw(false);
             
             if(wrapMode){
+                glDisable(GL_BLEND);
+
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
                 glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
-                
-                glDisable(GL_BLEND);
             }
         }
     }
@@ -283,7 +279,6 @@ static void project_window_painting_texture(
         LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Painting : Projecting painted texture (For 2D Scene)");
     }
 
-    glEnable(GL_BLEND);
 }
 
 
@@ -502,7 +497,6 @@ void update_depth_texture(Texture depth_texture, Camera cam, Mesh* mesh){
     }
     
     glDepthFunc(GL_LESS);
-    glDisable(GL_BLEND);
     
     //Clear the depth texture
     glViewport(0, 0, depth_texture.getResolution().x, depth_texture.getResolution().y);
@@ -531,7 +525,6 @@ void update_depth_texture(Texture depth_texture, Camera cam, Mesh* mesh){
     Settings::defaultFramebuffer()->setViewport();
 
     glDepthFunc(GL_LEQUAL);
-    glEnable(GL_BLEND);
 } 
 
 void generate_projected_painting_texture(Framebuffer* FBO, bool mirror_X, bool mirror_Y, bool mirror_Z, bool use_low_resolution_buffers){
@@ -794,7 +787,6 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
 static void updateTheTexture(
                                 Texture txtr, 
                                 int channelI,
-                                float channel_strength, 
                                 PaintSettings settings ,
                                 Framebuffer projected_painting_FBO
                             )
@@ -839,18 +831,44 @@ static void updateTheTexture(
     ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
 
     ShaderSystem::textureUpdatingShader().use();
+    ShaderSystem::textureUpdatingShader().setInt("channel_index", channelI);
 
     //*Fragment
-    ShaderSystem::textureUpdatingShader().setInt("txtr", 5); glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, txtr.ID);
-    ShaderSystem::textureUpdatingShader().setInt("paintingTexture", 6); glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, projected_painting_FBO.colorBuffer.ID);
-    ShaderSystem::textureUpdatingShader().setInt("brushModeState", settings.painting_mode);
-    ShaderSystem::textureUpdatingShader().setInt("usePaintingOver", settings.painting_over_data.active);
-    ShaderSystem::textureUpdatingShader().setFloat("smearTransformStrength", settings.smear_mode.smear_transform_strength);
-    ShaderSystem::textureUpdatingShader().setFloat("smearBlurStrength", settings.smear_mode.smear_blur_strength);
-    ShaderSystem::textureUpdatingShader().setInt("multiChannelsPaintingMod", panel_displaying_modes.selectedElement == 1);
-    ShaderSystem::textureUpdatingShader().setInt("channelI", channelI);
-    ShaderSystem::textureUpdatingShader().setFloat("channelStrength", channel_strength);
-
+    ShaderUTIL::set_shader_struct_painting_data(
+                                                    ShaderSystem::textureUpdatingShader(), 
+                                                    ShaderUTIL::PaintingData(
+                                                                                ShaderUTIL::PaintingData::PaintingBuffers(
+                                                                                                                            GL_TEXTURE5,
+                                                                                                                            txtr,
+                                                                                                                            GL_TEXTURE5,
+                                                                                                                            txtr,
+                                                                                                                            GL_TEXTURE5,
+                                                                                                                            txtr,
+                                                                                                                            GL_TEXTURE5,
+                                                                                                                            txtr,
+                                                                                                                            GL_TEXTURE5,
+                                                                                                                            txtr,
+                                                                                                                            GL_TEXTURE5,
+                                                                                                                            txtr,
+                                                                                                                            GL_TEXTURE6,
+                                                                                                                            projected_painting_FBO.colorBuffer
+                                                                                                                        ),   
+                                                                                ShaderUTIL::PaintingData::PaintingSmearData(
+                                                                                                                                settings.smear_mode.smear_transform_strength,
+                                                                                                                                settings.smear_mode.smear_blur_strength
+                                                                                                                            ),   
+                                                                                ShaderUTIL::PaintingData::ChannelData(
+                                                                                                                        settings.color_buffer.stroke_roughness_color,
+                                                                                                                        settings.color_buffer.stroke_metallic_color,
+                                                                                                                        settings.color_buffer.stroke_normalMap_color,
+                                                                                                                        settings.color_buffer.stroke_heightMap_color,
+                                                                                                                        settings.color_buffer.stroke_ao_color
+                                                                                                                    ),
+                                                                                settings.painting_mode,
+                                                                                settings.painting_over_data.active                            
+                                                                            )
+                                                );
+    
     if(settings.vertex_buffer.paint_model){
         //Draw the UV of the selected model
         {
@@ -863,6 +881,8 @@ static void updateTheTexture(
         }
     }
     else{
+        ShaderSystem::projectingPaintedTextureShader().use();
+
         //*Fragment
         ShaderSystem::projectingPaintedTextureShader().setInt("doDepthTest", 0);
 

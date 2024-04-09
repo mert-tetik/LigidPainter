@@ -18,32 +18,97 @@ Official Web Page : https://ligidtools.com/ligidpainter
     (squiggles becomes annoying since the vscode compiler doesn't recognise including other shader files) 
 */
 
+//----------------------- COMBINATION -----------------------  
+struct PaintingBuffers{
+    sampler2D albedo_txtr;
+    sampler2D roughness_txtr;
+    sampler2D metallic_txtr;
+    sampler2D normal_map_txtr;
+    sampler2D height_map_txtr;
+    sampler2D ao_txtr;
+    sampler2D brush_txtr; // This texture contains the projected brush strokes
+};
 
-//----------------------- DEPTH TESTING -----------------------
+struct PaintingSmearData{
+    float transform_strength;
+    float blur_strength;
+};
 
-// Constants
-const float far = 1.0;
-const float near = 0.1;
+struct ChannelData{
+    float roughness_strength;
+    float metallic_strength;
+    float normal_map_strength;
+    float height_map_strength;
+    float ao_strength;
+};
 
-/**
- * Linearize the depth value from a depth buffer.
- * 
- * @return The linearized depth value.
- */
-float linearizeDepth(
-                        float depth //The depth value to linearize.
-                    ) 
-{
+float channel_data_get_channel_strength(ChannelData channel_data, int channel_index){
+    if(channel_index == 0)
+        return 1.;
+    if(channel_index == 1)
+        return channel_data.roughness_strength;
+    if(channel_index == 2)
+        return channel_data.metallic_strength;
+    if(channel_index == 3)
+        return channel_data.normal_map_strength;
+    if(channel_index == 4)
+        return channel_data.height_map_strength;
+    if(channel_index == 5)
+        return channel_data.ao_strength;
 
-    // Compute the linearized depth value
-    float linearizedDepth = (2.0 * near * far) / (far + near - (depth * 2.0 - 1.0) * (far - near));
-
-    return linearizedDepth;
-
+    return 1.;
 }
 
+vec4 painting_buffers_get_src_txtr_texture_2D(PaintingBuffers painting_buffers, int channel_index, vec2 uv){
+    if(channel_index == 0)
+        return texture2D(painting_buffers.albedo_txtr, uv);
+    if(channel_index == 1)
+        return texture2D(painting_buffers.roughness_txtr, uv);
+    if(channel_index == 2)
+        return texture2D(painting_buffers.metallic_txtr, uv);
+    if(channel_index == 3)
+        return texture2D(painting_buffers.normal_map_txtr, uv);
+    if(channel_index == 4)
+        return texture2D(painting_buffers.height_map_txtr, uv);
+    if(channel_index == 5)
+        return texture2D(painting_buffers.ao_txtr, uv);
 
-//----------------------- SOFTEN BRUSH ----------------------- 
+    return texture2D(painting_buffers.albedo_txtr, uv);
+}
+
+vec4 painting_buffers_get_src_txtr_texture_lod(PaintingBuffers painting_buffers, int channel_index, vec2 uv, float lod){
+    if(channel_index == 0)
+        return texture2DLod(painting_buffers.albedo_txtr, uv, lod);
+    if(channel_index == 1)
+        return texture2DLod(painting_buffers.roughness_txtr, uv, lod);
+    if(channel_index == 2)
+        return texture2DLod(painting_buffers.metallic_txtr, uv, lod);
+    if(channel_index == 3)
+        return texture2DLod(painting_buffers.normal_map_txtr, uv, lod);
+    if(channel_index == 4)
+        return texture2DLod(painting_buffers.height_map_txtr, uv, lod);
+    if(channel_index == 5)
+        return texture2DLod(painting_buffers.ao_txtr, uv, lod);
+
+    return texture2DLod(painting_buffers.albedo_txtr, uv, lod);
+}
+
+struct PaintingData{
+    PaintingBuffers painting_buffers;
+
+    PaintingSmearData smear_data;
+
+    ChannelData channel_data;
+
+    int brush_mode; // Drawing 0, softening 1, smearing 2, normal map painting 3, filter painting 4, vector painting 5, bucket painting 6
+
+    bool painting_over_active;
+};
+
+
+
+
+//------------------------------------------- SOFTEN BRUSH ------------------------------------------ 
 
 const int LOD = 1,         // gaussian done on MIPmap at scale LOD
           sLOD = 1 << LOD; // tile size = 2^LOD
@@ -85,11 +150,11 @@ float gaussian(
 *
 *    returns the painted color data with given texture coordinate
 **/
-vec4 getSoftenedTexture(
-                            sampler2D txtr, //The texture that will be painted
-                            vec4 brushTxtr, //Brush value (painted texture value)
-                            vec2 TexCoords, //The texture coordinates
-                            float channelStrength
+vec4 get_soften(
+                            PaintingBuffers painting_buffers,
+                            ChannelData channel_data,
+                            int channel_index,
+                            vec2 texCoords
                         )
 { //Intensity from the painted texture
     const float width = 1024;
@@ -104,20 +169,25 @@ vec4 getSoftenedTexture(
         vec2 d = vec2(i % s, i / s) * float(sLOD) - float(range) / 2.0;
 
         // Compute the contribution using the Gaussian function and textureLod
-        O += gaussian(d, range) * textureLod(txtr, TexCoords + vec2(1.0 / width) * d, float(LOD));
+        O += gaussian(d, range) * painting_buffers_get_src_txtr_texture_lod(painting_buffers, channel_index, texCoords + vec2(1.0 / width) * d, float(LOD));
     }
     
-    //Mix the blurred color data with original texture data with the brush texture's alpha value
+    //Mix the blurred color data with original texture data using the brush texture's alpha value
     return mix(
-                texture(txtr,TexCoords), //Original value
+                painting_buffers_get_src_txtr_texture_2D(painting_buffers, channel_index, texCoords), //Original value
                 O.rgba / O.a, //Blurred value
-                brushTxtr.a * channelStrength //The brush value
+                texture2D(painting_buffers.brush_txtr, texCoords).a * channel_data_get_channel_strength(channel_data, channel_index) //The brush value
             );
 }
 
 
-//----------------------- SMEAR BRUSH -----------------------
 
+
+
+
+
+
+//------------------------------------------- SMEAR BRUSH ------------------------------------------ 
 
 /**
 *    Apply smear brush to the given texture
@@ -133,21 +203,20 @@ vec4 getSoftenedTexture(
 *
 *    returns the painted color data with given texture coordinate
 **/
-vec4 getSmearedTexture(
-                        sampler2D txtr, //The texture that will be painted  
-                        vec4 brushTxtr, //Brush value (painted texture value)
-                        vec2 TexCoords,  //The texture coordinates
-                        float smearTransformStrength, 
-                        float smearBlurStrength,
-                        float channelStrength
+vec4 get_smear(
+                            PaintingBuffers painting_buffers,
+                            ChannelData channel_data,
+                            PaintingSmearData smear_data,
+                            int channel_index,
+                            vec2 texCoords
                     )
 {
     
     
-    float intensity = brushTxtr.a/2. * channelStrength;
+    float intensity = texture2D(painting_buffers.brush_txtr, texCoords).a/2. * channel_data_get_channel_strength(channel_data, channel_index);
     
     //Get the direction value from the painted texture (which direction the painting made in the current texture coordinates)
-    vec2 Direction = brushTxtr.rg;
+    vec2 Direction = texture2D(painting_buffers.brush_txtr, texCoords).rg;
 
     //Samples (multiple of 2)
     int Samples = 64;
@@ -157,8 +226,9 @@ vec4 getSmearedTexture(
     
     for(int i = -Samples/2; i <= Samples/2; i++)
     {
-        vec2 uv = TexCoords - vec2(Direction.x * (float(i) / float(Samples)), Direction.y * (float(i) / float(Samples))) * smearBlurStrength * intensity;
-        blurredColor += texture(txtr, vec2(uv.x - Direction.x * smearTransformStrength, uv.y + Direction.y * smearTransformStrength)) / float(Samples + 1);
+        vec2 uv = texCoords - vec2(Direction.x * (float(i) / float(Samples)), Direction.y * (float(i) / float(Samples))) * smear_data.blur_strength * intensity;
+        vec2 dest_uv = vec2(uv.x - Direction.x * smear_data.transform_strength, uv.y + Direction.y * smear_data.transform_strength);
+        blurredColor += painting_buffers_get_src_txtr_texture_2D(painting_buffers, channel_index, dest_uv) / float(Samples + 1);
     }
     
     //TODO : Write smt better to that returning value
@@ -167,7 +237,8 @@ vec4 getSmearedTexture(
 }
 
 
-//----------------------- NORMAL BRUSH -----------------------
+
+//------------------------------------------- NORMAL MAP BRUSH ------------------------------------------ 
 
 vec4 texNormalMap(sampler2D heightMap, in vec2 uv, float str)
 {
@@ -179,6 +250,59 @@ vec4 texNormalMap(sampler2D heightMap, in vec2 uv, float str)
        
    	return vec4(vec2(p - vec2(h1, v1)) * str + 0.5, 1., texture2D(heightMap, uv).a);
 }
+
+vec4 get_normal_map(
+                        PaintingBuffers painting_buffers,
+                        ChannelData channel_data,
+                        int channel_index,
+                        vec2 texCoords
+                    )
+{
+    vec4 paintColor = texNormalMap(painting_buffers.brush_txtr, texCoords, channel_data_get_channel_strength(channel_data, channel_index));
+    vec4 srcTxtr = painting_buffers_get_src_txtr_texture_2D(painting_buffers, channel_index, texCoords);
+    float brushTxtrAlpha = texture(painting_buffers.brush_txtr, texCoords).a; 
+
+    return mix(
+                srcTxtr, 
+                paintColor, 
+                brushTxtrAlpha
+            );
+}
+
+
+
+
+
+
+
+
+
+//------------------------------------------- FILTER DISPLAY BRUSH ------------------------------------------ 
+
+vec4 get_filter_display( 
+                        PaintingBuffers painting_buffers,
+                        ChannelData channel_data,
+                        int channel_index,
+                        vec2 texCoords
+                    )
+{
+    float intensity = texture2D(painting_buffers.brush_txtr, texCoords).a;
+
+    //Mix the original color data with painting color using the intensity of the painted texture
+    vec4 destColor = vec4(1.) - painting_buffers_get_src_txtr_texture_2D(painting_buffers, channel_index, texCoords);
+
+    return mix  (
+                    painting_buffers_get_src_txtr_texture_2D(painting_buffers, channel_index, texCoords),
+                    destColor, //paintingColor
+                    intensity * channel_data_get_channel_strength(channel_data, channel_index)
+                );
+}
+
+
+
+
+
+//------------------------------------------- DRAWING BRUSH ------------------------------------------ 
 
 /**
 *    Apply default brush to the given texture
@@ -194,47 +318,40 @@ vec4 texNormalMap(sampler2D heightMap, in vec2 uv, float str)
 *
 *    returns the painted color data with given texture coordinate
 **/
-vec4 getPaintedTexture  ( 
-                            sampler2D txtr, //The texture that will be painted  
-                            sampler2D brushTxtr, //Brush value (painted texture value)
-                            vec2 TexCoords,  //The texture coordinates
-                            vec2 modelCoord,  //The texture coordinates
-                            bool multiChannelsPaintingMod,
-                            int channelI,
-                            float channelStrength,
-                            bool paintingOverActive
+vec4 get_draw  ( 
+                            PaintingBuffers painting_buffers,
+                            ChannelData channel_data,
+                            bool painting_over_active,
+                            int channel_index,
+                            vec2 texCoords
                         )
 {
 
-    float brushTxtrAlpha = texture(brushTxtr, TexCoords).a; 
+    float brushTxtrAlpha = texture(painting_buffers.brush_txtr, texCoords).a; 
     vec4 paintColor; 
-    if(multiChannelsPaintingMod){
-        
-        // Albedo
-        if(channelI == 0){
-            paintColor = texture2D(brushTxtr, TexCoords);
-        }
+    
+    // Albedo
+    if(channel_index == 0){
+        paintColor = texture2D(painting_buffers.brush_txtr, texCoords);
+    }
 
-        // Normal map
-        else if(channelI == 3){
-            paintColor = texNormalMap(brushTxtr, TexCoords, channelStrength);   
-        }
+    // Normal map
+    else if(channel_index == 3){
+        paintColor = texNormalMap(painting_buffers.brush_txtr, texCoords, channel_data_get_channel_strength(channel_data, channel_index));   
+    }
 
+    else{
+        if(painting_over_active){
+            vec4 s = texture2D(painting_buffers.brush_txtr, texCoords);
+            float rs = max(max(s.r,s.g),s.b);
+            paintColor = vec4(mix(1.-rs, rs, channel_data_get_channel_strength(channel_data, channel_index)));
+        }
         else{
-            if(paintingOverActive){
-                vec4 s = texture2D(brushTxtr, TexCoords);
-                float rs = max(max(s.r,s.g),s.b);
-                paintColor = vec4(mix(1.-rs, rs, channelStrength));
-            }
-            else{
-                paintColor = vec4(vec3(channelStrength), 1.);
-            }
+            paintColor = vec4(vec3(channel_data_get_channel_strength(channel_data, channel_index)), 1.);
         }
     }
-    else
-        paintColor = texture2D(brushTxtr, TexCoords);
 
-    vec4 srcTxtr = texture(txtr, TexCoords);
+    vec4 srcTxtr = painting_buffers_get_src_txtr_texture_2D(painting_buffers, channel_index, texCoords);
 
     return mix(
                 srcTxtr, 
@@ -243,116 +360,42 @@ vec4 getPaintedTexture  (
             );
 }
 
-vec4 getNormalMapPaintedTexture(
-                                    sampler2D brushTxtr,
-                                    vec2 TexCoords,
-                                    float channelStrength,
-                                    sampler2D txtr
-                                )
-{
-    vec4 paintColor = texNormalMap(brushTxtr, TexCoords, channelStrength);
-    vec4 srcTxtr = texture(txtr, TexCoords);
-    float brushTxtrAlpha = texture(brushTxtr, TexCoords).a; 
-
-    return mix(
-                srcTxtr, 
-                paintColor, 
-                brushTxtrAlpha
-            );
-}
-
-vec3 getPaintedTextureTxtrClr( 
-                            sampler2D txtr, //The texture that will be painted  
-                            vec4 brushTxtr, //Brush value (painted texture value)
-                            vec2 TexCoords  //The texture coordinates
-                        )
-{
-
-    float intensity = brushTxtr.a;
-
-    //Mix the original color data with painting color using the intensity of the painted texture
-    vec3 destColor = brushTxtr.rgb;
-
-    return mix  (
-                    texture(txtr,TexCoords).rgb,
-                    destColor, //paintingColor
-                    intensity
-                );
-}
-
-vec4 getPaintedTextureFilterDisplayingMode( 
-                                            sampler2D txtr, //The texture that will be painted  
-                                            vec4 brushTxtr, //Brush value (painted texture value)
-                                            vec2 TexCoords,  //The texture coordinates
-                                            float channelStrength
-                                        )
-{
-
-    float intensity = brushTxtr.a;
-
-    //Mix the original color data with painting color using the intensity of the painted texture
-    vec4 destColor = vec4(1.) - texture(txtr,TexCoords);
-
-    return mix  (
-                    texture(txtr,TexCoords),
-                    destColor, //paintingColor
-                    intensity * channelStrength
-                );
-}
 
 
-//----------------------- COMBINATION -----------------------  
+
 
 /**
 *    Apply a brush to the given texture
-*
-*    Use that function as the given examples of the other painting functions 
-*
-*    brushModeState == 0 : paint with color
-*    
-*    brushModeState == 1 : paint with softening
-*
-*    brushModeState == 2 : paint with smearing
-*
 *    returns the painted color data with given texture coordinate
 **/
 vec4 getBrushedTexture (
-                            sampler2D txtr, //The texture that will be painted  
-                            vec4 brushTxtrVal, //Brush value (painted texture value)
-                            sampler2D brushTxtr, //Brush value (painted texture value)
-                            vec2 TexCoords,  //The texture coordinates
-                            vec2 modelCoord,  //The texture coordinates
-                            int brushModeState, //Decide which painting mode will be used
-                            float smearTransformStrength,
-                            float smearBlurStrength,
-                            bool multiChannelsPaintingMod,
-                            int channelI,
-                            float channelStrength,
-                            bool paintingOverActive
+                            PaintingData paintData, // Painting data
+                            int channel_index,
+                            vec2 texCoords  //Texture coordinates
                         )
 {
     //Apply painting with color
-    if(brushModeState == 0 || brushModeState == 6)
-        return getPaintedTexture(txtr, brushTxtr, TexCoords, modelCoord, multiChannelsPaintingMod, channelI, channelStrength, paintingOverActive);
+    if(paintData.brush_mode == 0 || paintData.brush_mode == 6)
+        return get_draw(paintData.painting_buffers, paintData.channel_data, paintData.painting_over_active, channel_index, texCoords);
 
     //Apply painting with softening
-    if(brushModeState == 1)
-        return getSoftenedTexture(txtr,brushTxtrVal,TexCoords, channelStrength);
+    if(paintData.brush_mode == 1)
+        return get_soften(paintData.painting_buffers, paintData.channel_data, channel_index, texCoords);
 
     //Apply painting with smearing
-    if(brushModeState == 2)
-        return getSmearedTexture(txtr,brushTxtrVal,TexCoords, smearTransformStrength, smearBlurStrength, channelStrength);
+    if(paintData.brush_mode == 2)
+        return get_smear(paintData.painting_buffers, paintData.channel_data, paintData.smear_data, channel_index, texCoords);
     
     //Apply painting with painting texture color data
-    if(brushModeState == 3)
-        return getNormalMapPaintedTexture(brushTxtr, TexCoords, channelStrength, txtr);
+    if(paintData.brush_mode == 3)
+        return get_normal_map(paintData.painting_buffers, paintData.channel_data, channel_index, texCoords);
     
     //Apply painting with inverted texture color
-    if(brushModeState == 4)
-        return getPaintedTextureFilterDisplayingMode(txtr, brushTxtrVal, TexCoords, channelStrength);
+    if(paintData.brush_mode == 4)
+        return get_filter_display(paintData.painting_buffers, paintData.channel_data, channel_index, texCoords);
     
-    if(brushModeState == 5)
-        return texture(txtr, TexCoords);
+    if(paintData.brush_mode == 5)
+        return painting_buffers_get_src_txtr_texture_2D(paintData.painting_buffers, channel_index, texCoords);
     
     //If the brushModeState value is not valid
     return vec4(0);

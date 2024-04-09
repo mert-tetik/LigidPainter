@@ -56,8 +56,14 @@ static int frame_counter = 0;
 
 static ThreeDPoint last_threeD_point;
 
+#define RETURN_FROM_PAINTING glEnable(GL_BLEND);\
+                             return;
+
+
 void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
     
+    glDisable(GL_BLEND);
+
     if(first_frame){
         Debugger::block("Painting : First frame: Update buffers"); // Start
         frame_counter = 0;
@@ -156,10 +162,10 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
                 Debugger::block("Painting : 2D Paint : Update depth texture"); // End
             }
 
-            //Texture* projected_painting_texture = &mirrorSide->paintingBuffers.projected_painting_texture_low; 
-            //if(last_frame){
-                Texture* projected_painting_texture = &mirrorSide->paintingBuffers.projected_painting_texture; 
-            //}
+                Texture* projected_painting_texture = &mirrorSide->paintingBuffers.projected_painting_texture_low; 
+                if(last_frame){
+                    projected_painting_texture = &mirrorSide->paintingBuffers.projected_painting_texture; 
+                }
 
             Debugger::block("Painting : 2D Paint : Project window painting texture"); // Start
             project_window_painting_texture(
@@ -189,12 +195,12 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
     if(last_frame){
         if(twoD_painting_mode && panel_displaying_modes.selectedElement != 2){
             LGDLOG::start << "ERROR : Painting : Invalid displaying mode for the 2D painting" << LGDLOG::end;
-            return;
+            RETURN_FROM_PAINTING;
         }
 
         if(button_mesh_selection.selectedMeshI >= getScene()->model->meshes.size()){
             LGDLOG::start << "ERROR : Painting : Invalid selected mesh" << LGDLOG::end;
-            return;
+            RETURN_FROM_PAINTING;
         }
         
         if(settings.color_buffer.use_custom_material){
@@ -212,7 +218,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
             for (PaintedBufferData painted_buffer : get_painted_buffers(settings))
             {
                 Debugger::block("Painting : Update the texture"); // Start
-                updateTheTexture(painted_buffer.txtr, painted_buffer.channel_index, painted_buffer.clr.r, settings, painting_projected_painting_FBO);
+                updateTheTexture(painted_buffer.txtr, painted_buffer.channel_index, settings, painting_projected_painting_FBO);
                 Debugger::block("Painting : Update the texture"); // End
                 
                 /*
@@ -234,6 +240,8 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
 
         updateThePreRenderedPanels = true;
     }
+
+    RETURN_FROM_PAINTING;
 }
 
 

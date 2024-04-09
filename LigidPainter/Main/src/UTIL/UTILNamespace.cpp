@@ -398,3 +398,7 @@ float UTIL::new_value_range(float value, float min, float max, float new_min, fl
     // Map the ratio to the new range and return the result
     return new_min + ratio * (new_max - new_min);
 }
+
+unsigned int UTIL::get_texture_slot_index(unsigned int slot){
+    return slot - GL_TEXTURE0;
+} 
