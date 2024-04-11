@@ -154,7 +154,7 @@ public:
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, bool initTxtrs);
     
     /*! @brief Renders the mesh*/
-    void Draw(bool displayWireframe);
+    void Draw();
 
     unsigned int VBO, EBO, VAO; //Vertex buffer object, element buffer object
 

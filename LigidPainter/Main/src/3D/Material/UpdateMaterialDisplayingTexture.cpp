@@ -165,7 +165,7 @@ void Material::updateMaterialDisplayingTexture(
         }
         
         //Draw the sphere
-        displayModel.meshes[i].Draw(false);
+        displayModel.meshes[i].Draw();
     }
     
     

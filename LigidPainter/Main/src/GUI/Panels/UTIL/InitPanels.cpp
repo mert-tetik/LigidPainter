@@ -366,7 +366,7 @@ void panels_init(){
                                                     Section(
                                                         Element(),
                                                         {   
-                                                            Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,4), ""  , Texture(), 7.f, true)), // 0
+                                                            Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,4), ""  , Texture(), 1.f, true)), // 0
                                                             
                                                             Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Enable Albedo Channel"  , 1.f)), //1
                                                             Element(PainterColorSelection(glm::vec2(2.f, 2.5f), 1.f)), // 2
@@ -404,25 +404,25 @@ void panels_init(){
 
     // ---------------------------------------------------
     
-        checkComboList_painting_face_selection = CheckComboList(
-                                                                    "Toggle masking mesh for painting / See the mesh settings", 
-                                                                    appTextures.TDModelIcon, 
-                                                                    glm::vec3(0.f, 0.f, 0.7f), 
-                                                                    0.f, 
-                                                                    Section(
-                                                                        Element(),
-                                                                        {  
-                                                                            CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), "Mask to selected mesh (F3)", 1.f), //0
-                                                                            CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), "Mesh selection mode (F4)", 1.f), //1
-                                                                            ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //2
-                                                                            RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2,1.f), "Circle radius"  , Texture(), 2.f, 1.f, 100.f, 10.f), //3
-                                                                            ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Custom"}, "Auto Select", 2.f), //4
-                                                                            Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,4), "Mask via texture"  , Texture(), 4.f, false)),//5
-                                                                            Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2,2), "Cancel texture mask"  , Texture(), 0.f, false)),//6
-                                                                            CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), "Hide unselected mesh", 2.f), //7
-                                                                        }
-                                                                    )
-                                                                );
+    checkComboList_painting_face_selection = CheckComboList(
+                                                                "Toggle masking mesh for painting / See the mesh settings", 
+                                                                appTextures.TDModelIcon, 
+                                                                glm::vec3(0.f, 0.f, 0.7f), 
+                                                                0.f, 
+                                                                Section(
+                                                                    Element(),
+                                                                    {  
+                                                                        CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), "Mask to selected mesh (F3)", 1.f), //0
+                                                                        CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), "Mesh selection mode (F4)", 1.f), //1
+                                                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //2
+                                                                        RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2,1.f), "Circle radius"  , Texture(), 2.f, 1.f, 100.f, 10.f), //3
+                                                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Custom"}, "Auto Select", 2.f), //4
+                                                                        Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,4), "Mask via texture"  , Texture(), 4.f, false)),//5
+                                                                        Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2,2), "Cancel texture mask"  , Texture(), 0.f, false)),//6
+                                                                        CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), "Hide unselected mesh", 2.f), //7
+                                                                    }
+                                                                )
+                                                            );
 
     checkComboList_painting_face_selection.panel.sections[0].elements[5].button.textureSelection3D = true;
     
@@ -436,7 +436,7 @@ void panels_init(){
                                             Section(
                                                 Element(),
                                                 {   
-                                                    CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "X Axis", 7.f), // 0
+                                                    CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "X Axis", 1.f), // 0
                                                     Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "X Axis Mirror Offset", Texture(), 0.f, -1.f, 1.f, 0.f)), // 1
                                                     CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Y Axis", 1.f), // 2
                                                     Element(RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,1),"Y Axis Mirror Offset"  , Texture(), 0.f, -1.f, 1.f, 0.f)),// 3
@@ -456,7 +456,7 @@ void panels_init(){
                                                 Section(
                                                         Element(),
                                                         {   
-                                                            Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Use Painting Over (F1)", 7.f)), //0
+                                                            Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Use Painting Over (F1)", 1.f)), //0
                                                             Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Editor Mode (F2)", 1.f)), //1
                                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "Add Texture From Library", Texture(), 1.f,false)), //2
                                                             Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "Add Texture From Computer", Texture(), 1.f,false)), //3

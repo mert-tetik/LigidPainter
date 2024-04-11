@@ -24,6 +24,23 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
+#include "3D/Mesh/Mesh.hpp"
+
+void ShaderUTIL::set_shader_struct_face_selection_data(Shader shader, Mesh& mesh, unsigned int txtr_slot1, unsigned int txtr_slot2){
+    shader.use();
+    if(txtr_slot1 && mesh.face_selection_data.selectedFaces.ID && txtr_slot2 && mesh.face_selection_data.meshMask.ID){
+        shader.setInt("face_selection_data.meshSelectionEditing", mesh.face_selection_data.editMode);
+        shader.setInt("face_selection_data.hideUnselected", mesh.face_selection_data.hideUnselected);
+        shader.setInt("face_selection_data.usingMeshSelection", mesh.face_selection_data.activated);
+        shader.setInt("face_selection_data.selectedPrimitiveIDS", UTIL::get_texture_slot_index(txtr_slot1)); glActiveTexture(txtr_slot1); glBindTexture(GL_TEXTURE_2D, mesh.face_selection_data.selectedFaces.ID);
+        shader.setInt("face_selection_data.meshMask", UTIL::get_texture_slot_index(txtr_slot2)); glActiveTexture(txtr_slot2); glBindTexture(GL_TEXTURE_2D, mesh.face_selection_data.meshMask.ID);
+        shader.setInt("face_selection_data.primitiveCount", mesh.indices.size() / 3);
+    }
+    else{
+        shader.setInt("face_selection_data.usingMeshSelection", false);
+    }
+}
+
 void ShaderUTIL::set_shader_struct_painting_data(Shader shader, PaintingData painting_data){
     shader.use();
     if(painting_data.painting_buffers.albedo_txtr.ID){

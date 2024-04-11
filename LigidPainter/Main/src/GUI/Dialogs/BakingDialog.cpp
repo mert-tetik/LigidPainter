@@ -361,7 +361,7 @@ Texture BakingDialog::bake(Skybox skybox, unsigned int resolution){
     glActiveTexture(GL_TEXTURE7);
     glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].ambientOcclusion.ID);
     
-    getScene()->model->meshes[selectMeshButton.selectedMeshI].Draw(false);
+    getScene()->model->meshes[selectMeshButton.selectedMeshI].Draw();
 
     glDeleteFramebuffers(1, &FBO);
     glDeleteRenderbuffers(1, &RBO);

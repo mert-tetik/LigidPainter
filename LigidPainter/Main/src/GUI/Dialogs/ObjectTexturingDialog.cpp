@@ -449,9 +449,8 @@ void ObjectTexturingDialog::show(Timer& timer){
                     ShaderSystem::objectTexturingAssign().setMat4("perspectiveProjection", getScene()->projectionMatrix);
                     ShaderSystem::objectTexturingAssign().setMat4("view", getScene()->camera.viewMatrix);
                     ShaderSystem::objectTexturingAssign().setInt("txtr", 0);
-                    ShaderSystem::objectTexturingAssign().setInt("selectedPrimitiveIDS", 1);
-                    ShaderSystem::objectTexturingAssign().setInt("meshMask", 2);
-                    ShaderSystem::objectTexturingAssign().setInt("primitiveCount", getScene()->model->meshes[i].indices.size() / 3);
+
+                    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::objectTexturingAssign(), getScene()->model->meshes[i], GL_TEXTURE0, GL_TEXTURE1);
 
                     glActiveTexture(GL_TEXTURE0);
                     if(channelI == 0)
@@ -467,13 +466,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                     if(channelI == 5)
                         glBindTexture(GL_TEXTURE_2D, result_channels[i].ambientOcclusion.ID);
                     
-                    glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[i].face_selection_data.selectedFaces.ID);
-                    
-                    glActiveTexture(GL_TEXTURE2);
-                    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[i].face_selection_data.meshMask.ID);
-
-                    getScene()->model->meshes[i].Draw(false);
+                    getScene()->model->meshes[i].Draw();
                     
                     glEnable(GL_DEPTH_TEST);
 

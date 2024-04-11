@@ -2,6 +2,20 @@
 
 #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Painting.frag)
 
+/*
+struct FaceSelectionData{
+    int meshSelectionEditing;
+    int hideUnselected;
+    int usingMeshSelection;
+    sampler2D selectedPrimitiveIDS;
+    sampler2D meshMask;
+    int primitiveCount;
+};
+face_selection_is_current_prim_selected or face_selection_is_current_prim_hovered
+*/
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Face_Selection.frag)
+uniform FaceSelectionData face_selection_data;
+
 in vec2 TexCoords;
 in vec3 Normal;
 in vec3 Pos;
@@ -29,17 +43,12 @@ struct Light {
 //Position of the camera
 uniform vec3 viewPos;
 
-uniform int primitiveCount;
-uniform int wireframeMode = 0;
-uniform int meshSelectionEditing = 0;
-uniform int hideUnselected = 0;
-uniform int usingMeshSelection = 0;
-uniform sampler2D selectedPrimitiveIDS;
-uniform sampler2D meshMask;
-
 uniform int paintingMode;
 
 uniform PaintingData painting_data;
+
+uniform vec3 mirrorState = vec3(0.);
+uniform vec3 mirrorOffsets = vec3(0.);
 
 //Fragment shader output
 out vec4 fragColor;
@@ -48,18 +57,10 @@ void main() {
 
     gl_FragDepth = gl_FragCoord.z;
 
-    float prim_txtr_res = int(ceil(sqrt(primitiveCount)));
-    float prim_height = floor(float(gl_PrimitiveID) / prim_txtr_res);
-    float prim = texelFetch(selectedPrimitiveIDS, ivec2(float(gl_PrimitiveID) - (prim_height * prim_txtr_res) , prim_height), 0).r;
-    bool selectedPrim = prim > 0.9 && texture(meshMask, TexCoords).r > 0.5;
-    bool hoveredPrim = prim > 0.3 && prim < 0.9;
+    bool selectedPrim = face_selection_is_current_prim_selected(face_selection_data, TexCoords);
+    bool hoveredPrim = face_selection_is_current_prim_hovered(face_selection_data, TexCoords);
 
-    if(wireframeMode == 1){
-        fragColor = vec4(0.18, 0.42, 0.64, 1.);
-        return;
-    }
-
-    if(!selectedPrim && usingMeshSelection == 1 && meshSelectionEditing == 0 && hideUnselected == 1){
+    if(!selectedPrim && face_selection_data.meshSelectionEditing == 0 && face_selection_data.hideUnselected == 1){
         fragColor.rgba = vec4(0.);
         gl_FragDepth = 1.;
         return;
@@ -110,6 +111,28 @@ void main() {
     vec3 result = ambient + diffuse + specular;
     fragColor = vec4(result, 1.0);
 
-    if(hoveredPrim)
+    if(!selectedPrim && face_selection_data.usingMeshSelection == 1 && face_selection_data.meshSelectionEditing == 0){
+        fragColor.rgb = mix(fragColor.rgb, vec3(1.), 0.6);
+    }
+
+    if(selectedPrim && face_selection_data.meshSelectionEditing == 1){
+        fragColor.rgb = mix(fragColor.rgb, vec3(0.18, 0.42, 0.64), 0.6);
+    }
+
+    if(hoveredPrim && face_selection_data.meshSelectionEditing == 1)
         fragColor.rgb /= 2.;
+
+    float mirrorDisplayerLineThickness = 0.005;
+    if(mirrorState.x == 1.){
+        if(Pos.x + mirrorOffsets.x > -mirrorDisplayerLineThickness && Pos.x + mirrorOffsets.x < mirrorDisplayerLineThickness)
+            fragColor = vec4(0., 0.5, 1., 1.);
+    }
+    if(mirrorState.y == 1.){
+        if(Pos.y + mirrorOffsets.y > -mirrorDisplayerLineThickness && Pos.y + mirrorOffsets.y < mirrorDisplayerLineThickness)
+            fragColor = vec4(0., 0.5, 1., 1.);
+    }
+    if(mirrorState.z == 1.){
+        if(Pos.z + mirrorOffsets.z > -mirrorDisplayerLineThickness && Pos.z + mirrorOffsets.z < mirrorDisplayerLineThickness)
+            fragColor = vec4(0., 0.5, 1., 1.);
+    }
 }

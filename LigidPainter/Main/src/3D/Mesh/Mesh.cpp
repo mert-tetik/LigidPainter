@@ -132,7 +132,7 @@ void Mesh::generateDisplayingTexture(){
     ShaderSystem::solidShadingShader().setVec3("viewPos", camPos);
     
     //Draw the sphere
-    this->Draw(false);
+    this->Draw();
     
     //!Finish (prepare rendering the GUI)
 
@@ -165,7 +165,7 @@ void Mesh::generateUVMask(){
     ShaderSystem::uvMaskShader().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f));
     ShaderSystem::uvMaskShader().setFloat("depthToleranceValue", 0);
 
-    this->Draw(false);
+    this->Draw();
 
     Settings::defaultFramebuffer()->FBO.bind();
     FBO.deleteBuffers(false, false);
@@ -211,7 +211,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 }
 
 // Render the mesh
-void Mesh::Draw(bool displayWireframe) 
+void Mesh::Draw() 
 {
 
     LigidGL::cleanGLErrors();
@@ -230,23 +230,6 @@ void Mesh::Draw(bool displayWireframe)
 
     glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
     LigidGL::testGLError("Mesh::Draw : Drawing Elements");
-
-    // Wireframe  
-    if(displayWireframe){
-        glDepthFunc(GL_LESS);
-        ShaderSystem::tdModelShader().setMat4("modelMatrix", glm::scale(getScene()->transformMatrix, glm::vec3(1.0015f)));
-        ShaderSystem::tdModelShader().setInt("wireframeMode", 1);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        ShaderSystem::tdModelShader().setMat4("modelMatrix", getScene()->transformMatrix);
-        glDepthFunc(GL_LEQUAL);
-        ShaderSystem::tdModelShader().setInt("wireframeMode", 0);
-        
-        LigidGL::testGLError("Mesh::Draw : Rendering wireframe");
-    }
-
-    LigidGL::cleanGLErrors();
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     LigidGL::testGLError("Mesh::Draw : Binding 0 array buffer");
@@ -453,20 +436,11 @@ void Mesh::updatePosNormalTexture(){
         ShaderSystem::renderModelData().setMat4("modelMatrix",getScene()->transformMatrix);
         ShaderSystem::renderModelData().setInt("state", i + 1);
 
-        ShaderSystem::renderModelData().setInt("usingMeshSelection", this->face_selection_data.activated);
-        ShaderSystem::renderModelData().setInt("hideUnselected", this->face_selection_data.hideUnselected);
-        ShaderSystem::renderModelData().setInt("selectedPrimitiveIDS", 0);
-        ShaderSystem::renderModelData().setInt("meshMask", 1);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->face_selection_data.selectedFaces.ID);
-        
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, this->face_selection_data.meshMask.ID);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *this, GL_TEXTURE0, GL_TEXTURE1);
 
         //Draw the selected mesh in 3D
         ShaderSystem::renderModelData().setInt("primitiveCount", this->indices.size() / 3);
-        this->Draw(false);
+        this->Draw();
     }
     
     //!Finished
@@ -539,7 +513,7 @@ void Mesh::updateObjectIDsTexture(){
             ShaderSystem::modelObjectID().setVec2("objIndices[" + std::to_string(objI) + "]", this->objects[objI].vertIndices / glm::ivec2(3));
         }
         
-        this->Draw(false);
+        this->Draw();
     }
     
     //!Finished
@@ -575,7 +549,7 @@ void Mesh::updateModelPrimitivesTexture(){
     glDepthFunc(GL_LESS);
 
     ShaderSystem::primitiveIDShader().setInt("emptyFlag", false);
-    this->Draw(false);
+    this->Draw();
 
     //Set back to default shader
     ShaderSystem::buttonShader().use();

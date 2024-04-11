@@ -19,6 +19,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Painting.frag)
 
+/*
+struct FaceSelectionData{
+    int meshSelectionEditing;
+    int hideUnselected;
+    int usingMeshSelection;
+    sampler2D selectedPrimitiveIDS;
+    sampler2D meshMask;
+    int primitiveCount;
+};
+face_selection_is_current_prim_selected or face_selection_is_current_prim_hovered
+*/
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Face_Selection.frag)
+uniform FaceSelectionData face_selection_data;
+
 in vec2 TexCoords;
 in vec4 ProjectedPos;
 
@@ -45,11 +59,6 @@ uniform int selectedPaintingModeIndex;
 
 //Fragment shader output
 out vec4 fragColor;
-
-uniform int usingMeshSelection;
-uniform sampler2D selectedPrimitiveIDS;
-uniform sampler2D meshMask;
-uniform int primitiveCount;
 
 // Function for blending stroke values
 void strokeBlendUniColor(
@@ -143,12 +152,9 @@ void main(){
 
     vec4 brushTxtr = getBrushValue(paintingTexture, depthTexture, screenPos, paintingOpacity, doDepthTest);
 
-    float prim_txtr_res = int(ceil(sqrt(primitiveCount)));
-    float prim_height = floor(float(gl_PrimitiveID) / prim_txtr_res);
-    float prim = texelFetch(selectedPrimitiveIDS, ivec2(float(gl_PrimitiveID) - (prim_height * prim_txtr_res) , prim_height), 0).r;
-    bool selectedPrim = prim > 0.9 && texture(meshMask, TexCoords).r > 0.5;
+    bool selectedPrim = face_selection_is_current_prim_selected(face_selection_data, TexCoords);
     
-    if(!selectedPrim && usingMeshSelection == 1){
+    if(!selectedPrim){
         brushTxtr = vec4(0.);
     }
 

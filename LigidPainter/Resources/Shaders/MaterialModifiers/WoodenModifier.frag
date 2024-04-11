@@ -13,6 +13,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #version 400 core
 
+/*
+struct FaceSelectionData{
+    int meshSelectionEditing;
+    int hideUnselected;
+    int usingMeshSelection;
+    sampler2D selectedPrimitiveIDS;
+    sampler2D meshMask;
+    int primitiveCount;
+};
+face_selection_is_current_prim_selected or face_selection_is_current_prim_hovered
+*/
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Face_Selection.frag)
+uniform FaceSelectionData face_selection_data;
+
 /* Colors */
 uniform vec3 woodColor1 = vec3(0.0, 0.0, 0.0);
 uniform vec3 woodColor2 = vec3(0.25, 0.11, 0.04);
@@ -52,10 +66,6 @@ uniform sampler2D previousTxtr;
 uniform float opacity;
 uniform float depthValue;
 uniform sampler2D depthTxtr;
-uniform sampler2D selectedPrimitiveIDS;
-uniform sampler2D meshMask;
-uniform int primitiveCount;
-uniform int useMeshMask;
 
 in vec2 TexCoords;
 in vec3 Normal;
@@ -65,7 +75,6 @@ in vec3 Bitangent;
 in vec4 ProjectedPos;
 
 out vec4 fragColor;
-
 
 float hash(float n) {
     return fract(sin(n) * seed);
@@ -153,15 +162,10 @@ vec3 getWood(vec3 p) {
 }
 
 void main() {
-    if(useMeshMask == 1){
-        float prim_txtr_res = int(ceil(sqrt(primitiveCount)));
-        float prim_height = floor(float(gl_PrimitiveID) / prim_txtr_res);
-        float prim = texelFetch(selectedPrimitiveIDS, ivec2(float(gl_PrimitiveID) - (prim_height * prim_txtr_res) , prim_height), 0).r;
-        bool selectedPrim = prim > 0.9 && texture(meshMask, TexCoords).r > 0.5;
-        if(!selectedPrim){
-            fragColor = vec4(0.);
-            return;
-        }
+    bool selectedPrim = face_selection_is_current_prim_selected(face_selection_data, TexCoords);
+    if(!selectedPrim){
+        fragColor = vec4(0.);
+        return;
     }
 
     //TODO Use the scale

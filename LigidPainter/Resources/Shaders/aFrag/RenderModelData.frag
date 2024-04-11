@@ -19,6 +19,20 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //OpenGL version used in the app (Major 4 , Minor 0, Profile core)
 #version 400 core
 
+/*
+struct FaceSelectionData{
+    int meshSelectionEditing;
+    int hideUnselected;
+    int usingMeshSelection;
+    sampler2D selectedPrimitiveIDS;
+    sampler2D meshMask;
+    int primitiveCount;
+};
+face_selection_is_current_prim_selected or face_selection_is_current_prim_hovered
+*/
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Face_Selection.frag)
+uniform FaceSelectionData face_selection_data;
+
 //Fragment shader output
 out vec4 color;
 
@@ -30,11 +44,6 @@ in vec3 Tangent;
 in vec3 Bitangent;
 in vec4 ProjectedPos;
 
-uniform int usingMeshSelection = 0;
-uniform int hideUnselected = 0;
-uniform sampler2D selectedPrimitiveIDS;
-uniform sampler2D meshMask;
-uniform int primitiveCount;
 
 void main() {
     gl_FragDepth = gl_FragCoord.z;
@@ -54,13 +63,10 @@ void main() {
     else
         color = vec4(1.,0.,1., 1.); 
 
-    float prim_txtr_res = int(ceil(sqrt(primitiveCount)));
-    float prim_height = floor(float(gl_PrimitiveID) / prim_txtr_res);
-    float prim = texelFetch(selectedPrimitiveIDS, ivec2(float(gl_PrimitiveID) - (prim_height * prim_txtr_res) , prim_height), 0).r;
-    bool selectedPrim = prim > 0.9 && texture(meshMask, TexCoords).r > 0.5;
+    bool selectedPrim = face_selection_is_current_prim_selected(face_selection_data, TexCoords);
     
-    if(!selectedPrim && usingMeshSelection == 1){
-        if(hideUnselected == 1){
+    if(!selectedPrim){
+        if(face_selection_data.hideUnselected == 1){
             color.rgba = vec4(0.);
             gl_FragDepth = 1.;
         }

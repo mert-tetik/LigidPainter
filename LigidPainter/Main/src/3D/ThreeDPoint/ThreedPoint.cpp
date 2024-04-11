@@ -117,19 +117,9 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, f
             ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
             ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
-            ShaderSystem::alphaZero3D().setInt("usingMeshSelection", getScene()->get_selected_mesh()->face_selection_data.activated);
-            ShaderSystem::alphaZero3D().setInt("hideUnselected", getScene()->get_selected_mesh()->face_selection_data.hideUnselected);
-            ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
-            ShaderSystem::alphaZero3D().setInt("meshMask", 1);
+            ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
 
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, getScene()->get_selected_mesh()->face_selection_data.selectedFaces.ID);
-            
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, getScene()->get_selected_mesh()->face_selection_data.meshMask.ID);
-            
-            ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
-            getScene()->get_selected_mesh()->Draw(false);
+            getScene()->get_selected_mesh()->Draw();
 
             this->render(timer, false, true, radius, false);
 

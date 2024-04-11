@@ -236,9 +236,7 @@ static void project_window_painting_texture(
         ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
         ShaderSystem::projectingPaintedTextureShader().setMat4("view", cam.viewMatrix);
 
-        ShaderSystem::projectingPaintedTextureShader().setInt("usingMeshSelection", vertex_buffer_data.model_mesh->face_selection_data.activated);
-        ShaderSystem::projectingPaintedTextureShader().setInt("selectedPrimitiveIDS", 8); glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, vertex_buffer_data.model_mesh->face_selection_data.selectedFaces.ID);
-        ShaderSystem::projectingPaintedTextureShader().setInt("meshMask", 10); glActiveTexture(GL_TEXTURE10); glBindTexture(GL_TEXTURE_2D, vertex_buffer_data.model_mesh->face_selection_data.meshMask.ID);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::projectingPaintedTextureShader(), *vertex_buffer_data.model_mesh, GL_TEXTURE8, GL_TEXTURE10);
 
         //Draw the UV of the selected model
         {    
@@ -249,8 +247,7 @@ static void project_window_painting_texture(
                 glBlendEquationSeparate(GL_MAX, GL_MAX);
             }
 
-            ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", vertex_buffer_data.model_mesh->indices.size() / 3);
-            vertex_buffer_data.model_mesh->Draw(false);
+            vertex_buffer_data.model_mesh->Draw();
             
             if(wrapMode){
                 glDisable(GL_BLEND);
@@ -378,14 +375,9 @@ static glm::vec2 process_3D_point_calculate_2D_location(Camera cam, ThreeDPoint 
     ShaderSystem::renderModelData().setMat4("modelMatrix", getScene()->transformMatrix);
     ShaderSystem::renderModelData().setInt("state", 1);
 
-    ShaderSystem::renderModelData().setInt("usingMeshSelection", mesh->face_selection_data.activated);
-    ShaderSystem::renderModelData().setInt("hideUnselected", mesh->face_selection_data.hideUnselected);
-    ShaderSystem::renderModelData().setInt("selectedPrimitiveIDS", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, mesh->face_selection_data.selectedFaces.ID);
-    ShaderSystem::renderModelData().setInt("meshMask", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, mesh->face_selection_data.meshMask.ID);
-
-    //Draw the selected mesh in 3D
-    ShaderSystem::renderModelData().setInt("primitiveCount", mesh->indices.size() / 3);
-    mesh->Draw(false);
+    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *mesh, GL_TEXTURE0, GL_TEXTURE1);
+    
+    mesh->Draw();
 
     float* pxs = new float[resolution * resolution * 4]; 
     
@@ -508,14 +500,10 @@ void update_depth_texture(Texture depth_texture, Camera cam, Mesh* mesh){
     ShaderSystem::depth3D().setMat4("view", cam.viewMatrix);
     ShaderSystem::depth3D().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::depth3D().setMat4("modelMatrix", getScene()->transformMatrix);
-    ShaderSystem::depth3D().setInt("usingMeshSelection", mesh->face_selection_data.activated);
-    ShaderSystem::depth3D().setInt("hideUnselected", mesh->face_selection_data.hideUnselected);
-    ShaderSystem::depth3D().setInt("selectedPrimitiveIDS", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, mesh->face_selection_data.selectedFaces.ID);
-    ShaderSystem::depth3D().setInt("meshMask", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, mesh->face_selection_data.meshMask.ID);
-
-    //Draw the selected mesh in 3D
-    ShaderSystem::depth3D().setInt("primitiveCount", mesh->indices.size() / 3);
-    mesh->Draw(false);
+    
+    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::depth3D(), *mesh, GL_TEXTURE0, GL_TEXTURE1);
+    
+    mesh->Draw();
 
     //!Finished
     //Set back to default shader
@@ -877,7 +865,7 @@ static void updateTheTexture(
             ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
             ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->camera.viewMatrix);
 
-            settings.vertex_buffer.model_mesh->Draw(false);         
+            settings.vertex_buffer.model_mesh->Draw();         
         }
     }
     else{

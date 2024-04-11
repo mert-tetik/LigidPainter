@@ -1,27 +1,32 @@
 #version 400 core
 
+/*
+struct FaceSelectionData{
+    int meshSelectionEditing;
+    int hideUnselected;
+    int usingMeshSelection;
+    sampler2D selectedPrimitiveIDS;
+    sampler2D meshMask;
+    int primitiveCount;
+};
+face_selection_is_current_prim_selected or face_selection_is_current_prim_hovered
+*/
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Face_Selection.frag)
+uniform FaceSelectionData face_selection_data;
+
 out vec4 fragColor;
 
 in vec2 TexCoords;
-
-uniform int usingMeshSelection = 0;
-uniform int hideUnselected = 0;
-uniform sampler2D selectedPrimitiveIDS;
-uniform sampler2D meshMask;
-uniform int primitiveCount;
 
 void main(){
     fragColor = vec4(0.);
 
     gl_FragDepth = gl_FragCoord.z;
     
-    float prim_txtr_res = int(ceil(sqrt(primitiveCount)));
-    float prim_height = floor(float(gl_PrimitiveID) / prim_txtr_res);
-    float prim = texelFetch(selectedPrimitiveIDS, ivec2(float(gl_PrimitiveID) - (prim_height * prim_txtr_res) , prim_height), 0).r;
-    bool selectedPrim = prim > 0.9 && texture(meshMask, TexCoords).r > 0.5;
+    bool selectedPrim = face_selection_is_current_prim_selected(face_selection_data, TexCoords);
     
-    if(!selectedPrim && usingMeshSelection == 1){
-        if(hideUnselected == 1){
+    if(!selectedPrim){
+        if(face_selection_data.hideUnselected == 1){
             gl_FragDepth = 1.;
         }
     }

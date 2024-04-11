@@ -26,6 +26,19 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
+static float calculateDepthToleranceValue(glm::vec3 campos,glm::vec3 origin){
+    float distance = glm::distance(campos, origin);
+
+    if(distance < 2.f)
+        return 0.01f;
+    else if(distance < 5.f)
+        return 0.001f;
+    else if(distance < 10.f)
+        return 0.0001f;
+
+    return 0.00001f;
+}
+
 static Camera prevCam;
 bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool registerHistory);
 
@@ -39,11 +52,15 @@ void Scene::render_model(Timer& timer){
 
     const bool multi_channel_mode = panel_displaying_modes.selectedElement != 2; 
 
-
     if(multi_channel_mode){
 
         for (size_t i = 0; i < this->model->meshes.size(); i++)
         {   
+            if(i != button_mesh_selection.selectedMeshI){
+                this->model->meshes[i].face_selection_data.activated = false;
+                this->model->meshes[i].face_selection_data.editMode = false;
+            }
+
             //3D Model Shader
             ShaderSystem::tdModelShader().use();
             
@@ -82,11 +99,11 @@ void Scene::render_model(Timer& timer){
                                                                                     )
                                                         );
             
+            ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::tdModelShader(), this->model->meshes[i], GL_TEXTURE11, GL_TEXTURE12);
+
             ShaderSystem::tdModelShader().setInt("skybox",6); glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.ID);
             ShaderSystem::tdModelShader().setInt("prefilterMap",7); glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
             
-            ShaderSystem::tdModelShader().setInt("selectedPrimitiveIDS", 11); glActiveTexture(GL_TEXTURE11);glBindTexture(GL_TEXTURE_2D, this->model->meshes[i].face_selection_data.selectedFaces.ID);
-            ShaderSystem::tdModelShader().setInt("meshMask", 12); glActiveTexture(GL_TEXTURE12); glBindTexture(GL_TEXTURE_2D, (this->get_selected_mesh()->face_selection_data.editMode) ? appTextures.white.ID : this->get_selected_mesh()->face_selection_data.meshMask.ID);
             ShaderSystem::tdModelShader().setVec3("viewPos", this->camera.cameraPos);
             ShaderSystem::tdModelShader().setMat4("view", this->camera.viewMatrix);
             ShaderSystem::tdModelShader().setMat4("projection", this->projectionMatrix);
@@ -102,18 +119,6 @@ void Scene::render_model(Timer& timer){
                                                                                 checkComboList_painting_mirror.panel.sections[0].elements[3].rangeBar.value, 
                                                                                 checkComboList_painting_mirror.panel.sections[0].elements[5].rangeBar.value
                                                                             ));
-
-            ShaderSystem::tdModelShader().setInt("wireframeMode", 0);
-
-            if(i != button_mesh_selection.selectedMeshI){
-                this->model->meshes[i].face_selection_data.activated = false;
-                this->model->meshes[i].face_selection_data.editMode = false;
-            }
-            
-            ShaderSystem::tdModelShader().setInt("usingMeshSelection", this->model->meshes[i].face_selection_data.activated);
-            ShaderSystem::tdModelShader().setInt("meshSelectionEditing", this->model->meshes[i].face_selection_data.editMode);
-            ShaderSystem::tdModelShader().setInt("hideUnselected", this->model->meshes[i].face_selection_data.hideUnselected);
-
             
             if(button_mesh_selection.selectedMeshI == i){
                 ShaderSystem::tdModelShader().setFloat("opacity", 1.f);
@@ -140,8 +145,7 @@ void Scene::render_model(Timer& timer){
             ShaderSystem::tdModelShader().setInt("paintingMode", painting_paint_condition());
 
             if(!(i != button_mesh_selection.selectedMeshI && this->model->meshes[i].face_selection_data.hideUnselected)){
-                ShaderSystem::tdModelShader().setInt("primitiveCount", this->model->meshes[i].indices.size() / 3);
-                this->model->meshes[i].Draw(this->model->meshes[i].face_selection_data.editMode && i == button_mesh_selection.selectedMeshI);
+                this->model->meshes[i].Draw();
             }
         }   
     }
@@ -189,16 +193,35 @@ void Scene::render_model(Timer& timer){
         ShaderSystem::solidPaintingShader().setMat4("projection", this->projectionMatrix);
         ShaderSystem::solidPaintingShader().setMat4("modelMatrix", this->transformMatrix);
 
-        ShaderSystem::solidPaintingShader().setInt("paintingMode", painting_paint_condition());
-        ShaderSystem::solidPaintingShader().setInt("primitiveCount", this->get_selected_mesh()->indices.size());
-        ShaderSystem::solidPaintingShader().setInt("wireframeMode", 0);
-        ShaderSystem::solidPaintingShader().setInt("meshSelectionEditing", this->get_selected_mesh()->face_selection_data.editMode);
-        ShaderSystem::solidPaintingShader().setInt("hideUnselected", this->get_selected_mesh()->face_selection_data.hideUnselected);
-        ShaderSystem::solidPaintingShader().setInt("usingMeshSelection", this->get_selected_mesh()->face_selection_data.activated);
-        ShaderSystem::solidPaintingShader().setInt("selectedPrimitiveIDS", 2); glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, this->get_selected_mesh()->face_selection_data.selectedFaces.ID);
-        ShaderSystem::solidPaintingShader().setInt("meshMask", 3); glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, (this->get_selected_mesh()->face_selection_data.editMode) ? appTextures.white.ID : this->get_selected_mesh()->face_selection_data.meshMask.ID);
+        ShaderSystem::solidPaintingShader().setVec3("mirrorState", glm::vec3(
+                                                                    checkComboList_painting_mirror.panel.sections[0].elements[0].checkBox.clickState1, 
+                                                                    checkComboList_painting_mirror.panel.sections[0].elements[2].checkBox.clickState1, 
+                                                                    checkComboList_painting_mirror.panel.sections[0].elements[4].checkBox.clickState1
+                                                                ));
+                                                                            
+        ShaderSystem::solidPaintingShader().setVec3("mirrorOffsets", glm::vec3(
+                                                                            checkComboList_painting_mirror.panel.sections[0].elements[1].rangeBar.value, 
+                                                                            checkComboList_painting_mirror.panel.sections[0].elements[3].rangeBar.value, 
+                                                                            checkComboList_painting_mirror.panel.sections[0].elements[5].rangeBar.value
+                                                                        ));
 
-        this->get_selected_mesh()->Draw(this->get_selected_mesh()->face_selection_data.editMode);
+        ShaderSystem::solidPaintingShader().setInt("paintingMode", painting_paint_condition());
+
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::solidPaintingShader(), *this->get_selected_mesh(), GL_TEXTURE2, GL_TEXTURE3);
+
+        this->get_selected_mesh()->Draw();
+    }
+
+    if(this->get_selected_mesh()->face_selection_data.editMode){
+        ShaderSystem::color3d().use();
+        ShaderSystem::color3d().setMat4("view", this->camera.viewMatrix);
+        ShaderSystem::color3d().setMat4("projection", this->projectionMatrix);
+        ShaderSystem::color3d().setMat4("modelMatrix", this->transformMatrix);
+        ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
+        ShaderSystem::color3d().setFloat("depthToleranceValue", 0.0001f);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        this->get_selected_mesh()->Draw();
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
     if(this->get_selected_mesh()->face_selection_data.editMode && !panels_any_hovered())    
@@ -207,10 +230,10 @@ void Scene::render_model(Timer& timer){
     // Update the 3D model depth texture if necessary last frame camera changed position
     if(
             (prevCam != this->camera) && !*Mouse::RPressed() ||
-            getScene()->get_selected_mesh()->face_selection_data.editMode    
+            this->get_selected_mesh()->face_selection_data.editMode    
         )
     {
-        getScene()->get_selected_mesh()->updatePosNormalTexture();
+        this->get_selected_mesh()->updatePosNormalTexture();
         prevCam = this->camera;
     }
 

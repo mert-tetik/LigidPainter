@@ -467,7 +467,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         ShaderSystem::normalVectorShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
         ShaderSystem::normalVectorShader().setMat4("view", getScene()->camera.viewMatrix);
     
-        mesh.Draw(false);
+        mesh.Draw();
 
         // Blured normal vector txtr
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, normalMapTxtrBlurred.ID, 0);
@@ -594,7 +594,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        mesh.Draw(false);
+        mesh.Draw();
 
         Settings::defaultFramebuffer()->FBO.bind();
         glDeleteFramebuffers(1, &FBO);
@@ -820,7 +820,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
             glActiveTexture(GL_TEXTURE7);        
             glBindTexture(GL_TEXTURE_2D, proc.ID);
 
-            model.meshes[i].Draw(false);
+            model.meshes[i].Draw();
         }
 
         //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 

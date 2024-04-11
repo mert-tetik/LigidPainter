@@ -27,11 +27,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-#include "GUI/Elements.hpp"
 #include "UTIL/Util.hpp"
-#include "3D/ThreeD.hpp"
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Settings/Settings.hpp"
+
+#include "GUI/Elements.hpp"
+
+#include "3D/ThreeD.hpp"
+
 
 //0 = albedo
 //1 = roughness
@@ -153,8 +156,6 @@ static Texture aoTxtrDup;
 static void genAmbientOcclusion(
                                     Texture& aoTxtr, 
                                     Mesh& mesh, 
-                                    Texture meshMask, 
-                                    Texture selectedObjectPrimitivesTxtr, 
                                     Model& model,
                                     bool usePrevAO,
                                     bool singleMesh,
@@ -241,19 +242,10 @@ static void genAmbientOcclusion(
         ShaderSystem::depth3D().setMat4("projection", projection);
         ShaderSystem::depth3D().setMat4("modelMatrix", glm::mat4(1.f));
 
-        ShaderSystem::depth3D().setInt("usingMeshSelection", false);
-        ShaderSystem::depth3D().setInt("hideUnselected", false);
-        ShaderSystem::depth3D().setInt("selectedPrimitiveIDS", 0);
-        ShaderSystem::depth3D().setInt("meshMask", 1);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, selectedObjectPrimitivesTxtr.ID);
-        
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, meshMask.ID);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::depth3D(), Mesh(), GL_TEXTURE0, GL_TEXTURE1);
 
         if(singleMesh)
-            mesh.Draw(false);
+            mesh.Draw();
         else
             model.Draw();
         
@@ -265,10 +257,7 @@ static void genAmbientOcclusion(
         ShaderSystem::AOGen().setMat4("perspectiveProjection", projection); 
         ShaderSystem::AOGen().setMat4("view", view); 
         
-        ShaderSystem::AOGen().setInt("useMeshMask", selectedObjectPrimitivesTxtr.ID != 0);
-        ShaderSystem::AOGen().setInt("selectedPrimitiveIDS", 2);
-        ShaderSystem::AOGen().setInt("meshMask", 3);
-        ShaderSystem::AOGen().setInt("primitiveCount", mesh.indices.size() / 3);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::AOGen(), mesh, GL_TEXTURE2, GL_TEXTURE3);
         
         ShaderSystem::AOGen().setInt("depthTexture", 0); 
         ShaderSystem::AOGen().setInt("srcTxtr", 1);
@@ -280,13 +269,7 @@ static void genAmbientOcclusion(
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, aoTxtrDup.ID);
         
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, selectedObjectPrimitivesTxtr.ID);
-
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, meshMask.ID);
-
-        mesh.Draw(false);
+        mesh.Draw();
     }
     
     if(smoothness > 0.1f)
@@ -320,8 +303,6 @@ static void setUniforms(
                             Texture prevDepthTexture,
                             unsigned int textureModifierSelectedTexture_procedural,
                             Mesh& mesh,
-                            Texture meshMask,
-                            Texture selectedObjectPrimitivesTxtr,
                             bool noPrevTxtrMode
                         )
 {
@@ -338,10 +319,8 @@ static void setUniforms(
         modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[0].elements[channelI * 2 + 1].rangeBar.value);
 
     modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[0].rangeBar.value);
-    modifierShader.setInt("selectedPrimitiveIDS" , 3); //Set the previous height map texture
-    modifierShader.setInt("meshMask" , 4); //Set the previous height map texture
-    modifierShader.setInt("primitiveCount" , mesh.indices.size() / 3); //Set the previous height map texture
-    modifierShader.setInt("useMeshMask" , selectedObjectPrimitivesTxtr.ID != 0); //Set the previous height map texture
+
+    ShaderUTIL::set_shader_struct_face_selection_data(modifierShader, mesh, GL_TEXTURE3, GL_TEXTURE4);
 
     // Bind the mask texture
     glActiveTexture(GL_TEXTURE0);
@@ -360,12 +339,6 @@ static void setUniforms(
         glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
     else
         glBindTexture(GL_TEXTURE_2D, appTextures.black.ID);
-
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, selectedObjectPrimitivesTxtr.ID);
-    
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, meshMask.ID);
 
 
     if(material.materialModifiers[curModI].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
@@ -647,13 +620,11 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                             prevDepthTexture,
                             textureModifierSelectedTexture_procedural.ID,
                             mesh,
-                            mesh.face_selection_data.meshMask,
-                            mesh.face_selection_data.selectedFaces,
                             noPrevTxtrMode
                         );
             
             // Render the result to the framebuffer
-            mesh.Draw(false);
+            mesh.Draw();
 
             //Delete the framebuffer after completing the channel
             FBO.deleteBuffers(false, false);
@@ -792,8 +763,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                 genAmbientOcclusion(
                                     mesh.ambientOcclusion, 
                                     mesh, 
-                                    mesh.face_selection_data.meshMask, 
-                                    mesh.face_selection_data.selectedFaces, 
                                     model,
                                     material.materialModifiers[curModI].sections[sections.size() - 1].elements[1].checkBox.clickState1,
                                     material.materialModifiers[curModI].sections[sections.size() - 1].elements[2].checkBox.clickState1,

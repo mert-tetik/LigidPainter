@@ -66,19 +66,9 @@ void TextureField::renderWrappedTextureField(
         ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
         ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
-        ShaderSystem::alphaZero3D().setInt("usingMeshSelection", getScene()->get_selected_mesh()->face_selection_data.activated);
-        ShaderSystem::alphaZero3D().setInt("hideUnselected", getScene()->get_selected_mesh()->face_selection_data.hideUnselected);
-        ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
-        ShaderSystem::alphaZero3D().setInt("meshMask", 1);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, getScene()->get_selected_mesh()->face_selection_data.selectedFaces.ID);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
         
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, getScene()->get_selected_mesh()->face_selection_data.meshMask.ID);
-        
-        ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
-        getScene()->get_selected_mesh()->Draw(false);
+        getScene()->get_selected_mesh()->Draw();
 
         // Render the points
         if(!generatingTextureMode && editMode){
@@ -104,19 +94,9 @@ void TextureField::renderWrappedTextureField(
         ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
         ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
-        ShaderSystem::alphaZero3D().setInt("usingMeshSelection", getScene()->get_selected_mesh()->face_selection_data.activated);
-        ShaderSystem::alphaZero3D().setInt("hideUnselected", getScene()->get_selected_mesh()->face_selection_data.hideUnselected);
-        ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
-        ShaderSystem::alphaZero3D().setInt("meshMask", 1);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, getScene()->get_selected_mesh()->face_selection_data.selectedFaces.ID);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
         
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, getScene()->get_selected_mesh()->face_selection_data.meshMask.ID);
-
-        ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
-        getScene()->get_selected_mesh()->Draw(false);
+        getScene()->get_selected_mesh()->Draw();
 
         // Render the wrapped texture
         if(this->threeDPointTopLeft.pos != glm::vec3(0.f) && this->threeDPointBottomRight.pos != glm::vec3(0.f))
@@ -695,19 +675,9 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, bool doMo
     ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
-    ShaderSystem::alphaZero3D().setInt("usingMeshSelection", getScene()->get_selected_mesh()->face_selection_data.activated);
-    ShaderSystem::alphaZero3D().setInt("hideUnselected", getScene()->get_selected_mesh()->face_selection_data.hideUnselected);
-    ShaderSystem::alphaZero3D().setInt("selectedPrimitiveIDS", 0);
-    ShaderSystem::alphaZero3D().setInt("meshMask", 1);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, getScene()->get_selected_mesh()->face_selection_data.selectedFaces.ID);
+    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1); 
     
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, getScene()->get_selected_mesh()->face_selection_data.meshMask.ID);
-
-    ShaderSystem::alphaZero3D().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
-    getScene()->get_selected_mesh()->Draw(false);
+    getScene()->get_selected_mesh()->Draw();
     
     // Then render the wrapped image
     ShaderSystem::color3d().use();
