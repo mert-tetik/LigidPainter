@@ -222,20 +222,23 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
         else{
             for (PaintedBufferData painted_buffer : get_painted_buffers(settings))
             {
-                Debugger::block("Painting : Update the texture"); // Start
-                updateTheTexture(painted_buffer.txtr, painted_buffer.channel_index, settings, painting_projected_painting_FBO);
-                Debugger::block("Painting : Update the texture"); // End
-                
-                /*
-                txtr.mix(customMatTxtr, projectedPaintingTexture, true, false, false);
-                txtr.removeSeams(*getScene()->get_selected_mesh(), txtr.getResolution());
-                */
+                if(settings.color_buffer.use_custom_material){
+                    Debugger::block("Painting : Applying custom mat"); // Start
+                    painted_buffer.txtr.mix(painted_buffer.corresponding_custom_material_channel, painting_projected_painting_FBO.colorBuffer, true, false, false);
+                    painted_buffer.txtr.removeSeams(*getScene()->get_selected_mesh(), painted_buffer.txtr.getResolution());
+                    Debugger::block("Painting : Applying custom mat"); // End
+                }
+                else{
+                    Debugger::block("Painting : Update the texture"); // Start
+                    updateTheTexture(painted_buffer.txtr, painted_buffer.channel_index, settings, painting_projected_painting_FBO);
+                    Debugger::block("Painting : Update the texture"); // End
 
-                for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-                {
-                    if(painted_buffer.txtr.ID == Library::getTexture(i)->ID){
-                        Library::getTexture(i)->copyDataToTheCopyContext();
-                        projectUpdatingThreadElements.updateTextures = true;
+                    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
+                    {
+                        if(painted_buffer.txtr.ID == Library::getTexture(i)->ID){
+                            Library::getTexture(i)->copyDataToTheCopyContext();
+                            projectUpdatingThreadElements.updateTextures = true;
+                        }
                     }
                 }
             }

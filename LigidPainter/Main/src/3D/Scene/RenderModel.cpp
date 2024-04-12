@@ -69,17 +69,17 @@ void Scene::render_model(Timer& timer){
                                                             ShaderUTIL::PaintingData(
                                                                                         ShaderUTIL::PaintingData::PaintingBuffers(
                                                                                                                                     GL_TEXTURE0,
-                                                                                                                                    this->model->meshes[i].albedo,
+                                                                                                                                    (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].albedo : appTextures.noLayersWarningTexture,
                                                                                                                                     GL_TEXTURE1,
-                                                                                                                                    this->model->meshes[i].roughness,
+                                                                                                                                    (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].roughness : appTextures.white,
                                                                                                                                     GL_TEXTURE2,
-                                                                                                                                    this->model->meshes[i].metallic,
+                                                                                                                                    (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].metallic : appTextures.black,
                                                                                                                                     GL_TEXTURE3,
-                                                                                                                                    this->model->meshes[i].normalMap,
+                                                                                                                                    (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].normalMap : appTextures.noLayersWarningTexture,
                                                                                                                                     GL_TEXTURE4,
-                                                                                                                                    this->model->meshes[i].heightMap,
+                                                                                                                                    (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].heightMap : appTextures.white,
                                                                                                                                     GL_TEXTURE5,
-                                                                                                                                    this->model->meshes[i].ambientOcclusion,
+                                                                                                                                    (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].ambientOcclusion : appTextures.white,
                                                                                                                                     GL_TEXTURE8,
                                                                                                                                     painting_projected_painting_FBO.colorBuffer
                                                                                                                                 ),   
@@ -157,7 +157,7 @@ void Scene::render_model(Timer& timer){
                                                         ShaderUTIL::PaintingData(
                                                                                     ShaderUTIL::PaintingData::PaintingBuffers(
                                                                                                                                 GL_TEXTURE0,
-                                                                                                                                panel_library_selected_texture.ID,
+                                                                                                                                (panel_library_selected_texture.ID) ? panel_library_selected_texture.ID : appTextures.black,
                                                                                                                                 0,
                                                                                                                                 0,
                                                                                                                                 0,

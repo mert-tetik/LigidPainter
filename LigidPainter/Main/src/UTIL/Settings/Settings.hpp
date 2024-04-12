@@ -109,7 +109,7 @@ struct AppTextures{
     Texture greetingDialogImage;  
     Texture newVersionBanner;  
     Texture filterDisplayerImage;  
-    Texture noMaterialConnectedToTheMeshWarningImage;  
+    Texture noLayersWarningTexture;  
     Texture noMaterialModifierIsConnectedToMaterialWarningImage;
     Texture materialChannelMissingTexture;
     Texture baking_LigidRay;
