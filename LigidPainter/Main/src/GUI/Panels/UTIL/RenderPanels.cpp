@@ -113,11 +113,12 @@ void panels_render(Timer& timer)
         button_painting_brush_render(timer, true);
         Debugger::block("GUI : Panels : Painting brush button"); // End
 
-        if(panel_painting_modes.selectedElement == 4){
+        if(panel_painting_modes.selectedElement == 2){
             Debugger::block("GUI : Panels : Smear painting properties panel"); // Start
             panel_smear_painting_properties_render(timer, true);
             Debugger::block("GUI : Panels : Smear painting properties panel"); // End
-           
+        }
+        if(panel_painting_modes.selectedElement == 4){
             Debugger::block("GUI : Panels : Painting filter mode filter selection button"); // Start
             button_painting_filter_mode_filter_render(timer, true);
             Debugger::block("GUI : Panels : Painting filter mode filter selection button"); // End

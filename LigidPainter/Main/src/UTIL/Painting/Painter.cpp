@@ -55,6 +55,7 @@ MirrorSide XYZ_side;
 static int frame_counter = 0;
 
 static ThreeDPoint last_threeD_point;
+static Texture one_px_txtr;
 
 #define RETURN_FROM_PAINTING glEnable(GL_BLEND);\
                              return;
@@ -212,7 +213,11 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
         register_history_actions(settings.painting_mode, settings.painted_buffers);
 
         if(settings.painting_mode == 4){
-            //button_painting_filter_mode_filter.filter.applyFilter(panel_library_selected_texture.ID, this->projectedPaintingTexture, 0);
+            for (PaintedBufferData painted_buffer : get_painted_buffers(settings)){
+                char clrPx[4] = {painted_buffer.clr.r * 127, painted_buffer.clr.g * 127, painted_buffer.clr.b * 127, 1.};
+                one_px_txtr.update(clrPx, 1, 1);
+                button_painting_filter_mode_filter.filter.applyFilter(painted_buffer.txtr.ID, painting_projected_painting_FBO.colorBuffer, one_px_txtr);
+            }
         }
         else{
             for (PaintedBufferData painted_buffer : get_painted_buffers(settings))
@@ -302,6 +307,8 @@ std::vector<MirrorSide*> painting_get_selected_mirror_sides(bool mirror_X, bool 
                                             mirror_side.effectAxis = axis;
 
 void painting_init_buffers(){
+    one_px_txtr = Texture(nullptr, 1, 1, GL_NEAREST);
+
     painting_projected_painting_FBO = Framebuffer(Texture(nullptr, 1024, 1024), GL_TEXTURE_2D, "projected_painting_FBO");
     
     INIT_MIRROR_SIDE(O_side, glm::vec3(-1.f, -1.f, -1.f))
