@@ -17,12 +17,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "GUI/Elements.hpp"
-#include "GUI/Dialogs.hpp"
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+
+#include "GUI/Elements.hpp"
+#include "GUI/Dialogs.hpp"
+
+#include <tinyfiledialogs.h>
+
 
 #include <string>
 #include <iostream>
@@ -114,6 +118,36 @@ void PainterColorSelection::render(
         this->selectedI = 1;
     if(clr3_Btn.hover && *Mouse::LClick())
         this->selectedI = 2;
+
+    if((clr1_Btn.hover || clr2_Btn.hover || clr3_Btn.hover) && *Mouse::LDoubleClick()){
+        unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
+        Color clrObj;
+        if(clr1_Btn.hover){
+            clrObj.loadRGB_normalized(clr1_Btn.color);
+        }  
+        else if(clr2_Btn.hover){
+            clrObj.loadRGB_normalized(clr2_Btn.color);
+        }  
+        else if(clr3_Btn.hover){
+            clrObj.loadRGB_normalized(clr3_Btn.color);
+        }
+
+        std::string hex0Val = clrObj.getHEX();
+        auto check = tinyfd_colorChooser("Select a color", hex0Val.c_str(), defRGB,defRGB);
+        if(check){
+            Color clr(check);
+            
+            if(clr1_Btn.hover){
+                clr1_Btn.color = glm::vec4(clr.getRGB_normalized(), 1.f);
+            }  
+            else if(clr2_Btn.hover){
+                clr2_Btn.color = glm::vec4(clr.getRGB_normalized(), 1.f);
+            }  
+            else if(clr3_Btn.hover){
+                clr3_Btn.color = glm::vec4(clr.getRGB_normalized(), 1.f);
+            }
+        }        
+    }
 
     if(this->selectedI != 0)
         clr1_Btn.clickState1 = false;

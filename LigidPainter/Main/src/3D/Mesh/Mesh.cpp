@@ -533,6 +533,7 @@ void Mesh::updateModelPrimitivesTexture(){
     if(!updateModelPrimitivesTexture_FBO.ID)
         updateModelPrimitivesTexture_FBO = Framebuffer(this->face_selection_data.modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, this->face_selection_data.modelPrimitives.getResolution()), "Face selection");
 
+    updateModelPrimitivesTexture_FBO.setColorBuffer(this->face_selection_data.modelPrimitives, GL_TEXTURE_2D);
     updateModelPrimitivesTexture_FBO.bind();
 
     glClearColor(0.,0.,0.,0.);

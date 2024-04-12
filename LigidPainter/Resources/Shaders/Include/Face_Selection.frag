@@ -25,12 +25,21 @@ struct FaceSelectionData{
     sampler2D selectedPrimitiveIDS;
     sampler2D meshMask;
     int primitiveCount;
+    float prim_txtr_res;
 };
 
 float face_selection_get_prim_value(FaceSelectionData face_selection_data){
-    float prim_txtr_res = int(ceil(sqrt(face_selection_data.primitiveCount)));
-    float prim_height = floor(float(gl_PrimitiveID) / prim_txtr_res);
-    float prim = texelFetch(face_selection_data.selectedPrimitiveIDS, ivec2(float(gl_PrimitiveID) - (prim_height * prim_txtr_res) , prim_height), 0).r;
+    float prim_height = floor(float(gl_PrimitiveID) / face_selection_data.prim_txtr_res); // 56
+    ivec2 uv = ivec2(float(gl_PrimitiveID) - (prim_height * face_selection_data.prim_txtr_res), prim_height);
+    if(uv.x < 0)
+        uv.x = 0;
+    if(uv.y < 0)
+        uv.y = 0;
+    if(uv.x >= int(face_selection_data. prim_txtr_res))
+        uv.x = int(face_selection_data. prim_txtr_res)-1;
+    if(uv.y >= int(face_selection_data. prim_txtr_res))
+        uv.y = int(face_selection_data. prim_txtr_res)-1;
+    float prim = texelFetch(face_selection_data.selectedPrimitiveIDS, uv, 0).r;
     return prim;
 
 }

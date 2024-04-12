@@ -46,10 +46,6 @@ static void unselect_all_faces(std::vector<byte>* selectedPrimitiveIDs, std::vec
 static void apply_pixels(float* pxs, glm::vec2 scale, std::vector<byte>* selectedPrimitiveIDs, std::vector<int>* changedIndices);
 void updatePrimitivesArrayTexture(Mesh* mesh);
 
-static Framebuffer capture_FBO;
-
-int originalOBJI = 0;
-
 static Camera prev_cam;
 
 bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool registerHistory){
@@ -80,7 +76,6 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
     // Scale of the user's primary monitor
     glm::vec2 videoScale = *Settings::videoScale();
 
-
     if(prev_cam != getScene()->camera){
         mesh->updateObjectIDsTexture();
         mesh->updateModelPrimitivesTexture();
@@ -109,7 +104,7 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
         glm::ivec2 scale;
         
         if(mesh->face_selection_data.selectionModeIndex == 0){
-            scale = glm::vec2(model->meshes[meshI].face_selection_data.radius);
+            scale = glm::vec2(mesh->face_selection_data.radius);
             
             pos.x = UTIL::new_value_range(Mouse::cursorPos()->x, 0, getContext()->windowScale.x, 0, mesh->objectIDs.getResolution().x);
             pos.y = UTIL::new_value_range(Mouse::cursorPos()->y, 0, getContext()->windowScale.y, 0, mesh->objectIDs.getResolution().y);
@@ -117,8 +112,8 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
             pos -= (glm::vec2)scale/2.f;
         }
         else if(mesh->face_selection_data.selectionModeIndex == 1){
-            glm::vec2 boxSelectionStartSc = model->meshes[meshI].face_selection_data.boxSelectionStart / 100.f * *Settings::videoScale();
-            glm::vec2 boxSelectionEndSc = model->meshes[meshI].face_selection_data.boxSelectionEnd / 100.f * *Settings::videoScale();
+            glm::vec2 boxSelectionStartSc = mesh->face_selection_data.boxSelectionStart / 100.f * *Settings::videoScale();
+            glm::vec2 boxSelectionEndSc = mesh->face_selection_data.boxSelectionEnd / 100.f * *Settings::videoScale();
             boxSelectionStartSc.x = UTIL::new_value_range(boxSelectionStartSc.x, 0, getContext()->windowScale.x, 0, mesh->objectIDs.getResolution().x);
             boxSelectionStartSc.y = UTIL::new_value_range(boxSelectionStartSc.y, 0, getContext()->windowScale.y, 0, mesh->objectIDs.getResolution().y);
             boxSelectionEndSc.x = UTIL::new_value_range(boxSelectionEndSc.x, 0, getContext()->windowScale.x, 0, mesh->objectIDs.getResolution().x);
@@ -275,6 +270,7 @@ void updatePrimitivesArrayTexture(Mesh* mesh){
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     if(mesh->face_selection_data.changedIndices.size() > 50){
+        
         while (glGetError() != GL_NO_ERROR)
         {
         }
@@ -290,7 +286,7 @@ void updatePrimitivesArrayTexture(Mesh* mesh){
                 pxs[i] = mesh->face_selection_data.selectedPrimitiveIDs[mesh->face_selection_data.selectedPrimitiveIDs.size()-1] * 126;
         }
 
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0,0, prim_txtr_res, prim_txtr_res, GL_RED, GL_UNSIGNED_BYTE, pxs);
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, prim_txtr_res, prim_txtr_res, GL_RED, GL_UNSIGNED_BYTE, pxs);
         glGenerateMipmap(GL_TEXTURE_2D);
 
         if(glGetError() == 1281){
@@ -306,9 +302,9 @@ void updatePrimitivesArrayTexture(Mesh* mesh){
             unsigned char pxs[1];
             pxs[0] = (unsigned char)(mesh->face_selection_data.selectedPrimitiveIDs[mesh->face_selection_data.changedIndices[i]] * 126);
 
-            float prim_txtr_res = int(ceil(sqrt(mesh->face_selection_data.selectedPrimitiveIDs.size())));
-            float prim_height = floor((float)mesh->face_selection_data.changedIndices[i] / prim_txtr_res);
-            glm::ivec2 offset = glm::ivec2((float)mesh->face_selection_data.changedIndices[i] - (prim_height * prim_txtr_res), prim_height);
+            float prim_txtr_res = int(ceil(sqrt(mesh->face_selection_data.selectedPrimitiveIDs.size()))); // 63
+            float prim_height = floor((float)mesh->face_selection_data.changedIndices[i] / prim_txtr_res); // 56
+            glm::ivec2 offset = glm::ivec2((float)mesh->face_selection_data.changedIndices[i] - (prim_height * prim_txtr_res), prim_height);// 3529 - 3528
 
             glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);
         }
@@ -339,6 +335,8 @@ static void unselect_all_faces(std::vector<byte>* selectedPrimitiveIDs, std::vec
 static void apply_pixels(float* pxs, glm::vec2 scale, std::vector<byte>* selectedPrimitiveIDs, std::vector<int>* changedIndices){
     for (size_t i = 0; i < scale.x * scale.y; i++)
     {
+        if(i == 1)
+            std::cout << "cur : " << pxs[i] << std::endl;
         pxs[i] -= 1;
         
         if(pxs[i] < selectedPrimitiveIDs->size() && pxs[i] >= 0){

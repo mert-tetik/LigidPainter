@@ -29,12 +29,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 void ShaderUTIL::set_shader_struct_face_selection_data(Shader shader, Mesh& mesh, unsigned int txtr_slot1, unsigned int txtr_slot2){
     shader.use();
     if(txtr_slot1 && mesh.face_selection_data.selectedFaces.ID && txtr_slot2 && mesh.face_selection_data.meshMask.ID){
+        shader.setFloat("face_selection_data.prim_txtr_res", mesh.face_selection_data.selectedFaces.getResolution().x);
         shader.setInt("face_selection_data.meshSelectionEditing", mesh.face_selection_data.editMode);
         shader.setInt("face_selection_data.hideUnselected", mesh.face_selection_data.hideUnselected);
         shader.setInt("face_selection_data.usingMeshSelection", mesh.face_selection_data.activated);
         shader.setInt("face_selection_data.selectedPrimitiveIDS", UTIL::get_texture_slot_index(txtr_slot1)); glActiveTexture(txtr_slot1); glBindTexture(GL_TEXTURE_2D, mesh.face_selection_data.selectedFaces.ID);
         shader.setInt("face_selection_data.meshMask", UTIL::get_texture_slot_index(txtr_slot2)); glActiveTexture(txtr_slot2); glBindTexture(GL_TEXTURE_2D, mesh.face_selection_data.meshMask.ID);
-        shader.setInt("face_selection_data.primitiveCount", mesh.indices.size() / 3);
+        shader.setInt("face_selection_data.primitiveCount", mesh.face_selection_data.selectedPrimitiveIDs.size());
     }
     else{
         shader.setInt("face_selection_data.usingMeshSelection", false);
