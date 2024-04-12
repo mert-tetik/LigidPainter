@@ -62,12 +62,17 @@ void Renderer::render(){
     getBox()->bindBuffers();
     
     Debugger::block("Render : Toolkits"); // Start
-    render_toolkits(timer);
+    render_toolkits_before_panels(timer);
     Debugger::block("Render : Toolkits"); // End
     
     Debugger::block("Render : Panels"); // Start
     panels_render(timer);
     Debugger::block("Render : Panels"); // End
+    
+    Debugger::block("Render : Toolkits after panels"); // Start
+    render_toolkits_after_panels(timer);
+    Debugger::block("Render : Toolkits after panels"); // End
+    
     Debugger::block("Painting"); // Start
     //Painting
     if(

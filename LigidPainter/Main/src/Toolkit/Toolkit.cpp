@@ -18,15 +18,19 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "GUI/GUI.hpp"
-#include "3D/ThreeD.hpp"
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
-#include "Toolkit/Toolkits.hpp"
+#include "UTIL/Painting/Painter.hpp"
+
+#include "GUI/GUI.hpp"
 #include "GUI/Panels.hpp"
+
+#include "3D/ThreeD.hpp"
+
+#include "Toolkit/Toolkits.hpp"
 
 #include <string>
 #include <iostream>
@@ -34,7 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static bool prevStraightLinePaintingCondition = false;
 
-void render_toolkits(Timer& timer){
+void render_toolkits_before_panels(Timer& timer){
     
     if(checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
         Debugger::block("GUI : Rendering dotes"); // Start
@@ -71,15 +75,12 @@ void render_toolkits(Timer& timer){
         Debugger::block("GUI : Line painting"); // End
     }
     prevStraightLinePaintingCondition = straightLinePaintingCondition;
+}
 
+void render_toolkits_after_panels(Timer& timer){
     //Render the brush cursor
     if(
-            !panels_any_hovered() && 
-            (panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2) && panel_painting_modes.selectedElement != 5 && panel_painting_modes.selectedElement != 6 &&
-            !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 &&
-            !getScene()->get_selected_mesh()->face_selection_data.editMode &&
-            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) &&
-            !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
+            painting_paintable_condition()
         )
     {
         if(!checkBox_wrap_mode.clickState1){

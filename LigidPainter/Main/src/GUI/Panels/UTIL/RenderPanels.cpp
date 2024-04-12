@@ -67,7 +67,7 @@ void panels_render(Timer& timer)
     Debugger::block("GUI : Panels : Scene Gizmo"); // End
 
     Debugger::block("GUI : Panels : Wrap Mode Checkbox"); // Start
-    checkBox_wrap_mode_render(timer, true);
+    checkBox_wrap_mode_render(timer, !twoD_painting_mode);
     Debugger::block("GUI : Panels : Wrap Mode Checkbox"); // End
     
     Debugger::block("GUI : Panels : Current mode hint displayer"); // Start
@@ -75,17 +75,24 @@ void panels_render(Timer& timer)
     Debugger::block("GUI : Panels : Current mode hint displayer"); // End
 
     Debugger::block("GUI : Panels : Layers Panel"); // Start
-    panel_layers_render(timer, true);
+    panel_layers_render(timer, !twoD_painting_mode);
     Debugger::block("GUI : Panels : Layers Panel"); // End
 
     Debugger::block("GUI : Panels : Displaying modes panel"); // Start
-    panel_displaying_modes_render(timer, true);
+    panel_displaying_modes_render(timer, !twoD_painting_mode);
     Debugger::block("GUI : Panels : Displaying modes panel"); // End
     
     if(twoD_painting_mode){
         Debugger::block("GUI : Panels : 2D painting panel"); // Start
         panel_twoD_painting_render(timer, true);
         Debugger::block("GUI : Panels : 2D painting panel"); // End
+
+        checkBox_wrap_mode.clickState1 = false;
+        checkComboList_painting_mirror.panel.sections[0].elements[0].checkBox.clickState1 = false;
+        checkComboList_painting_mirror.panel.sections[0].elements[2].checkBox.clickState1 = false;
+        checkComboList_painting_mirror.panel.sections[0].elements[4].checkBox.clickState1 = false;
+        checkComboList_painting_face_selection.panel.sections[0].elements[0].checkBox.clickState1 = false;
+        checkComboList_painting_face_selection.panel.sections[0].elements[1].checkBox.clickState1 = false;
     }
 
     Debugger::block("GUI : Panels : Painting face selection check combo list"); // Start

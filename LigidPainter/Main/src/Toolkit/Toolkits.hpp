@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Toolkit/LinePaintingTool/LinePaintingTool.hpp"
 #include "Toolkit/3DCursor/3DCursor.hpp"
 
-void render_toolkits(Timer& timer);
+void render_toolkits_before_panels(Timer& timer);
+void render_toolkits_after_panels(Timer& timer);
 
 #endif

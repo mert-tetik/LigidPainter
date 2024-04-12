@@ -857,35 +857,23 @@ static void updateTheTexture(
                                                                             )
                                                 );
     
+    //*Vertex
+    ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
+    ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
+    ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->camera.viewMatrix);
+
     if(settings.vertex_buffer.paint_model){
         //Draw the UV of the selected model
-        {
-            //*Vertex
-            ShaderSystem::textureUpdatingShader().setMat4("orthoProjection", orthoProjection);
-            ShaderSystem::textureUpdatingShader().setMat4("perspectiveProjection", getScene()->projectionMatrix);
-            ShaderSystem::textureUpdatingShader().setMat4("view", getScene()->camera.viewMatrix);
-
-            settings.vertex_buffer.model_mesh->Draw();         
-        }
+        settings.vertex_buffer.model_mesh->Draw();         
+        
+        captureTexture.removeSeams(*settings.vertex_buffer.model_mesh, destScale);
     }
     else{
-        ShaderSystem::projectingPaintedTextureShader().use();
-
-        //*Fragment
-        ShaderSystem::projectingPaintedTextureShader().setInt("doDepthTest", 0);
-
-        //*Vertex
-        ShaderSystem::projectingPaintedTextureShader().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-        ShaderSystem::projectingPaintedTextureShader().setMat4("perspectiveProjection", getContext()->ortho_projection);
-        ShaderSystem::projectingPaintedTextureShader().setMat4("view", glm::mat4(1.));
         
         settings.vertex_buffer.box->bindBuffers();
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Applying painting to the texture");
     }
     
-    if(!twoD_painting_mode){
-        captureTexture.removeSeams(*getScene()->get_selected_mesh(), destScale);
-    }
 
     //Delete the capture framebuffer
     captureFBO.deleteBuffers(false, false);

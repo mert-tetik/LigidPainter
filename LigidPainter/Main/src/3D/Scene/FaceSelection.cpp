@@ -335,8 +335,6 @@ static void unselect_all_faces(std::vector<byte>* selectedPrimitiveIDs, std::vec
 static void apply_pixels(float* pxs, glm::vec2 scale, std::vector<byte>* selectedPrimitiveIDs, std::vector<int>* changedIndices){
     for (size_t i = 0; i < scale.x * scale.y; i++)
     {
-        if(i == 1)
-            std::cout << "cur : " << pxs[i] << std::endl;
         pxs[i] -= 1;
         
         if(pxs[i] < selectedPrimitiveIDs->size() && pxs[i] >= 0){

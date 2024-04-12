@@ -260,7 +260,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
 
 bool painting_paintable_condition()
 {
-    return !panels_any_hovered() && 
+    return (!panels_any_hovered() || (panel_twoD_painting.hover && twoD_painting_mode)) && 
             (panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2) && panel_painting_modes.selectedElement != 5 &&
             !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 &&
             !getScene()->get_selected_mesh()->face_selection_data.editMode &&
