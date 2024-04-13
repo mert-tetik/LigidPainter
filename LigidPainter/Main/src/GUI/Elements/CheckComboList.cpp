@@ -105,12 +105,14 @@ void CheckComboList::render(
 
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", arrowButton.clickedMixVal);
     panel.pos = arrowButton.pos;
-    panel.scale = glm::vec2(glm::sin(arrowButton.clickedMixVal) * 10.f);
-    panel.scale.y *= 2.f;
+    panel.scale = glm::vec2(glm::sin(arrowButton.clickedMixVal));
+    panel.scale.x *= 10.f;
+    panel.scale.y *= panel.get_elements_height() + 2.f;
     panel.pos.y += arrowButton.scale.y + panel.scale.y - 0.2f;
     panel.pos.z = 0.9f;
     if(panel.scale.x > 2.f)
         panel.render(timer, doMouseTracking);
+    
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
     if(hover)

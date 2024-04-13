@@ -757,6 +757,9 @@ public:
 
     /// @brief Renders the panel
     void render(Timer &timer,bool doMouseTracking);
+
+    float get_elements_height();
+
 };
 
 class CheckComboList{

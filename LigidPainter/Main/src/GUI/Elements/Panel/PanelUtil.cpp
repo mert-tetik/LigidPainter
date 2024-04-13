@@ -168,3 +168,24 @@ void Panel::prepDrawBtnHorizontally(Element &button,Element &previousButton,floa
     button.pos.x = elementPos;
 }
 
+float Panel::get_elements_height(){
+    float res = 0.f;
+    
+    for (Section section : this->sections)
+    {
+        for (Element element : section.elements)
+        {
+            res += element.scale.y;
+            res += element.panelOffset;
+        }
+    }
+
+    if(this->sections.size()){
+        if(this->sections[this->sections.size() - 1].elements.size()){
+            if(this->sections[this->sections.size() - 1].elements[this->sections[this->sections.size() - 1].elements.size() - 1].state == 1)
+                res += 0.6 * 2.f;
+        }
+    }
+
+    return res;
+}

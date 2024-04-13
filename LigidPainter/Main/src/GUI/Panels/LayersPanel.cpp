@@ -49,6 +49,8 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
         panels_transform();
     }
     
+    button_mesh_selection.render(timer, doMouseTracking);
+    
     Button comboBox_layers_resolutionBG = Button(ELEMENT_STYLE_SOLID, comboBox_layers_resolution.scale, "", Texture(), 0.f, 0);
     comboBox_layers_resolutionBG.pos = comboBox_layers_resolution.pos;
     comboBox_layers_resolutionBG.render(timer, false);
@@ -58,7 +60,6 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
     // Render the layers
     getScene()->get_selected_mesh()->layerScene.render(timer, panel_layers, doMouseTracking, layersResolution, *getScene()->get_selected_mesh());
     
-    button_mesh_selection.render(timer, doMouseTracking);
     
     
 
