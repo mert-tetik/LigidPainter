@@ -40,4 +40,6 @@ void panel_painting_modes_render(Timer& timer, bool doMouseTracking){
     if(panel_painting_modes.resizingDone){
         panels_transform();
     }
+
+    glClear(GL_DEPTH_BUFFER_BIT);
 }

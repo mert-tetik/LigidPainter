@@ -27,6 +27,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 #include <iostream>
 #include <vector>
+#include <map>
+
+static std::map<std::string, CheckComboList*> all_checkcombolists;
 
 CheckComboList::CheckComboList(std::string info, Texture texture, glm::vec3 pos, float panelOffset, Section& section){
     this->info = info;
@@ -67,6 +70,15 @@ void CheckComboList::render(
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
                         
+    all_checkcombolists[this->info] = this;
+
+    if(this->arrowButton.hover && *Mouse::LClick()){
+        for (auto it = all_checkcombolists.begin(); it != all_checkcombolists.end(); ++it) {
+            if(it->second->arrowButton.clickState1 && it->first != this->info)
+                it->second->arrowButton.clickState1 = false;
+        }
+    }
+
     this->doMouseTracking = doMouseTracking;
 
     // pos value % of the video scale
@@ -106,5 +118,4 @@ void CheckComboList::render(
 
     if(LigidGL::getTime() - lastTimeHover > 0.5)
         arrowButton.clickState1 = false;
-
 }

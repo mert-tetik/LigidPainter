@@ -95,10 +95,6 @@ void panels_render(Timer& timer)
         checkComboList_painting_face_selection.panel.sections[0].elements[1].checkBox.clickState1 = false;
     }
 
-    Debugger::block("GUI : Panels : Painting face selection check combo list"); // Start
-    checkComboList_painting_face_selection_render(timer, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
-    Debugger::block("GUI : Panels : Painting face selection check combo list"); // End
-
     if(panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2){
         Debugger::block("GUI : Panels : Painting modes panel"); // Start
         panel_painting_modes_render(timer, true);
@@ -136,6 +132,12 @@ void panels_render(Timer& timer)
         button_texture_selected_objects_render(timer, true);
         Debugger::block("GUI : Panels : Texture selected objects button"); // End
     }
+
+    Debugger::block("GUI : Panels : Painting face selection check combo list"); // Start
+    checkComboList_painting_face_selection_render(timer, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
+    Debugger::block("GUI : Panels : Painting face selection check combo list"); // End
+
+    glClear(GL_DEPTH_BUFFER_BIT);
 
     if(!Settings::properties()->cat_hide){
         Debugger::block("GUI : Log Dialog"); // Start
