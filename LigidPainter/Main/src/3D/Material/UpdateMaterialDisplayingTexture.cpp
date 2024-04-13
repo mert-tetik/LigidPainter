@@ -41,6 +41,8 @@ void Material::updateMaterialDisplayingTexture(
     if(!material_displaying_FBO.ID)
         material_displaying_FBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(128)), "Material displaying fbo");
 
+    material_displaying_FBO.setColorBuffer(this->displayingTexture, GL_TEXTURE_2D);
+
     updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, material_displaying_FBO, *getMaterialDisplayerModel(), -1);
 }
 
@@ -170,7 +172,7 @@ void Material::updateMaterialDisplayingTexture(
     }
     
     
-    ShaderSystem::tdModelShader().setInt("displayingMode", 0);
+    ShaderSystem::PBRDisplayOnly().setInt("displayingMode", 0);
     
     //!Finish (prepare rendering the GUI)
 

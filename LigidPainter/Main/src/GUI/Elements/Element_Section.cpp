@@ -208,6 +208,10 @@ bool Element::operator==(const Element& element) const{
     if(state == 0){ //Render the button
         if(this->button.text != element.button.text)
             return false;
+        if(this->button.color != element.button.color)
+            return false;
+        if(this->button.color2 != element.button.color2)
+            return false;
         if(this->button.clickState1 != element.button.clickState1)
             return false;
         if(this->button.textureSelection2D != element.button.textureSelection2D)
@@ -286,6 +290,8 @@ bool Element::operator==(const Element& element) const{
         if(this->painterColorSelection.clr3_Btn.color != element.painterColorSelection.clr3_Btn.color)
             return false;
     }
+
+    return true;
 }   
 
 bool Element::operator!=(const Element& element) const{
