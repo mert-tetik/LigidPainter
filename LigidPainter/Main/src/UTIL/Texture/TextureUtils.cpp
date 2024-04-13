@@ -776,21 +776,22 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
                                                         100.f  //Far (the material is pretty close to the camera actually  ) 
                                                     );
 
-    //Use the 3D model rendering shader
-    ShaderSystem::PBRDisplayOnly().use();
-    ShaderSystem::PBRDisplayOnly().setMat4("view", view);
-    ShaderSystem::PBRDisplayOnly().setMat4("projection", projectionMatrix);
-    
-    ShaderSystem::PBRDisplayOnly().setVec3("viewPos",matCam.cameraPos);
-    ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.ID);
-    ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.IDPrefiltered);
-    ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", 2);
-    ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", 3);
-    ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", 4);
-    ShaderSystem::PBRDisplayOnly().setInt("normalMapTxtr", 5);
-    ShaderSystem::PBRDisplayOnly().setInt("heightMapTxtr", 6);
-    ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", 7);
-    ShaderSystem::PBRDisplayOnly().setInt("displayingMode", 0);
+        //Use the 3D model rendering shader
+        ShaderSystem::PBRDisplayOnly().use();
+        ShaderSystem::PBRDisplayOnly().setMat4("view", view);
+        ShaderSystem::PBRDisplayOnly().setMat4("projection", projectionMatrix);
+        ShaderSystem::PBRDisplayOnly().setMat4("modelMatrix", glm::mat4(1.f));
+        
+        ShaderSystem::PBRDisplayOnly().setVec3("viewPos",matCam.cameraPos);
+        ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.ID);
+        ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.IDPrefiltered);
+        ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", 2);
+        ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", 3);
+        ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", 4);
+        ShaderSystem::PBRDisplayOnly().setInt("normalMapTxtr", 5);
+        ShaderSystem::PBRDisplayOnly().setInt("heightMapTxtr", 6);
+        ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", 7);
+        ShaderSystem::PBRDisplayOnly().setInt("displayingMode", 0);
 
         Model model;
         if(displayMode == 1)

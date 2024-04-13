@@ -120,6 +120,7 @@ void Material::updateMaterialDisplayingTexture(
     ShaderSystem::PBRDisplayOnly().use();
     ShaderSystem::PBRDisplayOnly().setMat4("view",view);
     ShaderSystem::PBRDisplayOnly().setMat4("projection",projectionMatrix);
+    ShaderSystem::PBRDisplayOnly().setMat4("modelMatrix", glm::mat4(1.f));
     
     ShaderSystem::PBRDisplayOnly().setVec3("viewPos",matCam.cameraPos);
     ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.ID);

@@ -412,6 +412,7 @@ void Mesh::updatePosNormalTexture(){
     if(!updatePosNormalTexture_FBO.ID){
         updatePosNormalTexture_FBO = Framebuffer(this->meshPosTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "updatePosNormalTexture_FBO");
     }
+    updatePosNormalTexture_FBO.setColorBuffer(this->meshPosTxtr, GL_TEXTURE_2D);
     
     updatePosNormalTexture_FBO.bind();
 
@@ -492,6 +493,7 @@ void Mesh::updateObjectIDsTexture(){
     if(!updateObjectIDsTexture_FBO.ID)
         updateObjectIDsTexture_FBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "updateObjectIDsTexture");
     
+    updateObjectIDsTexture_FBO.setColorBuffer(this->objectIDs, GL_TEXTURE_2D);
     updateObjectIDsTexture_FBO.bind();
     
     //Clear the object ids texture
