@@ -57,37 +57,6 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
     comboBox_layers_resolution.render(timer, doMouseTracking);
     int layersResolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]);
 
-    // Render the layers
-    getScene()->get_selected_mesh()->layerScene.render(timer, panel_layers, doMouseTracking, layersResolution, *getScene()->get_selected_mesh());
-    
-    
-    
-
-    if(getScene()->model->newModelAdded || lastLayerResolution != layersResolution){
-        if(lastLayerResolution != layersResolution){
-            int res = showMessageBox(
-                                        "Warning!", 
-                                        "You are altering the resolution value of the layers!" 
-                                        " This action will resize each textures in the layers. (Applied automatically for each mesh)"
-                                        " And is irreversible for painting layers (once you go low resolution (there is no covering painting textures to high resolution))"
-                                        " Are you sure you want to proceed?",
-                                        MESSAGEBOX_TYPE_WARNING,
-                                        MESSAGEBOX_BUTTON_YESNO
-                                        );
-            
-            // Pressed to no
-            if(res == 0){
-                comboBox_layers_resolution.selectedIndex = std::log2(lastLayerResolution / 256); 
-                layersResolution = lastLayerResolution;
-            }
-        }
-
-        getScene()->get_selected_mesh()->layerScene.update_all_layers(layersResolution, glm::vec3(0.f), *getScene()->get_selected_mesh());
-    }
-
-    lastLayerResolution = layersResolution;
-    
-    
     // Render the add layer panel
     panel_add_layer.render(timer, doMouseTracking);
     
@@ -114,4 +83,32 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
         VectorLayer* vectorLayer = new VectorLayer(layersResolution);
         getScene()->get_selected_mesh()->layerScene.add_new(vectorLayer);
     }
+
+    // Render the layers
+    getScene()->get_selected_mesh()->layerScene.render(timer, panel_layers, doMouseTracking, layersResolution, *getScene()->get_selected_mesh());
+
+    if(getScene()->model->newModelAdded || lastLayerResolution != layersResolution){
+        if(lastLayerResolution != layersResolution){
+            int res = showMessageBox(
+                                        "Warning!", 
+                                        "You are altering the resolution value of the layers!" 
+                                        " This action will resize each textures in the layers. (Applied automatically for each mesh)"
+                                        " And is irreversible for painting layers (once you go low resolution (there is no covering painting textures to high resolution))"
+                                        " Are you sure you want to proceed?",
+                                        MESSAGEBOX_TYPE_WARNING,
+                                        MESSAGEBOX_BUTTON_YESNO
+                                        );
+            
+            // Pressed to no
+            if(res == 0){
+                comboBox_layers_resolution.selectedIndex = std::log2(lastLayerResolution / 256); 
+                layersResolution = lastLayerResolution;
+            }
+        }
+
+        getScene()->get_selected_mesh()->layerScene.update_all_layers(layersResolution, glm::vec3(0.f), *getScene()->get_selected_mesh());
+    }
+
+    lastLayerResolution = layersResolution;
+
 }

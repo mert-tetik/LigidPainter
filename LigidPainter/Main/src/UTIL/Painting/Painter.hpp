@@ -124,25 +124,16 @@ struct PaintSettings{
     };
     
     struct DrawMode{
-        /*! @brief This brush will be used for the strokes;*/
-        Brush stroke_brush;
-        
         DrawMode(){}
-
-        DrawMode(Brush stroke_brush){
-            this->stroke_brush = stroke_brush;
-        }
     };
     struct SoftenMode{
         
         /*! @brief This brush will be used for the strokes;*/
-        Brush stroke_brush;
         float softening_strength = 0.f;
         
         SoftenMode(){}
 
-        SoftenMode(Brush stroke_brush, float softening_strength){
-            this->stroke_brush = stroke_brush;
+        SoftenMode(float softening_strength){
             this->softening_strength = softening_strength;
         }
     };
@@ -150,52 +141,39 @@ struct PaintSettings{
         
         float smear_blur_strength = 0.f;
         /*! @brief This brush will be used for the strokes*/
-        Brush stroke_brush;
         float smear_transform_strength = 0.f;
         
         SmearMode(){}
 
-        SmearMode(float smear_blur_strength, float smear_transform_strength, Brush stroke_brush){
+        SmearMode(float smear_blur_strength, float smear_transform_strength){
             this->smear_blur_strength = smear_blur_strength;
-            this->stroke_brush = stroke_brush;
             this->smear_transform_strength = smear_transform_strength;
         }
     };
     struct NormalMode{
         
         /*! @brief This brush will be used for the strokes;*/
-        Brush stroke_brush;
         float normal_strength = 0.f;
         
         NormalMode(){}
 
-        NormalMode(Brush stroke_brush, float normal_strength){
-            this->stroke_brush = stroke_brush;
+        NormalMode(float normal_strength){
             this->normal_strength = normal_strength;
         }
     };
     struct FilterMode{
         
         /*! @brief This brush will be used for the strokes;*/
-        Brush stroke_brush;
         Filter filter;
         
         FilterMode(){}
 
-        FilterMode(Brush stroke_brush, Filter filter){
-            this->stroke_brush = stroke_brush;
+        FilterMode(Filter filter){
             this->filter = filter;
         }
     };
     struct BucketMode{
-        /*! @brief This brush will be used for the opacity value*/
-        Brush stroke_brush;
-        
         BucketMode(){}
-
-        BucketMode(Brush stroke_brush){
-            this->stroke_brush = stroke_brush;
-        }
     };
 
     struct PaintVertexBuffer{
@@ -308,6 +286,8 @@ struct PaintSettings{
     /*! @brief 0 : Draw Mode, 1 : Soften Mode, 2 : Smear Mode, 3 : Normal Mode, 4 : Filter Mode, 5 : Vector(empty), 6 : bucket */ 
     int painting_mode;
 
+    Brush stroke_brush;
+
     DrawMode draw_mode;
     SoftenMode soften_mode;
     SmearMode smear_mode;
@@ -319,7 +299,7 @@ struct PaintSettings{
 
     PaintSettings(PaintingOverData painting_over_data, ColorBuffer color_buffer, PaintedBuffers painted_buffers, MirrorSettings mirror_settings,
                     PaintVertexBuffer vertex_buffer, PointData point, int painting_mode, DrawMode draw_mode, SoftenMode soften_mode, 
-                    SmearMode smear_mode, NormalMode normal_mode, FilterMode filter_mode, BucketMode bucket_mode
+                    SmearMode smear_mode, NormalMode normal_mode, FilterMode filter_mode, BucketMode bucket_mode, Brush stroke_brush
                 )
 {
         this->painting_over_data = painting_over_data;
@@ -335,6 +315,7 @@ struct PaintSettings{
         this->normal_mode = normal_mode;
         this->filter_mode = filter_mode;
         this->bucket_mode = bucket_mode;
+        this->stroke_brush = stroke_brush;
     }
 };
 
@@ -350,5 +331,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
 std::vector<MirrorSide*> painting_get_selected_mirror_sides(bool mirror_X, bool mirror_Y, bool mirror_Z);
 
 void painting_init_buffers();
+
+PaintSettings get_paint_settings_using_GUI_data(bool* success);
 
 #endif

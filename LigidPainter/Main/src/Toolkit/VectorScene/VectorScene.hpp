@@ -27,6 +27,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Elements.hpp"
 #include "3D/ThreeDPoint/ThreeDPoint.hpp"
 
+class PaintSettings; 
+
 struct VectorPoint2D{
     /*! @brief Position of the point (0 - 100 scale) */
     glm::vec2 pos = glm::vec2(0.f);
@@ -118,7 +120,7 @@ public:
 
     void render_scene(Timer& timer, bool doMouseTracking, bool threeD);
 
-    void apply_strokes(bool threeD, bool twoDWrap);
+    void apply_strokes(bool threeD, bool twoDWrap, PaintSettings paint_settings);
     void delete_selected_points(bool threeD);
     void clear_points(bool threeD);
     void subdivide_selected_points(bool threeD);

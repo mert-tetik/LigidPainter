@@ -106,8 +106,13 @@ void MaterialLayer::render(const unsigned int resolution, Mesh& mesh){
     resMesh.normalMap = this->result.normalMap;
     resMesh.heightMap = this->result.heightMap;
     resMesh.ambientOcclusion = this->result.ambientOcclusion;
+    resMesh.VBO = mesh.VBO;
+    resMesh.EBO = mesh.EBO;
+    resMesh.VAO = mesh.VAO;
+    resMesh.indices = mesh.indices;
+    resMesh.vertices = mesh.vertices;
 
-    this->material.apply_material(Model(), mesh, resolution, false);
+    this->material.apply_material(Model(), resMesh, resolution, false);
 
-    getScene()->get_selected_mesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);
+    mesh.layerScene.update_result(resolution, glm::vec3(0.f), mesh);
 }

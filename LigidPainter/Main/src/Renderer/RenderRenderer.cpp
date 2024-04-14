@@ -80,90 +80,16 @@ void Renderer::render(){
         )
     {
         bool success = false;
-        Texture albedo = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).albedo;  
-        Texture roughness = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).roughness;  
-        Texture metallic = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).metallic;  
-        Texture normalMap = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).normalMap;  
-        Texture heightMap = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).heightMap;  
-        Texture ambientOcclusion = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success).ambientOcclusion;  
+        PaintSettings paint_settings = get_paint_settings_using_GUI_data(&success);
+        if(success){
+            bool first_frame = !last_painting_condition && painting_paint_condition();
+            bool last_frame = last_painting_condition && !painting_paint_condition();
+            painting_paint_buffers(paint_settings, first_frame, last_frame);
+        }
 
-        if(success || panel_displaying_modes.selectedElement != 1)
-        painting_paint_buffers(PaintSettings(
-                                                PaintSettings::PaintingOverData(
-                                                                                    checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1,
-                                                                                    checkComboList_painting_over.panel.sections[0].elements[4].checkBox.clickState1,
-                                                                                    getTextureFieldScene()
-                                                                                ),
-                                                PaintSettings::ColorBuffer(
-                                                                                checkComboList_painting_color.panel.sections[0].elements[2].painterColorSelection.getSelectedColor(),
-                                                                                checkComboList_painting_color.panel.sections[0].elements[4].rangeBar.value,
-                                                                                checkComboList_painting_color.panel.sections[0].elements[6].rangeBar.value,
-                                                                                checkComboList_painting_color.panel.sections[0].elements[8].rangeBar.value,
-                                                                                checkComboList_painting_color.panel.sections[0].elements[10].rangeBar.value,
-                                                                                checkComboList_painting_color.panel.sections[0].elements[12].rangeBar.value,
-                                                                                checkComboList_painting_color.panel.sections[0].elements[14].button.material,
-                                                                                checkComboList_painting_color.panel.sections[0].elements[13].checkBox.clickState1
-                                                                            ),
-                                                PaintSettings::PaintedBuffers(
-                                                                                    panel_displaying_modes.selectedElement == 1,
-                                                                                    panel_library_selected_texture,
-                                                                                    checkComboList_painting_color.panel.sections[0].elements[1].checkBox.clickState1,
-                                                                                    albedo,
-                                                                                    checkComboList_painting_color.panel.sections[0].elements[3].checkBox.clickState1,
-                                                                                    roughness,
-                                                                                    checkComboList_painting_color.panel.sections[0].elements[5].checkBox.clickState1,
-                                                                                    metallic,
-                                                                                    checkComboList_painting_color.panel.sections[0].elements[7].checkBox.clickState1,
-                                                                                    normalMap,
-                                                                                    checkComboList_painting_color.panel.sections[0].elements[9].checkBox.clickState1,
-                                                                                    heightMap,
-                                                                                    checkComboList_painting_color.panel.sections[0].elements[11].checkBox.clickState1,
-                                                                                    ambientOcclusion
-                                                                                ),
-                                                PaintSettings::MirrorSettings(
-                                                                                checkComboList_painting_mirror.panel.sections[0].elements[0].checkBox.clickState1,
-                                                                                checkComboList_painting_mirror.panel.sections[0].elements[1].rangeBar.value,
-                                                                                checkComboList_painting_mirror.panel.sections[0].elements[2].checkBox.clickState1,
-                                                                                checkComboList_painting_mirror.panel.sections[0].elements[3].rangeBar.value,
-                                                                                checkComboList_painting_mirror.panel.sections[0].elements[4].checkBox.clickState1,
-                                                                                checkComboList_painting_mirror.panel.sections[0].elements[5].rangeBar.value
-                                                                            ),
-                                                PaintSettings::PaintVertexBuffer(
-                                                                                    getScene()->get_selected_mesh(),
-                                                                                    &twoD_painting_box,
-                                                                                    !twoD_painting_mode
-                                                                                ),
-                                                PaintSettings::PointData(
-                                                                            *Mouse::cursorPos(),
-                                                                            getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor(),
-                                                                            checkBox_wrap_mode.clickState1
-                                                                        ),
-                                                panel_painting_modes.selectedElement,
-                                                PaintSettings::DrawMode(
-                                                                            Brush(button_painting_brush.brushProperties, "")
-                                                                        ),
-                                                PaintSettings::SoftenMode(
-                                                                            Brush(button_painting_brush.brushProperties, ""),
-                                                                            1.f
-                                                                        ),
-                                                PaintSettings::SmearMode(
-                                                                            panel_smear_painting_properties.sections[0].elements[1].rangeBar.value,
-                                                                            panel_smear_painting_properties.sections[0].elements[0].rangeBar.value,
-                                                                            Brush(button_painting_brush.brushProperties, "")
-                                                                        ),
-                                                PaintSettings::NormalMode(
-                                                                            Brush(button_painting_brush.brushProperties, ""),
-                                                                            1.f
-                                                                        ),
-                                                PaintSettings::FilterMode(
-                                                                            Brush(button_painting_brush.brushProperties, ""),
-                                                                            button_painting_filter_mode_filter.filter
-                                                                        ),
-                                                PaintSettings::BucketMode(
-                                                                            Brush(button_painting_brush.brushProperties, "")
-                                                                        )
-
-                                            ), !last_painting_condition && painting_paint_condition(), last_painting_condition && !painting_paint_condition());
+        if(last_painting_condition && !painting_paint_condition()){
+            getScene()->get_selected_mesh()->layerScene.update_result(std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]), glm::vec3(0.f), *getScene()->get_selected_mesh());
+        }
     }
 
     last_painting_condition = painting_paint_condition();

@@ -38,14 +38,6 @@ uniform samplerCube skybox;
 //Used for reflection
 uniform samplerCube prefilterMap;
 
-//Material channels
-uniform sampler2D albedoTxtr; //Albedo
-uniform sampler2D roughnessTxtr; //Roughness
-uniform sampler2D metallicTxtr; //Metallic
-uniform sampler2D normalMapTxtr; //Normal Map
-uniform sampler2D heightMapTxtr; //Ambient occlusion (ao)
-uniform sampler2D ambientOcclusionTxtr; //Ambient occlusion (ao)
-
 uniform int paintingMode;
 
 uniform int displayingMode = 0; 
@@ -99,7 +91,7 @@ void main() {
         albedo = getBrushedTexture(painting_data, 0, TexCoords).rgb;
     }
     else
-        albedo = texture(albedoTxtr,TexCoords).rgb;
+        albedo = texture(painting_data.painting_buffers.albedo_txtr,TexCoords).rgb;
     
 
     //Get Roughness
@@ -107,7 +99,7 @@ void main() {
         roughness = getBrushedTexture(painting_data, 1, TexCoords).r;
     }
     else
-        roughness = texture(roughnessTxtr,TexCoords).r;
+        roughness = texture(painting_data.painting_buffers.roughness_txtr,TexCoords).r;
     
 
     //Get Metallic
@@ -115,7 +107,7 @@ void main() {
         metallic = getBrushedTexture(painting_data, 2, TexCoords).r;
     }
     else
-        metallic = texture(metallicTxtr,TexCoords).r;
+        metallic = texture(painting_data.painting_buffers.metallic_txtr,TexCoords).r;
 
 
     //Get Normal Map
@@ -123,14 +115,14 @@ void main() {
         normal = getBrushedTexture(painting_data, 3, TexCoords).rgb;
     }
     else
-        normal = texture(normalMapTxtr,TexCoords).rgb;
+        normal = texture(painting_data.painting_buffers.normal_map_txtr,TexCoords).rgb;
     
     //Get Height
     if(enableHeightMapChannel == 1 && paintingMode == 1){
         height = getBrushedTexture(painting_data, 4, TexCoords).r;
     }
     else
-        height = texture(heightMapTxtr,TexCoords).r;
+        height = texture(painting_data.painting_buffers.height_map_txtr,TexCoords).r;
     
 
     //Get Ambient Occlusion
@@ -138,7 +130,7 @@ void main() {
         ao = getBrushedTexture(painting_data, 5, TexCoords).r;
     }
     else
-        ao = texture(ambientOcclusionTxtr,TexCoords).r;
+        ao = texture(painting_data.painting_buffers.ao_txtr,TexCoords).r;
 
 
     vec3 pbrResult;

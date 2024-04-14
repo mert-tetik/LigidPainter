@@ -324,6 +324,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     }
 
     if(rightClicked){
+        glClear(GL_DEPTH_BUFFER_BIT);
         contextMenu.render(timer, true);
         if(contextMenu.sections[0].elements[0].button.clicked){
             infoMode = true;

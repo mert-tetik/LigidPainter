@@ -192,6 +192,13 @@ public:
 class VectorLayer : public Layer {
 public:
     std::vector<VectorStroke3D> strokes;
+    VectorScene vector_scene;
+
+    CheckComboList color_checkComboList;
+    CheckComboList mirror_checkComboList;
+    Panel smear_properties_panel;
+    Button filter_button;
+    Button brush_properties_button;
 
     VectorLayer(const unsigned int resolution);
 

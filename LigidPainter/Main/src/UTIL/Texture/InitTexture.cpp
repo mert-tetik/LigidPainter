@@ -116,6 +116,7 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
     this->update(pixels, w, h, filterParam, format, internalFormat, GL_MIRRORED_REPEAT);
 }
 
+static Framebuffer clear_fbo;
 void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap) {
     if (!this->ID) {
         std::cout << "ERROR : Updating texture : Invalid ID : " << ID << std::endl;
@@ -152,7 +153,21 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
         if (currentWidth == w && currentHeight == h && currentInternalFormat == static_cast<int>(internalFormat) && currentFilterParam == static_cast<int>(filterParam) && currentWrap == static_cast<int>(wrap)) {
             
             if(pixels == nullptr){
+                Framebuffer bound_fbo;
+                bound_fbo.makeCurrentlyBindedFBO();
+
                 // Pixels was nullptr
+                glClearColor(0,0,0,0);
+                
+                if(!clear_fbo.ID)
+                    clear_fbo.generate();
+
+                clear_fbo.setColorBuffer(*this, GL_TEXTURE_2D);
+                clear_fbo.bind();
+
+                glClear(GL_COLOR_BUFFER_BIT);
+
+                bound_fbo.bind();
             }
             else{
                 // Use glTexSubImage2D if the parameters match

@@ -20,13 +20,17 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "UTIL/Util.hpp"
-#include "GUI/GUI.hpp"
-#include "GUI/Panels.hpp"
-#include "3D/ThreeD.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Painting/Painter.hpp"
+
+#include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
+
+#include "3D/ThreeD.hpp"
+
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
 #include <string>
@@ -49,7 +53,6 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
 
 
     // Rendering interaction panel
-
     interaction_panel.pos.x = panel_library.pos.x + panel_library.scale.x + interaction_panel.scale.x + 1;
     interaction_panel.pos.y = panel_painting_modes.pos.y + panel_painting_modes.scale.y + interaction_panel.scale.y + 1;
 
@@ -72,10 +75,16 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
         this->delete_selected_points(threeD);
     }
     if(this->interaction_panel.sections[0].elements[4].button.clicked){
-        this->apply_strokes(
-                                threeD,
-                                twoD_mode_wrap_checkBox.clickState1
-                            );
+        bool success;
+        PaintSettings paint_settings = get_paint_settings_using_GUI_data(&success);
+        paint_settings.painting_mode = this->interaction_panel.sections[0].elements[0].comboBox.selectedIndex;
+        if(success){
+            this->apply_strokes(
+                                    threeD,
+                                    twoD_mode_wrap_checkBox.clickState1,
+                                    paint_settings
+                                );
+        }
     }
 }
 
@@ -419,9 +428,26 @@ static std::vector<glm::vec2> calculateBezierCurve(glm::vec2 start, glm::vec2 en
 
 void VectorScene::apply_strokes(
                                     bool threeD,
-                                    bool twoDWrap
+                                    bool twoDWrap,
+                                    PaintSettings paint_settings
                                 )
 {
+    if(threeD){
+        for (VectorStroke3D stroke3D : this->strokes_3D)
+        {
+            int stroke_pos_i = 0;
+            for (VertexUTIL stroke_pos : stroke3D.lineVertices){
+                if(stroke_pos_i % (int)std::ceil((paint_settings.stroke_brush.properties.spacing + 1.f) / 20.f) == 0){
+                    paint_settings.point.use_3D = true;
+                    paint_settings.point.point_3D = ThreeDPoint(stroke_pos.Position, stroke_pos.Normal);
+                    painting_paint_buffers(paint_settings, stroke_pos_i == 0, stroke_pos_i == stroke3D.lineVertices.size() - 1);
+                }
+
+                stroke_pos_i++;
+            }
+        }
+    }
+
     /*
     if(threeD){
         for (size_t strokeI = 0; strokeI < this->strokes_3D.size(); strokeI++)
