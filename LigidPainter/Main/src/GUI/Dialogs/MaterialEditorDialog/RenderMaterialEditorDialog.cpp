@@ -127,6 +127,7 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
         glClear(GL_DEPTH_BUFFER_BIT);
         
         dialogControl.updateEnd(timer,0.15f);
+        Settings::defaultFramebuffer()->update_bg_txtr();
         if(dialogControl.mixVal == 0.f){
             break;
         }

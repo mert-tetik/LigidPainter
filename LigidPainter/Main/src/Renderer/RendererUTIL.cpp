@@ -131,32 +131,7 @@ void Renderer::end_render(){
 
     // ------- Rendering the framebuffer result ------- 
     if(true){
-
-        Debugger::block("Low resolution framebuffer result"); // Start
-
-        if(Settings::defaultFramebuffer()->FBO.ID != 0)
-            Settings::defaultFramebuffer()->render();
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // Create a framebuffer object (FBO)
-        GLuint framebuffer;
-        glGenFramebuffers(1, &framebuffer);
-        glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, Settings::defaultFramebuffer()->bgTxtr.ID, 0);
-
-        // Set up the blit
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, 0); // Bind the default framebuffer as the source
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer); // Bind the FBO as the destination
-        glBlitFramebuffer(0, 0, getContext()->windowScale.x, getContext()->windowScale.y, 0, 0, Settings::defaultFramebuffer()->resolution.x, Settings::defaultFramebuffer()->resolution.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-
-        // Unbind the FBO
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-        // Clean up resources (delete framebuffer and unneeded textures if necessary)
-        glDeleteFramebuffers(1, &framebuffer);
-
-        Debugger::block("Low resolution framebuffer result"); // End
+        Settings::defaultFramebuffer()->update_bg_txtr();
     }
 
 

@@ -152,6 +152,8 @@ namespace Settings{
         void setViewport();
 
         void render();
+
+        void update_bg_txtr();
     
     private:
         unsigned int orgID;
