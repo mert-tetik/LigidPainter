@@ -54,7 +54,7 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, c
     bool anyBtnClickState1 = false;
     for (int i = this->layers.size() -1; i >= 0; i--)
     {
-        glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 1.5f); 
+        glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 2.5f); 
         glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
         int layerMSG = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, resolution, mesh);
         

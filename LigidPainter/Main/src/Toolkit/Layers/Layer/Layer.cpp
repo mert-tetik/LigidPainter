@@ -143,7 +143,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     layerButton.text = this->title;
     layerButton.render(timer, doMosueTracking && !eyeBtn.hover);
 
-    if(scale.x > 6.f){
+    if(scale.x > 8.f){
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity / 2.f);
         Button layerIconDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->layerIcon, 0.f, false);
         layerIconDisplayer.color = glm::vec4(0.f);
@@ -226,7 +226,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
             alphaSettingsMode = true;
         }
         if(res == 2){
-            dialog_renaming.show(timer, this->layerButton.pos, this->layerButton.scale.x, &this->title);
+            dialog_renaming.show(timer, this->layerButton.pos, this->layerButton.scale.x, &this->title, 25);
         }
         if(res == 3){
             return 1;

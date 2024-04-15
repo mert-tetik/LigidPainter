@@ -585,7 +585,7 @@ public:
    RenamingDialog(int);
 
    //Public member functions
-   void show(Timer& timer, glm::vec2 pos, float width, std::string* title);
+   void show(Timer& timer, glm::vec2 pos, float width, std::string* title, int max_char_count);
 };
 
 
