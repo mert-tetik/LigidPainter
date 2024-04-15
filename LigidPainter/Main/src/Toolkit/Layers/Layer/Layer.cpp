@@ -140,13 +140,10 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
     layerButton.pos = pos;
     layerButton.scale = scale;
-    if(renamingMode)
-        layerButton.text = "";
-    else    
-        layerButton.text = this->title;
+    layerButton.text = this->title;
     layerButton.render(timer, doMosueTracking && !eyeBtn.hover);
 
-    if(scale.x > 6.f && !renamingMode){
+    if(scale.x > 6.f){
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity / 2.f);
         Button layerIconDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->layerIcon, 0.f, false);
         layerIconDisplayer.color = glm::vec4(0.f);
@@ -190,20 +187,6 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         generalOpacityDisplayer.render(timer, false);
     }
 
-    if(renamingMode){
-        renamingTextBox.active = true;
-        renamingTextBox.scale = this->layerButton.scale;
-        renamingTextBox.pos = this->layerButton.pos;
-        this->renamingTextBox.text = this->title;
-        renamingTextBox.render(timer, true);
-        this->title = this->renamingTextBox.text;
-        renamingTextBox.outlineColor2 = glm::vec4(0.f);
-
-        if(*Mouse::LClick() || *Mouse::RClick() || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ENTER)){
-            renamingMode = false;
-        }
-    }
-
     if(mainSelected){
         layerButton.color = ColorPalette::themeColor;
         layerButton.color.r /= 2.0f;
@@ -243,7 +226,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
             alphaSettingsMode = true;
         }
         if(res == 2){
-            renamingMode = true;
+            dialog_renaming.show(timer, this->layerButton.pos, this->layerButton.scale.x, &this->title);
         }
         if(res == 3){
             return 1;

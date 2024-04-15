@@ -176,9 +176,6 @@ public:
     /*! @brief Button of the layer to display this layer*/
     Button layerButton;
     
-    bool renamingMode = false;
-    TextBox renamingTextBox = TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Select A Path", 6.f, false);
-
     Button eyeBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.7f, 1.f), "", Texture(), 0.f, false);
     bool hiden = false;
 
