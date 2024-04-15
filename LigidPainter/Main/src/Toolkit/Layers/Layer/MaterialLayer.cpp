@@ -32,11 +32,8 @@ MaterialLayer::MaterialLayer(const unsigned int resolution){
     this->layerIcon = appTextures.materialIcon;
     this->updateLayerButton();
     this->genResultChannels(resolution);
-}
 
-static bool __enteredPanelOnce = false;
-
-Panel materialSelectPanel = Panel(
+    this->materialSelectPanel = Panel(
                                     {
                                         Section(
                                             Element(),
@@ -60,6 +57,9 @@ Panel materialSelectPanel = Panel(
                                     20.f, 
                                     true
                                 );
+}
+
+static bool __enteredPanelOnce = false;
 
 void MaterialLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     materialSelectPanel.sections[0].elements[0].button.texture = this->material.displayingTexture;

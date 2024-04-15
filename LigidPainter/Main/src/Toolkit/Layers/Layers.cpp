@@ -271,10 +271,14 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
     
 }
 
-bool LayerScene::any_dialog_active(){
+bool LayerScene::any_dialog_hovered(){
     for (size_t i = 0; i < this->layers.size(); i++)
     {
-        if((this->layers[i]->elementSelectionMode && this->layers[i]->layerType != "vector") || this->layers[i]->alphaSettingsMode || this->layers[i]->infoMode || this->layers[i]->renamingMode || this->layers[i]->rightClicked)
+        if(
+            (this->layers[i]->elementSelectionMode && this->layers[i]->is_type_specific_panels_hovered()) || 
+            (this->layers[i]->alphaSettingsMode && this->layers[i]->alphaSettingsPanel.hover) || 
+            (this->layers[i]->infoMode || this->layers[i]->infoPanel.hover)
+        )
             return true;
     }
     return false;

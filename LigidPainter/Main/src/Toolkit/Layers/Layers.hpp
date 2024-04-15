@@ -72,6 +72,97 @@ struct LayerAlpha{
 */
 class Layer {
 public:
+
+    Panel infoPanel = Panel(
+                                    {
+                                        Section(
+                                            Element(),
+                                            {   
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Title : "  , Texture(), 0.f, false), //0
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Type : "  , Texture(), 0.f, false), //1
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "General Mask Texture"  , Texture(), 0.f, false), //2
+                                                
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "ALBEDO"  , Texture(), 2.f, false), //3
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //4
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //5
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "ROUGHNESS"  , Texture(), 1.f, false), //6
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //7
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //8
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "METALLIC"  , Texture(), 1.f, false), //9
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //10
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //11
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "NORMAL MAP"  , Texture(), 1.f, false), //12
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //13
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //14
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "HEIGHT MAP"  , Texture(), 1.f, false), //15
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //16
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //17
+
+                                                Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "AMBIENT OCCLUSION"  , Texture(), 1.f, false), //18
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Mask Texture"  , Texture(), 0.f, false), //19
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,7), ""  , Texture(), 0.f, false), //20
+                                            }
+                                        )
+                                    }, 
+                                    glm::vec2(15.f, 20.f), 
+                                    glm::vec3(50.f, 50.f, 0.7), 
+                                    ColorPalette::mainColor, 
+                                    ColorPalette::thirdColor, 
+                                    true, 
+                                    true, 
+                                    true, 
+                                    true, 
+                                    true, 
+                                    1.f, 
+                                    1, 
+                                    {}, 
+                                    20.f, 
+                                    true
+                                );
+
+    Panel alphaSettingsPanel = Panel(
+                                    {
+                                        Section(
+                                            Element(),
+                                            {   
+                                                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2), "General Opacity"  , Texture(), 1.f, 0.f, 1.f, 1.f), //0
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "General Opacity Map"  , Texture(), 0.f, false), //1
+                                                
+                                                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2), "Albedo Opacity"  , Texture(), 4.f, 0.f, 1.f, 1.f), //2
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Albedo Opacity Map"  , Texture(), 0.f, false), //3
+                                                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2), "Roughness Opacity"  , Texture(), 1.f, 0.f, 1.f, 1.f), //4
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Roughness Opacity Map"  , Texture(), 0.f, false), //5
+                                                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2), "Metallic Opacity"  , Texture(), 1.f, 0.f, 1.f, 1.f), //6
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Metallic Opacity Map"  , Texture(), 0.f, false), //7
+                                                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2), "Normal Map Opacity"  , Texture(), 1.f, 0.f, 1.f, 1.f), //8
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Normal Map Opacity Map"  , Texture(), 0.f, false), //9
+                                                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2), "Height Map Opacity"  , Texture(), 1.f, 0.f, 1.f, 1.f), //10
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Height Map Opacity Map"  , Texture(), 0.f, false), //11
+                                                RangeBar(ELEMENT_STYLE_SOLID, glm::vec2(2,2), "Ambient Occlusion Opacity"  , Texture(), 1.f, 0.f, 1.f, 1.f), //12
+                                                Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2), "Ambient Occlusion Opacity Map"  , Texture(), 0.f, false), //13
+                                            }
+                                        )
+                                    }, 
+                                    glm::vec2(15.f, 20.f), 
+                                    glm::vec3(50.f, 50.f, 0.7), 
+                                    ColorPalette::secondColor, 
+                                    ColorPalette::thirdColor, 
+                                    true, 
+                                    true, 
+                                    true, 
+                                    true, 
+                                    true, 
+                                    1.f, 
+                                    2, 
+                                    {}, 
+                                    20.f, 
+                                    true
+                                );
+
     /*! @brief Handle opacity of the layer */
     LayerAlpha alpha;
     /*! @brief Result textures of the layer */
@@ -93,23 +184,6 @@ public:
 
     bool mainSelected = false;
     bool subSelected = false;
-
-    bool rightClicked = false;
-    Panel contextMenu = Panel(
-                                        {
-                                            Section(
-                                                Element(),
-                                                {   
-                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Layer Info"  , Texture(), 0.f, false), //1
-                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Opacity Settings"  , Texture(), 0.f, false), //1
-                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Rename"  , Texture(), 0.f, false), //1
-                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Delete"  , Texture(), 0.f, false), //1
-                                                    Button(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Set Elements"  , Texture(), 0.f, false), //1
-                                                }
-                                            )
-                                        }, 
-                                        glm::vec2(5.f, 5.f), glm::vec3(50.f, 50.f, 0.7), ColorPalette::secondColor, ColorPalette::thirdColor, true, true, true, true, true, 1.f, 1, {}, 20.f, true
-                                    );
     
     bool elementSelectionMode = false;
 
@@ -123,6 +197,7 @@ public:
     virtual void render(const unsigned int resolution, Mesh& mesh) = 0;
     virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) = 0;
     virtual void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) = 0;
+    virtual bool is_type_specific_panels_hovered() = 0;
 
     /*! 
         @brief Renders GUI elements for the layer
@@ -138,6 +213,8 @@ public:
     void updateProceduralMaskTextures(const unsigned int resolution, Mesh& mesh);
 
     void updateResultTextureResolutions(const unsigned int resolution, Mesh& mesh);
+
+    
 };
 
 /*!
@@ -146,6 +223,7 @@ public:
 class TextureLayer : public Layer {
 public:
     MaterialChannels channels = MaterialChannels();
+    Panel textureSelectPanel;
 
     TextureLayer(const unsigned int resolution);
     
@@ -153,6 +231,9 @@ public:
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
     void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
         *materialChannels = &this->channels;
+    }
+    bool is_type_specific_panels_hovered() override{
+        return false;
     }
 };
 
@@ -168,6 +249,9 @@ public:
     void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
         return;
     }
+    bool is_type_specific_panels_hovered() override{
+        return false;
+    }
 };
 
 /*!
@@ -176,6 +260,7 @@ public:
 class MaterialLayer : public Layer {
 public:
     Material material;
+    Panel materialSelectPanel;
 
     MaterialLayer(const unsigned int resolution);
     
@@ -183,6 +268,9 @@ public:
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
     void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
         *material = &this->material; 
+    }
+    bool is_type_specific_panels_hovered() override{
+        return materialSelectPanel.hover;
     }
 };
 
@@ -207,6 +295,9 @@ public:
     void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
         *strokes = &this->strokes; 
     }
+    bool is_type_specific_panels_hovered() override{
+        return color_checkComboList.hover || mirror_checkComboList.hover || smear_properties_panel.hover || filter_button.hover || brush_properties_button.hover;
+    }
 };
 
 class LayerScene{
@@ -220,7 +311,7 @@ public:
     void render(Timer& timer, Panel &layerPanel, bool doMouseTracking, const unsigned int resolution, Mesh& mesh);
     void add_new(Layer* layer);
     void update_result(unsigned int resolution, glm::vec3 baseColor, Mesh& mesh);
-    bool any_dialog_active();
+    bool any_dialog_hovered();
     bool any_vector_editing();
     MaterialChannels get_painting_channels(bool* success);
     void update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Mesh& mesh);

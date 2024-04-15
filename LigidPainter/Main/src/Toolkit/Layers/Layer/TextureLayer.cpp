@@ -34,9 +34,8 @@ TextureLayer::TextureLayer(const unsigned int resolution){
     this->layerIcon = appTextures.textureIcon;
     this->updateLayerButton();
     this->genResultChannels(resolution);
-}
 
-Panel textureSelectPanel = Panel(
+    this->textureSelectPanel = Panel(
                                     {
                                         Section(
                                             Element(),
@@ -76,6 +75,7 @@ Panel textureSelectPanel = Panel(
                                     20.f, 
                                     true
                                 );
+}
 
 void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     textureSelectPanel.sections[0].elements[1].button.textureSelection3D = true;

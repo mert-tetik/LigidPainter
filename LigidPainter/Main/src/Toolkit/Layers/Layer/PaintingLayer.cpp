@@ -32,7 +32,6 @@ PaintingLayer::PaintingLayer(const unsigned int resolution){
     this->layerIcon = appTextures.brushIcon;
     this->updateLayerButton();
     this->genResultChannels(resolution);
-    this->contextMenu.sections[0].elements.pop_back();
 }
 
 void PaintingLayer::render(const unsigned int resolution, Mesh& mesh){

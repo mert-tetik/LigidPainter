@@ -46,5 +46,6 @@ bool panels_any_hovered(){
             button_painting_brush.hover ||
             button_painting_filter_mode_filter.hover ||
             panel_smear_painting_properties.hover ||
+            getScene()->get_selected_mesh()->layerScene.any_dialog_hovered() ||
             checkBox_wrap_mode.hover;
 }
