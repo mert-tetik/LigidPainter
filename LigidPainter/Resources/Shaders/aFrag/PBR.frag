@@ -62,6 +62,31 @@ uniform int enableAOChannel;
 uniform PaintingData painting_data;
 
 
+float checkerPattern(
+                        vec2 p
+                    )  
+{
+    p = 0.5 - fract(p);
+    return 0.5 + 0.5*sign(p.x*p.y);
+}
+
+vec3 get_channel(sampler2D txtr, bool painting, vec3 checker_val, int channelI){
+    vec4 val = vec4(0.);
+    
+    // Get the value
+    if(painting){
+        val = getBrushedTexture(painting_data, channelI, TexCoords);
+    }
+    else
+        val = texture(txtr,TexCoords);
+    
+    // Apply checker texture
+    if(val.a != 1.)
+        val.rgb = mix(checker_val, val.rgb, val.a);
+
+    return val.rgb;
+}
+
 void main() {
 
     gl_FragDepth = gl_FragCoord.z;
@@ -75,84 +100,36 @@ void main() {
         return;
     }
     
+    vec3 checker_val = vec3(checkerPattern(Pos.xy * 10.) / 8. + 0.5);
+    
     //Material channels
-    vec3 albedo;
-    float roughness;
-    float metallic;
-    vec3 normal;
-    float height;
-    float ao;
-
-
-    vec3 screenPos = 0.5 * (vec3(1,1,1) + ProjectedPos.xyz / ProjectedPos.w); 
-
-    //Get Albedo
-    if(enableAlbedoChannel == 1 && paintingMode == 1){
-        albedo = getBrushedTexture(painting_data, 0, TexCoords).rgb;
-    }
-    else
-        albedo = texture(painting_data.painting_buffers.albedo_txtr,TexCoords).rgb;
-    
-
-    //Get Roughness
-    if(enableRoughnessChannel == 1 && paintingMode == 1){
-        roughness = getBrushedTexture(painting_data, 1, TexCoords).r;
-    }
-    else
-        roughness = texture(painting_data.painting_buffers.roughness_txtr,TexCoords).r;
-    
-
-    //Get Metallic
-    if(enableMetallicChannel == 1 && paintingMode == 1){
-        metallic = getBrushedTexture(painting_data, 2, TexCoords).r;
-    }
-    else
-        metallic = texture(painting_data.painting_buffers.metallic_txtr,TexCoords).r;
-
-
-    //Get Normal Map
-    if(enableNormalMapChannel == 1 && paintingMode == 1){
-        normal = getBrushedTexture(painting_data, 3, TexCoords).rgb;
-    }
-    else
-        normal = texture(painting_data.painting_buffers.normal_map_txtr,TexCoords).rgb;
-    
-    //Get Height
-    if(enableHeightMapChannel == 1 && paintingMode == 1){
-        height = getBrushedTexture(painting_data, 4, TexCoords).r;
-    }
-    else
-        height = texture(painting_data.painting_buffers.height_map_txtr,TexCoords).r;
-    
-
-    //Get Ambient Occlusion
-    if(enableAOChannel == 1 && paintingMode == 1){
-        ao = getBrushedTexture(painting_data, 5, TexCoords).r;
-    }
-    else
-        ao = texture(painting_data.painting_buffers.ao_txtr,TexCoords).r;
-
+    vec3 albedo = get_channel(painting_data.painting_buffers.albedo_txtr, enableAlbedoChannel == 1 && paintingMode == 1, checker_val, 0);
+    vec3 roughness = get_channel(painting_data.painting_buffers.roughness_txtr, enableRoughnessChannel == 1 && paintingMode == 1, checker_val, 1);
+    vec3 metallic = get_channel(painting_data.painting_buffers.metallic_txtr, enableMetallicChannel == 1 && paintingMode == 1, checker_val, 2);
+    vec3 normal = get_channel(painting_data.painting_buffers.normal_map_txtr, enableNormalMapChannel == 1 && paintingMode == 1, checker_val, 3);
+    vec3 height = get_channel(painting_data.painting_buffers.height_map_txtr, enableHeightMapChannel == 1 && paintingMode == 1, checker_val, 4);
+    vec3 ao = get_channel(painting_data.painting_buffers.ao_txtr, enableAOChannel == 1 && paintingMode == 1, checker_val, 5);
 
     vec3 pbrResult;
 
     if(displayingMode == 0)
         pbrResult = getPBR(
-                                albedo, roughness, metallic, normal, ao, 
+                                albedo.rgb, roughness.r, metallic.r, normal.rgb, ao.r, 
                                 Pos, Normal, Tangent, Bitangent, 
                                 skybox, prefilterMap, viewPos, 1
                             );
     if(displayingMode == 1)
         pbrResult = albedo;
     if(displayingMode == 2)
-        pbrResult = vec3(roughness);
+        pbrResult = roughness;
     if(displayingMode == 3)
-        pbrResult = vec3(metallic);
+        pbrResult = metallic;
     if(displayingMode == 4)
         pbrResult = normal;
     if(displayingMode == 5)
-        pbrResult = vec3(height);
+        pbrResult = height;
     if(displayingMode == 6)
-        pbrResult = vec3(ao);
+        pbrResult = ao;
 
     fragColor = vec4(
                         pbrResult, 
@@ -184,4 +161,5 @@ void main() {
             fragColor = vec4(0., 0.5, 1., 1.);
     }
 
+    fragColor.rgb = mix(vec3(checkerPattern(gl_FragCoord.xy / 5.)), fragColor.rgb, fragColor.a);
 }

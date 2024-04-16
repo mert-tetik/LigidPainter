@@ -151,7 +151,7 @@ void Brush::updateDisplayTexture(float radius){
 
         ShaderSystem::twoDPainting().setInt("brush.txtr", 0); 
         glActiveTexture(GL_TEXTURE0); 
-        glBindTexture(GL_TEXTURE_2D, this->properties.brushTexture.ID);
+        glBindTexture(GL_TEXTURE_2D, (this->properties.brushTexture.ID) ? this->properties.brushTexture.ID : appTextures.white.ID);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);

@@ -52,9 +52,16 @@ uniform vec3 mirrorOffsets = vec3(0.);
 
 //Fragment shader output
 out vec4 fragColor;
-void main() {
-    
 
+float checkerPattern(
+                        vec2 p
+                    )  
+{
+    p = 0.5 - fract(p);
+    return 0.5 + 0.5*sign(p.x*p.y);
+}
+
+void main() {
     gl_FragDepth = gl_FragCoord.z;
 
     bool selectedPrim = face_selection_is_current_prim_selected(face_selection_data, TexCoords);
@@ -69,17 +76,19 @@ void main() {
     Light light;
     Material material;
 
-    vec3 color;
+    vec4 color;
     //Get Albedo
     if(paintingMode == 1){
-        color = getBrushedTexture(painting_data, 0, TexCoords).rgb;
+        color = getBrushedTexture(painting_data, 0, TexCoords);
     }
     else
-        color = texture(painting_data.painting_buffers.albedo_txtr, TexCoords).rgb;
+        color = texture(painting_data.painting_buffers.albedo_txtr, TexCoords);
 
+    vec3 checker_val = vec3(checkerPattern(Pos.xy * 10.) / 4. + 0.5);
+    color.rgb = mix(checker_val, color.rgb, color.a);
 
-    material.ambient = vec3(color);
-    material.diffuse = vec3(color);
+    material.ambient = color.rgb;
+    material.diffuse = color.rgb;
     material.specular = vec3( 0.5, 0.5, 0.5);
     material.shininess = 32.0;
 

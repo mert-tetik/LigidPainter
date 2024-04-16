@@ -232,7 +232,7 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
 
     glViewport(0, 0, resolution, resolution);
 
-    glClearColor(baseColor.r, baseColor.g, baseColor.b, 1.f);
+    glClearColor(baseColor.r, baseColor.g, baseColor.b, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     getBox()->bindBuffers();
@@ -305,6 +305,19 @@ MaterialChannels LayerScene::get_painting_channels(bool* success){
     
     *success = false;
     return MaterialChannels();
+}
+
+Layer* LayerScene::get_selected_layer(bool* success){
+    for (size_t i = 0; i < this->layers.size(); i++)
+    {
+        if(this->layers[i]->mainSelected){
+            *success = true;
+            return this->layers[i];
+        }
+    }
+    
+    *success = false;
+    return nullptr;
 }
 
 void LayerScene::update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Mesh& mesh){

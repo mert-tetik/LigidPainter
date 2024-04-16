@@ -42,6 +42,16 @@ struct MaterialChannels{
     Texture normalMap;
     Texture heightMap;
     Texture ambientOcclusion;
+
+    MaterialChannels(){}
+    MaterialChannels(Texture albedo, Texture roughness, Texture metallic, Texture normalMap, Texture heightMap, Texture ambientOcclusion){
+        this->albedo = albedo;
+        this->roughness = roughness;
+        this->metallic = metallic;
+        this->normalMap = normalMap;
+        this->heightMap = heightMap;
+        this->ambientOcclusion = ambientOcclusion;
+    }
 };
 
 //-------------- MATERIAL MODIFIER ------------

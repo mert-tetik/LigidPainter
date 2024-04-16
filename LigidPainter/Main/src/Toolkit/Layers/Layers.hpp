@@ -193,7 +193,7 @@ public:
     /*! @brief Generate result textures for the layer */
     virtual void render(const unsigned int resolution, Mesh& mesh) = 0;
     virtual void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) = 0;
-    virtual void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) = 0;
+    virtual void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) = 0;
     virtual bool is_type_specific_panels_hovered() = 0;
 
     /*! 
@@ -226,11 +226,12 @@ public:
     
     void render(const unsigned int resolution, Mesh& mesh) override;
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
-        *materialChannels = &this->channels;
+    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+        if(materialChannels != nullptr)
+            *materialChannels = &this->channels;
     }
     bool is_type_specific_panels_hovered() override{
-        return false;
+        return textureSelectPanel.hover;
     }
 };
 
@@ -239,12 +240,15 @@ public:
 */
 class PaintingLayer : public Layer {
 public:
+    Texture painting_capture_txtr;
+
     PaintingLayer(const unsigned int resolution);
     
     void render(const unsigned int resolution, Mesh& mesh) override;
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
-        return;
+    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+        if(painting_capture_txtr != nullptr)
+            *painting_capture_txtr = &this->painting_capture_txtr;
     }
     bool is_type_specific_panels_hovered() override{
         return false;
@@ -263,8 +267,9 @@ public:
     
     void render(const unsigned int resolution, Mesh& mesh) override;
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
-        *material = &this->material; 
+    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+        if(material != nullptr)
+            *material = &this->material; 
     }
     bool is_type_specific_panels_hovered() override{
         return materialSelectPanel.hover;
@@ -289,8 +294,11 @@ public:
 
     void render(const unsigned int resolution, Mesh& mesh) override;
     void render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, MaterialChannels** materialChannels) override{
-        *strokes = &this->strokes; 
+    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+        if(strokes != nullptr)
+            *strokes = &this->strokes; 
+        if(vector_stroke_brush != nullptr)
+            *vector_stroke_brush = &this->brush_properties_button.brush; 
     }
     bool is_type_specific_panels_hovered() override{
         return color_checkComboList.hover || mirror_checkComboList.hover || smear_properties_panel.hover || filter_button.hover || brush_properties_button.hover;
@@ -311,6 +319,7 @@ public:
     bool any_dialog_hovered();
     bool any_vector_editing();
     MaterialChannels get_painting_channels(bool* success);
+    Layer* get_selected_layer(bool* success);
     void update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Mesh& mesh);
 };
 

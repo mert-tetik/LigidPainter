@@ -227,7 +227,7 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                 // Type specific data
                 if(layer->layerType == "texture"){
                     MaterialChannels* channels;
-                    layer->get_type_specific_variable(nullptr, nullptr, &channels);
+                    layer->get_type_specific_variable(nullptr, nullptr, nullptr, &channels, nullptr);
                     
                     channels->albedo.readTextureData(rf, true, 2);
                     channels->roughness.readTextureData(rf, true, 2);
@@ -246,14 +246,14 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                 }
                 else if(layer->layerType == "material"){
                     Material* material;
-                    layer->get_type_specific_variable(&material, nullptr, nullptr);
+                    layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr);
                     
                     FileHandler::readMaterialData(rf, *material);
 
                 }
                 else if(layer->layerType == "vector"){
                     std::vector<VectorStroke3D>* strokes;
-                    layer->get_type_specific_variable(nullptr, &strokes, nullptr);
+                    layer->get_type_specific_variable(nullptr, &strokes, nullptr, nullptr, nullptr);
 
                     uint64_t strokesSize; 
                     READBITS(strokesSize, uint64_t, "Mesh strokes size");        

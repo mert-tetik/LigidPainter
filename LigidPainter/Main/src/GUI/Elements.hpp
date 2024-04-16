@@ -120,7 +120,7 @@ public:
     int selectedMeshI = 0;
     /// @brief Displays brush modification dialog using 
     bool brushModification = false;
-    BrushProperties brushProperties;
+    Brush brush;
     ///
     bool materialSelection = false;
     Material material;

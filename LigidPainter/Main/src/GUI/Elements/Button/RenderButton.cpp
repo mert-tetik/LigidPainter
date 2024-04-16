@@ -109,7 +109,9 @@ void Button::render(
             dialog_meshSelection.show(timer, this->selectedMeshI);
         }
         if(this->brushModification){
-            dialog_brushModification.show(timer, &this->brushProperties);
+            dialog_brushModification.show(timer, &this->brush.properties);
+        
+            this->brush.updateDisplayTexture(this->brush.properties.radius);
         }
         if(materialSelection){
             dialog_materialSelection.show(timer, &this->material);

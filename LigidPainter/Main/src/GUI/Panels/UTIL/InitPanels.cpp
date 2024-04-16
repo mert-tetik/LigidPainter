@@ -502,6 +502,8 @@ void panels_init(){
     button_painting_brush = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f), ""  , appTextures.brushIcon, 0.f, false);
     button_painting_brush.infoText = "Modify or display the current brush used for painting";
     button_painting_brush.brushModification = true;
+    button_painting_brush.brush = Brush(BrushProperties(), "Button brush");
+    button_painting_brush.brush.updateDisplayTexture(button_painting_brush.brush.properties.radius);
  
     // ---------------------------------------------------
     

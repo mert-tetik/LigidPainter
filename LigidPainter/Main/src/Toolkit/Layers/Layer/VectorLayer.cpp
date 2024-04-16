@@ -47,6 +47,7 @@ VectorLayer::VectorLayer(const unsigned int resolution){
     this->smear_properties_panel = panel_smear_painting_properties;
     this->filter_button = button_painting_filter_mode_filter;
     this->brush_properties_button = button_painting_brush;
+
 }
 
 static std::vector<VectorStroke3D> last_strokes;
@@ -65,6 +66,7 @@ void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTrack
     this->mirror_checkComboList.pos = glm::vec3(this->color_checkComboList.pos.x + this->color_checkComboList.scale.x + this->mirror_checkComboList.scale.x, this->color_checkComboList.pos.y, this->color_checkComboList.pos.z);
     this->mirror_checkComboList.render(timer, true);
    
+    this->brush_properties_button.scale.y = mirror_checkComboList.scale.y;
     this->brush_properties_button.pos = glm::vec3(this->mirror_checkComboList.pos.x + this->mirror_checkComboList.scale.x + this->brush_properties_button.scale.x, this->mirror_checkComboList.pos.y, this->color_checkComboList.pos.z);
     this->brush_properties_button.render(timer, true);
     
@@ -169,7 +171,7 @@ void VectorLayer::render(const unsigned int resolution, Mesh& mesh){
                                                 PaintSettings::NormalMode(1.f),
                                                 PaintSettings::FilterMode(filter_button.filter),
                                                 PaintSettings::BucketMode(),
-                                                Brush(brush_properties_button.brushProperties, "VectorLayer::applyStrokes brush")
+                                                brush_properties_button.brush
                                             )
                                 );
 

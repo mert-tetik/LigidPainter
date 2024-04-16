@@ -84,10 +84,10 @@ void render_toolkits_after_panels(Timer& timer){
         )
     {
         if(!checkBox_wrap_mode.clickState1){
-            render_painting_cursor(button_painting_brush.brushProperties.radius);
+            render_painting_cursor(button_painting_brush.brush.properties.radius);
         }
         else{
-            render_3D_cursor(button_painting_brush.brushProperties.radius);
+            render_3D_cursor(button_painting_brush.brush.properties.radius);
         }
         
     }

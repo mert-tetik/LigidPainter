@@ -202,7 +202,7 @@ bool FileHandler::writeLGDMODELFile(std::string path, Model model){
                 // Type specific data
                 if(layer->layerType == "texture"){
                     MaterialChannels* channels;
-                    layer->get_type_specific_variable(nullptr, nullptr, &channels);
+                    layer->get_type_specific_variable(nullptr, nullptr, nullptr, &channels, nullptr);
                     
                     channels->albedo.writeTextureData(wf);
                     channels->roughness.writeTextureData(wf);
@@ -221,13 +221,13 @@ bool FileHandler::writeLGDMODELFile(std::string path, Model model){
                 }
                 else if(layer->layerType == "material"){
                     Material* material;
-                    layer->get_type_specific_variable(&material, nullptr, nullptr);
+                    layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr);
 
                     FileHandler::writeMaterialData(wf, *material);
                 }
                 else if(layer->layerType == "vector"){
                     std::vector<VectorStroke3D>* strokes;
-                    layer->get_type_specific_variable(nullptr, &strokes, nullptr);
+                    layer->get_type_specific_variable(nullptr, &strokes, nullptr, nullptr, nullptr);
 
                     uint64_t strokesSize = strokes->size(); 
                     WRITEBITS(strokesSize, uint64_t, "Mesh strokes size");        

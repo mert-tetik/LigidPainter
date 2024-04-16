@@ -390,6 +390,6 @@ PaintSettings get_paint_settings_using_GUI_data(bool* success){
                     PaintSettings::NormalMode(1.f),
                     PaintSettings::FilterMode(button_painting_filter_mode_filter.filter),
                     PaintSettings::BucketMode(),
-                    Brush(button_painting_brush.brushProperties, "PaintSettings::brush")
+                    button_painting_brush.brush
                 );
 }

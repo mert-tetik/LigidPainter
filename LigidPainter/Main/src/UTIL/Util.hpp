@@ -63,6 +63,10 @@ class Painter;
 struct Section;
 /// @brief forward declared MaterialIDColor struct
 struct MaterialIDColor;
+/// @brief forward declared MaterialChannels struct
+struct MaterialChannels;
+/// @brief forward declared Camera struct
+struct Camera;
 
 
 
@@ -438,6 +442,8 @@ public:
     void resize(const glm::ivec2 newResolution);
 
     void mix(Texture txtr2, Texture mask, bool maskAlpha, bool normalMapMode, bool invert);
+
+    void render_mesh(Mesh& mesh, MaterialChannels channels, Camera cam);
 };
 
 struct BrushProperties{

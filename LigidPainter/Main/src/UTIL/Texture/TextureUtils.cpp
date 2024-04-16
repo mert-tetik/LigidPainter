@@ -65,7 +65,6 @@ void Texture::getData(char*& pixels){
 glm::ivec2 Texture::getResolution(){
 
     if(!this->ID || glIsTexture(this->ID) == GL_FALSE){
-        std::cout << "ERROR : Can't get the resolution of the texture : Invalid ID : "  << std::endl;
         return glm::ivec2(1024);
     }
     
@@ -1243,5 +1242,40 @@ void Texture::mix(Texture txtr2, Texture mask, bool maskAlpha, bool normalMapMod
     ShaderSystem::buttonShader().use();
     FBO.deleteBuffers(false, false);
     glDeleteTextures(1, &copiedTxtr.ID);
+    Settings::defaultFramebuffer()->setViewport();
+}
+
+static Framebuffer render_mesh_FBO; 
+void Texture::render_mesh(Mesh& mesh, MaterialChannels channels, Camera cam){
+    if(!render_mesh_FBO.ID){
+        render_mesh_FBO = Framebuffer(*this, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)), "Texture::render_mesh FBO");
+    }
+
+    render_mesh_FBO.setColorBuffer(*this, GL_TEXTURE_2D);
+    render_mesh_FBO.bind();
+    
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glViewport(0, 0, this->getResolution().x, this->getResolution().y);
+
+    ShaderSystem::PBRDisplayOnly().use();
+    ShaderSystem::PBRDisplayOnly().setMat4("view", cam.viewMatrix);
+    ShaderSystem::PBRDisplayOnly().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::PBRDisplayOnly().setMat4("modelMatrix", glm::mat4(1.f));
+    
+    ShaderSystem::PBRDisplayOnly().setVec3("viewPos", cam.cameraPos);
+    ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.ID);
+    ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.IDPrefiltered);
+    ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", 2); glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, channels.albedo.ID);
+    ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", 3); glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, channels.roughness.ID);
+    ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", 4); glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, channels.metallic.ID);
+    ShaderSystem::PBRDisplayOnly().setInt("normalMapTxtr", 5); glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, channels.normalMap.ID);
+    ShaderSystem::PBRDisplayOnly().setInt("heightMapTxtr", 6); glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, channels.heightMap.ID);
+    ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", 7); glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, channels.ambientOcclusion.ID);
+    ShaderSystem::PBRDisplayOnly().setInt("displayingMode", 0);
+
+    mesh.Draw();
+
+    Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }
