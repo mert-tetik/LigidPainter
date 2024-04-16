@@ -211,7 +211,8 @@ public:
 
     void updateResultTextureResolutions(const unsigned int resolution, Mesh& mesh);
 
-    
+private:
+    void render_layer_bg();
 };
 
 /*!

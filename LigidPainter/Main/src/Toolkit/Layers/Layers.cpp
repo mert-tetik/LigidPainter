@@ -86,19 +86,18 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, c
                 }
             }
 
-            std::vector<Layer*> __layersCopy = this->layers;
             int copyCount = 0;
-            for (int cI = __layersCopy.size() -1; cI >= 0; cI--)
+            for (int cI = this->layers.size() -1; cI >= 0; cI--)
             {
                 glm::vec3 btnPos = glm::vec3(crsPos.x, crsPos.y + btnScale.y * (copyCount * 2), layerPanel.pos.z + 0.05f);
                 if(layerPanel.hover)
                     btnPos.x = layerPanel.pos.x;
                 
-                if(this->layers[i]->subSelected && __layersCopy[cI]->subSelected || cI == i){
+                if(this->layers[i]->subSelected && this->layers[cI]->subSelected || cI == i){
                     if(copyCount == 0)
                         movingLayers.clear();    
                     movingLayers.push_back(this->layers[cI]);
-                    __layersCopy[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, resolution, mesh);
+                    this->layers[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, resolution, mesh);
                     copyCount++;
                 }
             }

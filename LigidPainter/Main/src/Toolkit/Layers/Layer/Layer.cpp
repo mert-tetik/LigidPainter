@@ -136,7 +136,7 @@ void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
     }
 }
 
-int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh){
+void Layer::render_layer_bg(){
     {
         ShaderSystem::color2d().use();
         ShaderSystem::color2d().setMat4("projection", getContext()->ortho_projection);
@@ -156,7 +156,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         this->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr);
         ShaderSystem::textureRenderingShader().use();
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
-        ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f / (Settings::videoScale()->x / Settings::videoScale()->y)));
+        ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
         ShaderSystem::textureRenderingShader().setVec3("pos", layerButton.resultPos);
         ShaderSystem::textureRenderingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, material->displayingTexture.ID);
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
@@ -175,7 +175,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         this->get_type_specific_variable(nullptr, &strokes, &brush, nullptr, nullptr);
         ShaderSystem::textureRenderingShader().use();
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
-        ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f / (Settings::videoScale()->x / Settings::videoScale()->y)));
+        ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
         ShaderSystem::textureRenderingShader().setVec3("pos", layerButton.resultPos);
         ShaderSystem::textureRenderingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, brush->displayingTexture.ID);
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
@@ -193,7 +193,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         this->get_type_specific_variable(nullptr, nullptr, nullptr, nullptr, &capture_txtr);
         ShaderSystem::textureRenderingShader().use();
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
-        ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f / (Settings::videoScale()->x / Settings::videoScale()->y)));
+        ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
         ShaderSystem::textureRenderingShader().setVec3("pos", layerButton.resultPos);
         ShaderSystem::textureRenderingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, capture_txtr->ID);
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
@@ -251,11 +251,26 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     }   
 
     glClear(GL_DEPTH_BUFFER_BIT);
+}
+
+int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh){
+
+    layerButton.pos = pos;
+    layerButton.scale = scale;
+
+    layerButton.resultPos = glm::vec3( 
+                        UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
+                        ,pos.z); //Use the original depth value
+
+    //Get the real scale value
+    layerButton.resultScale = UTIL::getPercent(*Settings::videoScale(), glm::abs(scale));
+    layerButton.resultScale *= glm::sign(scale);
+
+    if(opacity == 1.f)
+        this->render_layer_bg();
 
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
     layerButton.color.a = 0.4f;
-    layerButton.pos = pos;
-    layerButton.scale = scale;
     layerButton.text = this->title;
     layerButton.render(timer, doMosueTracking && !eyeBtn.hover);
 
@@ -329,7 +344,16 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     }
 
 
+    if(layerButton.clicked){
+        mainSelected = true;
+        subSelected = true;
+        return 2;
+    }
+
     if(layerButton.hover && *Mouse::RClick()){
+        mainSelected = true;
+        subSelected = true;
+
         int res;
         if(this->layerType == "painting")
             res = show_context_menu(timer, {"Layer Info", "Opacity Settings", "Rename" , "Delete"});
@@ -351,6 +375,8 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         if(res == 4){
             elementSelectionMode = true;
         }
+
+        return 2;
     }
 
     if(elementSelectionMode)
@@ -362,12 +388,6 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     if(infoMode)
         this->renderInfoPanel(timer, true);
     
-    
-    if(layerButton.clicked || (layerButton.hover && *Mouse::RClick() && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && !subSelected && !mainSelected)){
-        mainSelected = true;
-        subSelected = true;
-        return 2;
-    }
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
     return 0;
