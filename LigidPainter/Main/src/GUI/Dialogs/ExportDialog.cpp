@@ -282,7 +282,7 @@ void ExportDialog::show(Timer& timer){
                                             this->libraryMaterialsPanel.sections[0].elements[0].textBox.text,
                                             std::stoi(this->libraryMaterialsPanel.sections[0].elements[1].comboBox.texts[this->libraryMaterialsPanel.sections[0].elements[1].comboBox.selectedIndex]),
                                             this->libraryMaterialsPanel.sections[0].elements[2].comboBox.texts[this->libraryMaterialsPanel.sections[0].elements[2].comboBox.selectedIndex],
-                                            this->libraryMaterialsPanel.sections[0].elements[3].comboBox.texts[this->libraryMaterialsPanel.sections[0].elements[3].comboBox.selectedIndex],
+                                            this->libraryMaterialsPanel.sections[0].elements[3].comboBox.texts[this->libraryMaterialsPanel.sections[0].elements[3].comboBox.selectedIndex]
                                         );
                 projectUTIL_processing = false;
             }
@@ -500,11 +500,22 @@ static void exportLayers(std::string destPath, std::string format){
             return;
         }
 
+        mesh.albedo.title = "albedo";
         mesh.albedo.exportTexture(texturesFolderPath, format);
+
+        mesh.roughness.title = "roughness";
         mesh.roughness.exportTexture(texturesFolderPath, format);
+
+        mesh.metallic.title = "metallic";
         mesh.metallic.exportTexture(texturesFolderPath, format);
+
+        mesh.normalMap.title = "normalMap";
         mesh.normalMap.exportTexture(texturesFolderPath, format);
+
+        mesh.heightMap.title = "heightMap";
         mesh.heightMap.exportTexture(texturesFolderPath, format);
+
+        mesh.ambientOcclusion.title = "ambientOcclusion";
         mesh.ambientOcclusion.exportTexture(texturesFolderPath, format); 
     }
 
