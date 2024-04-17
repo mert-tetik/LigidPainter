@@ -28,6 +28,222 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static bool __enteredPanelOnce = false;
 
+
+int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh){
+
+    layerButton.pos = pos;
+    layerButton.scale = scale;
+
+    layerButton.update_result_transform_values();
+
+    if(opacity == 1.f)
+        this->render_layer_bg();
+
+    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
+    layerButton.color.a = 0.4f;
+    layerButton.text = this->title;
+    layerButton.render(timer, doMosueTracking && !eyeBtn.hover);
+
+
+    if(scale.x > 8.f){
+        ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity / 2.f);
+        Button layerIconDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->layerIcon, 0.f, false);
+        layerIconDisplayer.color = glm::vec4(0.f);
+        layerIconDisplayer.outline = false;
+        layerIconDisplayer.pos = pos;
+        layerIconDisplayer.pos.x -= scale.x - layerIconDisplayer.scale.x;
+        layerIconDisplayer.render(timer, false);
+        ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
+        
+        if(hiden)
+            eyeBtn.texture = appTextures.eyeClosedIcon;
+        else{
+            eyeBtn.texture = appTextures.eyeOpenedIcon;
+        }
+        eyeBtn.color = glm::vec4(0.f);
+        eyeBtn.color2 = glm::vec4(0.f);
+        eyeBtn.outline = false;
+        eyeBtn.pos = layerIconDisplayer.pos;
+        eyeBtn.pos.x += layerIconDisplayer.scale.x + 0.7f * 1.5f;
+        eyeBtn.scale = glm::vec2(0.7f, scale.y) + glm::vec2(0.1f) * eyeBtn.hoverMixVal + glm::vec2(0.1f) * eyeBtn.clickedMixVal;
+        if(eyeBtn.clicked)
+            this->hiden = !this->hiden;
+
+        eyeBtn.render(timer, doMosueTracking);
+        
+        Button generalOpacityMapDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->alpha.general_Alpha.alphaMap, 0.f, false);
+        generalOpacityMapDisplayer.color = glm::vec4(0.f);
+        generalOpacityMapDisplayer.outline = false;
+        generalOpacityMapDisplayer.pos = pos;
+        generalOpacityMapDisplayer.pos.x += scale.x - generalOpacityMapDisplayer.scale.x;
+        generalOpacityMapDisplayer.render(timer, false);
+        
+        Button generalOpacityDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f, scale.y), "", Texture(), 0.f, false);
+        generalOpacityDisplayer.color = glm::vec4(0.f);
+        generalOpacityDisplayer.outline = false;
+        std::string generalOpacityDisplayerTxt = std::to_string(this->alpha.general_Alpha.alphaValue);
+        generalOpacityDisplayerTxt.erase(generalOpacityDisplayerTxt.begin() + 4, generalOpacityDisplayerTxt.end());
+        generalOpacityDisplayer.text = generalOpacityDisplayerTxt; 
+        generalOpacityDisplayer.pos = generalOpacityMapDisplayer.pos;
+        generalOpacityDisplayer.pos.x -= generalOpacityMapDisplayer.scale.x + generalOpacityDisplayer.scale.x;
+        generalOpacityDisplayer.render(timer, false);
+    }
+
+    if(mainSelected){
+        layerButton.color = ColorPalette::themeColor;
+        layerButton.color.r /= 2.0f;
+        layerButton.color.g /= 2.0f;
+        layerButton.color.b /= 2.0f;
+        
+        layerButton.textColor = ColorPalette::oppositeColor;
+    }
+    else if(subSelected){
+        layerButton.color = ColorPalette::themeColor;
+        layerButton.color.r /= 4.0f;
+        layerButton.color.g /= 4.0f;
+        layerButton.color.b /= 4.0f;
+
+        layerButton.textColor = ColorPalette::oppositeColor;
+        layerButton.textColor.r /= 1.3f;
+        layerButton.textColor.g /= 1.3f;
+        layerButton.textColor.b /= 1.3f;
+    }
+    else{
+        layerButton.color = ColorPalette::secondColor;
+        layerButton.textColor = ColorPalette::oppositeColor;
+    }
+
+
+    if(layerButton.clicked){
+        mainSelected = true;
+        subSelected = true;
+        return 2;
+    }
+
+    if(layerButton.hover && *Mouse::RClick()){
+        mainSelected = true;
+        subSelected = true;
+
+        int res;
+        if(this->layerType == "painting")
+            res = show_context_menu(timer, {"Layer Info", "Opacity Settings", "Rename" , "Delete"});
+        else
+            res = show_context_menu(timer, {"Layer Info", "Opacity Settings", "Rename" , "Delete" , "Set Elements"});
+        
+        if(res == 0){
+            infoMode = true;
+        }
+        if(res == 1){
+            alphaSettingsMode = true;
+        }
+        if(res == 2){
+            dialog_renaming.show(timer, this->layerButton.pos, this->layerButton.scale.x, &this->title, 25);
+        }
+        if(res == 3){
+            return 1;
+        }
+        if(res == 4){
+            elementSelectionMode = true;
+        }
+
+        return 2;
+    }
+
+    if(elementSelectionMode)
+        this->render_element_selection_panel(timer, true, resolution, mesh);
+
+    if(alphaSettingsMode)
+        this->renderAlphaSettingsPanel(timer, true, resolution, mesh);
+
+    if(infoMode)
+        this->renderInfoPanel(timer, true);
+    
+    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void Layer::updateLayerButton(){
+    this->layerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), this->title, Texture(), 0.f, false);
+}
+
+void Layer::genResultChannels(const unsigned int resolution){
+    result.albedo = Texture(nullptr, resolution, resolution);
+    result.roughness = Texture(nullptr, resolution, resolution);
+    result.metallic = Texture(nullptr, resolution, resolution);
+    result.normalMap = Texture(nullptr, resolution, resolution);
+    result.heightMap = Texture(nullptr, resolution, resolution);
+    result.ambientOcclusion = Texture(nullptr, resolution, resolution);
+
+    this->alpha.general_Alpha.genTxtrs();
+    this->alpha.albedo_Alpha.genTxtrs();
+    this->alpha.roughness_Alpha.genTxtrs();
+    this->alpha.metallic_Alpha.genTxtrs();
+    this->alpha.normalMap_Alpha.genTxtrs();
+    this->alpha.heightMap_Alpha.genTxtrs();
+    this->alpha.ambientOcclusion_Alpha.genTxtrs();
+}
+
+void Layer::updateProceduralMaskTextures(const unsigned int resolution, Mesh& mesh){
+    this->alpha.general_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.albedo_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.roughness_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.metallic_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.normalMap_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.heightMap_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+
+    this->alpha.general_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.general_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.albedo_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.albedo_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.roughness_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.roughness_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.metallic_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.metallic_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.normalMap_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.normalMap_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.heightMap_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.heightMap_Alpha.alphaMapProceduralTxtr, resolution);
+    this->alpha.ambientOcclusion_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr, resolution);
+} 
+
+void Layer::updateResultTextureResolutions(const unsigned int resolution, Mesh& mesh){
+    if(result.albedo.getResolution().x != resolution){
+        result.albedo.resize(glm::ivec2(resolution));
+        result.roughness.resize(glm::ivec2(resolution));
+        result.metallic.resize(glm::ivec2(resolution));
+        result.normalMap.resize(glm::ivec2(resolution));
+        result.heightMap.resize(glm::ivec2(resolution));
+        result.ambientOcclusion.resize(glm::ivec2(resolution));
+
+        this->updateProceduralMaskTextures(resolution, mesh);
+    }
+}
+
 void Layer::renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     alphaSettingsPanel.sections[0].elements[1].button.textureSelection3D = true;
     alphaSettingsPanel.sections[0].elements[3].button.textureSelection3D = true;
@@ -95,10 +311,12 @@ void Layer::renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking, const u
 }
 
 void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
+    Button detailed_display_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "", appTextures.eyeOpenedIcon, 0.f, false);
+    
     infoPanel.sections[0].elements[0].button.text = "Title : " + this->title;
     infoPanel.sections[0].elements[1].button.text = "Type : " + this->layerType;
     infoPanel.sections[0].elements[1].button.texture = this->layerIcon;
-    
+
     infoPanel.sections[0].elements[2].button.texture = this->alpha.albedo_Alpha.alphaMapProceduralTxtr;
     infoPanel.sections[0].elements[4].button.texture = this->alpha.albedo_Alpha.alphaMapProceduralTxtr;
     infoPanel.sections[0].elements[7].button.texture = this->alpha.roughness_Alpha.alphaMapProceduralTxtr;
@@ -117,7 +335,57 @@ void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
     infoPanel.pos = this->layerButton.pos;
     infoPanel.pos.x -= this->layerButton.scale.x + infoPanel.scale.x;
     infoPanel.pos.y -= this->layerButton.scale.y - infoPanel.scale.y;
+    infoPanel.clearDepthBuffer = false;
     infoPanel.render(timer, doMouseTracking);
+
+    Button detailed_display_btn_albedo = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
+    Button detailed_display_btn_roughness = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
+    Button detailed_display_btn_metallic = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
+    Button detailed_display_btn_normalMap = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
+    Button detailed_display_btn_heightMap = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
+    Button detailed_display_btn_ao = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
+    
+    detailed_display_btn_albedo.color.a = 0.f; detailed_display_btn_albedo.outlineExtra = false;
+    detailed_display_btn_roughness.color.a = 0.f; detailed_display_btn_roughness.outlineExtra = false;
+    detailed_display_btn_metallic.color.a = 0.f; detailed_display_btn_metallic.outlineExtra = false;
+    detailed_display_btn_normalMap.color.a = 0.f; detailed_display_btn_normalMap.outlineExtra = false;
+    detailed_display_btn_heightMap.color.a = 0.f; detailed_display_btn_heightMap.outlineExtra = false;
+    detailed_display_btn_ao.color.a = 0.f; detailed_display_btn_ao.outlineExtra = false;
+
+    detailed_display_btn_albedo.pos = glm::vec3(infoPanel.sections[0].elements[5].button.pos.x + infoPanel.sections[0].elements[5].button.scale.x - detailed_display_btn_albedo.scale.x-0.5f, infoPanel.sections[0].elements[5].button.pos.y - infoPanel.sections[0].elements[5].button.scale.y + detailed_display_btn_albedo.scale.y+0.5f, infoPanel.sections[0].elements[5].button.pos.z);
+    detailed_display_btn_roughness.pos = glm::vec3(infoPanel.sections[0].elements[8].button.pos.x + infoPanel.sections[0].elements[8].button.scale.x - detailed_display_btn_roughness.scale.x-0.5f, infoPanel.sections[0].elements[8].button.pos.y - infoPanel.sections[0].elements[8].button.scale.y + detailed_display_btn_roughness.scale.y+0.5f, infoPanel.sections[0].elements[8].button.pos.z);
+    detailed_display_btn_metallic.pos = glm::vec3(infoPanel.sections[0].elements[11].button.pos.x + infoPanel.sections[0].elements[11].button.scale.x - detailed_display_btn_metallic.scale.x-0.5f, infoPanel.sections[0].elements[11].button.pos.y - infoPanel.sections[0].elements[11].button.scale.y + detailed_display_btn_metallic.scale.y+0.5f, infoPanel.sections[0].elements[11].button.pos.z);
+    detailed_display_btn_normalMap.pos = glm::vec3(infoPanel.sections[0].elements[14].button.pos.x + infoPanel.sections[0].elements[14].button.scale.x - detailed_display_btn_normalMap.scale.x-0.5f, infoPanel.sections[0].elements[14].button.pos.y - infoPanel.sections[0].elements[14].button.scale.y + detailed_display_btn_normalMap.scale.y+0.5f, infoPanel.sections[0].elements[14].button.pos.z);
+    detailed_display_btn_heightMap.pos = glm::vec3(infoPanel.sections[0].elements[17].button.pos.x + infoPanel.sections[0].elements[17].button.scale.x - detailed_display_btn_heightMap.scale.x-0.5f, infoPanel.sections[0].elements[17].button.pos.y - infoPanel.sections[0].elements[17].button.scale.y + detailed_display_btn_heightMap.scale.y+0.5f, infoPanel.sections[0].elements[17].button.pos.z);
+    detailed_display_btn_ao.pos = glm::vec3(infoPanel.sections[0].elements[20].button.pos.x + infoPanel.sections[0].elements[20].button.scale.x - detailed_display_btn_ao.scale.x-0.5f, infoPanel.sections[0].elements[20].button.pos.y - infoPanel.sections[0].elements[20].button.scale.y + detailed_display_btn_ao.scale.y+0.5f, infoPanel.sections[0].elements[20].button.pos.z);
+
+    detailed_display_btn_albedo.render(timer, true);
+    detailed_display_btn_roughness.render(timer, true);
+    detailed_display_btn_metallic.render(timer, true);
+    detailed_display_btn_normalMap.render(timer, true);
+    detailed_display_btn_heightMap.render(timer, true);
+    detailed_display_btn_ao.render(timer, true);
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    if(detailed_display_btn_albedo.hover && *Mouse::LClick()){
+        dialog_textureDisplayer.show(timer, this->result.albedo);
+    }
+    if(detailed_display_btn_roughness.hover && *Mouse::LClick()){
+        dialog_textureDisplayer.show(timer, this->result.roughness);
+    }
+    if(detailed_display_btn_metallic.hover && *Mouse::LClick()){
+        dialog_textureDisplayer.show(timer, this->result.metallic);
+    }
+    if(detailed_display_btn_normalMap.hover && *Mouse::LClick()){
+        dialog_textureDisplayer.show(timer, this->result.normalMap);
+    }
+    if(detailed_display_btn_heightMap.hover && *Mouse::LClick()){
+        dialog_textureDisplayer.show(timer, this->result.heightMap);
+    }
+    if(detailed_display_btn_ao.hover && *Mouse::LClick()){
+        dialog_textureDisplayer.show(timer, this->result.ambientOcclusion);
+    }
 
     if(infoPanel.hover)
         __enteredPanelOnce = true;
@@ -251,196 +519,4 @@ void Layer::render_layer_bg(){
     }   
 
     glClear(GL_DEPTH_BUFFER_BIT);
-}
-
-int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh){
-
-    layerButton.pos = pos;
-    layerButton.scale = scale;
-
-    layerButton.resultPos = glm::vec3( 
-                        UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
-                        ,pos.z); //Use the original depth value
-
-    //Get the real scale value
-    layerButton.resultScale = UTIL::getPercent(*Settings::videoScale(), glm::abs(scale));
-    layerButton.resultScale *= glm::sign(scale);
-
-    if(opacity == 1.f)
-        this->render_layer_bg();
-
-    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
-    layerButton.color.a = 0.4f;
-    layerButton.text = this->title;
-    layerButton.render(timer, doMosueTracking && !eyeBtn.hover);
-
-
-    if(scale.x > 8.f){
-        ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity / 2.f);
-        Button layerIconDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->layerIcon, 0.f, false);
-        layerIconDisplayer.color = glm::vec4(0.f);
-        layerIconDisplayer.outline = false;
-        layerIconDisplayer.pos = pos;
-        layerIconDisplayer.pos.x -= scale.x - layerIconDisplayer.scale.x;
-        layerIconDisplayer.render(timer, false);
-        ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
-        
-        if(hiden)
-            eyeBtn.texture = appTextures.eyeClosedIcon;
-        else{
-            eyeBtn.texture = appTextures.eyeOpenedIcon;
-        }
-        eyeBtn.color = glm::vec4(0.f);
-        eyeBtn.color2 = glm::vec4(0.f);
-        eyeBtn.outline = false;
-        eyeBtn.pos = layerIconDisplayer.pos;
-        eyeBtn.pos.x += layerIconDisplayer.scale.x + 0.7f * 1.5f;
-        eyeBtn.scale = glm::vec2(0.7f, scale.y) + glm::vec2(0.1f) * eyeBtn.hoverMixVal + glm::vec2(0.1f) * eyeBtn.clickedMixVal;
-        if(eyeBtn.clicked)
-            this->hiden = !this->hiden;
-
-        eyeBtn.render(timer, doMosueTracking);
-        
-        Button generalOpacityMapDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->alpha.general_Alpha.alphaMap, 0.f, false);
-        generalOpacityMapDisplayer.color = glm::vec4(0.f);
-        generalOpacityMapDisplayer.outline = false;
-        generalOpacityMapDisplayer.pos = pos;
-        generalOpacityMapDisplayer.pos.x += scale.x - generalOpacityMapDisplayer.scale.x;
-        generalOpacityMapDisplayer.render(timer, false);
-        
-        Button generalOpacityDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f, scale.y), "", Texture(), 0.f, false);
-        generalOpacityDisplayer.color = glm::vec4(0.f);
-        generalOpacityDisplayer.outline = false;
-        std::string generalOpacityDisplayerTxt = std::to_string(this->alpha.general_Alpha.alphaValue);
-        generalOpacityDisplayerTxt.erase(generalOpacityDisplayerTxt.begin() + 4, generalOpacityDisplayerTxt.end());
-        generalOpacityDisplayer.text = generalOpacityDisplayerTxt; 
-        generalOpacityDisplayer.pos = generalOpacityMapDisplayer.pos;
-        generalOpacityDisplayer.pos.x -= generalOpacityMapDisplayer.scale.x + generalOpacityDisplayer.scale.x;
-        generalOpacityDisplayer.render(timer, false);
-    }
-
-    if(mainSelected){
-        layerButton.color = ColorPalette::themeColor;
-        layerButton.color.r /= 2.0f;
-        layerButton.color.g /= 2.0f;
-        layerButton.color.b /= 2.0f;
-        
-        layerButton.textColor = ColorPalette::oppositeColor;
-    }
-    else if(subSelected){
-        layerButton.color = ColorPalette::themeColor;
-        layerButton.color.r /= 4.0f;
-        layerButton.color.g /= 4.0f;
-        layerButton.color.b /= 4.0f;
-
-        layerButton.textColor = ColorPalette::oppositeColor;
-        layerButton.textColor.r /= 1.3f;
-        layerButton.textColor.g /= 1.3f;
-        layerButton.textColor.b /= 1.3f;
-    }
-    else{
-        layerButton.color = ColorPalette::secondColor;
-        layerButton.textColor = ColorPalette::oppositeColor;
-    }
-
-
-    if(layerButton.clicked){
-        mainSelected = true;
-        subSelected = true;
-        return 2;
-    }
-
-    if(layerButton.hover && *Mouse::RClick()){
-        mainSelected = true;
-        subSelected = true;
-
-        int res;
-        if(this->layerType == "painting")
-            res = show_context_menu(timer, {"Layer Info", "Opacity Settings", "Rename" , "Delete"});
-        else
-            res = show_context_menu(timer, {"Layer Info", "Opacity Settings", "Rename" , "Delete" , "Set Elements"});
-        
-        if(res == 0){
-            infoMode = true;
-        }
-        if(res == 1){
-            alphaSettingsMode = true;
-        }
-        if(res == 2){
-            dialog_renaming.show(timer, this->layerButton.pos, this->layerButton.scale.x, &this->title, 25);
-        }
-        if(res == 3){
-            return 1;
-        }
-        if(res == 4){
-            elementSelectionMode = true;
-        }
-
-        return 2;
-    }
-
-    if(elementSelectionMode)
-        this->render_element_selection_panel(timer, true, resolution, mesh);
-
-    if(alphaSettingsMode)
-        this->renderAlphaSettingsPanel(timer, true, resolution, mesh);
-
-    if(infoMode)
-        this->renderInfoPanel(timer, true);
-    
-    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
-
-    return 0;
-}
-
-void Layer::updateLayerButton(){
-    this->layerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(1,1.5f), this->title, Texture(), 0.f, false);
-}
-
-void Layer::genResultChannels(const unsigned int resolution){
-    result.albedo = Texture(nullptr, resolution, resolution);
-    result.roughness = Texture(nullptr, resolution, resolution);
-    result.metallic = Texture(nullptr, resolution, resolution);
-    result.normalMap = Texture(nullptr, resolution, resolution);
-    result.heightMap = Texture(nullptr, resolution, resolution);
-    result.ambientOcclusion = Texture(nullptr, resolution, resolution);
-
-    this->alpha.general_Alpha.genTxtrs();
-    this->alpha.albedo_Alpha.genTxtrs();
-    this->alpha.roughness_Alpha.genTxtrs();
-    this->alpha.metallic_Alpha.genTxtrs();
-    this->alpha.normalMap_Alpha.genTxtrs();
-    this->alpha.heightMap_Alpha.genTxtrs();
-    this->alpha.ambientOcclusion_Alpha.genTxtrs();
-}
-
-void Layer::updateProceduralMaskTextures(const unsigned int resolution, Mesh& mesh){
-    this->alpha.general_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->alpha.albedo_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->alpha.roughness_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->alpha.metallic_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->alpha.normalMap_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->alpha.heightMap_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-
-    this->alpha.general_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.general_Alpha.alphaMapProceduralTxtr, resolution);
-    this->alpha.albedo_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.albedo_Alpha.alphaMapProceduralTxtr, resolution);
-    this->alpha.roughness_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.roughness_Alpha.alphaMapProceduralTxtr, resolution);
-    this->alpha.metallic_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.metallic_Alpha.alphaMapProceduralTxtr, resolution);
-    this->alpha.normalMap_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.normalMap_Alpha.alphaMapProceduralTxtr, resolution);
-    this->alpha.heightMap_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.heightMap_Alpha.alphaMapProceduralTxtr, resolution);
-    this->alpha.ambientOcclusion_Alpha.alphaMap.generateProceduralTexture(mesh, this->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr, resolution);
-} 
-
-void Layer::updateResultTextureResolutions(const unsigned int resolution, Mesh& mesh){
-    if(result.albedo.getResolution().x != resolution){
-        result.albedo.resize(glm::ivec2(resolution));
-        result.roughness.resize(glm::ivec2(resolution));
-        result.metallic.resize(glm::ivec2(resolution));
-        result.normalMap.resize(glm::ivec2(resolution));
-        result.heightMap.resize(glm::ivec2(resolution));
-        result.ambientOcclusion.resize(glm::ivec2(resolution));
-
-        this->updateProceduralMaskTextures(resolution, mesh);
-    }
 }

@@ -22,6 +22,7 @@ extern GreetingDialog dialog_greeting;
 extern NewProjectDialog dialog_newProject;
 extern ExportDialog dialog_export;
 extern MaterialDisplayerDialog dialog_materialDisplayer;
+extern DisplayTextureDialog dialog_textureDisplayer;
 extern FilterDisplayerDialog dialog_filterDisplayer;
 extern DropperDialog dialog_dropper;
 extern RenamingDialog dialog_renaming;

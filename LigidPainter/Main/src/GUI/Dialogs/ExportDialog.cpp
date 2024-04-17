@@ -71,7 +71,8 @@ ExportDialog::ExportDialog(int){
                                     Element(Button()),
                                     {
                                         Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Library Textures",Texture(),0.f, true)),
-                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Library Materials",Texture(),0.f, true))
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Library Materials",Texture(),0.f, true)),
+                                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(4,2),"Layers",Texture(),0.f, true))
                                     }
                                 )
                             },
@@ -91,88 +92,252 @@ ExportDialog::ExportDialog(int){
                             false
                         );
 
+    this->subPanel.elementSelectionMode = true;
+
     //Create the panel
-    this->propertiesPanel = Panel(
-                            
-                            {
-                                Section(
+    this->libraryTexturesPanel = Panel(
+                                        {
+                                            Section(
+                                                Element(Button()),
+                                                {
+                                                    //Project settings
+                                                    Element(TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Select A Path", 6.f, true)),
+                                                    
+                                                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
+                                                    {
+                                                        "PNG", 
+                                                        "JPEG", 
+                                                        "BMP", 
+                                                        "TGA"
+                                                    },"File Format", 4.f)),
 
-                                )
-                            },
-                            glm::vec2(panel.scale.x - subPanel.scale.x, panel.scale.y),
-                            glm::vec3(subPanel.pos.x + subPanel.scale.x + (panel.scale.x - subPanel.scale.x), subPanel.pos.y, 0.8f),
-                            ColorPalette::mainColor,
-                            ColorPalette::thirdColor,
-                            true,
-                            true,
-                            true,
-                            true,
-                            true,
-                            1.f,
-                            1,
-                            {},
-                            0.25f,
-                            false
-                        );
+                                                    Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),"Export",Texture(),5.f,false))
+                                                }
+                                            )
+                                        },
+                                        glm::vec2(panel.scale.x - subPanel.scale.x, panel.scale.y),
+                                        glm::vec3(subPanel.pos.x + subPanel.scale.x + (panel.scale.x - subPanel.scale.x), subPanel.pos.y, 0.8f),
+                                        ColorPalette::mainColor,
+                                        ColorPalette::thirdColor,
+                                        true,
+                                        true,
+                                        true,
+                                        true,
+                                        true,
+                                        1.f,
+                                        1,
+                                        {},
+                                        0.25f,
+                                        false
+                                    );
+
+    this->libraryMaterialsPanel = Panel(
+                                        {
+                                            Section(
+                                                Element(Button()),
+                                                {
+                                                    //Project settings
+                                                    Element(TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Select A Path", 6.f, true)),
+
+                                                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
+                                                    {
+                                                        "256",
+                                                        "512",
+                                                        "1024",
+                                                        "2048",
+                                                        "4096"
+                                                    },"Texture Resolution", 4.f)),
+                                                    
+                                                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
+                                                    {
+                                                        "PNG", 
+                                                        "JPEG", 
+                                                        "BMP", 
+                                                        "TGA"
+                                                    },"Texture File Format", 4.f)),
+                                                    
+                                                    Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
+                                                    {
+                                                        "LGDMATERIAL", 
+                                                    },"Material File Format", 4.f)),
+
+                                                    Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),"Export",Texture(),5.f,false))
+                                                }
+                                            )
+                                        },
+                                        glm::vec2(panel.scale.x - subPanel.scale.x, panel.scale.y),
+                                        glm::vec3(subPanel.pos.x + subPanel.scale.x + (panel.scale.x - subPanel.scale.x), subPanel.pos.y, 0.8f),
+                                        ColorPalette::mainColor,
+                                        ColorPalette::thirdColor,
+                                        true,
+                                        true,
+                                        true,
+                                        true,
+                                        true,
+                                        1.f,
+                                        1,
+                                        {},
+                                        0.25f,
+                                        false
+                                    );
     
-    this->libraryTexturesSection = Section(
-                                    Element(Button()),
-                                    {
-                                        //Project settings
-                                        Element(TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Select A Path", 6.f, true)),
-                                        
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
+    this->layersPanel = Panel(
+                                {
+                                    Section(
+                                        Element(Button()),
                                         {
-                                            "PNG", 
-                                            "JPEG", 
-                                            "BMP", 
-                                            "TGA"
-                                        },"File Format", 4.f)),
+                                            //Project settings
+                                            Element(TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Select A Path", 6.f, true)),
+                                            
+                                            Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
+                                            {
+                                                "PNG", 
+                                                "JPEG", 
+                                                "BMP", 
+                                                "TGA"
+                                            },"Texture File Format", 4.f)),
 
-                                        CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Mesh Textures Only", 4.f),
-
-                                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),"Export",Texture(),5.f,false))
-                                    }
-                                );
-
-    this->libraryMaterialsSection = Section(
-                                    Element(Button()),
-                                    {
-                                        //Project settings
-                                        Element(TextBox(ELEMENT_STYLE_BASIC, glm::vec2(4,2), "Select A Path", 6.f, true)),
-
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
-                                        {
-                                            "256",
-                                            "512",
-                                            "1024",
-                                            "2048",
-                                            "4096"
-                                        },"Texture Resolution", 4.f)),
-                                        
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
-                                        {
-                                            "PNG", 
-                                            "JPEG", 
-                                            "BMP", 
-                                            "TGA"
-                                        },"Texture File Format", 4.f)),
-                                        
-                                        Element(ComboBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2),
-                                        {
-                                            "LGDMATERIAL", 
-                                        },"Material File Format", 4.f)),
-
-                                        Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),"Export",Texture(),5.f,false))
-                                    }
-                                );
+                                            Element(Button(ELEMENT_STYLE_STYLIZED,glm::vec2(4,2),"Export",Texture(),5.f,false))
+                                        }
+                                    )
+                                },
+                                glm::vec2(panel.scale.x - subPanel.scale.x, panel.scale.y),
+                                glm::vec3(subPanel.pos.x + subPanel.scale.x + (panel.scale.x - subPanel.scale.x), subPanel.pos.y, 0.8f),
+                                ColorPalette::mainColor,
+                                ColorPalette::thirdColor,
+                                true,
+                                true,
+                                true,
+                                true,
+                                true,
+                                1.f,
+                                1,
+                                {},
+                                0.25f,
+                                false
+                            );
     
-
-    //this->panel.sections[0].elements[0].button.color = ColorPalette::secondColor;
-    //this->panel.sections[0].elements[0].button.color2 = ColorPalette::thirdColor;
-    //this->panel.sections[0].elements[0].button.outlineColor = ColorPalette::thirdColor;
-    //this->panel.sections[0].elements[0].button.outlineColor2 = ColorPalette::thirdColor;
 }
+
+
+static void exportLibraryMaterials(std::string destPath, int resolution, std::string txtrFormat, std::string materialFormat);
+static void exportLibraryTextures(std::string destPath, std::string format);
+static void exportLayers(std::string destPath, std::string format);
+
+void ExportDialog::show(Timer& timer){
+    
+    dialogControl.activate();
+
+    while(!getContext()->window.shouldClose()){
+
+        dialogControl.updateStart();
+
+        //Render the panels
+        panel.render(timer,false);
+        subPanel.render(timer,true);
+        
+        float total_hover_mix = subPanel.sections[0].elements[0].button.hoverMixVal + subPanel.sections[0].elements[1].button.hoverMixVal + subPanel.sections[0].elements[2].button.hoverMixVal;
+
+        glm::vec2 panel_scale = glm::vec2(panel.scale.x - subPanel.scale.x, panel.scale.y);
+        if(subPanel.sections[0].elements[0].button.clickedMixVal){
+            ShaderSystem::buttonShader().setFloat("properties.groupOpacity", (subPanel.sections[0].elements[0].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[0].button.hoverMixVal) / 20.f));
+            this->libraryTexturesPanel.scale = panel_scale * (subPanel.sections[0].elements[0].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[0].button.hoverMixVal) / 20.f) + 0.1f;
+            this->libraryTexturesPanel.render(timer, true);
+        }
+        if(subPanel.sections[0].elements[1].button.clickedMixVal){
+            ShaderSystem::buttonShader().setFloat("properties.groupOpacity", (subPanel.sections[0].elements[1].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[1].button.hoverMixVal) / 20.f));
+            this->libraryMaterialsPanel.scale = panel_scale * (subPanel.sections[0].elements[1].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[1].button.hoverMixVal) / 20.f) + 0.1f;
+            this->libraryMaterialsPanel.render(timer, true);
+        }
+        if(subPanel.sections[0].elements[2].button.clickedMixVal){
+            ShaderSystem::buttonShader().setFloat("properties.groupOpacity", (subPanel.sections[0].elements[2].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[2].button.hoverMixVal) / 20.f));
+            this->layersPanel.scale = panel_scale * (subPanel.sections[0].elements[2].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[2].button.hoverMixVal) / 20.f) + 0.1f;
+            this->layersPanel.render(timer, true);
+        }
+
+        ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
+
+        if(subPanel.selectedElement == 0){
+            if(this->libraryTexturesPanel.sections[0].elements[this->libraryTexturesPanel.sections[0].elements.size() - 1].button.clicked){
+                while(true){
+                    if(!projectUTIL_processing)
+                        break;
+                }
+                projectUTIL_processing = true;
+                exportLibraryTextures(
+                                            this->libraryTexturesPanel.sections[0].elements[0].textBox.text,
+                                            this->libraryTexturesPanel.sections[0].elements[1].comboBox.texts[this->libraryTexturesPanel.sections[0].elements[1].comboBox.selectedIndex]
+                                        );
+                projectUTIL_processing = false;
+            }
+        }
+        if(subPanel.selectedElement == 1){
+            if(this->libraryMaterialsPanel.sections[0].elements[this->libraryMaterialsPanel.sections[0].elements.size() - 1].button.clicked){
+                while(true){
+                    if(!projectUTIL_processing)
+                        break;
+                }
+                projectUTIL_processing = true;
+                exportLibraryMaterials(
+                                            this->libraryMaterialsPanel.sections[0].elements[0].textBox.text,
+                                            std::stoi(this->libraryMaterialsPanel.sections[0].elements[1].comboBox.texts[this->libraryMaterialsPanel.sections[0].elements[1].comboBox.selectedIndex]),
+                                            this->libraryMaterialsPanel.sections[0].elements[2].comboBox.texts[this->libraryMaterialsPanel.sections[0].elements[2].comboBox.selectedIndex],
+                                            this->libraryMaterialsPanel.sections[0].elements[3].comboBox.texts[this->libraryMaterialsPanel.sections[0].elements[3].comboBox.selectedIndex],
+                                        );
+                projectUTIL_processing = false;
+            }
+        }
+        if(subPanel.selectedElement == 2){
+            if(this->layersPanel.sections[0].elements[this->layersPanel.sections[0].elements.size() - 1].button.clicked){
+                while(true){
+                    if(!projectUTIL_processing)
+                        break;
+                }
+                projectUTIL_processing = true;
+                exportLayers(                                            
+                                this->layersPanel.sections[0].elements[0].textBox.text,
+                                this->layersPanel.sections[0].elements[1].comboBox.texts[this->libraryTexturesPanel.sections[0].elements[1].comboBox.selectedIndex]
+                            );
+                projectUTIL_processing = false;
+            }
+        }
+        
+        //Close the dialog (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
+            if(!dialogControl.firstFrameActivated)
+                this->dialogControl.unActivate();
+        }
+
+        dialogControl.updateEnd(timer,0.15f);
+        if(dialogControl.mixVal == 0.f)
+            break;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #define CREATE_DIR(destPath, folderName, res)std::string folderNameX = folderName; \
                                         std::vector<std::string> names; \
@@ -186,12 +351,7 @@ ExportDialog::ExportDialog(int){
                                             return; \
                                         } 
 
-static void exportLibraryMaterials(Panel& propertiesPanel){
-    
-    int resolution = std::stoi(propertiesPanel.sections[0].elements[1].comboBox.texts[propertiesPanel.sections[0].elements[1].comboBox.selectedIndex]);
-        
-    std::string destPath = propertiesPanel.sections[0].elements[0].textBox.text;
-
+static void exportLibraryMaterials(std::string destPath, int resolution, std::string txtrFormat, std::string materialFormat){
     if(!std::filesystem::exists(destPath)){
 
         showMessageBox(
@@ -273,16 +433,13 @@ static void exportLibraryMaterials(Panel& propertiesPanel){
                 channelTxtr.title = "ambientOcclusion";
             }
 
-            channelTxtr.exportTexture(materialFolderPath, propertiesPanel.sections[0].elements[2].comboBox.texts[propertiesPanel.sections[0].elements[2].comboBox.selectedIndex]);
+            channelTxtr.exportTexture(materialFolderPath, txtrFormat);
         }
     }
 }
 
-static void exportLibraryTextures(Panel& propertiesPanel){
-    std::string destPath = propertiesPanel.sections[0].elements[0].textBox.text;
-
+static void exportLibraryTextures(std::string destPath, std::string format){
     if(!std::filesystem::exists(destPath)){
-
         showMessageBox(
                         "Warning!", 
                         "Error! Invalid exporting path.", 
@@ -302,104 +459,53 @@ static void exportLibraryTextures(Panel& propertiesPanel){
         return;
     }
 
-    bool markedOnly = propertiesPanel.sections[0].elements[2].checkBox.clickState1;
-    
     for (size_t i = 0; i < Library::getTextureArraySize(); i++)
     {
-        std::string FORMAT = propertiesPanel.sections[0].elements[1].comboBox.texts[propertiesPanel.sections[0].elements[1].comboBox.selectedIndex];
-        
-        bool meshMatch = false;
-
-        for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
-        {
-            if(
-                    getScene()->model->meshes[meshI].albedo.ID == Library::getTextureObj(i).ID ||
-                    getScene()->model->meshes[meshI].roughness.ID == Library::getTextureObj(i).ID ||
-                    getScene()->model->meshes[meshI].metallic.ID == Library::getTextureObj(i).ID ||
-                    getScene()->model->meshes[meshI].normalMap.ID == Library::getTextureObj(i).ID ||
-                    getScene()->model->meshes[meshI].heightMap.ID == Library::getTextureObj(i).ID ||
-                    getScene()->model->meshes[meshI].ambientOcclusion.ID == Library::getTextureObj(i).ID
-                )
-            {
-                meshMatch = true;
-            }
-        }   
-        
-        if(!(markedOnly && !meshMatch))
-            Library::getTextureObj(i).exportTexture(
-                                                        texturesFolderPath, 
-                                                        FORMAT
-                                                    );
+        Library::getTextureObj(i).exportTexture(
+                                                    texturesFolderPath, 
+                                                    format
+                                                );
     }
 }
 
+static void exportLayers(std::string destPath, std::string format){
+    if(!std::filesystem::exists(destPath)){
 
+        showMessageBox(
+                        "Warning!", 
+                        "Error! Invalid exporting path.", 
+                        MESSAGEBOX_TYPE_WARNING, 
+                        MESSAGEBOX_BUTTON_OK
+                    );
 
-void ExportDialog::show(Timer& timer){
-    
-    dialogControl.activate();
+        return;
+    }
 
-    while(!getContext()->window.shouldClose()){
+    std::string layersFolderPath;
 
-        dialogControl.updateStart();
+    CREATE_DIR(destPath, "LigidPainter-Layer-Results", layersFolderPath)
 
-        if(this->activeSection == 0)
-            propertiesPanel.sections[0] = libraryTexturesSection;
-        if(this->activeSection == 1)
-            propertiesPanel.sections[0] = libraryMaterialsSection;
-        
-        //Render the panels
-        panel.render(timer,false);
-        subPanel.render(timer,true);
-        propertiesPanel.render(timer,true);
+    if(layersFolderPath == ""){
+        LGDLOG::start << "ERROR : Unable to generate a location for the layers folder!" << LGDLOG::end;
+        return;
+    }
 
-        if(this->activeSection == 0)
-            libraryTexturesSection = propertiesPanel.sections[0];
-        if(this->activeSection == 1)
-            libraryMaterialsSection = propertiesPanel.sections[0];
+    for (Mesh& mesh : getScene()->model->meshes)
+    {
+        std::string texturesFolderPath;
+        CREATE_DIR(layersFolderPath, mesh.materialName, texturesFolderPath)
 
-        for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++)
-        {
-            if(subPanel.sections[0].elements[i].button.clickState1 && this->activeSection != i){
-                this->activeSection = i;
-                for (size_t i = 0; i < subPanel.sections[0].elements.size(); i++){
-                    subPanel.sections[0].elements[i].button.clickState1 = false;
-                }
-            }
-            if(this->activeSection == i){
-                subPanel.sections[0].elements[i].button.clickState1 = true;
-            }
-            else{
-                subPanel.sections[0].elements[i].button.clickState1 = false;
-            }
-        }
-        
-        //If pressed to the last button of the panel (Export button)
-        if(propertiesPanel.sections[0].elements[propertiesPanel.sections[0].elements.size() - 1].button.clicked){
-
-            while(true){
-                if(!projectUTIL_processing)
-                    break;
-            }
-            projectUTIL_processing = true;
-
-            if(this->activeSection == 0)
-                exportLibraryTextures(this->propertiesPanel);
-            if(this->activeSection == 1)
-                exportLibraryMaterials(this->propertiesPanel);
-            
-            projectUTIL_processing = false;
-        }
-        
-        //Close the dialog (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
-            if(!dialogControl.firstFrameActivated)
-                this->dialogControl.unActivate();
+        if(texturesFolderPath == ""){
+            LGDLOG::start << "ERROR : Unable to generate a location for the textures folder!" << LGDLOG::end;
+            return;
         }
 
-        dialogControl.updateEnd(timer,0.15f);
-        if(dialogControl.mixVal == 0.f)
-            break;
+        mesh.albedo.exportTexture(texturesFolderPath, format);
+        mesh.roughness.exportTexture(texturesFolderPath, format);
+        mesh.metallic.exportTexture(texturesFolderPath, format);
+        mesh.normalMap.exportTexture(texturesFolderPath, format);
+        mesh.heightMap.exportTexture(texturesFolderPath, format);
+        mesh.ambientOcclusion.exportTexture(texturesFolderPath, format); 
     }
 
 }

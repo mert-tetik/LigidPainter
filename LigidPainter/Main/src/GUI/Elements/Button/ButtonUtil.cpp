@@ -20,8 +20,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "GUI/Elements.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 #include <string>
 #include <iostream>
@@ -293,3 +295,13 @@ glm::vec2 getTextureScale(Texture texture, glm::vec2 resultScale, float textureS
     glm::vec2 resultScaleTexture = glm::vec2(std::min(glm::abs(resultScale).x,glm::abs(resultScale).y)) / glm::vec2(textureSizeScale);
     return resultScaleTexture /= txtrResDivider;
 } 
+
+void Button::update_result_transform_values(){
+    this->resultPos = glm::vec3( 
+                UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
+                ,pos.z); //Use the original depth value
+
+    //Get the real scale value
+    this->resultScale = UTIL::getPercent(*Settings::videoScale(), glm::abs(scale));
+    this->resultScale *= glm::sign(scale);
+}

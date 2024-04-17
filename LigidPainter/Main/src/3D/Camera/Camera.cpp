@@ -49,6 +49,29 @@ void Camera::setCameraRadius(float radius){
     this->cameraPos.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch)) * this->radius + this->originPos.z;
 }
 
+static bool keep_pos_in_place(glm::vec3* pos, float radius_origin, float radius_scroll){
+    bool changed = false;
+    
+    if(radius_origin){
+        if(glm::distance(*pos, glm::vec3(0.f)) > radius_origin)
+            changed = true;
+    }
+    
+    if(pos->x > radius_scroll || pos->x < -radius_scroll){
+        //*pos = glm::mix(*pos, glm::vec3(0.f), 0.05f);
+        changed = true;
+    }
+    if(pos->y > radius_scroll || pos->y < -radius_scroll){
+        //*pos = glm::mix(*pos, glm::vec3(0.f), 0.05f);
+        changed = true;
+    }
+    if(pos->z > radius_scroll || pos->z < -radius_scroll){
+        //*pos = glm::mix(*pos, glm::vec3(0.f), 0.05f);
+        changed = true;
+    }
+    return changed;
+}
+
 void Camera::interaction(float scroll, glm::vec2 mouseOffset){
     const float sensitivity = 0.14f; //Mouse sensivity 
 
@@ -92,17 +115,10 @@ void Camera::interaction(float scroll, glm::vec2 mouseOffset){
         // Calculate the y offset based on pitch, mouse movement, sensitivity, and half sensitivity
         const float y_offset = cos_pitch * mouseOffset.y * sensitivity * straightMovSensivity * half_sensitivity;
 
-        // Update camera's x position and origin position by subtracting x offset
-        this->cameraPos.x -= x_offset;
-        this->originPos.x -= x_offset;
-
-        // Update camera's z position and origin position by adding z offset
-        this->cameraPos.z += z_offset;
-        this->originPos.z += z_offset;
-
-        // Update camera's y position and origin position by adding y offset
-        this->cameraPos.y += y_offset;
-        this->originPos.y += y_offset;
+        glm::vec3 offset = glm::vec3(-x_offset, y_offset, z_offset);
+        this->cameraPos += offset;
+    
+        this->originPos += offset;
     }
     else{
         if(mouseR && (mouseOffset.x || mouseOffset.y)){
@@ -120,10 +136,10 @@ void Camera::interaction(float scroll, glm::vec2 mouseOffset){
             float originCameraDistance = glm::distance(this->originPos, this->cameraPos) / 10;
 
             //Change the distance between camera & center (radius)
-            if (scroll > 0) {
+            if (scroll > 0 && this->radius) {
                 this->radius -= originCameraDistance;
             }
-            else if (scroll < 0) {
+            else if (scroll < 0 && this->radius) {
                 this->radius += originCameraDistance;
             }
         }
@@ -135,8 +151,14 @@ void Camera::interaction(float scroll, glm::vec2 mouseOffset){
         this->cameraPos.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch)) * this->radius + this->originPos.z;
     }
 
+    if(!scroll && !*Mouse::LPressed() && !*Mouse::RPressed() && !*Mouse::MPressed()){
+        if(keep_pos_in_place(&this->cameraPos, 0.f, 100.f) || keep_pos_in_place(&this->originPos, 10.f, 100.f)){
+            this->originLocked = true;
+        }
+    }
+
     if(moved){
-        if(glm::distance(this->cameraPos, glm::vec3(10.f, 0.f, 0.f)) < 1.f)
+        if(glm::distance(this->cameraPos, glm::vec3(glm::normalize(this->cameraPos) * 10.f)) < 1.f)
             this->originLocked = false;
         this->XPLocked = false;
         this->XNLocked = false;
@@ -237,7 +259,7 @@ void Camera::posShortcutInteraction(bool active){
 
 
     if(this->originLocked){        
-        this->transition(glm::vec3(10.f, 0.f, 0.f), glm::vec3(0.f));
+        this->transition(glm::vec3(glm::normalize(this->cameraPos) * 10.f), glm::vec3(0.f));
         this->updateViewMatrix();
     }
     if(this->XPLocked){        

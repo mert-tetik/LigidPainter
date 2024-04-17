@@ -408,13 +408,11 @@ class ExportDialog
 public:
    Panel panel;
    Panel subPanel;
-   Panel propertiesPanel;
 
-   Section libraryTexturesSection;
-   Section libraryMaterialsSection;
+   Panel libraryTexturesPanel;
+   Panel libraryMaterialsPanel;
+   Panel layersPanel;
 
-   int activeSection = 0; 
-    
    DialogControl dialogControl;
 
    //Constructors
@@ -500,6 +498,28 @@ class MaterialDisplayerDialog
 
    //Public member functions
    void show(Timer& timer, Material material);
+ };
+
+//!------------------------------TEXTURE DISPLAYER------------------------------
+
+class DisplayTextureDialog
+ {
+ public:
+   Panel panel;
+   Button threeD_display_btn;
+   Button twoD_display_btn;
+
+   DialogControl dialogControl;
+   
+   Framebuffer displayingFBO;
+   Camera displayingCam;
+
+   //Constructors
+   DisplayTextureDialog(){}
+   DisplayTextureDialog(int);
+
+   //Public member functions
+   void show(Timer& timer, Texture texture);
  };
 
 //!------------------------------ MATERIAL SELECTION DIALOG ------------------------------

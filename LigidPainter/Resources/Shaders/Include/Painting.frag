@@ -78,19 +78,19 @@ vec4 painting_buffers_get_src_txtr_texture_2D(PaintingBuffers painting_buffers, 
 
 vec4 painting_buffers_get_src_txtr_texture_lod(PaintingBuffers painting_buffers, int channel_index, vec2 uv, float lod){
     if(channel_index == 0)
-        return texture2DLod(painting_buffers.albedo_txtr, uv, lod);
+        return textureLod(painting_buffers.albedo_txtr, uv, lod);
     if(channel_index == 1)
-        return texture2DLod(painting_buffers.roughness_txtr, uv, lod);
+        return textureLod(painting_buffers.roughness_txtr, uv, lod);
     if(channel_index == 2)
-        return texture2DLod(painting_buffers.metallic_txtr, uv, lod);
+        return textureLod(painting_buffers.metallic_txtr, uv, lod);
     if(channel_index == 3)
-        return texture2DLod(painting_buffers.normal_map_txtr, uv, lod);
+        return textureLod(painting_buffers.normal_map_txtr, uv, lod);
     if(channel_index == 4)
-        return texture2DLod(painting_buffers.height_map_txtr, uv, lod);
+        return textureLod(painting_buffers.height_map_txtr, uv, lod);
     if(channel_index == 5)
-        return texture2DLod(painting_buffers.ao_txtr, uv, lod);
+        return textureLod(painting_buffers.ao_txtr, uv, lod);
 
-    return texture2DLod(painting_buffers.albedo_txtr, uv, lod);
+    return textureLod(painting_buffers.albedo_txtr, uv, lod);
 }
 
 struct PaintingData{

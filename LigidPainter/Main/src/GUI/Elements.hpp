@@ -162,15 +162,7 @@ public:
     //Public member functions
     void render(Timer &timer,bool doMouseTracking);
 
-    void update_result_transform_values(){
-        layerButton.resultPos = glm::vec3( 
-                    UTIL::getPercent(*Settings::videoScale(), glm::vec2(pos.x,pos.y)) //Don't include the depth
-                    ,pos.z); //Use the original depth value
-
-        //Get the real scale value
-        layerButton.resultScale = UTIL::getPercent(*Settings::videoScale(), glm::abs(scale));
-        layerButton.resultScale *= glm::sign(scale);
-    }
+    void update_result_transform_values();
 };
 
 
