@@ -310,6 +310,24 @@ void Layer::renderAlphaSettingsPanel(Timer& timer, bool doMouseTracking, const u
     }
 }
 
+
+static void info_panel_render_eye(Timer& timer, Element button){
+    Button detailed_display_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", appTextures.eyeOpenedIcon, 0.f, false); 
+    
+    detailed_display_btn.pos = glm::vec3(button.pos.x + button.scale.x - detailed_display_btn.scale.x-0.5f, button.pos.y - button.scale.y + detailed_display_btn.scale.y+0.5f, button.pos.z); detailed_display_btn.update_result_transform_values();
+    
+    if(Mouse::isMouseHover(detailed_display_btn.resultScale, detailed_display_btn.resultPos))
+        detailed_display_btn.scale *= 1.5f;
+
+    detailed_display_btn.color.a = 0.f; detailed_display_btn.color2.a = 0.f; detailed_display_btn.outlineExtra = false; 
+
+    detailed_display_btn.render(timer, true);
+
+    if(detailed_display_btn.hover && *Mouse::LClick()){
+        dialog_textureDisplayer.show(timer, button.button.texture);
+    }
+}
+
 void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
     Button detailed_display_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "", appTextures.eyeOpenedIcon, 0.f, false);
     
@@ -317,7 +335,7 @@ void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
     infoPanel.sections[0].elements[1].button.text = "Type : " + this->layerType;
     infoPanel.sections[0].elements[1].button.texture = this->layerIcon;
 
-    infoPanel.sections[0].elements[2].button.texture = this->alpha.albedo_Alpha.alphaMapProceduralTxtr;
+    infoPanel.sections[0].elements[2].button.texture = this->alpha.general_Alpha.alphaMapProceduralTxtr;
     infoPanel.sections[0].elements[4].button.texture = this->alpha.albedo_Alpha.alphaMapProceduralTxtr;
     infoPanel.sections[0].elements[7].button.texture = this->alpha.roughness_Alpha.alphaMapProceduralTxtr;
     infoPanel.sections[0].elements[10].button.texture = this->alpha.metallic_Alpha.alphaMapProceduralTxtr;
@@ -330,7 +348,13 @@ void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
     infoPanel.sections[0].elements[11].button.texture = this->result.metallic;
     infoPanel.sections[0].elements[14].button.texture = this->result.normalMap;
     infoPanel.sections[0].elements[17].button.texture = this->result.heightMap;
-    infoPanel.sections[0].elements[20].button.texture = this->result.ambientOcclusion;
+    infoPanel.sections[0].elements[20].button.texture = this->result.ambientOcclusion;  
+    infoPanel.sections[0].elements[5].button.color2 = infoPanel.sections[0].elements[5].button.color;
+    infoPanel.sections[0].elements[8].button.color2 = infoPanel.sections[0].elements[8].button.color;
+    infoPanel.sections[0].elements[11].button.color2 = infoPanel.sections[0].elements[11].button.color;
+    infoPanel.sections[0].elements[14].button.color2 = infoPanel.sections[0].elements[14].button.color;
+    infoPanel.sections[0].elements[17].button.color2 = infoPanel.sections[0].elements[17].button.color;
+    infoPanel.sections[0].elements[20].button.color2 = infoPanel.sections[0].elements[20].button.color;
     
     infoPanel.pos = this->layerButton.pos;
     infoPanel.pos.x -= this->layerButton.scale.x + infoPanel.scale.x;
@@ -338,54 +362,22 @@ void Layer::renderInfoPanel(Timer& timer, bool doMouseTracking){
     infoPanel.clearDepthBuffer = false;
     infoPanel.render(timer, doMouseTracking);
 
-    Button detailed_display_btn_albedo = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
-    Button detailed_display_btn_roughness = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
-    Button detailed_display_btn_metallic = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
-    Button detailed_display_btn_normalMap = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
-    Button detailed_display_btn_heightMap = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
-    Button detailed_display_btn_ao = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.5f), "", appTextures.eyeOpenedIcon, 0.f, false);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[5]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[8]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[11]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[14]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[17]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[20]);
     
-    detailed_display_btn_albedo.color.a = 0.f; detailed_display_btn_albedo.outlineExtra = false;
-    detailed_display_btn_roughness.color.a = 0.f; detailed_display_btn_roughness.outlineExtra = false;
-    detailed_display_btn_metallic.color.a = 0.f; detailed_display_btn_metallic.outlineExtra = false;
-    detailed_display_btn_normalMap.color.a = 0.f; detailed_display_btn_normalMap.outlineExtra = false;
-    detailed_display_btn_heightMap.color.a = 0.f; detailed_display_btn_heightMap.outlineExtra = false;
-    detailed_display_btn_ao.color.a = 0.f; detailed_display_btn_ao.outlineExtra = false;
-
-    detailed_display_btn_albedo.pos = glm::vec3(infoPanel.sections[0].elements[5].button.pos.x + infoPanel.sections[0].elements[5].button.scale.x - detailed_display_btn_albedo.scale.x-0.5f, infoPanel.sections[0].elements[5].button.pos.y - infoPanel.sections[0].elements[5].button.scale.y + detailed_display_btn_albedo.scale.y+0.5f, infoPanel.sections[0].elements[5].button.pos.z);
-    detailed_display_btn_roughness.pos = glm::vec3(infoPanel.sections[0].elements[8].button.pos.x + infoPanel.sections[0].elements[8].button.scale.x - detailed_display_btn_roughness.scale.x-0.5f, infoPanel.sections[0].elements[8].button.pos.y - infoPanel.sections[0].elements[8].button.scale.y + detailed_display_btn_roughness.scale.y+0.5f, infoPanel.sections[0].elements[8].button.pos.z);
-    detailed_display_btn_metallic.pos = glm::vec3(infoPanel.sections[0].elements[11].button.pos.x + infoPanel.sections[0].elements[11].button.scale.x - detailed_display_btn_metallic.scale.x-0.5f, infoPanel.sections[0].elements[11].button.pos.y - infoPanel.sections[0].elements[11].button.scale.y + detailed_display_btn_metallic.scale.y+0.5f, infoPanel.sections[0].elements[11].button.pos.z);
-    detailed_display_btn_normalMap.pos = glm::vec3(infoPanel.sections[0].elements[14].button.pos.x + infoPanel.sections[0].elements[14].button.scale.x - detailed_display_btn_normalMap.scale.x-0.5f, infoPanel.sections[0].elements[14].button.pos.y - infoPanel.sections[0].elements[14].button.scale.y + detailed_display_btn_normalMap.scale.y+0.5f, infoPanel.sections[0].elements[14].button.pos.z);
-    detailed_display_btn_heightMap.pos = glm::vec3(infoPanel.sections[0].elements[17].button.pos.x + infoPanel.sections[0].elements[17].button.scale.x - detailed_display_btn_heightMap.scale.x-0.5f, infoPanel.sections[0].elements[17].button.pos.y - infoPanel.sections[0].elements[17].button.scale.y + detailed_display_btn_heightMap.scale.y+0.5f, infoPanel.sections[0].elements[17].button.pos.z);
-    detailed_display_btn_ao.pos = glm::vec3(infoPanel.sections[0].elements[20].button.pos.x + infoPanel.sections[0].elements[20].button.scale.x - detailed_display_btn_ao.scale.x-0.5f, infoPanel.sections[0].elements[20].button.pos.y - infoPanel.sections[0].elements[20].button.scale.y + detailed_display_btn_ao.scale.y+0.5f, infoPanel.sections[0].elements[20].button.pos.z);
-
-    detailed_display_btn_albedo.render(timer, true);
-    detailed_display_btn_roughness.render(timer, true);
-    detailed_display_btn_metallic.render(timer, true);
-    detailed_display_btn_normalMap.render(timer, true);
-    detailed_display_btn_heightMap.render(timer, true);
-    detailed_display_btn_ao.render(timer, true);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[2]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[4]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[7]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[10]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[13]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[16]);
+    info_panel_render_eye(timer, infoPanel.sections[0].elements[19]);
 
     glClear(GL_DEPTH_BUFFER_BIT);
-
-    if(detailed_display_btn_albedo.hover && *Mouse::LClick()){
-        dialog_textureDisplayer.show(timer, this->result.albedo);
-    }
-    if(detailed_display_btn_roughness.hover && *Mouse::LClick()){
-        dialog_textureDisplayer.show(timer, this->result.roughness);
-    }
-    if(detailed_display_btn_metallic.hover && *Mouse::LClick()){
-        dialog_textureDisplayer.show(timer, this->result.metallic);
-    }
-    if(detailed_display_btn_normalMap.hover && *Mouse::LClick()){
-        dialog_textureDisplayer.show(timer, this->result.normalMap);
-    }
-    if(detailed_display_btn_heightMap.hover && *Mouse::LClick()){
-        dialog_textureDisplayer.show(timer, this->result.heightMap);
-    }
-    if(detailed_display_btn_ao.hover && *Mouse::LClick()){
-        dialog_textureDisplayer.show(timer, this->result.ambientOcclusion);
-    }
 
     if(infoPanel.hover)
         __enteredPanelOnce = true;
