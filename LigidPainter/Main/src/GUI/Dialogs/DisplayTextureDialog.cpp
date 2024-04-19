@@ -71,13 +71,16 @@ void DisplayTextureDialog::show(Timer& timer, Texture texture){
     
     this->dialogControl.activate();
 
+
     while (!getContext()->window.shouldClose())
     {
         this->dialogControl.updateStart();
 
-        if(this->threeD_display_btn.hover){
+        if(this->threeD_display_btn.hover || dialogControl.firstFrameActivated){
             this->displayingCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
             this->displayingCam.posShortcutInteraction(true);
+            if(dialogControl.firstFrameActivated)
+                this->displayingCam.updateViewMatrix();
         }
 
         //Render the panel
@@ -87,7 +90,7 @@ void DisplayTextureDialog::show(Timer& timer, Texture texture){
         threeD_display_btn.pos = glm::vec3(this->panel.pos.x - this->panel.scale.x + threeD_display_btn.scale.x, this->panel.pos.y, this->panel.pos.z);
         threeD_display_btn.render(timer, true);
 
-        if(threeD_display_btn.hover)
+        if(threeD_display_btn.hover || dialogControl.firstFrameActivated)
             this->threeD_display_btn.texture.render_mesh(*getScene()->get_selected_mesh(), MaterialChannels(texture, appTextures.white, appTextures.black, appTextures.white, appTextures.white, appTextures.white), this->displayingCam);
 
         ShaderSystem::buttonShader().use();
