@@ -50,6 +50,13 @@ static void moveLayer(int src, int dest, std::vector<Layer*> layers){
 
 void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     int count = 0;
+    
+    if(layerPanel.hover && *Mouse::LClick() && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL)){
+        for (Layer* layer : this->layers){
+            layer->mainSelected = false;
+            layer->subSelected = false;
+        }
+    }
 
     bool anyBtnClickState1 = false;
     for (int i = this->layers.size() -1; i >= 0; i--)
