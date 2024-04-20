@@ -44,6 +44,8 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     layerButton.text = this->title;
     layerButton.render(timer, doMosueTracking && !eyeBtn.hover);
 
+    timer.transition(this->mainSelected || this->subSelected, this->clickedMixVal, 0.1f);
+
     if(scale.x > 8.f){
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity / 2.f);
         Button layerIconDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->layerIcon, 0.f, false);
@@ -90,7 +92,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
 
     // Highlight the selected layers
     if(mainSelected || subSelected){
-        Button hightlight_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(layerButton.scale.x, layerButton.scale.y / 10.f), "", Texture(), 0.f, false);
+        Button hightlight_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(layerButton.scale.x, layerButton.scale.y / 10.f * this->clickedMixVal), "", Texture(), 0.f, false);
         hightlight_btn.pos = glm::vec3(layerButton.pos.x, layerButton.pos.y - layerButton.scale.y + hightlight_btn.scale.y, layerButton.pos.z);
         hightlight_btn.color = ColorPalette::themeColor;
         if(!mainSelected)

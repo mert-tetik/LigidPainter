@@ -175,6 +175,8 @@ public:
     std::string layerType;
     /*! @brief Button of the layer to display this layer*/
     Button layerButton;
+
+    float clickedMixVal = 0.f;
     
     Button eyeBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(0.7f, 1.f), "", Texture(), 0.f, false);
     bool hiden = false;
