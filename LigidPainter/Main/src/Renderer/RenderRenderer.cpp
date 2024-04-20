@@ -89,10 +89,10 @@ void Renderer::render(){
 
         if(last_painting_condition && !painting_paint_condition()){
             getScene()->get_selected_mesh()->layerScene.update_result(std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]), glm::vec3(0.f), *getScene()->get_selected_mesh());
-            bool success = false;
-            Layer* layer = getScene()->get_selected_mesh()->layerScene.get_selected_layer(&success);
+            int layerIndex = -1;
+            Layer* layer = getScene()->get_selected_mesh()->layerScene.get_selected_layer(&layerIndex);
 
-            if(success){
+            if(layerIndex != -1){
                 Texture* capture_txtr;
                 layer->get_type_specific_variable(nullptr, nullptr, nullptr, nullptr, &capture_txtr);
                

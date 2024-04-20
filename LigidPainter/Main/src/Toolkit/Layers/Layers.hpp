@@ -35,6 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 // Forward declerations
 class MaterialSelectionDialog; 
+class LayerScene;
 
 /*! @brief Handles the alpha value of a channel*/
 struct ChannelAlpha{
@@ -199,10 +200,9 @@ public:
     virtual bool is_type_specific_panels_hovered() = 0;
 
     /*! 
-        @brief Renders GUI elements for the layer
-        @return 0 : No msg | 1 : Delete this layer | 2 : layer selected
+        @brief Renders GUI elements for the layer. Returns true if the layer is deleted
     */
-    int render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh);
+    bool render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh, LayerScene* src_layer_scene, int src_layer_index);
 
     /*! @brief Generates the this->layerButton from scratch using this->title, this->layerIcon*/
     void updateLayerButton();
@@ -322,8 +322,27 @@ public:
     bool any_dialog_hovered();
     bool any_vector_editing();
     MaterialChannels get_painting_channels(bool* success);
-    Layer* get_selected_layer(bool* success);
+    
+    /*! @brief Returns only the main-selected layer. Returns nullptr if no layer was selected. layer_index is set to index value of the selected layer in the array and is not modified if no layer was main-selected*/
+    Layer* get_selected_layer(int* layer_index);
+    
+    /*! @brief Returns all the selected layers in the layer scene. Whether sub-selected or main-selected*/
+    std::vector<Layer*> get_selected_layers();
+
+    /*! @brief  Set main-selected & sub-selected flags to false for each layer*/
+    void unselect_all_layers();
+
+    /*! @brief Deletes all the selected layers*/
+    void delete_all_selected_layers();
+    
+    //! @brief Selects the corresponding layer at the index of layer_index. If unselect_selected_ones flag set to true all remaining layers will be unselected. If select_between flag set to true layers between the already selected and 
+    void select_layer(int layer_index, bool unselect_selected_ones, bool select_between);
+
+    // Alters the hide state of the selected layers
+    void hide_unhide_selected_layers();
+    
     void update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Mesh& mesh);
+    
 };
 
 #endif // LIGID_LAYERS_HPP

@@ -28,8 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static bool __enteredPanelOnce = false;
 
-
-int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh){
+bool Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh, LayerScene* src_layer_scene, int src_layer_index){
 
     layerButton.pos = pos;
     layerButton.scale = scale;
@@ -91,7 +90,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     }
 
     // Highlight the selected layers
-    if(mainSelected || subSelected){
+    if(clickedMixVal){
         Button hightlight_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(layerButton.scale.x, layerButton.scale.y / 10.f * this->clickedMixVal), "", Texture(), 0.f, false);
         hightlight_btn.pos = glm::vec3(layerButton.pos.x, layerButton.pos.y - layerButton.scale.y + hightlight_btn.scale.y, layerButton.pos.z);
         hightlight_btn.color = ColorPalette::themeColor;
@@ -111,38 +110,72 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     }
 
     if(layerButton.clicked){
-        mainSelected = true;
-        subSelected = true;
-        return 2;
+        src_layer_scene->select_layer(
+                                        src_layer_index, 
+                                        !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL), 
+                                        getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT)
+                                    );
     }
 
-    if(layerButton.hover && *Mouse::RClick()){
-        mainSelected = true;
-        subSelected = true;
+    if(layerButton.hover && *Mouse::RClick() && src_layer_scene != nullptr){
+        src_layer_scene->select_layer(src_layer_index, false, false);
 
-        int res;
-        if(this->layerType == "painting")
-            res = show_context_menu(timer, {"Layer Info", "Opacity Settings", "Rename" , "Delete"});
-        else
-            res = show_context_menu(timer, {"Layer Info", "Opacity Settings", "Rename" , "Delete" , "Set Elements"});
+        std::vector<std::string> context_menu_elements;
+
+        std::string layer_info_txt = "Layer Info", 
+                    opacity_settings_txt = "Opacity Settings", 
+                    rename_txt = "Rename", 
+                    hide_txt = "Hide", 
+                    unhide_txt = "Unhide", 
+                    hide_unhide_all_txt = "Hide - Unhide All Selected", 
+                    set_elements_txt = "Set Elements", 
+                    delete_txt = "Delete", 
+                    delete_all_txt = "Delete All Selected";
+
+        // Multiple layers selected
+        if(!src_layer_scene->get_selected_layers().size() > 1){
+            context_menu_elements = {hide_unhide_all_txt, delete_all_txt};
+        }
+        else{
+            context_menu_elements = {layer_info_txt, opacity_settings_txt, rename_txt, (this->hiden) ? unhide_txt : hide_txt, delete_txt};
+        }
+
+        int res = show_context_menu(timer, context_menu_elements);
         
-        if(res == 0){
+        // No context menu buttons were selected
+        if(res == -1)
+            return false;
+
+        // Pressed to layer info button 
+        if(context_menu_elements[res] == layer_info_txt){
             infoMode = true;
         }
-        if(res == 1){
+
+        // Pressed to opacity settings button
+        if(context_menu_elements[res] == opacity_settings_txt){
             alphaSettingsMode = true;
         }
-        if(res == 2){
+        
+        // Pressed to rename button
+        if(context_menu_elements[res] == rename_txt){
             dialog_renaming.show(timer, this->layerButton.pos, this->layerButton.scale.x, &this->title, 25);
         }
-        if(res == 3){
-            return 1;
-        }
-        if(res == 4){
+
+        // Pressed to hide - unhide button
+        if(context_menu_elements[res] == hide_txt || context_menu_elements[res] == unhide_txt || context_menu_elements[res] == hide_unhide_all_txt){
+            src_layer_scene->hide_unhide_selected_layers();
+        }   
+
+        // Pressed to set elements button
+        if(context_menu_elements[res] == set_elements_txt){
             elementSelectionMode = true;
         }
 
-        return 2;
+        // Pressed to delete button
+        if(context_menu_elements[res] == delete_txt || context_menu_elements[res] == delete_all_txt){
+            src_layer_scene->delete_all_selected_layers();
+            return true;
+        }
     }
 
     if(elementSelectionMode)
@@ -156,7 +189,7 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
-    return 0;
+    return false;
 }
 
 

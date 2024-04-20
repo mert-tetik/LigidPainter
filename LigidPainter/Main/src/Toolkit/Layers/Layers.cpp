@@ -61,10 +61,16 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, c
     bool anyBtnClickState1 = false;
     for (int i = this->layers.size() -1; i >= 0; i--)
     {
+        layer_rendering_start:
+
         glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 2.5f); 
         glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
-        int layerMSG = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, resolution, mesh);
+        bool layerDeleted = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, resolution, mesh, this, i);
         
+        if(layerDeleted){
+            return;
+        }
+
         if(this->layers[i]->layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
             btnMoving = true;
 
@@ -104,7 +110,7 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, c
                     if(copyCount == 0)
                         movingLayers.clear();    
                     movingLayers.push_back(this->layers[cI]);
-                    this->layers[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, resolution, mesh);
+                    this->layers[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, resolution, mesh, nullptr, 0);
                     copyCount++;
                 }
             }
@@ -114,37 +120,6 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, c
         if(layerPanel.hover && shortcuts_CTRL_A()){
             for (size_t cI = 0; cI < this->layers.size(); cI++){
                 this->layers[cI]->subSelected = true;
-            }
-        }
-
-        if(layerMSG == 1){
-            for (size_t cI = 0; cI < this->layers.size(); cI++){
-                if(this->layers[cI]->subSelected || this->layers[cI]->mainSelected){
-                    this->layers.erase(this->layers.begin() + cI);
-                    cI--;
-                }
-            }
-
-            break;
-        }
-
-        if(layerMSG == 2){
-            for (int cI = 0; cI < this->layers.size(); cI++)
-            {
-                if(cI != i){
-                    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && this->layers[cI]->mainSelected){
-                        for (int cII = 0; cII < this->layers.size(); cII++){
-                            if(cII < std::max(cI, i) && cII > std::min(cI, i))
-                                this->layers[cII]->subSelected = true;
-                        }
-                    }
-                    
-                    this->layers[cI]->mainSelected = false;   
-                    
-                    
-                    if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
-                        this->layers[cI]->subSelected = false;
-                }
             }
         }
         
@@ -313,17 +288,29 @@ MaterialChannels LayerScene::get_painting_channels(bool* success){
     return MaterialChannels();
 }
 
-Layer* LayerScene::get_selected_layer(bool* success){
+Layer* LayerScene::get_selected_layer(int* layer_index){
     for (size_t i = 0; i < this->layers.size(); i++)
     {
         if(this->layers[i]->mainSelected){
-            *success = true;
+            *layer_index = i;
             return this->layers[i];
         }
     }
     
-    *success = false;
     return nullptr;
+}
+
+std::vector<Layer*> LayerScene::get_selected_layers(){
+    std::vector<Layer*> selected_layers;
+
+    for (size_t i = 0; i < this->layers.size(); i++)
+    {
+        if(this->layers[i]->mainSelected || this->layers[i]->subSelected){
+            selected_layers.push_back(this->layers[i]);
+        }
+    }
+
+    return selected_layers;
 }
 
 void LayerScene::update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Mesh& mesh){
@@ -331,5 +318,63 @@ void LayerScene::update_all_layers(const unsigned int resolution, glm::vec3 base
     {
         this->layers[i]->render(resolution, mesh);
     }
+
     this->update_result(resolution, baseColor, mesh);
+}
+
+void LayerScene::unselect_all_layers(){
+    for(Layer* layer : this->layers){
+        layer->mainSelected = false;
+        layer->subSelected = false;
+    }
+}
+
+void LayerScene::delete_all_selected_layers(){
+    for (size_t layerI = 0; layerI < this->layers.size(); layerI++){
+        if(this->layers[layerI]->subSelected || this->layers[layerI]->mainSelected){
+            this->layers.erase(this->layers.begin() + layerI);
+            layerI--;
+        }
+    }
+}
+
+void LayerScene::select_layer(int layer_index, bool unselect_selected_ones, bool select_between){
+    
+    // Check if the layer_index is valid
+    if(layer_index < 0 || layer_index >= this->layers.size()){
+        LGDLOG::start << "Error : Invalid LayerScene::select_layer index" << LGDLOG::end;
+        return;
+    }
+
+    int already_main_selected_index = -1;
+    this->get_selected_layer(&already_main_selected_index);
+
+    // Loop thru all the layers
+    for (Layer* layer : this->layers)
+    {
+        // Sub-select all the layers between
+        if(already_main_selected_index != -1 && select_between){
+            for (int cII = 0; cII < this->layers.size(); cII++){
+                if(cII < std::max(already_main_selected_index, layer_index) && cII > std::min(already_main_selected_index, layer_index))
+                    this->layers[cII]->subSelected = true;
+            }
+        }
+        
+        // None of the layers will be main selected but the especially selected one
+        layer->mainSelected = false;   
+        
+        // None of the layers will be selected but the especially selected one 
+        if(unselect_selected_ones)
+            layer->subSelected = false;
+    }
+
+    // Select the layer 
+    this->layers[layer_index]->mainSelected = true;
+    this->layers[layer_index]->subSelected = true;
+}
+
+void LayerScene::hide_unhide_selected_layers(){
+    for (Layer* layer : this->get_selected_layers()){
+        layer->hiden = !layer->hiden;
+    }
 }
