@@ -44,7 +44,6 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
     layerButton.text = this->title;
     layerButton.render(timer, doMosueTracking && !eyeBtn.hover);
 
-
     if(scale.x > 8.f){
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity / 2.f);
         Button layerIconDisplayer = Button(ELEMENT_STYLE_SOLID, glm::vec2(1, scale.y), "", this->layerIcon, 0.f, false);
@@ -89,30 +88,25 @@ int Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, gl
         generalOpacityDisplayer.render(timer, false);
     }
 
-    if(mainSelected){
-        layerButton.color = ColorPalette::themeColor;
-        layerButton.color.r /= 2.0f;
-        layerButton.color.g /= 2.0f;
-        layerButton.color.b /= 2.0f;
-        
-        layerButton.textColor = ColorPalette::oppositeColor;
-    }
-    else if(subSelected){
-        layerButton.color = ColorPalette::themeColor;
-        layerButton.color.r /= 4.0f;
-        layerButton.color.g /= 4.0f;
-        layerButton.color.b /= 4.0f;
+    // Highlight the selected layers
+    if(mainSelected || subSelected){
+        Button hightlight_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(layerButton.scale.x, layerButton.scale.y / 10.f), "", Texture(), 0.f, false);
+        hightlight_btn.pos = glm::vec3(layerButton.pos.x, layerButton.pos.y - layerButton.scale.y + hightlight_btn.scale.y, layerButton.pos.z);
+        hightlight_btn.color = ColorPalette::themeColor;
+        if(!mainSelected)
+            hightlight_btn.color /= 2.f;
+        hightlight_btn.outlineExtra = false;
+        hightlight_btn.render(timer, false);
 
-        layerButton.textColor = ColorPalette::oppositeColor;
-        layerButton.textColor.r /= 1.3f;
-        layerButton.textColor.g /= 1.3f;
-        layerButton.textColor.b /= 1.3f;
+        // Render the same for the bottom part
+        hightlight_btn.pos = glm::vec3(layerButton.pos.x, layerButton.pos.y + layerButton.scale.y - hightlight_btn.scale.y, layerButton.pos.z);
+        hightlight_btn.render(timer, false);
+
+        layerButton.textColor = hightlight_btn.color;
     }
     else{
-        layerButton.color = ColorPalette::secondColor;
         layerButton.textColor = ColorPalette::oppositeColor;
     }
-
 
     if(layerButton.clicked){
         mainSelected = true;
