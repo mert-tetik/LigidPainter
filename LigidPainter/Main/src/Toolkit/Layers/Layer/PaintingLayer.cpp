@@ -30,17 +30,15 @@ PaintingLayer::PaintingLayer(const unsigned int resolution){
     this->title = "Painting Layer";
     this->layerType = "painting";
     this->layerIcon = appTextures.brushIcon;
-    this->updateLayerButton();
-    this->genResultChannels(resolution);
+    this->generate_layer_buffers(resolution);
 
     this->painting_capture_txtr = Texture(nullptr, 1024, 1024);
 }
 
-void PaintingLayer::render(const unsigned int resolution, Mesh& mesh){
-    this->updateResultTextureResolutions(resolution, mesh);
+void PaintingLayer::type_specific_generate_result(const unsigned int resolution, Mesh& mesh){
 }
 
-void PaintingLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
-    this->elementSelectionMode = false;
+void PaintingLayer::type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
+    this->type_specific_modification_enabled = false;
     return;
 }

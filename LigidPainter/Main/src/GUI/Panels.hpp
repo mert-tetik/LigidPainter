@@ -14,7 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #ifndef LIGID_PANELS_HPP
 #define LIGID_PANELS_HPP
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>

@@ -61,8 +61,6 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, c
     bool anyBtnClickState1 = false;
     for (int i = this->layers.size() -1; i >= 0; i--)
     {
-        layer_rendering_start:
-
         glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 2.5f); 
         glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
         bool layerDeleted = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, resolution, mesh, this, i);
@@ -71,23 +69,23 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, c
             return;
         }
 
-        if(this->layers[i]->layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
+        if(this->layers[i]->layerGUI.layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
             btnMoving = true;
 
-        if(this->layers[i]->layerButton.clickState1)
+        if(this->layers[i]->layerGUI.layerButton.clickState1)
             anyBtnClickState1 = true;
 
-        if(this->layers[i]->layerButton.clickState1 && btnMoving){
+        if(this->layers[i]->layerGUI.layerButton.clickState1 && btnMoving){
             glm::vec2 crsPos = glm::vec2(Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f, Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f);
             for (size_t cI = 0; cI < this->layers.size(); cI++){
-                if(crsPos.y > this->layers[cI]->layerButton.pos.y || (cI == this->layers.size() - 1 && crsPos.y < this->layers[cI]->layerButton.pos.y)){
-                    Button btn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(this->layers[cI]->layerButton.scale.x, 0.2f), "", Texture(), 0.f, false);
+                if(crsPos.y > this->layers[cI]->layerGUI.layerButton.pos.y || (cI == this->layers.size() - 1 && crsPos.y < this->layers[cI]->layerGUI.layerButton.pos.y)){
+                    Button btn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(this->layers[cI]->layerGUI.layerButton.scale.x, 0.2f), "", Texture(), 0.f, false);
                     btn.radius = 0.05f;
                     btn.outlineThickness /= 2.f;
                     btn.color = glm::vec4(1.f);
-                    btn.pos = glm::vec3(this->layers[cI]->layerButton.pos.x, this->layers[cI]->layerButton.pos.y + this->layers[cI]->layerButton.scale.y + btn.scale.y, this->layers[cI]->layerButton.pos.z + 0.05f);
-                    if(!(crsPos.y > this->layers[cI]->layerButton.pos.y) && (cI == this->layers.size() - 1 && crsPos.y < this->layers[cI]->layerButton.pos.y)){
-                        btn.pos.y = this->layers[cI]->layerButton.pos.y - this->layers[cI]->layerButton.scale.y - btn.scale.y;
+                    btn.pos = glm::vec3(this->layers[cI]->layerGUI.layerButton.pos.x, this->layers[cI]->layerGUI.layerButton.pos.y + this->layers[cI]->layerGUI.layerButton.scale.y + btn.scale.y, this->layers[cI]->layerGUI.layerButton.pos.z + 0.05f);
+                    if(!(crsPos.y > this->layers[cI]->layerGUI.layerButton.pos.y) && (cI == this->layers.size() - 1 && crsPos.y < this->layers[cI]->layerGUI.layerButton.pos.y)){
+                        btn.pos.y = this->layers[cI]->layerGUI.layerButton.pos.y - this->layers[cI]->layerGUI.layerButton.scale.y - btn.scale.y;
                         btnMovingI = cI + 1;                    
                     }
                     else{
@@ -256,9 +254,7 @@ bool LayerScene::any_dialog_hovered(){
     for (size_t i = 0; i < this->layers.size(); i++)
     {
         if(
-            (this->layers[i]->elementSelectionMode && this->layers[i]->is_type_specific_panels_hovered()) || 
-            (this->layers[i]->alphaSettingsMode && this->layers[i]->alphaSettingsPanel.hover) || 
-            (this->layers[i]->infoMode || this->layers[i]->infoPanel.hover)
+            (this->layers[i]->type_specific_modification_enabled && this->layers[i]->is_type_specific_panels_hovered())
         )
             return true;
     }
@@ -268,7 +264,7 @@ bool LayerScene::any_dialog_hovered(){
 bool LayerScene::any_vector_editing(){
     for (size_t i = 0; i < this->layers.size(); i++)
     {
-        if((this->layers[i]->elementSelectionMode && this->layers[i]->layerType == "vector"))
+        if((this->layers[i]->type_specific_modification_enabled && this->layers[i]->layerType == "vector"))
             return true;
     }
     return false;
@@ -316,7 +312,7 @@ std::vector<Layer*> LayerScene::get_selected_layers(){
 void LayerScene::update_all_layers(const unsigned int resolution, glm::vec3 baseColor, Mesh& mesh){
     for (size_t i = 0; i < this->layers.size(); i++)
     {
-        this->layers[i]->render(resolution, mesh);
+        this->layers[i]->type_specific_generate_result(resolution, mesh);
     }
 
     this->update_result(resolution, baseColor, mesh);

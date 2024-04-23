@@ -92,8 +92,8 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
             int res = showMessageBox(
                                         "Warning!", 
                                         "You are altering the resolution value of the layers!" 
-                                        " This action will resize each textures in the layers. (Applied automatically for each mesh)"
-                                        " And is irreversible for painting layers (once you go low resolution (there is no covering painting textures to high resolution))"
+                                        " This action will resize each textures in the layers."
+                                        " And is irreversible for painting layers (once you go low resolution there is no covering painting textures to high resolution)"
                                         " Are you sure you want to proceed?",
                                         MESSAGEBOX_TYPE_WARNING,
                                         MESSAGEBOX_BUTTON_YESNO

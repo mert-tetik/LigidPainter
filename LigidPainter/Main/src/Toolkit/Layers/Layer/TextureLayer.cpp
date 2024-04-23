@@ -26,14 +26,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/Dialogs.hpp"
 #include "Toolkit/Layers/Layers.hpp"
 
-static bool __enteredPanelOnce = false;
-
 TextureLayer::TextureLayer(const unsigned int resolution){
     this->title = "Texture Layer";
     this->layerType = "texture";
     this->layerIcon = appTextures.textureIcon;
-    this->updateLayerButton();
-    this->genResultChannels(resolution);
+    this->generate_layer_buffers(resolution);
 
     this->textureSelectPanel = Panel(
                                     {
@@ -77,63 +74,54 @@ TextureLayer::TextureLayer(const unsigned int resolution){
                                 );
 }
 
-void TextureLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
-    textureSelectPanel.sections[0].elements[1].button.textureSelection3D = true;
-    textureSelectPanel.sections[0].elements[3].button.textureSelection3D = true;
-    textureSelectPanel.sections[0].elements[5].button.textureSelection3D = true;
-    textureSelectPanel.sections[0].elements[7].button.textureSelection3D = true;
-    textureSelectPanel.sections[0].elements[9].button.textureSelection3D = true;
-    textureSelectPanel.sections[0].elements[11].button.textureSelection3D = true;
-    
-    textureSelectPanel.sections[0].elements[1].button.texture = this->channels.albedo;
-    textureSelectPanel.sections[0].elements[3].button.texture = this->channels.roughness;
-    textureSelectPanel.sections[0].elements[5].button.texture = this->channels.metallic;
-    textureSelectPanel.sections[0].elements[7].button.texture = this->channels.normalMap;
-    textureSelectPanel.sections[0].elements[9].button.texture = this->channels.heightMap;
-    textureSelectPanel.sections[0].elements[11].button.texture = this->channels.ambientOcclusion;
-    
-    textureSelectPanel.pos = this->layerButton.pos;
-    textureSelectPanel.pos.x -= this->layerButton.scale.x + textureSelectPanel.scale.x;
-    textureSelectPanel.pos.y -= this->layerButton.scale.y - textureSelectPanel.scale.y;
-    textureSelectPanel.render(timer, doMouseTracking);
-    
-    this->channels.albedo = textureSelectPanel.sections[0].elements[1].button.texture;
-    this->channels.roughness = textureSelectPanel.sections[0].elements[3].button.texture;
-    this->channels.metallic = textureSelectPanel.sections[0].elements[5].button.texture;
-    this->channels.normalMap = textureSelectPanel.sections[0].elements[7].button.texture;
-    this->channels.heightMap = textureSelectPanel.sections[0].elements[9].button.texture;
-    this->channels.ambientOcclusion = textureSelectPanel.sections[0].elements[11].button.texture;
+static DialogControl texture_select_dialog_control;
 
-    if(
-        textureSelectPanel.sections[0].elements[1].button.clicked ||
-        textureSelectPanel.sections[0].elements[3].button.clicked ||
-        textureSelectPanel.sections[0].elements[5].button.clicked ||
-        textureSelectPanel.sections[0].elements[7].button.clicked ||
-        textureSelectPanel.sections[0].elements[9].button.clicked ||
-        textureSelectPanel.sections[0].elements[11].button.clicked 
-    )
-        this->render(resolution, mesh);
+void TextureLayer::type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
+    texture_select_dialog_control.activate();
 
-    if(textureSelectPanel.hover)
-        __enteredPanelOnce = true;
+    while (!getContext()->window.shouldClose())
+    {
+        textureSelectPanel.sections[0].elements[1].button.textureSelection3D = true;
+        textureSelectPanel.sections[0].elements[3].button.textureSelection3D = true;
+        textureSelectPanel.sections[0].elements[5].button.textureSelection3D = true;
+        textureSelectPanel.sections[0].elements[7].button.textureSelection3D = true;
+        textureSelectPanel.sections[0].elements[9].button.textureSelection3D = true;
+        textureSelectPanel.sections[0].elements[11].button.textureSelection3D = true;
+        
+        textureSelectPanel.sections[0].elements[1].button.texture = this->channels.albedo;
+        textureSelectPanel.sections[0].elements[3].button.texture = this->channels.roughness;
+        textureSelectPanel.sections[0].elements[5].button.texture = this->channels.metallic;
+        textureSelectPanel.sections[0].elements[7].button.texture = this->channels.normalMap;
+        textureSelectPanel.sections[0].elements[9].button.texture = this->channels.heightMap;
+        textureSelectPanel.sections[0].elements[11].button.texture = this->channels.ambientOcclusion;
+        
+        textureSelectPanel.pos = this->layerGUI.layerButton.pos;
+        textureSelectPanel.pos.x -= this->layerGUI.layerButton.scale.x + textureSelectPanel.scale.x;
+        textureSelectPanel.pos.y -= this->layerGUI.layerButton.scale.y - textureSelectPanel.scale.y;
+        textureSelectPanel.render(timer, doMouseTracking);
+        
+        this->channels.albedo = textureSelectPanel.sections[0].elements[1].button.texture;
+        this->channels.roughness = textureSelectPanel.sections[0].elements[3].button.texture;
+        this->channels.metallic = textureSelectPanel.sections[0].elements[5].button.texture;
+        this->channels.normalMap = textureSelectPanel.sections[0].elements[7].button.texture;
+        this->channels.heightMap = textureSelectPanel.sections[0].elements[9].button.texture;
+        this->channels.ambientOcclusion = textureSelectPanel.sections[0].elements[11].button.texture;
 
-    if(*Mouse::LPressed())
-        __enteredPanelOnce = false;
+        if((!textureSelectPanel.hover && *Mouse::LClick()) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE))
+            texture_select_dialog_control.unActivate();
+        
+        texture_select_dialog_control.updateEnd(timer,0.15f);
 
-    if(*Mouse::LClick() && !__enteredPanelOnce && !textureSelectPanel.hover){
-        this->elementSelectionMode = false;
-        __enteredPanelOnce = false;
-    }
-
-    if(__enteredPanelOnce && !textureSelectPanel.hover){
-        this->elementSelectionMode = false;
-        __enteredPanelOnce = false;
+        /* Quit the layer info dialog*/
+        if(texture_select_dialog_control.mixVal == 0.f){
+            this->update_result_buffers(resolution, mesh);
+            this->type_specific_modification_enabled = false;
+            break;
+        }
     }
 }
 
-void TextureLayer::render(const unsigned int resolution, Mesh& mesh){
-    this->updateResultTextureResolutions(resolution, mesh);
-    
+void TextureLayer::type_specific_generate_result(const unsigned int resolution, Mesh& mesh){
     this->channels.albedo.generateProceduralTexture(mesh, this->result.albedo, resolution);
     this->channels.roughness.generateProceduralTexture(mesh, this->result.roughness, resolution);
     this->channels.metallic.generateProceduralTexture(mesh, this->result.metallic, resolution);

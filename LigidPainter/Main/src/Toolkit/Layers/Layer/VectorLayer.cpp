@@ -36,8 +36,7 @@ VectorLayer::VectorLayer(const unsigned int resolution){
     this->title = "Vector Layer";
     this->layerType = "vector";
     this->layerIcon = appTextures.inkPenIcon;
-    this->updateLayerButton();
-    this->genResultChannels(resolution);
+    this->generate_layer_buffers(resolution);
 
     this->vector_scene = VectorScene({}, {});
 
@@ -54,7 +53,7 @@ static std::vector<VectorStroke3D> last_strokes;
 
 static Button cancel_editing_vectors_btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(7.f,2.f), "Quit Vector Editing", Texture(), 0.f, false);
 static bool firstFrameActivated = true;
-void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
+void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     
     this->vector_scene.strokes_3D = this->strokes;
     this->vector_scene.render_scene(timer, true, true);
@@ -95,39 +94,12 @@ void VectorLayer::render_element_selection_panel(Timer& timer, bool doMouseTrack
         same = false;
 
     if(!*Mouse::LPressed() && !same){
-        this->render(resolution, mesh);
+        this->update_result_buffers(resolution, mesh);
         last_strokes = this->strokes;
     }
-    
-    /*
-    cancel_editing_vectors_btn.pos = glm::vec3(50.f, 20.f, 0.8f);
-    cancel_editing_vectors_btn.render(timer, true);
-    if(cancel_editing_vectors_btn.clicked || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ENTER)){
-        this->elementSelectionMode = false;
-    }
-
-    firstFrameActivated = false;
-
-    bool anyStrokeInteracted = false;
-    for (size_t i = 0; i < painter.vectorStrokes3D.size(); i++)
-    {
-        if(painter.vectorStrokes3D[i].startPoint.moving || painter.vectorStrokes3D[i].endPoint.moving)
-            anyStrokeInteracted = true;
-    }
-    
-    if(anyStrokeInteracted){
-        this->render(resolution, mesh);
-    }
-
-    if(!this->elementSelectionMode)
-        firstFrameActivated = true;
-
-    if(!elementSelectionMode)
-        painter.vectorStrokes3D = lastPainterStrokes;
-    */
 }
 
-void VectorLayer::render(const unsigned int resolution, Mesh& mesh){
+void VectorLayer::type_specific_generate_result(const unsigned int resolution, Mesh& mesh){
     Box emptyBox;
     TextureFieldScene emptyTextureFieldScene;
 
@@ -176,27 +148,4 @@ void VectorLayer::render(const unsigned int resolution, Mesh& mesh){
                                 );
 
     mesh.layerScene.update_result(resolution, glm::vec3(0.f), mesh);
-    
-    /*
-    this->updateResultTextureResolutions(resolution, mesh);
-    
-    lastPainterStrokes = painter.vectorStrokes3D;
-    painter.vectorStrokes3D = this->strokes;
-
-    painter.applyVectorStrokes(
-                                {}, 
-                                Panel(), 
-                                0, 
-                                Filter(), 
-                                Box(), 
-                                Material(),
-                                {},
-                                false
-                            );
-        
-    getScene()->get_selected_mesh()->layerScene.update_result(resolution, glm::vec3(0.f), mesh);
-    
-    painter.vectorStrokes3D = lastPainterStrokes;
-
-    */
 }
