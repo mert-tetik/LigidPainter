@@ -69,6 +69,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
         Debugger::block("Painting : First frame: Update buffers"); // Start
         frame_counter = 0;
         settings.painting_over_data.texture_field_scene->update_painting_over_texture(settings.point.use_3D);
+        painting_update_buffers((settings.painted_buffers.material_painting) ? settings.painted_buffers.material_channel_albedo.getResolution().x : settings.painted_buffers.solid_painted_texture.getResolution().x);
         Debugger::block("Painting : First frame: Update buffers"); // End
     }
 
@@ -320,6 +321,29 @@ void painting_init_buffers(){
     INIT_MIRROR_SIDE(XZ_side, glm::vec3(1.f, -1.f, 1.f));
     INIT_MIRROR_SIDE(YZ_side, glm::vec3(-1.f, 1.f, 1.f));
     INIT_MIRROR_SIDE(XYZ_side, glm::vec3(1.f, 1.f, 1.f));
+}
+
+#define UPDATE_MIRROR_SIDE(mirror_side, axis) mirror_side.paintingBuffers.depth_texture  = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);\
+                                            mirror_side.paintingBuffers.window_painting_texture  = Texture(nullptr, 1024, 1024);\
+                                            mirror_side.paintingBuffers.projected_painting_texture  = Texture(nullptr, 1024, 1024, GL_LINEAR);\
+                                            mirror_side.effectAxis = axis;
+
+void painting_update_buffers(const unsigned int resolution){
+    one_px_txtr = Texture(nullptr, 1, 1, GL_NEAREST);
+
+    if(painting_projected_painting_FBO.colorBuffer.getResolution().x != resolution)
+        painting_projected_painting_FBO.colorBuffer.update(nullptr, resolution, resolution);
+    
+    if(O_side.paintingBuffers.projected_painting_texture.getResolution().x != resolution){
+        O_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
+        X_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
+        Y_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
+        XY_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
+        Z_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
+        XZ_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
+        YZ_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
+        XYZ_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
+    }
 }
 
 PaintSettings get_paint_settings_using_GUI_data(bool* success){
