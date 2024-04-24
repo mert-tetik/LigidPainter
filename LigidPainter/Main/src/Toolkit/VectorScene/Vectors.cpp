@@ -260,6 +260,8 @@ void VectorScene::render2DVectors(Timer& timer, bool doMouseTracking){
     if(doMouseTracking && Mouse::activeCursor()->cursorType == Mouse::defaultCursor()->cursorType && doMouseTracking)
         Mouse::setCursor(*Mouse::inkPenCursor());
 
+    getBox()->bindBuffers();
+
     // Render the vectors
     bool anyPointMovingCondition = false;
     for (int i = this->strokes_2D.size() - 1; i >= 0; i--)
@@ -447,34 +449,6 @@ void VectorScene::apply_strokes(
             }
         }
     }
-
-    /*
-    if(threeD){
-        for (size_t strokeI = 0; strokeI < this->strokes_3D.size(); strokeI++)
-        {
-            for (size_t vertI = 0; vertI < this->strokes_3D[strokeI].lineVertices.size(); vertI++){
-                if(vertI % (int)std::ceil((this->brushProperties.spacing + 1.f) / 20.f) == 0){
-                    doPaint(
-                                ThreeDPoint(this->strokes_3D[strokeI].lineVertices[vertI].Position, this->strokes_3D[strokeI].lineVertices[vertI].Normal), 
-                                vertI == 0, 
-                                this->interaction_panel.sections[0].elements[0].comboBox.selectedIndex, 
-                                true, 
-                                textureFields
-                            );
-                }
-            }
-        }
-
-        if(this->strokes_3D.size()){
-            updateTexture(this->interaction_panel.sections[0].elements[0].comboBox.selectedIndex);
-
-            refreshPainting();
-        }        
-
-        ShaderSystem::buttonShader().use();
-        Settings::defaultFramebuffer()->FBO.bind();
-        Settings::defaultFramebuffer()->setViewport();
-    }
     else{
         std::vector<glm::vec2> strokePositions;
 
@@ -514,27 +488,16 @@ void VectorScene::apply_strokes(
 
             for (size_t i = 0; i < subVector.size(); i++)
             {
-                doPaint(
-                            subVector[i], 
-                            twoDWrap, 
-                            i == 0 || (i == subVector.size() - 1 && this->brushProperties.spacing > 5.f), 
-                            this->interaction_panel.sections[0].elements[0].comboBox.selectedIndex, 
-                            true, 
-                            textureFields
-                        );
+                paint_settings.point.use_3D = false;
+                paint_settings.point.point_2D = subVector[i];
+                painting_paint_buffers(paint_settings, i == 0, i == subVector.size() - 1);
             }
         }
-
-        updateTexture(paintingMode);
-
-        refreshPainting();
 
         ShaderSystem::buttonShader().use();
         Settings::defaultFramebuffer()->FBO.bind();
         Settings::defaultFramebuffer()->setViewport();
     }
-
-    */
 }
 
 bool VectorScene::isAny2DPointsActive(){
