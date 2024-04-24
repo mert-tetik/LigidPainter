@@ -81,6 +81,7 @@ void Renderer::render(){
     {
         bool success = false;
         PaintSettings paint_settings = get_paint_settings_using_GUI_data(&success);
+
         if(success){
             bool first_frame = !last_painting_condition && painting_paint_condition();
             bool last_frame = last_painting_condition && !painting_paint_condition();
@@ -89,10 +90,11 @@ void Renderer::render(){
 
         if(last_painting_condition && !painting_paint_condition()){
             getScene()->get_selected_mesh()->layerScene.update_result(std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]), glm::vec3(0.f), *getScene()->get_selected_mesh());
+
             int layerIndex = -1;
             Layer* layer = getScene()->get_selected_mesh()->layerScene.get_selected_layer(&layerIndex);
 
-            if(layerIndex != -1){
+            if(layerIndex != -1 && layer->layerType == "painting"){
                 Texture* capture_txtr;
                 layer->get_type_specific_variable(nullptr, nullptr, nullptr, nullptr, &capture_txtr);
                

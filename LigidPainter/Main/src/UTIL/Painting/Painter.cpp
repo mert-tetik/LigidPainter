@@ -62,7 +62,7 @@ static Texture one_px_txtr;
 
 
 void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_frame){
-    
+
     glDisable(GL_BLEND);
 
     if(first_frame){
@@ -244,6 +244,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
         refresh_buffers(&painting_projected_painting_FBO);
 
         updateThePreRenderedPanels = true;
+
     }
 
     RETURN_FROM_PAINTING;
