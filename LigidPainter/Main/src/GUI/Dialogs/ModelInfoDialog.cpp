@@ -119,7 +119,7 @@ void ModelInfoDialog::show(Timer& timer, Model* model){
                 this->panel.sections[this->panel.sections.size() - 1].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,1), "Layers : ",  Texture(), 0.f, false));
                 for (int layerI = model->meshes[i].layerScene.layers.size() - 1; layerI >= 0; layerI--)
                 {
-                    this->panel.sections[this->panel.sections.size() - 1].elements.push_back(model->meshes[i].layerScene.layers[layerI]->layerButton);
+                    this->panel.sections[this->panel.sections.size() - 1].elements.push_back(model->meshes[i].layerScene.layers[layerI]->layerGUI.layerButton);
                 }
             }
         }

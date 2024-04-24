@@ -769,6 +769,7 @@ public:
     float panelOffset = 0.f;
     
     std::string info;
+    std::string title;
 
     glm::vec3 pos;
     glm::vec2 scale;
@@ -782,7 +783,7 @@ public:
     Panel panel;
 
     CheckComboList(){}
-    CheckComboList(std::string info, Texture texture, glm::vec3 pos, float panelOffset, Section& section);
+    CheckComboList(std::string info, std::string title, Texture texture, glm::vec3 pos, float panelOffset, Section& section);
 
     void render(Timer &timer,bool doMouseTracking);
 };

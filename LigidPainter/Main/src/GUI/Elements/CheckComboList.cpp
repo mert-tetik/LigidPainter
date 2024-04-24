@@ -31,8 +31,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 static std::map<std::string, CheckComboList*> all_checkcombolists;
 
-CheckComboList::CheckComboList(std::string info, Texture texture, glm::vec3 pos, float panelOffset, Section& section){
+CheckComboList::CheckComboList(std::string info, std::string title, Texture texture, glm::vec3 pos, float panelOffset, Section& section){
     this->info = info;
+    this->title = title;
     this->pos = pos;
     this->panelOffset = panelOffset;
     this->checkButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f, Settings::videoScale()->x / Settings::videoScale()->y), "", texture, 0.f, true);
@@ -66,9 +67,10 @@ CheckComboList::CheckComboList(std::string info, Texture texture, glm::vec3 pos,
 }
 
 void CheckComboList::render(
-                        Timer &timer, //Timer that handles the animations
-                        bool doMouseTracking //If there is need to check if mouse hover
-                    ){
+                                Timer &timer, //Timer that handles the animations
+                                bool doMouseTracking //If there is need to check if mouse hover
+                            )
+{
                         
     all_checkcombolists[this->info] = this;
 
@@ -110,9 +112,20 @@ void CheckComboList::render(
     panel.scale.y *= panel.get_elements_height() + 2.f;
     panel.pos.y += arrowButton.scale.y + panel.scale.y - 0.2f;
     panel.pos.z = 0.9f;
-    if(panel.scale.x > 2.f)
+    if(panel.scale.x > 2.f){
+        // Prevent coliding with the title info button
+        panel.sections[0].elements[0].panelOffset += 1.f;
+        // Render the main panel        
         panel.render(timer, doMouseTracking);
-    
+        // Set the panel offset value back
+        panel.sections[0].elements[0].panelOffset -= 1.f;
+    }
+
+    Button title_info_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(panel.scale.x, 1.f), this->title, Texture(), 0.f, false);
+    title_info_btn.color.a = 1.f;
+    title_info_btn.pos = glm::vec3(this->panel.pos.x, this->panel.pos.y - this->panel.scale.y + title_info_btn.scale.y, this->panel.pos.z);
+    title_info_btn.render(timer, false);
+
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
     if(hover)

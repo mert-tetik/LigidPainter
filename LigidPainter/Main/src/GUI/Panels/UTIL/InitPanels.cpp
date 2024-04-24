@@ -360,6 +360,7 @@ void panels_init(){
 
     checkComboList_painting_color = CheckComboList(
                                                     "See the color settings", 
+                                                    "Color Settings", 
                                                     appTextures.colorIcon, 
                                                     glm::vec3(0.f, 0.f, 0.7f), 
                                                     0.f, 
@@ -406,6 +407,7 @@ void panels_init(){
     
     checkComboList_painting_face_selection = CheckComboList(
                                                                 "Toggle masking mesh for painting / See the mesh settings", 
+                                                                "Mesh Face Selection", 
                                                                 appTextures.TDModelIcon, 
                                                                 glm::vec3(0.f, 0.f, 0.7f), 
                                                                 0.f, 
@@ -430,6 +432,7 @@ void panels_init(){
 
     checkComboList_painting_mirror = CheckComboList(
                                             "See the mirror settings", 
+                                            "Mirror", 
                                             appTextures.mirrorIcon, 
                                             glm::vec3(0.f, 0.f, 0.7f), 
                                             0.f, 
@@ -450,6 +453,7 @@ void panels_init(){
     
     checkComboList_painting_over = CheckComboList(
                                                 "Toggle painting over / See the painting over settings", 
+                                                "Painting Over", 
                                                 appTextures.paintingOverIcon, 
                                                 glm::vec3(0.f, 0.f, 0.7f), 
                                                 0.f, 
