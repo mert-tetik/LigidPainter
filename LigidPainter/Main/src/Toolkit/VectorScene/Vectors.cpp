@@ -45,12 +45,14 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
 {
     // Rendering vectors
     if(threeD){
-        this->render3DVectors(timer, doMouseTracking);
+        this->render3DVectors(timer, doMouseTracking && !twoD_mode_wrap_checkBox.hover && !this->interaction_panel.hover);
     }
     else{
-        this->render2DVectors(timer, doMouseTracking);
+        this->render2DVectors(timer, doMouseTracking && !twoD_mode_wrap_checkBox.hover && !this->interaction_panel.hover);
     }
 
+    getBox()->bindBuffers();
+    ShaderSystem::buttonShader().use();
 
     // Rendering interaction panel
     interaction_panel.pos.x = panel_library.pos.x + panel_library.scale.x + interaction_panel.scale.x + 1;
@@ -60,10 +62,10 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
     twoD_mode_wrap_checkBox.pos = interaction_panel.pos; 
     twoD_mode_wrap_checkBox.pos.y += interaction_panel.scale.y + twoD_mode_wrap_checkBox.scale.y; 
 
-    this->interaction_panel.render(timer, doMouseTracking); 
+    this->interaction_panel.render(timer, true); 
     
     if(!threeD)
-        twoD_mode_wrap_checkBox.render(timer, doMouseTracking);
+        twoD_mode_wrap_checkBox.render(timer, true);
 
     if(this->interaction_panel.sections[0].elements[1].button.clicked){
         this->subdivide_selected_points(threeD);

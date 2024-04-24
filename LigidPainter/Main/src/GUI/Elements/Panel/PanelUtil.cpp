@@ -29,6 +29,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+/* This flag will be used for determining if any panel is hovered by the cursor. Will be set to false at the beginning of Renderer.cpp. Used in any_panels_hovered function. */
+bool _any_panels_hovered = false;
+bool _last_any_panels_hovered = false;
+
 void Panel::mouseTracking(){
     //Check if mouse on the panel or any side of the panel 
     const float grabbingRange = 20; 
@@ -65,6 +69,9 @@ void Panel::mouseTracking(){
     }
     
     hover = hover || leftSide.hover || rightSide.hover || bottomSide.hover || topSide.hover;
+
+    if(hover)
+        _any_panels_hovered = true;
 
     resizingDone = (leftSide.pressed || rightSide.pressed || bottomSide.pressed || topSide.pressed);
     

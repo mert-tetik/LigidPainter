@@ -27,8 +27,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 // Defined in the RenderPanel.cpp
 extern bool updateThePreRenderedPanels;
 
+extern bool _any_panels_hovered;
+extern bool _last_any_panels_hovered;
+
+
 void panels_render(Timer& timer)
 {
+    _last_any_panels_hovered = _any_panels_hovered; 
+    _any_panels_hovered = false;
+
     ShaderSystem::buttonShader().use();
     ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection); 
     ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));

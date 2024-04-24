@@ -24,29 +24,21 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 #include <vector>
 
+extern bool _any_panels_hovered;
+extern bool _last_any_panels_hovered;
+
 bool panels_any_hovered(){
-    return  panel_library.hover ||
-            panel_navigation.hover ||
-            panel_window.hover ||
-            panel_library_modes.hover ||
-            panel_selected_texture_display.hover ||
-            panel_displaying_modes.hover ||
+    return _any_panels_hovered || _last_any_panels_hovered ||
             button_texture_selected_objects.hover ||
             gizmo_scene.hover ||
-            panel_layers.hover ||
-            panel_add_layer.hover ||
             button_mesh_selection.hover ||
             comboBox_layers_resolution.hover[0] ||
-            panel_painting_modes.hover ||
             checkComboList_painting_color.hover ||
             checkComboList_painting_face_selection.hover ||
             checkComboList_painting_mirror.hover ||
             checkComboList_painting_over.hover ||
-            panel_twoD_painting.hover ||
             button_painting_brush.hover ||
             button_painting_filter_mode_filter.hover ||
-            panel_smear_painting_properties.hover ||
             getScene()->get_selected_mesh()->layerScene.any_dialog_hovered() ||
-            getVectorScene()->interaction_panel.hover ||
             checkBox_wrap_mode.hover;
 }
