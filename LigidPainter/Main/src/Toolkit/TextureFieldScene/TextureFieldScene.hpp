@@ -205,7 +205,7 @@ public:
         this->texture_fields = texture_fields;
 
         //--------- init paintingOverTexture --------- 
-        this->painting_over_texture = Texture(nullptr, 1024, 1024, GL_LINEAR);
+        this->painting_over_texture = Texture(nullptr, 2024, 2024, GL_LINEAR);
 
         this->FBO = Framebuffer(
                                 this->painting_over_texture, 
@@ -213,7 +213,7 @@ public:
                                 Renderbuffer(
                                                 GL_DEPTH_COMPONENT16, 
                                                 GL_DEPTH_ATTACHMENT, 
-                                                glm::ivec2(1024)
+                                                glm::ivec2(2024)
                                             ), 
 
                                 "Update painting over texture"
