@@ -112,13 +112,15 @@ void CheckComboList::render(
     panel.scale.y *= panel.get_elements_height() + 2.f;
     panel.pos.y += arrowButton.scale.y + panel.scale.y - 0.2f;
     panel.pos.z = 0.9f;
-    if(panel.scale.x > 2.f){
-        // Prevent coliding with the title info button
-        panel.sections[0].elements[0].panelOffset += 1.f;
-        // Render the main panel        
-        panel.render(timer, doMouseTracking);
-        // Set the panel offset value back
-        panel.sections[0].elements[0].panelOffset -= 1.f;
+    if(panel.scale.x > 2.f && panel.sections.size()){
+        if(panel.sections[0].elements.size()){
+            // Prevent coliding with the title info button
+            panel.sections[0].elements[0].panelOffset += 1.f;
+            // Render the main panel        
+            panel.render(timer, doMouseTracking);
+            // Set the panel offset value back
+            panel.sections[0].elements[0].panelOffset -= 1.f;
+        }
     }
 
     Button title_info_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(panel.scale.x, 1.f), this->title, Texture(), 0.f, false);
