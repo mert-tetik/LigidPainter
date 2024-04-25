@@ -386,6 +386,7 @@ public:
     /// char* pixels = new pixels[textureRes.x * textureRes.y * 4];
     /// getData(pixels); //Write the data to the pixels variable
     void getData(char*& pixels);
+    void getData(unsigned char*& pixels);
     
     /// @brief @return the resolution value of the texture 
     glm::ivec2 getResolution();

@@ -62,6 +62,12 @@ void Texture::getData(char*& pixels){
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
 }
 
+void Texture::getData(unsigned char*& pixels){
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D,ID);
+	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+}
+
 glm::ivec2 Texture::getResolution(){
 
     if(!this->ID || glIsTexture(this->ID) == GL_FALSE){

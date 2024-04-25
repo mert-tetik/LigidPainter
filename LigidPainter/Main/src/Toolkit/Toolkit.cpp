@@ -80,7 +80,8 @@ void render_toolkits_before_panels(Timer& timer){
 void render_toolkits_after_panels(Timer& timer){
     //Render the brush cursor
     if(
-            painting_paintable_condition()
+            painting_paintable_condition() &&
+            panel_painting_modes.selectedElement != 6 // If not bucket painting mode
         )
     {
         if(!checkBox_wrap_mode.clickState1){
@@ -89,9 +90,12 @@ void render_toolkits_after_panels(Timer& timer){
         else{
             render_3D_cursor(button_painting_brush.brush.properties.radius);
         }
-        
     }
     else{
         getContext()->window.setCursorVisibility(true);
+        // Set the cursor as the bucket cursor if bucket painting mode
+        if(panel_painting_modes.selectedElement == 6 && painting_paintable_condition()){
+            Mouse::setCursor(*Mouse::bucketCursor());
+        }
     }
 }

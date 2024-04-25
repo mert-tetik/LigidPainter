@@ -54,6 +54,7 @@ bool __RPressed = false;
 bool __MPressed = false;
 double __mouseScroll = 0.;
 LigidCursor __defaultCursor;
+LigidCursor __bucketCursor;
 LigidCursor __pointerCursor;
 LigidCursor __hSlideCursor;
 LigidCursor __vSlideCursor;
@@ -101,6 +102,10 @@ void Mouse::loadCursors(){
 	
 	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/PointerXIcon.png", cursorScaleX, cursorScaleY, channel, 4, false); //rgba 0 
 	__pointerXCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels, -1);
+	//stbi_image_free(pixels);
+
+	pixels = texture.getTextureDataViaPath("LigidPainter/Resources/Ico/Bucket.png", cursorScaleX, cursorScaleY, channel, 4, false); //rgba 0 
+	__bucketCursor.createCursor(cursorScaleX, cursorScaleY, 15, 0, pixels, -1);
 	//stbi_image_free(pixels);
 }
 
@@ -187,6 +192,9 @@ double* Mouse::mouseScroll(){
 } 
 LigidCursor* Mouse::defaultCursor(){
 	return &__defaultCursor;
+}
+LigidCursor* Mouse::bucketCursor(){
+	return &__bucketCursor;
 }
 LigidCursor* Mouse::pointerCursor(){
 	return &__pointerCursor;

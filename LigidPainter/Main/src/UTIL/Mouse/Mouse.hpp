@@ -51,6 +51,7 @@ namespace Mouse
     bool* MPressed();
     double* mouseScroll();
     LigidCursor* defaultCursor();
+    LigidCursor* bucketCursor();
     LigidCursor* pointerCursor();
     LigidCursor* hSlideCursor();
     LigidCursor* vSlideCursor();
