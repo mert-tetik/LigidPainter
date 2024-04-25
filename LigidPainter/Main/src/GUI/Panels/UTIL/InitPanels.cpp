@@ -405,7 +405,7 @@ void panels_init(){
 
     // ---------------------------------------------------
     
-    checkComboList_painting_face_selection = CheckComboList(
+    checkComboList_mesh_face_selection = CheckComboList(
                                                                 "Toggle masking mesh for painting / See the mesh settings", 
                                                                 "Mesh Face Selection", 
                                                                 appTextures.TDModelIcon, 
@@ -426,7 +426,7 @@ void panels_init(){
                                                                 )
                                                             );
 
-    checkComboList_painting_face_selection.panel.sections[0].elements[5].button.textureSelection3D = true;
+    checkComboList_mesh_face_selection.panel.sections[0].elements[5].button.textureSelection3D = true;
     
     // ---------------------------------------------------
 

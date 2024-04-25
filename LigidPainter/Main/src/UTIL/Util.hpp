@@ -414,10 +414,9 @@ public:
     // -------- Texture Manipulation --------
 
     /// @brief Expands the texture's boundaries according to the mesh uv mask
-    void removeSeams(Mesh& mesh, int textureResolution);
+    void removeSeams(Mesh& mesh);
 
-    /// @brief Expands the texture's boundaries according to the mesh uv mask
-    void removeSeams(Mesh& mesh, glm::ivec2 textureResolution);
+    void removeUnselectedFaces(Mesh& mesh);
     
     /// @brief Writes the normal map version of the texture into the normalMap param (normalMap has to be initialized) 
     void generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale);

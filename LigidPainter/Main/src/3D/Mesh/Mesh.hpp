@@ -91,6 +91,7 @@ public:
 
         /*! @brief This Texture is used for masking the mesh using a texture and not primitive IDs*/
         Texture meshMask;
+        Texture meshMask_display_txtr;
 
         /*! @brief Contains selected face data to be intercepted in shaders
                     Resolution : x = sqrt(mesh's indices size), y = sqrt(mesh's indices size)      

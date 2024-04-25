@@ -450,9 +450,6 @@ static void render_selection_cursor(float radius){
     ShaderSystem::circleShader().setVec3("pos", glm::vec3(Mouse::cursorPos()->x, Mouse::cursorPos()->y, 1));
     ShaderSystem::circleShader().setVec2("scale", glm::vec2(UTIL::new_value_range(radius, 0, 1024, 0, Settings::videoScale()->x)));
 
-    /* Hide the cursor */
-    getContext()->window.setCursorVisibility(false);
-
     /* Render the circle s*/
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Rendering 2D brush cursor");
 

@@ -73,8 +73,8 @@ extern CheckComboList checkComboList_painting_color;
 void checkComboList_painting_color_render(Timer& timer, bool doMouseTracking);
 
 /*! @brief 0 = Mask to selected mesh, 1 = Mesh selection mode, 2 = Selecting Mode, 3 = Circle radius, 4 = Auto Select, 5 = Mask via texture, 6 = Cancel texture mask, 7 = Hide unselected mesh*/
-extern CheckComboList checkComboList_painting_face_selection;
-void checkComboList_painting_face_selection_render(Timer& timer, bool doMouseTracking);
+extern CheckComboList checkComboList_mesh_face_selection;
+void checkComboList_mesh_face_selection_render(Timer& timer, bool doMouseTracking);
 
 /*! @brief 0 = x axis, 1 = x axis offset, 2 = x axis, 3 = x axis offset, 4 = x axis, 5 = x axis offset*/
 extern CheckComboList checkComboList_painting_mirror;

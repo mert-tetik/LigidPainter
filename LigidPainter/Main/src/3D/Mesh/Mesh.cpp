@@ -187,13 +187,18 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
         this->heightMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
         this->ambientOcclusion = Texture(nullptr, 1024, 1024, GL_LINEAR);
         this->objectIDs = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RG, GL_RG32F);
+        
         this->face_selection_data.modelPrimitives = Texture(nullptr, 1024, 1024, GL_NEAREST, GL_RED, GL_R32F);
+        char whitePx[] = {127, 127, 127, 127};
+        this->face_selection_data.meshMask = Texture(whitePx, 1, 1, GL_NEAREST);
+
+        this->face_selection_data.meshMask_display_txtr = Texture(nullptr, 512, 512);
+        this->face_selection_data.meshMask_display_txtr.proceduralProps.proceduralID = 24;
+        this->face_selection_data.meshMask_display_txtr.proceduralProps.proceduralnverted = false;
+        this->face_selection_data.meshMask_display_txtr.generateProceduralDisplayingTexture(512, 1);
 
         this->meshPosTxtr = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);
         this->meshNormalTxtr = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-
-        char whitePx[] = {127, 127, 127, 127};
-        this->face_selection_data.meshMask = Texture(whitePx, 1, 1, GL_NEAREST);
 
         this->face_selection_data.selectedPrimitiveIDs.resize(this->indices.size() / 3);
         std::fill(this->face_selection_data.selectedPrimitiveIDs.begin(), this->face_selection_data.selectedPrimitiveIDs.end(), 0);

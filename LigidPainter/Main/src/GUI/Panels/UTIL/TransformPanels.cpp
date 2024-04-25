@@ -74,11 +74,11 @@ void panels_transform()
     panel_painting_modes.pos.x = panel_library.pos.x + panel_library.scale.x + panel_painting_modes.scale.x + 1;
     panel_painting_modes.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_painting_modes.scale.y;
 
-    checkComboList_painting_face_selection.pos = panel_painting_modes.pos;
-    checkComboList_painting_face_selection.pos.x += panel_painting_modes.scale.x + checkComboList_painting_face_selection.scale.x + 0.5f;
-    checkComboList_painting_face_selection.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + checkComboList_painting_face_selection.scale.y;
-    checkComboList_painting_over.pos = checkComboList_painting_face_selection.pos;  
-    checkComboList_painting_over.pos.x += checkComboList_painting_face_selection.scale.x + checkComboList_painting_over.scale.x + 0.25f;  
+    checkComboList_mesh_face_selection.pos = panel_painting_modes.pos;
+    checkComboList_mesh_face_selection.pos.x += panel_painting_modes.scale.x + checkComboList_mesh_face_selection.scale.x + 0.5f;
+    checkComboList_mesh_face_selection.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + checkComboList_mesh_face_selection.scale.y;
+    checkComboList_painting_over.pos = checkComboList_mesh_face_selection.pos;  
+    checkComboList_painting_over.pos.x += checkComboList_mesh_face_selection.scale.x + checkComboList_painting_over.scale.x + 0.25f;  
     checkComboList_painting_color.pos = checkComboList_painting_over.pos;  
     checkComboList_painting_color.pos.x += checkComboList_painting_over.scale.x + checkComboList_painting_color.scale.x + 0.25f;  
     checkComboList_painting_mirror.pos = checkComboList_painting_color.pos;  
@@ -87,7 +87,7 @@ void panels_transform()
     button_painting_brush.pos = checkComboList_painting_mirror.pos;  
     button_painting_brush.pos.x += checkComboList_painting_mirror.scale.x + button_painting_brush.scale.x + 0.25f;  
 
-    //checkComboList_painting_face_selection
+    //checkComboList_mesh_face_selection
     //checkComboList_painting_over
     
     panel_smear_painting_properties.pos.x = panel_library.pos.x + panel_library.scale.x + panel_smear_painting_properties.scale.x + 1;

@@ -139,6 +139,7 @@ namespace ShaderSystem{
     Shader color3DInstancing();
     Shader layersUpdate();
     Shader solidPaintingShader();
+    Shader removeUnselectedFacesShader();
 
     
     Shader textureModifierShader();

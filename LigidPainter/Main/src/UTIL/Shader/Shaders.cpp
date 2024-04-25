@@ -84,6 +84,7 @@ Shader __alphaZero3D;
 Shader __color3DInstancing;
 Shader __layersUpdate;
 Shader __solidPaintingShader;
+Shader __removeUnselectedFacesShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -150,6 +151,7 @@ void ShaderSystem::initShaderSystem(){
     __solidModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/SolidModifier.frag");
     __woodenModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/MaterialModifiers/WoodenModifier.frag");
     __mathModifierShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert","LigidPainter/Resources/Shaders/MaterialModifiers/MathModifier.frag");
+    __removeUnselectedFacesShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/aFrag/RemoveUnselectedFaces.frag");
 }
 
 Shader ShaderSystem::tdModelShader(){
@@ -344,4 +346,7 @@ Shader ShaderSystem::layersUpdate(){
 }
 Shader ShaderSystem::solidPaintingShader(){
     return __solidPaintingShader;
+}
+Shader ShaderSystem::removeUnselectedFacesShader(){
+    return __removeUnselectedFacesShader;
 }

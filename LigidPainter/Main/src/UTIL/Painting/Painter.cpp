@@ -77,7 +77,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
     
     if(settings.painting_mode == 6){
         Debugger::block("Painting : Bucket painting"); // Start
-        bucket_paint_texture(painting_projected_painting_FBO.colorBuffer, Color(settings.color_buffer.stroke_albedo_color), settings.stroke_brush.properties.opacity);
+        bucket_paint_texture(painting_projected_painting_FBO.colorBuffer, Color(settings.color_buffer.stroke_albedo_color), settings.stroke_brush.properties.opacity, (settings.vertex_buffer.paint_model) ? settings.vertex_buffer.model_mesh : nullptr);
         Debugger::block("Painting : Bucket painting"); // End
         goto UPDATE_TEXTURE;
     } 
@@ -183,6 +183,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
         }
     }
     
+    GENERATE_PROJECTED_PAINTING_TEXTURE_AND_UPDATE_TEXTURE:
     Debugger::block("Painting : Generate projected painting texture"); // Start
     generate_projected_painting_texture(&painting_projected_painting_FBO, settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z, !last_frame && !settings.point.use_3D);
     Debugger::block("Painting : Generate projected painting texture"); // End
@@ -223,7 +224,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
                 if(settings.color_buffer.use_custom_material){
                     Debugger::block("Painting : Applying custom mat"); // Start
                     painted_buffer.txtr.mix(painted_buffer.corresponding_custom_material_channel, painting_projected_painting_FBO.colorBuffer, true, false, false);
-                    painted_buffer.txtr.removeSeams(*getScene()->get_selected_mesh(), painted_buffer.txtr.getResolution());
+                    painted_buffer.txtr.removeSeams(*getScene()->get_selected_mesh());
                     Debugger::block("Painting : Applying custom mat"); // End
                 }
                 else{

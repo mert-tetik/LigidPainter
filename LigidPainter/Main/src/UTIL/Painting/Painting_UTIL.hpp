@@ -648,7 +648,7 @@ void twoD_painting_generate_mirrored_window_painting_texture(MirrorSide* mirrorS
         mirrorSide->paintingBuffers.window_painting_texture.flipTexture(horizontal, vertical);
 }
 
-void bucket_paint_texture(Texture texture, Color color, float opacity){
+void bucket_paint_texture(Texture texture, Color color, float opacity, Mesh* mesh){
     char whitePx[4] = {
                         color.getRGB_normalized().r * 127,
                         color.getRGB_normalized().g * 127,
@@ -674,6 +674,9 @@ void bucket_paint_texture(Texture texture, Color color, float opacity){
     }
 
     texture.update(pxs, res.x, res.y, GL_LINEAR);
+
+    if(mesh != nullptr)
+        texture.removeUnselectedFaces(*mesh);
 
     delete[] pxs;
 }
@@ -866,7 +869,7 @@ static void updateTheTexture(
         //Draw the UV of the selected model
         settings.vertex_buffer.model_mesh->Draw();         
         
-        captureTexture.removeSeams(*settings.vertex_buffer.model_mesh, destScale);
+        captureTexture.removeSeams(*settings.vertex_buffer.model_mesh);
     }
     else{
         

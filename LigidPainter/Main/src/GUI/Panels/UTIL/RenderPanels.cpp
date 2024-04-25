@@ -98,8 +98,8 @@ void panels_render(Timer& timer)
         checkComboList_painting_mirror.panel.sections[0].elements[0].checkBox.clickState1 = false;
         checkComboList_painting_mirror.panel.sections[0].elements[2].checkBox.clickState1 = false;
         checkComboList_painting_mirror.panel.sections[0].elements[4].checkBox.clickState1 = false;
-        checkComboList_painting_face_selection.panel.sections[0].elements[0].checkBox.clickState1 = false;
-        checkComboList_painting_face_selection.panel.sections[0].elements[1].checkBox.clickState1 = false;
+        checkComboList_mesh_face_selection.panel.sections[0].elements[0].checkBox.clickState1 = false;
+        checkComboList_mesh_face_selection.panel.sections[0].elements[1].checkBox.clickState1 = false;
     }
 
     if(panel_displaying_modes.selectedElement == 1 || panel_displaying_modes.selectedElement == 2){
@@ -141,7 +141,7 @@ void panels_render(Timer& timer)
     }
 
     Debugger::block("GUI : Panels : Painting face selection check combo list"); // Start
-    checkComboList_painting_face_selection_render(timer, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
+    checkComboList_mesh_face_selection_render(timer, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
     Debugger::block("GUI : Panels : Painting face selection check combo list"); // End
 
     glClear(GL_DEPTH_BUFFER_BIT);

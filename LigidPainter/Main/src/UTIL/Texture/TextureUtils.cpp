@@ -372,33 +372,38 @@ std::vector<MaterialIDColor> Texture::getMaterialIDPalette(){
     return materialIDColors;
 }
 
-void Texture::removeSeams(Mesh& mesh, int textureResolution){
-    this->removeSeams(mesh, glm::ivec2(textureResolution));
-}
+static Framebuffer remove_seams_FBO; 
+static Texture remove_seams_copy_txtr; 
 
-void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
+void Texture::removeSeams(Mesh& mesh){
     
-    /*! Binds another framebuffer !*/
-    Texture textureObject = Texture(this->ID);
-    unsigned int textureCopy = textureObject.duplicateTexture();
-    
-    unsigned int FBO;
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, this->ID, 0);
-    glViewport(0, 0, textureResolution.x, textureResolution.y);
+    if(!remove_seams_FBO.ID){
+        remove_seams_FBO.generate();
+        remove_seams_copy_txtr = Texture(nullptr, 1, 1);
+    }
+
+    if(remove_seams_copy_txtr.getResolution() != this->getResolution()){
+        remove_seams_copy_txtr.update(nullptr, this->getResolution().x, this->getResolution().y); 
+    }
+
+    this->duplicateTextureSub(remove_seams_copy_txtr); 
+
+    remove_seams_FBO.setColorBuffer(*this, GL_TEXTURE_2D);
+    remove_seams_FBO.bind();
+
+    glViewport(0, 0, this->getResolution().x, this->getResolution().y);
 
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     getBox()->bindBuffers();
     
-    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution.x, (float)textureResolution.y, 0.f); 
+    glm::mat4 projection = glm::ortho(0.f, 1.f, 1.f, 0.f); 
     ShaderSystem::boundaryExpandingShader().use();
     ShaderSystem::boundaryExpandingShader().setMat4("projection"  ,       projection);
     ShaderSystem::boundaryExpandingShader().setMat4("projectedPosProjection"  ,       projection);
-    ShaderSystem::boundaryExpandingShader().setVec3("pos"         ,       glm::vec3((float)textureResolution.x / 2.f, (float)textureResolution.y / 2.f, 0.9f));
-    ShaderSystem::boundaryExpandingShader().setVec2("scale"       ,       glm::vec2((float)textureResolution.x / 2.f, (float)textureResolution.y / 2.f));
+    ShaderSystem::boundaryExpandingShader().setVec3("pos"         ,       glm::vec3(0.5f, 0.5f, 0.9f));
+    ShaderSystem::boundaryExpandingShader().setVec2("scale"       ,       glm::vec2(0.5f, 0.5f));
 
     ShaderSystem::boundaryExpandingShader().setInt("whiteUVTexture", 0);
     ShaderSystem::boundaryExpandingShader().setInt("originalTexture", 1);
@@ -407,13 +412,54 @@ void Texture::removeSeams(Mesh& mesh, glm::ivec2 textureResolution){
     glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
     
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, textureCopy);
+    glBindTexture(GL_TEXTURE_2D, remove_seams_copy_txtr.ID);
 
     LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Texture::removeSeams : Rendering result");
 
     Settings::defaultFramebuffer()->FBO.bind();
-    glDeleteFramebuffers(1, &FBO);
-    glDeleteTextures(1, &textureCopy);
+}
+
+static Framebuffer remove_unselected_faces_FBO; 
+static Texture remove_unselected_faces_copy_txtr; 
+
+void Texture::removeUnselectedFaces(Mesh& mesh){
+    
+    if(!remove_unselected_faces_FBO.ID){
+        remove_unselected_faces_FBO.generate();
+        remove_unselected_faces_copy_txtr = Texture(nullptr, 1, 1);
+    }
+
+    if(remove_unselected_faces_copy_txtr.getResolution() != this->getResolution()){
+        remove_unselected_faces_copy_txtr.update(nullptr, this->getResolution().x, this->getResolution().y); 
+    }
+
+    this->duplicateTextureSub(remove_unselected_faces_copy_txtr); 
+
+    remove_unselected_faces_FBO.setColorBuffer(*this, GL_TEXTURE_2D);
+    remove_unselected_faces_FBO.bind();
+
+    glViewport(0, 0, this->getResolution().x, this->getResolution().y);
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    getBox()->bindBuffers();
+    
+    glm::mat4 projection = glm::ortho(0.f, 1.f, 0.f, 1.f); 
+    ShaderSystem::removeUnselectedFacesShader().use();
+    ShaderSystem::removeUnselectedFacesShader().setMat4("orthoProjection", projection);
+    ShaderSystem::removeUnselectedFacesShader().setMat4("perspectiveProjection", glm::mat4(0.f));
+    ShaderSystem::removeUnselectedFacesShader().setMat4("view", glm::mat4(0.f));
+    
+    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::removeUnselectedFacesShader(), mesh, GL_TEXTURE1, GL_TEXTURE2);
+
+    ShaderSystem::removeUnselectedFacesShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, remove_unselected_faces_copy_txtr.ID);
+
+    mesh.Draw();
+
+    getBox()->bindBuffers();
+
+    Settings::defaultFramebuffer()->FBO.bind();
 }
 
 static Texture normalMapTxtr;
@@ -615,7 +661,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         destTxtr.update(normalMapData, textureRes, textureRes);
     }
 
-    destTxtr.removeSeams(mesh, textureRes);
+    destTxtr.removeSeams(mesh);
 }
 
 void Texture::generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale){

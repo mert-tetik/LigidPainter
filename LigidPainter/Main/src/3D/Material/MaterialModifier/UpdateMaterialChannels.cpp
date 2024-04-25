@@ -275,7 +275,7 @@ static void genAmbientOcclusion(
     if(smoothness > 0.1f)
         blurTheTexture(aoTxtr.ID, mesh, aoTxtrRes.x, smoothness, useSecondBlurAlgorithm);
     
-    aoTxtr.removeSeams(mesh, aoTxtrRes);
+    aoTxtr.removeSeams(mesh);
 
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
@@ -639,13 +639,13 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                 mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
                 
                 //Remove the seams of the normal map texture
-                mesh.normalMap.removeSeams(mesh, textureResolution);
+                mesh.normalMap.removeSeams(mesh);
             }
 
             glEnable(GL_DEPTH_TEST);
 
             // Remove the seams from the generated texture
-            currentTexture.removeSeams(mesh,textureResolution);
+            currentTexture.removeSeams(mesh);
 
             
             // Apply the filter to the albedo 
