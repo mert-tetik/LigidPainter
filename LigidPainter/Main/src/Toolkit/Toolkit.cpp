@@ -48,7 +48,7 @@ void render_toolkits_before_panels(Timer& timer){
 
     if(checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1){
         Debugger::block("GUI : Texture fields"); // Start
-        getTextureFieldScene()->render(timer, !panels_any_hovered(), checkBox_wrap_mode.clickState1, checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
+        getTextureFieldScene()->render(timer, !panels_any_hovered() && !getScene()->get_selected_mesh()->face_selection_data.editMode, checkBox_wrap_mode.clickState1, checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
         Debugger::block("GUI : Texture fields"); // End
     }
     
