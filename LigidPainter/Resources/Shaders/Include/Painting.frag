@@ -374,29 +374,32 @@ vec4 getBrushedTexture (
                             vec2 texCoords  //Texture coordinates
                         )
 {
+
+    vec4 res = vec4(0.);
     //Apply painting with color
     if(paintData.brush_mode == 0 || paintData.brush_mode == 6)
-        return get_draw(paintData.painting_buffers, paintData.channel_data, paintData.painting_over_active, channel_index, texCoords);
+        res = get_draw(paintData.painting_buffers, paintData.channel_data, paintData.painting_over_active, channel_index, texCoords);
 
     //Apply painting with softening
     if(paintData.brush_mode == 1)
-        return get_soften(paintData.painting_buffers, paintData.channel_data, channel_index, texCoords);
+        res = get_soften(paintData.painting_buffers, paintData.channel_data, channel_index, texCoords);
 
     //Apply painting with smearing
     if(paintData.brush_mode == 2)
-        return get_smear(paintData.painting_buffers, paintData.channel_data, paintData.smear_data, channel_index, texCoords);
+        res = get_smear(paintData.painting_buffers, paintData.channel_data, paintData.smear_data, channel_index, texCoords);
     
     //Apply painting with painting texture color data
     if(paintData.brush_mode == 3)
-        return get_normal_map(paintData.painting_buffers, paintData.channel_data, channel_index, texCoords);
+        res = get_normal_map(paintData.painting_buffers, paintData.channel_data, channel_index, texCoords);
     
     //Apply painting with inverted texture color
     if(paintData.brush_mode == 4)
-        return get_filter_display(paintData.painting_buffers, paintData.channel_data, channel_index, texCoords);
+        res = get_filter_display(paintData.painting_buffers, paintData.channel_data, channel_index, texCoords);
     
     if(paintData.brush_mode == 5)
-        return painting_buffers_get_src_txtr_texture_2D(paintData.painting_buffers, channel_index, texCoords);
+        res = painting_buffers_get_src_txtr_texture_2D(paintData.painting_buffers, channel_index, texCoords);
     
-    //If the brushModeState value is not valid
-    return vec4(0);
+    res.a = max(painting_buffers_get_src_txtr_texture_2D(paintData.painting_buffers, channel_index, texCoords).a, texture2D(paintData.painting_buffers.brush_txtr, texCoords).a);
+
+    return res;
 }
