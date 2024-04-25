@@ -55,6 +55,8 @@ static Button cancel_editing_vectors_btn = Button(ELEMENT_STYLE_BASIC, glm::vec2
 static bool firstFrameActivated = true;
 void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     
+    panel_displaying_modes.sections[0].elements[0].button.clickState1 = true;
+
     this->vector_scene.strokes_3D = this->strokes;
     this->vector_scene.render_scene(timer, true, true);
     this->strokes = vector_scene.strokes_3D;

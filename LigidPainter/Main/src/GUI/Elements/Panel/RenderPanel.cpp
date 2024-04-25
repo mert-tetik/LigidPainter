@@ -107,12 +107,12 @@ void Panel::render(Timer &timer, bool doMouseTracking){
     if(this->elementSelectionMode && this->sections.size()){
         for (size_t i = 0; i < this->sections[0].elements.size(); i++)
         {
-            if(this->sections[0].elements[i].button.clickState1){ //Painting mode pressed
-                    if(this->selectedElement != i){
-                        this->sections[0].elements[this->selectedElement].button.clickState1 = false;
-                        this->selectedElement = i;
-                        break;
-                    }
+            if(this->sections[0].elements[i].button.clickState1){
+                if(this->selectedElement != i){
+                    this->sections[0].elements[this->selectedElement].button.clickState1 = false;
+                    this->selectedElement = i;
+                    break;
+                }
             }
 
             if(this->selectedElement == i){

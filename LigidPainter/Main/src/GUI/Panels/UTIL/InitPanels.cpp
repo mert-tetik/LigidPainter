@@ -242,7 +242,6 @@ void panels_init(){
                                     false
                                 );
     
-    panel_displaying_modes.preRenderingMode = true;
     panel_displaying_modes.solidStyle = true; 
     panel_displaying_modes.elementSelectionMode = true; 
 
