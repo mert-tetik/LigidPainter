@@ -54,7 +54,7 @@ void render_toolkits_before_panels(Timer& timer){
     
     if(panel_painting_modes.selectedElement == 5 && panel_displaying_modes.selectedElement != 0 && !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
         Debugger::block("GUI : Vectors"); // Start
-        getVectorScene()->render_scene(timer, !panels_any_hovered(), checkBox_wrap_mode.clickState1);
+        getVectorScene()->render_scene(timer, !panels_any_hovered() && !getScene()->get_selected_mesh()->face_selection_data.editMode, checkBox_wrap_mode.clickState1);
         Debugger::block("GUI : Vectors"); // End
     }
 
