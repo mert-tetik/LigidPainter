@@ -155,4 +155,6 @@ void panels_render(Timer& timer)
         dialog_log.cryCounter = 5;
 
     updateThePreRenderedPanels = false;
+
+    appVideos.loading.render(timer, glm::vec3(50.f,50.f,0.7f), glm::vec2(20.f), 1.f, 1);
 }

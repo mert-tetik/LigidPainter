@@ -67,12 +67,15 @@ public:
 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-        Debugger::block("LOAD : App Textures"); //Start 160567296 153.13 MB
-
         //--Load the app textures
+        Debugger::block("LOAD : App Textures"); //Start 160567296 153.13 MB
         Settings::loadAppTextures();
-
         Debugger::block("LOAD : App Textures"); //End
+        
+        //--Load the app textures
+        Debugger::block("LOAD : App Videos"); //Start 160567296 153.13 MB
+        Settings::loadAppVideos();
+        Debugger::block("LOAD : App Videos"); //End
 
         Debugger::block("LOAD : Shaders"); //Start 12300288
     

@@ -79,3 +79,12 @@ void ShaderUTIL::set_shader_struct_painting_data(Shader shader, PaintingData pai
     
     shader.setInt("painting_data.painting_over_active", painting_data.painting_over_active);
 }
+
+Shader ShaderUTIL::get_bound_shader(){
+    int currentProgram;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgram);
+
+    Shader bound_shader;
+    bound_shader.ID = currentProgram;
+    return bound_shader;
+}

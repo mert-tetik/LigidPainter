@@ -888,6 +888,9 @@ namespace ShaderUTIL{
         };
     };
 
+    /*! @brief Returns the already bound shader program*/
+    Shader get_bound_shader();
+
     void set_shader_struct_painting_data(Shader shader, PaintingData painting_data);
 
     void set_shader_struct_face_selection_data(Shader shader, Mesh& mesh, unsigned int txtr_slot1, unsigned int txtr_slot2);

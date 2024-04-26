@@ -44,6 +44,8 @@ Texture::Texture(char* pixels, int w, int h, unsigned int filterParam){
 Texture::Texture(unsigned char* pixels, int w, int h, unsigned int filterParam, int proceduralID){
     this->proceduralProps.proceduralID = proceduralID;
 
+    LigidGL::cleanGLErrors();
+
     glActiveTexture(GL_TEXTURE0);
     LigidGL::testGLError("Texture::Texture : Activate the texture slot 0");
     
@@ -72,6 +74,8 @@ Texture::Texture(unsigned char* pixels, int w, int h, unsigned int filterParam, 
 }
 
 Texture::Texture(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat){
+    LigidGL::cleanGLErrors();
+    
     glActiveTexture(GL_TEXTURE0);
     LigidGL::testGLError("Texture::Texture : Activate the texture slot 0");
     

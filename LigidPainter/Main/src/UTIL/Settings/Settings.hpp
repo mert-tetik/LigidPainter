@@ -18,6 +18,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <atomic>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/Video/Video.hpp"
 
 #include "3D/ThreeD.hpp"
 #include "3D/Scene/Scene.hpp"
@@ -134,7 +135,12 @@ struct AppTextures{
     Texture mascotCat_pawR;
 };
 
+struct AppVideos{
+    Video loading;
+};
+
 extern AppTextures appTextures;
+extern AppVideos appVideos;
 
 namespace Settings{
 
@@ -172,6 +178,7 @@ namespace Settings{
     };
 
     void loadAppTextures();
+    void loadAppVideos();
 
     Properties* properties();
 

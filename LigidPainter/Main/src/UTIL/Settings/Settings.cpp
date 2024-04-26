@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 
 AppTextures appTextures;
+AppVideos appVideos;
 Settings::Properties __settingsProperties;
 
 Context __context; 
@@ -116,6 +117,10 @@ void Settings::loadAppTextures(){
     appTextures.white = Texture(whitePxs, 1, 1, GL_NEAREST);
     appTextures.black = Texture(blackPxs, 1, 1, GL_NEAREST);
     appTextures.transparent = Texture(nullptr, 1, 1, GL_NEAREST);
+}
+
+void Settings::loadAppVideos(){
+    appVideos.loading.load_folder("LigidPainter/Resources/Videos/Loading Animation", 15);
 }
 
 Context* getContext(){
