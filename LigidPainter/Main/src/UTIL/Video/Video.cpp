@@ -114,7 +114,7 @@ void Video::update_color_buffer(){
 
 }
 
-void Video::render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opacity, int render_mode)
+void Video::render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opacity, int render_mode, bool update_frame_value)
 {
     if(!this->frames.size()){
         return; 
@@ -131,20 +131,22 @@ void Video::render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opac
     // scale value % of the video scale
     glm::vec2 resultScale = UTIL::getPercent(*Settings::videoScale(), scale);
 
-    timer.transition(true, this->frame_mixVal, this->frames.size() / this->fps);
+    if(update_frame_value){
+        timer.transition(true, this->frame_mixVal, this->frames.size() / this->fps);
 
-    if(this->frame_mixVal >= 1.f){
-        // Keep the frame count at the last frame
-        if(render_mode == 0){
-            this->frame_mixVal = 1.f;
+        if(this->frame_mixVal >= 1.f){
+            // Keep the frame count at the last frame
+            if(render_mode == 0){
+                this->frame_mixVal = 1.f;
+            }
+            // Reset the video
+            if(render_mode == 1){
+                this->frame_mixVal = 0.f;
+            }
         }
-        // Reset the video
-        if(render_mode == 1){
-            this->frame_mixVal = 0.f;
-        }
+
+        this->frame = (((float)this->frames.size() - 1) * this->frame_mixVal);
     }
-
-    this->frame = (((float)this->frames.size() - 1) * this->frame_mixVal);
 
     this->update_color_buffer();
     
@@ -163,8 +165,5 @@ void Video::render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opac
 
     // Bind already bound shader at the start
     bound_shader.use();
-    
-    // Increase the frame value for each frame
-    this->frame++;
 }
 

@@ -103,6 +103,35 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
             }
         }    
 
+        for (Material& material : matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text])
+        {
+            if(!material.material_selection_dialog_initialized && !readMaterialThread_active){
+                
+                readMaterialThread_active = true; // Make sure this flag is set to true in time
+
+                thread_readMaterial_material = &material;
+                thread_readMaterial_path = material.material_selection_dialog_path;
+                thread_readMaterial_goodToGo = true;
+
+                material.material_selection_dialog_initialized = true;
+            }
+        }
+
+        bool update_frame_value = true;
+        int matI = 0;
+        for (Element element : this->matDisplayerPanel.sections[0].elements)
+        {
+            if(matI < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size()){
+                if(!matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][matI].material_selection_dialog_initialized){
+                    appVideos.loading.render(timer, element.pos, element.scale, 1.f, 1, update_frame_value);
+                    update_frame_value = false;
+                }
+            }
+        
+            matI++;
+        }
+        
+
         //Close the dialog
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && *Mouse::LClick())){
             if(!dialogControl.firstFrameActivated){

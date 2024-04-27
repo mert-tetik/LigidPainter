@@ -46,7 +46,5 @@ Material::Material(std::string title, std::vector<MaterialModifier> materialModi
     this->displayingTexture = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
     this->displayingTexture.title = "MaterialDisplay";
 
-    this->updateMaterialDisplayingTexture(displayRes, true, Camera(), 0, false);
-    
     Settings::defaultFramebuffer()->FBO.bind();
 }

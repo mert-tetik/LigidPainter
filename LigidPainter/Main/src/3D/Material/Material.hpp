@@ -140,6 +140,9 @@ public:
     /// Assigned by the material editor dialog
     std::vector<MaterialModifier> materialModifiers;
     std::vector<MaterialShortcut> materialShortcuts;
+
+    bool material_selection_dialog_initialized = false;
+    std::string material_selection_dialog_path = "";
     
     /// @brief title of the material (myMaterial_0)
     std::string title;

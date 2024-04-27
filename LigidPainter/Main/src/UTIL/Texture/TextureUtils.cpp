@@ -999,7 +999,7 @@ bool Texture::writeTextureData(std::ofstream& wf){
                                 return false; \
                             }
 
-bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int versionCode){
+bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int versionCode, bool generate_txtr){
 
     // --------- Read procedural data ---------
 
@@ -1135,9 +1135,11 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int v
     this->proceduralProps.proceduralStretch = proceduralStretch;
     this->proceduralProps.proceduralScaleModelPos = proceduralScaleModelPos;
 
-    glGenTextures(1, &this->ID);
+    if(generate_txtr){
+        glGenTextures(1, &this->ID);
 
-    this->generateProceduralDisplayingTexture(512, threeDMode);
+        this->generateProceduralDisplayingTexture(512, threeDMode);
+    }
 
     return true;
 }

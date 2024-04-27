@@ -407,7 +407,7 @@ public:
 
     bool writeTextureData(std::ofstream& wf);
     
-    bool readTextureData(std::ifstream& rf, bool threeDMode, unsigned int versionCode);
+    bool readTextureData(std::ifstream& rf, bool threeDMode, unsigned int versionCode, bool generate_txtr);
 
     void copyDataToTheCopyContext();
 
@@ -559,7 +559,7 @@ public:
 
     bool writeFilterData(std::ofstream& wf);
 
-    bool readFilterData(std::ifstream& rf);
+    bool readFilterData(std::ifstream& rf, bool dont_gen_buffers);
 
     std::string srcCode = "";
 };
@@ -721,9 +721,9 @@ namespace FileHandler{
     bool writeLGDMATERIALFile(std::string path, Material material);
 
     /*! @brief Read material data and write the data to material param*/
-    bool readMaterialData(std::ifstream& rf, Material& material);
+    bool readMaterialData(std::ifstream& rf, Material& material, std::vector<Texture*>* to_generate_txtrs);
     /*! @brief Read a *.lgdmaterial file and write the data to material param */
-    bool readLGDMATERIALFile(std::string path, Material& material);
+    bool readLGDMATERIALFile(std::string path, Material& material, bool update_displaying_texture);
 
     
     /*! @brief Write a *.lgdbrush file to the path (path could lead to both folder or a file) */
@@ -803,6 +803,12 @@ struct ThreadElements{
 extern ThreadElements projectUpdatingThreadElements; 
 void projectUpdatingThread();
 
+extern std::atomic<bool> readMaterialThread_active;
+extern std::thread thread_readMaterial;
+extern Material* thread_readMaterial_material;
+extern std::string thread_readMaterial_path;
+extern std::atomic<bool> thread_readMaterial_goodToGo;
+void readMaterialThread();
 
 namespace ShaderUTIL{
     

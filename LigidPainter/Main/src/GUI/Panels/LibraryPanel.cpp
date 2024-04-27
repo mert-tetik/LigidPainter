@@ -429,7 +429,7 @@ static void bar_buttons_interactions(Timer& timer){
 
             if(test.size()){
                 Material importedMaterial("", {});
-                if(FileHandler::readLGDMATERIALFile(test, importedMaterial))
+                if(FileHandler::readLGDMATERIALFile(test, importedMaterial, true))
                     Library::addMaterial(importedMaterial, "New material via importing");
             }
         }

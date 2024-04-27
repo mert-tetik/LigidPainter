@@ -181,7 +181,7 @@ void Material::updateMaterialDisplayingTexture(
 
     //Bind the default framebuffer
     Settings::defaultFramebuffer()->FBO.bind();
-    
+
     //Set the OpenGL viewport to default
     Settings::defaultFramebuffer()->setViewport();
 

@@ -56,8 +56,8 @@ public:
     /*! @brief Loads the video in image formats using multiple images (frame by frame) in a folder.*/
     void load_folder(const std::string folder_path, int fps);
 
-    /*! @brief Renders the video. render_mode(0 = play and stop, 1 = constantly play) */
-    void render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opacity, int render_mode);
+    /*! @brief Renders the video. render_mode(0 = play and stop, 1 = constantly play). Set the update_frame_value flag false if rendering multiple times at the same time (true for only once at the beginning)*/
+    void render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opacity, int render_mode, bool update_frame_value);
 };
 
 #endif

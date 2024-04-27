@@ -22,6 +22,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 #include <iostream>
 #include <vector>
+#include <fstream>
+#include <sstream>
 
 #include "UTIL/Util.hpp"
 #include "UTIL/Library/Library.hpp"
@@ -50,5 +52,49 @@ void projectUpdatingThread(){
             std::this_thread::sleep_for(std::chrono::seconds(1)); 
         }
         
+    }
+}
+
+std::atomic<bool> readMaterialThread_active;
+
+std::thread thread_readMaterial;
+
+Material* thread_readMaterial_material = nullptr;
+std::string thread_readMaterial_path;
+std::atomic<bool> thread_readMaterial_goodToGo;
+
+ThreadElements readMaterialThreadElements;
+void readMaterialThread(){    
+    while (readMaterialThreadElements.isRunning){
+
+        std::lock_guard<std::mutex> lock(readMaterialThreadElements.mutex);
+
+        if(thread_readMaterial_goodToGo && thread_readMaterial_material != nullptr){
+            // Start 
+            readMaterialThread_active = true;
+            
+            getSecondContext()->window.makeContextCurrent();
+            
+            std::ifstream rf(thread_readMaterial_path, std::ios::out | std::ios::binary); 
+            std::vector<Texture *> to_generate_txtrs;
+            
+            FileHandler::readMaterialData(rf, *thread_readMaterial_material, &to_generate_txtrs);
+
+            /*
+            for (Texture* texture : to_generate_txtrs)
+            {
+                glGenTextures(1, &texture->ID);
+                texture->generateProceduralDisplayingTexture(512, true);
+            }
+            */
+           
+            thread_readMaterial_material->updateMaterialDisplayingTexture(512, false, Camera(), 0, false);
+
+            // End
+            readMaterialThread_active = false;
+
+            thread_readMaterial_goodToGo = false;
+        }
+
     }
 }

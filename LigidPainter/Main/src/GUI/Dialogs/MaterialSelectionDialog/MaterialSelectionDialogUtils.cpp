@@ -131,7 +131,8 @@ void MaterialSelectionDialog::assignMaterialsToMap(){
 
             if(title == matModePanel.sections[0].elements[selectedMatMode].button.text){
                 Material mat = Material(UTIL::getLastWordBySeparatingWithChar(entry.path().string(), UTIL::folderDistinguisher()), {});
-                FileHandler::readLGDMATERIALFile(entry.path().string(), mat);
+                mat.material_selection_dialog_path = entry.path().string(); 
+
                 matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].push_back(mat);
             }    
         }            

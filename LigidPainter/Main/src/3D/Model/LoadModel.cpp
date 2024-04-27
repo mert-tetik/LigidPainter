@@ -91,7 +91,6 @@ bool Model::loadModel(std::string const &path, bool triangulate, bool initTxtrs)
     parseMeshData(assimpObjects, this->meshes, scene, initTxtrs);
 
     this->newModelAdded = true;
-
     this->generateDisplayingTexture();
 
     this->resize_meshes();

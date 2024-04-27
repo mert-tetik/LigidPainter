@@ -52,7 +52,7 @@ static bool read_channel_alpha(std::ifstream& rf, std::string path, ChannelAlpha
     
     READBITS(channelAlpha.alphaValue, float, "Channel alpha - Alpha value");
     
-    if(!channelAlpha.alphaMap.readTextureData(rf, true, 2))
+    if(!channelAlpha.alphaMap.readTextureData(rf, true, 2, false))
         return false;
     
     int resolution;
@@ -229,12 +229,12 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                     MaterialChannels* channels;
                     layer->get_type_specific_variable(nullptr, nullptr, nullptr, &channels, nullptr);
                     
-                    channels->albedo.readTextureData(rf, true, 2);
-                    channels->roughness.readTextureData(rf, true, 2);
-                    channels->metallic.readTextureData(rf, true, 2);
-                    channels->normalMap.readTextureData(rf, true, 2);
-                    channels->heightMap.readTextureData(rf, true, 2);
-                    channels->ambientOcclusion.readTextureData(rf, true, 2);
+                    channels->albedo.readTextureData(rf, true, 2, false);
+                    channels->roughness.readTextureData(rf, true, 2, false);
+                    channels->metallic.readTextureData(rf, true, 2, false);
+                    channels->normalMap.readTextureData(rf, true, 2, false);
+                    channels->heightMap.readTextureData(rf, true, 2, false);
+                    channels->ambientOcclusion.readTextureData(rf, true, 2, false);
                 }
                 else if(layer->layerType == "painting"){
                     FNC(read_texture_pixels(rf, path, layer->result.albedo))
@@ -248,7 +248,8 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                     Material* material;
                     layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr);
                     
-                    FileHandler::readMaterialData(rf, *material);
+                    FileHandler::readMaterialData(rf, *material, nullptr);
+                    material->updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
 
                 }
                 else if(layer->layerType == "vector"){

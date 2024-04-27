@@ -235,7 +235,7 @@ static void LOAD_materials(const std::string materials_folder_path){
                 
                 // Read the material
                 Material material("", {});
-                if(FileHandler::readLGDMATERIALFile(materialPath, material)){
+                if(FileHandler::readLGDMATERIALFile(materialPath, material, true)){
                     // Add the material to the library if material readen successfuly 
                     Library::addMaterial(material, "");
                 }

@@ -294,7 +294,7 @@ static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& propert
             else if(versionNumber == 2100)
                 versionCode = 1;
 
-            prop.texture.readTextureData(rf, false, versionCode);
+            prop.texture.readTextureData(rf, false, versionCode, false);
         }
         else{
             LGDLOG::start<< "ERROR! Reading lgdbrush file. Unknown property value type!" << LGDLOG::end;

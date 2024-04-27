@@ -307,7 +307,7 @@ void ProjectRecoverDialog::show(Timer& timer){
 
                         if(std::filesystem::is_regular_file(path)){
                             Material mat = Material("", {});
-                            FileHandler::readLGDMATERIALFile(path, mat);
+                            FileHandler::readLGDMATERIALFile(path, mat, true);
 
                             std::string title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
                             project_materialsPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(10.f, 3.f), title, mat.displayingTexture, 0.f, false));

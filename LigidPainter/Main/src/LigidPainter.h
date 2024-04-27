@@ -39,8 +39,12 @@ class LigidPainter{
 public:
     int run(){
 
-        // //Create the copy context for another threads    
+        // Create the copy context for another threads    
         getCopyContext()->window.createWindow(1, 1, L"Copy Thread");
+        
+        // Create the copy context for another threads    
+        getSecondContext()->window.createWindow(1, 1, L"Second Context");
+        
         //Init GLAD
         if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
         {
@@ -92,7 +96,10 @@ public:
         Debugger::block("LOAD : Init other threads"); //Start
         // Start the export thread
         std::thread projectUpdatingThreadX(projectUpdatingThread);
+        thread_readMaterial = std::thread(readMaterialThread);
         Debugger::block("LOAD : Init other threads"); //End
+
+
 
         LGDLOG::start.clear();
 
@@ -121,9 +128,11 @@ public:
 
         // Wait for the projectUpdatingThread to finish
         projectUpdatingThreadX.join();
+        thread_readMaterial.join();
 
         getContext()->window.deleteContext();
         getCopyContext()->window.deleteContext();
+        getSecondContext()->window.deleteContext();
 
         return 1;
     }

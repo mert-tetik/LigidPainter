@@ -25,6 +25,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/Library/Library.hpp"
+
 #include "GUI/GUI.hpp"
 
 Filter::Filter(){
@@ -249,7 +251,7 @@ bool Filter::writeFilterData(std::ofstream& wf){
                                 return false; \
                             }
 
-bool Filter::readFilterData(std::ifstream& rf){
+bool Filter::readFilterData(std::ifstream& rf, bool dont_gen_buffers){
 
     int32_t srcCodeCharSize;
     LGDFILTER_READBITS(srcCodeCharSize, int32_t, "Filter source code character size");
@@ -263,9 +265,23 @@ bool Filter::readFilterData(std::ifstream& rf){
     }
     LGDFILTER_READBITS(this->strength, float, "Filter strength")
 
-    this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
+    bool lib_match = false;
+    for (size_t i = 0; i < Library::getFilterArraySize(); i++)
+    {
+        if(Library::getFilter(i)->srcCode == this->srcCode){
+            this->shader = Library::getFilter(i)->shader;
+            lib_match = true;
+            break;
+        }
+    }
 
-    this->generateDisplayingTexture(glm::vec2(256));
+    if(!lib_match){
+        if(!dont_gen_buffers)
+            this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
+    }
+
+    if(!dont_gen_buffers)
+        this->generateDisplayingTexture(glm::vec2(256));
 
     this->displayingTxtr.title = "ReadenFilterDisplayerTXTR";
     this->title = "ReadenFilter";
