@@ -34,6 +34,7 @@ TODO : Refresh painting buffers
 #include "UTIL/Painting/Painter.hpp"
 #include "UTIL/Painting/Painting_UTIL.hpp"
 #include "UTIL/Library/Library.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 #include "3D/Material/Material.hpp"
 
@@ -333,17 +334,17 @@ void painting_update_buffers(const unsigned int resolution){
     one_px_txtr = Texture(nullptr, 1, 1, GL_NEAREST);
 
     if(painting_projected_painting_FBO.colorBuffer.getResolution().x != resolution)
-        painting_projected_painting_FBO.colorBuffer.update(nullptr, resolution, resolution);
+        painting_projected_painting_FBO.colorBuffer.update((char*)nullptr, resolution, resolution);
     
     if(O_side.paintingBuffers.projected_painting_texture.getResolution().x != resolution){
-        O_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
-        X_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
-        Y_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
-        XY_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
-        Z_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
-        XZ_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
-        YZ_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
-        XYZ_side.paintingBuffers.projected_painting_texture.update(nullptr, resolution, resolution);
+        O_side.paintingBuffers.projected_painting_texture.update((char*)nullptr, resolution, resolution);
+        X_side.paintingBuffers.projected_painting_texture.update((char*)nullptr, resolution, resolution);
+        Y_side.paintingBuffers.projected_painting_texture.update((char*)nullptr, resolution, resolution);
+        XY_side.paintingBuffers.projected_painting_texture.update((char*)nullptr, resolution, resolution);
+        Z_side.paintingBuffers.projected_painting_texture.update((char*)nullptr, resolution, resolution);
+        XZ_side.paintingBuffers.projected_painting_texture.update((char*)nullptr, resolution, resolution);
+        YZ_side.paintingBuffers.projected_painting_texture.update((char*)nullptr, resolution, resolution);
+        XYZ_side.paintingBuffers.projected_painting_texture.update((char*)nullptr, resolution, resolution);
     }
 }
 

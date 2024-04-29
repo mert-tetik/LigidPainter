@@ -20,9 +20,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 #include <string>
 #include <iostream>
@@ -57,7 +60,6 @@ void Material::updateMaterialDisplayingTexture(
                                                 int specificUpdateI
                                             )
 { 
-
     //Resolution of the material displaying texture
     const int displayRes = customFBO.colorBuffer.getResolution().x;
 
@@ -86,25 +88,8 @@ void Material::updateMaterialDisplayingTexture(
         //TODO : Material - update material function
         for (size_t meshI = 0; meshI < displayModel.meshes.size(); meshI++)
         {
-            glm::ivec2 albedoRes = displayModel.meshes[meshI].albedo.getResolution(); 
-            displayModel.meshes[meshI].albedo.update(nullptr, albedoRes.x, albedoRes.y);
-
-            glm::ivec2 roughnessRes = displayModel.meshes[meshI].roughness.getResolution(); 
-            displayModel.meshes[meshI].roughness.update(nullptr, roughnessRes.x, roughnessRes.y);
-
-            glm::ivec2 metallicRes = displayModel.meshes[meshI].metallic.getResolution(); 
-            displayModel.meshes[meshI].metallic.update(nullptr, metallicRes.x, metallicRes.y);
-
-            glm::ivec2 normalMapRes = displayModel.meshes[meshI].normalMap.getResolution(); 
-            displayModel.meshes[meshI].normalMap.update(nullptr, normalMapRes.x, normalMapRes.y);
-
-            glm::ivec2 heightMapRes = displayModel.meshes[meshI].heightMap.getResolution(); 
-            displayModel.meshes[meshI].heightMap.update(nullptr, heightMapRes.x, heightMapRes.y);
-
-            glm::ivec2 ambientOcclusionRes = displayModel.meshes[meshI].ambientOcclusion.getResolution(); 
-            displayModel.meshes[meshI].ambientOcclusion.update(nullptr, ambientOcclusionRes.x, ambientOcclusionRes.y);
-
-            this->apply_material(displayModel, displayModel.meshes[meshI], textureRes, specificUpdateI != -1);
+            //material_thread.apply_material(this, &displayModel, meshI);
+            //this->apply_material(displayModel, displayModel.meshes[meshI], textureRes, specificUpdateI != -1);
         }
     }
     
@@ -170,7 +155,6 @@ void Material::updateMaterialDisplayingTexture(
         //Draw the sphere
         displayModel.meshes[i].Draw();
     }
-    
     
     ShaderSystem::PBRDisplayOnly().setInt("displayingMode", 0);
     

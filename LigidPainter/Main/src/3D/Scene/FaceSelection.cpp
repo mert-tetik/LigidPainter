@@ -44,7 +44,7 @@ static void select_object(Mesh* mesh);
 static void select_all_faces(std::vector<byte>* selectedPrimitiveIDs, std::vector<int>* changedIndices);
 static void unselect_all_faces(std::vector<byte>* selectedPrimitiveIDs, std::vector<int>* changedIndices);
 static void apply_pixels(float* pxs, glm::vec2 scale, std::vector<byte>* selectedPrimitiveIDs, std::vector<int>* changedIndices);
-void updatePrimitivesArrayTexture(Mesh* mesh);
+void updatePrimitivesArrayTexture(Mesh* mesh, bool update_all);
 
 static Camera prev_cam;
 
@@ -59,6 +59,7 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
 
     if(!px_read_FBO.ID){
         px_read_FBO.generate();
+        px_read_FBO.purpose = "face_selection_interaction : px_read_FBO";
     }
 
     for (size_t i = 0; i < mesh->face_selection_data.selectedPrimitiveIDs.size(); i++)
@@ -182,7 +183,7 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
     bool changes_done = mesh->face_selection_data.changedIndices.size();
 
     if(mesh->face_selection_data.changedIndices.size()){
-        updatePrimitivesArrayTexture(mesh);
+        updatePrimitivesArrayTexture(mesh, false);
     }
 
     // Set back to default
@@ -262,15 +263,14 @@ bool boxSelectionInteraction(Timer &timer, Mesh* mesh){
     return applyBox;
 }
 
-void updatePrimitivesArrayTexture(Mesh* mesh){
+void updatePrimitivesArrayTexture(Mesh* mesh, bool update_all){
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, mesh->face_selection_data.selectedFaces.ID);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-    if(mesh->face_selection_data.changedIndices.size() > 50){
-        
+    if(mesh->face_selection_data.changedIndices.size() > 50 || update_all){
         while (glGetError() != GL_NO_ERROR)
         {
         }

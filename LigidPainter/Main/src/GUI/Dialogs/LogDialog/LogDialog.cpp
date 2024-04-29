@@ -31,6 +31,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp" 
 #include "UTIL/Project/Project.hpp" 
+#include "UTIL/Threads/Threads.hpp"
 
 #include <string>
 #include <iostream>

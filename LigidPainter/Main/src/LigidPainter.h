@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Project/Project.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 #include "Renderer.h"
 
@@ -42,9 +43,8 @@ public:
         // Create the copy context for another threads    
         getCopyContext()->window.createWindow(1, 1, L"Copy Thread");
         
-        // Create the copy context for another threads    
         getSecondContext()->window.createWindow(1, 1, L"Second Context");
-        
+
         //Init GLAD
         if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
         {
@@ -59,6 +59,14 @@ public:
 
         //Create the window and make it's OpenGL context current    
         getContext()->window.createWindow(Settings::videoScale()->x, Settings::videoScale()->y, L"LigidPainter");
+        getContext()->window.releaseContext();
+
+        if(!getContext()->window.shareContext(getSecondContext()->window)){
+            LGDLOG::start << "ERROR *CRITICAL* : Can't share OpenGL contexts between main context & second context. Multi-threading features won't be used!" << LGDLOG::end; 
+        }
+
+        getContext()->window.makeContextCurrent();
+
 
         //Show the created window
         getContext()->window.show();
@@ -81,26 +89,23 @@ public:
         Settings::loadAppVideos();
         Debugger::block("LOAD : App Videos"); //End
 
-        Debugger::block("LOAD : Shaders"); //Start 12300288
-    
         //Load shaders 
+        Debugger::block("LOAD : Shaders"); //Start 12300288
         ShaderSystem::initShaderSystem();
-        
+        MaterialModifierShaders::init_shaders();
         Debugger::block("LOAD : Shaders"); //End
-
+        
         Debugger::block("LOAD : Overall renderer"); //Start
         Renderer renderer;
         renderer.initRenderer();
         Debugger::block("LOAD : Overall renderer"); //End
-        
+
         Debugger::block("LOAD : Init other threads"); //Start
         // Start the export thread
         std::thread projectUpdatingThreadX(projectUpdatingThread);
-        thread_readMaterial = std::thread(readMaterialThread);
+        material_thread.thread = std::thread(material_thread_function);
         Debugger::block("LOAD : Init other threads"); //End
-
-
-
+        
         LGDLOG::start.clear();
 
         if(ligidPainter_ONLY_INIT)
@@ -128,7 +133,7 @@ public:
 
         // Wait for the projectUpdatingThread to finish
         projectUpdatingThreadX.join();
-        thread_readMaterial.join();
+        material_thread.thread.join();
 
         getContext()->window.deleteContext();
         getCopyContext()->window.deleteContext();

@@ -58,7 +58,7 @@ static bool read_channel_alpha(std::ifstream& rf, std::string path, ChannelAlpha
     int resolution;
     READBITS(resolution, int, "Channel alpha - Resolution value");
     
-    channelAlpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    channelAlpha.alphaMapProceduralTxtr.update((char*)nullptr, resolution, resolution);
     channelAlpha.alphaMap.generateProceduralTexture(mesh, channelAlpha.alphaMapProceduralTxtr, resolution);
 
     return true;

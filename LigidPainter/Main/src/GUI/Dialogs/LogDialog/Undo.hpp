@@ -38,7 +38,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 
 #include "GUI/Dialogs/LogDialog/Registering.hpp"
 
-void updatePrimitivesArrayTexture(Mesh* selectedMesh);
+void updatePrimitivesArrayTexture(Mesh* selectedMesh, bool update_all);
 
 void LogDialog::undo(){
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
@@ -62,7 +62,7 @@ void LogDialog::undo(){
             if(action.meshI < getScene()->model->meshes.size()){
                 if(getScene()->get_selected_mesh()->face_selection_data.selectedPrimitiveIDs.size() == action.primitivesArray.size()){
                     getScene()->get_selected_mesh()->face_selection_data.selectedPrimitiveIDs = action.primitivesArray;
-                    updatePrimitivesArrayTexture(&getScene()->model->meshes[action.meshI]);
+                    updatePrimitivesArrayTexture(&getScene()->model->meshes[action.meshI], false);
                 }
                 else{
                     LGDLOG::start << "ERROR : Undo face selection failed - Mesh data doesn't match" << LGDLOG::end;

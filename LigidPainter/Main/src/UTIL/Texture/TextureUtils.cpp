@@ -56,13 +56,13 @@ unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int 
     }
 }
 
-void Texture::getData(char*& pixels){
+void Texture::getData(char* pixels){
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,ID);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
 }
 
-void Texture::getData(unsigned char*& pixels){
+void Texture::getData(unsigned char* pixels){
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D,ID);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
@@ -379,23 +379,42 @@ std::vector<MaterialIDColor> Texture::getMaterialIDPalette(){
 }
 
 static Framebuffer remove_seams_FBO; 
+static Framebuffer remove_seams_FBO_2; 
 static Texture remove_seams_copy_txtr; 
+static Texture remove_seams_copy_txtr_2; 
 
 void Texture::removeSeams(Mesh& mesh){
     
     if(!remove_seams_FBO.ID){
         remove_seams_FBO.generate();
+        remove_seams_FBO.purpose = "Texture::removeSeams fbo";
+        remove_seams_FBO_2.generate();
+        remove_seams_FBO_2.purpose = "Texture::removeSeams fbo 2";
         remove_seams_copy_txtr = Texture(nullptr, 1, 1);
+        remove_seams_copy_txtr_2 = Texture(nullptr, 1, 1);
     }
 
-    if(remove_seams_copy_txtr.getResolution() != this->getResolution()){
-        remove_seams_copy_txtr.update(nullptr, this->getResolution().x, this->getResolution().y); 
+
+    if(getContext()->window.isContextCurrent()){
+        if(remove_seams_copy_txtr.getResolution() != this->getResolution()){
+            remove_seams_copy_txtr.update((char*)nullptr, this->getResolution().x, this->getResolution().y); 
+        }
+
+        this->duplicateTextureSub(remove_seams_copy_txtr); 
+        
+        remove_seams_FBO.setColorBuffer(*this, GL_TEXTURE_2D);
+        remove_seams_FBO.bind();
     }
+    else if(getSecondContext()->window.isContextCurrent()){
+        if(remove_seams_copy_txtr_2.getResolution() != this->getResolution()){
+            remove_seams_copy_txtr_2.update((char*)nullptr, this->getResolution().x, this->getResolution().y); 
+        }
 
-    this->duplicateTextureSub(remove_seams_copy_txtr); 
-
-    remove_seams_FBO.setColorBuffer(*this, GL_TEXTURE_2D);
-    remove_seams_FBO.bind();
+        this->duplicateTextureSub(remove_seams_copy_txtr_2); 
+        
+        remove_seams_FBO_2.setColorBuffer(*this, GL_TEXTURE_2D);
+        remove_seams_FBO_2.bind();
+    }
 
     glViewport(0, 0, this->getResolution().x, this->getResolution().y);
 
@@ -432,11 +451,12 @@ void Texture::removeUnselectedFaces(Mesh& mesh){
     
     if(!remove_unselected_faces_FBO.ID){
         remove_unselected_faces_FBO.generate();
+        remove_unselected_faces_FBO.purpose = "Texture::removeUnselectedFaces : remove_unselected_faces_FBO";
         remove_unselected_faces_copy_txtr = Texture(nullptr, 1, 1);
     }
 
     if(remove_unselected_faces_copy_txtr.getResolution() != this->getResolution()){
-        remove_unselected_faces_copy_txtr.update(nullptr, this->getResolution().x, this->getResolution().y); 
+        remove_unselected_faces_copy_txtr.update((char*)nullptr, this->getResolution().x, this->getResolution().y); 
     }
 
     this->duplicateTextureSub(remove_unselected_faces_copy_txtr); 
@@ -480,7 +500,7 @@ Texture Texture::generateProceduralTexture(Mesh &mesh, int textureRes){
         glGenTextures(1, &procTxtr.ID);
     }
     
-    procTxtr.update(nullptr, textureRes, textureRes);
+    procTxtr.update((char*)nullptr, textureRes, textureRes);
     
     generateProceduralTexture(mesh, procTxtr, textureRes);
     
@@ -657,7 +677,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
             normalMapRes = Texture(nullptr, textureRes, textureRes, GL_LINEAR);
         }
         else{
-            normalMapRes.update(nullptr, textureRes, textureRes, GL_LINEAR);
+            normalMapRes.update((char*)nullptr, textureRes, textureRes, GL_LINEAR);
         }
 
         destTxtr.generateNormalMap(normalMapRes.ID, textureRes, this->proceduralProps.proceduralNormalStrength, this->proceduralProps.proceduralNormalGrayScale); 
@@ -764,7 +784,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
     const int displayRes = displayingTextureRes;
 
     //!LEAK
-    this->update(nullptr, displayRes, displayRes);
+    this->update((char*)nullptr, displayRes, displayRes);
     
     /* Capturing FBO */
     unsigned int FBO; 
@@ -1193,7 +1213,7 @@ void Texture::resize(const glm::ivec2 newResolution){
     
     Texture copiedTxtr = this->duplicateTexture();
 
-    this->update(nullptr, newResolution.x, newResolution.y);
+    this->update((char*)nullptr, newResolution.x, newResolution.y);
     
     Framebuffer captureFBO = Framebuffer(*this, GL_TEXTURE_2D, "Texture::flipTexture");
     

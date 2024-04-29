@@ -36,6 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 bool _ligid_renderer_render_first_frame = true;
 
@@ -94,7 +95,10 @@ void Renderer::start_render(){
 }
 
 void Renderer::end_render(){
-        //Set mouse states to default
+    
+    material_thread.update_thread_result();
+    
+    //Set mouse states to default
     *Mouse::LClick() = false;
     *Mouse::RClick() = false;
     *Mouse::MClick() = false;

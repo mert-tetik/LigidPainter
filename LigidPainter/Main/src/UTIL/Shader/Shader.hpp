@@ -141,7 +141,10 @@ namespace ShaderSystem{
     Shader solidPaintingShader();
     Shader removeUnselectedFacesShader();
 
-    
+    void initShaderSystem();
+};
+
+namespace MaterialModifierShaders{
     Shader textureModifierShader();
     Shader dustModifierShader();
     Shader asphaltModifierShader();
@@ -153,7 +156,8 @@ namespace ShaderSystem{
     Shader woodenModifierShader();
     Shader mathModifierShader();
 
-    void initShaderSystem();
+    void init_shaders();
 };
+
 
 #endif

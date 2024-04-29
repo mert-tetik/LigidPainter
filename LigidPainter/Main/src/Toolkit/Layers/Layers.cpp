@@ -184,12 +184,12 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
     else{
         glm::vec2 albedoRes = mesh.albedo.getResolution();
         if(albedoRes.x != resolution){
-            mesh.albedo.update(nullptr, resolution, resolution);
-            mesh.roughness.update(nullptr, resolution, resolution);
-            mesh.metallic.update(nullptr, resolution, resolution);
-            mesh.normalMap.update(nullptr, resolution, resolution);
-            mesh.heightMap.update(nullptr, resolution, resolution);
-            mesh.ambientOcclusion.update(nullptr, resolution, resolution);
+            mesh.albedo.update((char*)nullptr, resolution, resolution);
+            mesh.roughness.update((char*)nullptr, resolution, resolution);
+            mesh.metallic.update((char*)nullptr, resolution, resolution);
+            mesh.normalMap.update((char*)nullptr, resolution, resolution);
+            mesh.heightMap.update((char*)nullptr, resolution, resolution);
+            mesh.ambientOcclusion.update((char*)nullptr, resolution, resolution);
         }
     }
     

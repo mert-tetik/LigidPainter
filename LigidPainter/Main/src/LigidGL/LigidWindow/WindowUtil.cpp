@@ -206,6 +206,22 @@ void LigidWindow::maximize(){
     UpdateWindow(this->window);
 }
 
+bool LigidWindow::isContextCurrent(){
+    HGLRC currentContext = wglGetCurrentContext();
+    if (currentContext == nullptr) 
+    {
+        return false;
+    } 
+    else 
+    {
+        return currentContext == this->openGLContext; 
+    }
+}
+
+bool LigidWindow::shareContext(LigidWindow another_context){
+    return wglShareLists(this->openGLContext, another_context.openGLContext);
+}
+
 bool LigidWindow::makeContextCurrent(){
 
 #if defined(_WIN32) || defined(_WIN64)

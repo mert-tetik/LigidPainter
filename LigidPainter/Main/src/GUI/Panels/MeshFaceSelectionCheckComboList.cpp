@@ -58,7 +58,7 @@ void checkComboList_mesh_face_selection_render(Timer& timer, bool doMouseTrackin
     // Generate mesh mask 
     if(checkComboList_mesh_face_selection.panel.sections[0].elements[5].button.clicked){          
         if(getScene()->get_selected_mesh()->face_selection_data.meshMask.getResolution().x != 1024){
-            getScene()->get_selected_mesh()->face_selection_data.meshMask.update(nullptr, 1024, 1024);
+            getScene()->get_selected_mesh()->face_selection_data.meshMask.update((char*)nullptr, 1024, 1024);
         }  
         checkComboList_mesh_face_selection.panel.sections[0].elements[5].button.texture.generateProceduralTexture(*getScene()->get_selected_mesh(), getScene()->get_selected_mesh()->face_selection_data.meshMask, 1024); 
     }

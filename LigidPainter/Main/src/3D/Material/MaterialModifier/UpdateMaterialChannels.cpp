@@ -73,11 +73,11 @@ static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, 
     if(!previousTexture.ID)
         previousTexture = Texture(nullptr, prevCurrentTextureRes.x, prevCurrentTextureRes.y);
     else
-        previousTexture.update(nullptr, prevCurrentTextureRes.x, prevCurrentTextureRes.y);
+        previousTexture.update((char*)nullptr, prevCurrentTextureRes.x, prevCurrentTextureRes.y);
     
     currentTexture.duplicateTextureSub(previousTexture);
 
-    currentTexture.update(nullptr, textureResolution, textureResolution);    
+    currentTexture.update((char*)nullptr, textureResolution, textureResolution);    
     
     //That framebuffer will be used to get the results of the shader 
     FBO = Framebuffer(currentTexture, GL_TEXTURE_2D, "ChannelPrep (material update)");
@@ -93,7 +93,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     if(!textureCopy_bluring.ID)
         textureCopy_bluring = Texture(nullptr, textureResolution, textureResolution);
     
-    textureCopy_bluring.update(nullptr, textureResolution, textureResolution);
+    textureCopy_bluring.update((char*)nullptr, textureResolution, textureResolution);
     
     textureObject.duplicateTextureSub(textureCopy_bluring);
 
@@ -183,7 +183,7 @@ static void genAmbientOcclusion(
         aoDepthFBO = Framebuffer(aoDepthTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)), "aoDepthFBO");
     }
 
-    aoTxtrDup.update(nullptr, aoTxtrRes.x, aoTxtrRes.y);
+    aoTxtrDup.update((char*)nullptr, aoTxtrRes.x, aoTxtrRes.y);
 
     if(usePrevAO)
         aoTxtr.duplicateTextureSub(aoTxtrDup);
@@ -545,6 +545,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
     if(this->hide)
         return;
 
+
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
     //Set the orthographic projection to render the uvs
@@ -555,13 +556,14 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
     if(!prevDepthTexture.ID)
         prevDepthTexture = Texture(nullptr, prevPrevDepthTextureRes.x, prevPrevDepthTextureRes.y);
     else
-        prevDepthTexture.update(nullptr, prevPrevDepthTextureRes.x, prevPrevDepthTextureRes.y);
+        prevDepthTexture.update((char*)nullptr, prevPrevDepthTextureRes.x, prevPrevDepthTextureRes.y);
 
     mesh.heightMap.duplicateTextureSub(prevDepthTexture);
     
     Texture maskTexture_procedural = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
+        
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
@@ -586,7 +588,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             if(textureModifierSelectedTexture_procedural.ID == 0)
                 textureModifierSelectedTexture_procedural = Texture(nullptr, textureResolution, textureResolution);
             
-            textureModifierSelectedTexture_procedural.update(nullptr, textureResolution, textureResolution);
+            textureModifierSelectedTexture_procedural.update((char*)nullptr, textureResolution, textureResolution);
 
             Texture txtr = material.materialModifiers[curModI].sections[0].elements[channelI + 1].button.texture;
             txtr.generateProceduralTexture(mesh, textureModifierSelectedTexture_procedural, textureResolution);
@@ -601,7 +603,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
         modifierShader.use(); 
  
         if(material.materialModifiers[curModI].modifierIndex != MATH_MATERIAL_MODIFIER){
-            
             
             // Vertex shader
             modifierShader.setMat4("orthoProjection", projection);
@@ -658,7 +659,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                 if(albedoFilterMaskTexture_procedural.ID == 0)
                     albedoFilterMaskTexture_procedural = Texture(nullptr, textureResolution, textureResolution);
                 
-                albedoFilterMaskTexture_procedural.update(nullptr, textureResolution, textureResolution);
+                albedoFilterMaskTexture_procedural.update((char*)nullptr, textureResolution, textureResolution);
 
                 if(maskTxtr.ID){
                     maskTxtr.generateProceduralTexture(mesh, albedoFilterMaskTexture_procedural, textureResolution);
@@ -728,7 +729,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                 if(mathModifierTexture_procedural.ID == 0)
                     mathModifierTexture_procedural = Texture(nullptr, textureResolution, textureResolution);
                 
-                mathModifierTexture_procedural.update(nullptr, textureResolution, textureResolution);
+                mathModifierTexture_procedural.update((char*)nullptr, textureResolution, textureResolution);
 
                 Texture txtr = material.materialModifiers[curModI].sections[0].elements[5].button.texture;
                 txtr.generateProceduralTexture(mesh, mathModifierTexture_procedural, textureResolution);
@@ -781,4 +782,5 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
         
         getBox()->bindBuffers();
     }
+
 }

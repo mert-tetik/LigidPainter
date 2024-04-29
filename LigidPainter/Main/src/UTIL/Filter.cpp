@@ -88,7 +88,7 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
     if(this->displayingTxtr.ID == 0)
         this->displayingTxtr = Texture(nullptr, displayRes.x, displayRes.y, GL_LINEAR);
     else
-        this->displayingTxtr.update(nullptr, displayRes.x, displayRes.y, GL_LINEAR);
+        this->displayingTxtr.update((char*)nullptr, displayRes.x, displayRes.y, GL_LINEAR);
 
     //Create the framebuffer
     Framebuffer captureFBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D, "Filter generateDisplayingTexture");

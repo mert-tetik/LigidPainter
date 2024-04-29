@@ -39,7 +39,7 @@ void Model::generateDisplayingTexture(){
     if(displayingTxtr.ID == 0)
         displayingTxtr = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
     else
-        displayingTxtr.update(nullptr, displayRes, displayRes, GL_LINEAR);
+        displayingTxtr.update((char*)nullptr, displayRes, displayRes, GL_LINEAR);
 
     Framebuffer FBO = Framebuffer(displayingTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)), "Generating model displaying texture");
 

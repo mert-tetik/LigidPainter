@@ -21,8 +21,11 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 #include <string>
 #include <iostream>
@@ -84,6 +87,8 @@ void DialogControl::updateStart(){
 
 void DialogControl::updateEnd(Timer &timer, float transitionDuration){
     
+    material_thread.update_thread_result();
+
     // Update local timer data
     timer.tick = false;
     if(timer.runTimer(1.f)){

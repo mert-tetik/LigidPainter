@@ -56,52 +56,52 @@ MaterialModifier::MaterialModifier(int modifierIndex){
     if(modifierIndex == TEXTURE_MATERIAL_MODIFIER){
         this->sections = createTextureModifier();
         this->title = "Texture Modifier";
-        this->shader = ShaderSystem::textureModifierShader();       
+        this->shader = MaterialModifierShaders::textureModifierShader();       
     }
     else if(modifierIndex == DUST_MATERIAL_MODIFIER){
         this->sections = createDustModifier();
         this->title = "Dust Modifier";
-        this->shader = ShaderSystem::dustModifierShader();    
+        this->shader = MaterialModifierShaders::dustModifierShader();    
     }
     else if(modifierIndex == ASPHALT_MATERIAL_MODIFIER){
         this->sections = createAsphaltModifier();
         this->title = "Asphalt Modifier";
-        this->shader = ShaderSystem::asphaltModifierShader();    
+        this->shader = MaterialModifierShaders::asphaltModifierShader();    
     }
     else if(modifierIndex == LIQUID_MATERIAL_MODIFIER){
         this->sections = createLiquidModifier();
         this->title = "Liquid Modifier";
-        this->shader = ShaderSystem::liquidModifierShader();    
+        this->shader = MaterialModifierShaders::liquidModifierShader();    
     }
     else if(modifierIndex == MOSS_MATERIAL_MODIFIER){
         this->sections = createMossModifier();
         this->title = "Moss Modifier";
-        this->shader = ShaderSystem::mossModifierShader();    
+        this->shader = MaterialModifierShaders::mossModifierShader();    
     }
     else if(modifierIndex == RUST_MATERIAL_MODIFIER){
         this->sections = createRustModifier();
         this->title = "Rust Modifier";
-        this->shader = ShaderSystem::rustModifierShader();    
+        this->shader = MaterialModifierShaders::rustModifierShader();    
     }
     else if(modifierIndex == SKIN_MATERIAL_MODIFIER){
         this->sections = createSkinModifier();
         this->title = "Skin Modifier";
-        this->shader = ShaderSystem::skinModifierShader();    
+        this->shader = MaterialModifierShaders::skinModifierShader();    
     }
     else if(modifierIndex == SOLID_MATERIAL_MODIFIER){
         this->sections = createSolidModifier();
         this->title = "Solid Modifier";
-        this->shader = ShaderSystem::solidModifierShader();    
+        this->shader = MaterialModifierShaders::solidModifierShader();    
     }
     else if(modifierIndex == WOODEN_MATERIAL_MODIFIER){
         this->sections = createWoodenModifier();
         this->title = "Wooden Modifier";
-        this->shader = ShaderSystem::woodenModifierShader();    
+        this->shader = MaterialModifierShaders::woodenModifierShader();    
     }
     else if(modifierIndex == MATH_MATERIAL_MODIFIER){
         this->sections = createMathModifier();
         this->title = "Math Modifier";
-        this->shader = ShaderSystem::mathModifierShader();    
+        this->shader = MaterialModifierShaders::mathModifierShader();    
     }
 
     this->modifierIndex = modifierIndex;

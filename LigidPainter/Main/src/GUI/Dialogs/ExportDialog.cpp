@@ -399,7 +399,7 @@ static void exportLibraryMaterials(std::string destPath, int resolution, std::st
                                 true
                             );
 
-        Library::getMaterialObj(i).apply_material(Model(), matMesh, resolution, false);
+        //Library::getMaterialObj(i).apply_material(Model(), matMesh, resolution, false);
         
         FileHandler::writeLGDMATERIALFile(materialFolderPath, Library::getMaterialObj(i));
 

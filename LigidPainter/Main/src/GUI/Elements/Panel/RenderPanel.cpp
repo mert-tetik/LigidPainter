@@ -230,7 +230,7 @@ void Panel::updateGraphics(Timer &timer){
         glGenTextures(1, &this->graphics.ID);
     }
 
-    this->graphics.update(nullptr, displayRes.x, displayRes.y, GL_NEAREST);
+    this->graphics.update((char*)nullptr, displayRes.x, displayRes.y, GL_NEAREST);
 
     Framebuffer captureGraphicsFBO = Framebuffer(this->graphics, GL_TEXTURE_2D, "Panel update graphics");
     captureGraphicsFBO.bind();

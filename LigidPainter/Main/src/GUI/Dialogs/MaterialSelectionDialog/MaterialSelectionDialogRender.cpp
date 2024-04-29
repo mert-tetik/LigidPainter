@@ -20,10 +20,13 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "3D/ThreeD.hpp" 
+
 #include "GUI/GUI.hpp" 
+
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 #include <string>
 #include <iostream>
@@ -105,15 +108,11 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
 
         for (Material& material : matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text])
         {
-            if(!material.material_selection_dialog_initialized && !readMaterialThread_active){
-                
-                readMaterialThread_active = true; // Make sure this flag is set to true in time
-
-                thread_readMaterial_material = &material;
-                thread_readMaterial_path = material.material_selection_dialog_path;
-                thread_readMaterial_goodToGo = true;
-
-                material.material_selection_dialog_initialized = true;
+            if(!material.material_selection_dialog_initialized){
+                if(!material_thread.active && !material_thread.readyToService){
+                    material.material_selection_dialog_initialized = true;
+                }
+                material_thread.read_material_file(&material, getMaterialDisplayerModel(), 0, material.material_selection_dialog_path);
             }
         }
 
@@ -142,5 +141,6 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         dialogControl.updateEnd(timer, 0.15f);
         if(dialogControl.mixVal == 0.f)
             break;
+
     }   
 }

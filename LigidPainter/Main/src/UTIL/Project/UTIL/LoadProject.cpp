@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Project/ProjectUTIL.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 #include "GUI/Elements.hpp"
 #include "GUI/GUI.hpp"

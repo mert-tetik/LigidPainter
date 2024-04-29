@@ -143,13 +143,13 @@ void Layer::generate_layer_buffers(const unsigned int resolution){
 }
 
 void LayerAlpha::update_buffers(const unsigned int resolution, Mesh& mesh){
-    this->general_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->albedo_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->roughness_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->metallic_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->normalMap_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->heightMap_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
-    this->ambientOcclusion_Alpha.alphaMapProceduralTxtr.update(nullptr, resolution, resolution);
+    this->general_Alpha.alphaMapProceduralTxtr.update((char*)nullptr, resolution, resolution);
+    this->albedo_Alpha.alphaMapProceduralTxtr.update((char*)nullptr, resolution, resolution);
+    this->roughness_Alpha.alphaMapProceduralTxtr.update((char*)nullptr, resolution, resolution);
+    this->metallic_Alpha.alphaMapProceduralTxtr.update((char*)nullptr, resolution, resolution);
+    this->normalMap_Alpha.alphaMapProceduralTxtr.update((char*)nullptr, resolution, resolution);
+    this->heightMap_Alpha.alphaMapProceduralTxtr.update((char*)nullptr, resolution, resolution);
+    this->ambientOcclusion_Alpha.alphaMapProceduralTxtr.update((char*)nullptr, resolution, resolution);
 
     this->general_Alpha.alphaMap.generateProceduralTexture(mesh, this->general_Alpha.alphaMapProceduralTxtr, resolution);
     this->albedo_Alpha.alphaMap.generateProceduralTexture(mesh, this->albedo_Alpha.alphaMapProceduralTxtr, resolution);
@@ -170,12 +170,12 @@ void Layer::update_result_buffers(const unsigned int resolution, Mesh& mesh){
         result.ambientOcclusion.resize(glm::ivec2(resolution));
     }
     else{
-        result.albedo.update(nullptr, resolution, resolution);
-        result.roughness.update(nullptr, resolution, resolution);
-        result.metallic.update(nullptr, resolution, resolution);
-        result.normalMap.update(nullptr, resolution, resolution);
-        result.heightMap.update(nullptr, resolution, resolution);
-        result.ambientOcclusion.update(nullptr, resolution, resolution);
+        result.albedo.update((char*)nullptr, resolution, resolution);
+        result.roughness.update((char*)nullptr, resolution, resolution);
+        result.metallic.update((char*)nullptr, resolution, resolution);
+        result.normalMap.update((char*)nullptr, resolution, resolution);
+        result.heightMap.update((char*)nullptr, resolution, resolution);
+        result.ambientOcclusion.update((char*)nullptr, resolution, resolution);
 
         this->type_specific_generate_result(resolution, mesh);
     }

@@ -516,7 +516,7 @@ public:
     /*!
         @brief Makes the OpenGL rendering context of the window current rendering context.
         
-        Use like that :
+        Use that way :
 
         window1.makeContextCurrent();
 
@@ -531,6 +531,17 @@ public:
         !!! Creating a window already makes it's OpenGL rendering context current
     */
     bool makeContextCurrent();
+
+    /*! 
+        @brief Share OpenGL buffers with another OpenGL context. Make sure no context is bound before calling this. And calling this once will be sufficient. 
+               Shared contexts will be synced for each OpenGL buffer object you create.
+    */
+    bool shareContext(LigidWindow another_context);
+    
+    /*! 
+        @brief Returns true if the currently bound context is this
+    */
+    bool isContextCurrent();
     
     /*!
         @brief Used to release the active context after calling the @ref makeContextCurrent function

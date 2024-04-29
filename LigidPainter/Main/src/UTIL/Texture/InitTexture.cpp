@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 Texture::Texture(){
 
@@ -104,24 +105,54 @@ Texture::Texture(char* pixels, int w, int h, unsigned int filterParam, unsigned 
 }
 
 
+//------
 void Texture::update(char* pixels, int w, int h){
     this->update(pixels, w, h, GL_LINEAR, GL_RGBA, GL_RGBA8);
 }
+void Texture::update(unsigned char* pixels, int w, int h){
+    this->update(pixels, w, h, GL_LINEAR, GL_RGBA, GL_RGBA8);
+}
+//------
 
+//------
 void Texture::update(char* pixels, int w, int h, unsigned int filterParam){
     this->update(pixels, w, h, filterParam, GL_RGBA, GL_RGBA8);
 }
+void Texture::update(unsigned char* pixels, int w, int h, unsigned int filterParam){
+    this->update(pixels, w, h, filterParam, GL_RGBA, GL_RGBA8);
+}
+//------
 
+//------
 void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format){
     this->update(pixels, w, h, filterParam, format, format);
 }
+void Texture::update(unsigned char* pixels, int w, int h, unsigned int filterParam, unsigned int format){
+    this->update(pixels, w, h, filterParam, format, format);
+}
+//------
 
+//------
 void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat){
     this->update(pixels, w, h, filterParam, format, internalFormat, GL_MIRRORED_REPEAT);
 }
+void Texture::update(unsigned char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat){
+    this->update(pixels, w, h, filterParam, format, internalFormat, GL_MIRRORED_REPEAT);
+}
+//------
+
+void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap){
+    this->update(pixels, nullptr, false, w, h, filterParam, format, internalFormat, wrap);
+}
+void Texture::update(unsigned char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap){
+    this->update((char*)nullptr, pixels, true, w, h, filterParam, format, internalFormat, wrap);
+}
+//------
+
 
 static Framebuffer clear_fbo;
-void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap) {
+static Framebuffer clear_fbo_2;
+void Texture::update(char* pixels, unsigned char* uPixels, bool use_unsigned, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap) {
     if (!this->ID) {
         std::cout << "ERROR : Updating texture : Invalid ID : " << ID << std::endl;
         return;
@@ -156,18 +187,28 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
         // Check if size, internal format, min filter, and wrap are the same
         if (currentWidth == w && currentHeight == h && currentInternalFormat == static_cast<int>(internalFormat) && currentFilterParam == static_cast<int>(filterParam) && currentWrap == static_cast<int>(wrap)) {
             
-            if(pixels == nullptr){
+            if((pixels == nullptr && !use_unsigned) || (uPixels == nullptr && use_unsigned)){
                 Framebuffer bound_fbo;
                 bound_fbo.makeCurrentlyBindedFBO();
 
                 // Pixels was nullptr
                 glClearColor(0,0,0,0);
                 
-                if(!clear_fbo.ID)
+                if(!clear_fbo.ID){
                     clear_fbo.generate();
+                    clear_fbo.purpose = "Texture::update : clear_fbo";
+                    clear_fbo_2.generate();
+                    clear_fbo_2.purpose = "Texture::update : clear_fbo_2";
+                }
 
-                clear_fbo.setColorBuffer(*this, GL_TEXTURE_2D);
-                clear_fbo.bind();
+                if(getContext()->window.isContextCurrent()){
+                    clear_fbo.setColorBuffer(*this, GL_TEXTURE_2D);
+                    clear_fbo.bind();
+                }
+                else if(getSecondContext()->window.isContextCurrent()){
+                    clear_fbo_2.setColorBuffer(*this, GL_TEXTURE_2D);
+                    clear_fbo_2.bind();
+                }
 
                 glClear(GL_COLOR_BUFFER_BIT);
 
@@ -175,7 +216,11 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
             }
             else{
                 // Use glTexSubImage2D if the parameters match
-                glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, format, GL_BYTE, pixels);
+                if(use_unsigned)
+                    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, uPixels);
+                else
+                    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, w, h, format, GL_BYTE, pixels);
+                
                 LigidGL::testGLError("Texture::update : glTexSubImage2D");
             }
         } 
@@ -192,7 +237,11 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap);
             LigidGL::testGLError("Texture::update : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrap)");
 
-            glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);
+            if(use_unsigned)
+                glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_UNSIGNED_BYTE, uPixels);
+            else
+                glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);
+
             LigidGL::testGLError("Texture::update : Allocate new memory for the texture : Texture is already initialized");
             
             glGenerateMipmap(GL_TEXTURE_2D);
@@ -218,5 +267,4 @@ void Texture::update(char* pixels, int w, int h, unsigned int filterParam, unsig
         glGenerateMipmap(GL_TEXTURE_2D);
         LigidGL::testGLError("Texture::update : Generate mipmap");
     }
-
 }

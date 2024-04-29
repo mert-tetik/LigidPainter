@@ -363,6 +363,15 @@ public:
     void update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format);
     void update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat);
     void update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat, unsigned int wrap);
+    
+    void update(unsigned char* pixels, int w, int h);
+    void update(unsigned char* pixels, int w, int h, unsigned int filterParam);
+    void update(unsigned char* pixels, int w, int h, unsigned int filterParam, unsigned int format);
+    void update(unsigned char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat);
+    void update(unsigned char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat, unsigned int wrap);
+    
+    void update(char* pixels, unsigned char* uPixels, bool use_unsigned, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap);
+
 
     /// @brief Load a texture by importing the texture in the given path via STBI
     bool load(const char* path);
@@ -385,14 +394,14 @@ public:
     /// glm::ivec2 textureRes = txtr.getResolution();
     /// char* pixels = new pixels[textureRes.x * textureRes.y * 4];
     /// getData(pixels); //Write the data to the pixels variable
-    void getData(char*& pixels);
-    void getData(unsigned char*& pixels);
+    void getData(char* pixels);
+    void getData(unsigned char* pixels);
     
     /// @brief @return the resolution value of the texture 
     glm::ivec2 getResolution();
 
     /// @brief creates a copy of the texture and returns the OpenGL texture buffer object ID of the duplicated texture.
-    ///         Use like that : Texture newTexture(duplicatedTexture.duplicateTexture());
+    ///         Use that way : Texture newTexture(duplicatedTexture.duplicateTexture());
     unsigned int duplicateTexture();
     void duplicateTexture(Texture &txtr);
     void duplicateTextureSub(Texture &txtr);
@@ -788,27 +797,6 @@ bool shortcuts_F9();
 bool shortcuts_F10();
 bool shortcuts_F11();
 bool shortcuts_anyShortCut();
-
-#include <thread>
-#include <mutex>
-
-struct ThreadElements{
-    std::atomic<bool> updateTextures = false;
-    
-    std::atomic<bool> isRunning = true;
-    std::mutex mutex;
-    std::condition_variable exportCV;
-};
-
-extern ThreadElements projectUpdatingThreadElements; 
-void projectUpdatingThread();
-
-extern std::atomic<bool> readMaterialThread_active;
-extern std::thread thread_readMaterial;
-extern Material* thread_readMaterial_material;
-extern std::string thread_readMaterial_path;
-extern std::atomic<bool> thread_readMaterial_goodToGo;
-void readMaterialThread();
 
 namespace ShaderUTIL{
     

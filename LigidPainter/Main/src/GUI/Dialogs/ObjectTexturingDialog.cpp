@@ -375,7 +375,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 hTxtrRes = meshTxtrHistory[i].albedo.getResolution();
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
-                            meshTxtrHistory[i].albedo.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                            meshTxtrHistory[i].albedo.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
                             colorBuffer.duplicateTextureSub(meshTxtrHistory[i].albedo);
                         }
                     }
@@ -385,7 +385,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 hTxtrRes = meshTxtrHistory[i].roughness.getResolution();
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
-                            meshTxtrHistory[i].roughness.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                            meshTxtrHistory[i].roughness.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
                             colorBuffer.duplicateTextureSub(meshTxtrHistory[i].roughness);
                         }
                     }
@@ -395,7 +395,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 hTxtrRes = meshTxtrHistory[i].metallic.getResolution();
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
-                            meshTxtrHistory[i].metallic.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                            meshTxtrHistory[i].metallic.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
                             colorBuffer.duplicateTextureSub(meshTxtrHistory[i].metallic);
                         }
                     }
@@ -405,7 +405,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 hTxtrRes = meshTxtrHistory[i].normalMap.getResolution();
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
-                            meshTxtrHistory[i].normalMap.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                            meshTxtrHistory[i].normalMap.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
                             colorBuffer.duplicateTextureSub(meshTxtrHistory[i].normalMap);
                         }
                     }
@@ -415,7 +415,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 hTxtrRes = meshTxtrHistory[i].heightMap.getResolution();
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
-                            meshTxtrHistory[i].heightMap.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                            meshTxtrHistory[i].heightMap.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
                             colorBuffer.duplicateTextureSub(meshTxtrHistory[i].heightMap);
                         }
                     }
@@ -425,7 +425,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 hTxtrRes = meshTxtrHistory[i].ambientOcclusion.getResolution();
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
-                            meshTxtrHistory[i].ambientOcclusion.update(nullptr, oTxtrRes.x, oTxtrRes.y);
+                            meshTxtrHistory[i].ambientOcclusion.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
                             colorBuffer.duplicateTextureSub(meshTxtrHistory[i].ambientOcclusion);
                         }
                     }
@@ -622,7 +622,7 @@ void ObjectTexturingDialog::updateMeshTextures(){
         getScene()->model->meshes[meshI].heightMap = result_channels[meshI].heightMap;
         getScene()->model->meshes[meshI].ambientOcclusion = result_channels[meshI].ambientOcclusion;
         
-        this->material.apply_material(*getScene()->model, getScene()->model->meshes[meshI], getResolution(), false);
+        //this->material.apply_material(*getScene()->model, getScene()->model->meshes[meshI], getResolution(), false);
 
         Texture maskMat = maskMaterialBtn.texture.generateProceduralTexture(getScene()->model->meshes[meshI], this->getResolution());
 
@@ -662,7 +662,7 @@ void ObjectTexturingDialog::updateMeshTextures(){
                         maskDuplicated = Texture(nullptr, maskRes.x, maskRes.y);
                     }
                     else{
-                        maskDuplicated.update(nullptr, maskRes.x, maskRes.y);
+                        maskDuplicated.update((char*)nullptr, maskRes.x, maskRes.y);
                     }
                     
                     maskTxtr.duplicateTextureSub(maskDuplicated);
@@ -677,7 +677,7 @@ void ObjectTexturingDialog::updateMeshTextures(){
                     maskDuplicated = Texture(nullptr, maskRes.x, maskRes.y);
                 }
                 else{
-                    maskDuplicated.update(nullptr, maskRes.x, maskRes.y);
+                    maskDuplicated.update((char*)nullptr, maskRes.x, maskRes.y);
                 }
                 
                 maskTxtr.duplicateTextureSub(maskDuplicated);

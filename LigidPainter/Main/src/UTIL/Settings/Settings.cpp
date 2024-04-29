@@ -38,6 +38,7 @@ Model __planeModel;
 Model __materialDisplayerModel;
 Model __getTDBrushCursorModel;
 Box __box;
+Box __box_2;
 Settings::DefaultFramebuffer __defaultFramebuffer;
 
 glm::vec2 __videoScale;
@@ -156,6 +157,11 @@ Model* getTDBrushCursorModel(){
     return &__getTDBrushCursorModel;
 }
 Box* getBox(){
+    if(getContext()->window.isContextCurrent())
+        return &__box;
+    if(getSecondContext()->window.isContextCurrent())
+        return &__box_2;
+
     return &__box;
 }
 
@@ -224,10 +230,10 @@ namespace Settings{
         this->resolution = resolution;
 
         //--------- update colorBuffer --------- 
-        this->FBO.colorBuffer.update(nullptr, resolution.x, resolution.y, GL_NEAREST);
+        this->FBO.colorBuffer.update((char*)nullptr, resolution.x, resolution.y, GL_NEAREST);
 
         //--------- update bgTxtr --------- 
-        bgTxtr.update(nullptr, resolution.x, resolution.y, GL_NEAREST);
+        bgTxtr.update((char*)nullptr, resolution.x, resolution.y, GL_NEAREST);
 
         //--------- update RBO --------- 
         this->FBO.renderBuffer.update(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution);

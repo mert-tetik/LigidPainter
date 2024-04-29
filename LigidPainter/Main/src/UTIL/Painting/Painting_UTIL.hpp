@@ -743,15 +743,15 @@ static void update_custom_material_mesh(PaintSettings::ColorBuffer color_buffer,
             customMatMesh.ambientOcclusion = Texture(nullptr, resolution.x, resolution.y);
         }
         else{
-            customMatMesh.albedo.update(nullptr, resolution.x, resolution.y);
-            customMatMesh.roughness.update(nullptr, resolution.x, resolution.y);
-            customMatMesh.metallic.update(nullptr, resolution.x, resolution.y);
-            customMatMesh.normalMap.update(nullptr, resolution.x, resolution.y);
-            customMatMesh.heightMap.update(nullptr, resolution.x, resolution.y);
-            customMatMesh.ambientOcclusion.update(nullptr, resolution.x, resolution.y);
+            customMatMesh.albedo.update((char*)nullptr, resolution.x, resolution.y);
+            customMatMesh.roughness.update((char*)nullptr, resolution.x, resolution.y);
+            customMatMesh.metallic.update((char*)nullptr, resolution.x, resolution.y);
+            customMatMesh.normalMap.update((char*)nullptr, resolution.x, resolution.y);
+            customMatMesh.heightMap.update((char*)nullptr, resolution.x, resolution.y);
+            customMatMesh.ambientOcclusion.update((char*)nullptr, resolution.x, resolution.y);
         }
 
-        color_buffer.material.apply_material(*getScene()->model, customMatMesh, resolution.x, false);
+        //color_buffer.material.apply_material(*getScene()->model, customMatMesh, resolution.x, false);
     }
 
     prevCustomMaterial = color_buffer.material;

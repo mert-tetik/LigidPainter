@@ -158,6 +158,7 @@ public:
     void Draw();
 
     unsigned int VBO, EBO, VAO; //Vertex buffer object, element buffer object
+    unsigned int VBO_2, EBO_2, VAO_2; //Vertex buffer object, element buffer object
 
     void processHeightMap();
 
@@ -178,9 +179,8 @@ public:
 
     void update_vertex_buffers();
 
-private:
     /*! @brief initializes all the buffer objects/arrays */
-    void setupMesh();
+    void setupMesh(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO);
 
     void generateUVMask();
 };

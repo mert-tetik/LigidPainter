@@ -106,7 +106,7 @@ void MaterialLayer::type_specific_generate_result(const unsigned int resolution,
     resMesh.indices = mesh.indices;
     resMesh.vertices = mesh.vertices;
 
-    this->material.apply_material(Model(), resMesh, resolution, false);
+    //this->material.apply_material(Model(), resMesh, resolution, false);
 
     mesh.layerScene.update_result(resolution, glm::vec3(0.f), mesh);
 }

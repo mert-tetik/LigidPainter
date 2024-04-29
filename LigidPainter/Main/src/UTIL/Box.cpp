@@ -45,27 +45,40 @@ void Box::init(){
         -1.0f,  1.0f, 0.0f      ,      0,0          // top left
     };
 
+    LigidGL::cleanGLErrors();
+
     //Generate vertex objects
     glGenVertexArrays(1, &VAO);
+    LigidGL::testGLError("Box::init : glGenVertexArrays(1, &VAO)");
     glGenBuffers(1, &VBO);
+    LigidGL::testGLError("Box::init : glGenBuffers(1, &VBO)");
     
     // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     glBindVertexArray(VAO);
+    LigidGL::testGLError("Box::init : glBindVertexArray(VAO)");
     
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    LigidGL::testGLError("Box::init : glBindBuffer(GL_ARRAY_BUFFER, VBO)");
     glBufferData(GL_ARRAY_BUFFER, boxVertices.size() * sizeof(float), &boxVertices[0], GL_STATIC_DRAW);
+    LigidGL::testGLError("Box::init : glBufferData(GL_ARRAY_BUFFER, boxVertices.size() * sizeof(float), &boxVertices[0], GL_STATIC_DRAW)");
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    LigidGL::testGLError("Box::init : glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0)");
     glEnableVertexAttribArray(0);
+    LigidGL::testGLError("Box::init : glEnableVertexAttribArray(0)");
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    LigidGL::testGLError("Box::init : glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)))");
     glEnableVertexAttribArray(1); 
+    LigidGL::testGLError("Box::init : glEnableVertexAttribArray(1);");
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
+    LigidGL::testGLError("Box::init : glBindBuffer(GL_ARRAY_BUFFER, 0);");
 
     // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
     // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
+    LigidGL::testGLError("Box::init : ");
 }
 
 void Box::customMeshInit(glm::vec3 pos, glm::vec2 scale){

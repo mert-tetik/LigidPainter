@@ -105,12 +105,12 @@ void VectorLayer::type_specific_generate_result(const unsigned int resolution, M
     Box emptyBox;
     TextureFieldScene emptyTextureFieldScene;
 
-    this->result.albedo.update(nullptr, this->result.albedo.getResolution().x, this->result.albedo.getResolution().y);
-    this->result.roughness.update(nullptr, this->result.roughness.getResolution().x, this->result.roughness.getResolution().y);
-    this->result.metallic.update(nullptr, this->result.metallic.getResolution().x, this->result.metallic.getResolution().y);
-    this->result.normalMap.update(nullptr, this->result.normalMap.getResolution().x, this->result.normalMap.getResolution().y);
-    this->result.heightMap.update(nullptr, this->result.heightMap.getResolution().x, this->result.heightMap.getResolution().y);
-    this->result.ambientOcclusion.update(nullptr, this->result.ambientOcclusion.getResolution().x, this->result.ambientOcclusion.getResolution().y);
+    this->result.albedo.update((char*)nullptr, this->result.albedo.getResolution().x, this->result.albedo.getResolution().y);
+    this->result.roughness.update((char*)nullptr, this->result.roughness.getResolution().x, this->result.roughness.getResolution().y);
+    this->result.metallic.update((char*)nullptr, this->result.metallic.getResolution().x, this->result.metallic.getResolution().y);
+    this->result.normalMap.update((char*)nullptr, this->result.normalMap.getResolution().x, this->result.normalMap.getResolution().y);
+    this->result.heightMap.update((char*)nullptr, this->result.heightMap.getResolution().x, this->result.heightMap.getResolution().y);
+    this->result.ambientOcclusion.update((char*)nullptr, this->result.ambientOcclusion.getResolution().x, this->result.ambientOcclusion.getResolution().y);
 
     vector_scene.apply_strokes(
                                 true, 

@@ -77,7 +77,7 @@ void Mesh::generateDisplayingTexture(){
     if(this->displayingTxtr.ID == 0)
         this->displayingTxtr = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
     else
-        this->displayingTxtr.update(nullptr, displayRes, displayRes, GL_LINEAR);
+        this->displayingTxtr.update((char*)nullptr, displayRes, displayRes, GL_LINEAR);
 
     this->displayingTxtr.title = "MeshDisplayingTxtr";
 
@@ -173,11 +173,21 @@ void Mesh::generateUVMask(){
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, bool initTxtrs)
 {
+    if(!vertices.size())
+        vertices.push_back(Vertex());
+
+    if(!indices.size())
+        indices.push_back(0);
+    
     this->vertices = vertices;
     this->indices = indices;
     this->materialName = materialName;
 
-    setupMesh();
+    getContext()->window.makeContextCurrent();
+    this->setupMesh(&this->VBO, &this->VAO, &this->EBO);   
+    getSecondContext()->window.makeContextCurrent();
+    this->setupMesh(&this->VBO_2, &this->VAO_2, &this->EBO_2);   
+    getContext()->window.makeContextCurrent();
 
     if(initTxtrs){
         this->albedo = Texture(nullptr, 1024, 1024, GL_LINEAR);
@@ -192,24 +202,26 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
         char whitePx[] = {127, 127, 127, 127};
         this->face_selection_data.meshMask = Texture(whitePx, 1, 1, GL_NEAREST);
 
-        this->face_selection_data.meshMask_display_txtr = Texture(nullptr, 512, 512);
-        this->face_selection_data.meshMask_display_txtr.proceduralProps.proceduralID = 24;
-        this->face_selection_data.meshMask_display_txtr.proceduralProps.proceduralnverted = false;
-        this->face_selection_data.meshMask_display_txtr.generateProceduralDisplayingTexture(512, 1);
 
         this->meshPosTxtr = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);
         this->meshNormalTxtr = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);
 
-        this->face_selection_data.selectedPrimitiveIDs.resize(this->indices.size() / 3);
-        std::fill(this->face_selection_data.selectedPrimitiveIDs.begin(), this->face_selection_data.selectedPrimitiveIDs.end(), 0);
+        if(indices.size()){
+            this->face_selection_data.meshMask_display_txtr = Texture(nullptr, 512, 512);
+            this->face_selection_data.meshMask_display_txtr.proceduralProps.proceduralID = 24;
+            this->face_selection_data.meshMask_display_txtr.proceduralProps.proceduralnverted = false;
+            this->face_selection_data.meshMask_display_txtr.generateProceduralDisplayingTexture(512, 1);
+            
+            this->face_selection_data.selectedPrimitiveIDs.resize(this->indices.size() / 3);
+            std::fill(this->face_selection_data.selectedPrimitiveIDs.begin(), this->face_selection_data.selectedPrimitiveIDs.end(), 0);
 
-        glGenTextures(1, &this->face_selection_data.selectedFaces.ID);
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->face_selection_data.selectedFaces.ID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size())), std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size())), 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-        glGenerateMipmap(GL_TEXTURE_2D);
+            glGenTextures(1, &this->face_selection_data.selectedFaces.ID);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, this->face_selection_data.selectedFaces.ID);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size())), std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size())), 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }
     }
-    
     generateUVMask();
 
     generateDisplayingTexture();
@@ -227,20 +239,26 @@ void Mesh::Draw()
     Debugger::block("Mesh::Draw"); // End
 
     // draw mesh
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, (getContext()->window.isContextCurrent()) ? VBO : VBO_2);
     LigidGL::testGLError("Mesh::Draw : Binding VBO");
 
-    glBindVertexArray(VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (getContext()->window.isContextCurrent()) ? EBO : EBO_2);
+    LigidGL::testGLError("Mesh::Draw : Binding EBO"); 
+    
+    glBindVertexArray((getContext()->window.isContextCurrent()) ? VAO : VAO_2);
     LigidGL::testGLError("Mesh::Draw : Binding VAO");
-
+    
     glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
     LigidGL::testGLError("Mesh::Draw : Drawing Elements");
 
+    glBindVertexArray(0);
+    LigidGL::testGLError("Mesh::Draw : Binding 0 vertex buffer");
+    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     LigidGL::testGLError("Mesh::Draw : Binding 0 array buffer");
     
-    glBindVertexArray(0);
-    LigidGL::testGLError("Mesh::Draw : Binding 0 vertex buffer");
     
     Debugger::block("Mesh::Draw"); // End
     
@@ -273,10 +291,10 @@ void Mesh::processHeightMap(){
 
     LigidGL::cleanGLErrors();
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, (getContext()->window.isContextCurrent()) ? VBO : VBO_2);
     LigidGL::testGLError("Mesh::processHeightMap : Binding VBO");
 
-    glBindVertexArray(VAO);
+    glBindVertexArray((getContext()->window.isContextCurrent()) ? VAO : VAO_2);
     LigidGL::testGLError("Mesh::processHeightMap : Binding VAO");
     // load data into vertex buffers
     // A great thing about structs is that their memory layout is sequential for all its items.
@@ -287,31 +305,34 @@ void Mesh::processHeightMap(){
 
     Settings::defaultFramebuffer()->FBO.bind();
 
+    glBindVertexArray(0);
+    LigidGL::testGLError("Mesh::processHeightMap : Binding 0 vertex buffer");
+    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    LigidGL::testGLError("Mesh::processHeightMap : Binding 0 element array buffer");
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    LigidGL::testGLError("Mesh::processHeightMap : Binding 0 array buffer");
+
     delete[] txtr;
 }
 
 // initializes all the buffer objects/arrays
-void Mesh::setupMesh()
+void Mesh::setupMesh(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO)
 {
-    if(!vertices.size())
-        vertices.push_back(Vertex());
-
-    if(!indices.size())
-        indices.push_back(0);
-
     LigidGL::cleanGLErrors();
     
     // create buffers/arrays
-    glGenVertexArrays(1, &VAO);
+    glGenVertexArrays(1, VAO);
     LigidGL::testGLError("Mesh::setupMesh : Generating VAO");
-    glGenBuffers(1, &VBO);
+    glGenBuffers(1, VBO);
     LigidGL::testGLError("Mesh::setupMesh : Generating VBO");
-    glGenBuffers(1, &EBO);
+    glGenBuffers(1, EBO);
     LigidGL::testGLError("Mesh::setupMesh : Generating EBO");
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, *VBO);
     LigidGL::testGLError("Mesh::setupMesh : Binding VBO");
-    glBindVertexArray(VAO);
+    glBindVertexArray(*VAO);
     LigidGL::testGLError("Mesh::setupMesh : Binding VAO");
     // load data into vertex buffers
     // A great thing about structs is that their memory layout is sequential for all its items.
@@ -320,7 +341,7 @@ void Mesh::setupMesh()
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);  
     LigidGL::testGLError("Mesh::setupMesh : GL_ARRAY_BUFFER data");
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
     LigidGL::testGLError("Mesh::setupMesh : Binding EBO");
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
     LigidGL::testGLError("Mesh::setupMesh : GL_ELEMENT_ARRAY_BUFFER data");
@@ -356,6 +377,15 @@ void Mesh::setupMesh()
     LigidGL::testGLError("Mesh::setupMesh : glEnableVertexAttribArray 4");
     glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(11 * sizeof(float)));
     LigidGL::testGLError("Mesh::setupMesh : glVertexAttribPointer 4");
+
+    glBindVertexArray(0);
+    LigidGL::testGLError("Mesh::setupMesh : Binding 0 vertex buffer");
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    LigidGL::testGLError("Mesh::setupMesh : Binding 0 array buffer");
+    
 }
 
 static Framebuffer getPosNormalOverPoint_FBO;
@@ -366,8 +396,10 @@ void Mesh::getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& no
     pointPos.x = UTIL::new_value_range(pointPos.x, 0, getContext()->windowScale.x, 0, resolution);
     pointPos.y = UTIL::new_value_range(pointPos.y, 0, getContext()->windowScale.y, 0, resolution);
 
-    if(!getPosNormalOverPoint_FBO.ID)
+    if(!getPosNormalOverPoint_FBO.ID){
         getPosNormalOverPoint_FBO.generate();
+        getPosNormalOverPoint_FBO.purpose = "Mesh::getPosNormalOverPoint getPosNormalOverPoint_FBO";
+    }
 
     getPosNormalOverPoint_FBO.setColorBuffer(this->meshPosTxtr, GL_TEXTURE_2D);
     getPosNormalOverPoint_FBO.bind();
@@ -577,17 +609,27 @@ void Mesh::update_vertex_buffers(){
 
     LigidGL::cleanGLErrors();
     
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, (getContext()->window.isContextCurrent()) ? VBO : VBO_2);
     LigidGL::testGLError("Mesh::update_vertex_buffers : Binding VBO");
-    glBindVertexArray(VAO);
+    
+    glBindVertexArray((getContext()->window.isContextCurrent()) ? VAO : VAO_2);
     LigidGL::testGLError("Mesh::update_vertex_buffers : Binding VAO");
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), &vertices[0]);  
     LigidGL::testGLError("Mesh::update_vertex_buffers : GL_ARRAY_BUFFER data");
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (getContext()->window.isContextCurrent()) ? EBO : EBO_2);
     LigidGL::testGLError("Mesh::update_vertex_buffers : Binding EBO");
 
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(unsigned int), &indices[0]);  
     LigidGL::testGLError("Mesh::update_vertex_buffers : GL_ELEMENT_ARRAY_BUFFER data");
+
+    glBindVertexArray(0);
+    LigidGL::testGLError("Mesh::update_vertex_buffers : Binding 0 vertex buffer");
+    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    LigidGL::testGLError("Mesh::update_vertex_buffers : Binding 0 element array buffer");
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    LigidGL::testGLError("Mesh::update_vertex_buffers : Binding 0 array buffer");
 }
