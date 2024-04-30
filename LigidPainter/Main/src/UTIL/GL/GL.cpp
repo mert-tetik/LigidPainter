@@ -99,17 +99,16 @@ void GL::releaseBoundTextures(std::string location){
 
     LigidGL::cleanGLErrors();
     
-    for (auto& texture_slot : texture_slot_data)
-    {
+    for (auto it = texture_slot_data.begin(); it != texture_slot_data.end(); ) {
         // Unbind the texture if contexts matches
-        if(bound_context == texture_slot.second.second){
-            glActiveTexture(GL_TEXTURE0 + texture_slot.first);
+        if(bound_context == it->second.second){
+            glActiveTexture(GL_TEXTURE0 + it->first);
             LigidGL::testGLError(location + " : GL::releaseBoundTextures : glActiveTexture(GL_TEXTURE0 + slot)");
 
             glBindTexture(GL_TEXTURE_2D, 0);
             LigidGL::testGLError(location + " : GL::releaseBoundTextures : glActiveTexture(GL_TEXTURE0 + slot)");
-
-            texture_slot_data.erase(texture_slot.first);    
+            
+            it = texture_slot_data.erase(it);
         }
     }
 }

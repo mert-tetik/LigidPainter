@@ -63,7 +63,7 @@ install(
             "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.29.30133/debug_nonredist/x64/Microsoft.VC142.DebugCRT/vcruntime140d.dll"
             "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.29.30133/debug_nonredist/x64/Microsoft.VC142.DebugCRT/vcruntime140d.dll"
             "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.29.30133/debug_nonredist/x64/Microsoft.VC142.DebugCRT/vcruntime140d.dll"
-            "C:/Program Files (x86)/Windows Kits/10/Redist/10.0.18362.0/ucrt/DLLs/x64/ucrtbased.dll" #Placed by me (downloaded form the https://www.dll-files.com/ucrtbased.dll.html)
+            "C:/Program Files (x86)/Windows Kits/10/Redist/10.0.18362.0/ucrt/DLLs/x64/ucrtbased.dll" #Placed manually (downloaded form the https://www.dll-files.com/ucrtbased.dll.html)
             DESTINATION bin
         )
 
@@ -115,7 +115,7 @@ include(CPack)
 # Set the MacOS version you want to target
 # set(CMAKE_OSX_DEPLOYMENT_TARGET 10.13 CACHE STRING "Minimum macOS version to target")
 
-target_link_options(Ligid PRIVATE "/STACK:2000000")
+target_link_options(Ligid PRIVATE "/STACK:3000000")
 
 list(APPEND CMAKE_MODULE_PATH "C:/Users/CASPER/source/repos/assimp-5.2.5/assimp-5.2.5/cmake-modules")
 
