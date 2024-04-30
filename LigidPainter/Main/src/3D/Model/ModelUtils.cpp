@@ -37,7 +37,7 @@ void Model::generateDisplayingTexture(){
 
     //Generating the displaying texture
     if(displayingTxtr.ID == 0)
-        displayingTxtr = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
+        displayingTxtr = Texture((char*)nullptr, displayRes, displayRes, GL_LINEAR);
     else
         displayingTxtr.update((char*)nullptr, displayRes, displayRes, GL_LINEAR);
 

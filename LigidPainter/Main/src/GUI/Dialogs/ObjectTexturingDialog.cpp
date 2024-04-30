@@ -127,7 +127,7 @@ ObjectTexturingDialog::ObjectTexturingDialog(int){
     this->mixOptionsComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 1.5f), {"Opaque", "Black Only", "White Only", "Roughness Mask", "Metallic Mask", "AO Mask", "Height Map Mask", "Normal Map Mask", "Normal Map Mask Inverted"}, "Mix",  1.f);
     this->displayingOptionsComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Heigth Map", "Ambient Occlusion"}, "Displaying",  1.f);
 
-    this->displayingTexture = Texture(nullptr, DISPLAY_RESOLUTION.x, DISPLAY_RESOLUTION.y);
+    this->displayingTexture = Texture((char*)nullptr, DISPLAY_RESOLUTION.x, DISPLAY_RESOLUTION.y);
 
     this->displayingFBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, DISPLAY_RESOLUTION), "Object texturing dialog - displaying");
 
@@ -166,12 +166,12 @@ void ObjectTexturingDialog::show(Timer& timer){
             for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
             {
                 MaterialChannels channel;
-                channel.albedo = Texture(nullptr, 1024, 1024);
-                channel.roughness = Texture(nullptr, 1024, 1024);
-                channel.metallic = Texture(nullptr, 1024, 1024);
-                channel.normalMap = Texture(nullptr, 1024, 1024);
-                channel.heightMap = Texture(nullptr, 1024, 1024);
-                channel.ambientOcclusion = Texture(nullptr, 1024, 1024);
+                channel.albedo = Texture((char*)nullptr, 1024, 1024);
+                channel.roughness = Texture((char*)nullptr, 1024, 1024);
+                channel.metallic = Texture((char*)nullptr, 1024, 1024);
+                channel.normalMap = Texture((char*)nullptr, 1024, 1024);
+                channel.heightMap = Texture((char*)nullptr, 1024, 1024);
+                channel.ambientOcclusion = Texture((char*)nullptr, 1024, 1024);
             
                 result_channels.push_back(channel);
             }
@@ -345,12 +345,12 @@ void ObjectTexturingDialog::show(Timer& timer){
                             while (meshTxtrHistory.size() < getScene()->model->meshes.size())
                             {
                                 Mesh msh;
-                                msh.albedo = Texture(nullptr, 1, 1);
-                                msh.roughness = Texture(nullptr, 1, 1);
-                                msh.metallic = Texture(nullptr, 1, 1);
-                                msh.normalMap = Texture(nullptr, 1, 1);
-                                msh.heightMap = Texture(nullptr, 1, 1);
-                                msh.ambientOcclusion = Texture(nullptr, 1, 1);
+                                msh.albedo = Texture((char*)nullptr, 1, 1);
+                                msh.roughness = Texture((char*)nullptr, 1, 1);
+                                msh.metallic = Texture((char*)nullptr, 1, 1);
+                                msh.normalMap = Texture((char*)nullptr, 1, 1);
+                                msh.heightMap = Texture((char*)nullptr, 1, 1);
+                                msh.ambientOcclusion = Texture((char*)nullptr, 1, 1);
                                 
                                 meshTxtrHistory.push_back(msh);
                             }
@@ -662,7 +662,7 @@ void ObjectTexturingDialog::updateMeshTextures(){
                     maskTxtr = modifiedTxtrs[i];
                     glm::ivec2 maskRes = maskTxtr.getResolution();
                     if(maskDuplicated.ID == 0){
-                        maskDuplicated = Texture(nullptr, maskRes.x, maskRes.y);
+                        maskDuplicated = Texture((char*)nullptr, maskRes.x, maskRes.y);
                     }
                     else{
                         maskDuplicated.update((char*)nullptr, maskRes.x, maskRes.y);
@@ -677,7 +677,7 @@ void ObjectTexturingDialog::updateMeshTextures(){
             else{
                 glm::ivec2 maskRes = maskTxtr.getResolution();
                 if(maskDuplicated.ID == 0){
-                    maskDuplicated = Texture(nullptr, maskRes.x, maskRes.y);
+                    maskDuplicated = Texture((char*)nullptr, maskRes.x, maskRes.y);
                 }
                 else{
                     maskDuplicated.update((char*)nullptr, maskRes.x, maskRes.y);

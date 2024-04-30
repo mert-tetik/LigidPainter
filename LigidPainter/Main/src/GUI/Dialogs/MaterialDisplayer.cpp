@@ -65,7 +65,7 @@ MaterialDisplayerDialog::MaterialDisplayerDialog(int){
     
     this->panel.sections[0].elements[1].button.color2 = this->panel.sections[0].elements[1].button.color;
 
-    this->displayingFBO = Framebuffer(Texture(nullptr, 512, 512), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(512)), "Material displayer dialog - displaying");
+    this->displayingFBO = Framebuffer(Texture((char*)nullptr, 512, 512), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(512)), "Material displayer dialog - displaying");
 }
 
 void MaterialDisplayerDialog::show(Timer& timer, Material material){

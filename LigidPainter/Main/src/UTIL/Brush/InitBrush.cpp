@@ -65,7 +65,7 @@ Brush::Brush(
 }
 
 Brush::Brush(BrushProperties brushProperties, std::string title){
-    this->displayingTexture = Texture(nullptr, 100, 100, GL_LINEAR);
+    this->displayingTexture = Texture((char*)nullptr, 100, 100, GL_LINEAR);
     this->displayingTexture.title = "BrushDisplayingTexture";    
     
     this->updateDisplayTexture(brushProperties.radius);

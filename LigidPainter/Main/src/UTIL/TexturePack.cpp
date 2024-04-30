@@ -343,7 +343,7 @@ static void assertSprite(Texture& srcTxtr, Texture sprite, std::vector<Region>& 
 }
 
 Texture TexturePack::generateSpriteTexture(){
-    Texture txtr = Texture(nullptr, this->textures[0].getResolution().x, this->textures[0].getResolution().y);
+    Texture txtr = Texture((char*)nullptr, this->textures[0].getResolution().x, this->textures[0].getResolution().y);
 
     std::vector<Region> regions;
 

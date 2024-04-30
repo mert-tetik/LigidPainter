@@ -128,12 +128,12 @@ bool Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, g
 
 
 void Layer::generate_layer_buffers(const unsigned int resolution){
-    result.albedo = Texture(nullptr, resolution, resolution);
-    result.roughness = Texture(nullptr, resolution, resolution);
-    result.metallic = Texture(nullptr, resolution, resolution);
-    result.normalMap = Texture(nullptr, resolution, resolution);
-    result.heightMap = Texture(nullptr, resolution, resolution);
-    result.ambientOcclusion = Texture(nullptr, resolution, resolution);
+    result.albedo = Texture((char*)nullptr, resolution, resolution);
+    result.roughness = Texture((char*)nullptr, resolution, resolution);
+    result.metallic = Texture((char*)nullptr, resolution, resolution);
+    result.normalMap = Texture((char*)nullptr, resolution, resolution);
+    result.heightMap = Texture((char*)nullptr, resolution, resolution);
+    result.ambientOcclusion = Texture((char*)nullptr, resolution, resolution);
 
     this->alpha.general_Alpha.genTxtrs();
     this->alpha.albedo_Alpha.genTxtrs();

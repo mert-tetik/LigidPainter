@@ -42,7 +42,7 @@ extern bool updateThePreRenderedPanels;
 
 TextureEditorDialog::TextureEditorDialog(int){
 
-    this->displayingTexture = Texture(nullptr, 512, 512, GL_LINEAR);
+    this->displayingTexture = Texture((char*)nullptr, 512, 512, GL_LINEAR);
 
     //Create the panel
     this->bgPanel = Panel(
@@ -705,7 +705,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
 
         if(this->saveAsButton.clicked){
             Texture newTxtr;
-            newTxtr = Texture(nullptr, receivedTexture->getResolution().x, receivedTexture->getResolution().y);
+            newTxtr = Texture((char*)nullptr, receivedTexture->getResolution().x, receivedTexture->getResolution().y);
             this->updateDisplayingTexture(receivedTexture, newTxtr.ID);
             Library::addTexture(newTxtr, "New texture via image editor");
             

@@ -58,13 +58,13 @@ DisplayTextureDialog::DisplayTextureDialog(int){
                             false
                         );
 
-    this->threeD_display_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1,2.f), "", Texture(nullptr, 1024, 1024), 0.f, false);
+    this->threeD_display_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1,2.f), "", Texture((char*)nullptr, 1024, 1024), 0.f, false);
     this->twoD_display_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(1,2.f), "", Texture(), 0.f, false);
 
     this->displayingCam.cameraPos = glm::vec3(0,0,-3.5f);
     this->displayingCam.radius = 3.5f;
 
-    this->displayingFBO = Framebuffer(Texture(nullptr, 512, 512), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(512)), "Material displayer dialog - displaying");
+    this->displayingFBO = Framebuffer(Texture((char*)nullptr, 512, 512), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(512)), "Material displayer dialog - displaying");
 }
 
 void DisplayTextureDialog::show(Timer& timer, Texture texture){

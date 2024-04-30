@@ -32,7 +32,7 @@ PaintingLayer::PaintingLayer(const unsigned int resolution){
     this->layerIcon = appTextures.brushIcon;
     this->generate_layer_buffers(resolution);
 
-    this->painting_capture_txtr = Texture(nullptr, 1024, 1024);
+    this->painting_capture_txtr = Texture((char*)nullptr, 1024, 1024);
 }
 
 void PaintingLayer::type_specific_generate_result(const unsigned int resolution, Mesh& mesh){

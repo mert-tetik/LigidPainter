@@ -322,7 +322,7 @@ Texture BakingDialog::bake(Skybox skybox, unsigned int resolution){
     ShaderSystem::bakingShader().setMat4("perspectiveProjection", projectionMatrix); 
     ShaderSystem::bakingShader().setMat4("view", view); 
 
-    Texture txtr = Texture(nullptr, resolution, resolution);
+    Texture txtr = Texture((char*)nullptr, resolution, resolution);
     txtr.title = "baked_" + getScene()->model->meshes[selectMeshButton.selectedMeshI].materialName;
 
     /* Capturing FBO */

@@ -87,7 +87,7 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
     glm::vec2 displayRes = displayResolution;
 
     if(this->displayingTxtr.ID == 0)
-        this->displayingTxtr = Texture(nullptr, displayRes.x, displayRes.y, GL_LINEAR);
+        this->displayingTxtr = Texture((char*)nullptr, displayRes.x, displayRes.y, GL_LINEAR);
     else
         this->displayingTxtr.update((char*)nullptr, displayRes.x, displayRes.y, GL_LINEAR);
 

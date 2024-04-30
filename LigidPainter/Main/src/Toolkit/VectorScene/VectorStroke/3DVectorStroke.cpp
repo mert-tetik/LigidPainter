@@ -53,7 +53,7 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
     const unsigned int resolution = 1024;
 
     if(!projectToModelFBO.ID){
-        projectToModelTxtr = Texture(nullptr, resolution, resolution);
+        projectToModelTxtr = Texture((char*)nullptr, resolution, resolution);
         projectToModelFBO = Framebuffer(projectToModelTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "ThreeDBox::projectToModel fbo");;
     }
 

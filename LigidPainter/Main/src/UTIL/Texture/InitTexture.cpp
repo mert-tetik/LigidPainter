@@ -70,7 +70,7 @@ Texture::Texture(char* pixels, int w, int h, GLenum filterParam, GLenum format, 
     *this = Texture(pixels, nullptr, false, w, h, filterParam, format, internalFormat, GL_MIRRORED_REPEAT, GL_TEXTURE_2D);
 }
 Texture::Texture(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat){
-    *this = Texture(nullptr, pixels, true, w, h, filterParam, format, internalFormat, GL_MIRRORED_REPEAT, GL_TEXTURE_2D);
+    *this = Texture((char*)nullptr, pixels, true, w, h, filterParam, format, internalFormat, GL_MIRRORED_REPEAT, GL_TEXTURE_2D);
 }
 //------
 

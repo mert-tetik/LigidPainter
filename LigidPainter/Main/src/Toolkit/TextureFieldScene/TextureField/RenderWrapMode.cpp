@@ -664,7 +664,7 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, bool doMo
 
     // Generate the checking buffers
     if(!threeDPointsStencilTexture.ID){
-        threeDPointsStencilTexture = Texture(nullptr, resolution, resolution);
+        threeDPointsStencilTexture = Texture((char*)nullptr, resolution, resolution);
         threeDPointsStencilFBO = Framebuffer(threeDPointsStencilTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "threeDPointsStencilFBO");
     }
 

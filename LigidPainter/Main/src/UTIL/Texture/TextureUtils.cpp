@@ -133,7 +133,7 @@ unsigned int Texture::duplicateTexture(){
 
     // Return a 1x1 rgba 0 texture if the requested texture is not valid
     if(this->ID == 0 || glIsTexture(this->ID) == GL_FALSE){
-        return Texture(nullptr, 1, 1).ID;
+        return Texture((char*)nullptr, 1, 1).ID;
     }
 
     unsigned int newTexture;
@@ -353,7 +353,7 @@ std::vector<MaterialIDColor> Texture::getMaterialIDPalette(){
     {
         MaterialIDColor materialIDColor;
         materialIDColor.color = res[i];
-        materialIDColor.grayScaleTxtr = Texture(nullptr, 512, 512);
+        materialIDColor.grayScaleTxtr = Texture((char*)nullptr, 512, 512);
 
         Framebuffer FBO = Framebuffer(materialIDColor.grayScaleTxtr, GL_TEXTURE_2D, "Texture::getMaterialIDPalette");
         FBO.bind();
@@ -401,8 +401,8 @@ void Texture::removeSeams(Mesh& mesh){
         remove_seams_FBO.purpose = "Texture::removeSeams fbo";
         remove_seams_FBO_2.generate();
         remove_seams_FBO_2.purpose = "Texture::removeSeams fbo 2";
-        remove_seams_copy_txtr = Texture(nullptr, 1, 1);
-        remove_seams_copy_txtr_2 = Texture(nullptr, 1, 1);
+        remove_seams_copy_txtr = Texture((char*)nullptr, 1, 1);
+        remove_seams_copy_txtr_2 = Texture((char*)nullptr, 1, 1);
     }
 
 
@@ -458,7 +458,7 @@ void Texture::removeUnselectedFaces(Mesh& mesh){
     if(!remove_unselected_faces_FBO.ID){
         remove_unselected_faces_FBO.generate();
         remove_unselected_faces_FBO.purpose = "Texture::removeUnselectedFaces : remove_unselected_faces_FBO";
-        remove_unselected_faces_copy_txtr = Texture(nullptr, 1, 1);
+        remove_unselected_faces_copy_txtr = Texture((char*)nullptr, 1, 1);
     }
 
     if(remove_unselected_faces_copy_txtr.getResolution() != this->getResolution()){
@@ -523,10 +523,10 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
     if(this->proceduralProps.proceduralID == 121){
     
         if(!normalMapTxtr.ID){
-            normalMapTxtr = Texture(nullptr, 1024, 1024);
-            normalMapTxtrBlurred = Texture(nullptr, 1024, 1024);
-            noiseTxtr = Texture(nullptr, 1024, 1024);
-            destTxtrCopy = Texture(nullptr, textureRes, textureRes);
+            normalMapTxtr = Texture((char*)nullptr, 1024, 1024);
+            normalMapTxtrBlurred = Texture((char*)nullptr, 1024, 1024);
+            noiseTxtr = Texture((char*)nullptr, 1024, 1024);
+            destTxtrCopy = Texture((char*)nullptr, textureRes, textureRes);
         }
         
         noiseTxtr.proceduralProps.proceduralID = 74;
@@ -669,7 +669,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
     // ------- Generating Normal Map -------
     if(this->proceduralProps.proceduralNormalMap){
         if(!normalMapRes.ID){
-            normalMapRes = Texture(nullptr, textureRes, textureRes, GL_LINEAR);
+            normalMapRes = Texture((char*)nullptr, textureRes, textureRes, GL_LINEAR);
         }
         else{
             normalMapRes.update((char*)nullptr, textureRes, textureRes, GL_LINEAR);
@@ -931,7 +931,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
     // Generate normal map
     if(this->proceduralProps.proceduralNormalMap && displayMode == 0){
         Texture txtrObject = Texture(this->ID);
-        Texture normalMapRes = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
+        Texture normalMapRes = Texture((char*)nullptr, displayRes, displayRes, GL_LINEAR);
 
         txtrObject.generateNormalMap(normalMapRes.ID, displayRes, this->proceduralProps.proceduralNormalStrength, this->proceduralProps.proceduralGrayScale); 
 

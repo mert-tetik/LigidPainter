@@ -304,16 +304,16 @@ std::vector<MirrorSide*> painting_get_selected_mirror_sides(bool mirror_X, bool 
     return mirrorSides;
 }
 
-#define INIT_MIRROR_SIDE(mirror_side, axis) mirror_side.paintingBuffers.depth_texture  = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);\
-                                            mirror_side.paintingBuffers.window_painting_texture  = Texture(nullptr, 1024, 1024);\
-                                            mirror_side.paintingBuffers.projected_painting_texture  = Texture(nullptr, 1024, 1024, GL_LINEAR);\
-                                            mirror_side.paintingBuffers.projected_painting_texture_low  = Texture(nullptr, 512, 512, GL_LINEAR, GL_RGBA, GL_RGBA16F);\
+#define INIT_MIRROR_SIDE(mirror_side, axis) mirror_side.paintingBuffers.depth_texture  = Texture((char*)nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);\
+                                            mirror_side.paintingBuffers.window_painting_texture  = Texture((char*)nullptr, 1024, 1024);\
+                                            mirror_side.paintingBuffers.projected_painting_texture  = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);\
+                                            mirror_side.paintingBuffers.projected_painting_texture_low  = Texture((char*)nullptr, 512, 512, GL_LINEAR, GL_RGBA, GL_RGBA16F);\
                                             mirror_side.effectAxis = axis;
 
 void painting_init_buffers(){
-    one_px_txtr = Texture(nullptr, 1, 1, GL_NEAREST);
+    one_px_txtr = Texture((char*)nullptr, 1, 1, GL_NEAREST);
 
-    painting_projected_painting_FBO = Framebuffer(Texture(nullptr, 1024, 1024), GL_TEXTURE_2D, "projected_painting_FBO");
+    painting_projected_painting_FBO = Framebuffer(Texture((char*)nullptr, 1024, 1024), GL_TEXTURE_2D, "projected_painting_FBO");
     
     INIT_MIRROR_SIDE(O_side, glm::vec3(-1.f, -1.f, -1.f))
     INIT_MIRROR_SIDE(X_side, glm::vec3(1.f, -1.f, -1.f));
@@ -325,13 +325,13 @@ void painting_init_buffers(){
     INIT_MIRROR_SIDE(XYZ_side, glm::vec3(1.f, 1.f, 1.f));
 }
 
-#define UPDATE_MIRROR_SIDE(mirror_side, axis) mirror_side.paintingBuffers.depth_texture  = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);\
-                                            mirror_side.paintingBuffers.window_painting_texture  = Texture(nullptr, 1024, 1024);\
-                                            mirror_side.paintingBuffers.projected_painting_texture  = Texture(nullptr, 1024, 1024, GL_LINEAR);\
+#define UPDATE_MIRROR_SIDE(mirror_side, axis) mirror_side.paintingBuffers.depth_texture  = Texture((char*)nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);\
+                                            mirror_side.paintingBuffers.window_painting_texture  = Texture((char*)nullptr, 1024, 1024);\
+                                            mirror_side.paintingBuffers.projected_painting_texture  = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);\
                                             mirror_side.effectAxis = axis;
 
 void painting_update_buffers(const unsigned int resolution){
-    one_px_txtr = Texture(nullptr, 1, 1, GL_NEAREST);
+    one_px_txtr = Texture((char*)nullptr, 1, 1, GL_NEAREST);
 
     if(painting_projected_painting_FBO.colorBuffer.getResolution().x != resolution)
         painting_projected_painting_FBO.colorBuffer.update((char*)nullptr, resolution, resolution);

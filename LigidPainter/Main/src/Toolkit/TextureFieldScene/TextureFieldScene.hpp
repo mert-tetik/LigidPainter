@@ -205,7 +205,7 @@ public:
         this->texture_fields = texture_fields;
 
         //--------- init paintingOverTexture --------- 
-        this->painting_over_texture = Texture(nullptr, 2024, 2024, GL_LINEAR);
+        this->painting_over_texture = Texture((char*)nullptr, 2024, 2024, GL_LINEAR);
 
         this->FBO = Framebuffer(
                                 this->painting_over_texture, 

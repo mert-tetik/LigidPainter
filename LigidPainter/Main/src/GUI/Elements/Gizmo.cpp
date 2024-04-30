@@ -86,7 +86,7 @@ void Gizmo::render(
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Gizmo : Render to screen");
 
     if(!FBO.ID){
-        FBO = Framebuffer(Texture(nullptr, Settings::videoScale()->x, Settings::videoScale()->y), GL_TEXTURE_2D, "Gizmo FBO");
+        FBO = Framebuffer(Texture((char*)nullptr, Settings::videoScale()->x, Settings::videoScale()->y), GL_TEXTURE_2D, "Gizmo FBO");
     }
 
     this->rHover = false;

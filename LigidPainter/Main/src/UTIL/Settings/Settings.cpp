@@ -122,7 +122,7 @@ void Settings::loadAppTextures(){
     char blackPxs[4] = {0,0,0,127};
     appTextures.white = Texture(whitePxs, 1, 1, GL_NEAREST);
     appTextures.black = Texture(blackPxs, 1, 1, GL_NEAREST);
-    appTextures.transparent = Texture(nullptr, 1, 1, GL_NEAREST);
+    appTextures.transparent = Texture((char*)nullptr, 1, 1, GL_NEAREST);
 }
 
 void Settings::loadAppVideos(){
@@ -215,10 +215,10 @@ namespace Settings{
         glActiveTexture(GL_TEXTURE0);
 
         //--------- init bgTxtr --------- 
-        this->bgTxtr = Texture(nullptr, resolution.x, resolution.y, GL_NEAREST);
+        this->bgTxtr = Texture((char*)nullptr, resolution.x, resolution.y, GL_NEAREST);
         
         //--------- init FBO --------- 
-        this->FBO = Framebuffer(Texture(nullptr, resolution.x, resolution.y, GL_NEAREST), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution), "Default FBO");
+        this->FBO = Framebuffer(Texture((char*)nullptr, resolution.x, resolution.y, GL_NEAREST), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution), "Default FBO");
 
         orgID = this->FBO.ID;
         this->FBO.ID = 0;

@@ -77,7 +77,7 @@ void Mesh::generateDisplayingTexture(){
     const int displayRes = 256;
     
     if(this->displayingTxtr.ID == 0)
-        this->displayingTxtr = Texture(nullptr, displayRes, displayRes, GL_LINEAR);
+        this->displayingTxtr = Texture((char*)nullptr, displayRes, displayRes, GL_LINEAR);
     else
         this->displayingTxtr.update((char*)nullptr, displayRes, displayRes, GL_LINEAR);
 
@@ -153,7 +153,7 @@ void Mesh::generateDisplayingTexture(){
 void Mesh::generateUVMask(){
     const int resolution = 2024;
     
-    this->uvMask = Texture(nullptr, resolution, resolution, GL_LINEAR);
+    this->uvMask = Texture((char*)nullptr, resolution, resolution, GL_LINEAR);
 
     Framebuffer FBO = Framebuffer(this->uvMask, GL_TEXTURE_2D, "Generating mesh uv mask");
     FBO.bind();
@@ -195,24 +195,24 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     bound_context->makeContextCurrent();
 
     if(initTxtrs){
-        this->albedo = Texture(nullptr, 1024, 1024, GL_LINEAR);
-        this->roughness = Texture(nullptr, 1024, 1024, GL_LINEAR);
-        this->metallic = Texture(nullptr, 1024, 1024, GL_LINEAR);
-        this->normalMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
-        this->heightMap = Texture(nullptr, 1024, 1024, GL_LINEAR);
-        this->ambientOcclusion = Texture(nullptr, 1024, 1024, GL_LINEAR);
-        this->objectIDs = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RG, GL_RG32F);
+        this->albedo = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->roughness = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->metallic = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->normalMap = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->heightMap = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->ambientOcclusion = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->objectIDs = Texture((char*)nullptr, 1024, 1024, GL_LINEAR, GL_RG, GL_RG32F);
         
-        this->face_selection_data.modelPrimitives = Texture(nullptr, 1024, 1024, GL_NEAREST, GL_RED, GL_R32F);
+        this->face_selection_data.modelPrimitives = Texture((char*)nullptr, 1024, 1024, GL_NEAREST, GL_RED, GL_R32F);
         char whitePx[] = {127, 127, 127, 127};
         this->face_selection_data.meshMask = Texture(whitePx, 1, 1, GL_NEAREST);
 
 
-        this->meshPosTxtr = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);
-        this->meshNormalTxtr = Texture(nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);
+        this->meshPosTxtr = Texture((char*)nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);
+        this->meshNormalTxtr = Texture((char*)nullptr, 1024, 1024, GL_LINEAR, GL_RGBA, GL_RGBA32F);
 
         if(indices.size()){
-            this->face_selection_data.meshMask_display_txtr = Texture(nullptr, 512, 512);
+            this->face_selection_data.meshMask_display_txtr = Texture((char*)nullptr, 512, 512);
             this->face_selection_data.meshMask_display_txtr.proceduralProps.proceduralID = 24;
             this->face_selection_data.meshMask_display_txtr.proceduralProps.proceduralnverted = false;
             this->face_selection_data.meshMask_display_txtr.generateProceduralDisplayingTexture(512, 1);
@@ -221,6 +221,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
             std::fill(this->face_selection_data.selectedPrimitiveIDs.begin(), this->face_selection_data.selectedPrimitiveIDs.end(), 0);
 
             int resolution = std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size()));
+            //this->face_selection_data.selectedFaces = Texture((char*)nullptr, nullptr, false, resolution, resolution, 0, GL_RED, GL_R8, 0, GL_TEXTURE_2D);
 
             glGenTextures(1, &this->face_selection_data.selectedFaces.ID);
             glActiveTexture(GL_TEXTURE0);

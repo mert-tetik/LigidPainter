@@ -177,12 +177,12 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
     }
 
     if(!mesh.albedo.ID){
-        mesh.albedo = Texture(nullptr, resolution, resolution);
-        mesh.roughness = Texture(nullptr, resolution, resolution);
-        mesh.metallic = Texture(nullptr, resolution, resolution);
-        mesh.normalMap = Texture(nullptr, resolution, resolution);
-        mesh.heightMap = Texture(nullptr, resolution, resolution);
-        mesh.ambientOcclusion = Texture(nullptr, resolution, resolution);
+        mesh.albedo = Texture((char*)nullptr, resolution, resolution);
+        mesh.roughness = Texture((char*)nullptr, resolution, resolution);
+        mesh.metallic = Texture((char*)nullptr, resolution, resolution);
+        mesh.normalMap = Texture((char*)nullptr, resolution, resolution);
+        mesh.heightMap = Texture((char*)nullptr, resolution, resolution);
+        mesh.ambientOcclusion = Texture((char*)nullptr, resolution, resolution);
     }
     else{
         glm::vec2 albedoRes = mesh.albedo.getResolution();

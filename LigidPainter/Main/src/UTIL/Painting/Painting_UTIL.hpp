@@ -102,7 +102,7 @@ static Framebuffer window_paint_FBO;
 static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> strokes, Brush brush, int frame_count, bool paint_offset_value){
     if(!window_paint_FBO.ID){
         window_paint_FBO = Framebuffer(*window_paint_texture, GL_TEXTURE_2D, "window_paint");
-        painting_BG_texture = Texture(nullptr, 1, 1);
+        painting_BG_texture = Texture((char*)nullptr, 1, 1);
     }
     else{
         window_paint_FBO.setColorBuffer(*window_paint_texture, GL_TEXTURE_2D);
@@ -432,7 +432,7 @@ static void process_3D_point(
     
     const unsigned int resolution = 512; 
     if(!process3DPointFBO.ID){
-        process3DPointFBO = Framebuffer(Texture(nullptr, resolution, resolution), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "process3DPointFBO");
+        process3DPointFBO = Framebuffer(Texture((char*)nullptr, resolution, resolution), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "process3DPointFBO");
     }
 
     glm::vec2 crs_pos = process_3D_point_calculate_2D_location(*cam, threeDPoint, resolution, mesh);
@@ -735,12 +735,12 @@ static void update_custom_material_mesh(PaintSettings::ColorBuffer color_buffer,
         customMatMesh.indices = mesh->indices;
         
         if(!customMatMesh.albedo.ID){
-            customMatMesh.albedo = Texture(nullptr, resolution.x, resolution.y);
-            customMatMesh.roughness = Texture(nullptr, resolution.x, resolution.y);
-            customMatMesh.metallic = Texture(nullptr, resolution.x, resolution.y);
-            customMatMesh.normalMap = Texture(nullptr, resolution.x, resolution.y);
-            customMatMesh.heightMap = Texture(nullptr, resolution.x, resolution.y);
-            customMatMesh.ambientOcclusion = Texture(nullptr, resolution.x, resolution.y);
+            customMatMesh.albedo = Texture((char*)nullptr, resolution.x, resolution.y);
+            customMatMesh.roughness = Texture((char*)nullptr, resolution.x, resolution.y);
+            customMatMesh.metallic = Texture((char*)nullptr, resolution.x, resolution.y);
+            customMatMesh.normalMap = Texture((char*)nullptr, resolution.x, resolution.y);
+            customMatMesh.heightMap = Texture((char*)nullptr, resolution.x, resolution.y);
+            customMatMesh.ambientOcclusion = Texture((char*)nullptr, resolution.x, resolution.y);
         }
         else{
             customMatMesh.albedo.update((char*)nullptr, resolution.x, resolution.y);
@@ -787,7 +787,7 @@ static void updateTheTexture(
 
     glActiveTexture(GL_TEXTURE0);
 
-    Texture captureTexture = Texture(nullptr, destScale.x, destScale.y, GL_LINEAR);
+    Texture captureTexture = Texture((char*)nullptr, destScale.x, destScale.y, GL_LINEAR);
     Framebuffer captureFBO = Framebuffer(captureTexture, GL_TEXTURE_2D, "Painter::updateTheTexture");
     
     captureFBO.bind();
