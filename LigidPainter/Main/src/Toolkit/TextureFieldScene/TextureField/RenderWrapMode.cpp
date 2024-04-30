@@ -21,10 +21,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/GL/GL.hpp"
+
 #include "Toolkit/TextureFieldScene/TextureFieldScene.hpp"
 
 #include <string>
@@ -70,6 +74,8 @@ void TextureField::renderWrappedTextureField(
         
         getScene()->get_selected_mesh()->Draw();
 
+        GL::releaseBoundTextures("TextureField : renderWrappedTextureField 1");
+
         // Render the points
         if(!generatingTextureMode && editMode){
             this->renderPoints(timer, doMouseTracking);
@@ -97,6 +103,8 @@ void TextureField::renderWrappedTextureField(
         ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
         
         getScene()->get_selected_mesh()->Draw();
+
+        GL::releaseBoundTextures("TextureField : renderWrappedTextureField 2");
 
         // Render the wrapped texture
         if(this->threeDPointTopLeft.pos != glm::vec3(0.f) && this->threeDPointBottomRight.pos != glm::vec3(0.f))
@@ -493,7 +501,7 @@ void TextureField::renderWrappedTextureBox(bool generatingTextureMode){
     
     // --------------- Set fragment shader data ---------------
     ShaderSystem::threeDTextureRenderingShader().setFloat("depthToleranceValue", calculateDepthToleranceValue((threeDPointTopLeft.pos + threeDPointTopRight.pos + threeDPointBottomLeft.pos + threeDPointBottomRight.pos) / 4.f));
-    ShaderSystem::threeDTextureRenderingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->texture.ID);
+    ShaderSystem::threeDTextureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(this->texture.ID, 0, "TextureField::renderWrappedTextureBox");
     
     if(generatingTextureMode)
         ShaderSystem::threeDTextureRenderingShader().setFloat("opacity", 1.0f);
@@ -509,6 +517,7 @@ void TextureField::renderWrappedTextureBox(bool generatingTextureMode){
     this->threeDWrapBox.draw();
 
     // --------------- Finish ---------------
+    GL::releaseBoundTextures("TextureField::renderWrappedTextureBox");
     ShaderSystem::threeDTextureRenderingShader().use();
     ShaderSystem::threeDTextureRenderingShader().setFloat("depthToleranceValue", 0);
 }
@@ -688,6 +697,8 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, bool doMo
     ShaderSystem::color3d().setFloat("depthToleranceValue", calculateDepthToleranceValue((threeDPointTopLeft.pos + threeDPointTopRight.pos + threeDPointBottomLeft.pos + threeDPointBottomRight.pos) / 4.f));
     this->threeDWrapBox.draw();
     
+    GL::releaseBoundTextures("TextureField : checkIfWrappedTextureClicked");
+
     // Get the pixel value on top of the cursor
     unsigned char* stencilData = new unsigned char[4];
     glReadPixels(

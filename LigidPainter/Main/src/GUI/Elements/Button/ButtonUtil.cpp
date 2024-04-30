@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -172,12 +173,13 @@ bool Button::renderTheTexture(
         ShaderSystem::buttonShader().setVec2("scale"  ,     resultScaleTexture * glm::sign(resultScale));
         
         //Bind the texture to the slot 0
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D,texture.ID);
-        
+        GL::bindTexture_2D(texture.ID, 0, "Button::renderTheTexture");
+
         //Draw the texture
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Button::renderTheTexture");
         
+        GL::releaseBoundTextures("Button::renderTheTexture");
+
         //Tell the button shader to rendering the texture is done
         ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
     }

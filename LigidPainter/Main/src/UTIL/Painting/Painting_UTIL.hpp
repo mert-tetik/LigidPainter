@@ -28,6 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Painting/Painter.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "3D/Material/Material.hpp"
 
@@ -73,12 +74,8 @@ static void set_brush_properties (
     ShaderSystem::twoDPainting().setInt("brush.sinWavePattern", brushProperties.sinWavePattern);
     
     //Bind the texture of the brush
-    if(brushProperties.brushTexture.ID){
-        ShaderSystem::twoDPainting().setFloat("brush.txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, brushProperties.brushTexture.ID);
-    }
-    else{
-        ShaderSystem::twoDPainting().setFloat("brush.txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, appTextures.white.ID);   
-    }
+    ShaderSystem::twoDPainting().setFloat("brush.txtr", 0); GL::bindTexture_2D((brushProperties.brushTexture.ID) ? brushProperties.brushTexture.ID : appTextures.white.ID, 0, "PaintingUTIL : generate_projected_painting_texture");
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
@@ -135,7 +132,7 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     ShaderSystem::twoDPainting().setVec2("paintingRes", glm::vec2(resolution)); 
     ShaderSystem::twoDPainting().setVec2("videoScale", getContext()->windowScale); 
     ShaderSystem::twoDPainting().setInt("frame", frame_count);
-    ShaderSystem::twoDPainting().setInt("bgTxtr", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, painting_BG_texture.ID);
+    ShaderSystem::twoDPainting().setInt("bgTxtr", 1); GL::bindTexture_2D(painting_BG_texture.ID, 1, "paintingUTIL : window_paint");
     ShaderSystem::twoDPainting().setInt("redChannelOnly", !paint_offset_value);
     ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(0.));
     
@@ -163,6 +160,7 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted");
     
     //Finish
+    GL::releaseBoundTextures("paintingUTIL : window_paint");
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
     glDepthFunc(GL_LESS);
@@ -216,12 +214,12 @@ static void project_window_painting_texture(
     ShaderSystem::projectingPaintedTextureShader().use();
 
     //*Fragment
-    ShaderSystem::projectingPaintedTextureShader().setInt("paintingTexture", 6); glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, window_painting_texture.ID);
-    ShaderSystem::projectingPaintedTextureShader().setInt("depthTexture", 7); glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, depth_texture.ID);
+    ShaderSystem::projectingPaintedTextureShader().setInt("paintingTexture", 6); glActiveTexture(GL_TEXTURE6); GL::bindTexture_2D(window_painting_texture.ID, 6, "paintingUTIL::project_window_painting_texture");
+    ShaderSystem::projectingPaintedTextureShader().setInt("depthTexture", 7); glActiveTexture(GL_TEXTURE7); GL::bindTexture_2D(depth_texture.ID, 7, "paintingUTIL::project_window_painting_texture");
     ShaderSystem::projectingPaintedTextureShader().setFloat("paintingOpacity", brush_opacity);
     ShaderSystem::projectingPaintedTextureShader().setInt("selectedPaintingModeIndex", painting_mode);
     
-    ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverTexture", 9); glActiveTexture(GL_TEXTURE9); glBindTexture(GL_TEXTURE_2D, painting_over_data.texture_field_scene->painting_over_texture.ID);
+    ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverTexture", 9); glActiveTexture(GL_TEXTURE9); GL::bindTexture_2D(painting_over_data.texture_field_scene->painting_over_texture.ID, 9, "paintingUTIL::project_window_painting_texture");
     ShaderSystem::projectingPaintedTextureShader().setInt("usePaintingOver", painting_over_data.active);
     ShaderSystem::projectingPaintedTextureShader().setInt("paintingOverGrayScale", painting_over_data.gray_scale);
     ShaderSystem::projectingPaintedTextureShader().setVec3("paintingColor", paint_color);
@@ -256,6 +254,8 @@ static void project_window_painting_texture(
                 glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
             }
         }
+
+        GL::releaseBoundTextures("painting : project_window_painting_texture");
     }
 
     // Painting the 2D scene 
@@ -275,6 +275,8 @@ static void project_window_painting_texture(
         ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", 2);
         LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Painting : Projecting painted texture (For 2D Scene)");
     }
+
+    GL::releaseBoundTextures("paintingUTIL::project_window_painting_texture");
 
 }
 
@@ -378,6 +380,8 @@ static glm::vec2 process_3D_point_calculate_2D_location(Camera cam, ThreeDPoint 
     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *mesh, GL_TEXTURE0, GL_TEXTURE1);
     
     mesh->Draw();
+
+    GL::releaseBoundTextures("process_3D_point_calculate_2D_location");
 
     float* pxs = new float[resolution * resolution * 4]; 
     
@@ -505,6 +509,8 @@ void update_depth_texture(Texture depth_texture, Camera cam, Mesh* mesh){
     
     mesh->Draw();
 
+    GL::releaseBoundTextures("paintingUTIL : update_depth_texture");
+
     //!Finished
     //Set back to default shader
     ShaderSystem::buttonShader().use();
@@ -535,45 +541,39 @@ void generate_projected_painting_texture(Framebuffer* FBO, bool mirror_X, bool m
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("redChannel", false);
         
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr1", 1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, (use_low_resolution_buffers) ? O_side.paintingBuffers.projected_painting_texture_low.ID : O_side.paintingBuffers.projected_painting_texture.ID);
+        GL::bindTexture_2D((use_low_resolution_buffers) ? O_side.paintingBuffers.projected_painting_texture_low.ID : O_side.paintingBuffers.projected_painting_texture.ID, 1, "PaintingUTIL : generate_projected_painting_texture");
         
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr2Active", mirror_X);
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr2", 2);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, (use_low_resolution_buffers) ? X_side.paintingBuffers.projected_painting_texture_low.ID : X_side.paintingBuffers.projected_painting_texture.ID);
+        GL::bindTexture_2D((use_low_resolution_buffers) ? X_side.paintingBuffers.projected_painting_texture_low.ID : X_side.paintingBuffers.projected_painting_texture.ID, 2, "PaintingUTIL : generate_projected_painting_texture");
 
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr3Active", mirror_Y);
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr3", 3);
-        glActiveTexture(GL_TEXTURE3);
-        glBindTexture(GL_TEXTURE_2D, (use_low_resolution_buffers) ? Y_side.paintingBuffers.projected_painting_texture_low.ID : Y_side.paintingBuffers.projected_painting_texture.ID);
+        GL::bindTexture_2D((use_low_resolution_buffers) ? Y_side.paintingBuffers.projected_painting_texture_low.ID : Y_side.paintingBuffers.projected_painting_texture.ID, 3, "PaintingUTIL : generate_projected_painting_texture");
 
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr4Active", mirror_X && mirror_Y);
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr4", 4);
-        glActiveTexture(GL_TEXTURE4);
-        glBindTexture(GL_TEXTURE_2D, (use_low_resolution_buffers) ? XY_side.paintingBuffers.projected_painting_texture_low.ID : XY_side.paintingBuffers.projected_painting_texture.ID);
+        GL::bindTexture_2D((use_low_resolution_buffers) ? XY_side.paintingBuffers.projected_painting_texture_low.ID : XY_side.paintingBuffers.projected_painting_texture.ID, 4, "PaintingUTIL : generate_projected_painting_texture");
 
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr5Active", mirror_Z);
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr5", 5);
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, (use_low_resolution_buffers) ? Z_side.paintingBuffers.projected_painting_texture_low.ID : Z_side.paintingBuffers.projected_painting_texture.ID);
+        GL::bindTexture_2D((use_low_resolution_buffers) ? Z_side.paintingBuffers.projected_painting_texture_low.ID : Z_side.paintingBuffers.projected_painting_texture.ID, 5, "PaintingUTIL : generate_projected_painting_texture");
 
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr6Active", mirror_X && mirror_Z);
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr6", 6);
-        glActiveTexture(GL_TEXTURE6);
-        glBindTexture(GL_TEXTURE_2D, (use_low_resolution_buffers) ? XZ_side.paintingBuffers.projected_painting_texture_low.ID : XZ_side.paintingBuffers.projected_painting_texture.ID);
+        GL::bindTexture_2D((use_low_resolution_buffers) ? XZ_side.paintingBuffers.projected_painting_texture_low.ID : XZ_side.paintingBuffers.projected_painting_texture.ID, 6, "PaintingUTIL : generate_projected_painting_texture");
 
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr7Active", mirror_Y && mirror_Z);
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr7", 7);
-        glActiveTexture(GL_TEXTURE7);
-        glBindTexture(GL_TEXTURE_2D, (use_low_resolution_buffers) ? YZ_side.paintingBuffers.projected_painting_texture_low.ID : YZ_side.paintingBuffers.projected_painting_texture.ID);
+        GL::bindTexture_2D((use_low_resolution_buffers) ? YZ_side.paintingBuffers.projected_painting_texture_low.ID : YZ_side.paintingBuffers.projected_painting_texture.ID, 7, "PaintingUTIL : generate_projected_painting_texture");
 
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8Active", mirror_X && mirror_Y && mirror_Z);
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8", 8);
-        glActiveTexture(GL_TEXTURE8);
-        glBindTexture(GL_TEXTURE_2D, (use_low_resolution_buffers) ? XYZ_side.paintingBuffers.projected_painting_texture_low.ID : XYZ_side.paintingBuffers.projected_painting_texture.ID);
+        GL::bindTexture_2D((use_low_resolution_buffers) ? XYZ_side.paintingBuffers.projected_painting_texture_low.ID : XYZ_side.paintingBuffers.projected_painting_texture.ID, 8, "PaintingUTIL : generate_projected_painting_texture");
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::generateMirroredProjectedPaintingTexture : Render result");
+
+        GL::releaseBoundTextures("PaintingUTIL : generate_projected_painting_texture");
     }
     else{
         if(use_low_resolution_buffers)
@@ -761,8 +761,7 @@ static void update_custom_material_mesh(PaintSettings::ColorBuffer color_buffer,
 
 static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 textureRes, unsigned int &selectedTextureID){
     //Bind the capture texture
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, captureTexture);
+    GL::bindTexture_2D(captureTexture, 0, "captureTxtrToSourceTxtr");
     
     //Get the pixels of the capture texture
     char* pixels = new char[textureRes.x * textureRes.y * 4];
@@ -773,6 +772,8 @@ static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 tex
 
     delete[] pixels; //Remove the capture texture's pixels out of the memory
     glDeleteTextures(1, &captureTexture);
+
+    GL::releaseBoundTextures("captureTxtrToSourceTxtr");
 }
 
 static void updateTheTexture(
@@ -795,8 +796,7 @@ static void updateTheTexture(
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     //Bind the selected texture (painted texture) to the albedo channel (to paint over that texture)
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, txtr.ID);
+    GL::bindTexture_2D(txtr.ID, 2, "paintingUTIL : updateTheTexture");
 
     //Set the viewport to the resolution of the texture
     glViewport(0,0,destScale.x,destScale.y);
@@ -814,8 +814,7 @@ static void updateTheTexture(
     ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
     ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, txtr.ID);
+    GL::bindTexture_2D(txtr.ID, 0, "paintingUTIL : updateTheTexture");
     
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Rendering the original texture (background)");
 
@@ -877,6 +876,7 @@ static void updateTheTexture(
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Applying painting to the texture");
     }
     
+    GL::releaseBoundTextures("paintingUTIL : updateTheTexture");
 
     //Delete the capture framebuffer
     captureFBO.deleteBuffers(false, false);

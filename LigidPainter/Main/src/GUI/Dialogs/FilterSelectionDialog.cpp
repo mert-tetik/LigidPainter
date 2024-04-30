@@ -22,9 +22,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -162,16 +164,12 @@ void FilterSelectionDialog::show(Timer &timer, Filter& receivedFilter, int displ
         ShaderSystem::splitTexturesShader().setVec3("pos"         ,   selectedTextureDisplayingPanel.sections[0].elements[0].button.resultPos);
         ShaderSystem::splitTexturesShader().setVec2("scale"       ,   glm::vec2(std::min(selectedTextureDisplayingPanel.sections[0].elements[0].button.resultScale.x, selectedTextureDisplayingPanel.sections[0].elements[0].button.resultScale.y)));
 
-        ShaderSystem::splitTexturesShader().setInt("texture1", 0);
-        ShaderSystem::splitTexturesShader().setInt("texture2", 1);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, appTextures.filterDisplayerImage.ID);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, this->selectedFilter.displayingTxtr.ID);
+        ShaderSystem::splitTexturesShader().setInt("texture1", 0); GL::bindTexture_2D(appTextures.filterDisplayerImage.ID, 0, "FilterSelectionDialog::show");
+        ShaderSystem::splitTexturesShader().setInt("texture2", 1); GL::bindTexture_2D(this->selectedFilter.displayingTxtr.ID, 1, "FilterSelectionDialog::show");
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter selection dialog : Split filters");
+
+        GL::releaseBoundTextures("FilterSelectionDialog::show");
 
         ShaderSystem::buttonShader().use();
 

@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "GUI/Elements.hpp"
 
@@ -111,8 +112,8 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
 
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
     blurShader.use();
-    blurShader.setInt("txtr", 0);
-    blurShader.setInt("uvMask", 1);
+    blurShader.setInt("txtr", 0); GL::bindTexture_2D(textureCopy_bluring.ID, 0, "UpdateMaterialChannel : blurTheTexture");
+    blurShader.setInt("uvMask", 1); GL::bindTexture_2D(mesh.uvMask.ID, 1, "UpdateMaterialChannel : blurTheTexture");
     blurShader.setVec2("txtrRes", glm::vec2(textureResolution));
     blurShader.setMat4("projection"  ,       projection);
     blurShader.setMat4("projectedPosProjection"  ,       projection);
@@ -121,12 +122,6 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     blurShader.setFloat("blurVal"     ,     blurVal);
     if(algorithmI == 1)
         blurShader.setInt("horizontal", 0);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureCopy_bluring.ID);
-    
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, mesh.uvMask.ID);
 
     LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "blurTheTexture first draw");
 
@@ -142,6 +137,8 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
         blurShader.setInt("horizontal", 1);
         LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "blurTheTexture second draw");
     }
+
+    GL::releaseBoundTextures("UpdateMaterialChannel : blurTheTexture");
 
     Settings::defaultFramebuffer()->FBO.bind();
     
@@ -248,7 +245,7 @@ static void genAmbientOcclusion(
             mesh.Draw();
         else
             model.Draw();
-        
+
         aoFBO.bind();
         glViewport(0, 0, aoTxtrRes.x, aoTxtrRes.y);
         
@@ -259,17 +256,13 @@ static void genAmbientOcclusion(
         
         ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::AOGen(), mesh, GL_TEXTURE2, GL_TEXTURE3);
         
-        ShaderSystem::AOGen().setInt("depthTexture", 0); 
-        ShaderSystem::AOGen().setInt("srcTxtr", 1);
+        ShaderSystem::AOGen().setInt("depthTexture", 0); GL::bindTexture_2D(aoDepthTxtr.ID, 0, "UpdateMaterialChannel : genAmbientOcclusion");
+        ShaderSystem::AOGen().setInt("srcTxtr", 1); GL::bindTexture_2D(aoTxtrDup.ID, 1, "UpdateMaterialChannel : genAmbientOcclusion");
         ShaderSystem::AOGen().setFloat("aoOffset", aoOffset);
         
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, aoDepthTxtr.ID);
-        
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, aoTxtrDup.ID);
-        
         mesh.Draw();
+
+        GL::releaseBoundTextures("UpdateMaterialChannel : genAmbientOcclusion");
     }
     
     if(smoothness > 0.1f)
@@ -309,9 +302,9 @@ static void setUniforms(
 
     /* Channel Properties */
     modifierShader.setInt("state", channelI); //Set the state
-    modifierShader.setInt("mask", 0); //Set the mask texture slot
-    modifierShader.setInt("previousTxtr", 1); //Set the previous texture slot
-    modifierShader.setInt( "depthTxtr" , 2); //Set the previous height map texture
+    modifierShader.setInt("mask", 0); GL::bindTexture_2D(maskTexture_procedural, 0, "UpdateMaterialChannel : setUniforms");
+    modifierShader.setInt("previousTxtr", 1); GL::bindTexture_2D((curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode) ? previousTexture.ID : appTextures.black.ID, 1, "UpdateMaterialChannel : setUniforms");
+    modifierShader.setInt( "depthTxtr" , 2); GL::bindTexture_2D((curModI != material.materialModifiers.size()-1) ? prevDepthTexture.ID : appTextures.black.ID, 2, "UpdateMaterialChannel : setUniforms");
     
     if(material.materialModifiers[curModI].modifierIndex != SOLID_MATERIAL_MODIFIER)
         modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-4].elements[channelI].rangeBar.value);
@@ -322,30 +315,9 @@ static void setUniforms(
 
     ShaderUTIL::set_shader_struct_face_selection_data(modifierShader, mesh, GL_TEXTURE3, GL_TEXTURE4);
 
-    // Bind the mask texture
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, maskTexture_procedural);
-
-    //Bind the previous texture
-    glActiveTexture(GL_TEXTURE1);
-    if(curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode)
-        glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
-    else
-        glBindTexture(GL_TEXTURE_2D, appTextures.black.ID);
-    
-    //Bind the previous height map texture
-    glActiveTexture(GL_TEXTURE2);
-    if(curModI != material.materialModifiers.size()-1)
-        glBindTexture(GL_TEXTURE_2D, prevDepthTexture.ID);
-    else
-        glBindTexture(GL_TEXTURE_2D, appTextures.black.ID);
-
-
     if(material.materialModifiers[curModI].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
         /* Selected texture */
-        modifierShader.setInt("theTexture", 5); 
-        glActiveTexture(GL_TEXTURE5);
-        glBindTexture(GL_TEXTURE_2D, textureModifierSelectedTexture_procedural);
+        modifierShader.setInt("theTexture", 5); GL::bindTexture_2D(textureModifierSelectedTexture_procedural, 5, "UpdateMaterialChannel : setUniforms");
     }
     else if(material.materialModifiers[curModI].modifierIndex == DUST_MATERIAL_MODIFIER){
         /* Noise */
@@ -545,7 +517,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
     if(this->hide)
         return;
 
-
     Shader modifierShader = material.materialModifiers[curModI].shader;
 
     //Set the orthographic projection to render the uvs
@@ -651,8 +622,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             
             // Apply the filter to the albedo 
             if(channelI == 0 && material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].button.filter.shader.ID){
-                glActiveTexture(GL_TEXTURE0);
-
                 // Generate the mask texture
                 Texture maskTxtr = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[1].button.texture; 
                 
@@ -672,6 +641,8 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                 getBox()->bindBuffers();
                 filter.applyFilter(currentTexture.ID, albedoFilterMaskTexture_procedural, maskTexture_procedural);
             }
+
+            GL::releaseBoundTextures("MaterialModifier::updateMaterialChannels::setUniforms");
         }
         else{
 
@@ -720,9 +691,9 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             modifierShader.setInt( "operationIndex" , material.materialModifiers[curModI].sections[0].elements[0].comboBox.selectedIndex);
             modifierShader.setInt( "useRightSideTxtr" , material.materialModifiers[curModI].sections[0].elements[4].checkBox.clickState1);
             modifierShader.setFloat( "rightSideVal" , material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value);
-            modifierShader.setInt( "previousTxtr" , 0);
-            modifierShader.setInt( "rightSideTxtr" , 1);
-            modifierShader.setInt( "mask" , 2);
+            modifierShader.setInt( "previousTxtr" , 0); GL::bindTexture_2D((curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode) ? previousTexture.ID : appTextures.black.ID, 0, "MaterialModifier::updateMaterialChannels");
+            modifierShader.setInt( "rightSideTxtr" , 1); GL::bindTexture_2D(mathModifierTexture_procedural.ID, 1, "MaterialModifier::updateMaterialChannels");
+            modifierShader.setInt( "mask" , 2); GL::bindTexture_2D(maskTexture_procedural.ID, 2, "MaterialModifier::updateMaterialChannels");
             modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[1].elements[channelI].rangeBar.value);
         
             {
@@ -739,22 +710,11 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                 FBO.bind();
             }
             
-            glActiveTexture(GL_TEXTURE0);
-            if(curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode)
-                glBindTexture(GL_TEXTURE_2D, previousTexture.ID);
-            else
-                glBindTexture(GL_TEXTURE_2D, appTextures.black.ID);
-
-        
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, mathModifierTexture_procedural.ID);
-
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, maskTexture_procedural.ID);
-
             getBox()->bindBuffers();
             // Render the result to the framebuffer
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Updating material channels");
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "MaterialModifier::updateMaterialChannels for math layer");
+
+            GL::releaseBoundTextures("MaterialModifier::updateMaterialChannels");
 
             FBO.deleteBuffers(false, false);
         }

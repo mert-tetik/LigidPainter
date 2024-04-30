@@ -19,10 +19,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/Elements.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -249,15 +251,15 @@ void RangeBar::render(
     ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     1    );
     ShaderSystem::buttonShader().setInt("properties.txtr"  ,     0    );
 
-
     //Render the left arrow
+    GL::bindTexture_2D(appTextures.arrowL.ID, 0, "RangeBar left arrow");    
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, appTextures.arrowL.ID);
     render(
             glm::vec3(resultPos.x - resultScale.x + (arrowBtnScale.x), resultPos.y, resultPos.z), 
             arrowBtnScale * (0.6f + (leftArrowMixVal + leftArrowClickedMixVal) / 10.f),
             resultRadius, color, color2, 0.f, true, resultOutlineThickness); //Back side
+
+    GL::releaseBoundTextures("RangeBar left arrow");
 
     if(doMouseTracking)
         leftArrowHover = Mouse::isMouseHover(arrowBtnScale, glm::vec2(resultPos.x - resultScale.x + (arrowBtnScale.x), resultPos.y));
@@ -279,13 +281,15 @@ void RangeBar::render(
     }
     
     //Render the right arrow
+    GL::bindTexture_2D(appTextures.arrowL.ID, 0, "RangeBar right arrow");
     
-    glBindTexture(GL_TEXTURE_2D, appTextures.arrowR.ID);
     render(
             glm::vec3(resultPos.x + resultScale.x - (arrowBtnScale.x), resultPos.y, resultPos.z), 
             arrowBtnScale * (0.6f + (rightArrowMixVal + rightArrowClickedMixVal) / 10.f),
             resultRadius, color, color2, 0.f, true, resultOutlineThickness); //Back side
     
+    GL::releaseBoundTextures("RangeBar right arrow");
+
     if(doMouseTracking)
         rightArrowHover = Mouse::isMouseHover(arrowBtnScale, glm::vec2(resultPos.x + resultScale.x - (arrowBtnScale.x), resultPos.y));
     else 

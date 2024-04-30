@@ -146,3 +146,18 @@ bool LigidGL::testGLError(std::string debugTitle){
 
     return true;
 }
+
+#include "UTIL/Settings/Settings.hpp"
+
+LigidWindow* LigidGL::getBoundContext(){
+    if(getContext()->window.isContextCurrent())
+        return &getContext()->window;
+    
+    if(getSecondContext()->window.isContextCurrent())
+        return &getSecondContext()->window;
+
+    if(getCopyContext()->window.isContextCurrent())
+        return &getCopyContext()->window;
+
+    return nullptr;
+}

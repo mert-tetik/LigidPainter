@@ -215,6 +215,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #endif
 
+class LigidWindow;
+
 /*!
 *   @brief Contains functions might help you related to your window-OpenGL context. 
 *
@@ -292,6 +294,11 @@ namespace LigidGL{
     *   @return returns true if faced with an error
     */
     bool testGLError(std::string debugTitle); 
+
+    /*! 
+        @brief LigidPainter specific function : Returns nullptr if no context is bound
+    */
+    LigidWindow* getBoundContext(); 
 };
 
 

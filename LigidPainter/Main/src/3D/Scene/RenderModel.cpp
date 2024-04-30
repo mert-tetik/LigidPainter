@@ -17,6 +17,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Painting/Painter.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "3D/ThreeD.hpp"
 #include "3D/Camera/Camera.hpp"
@@ -101,8 +102,8 @@ void Scene::render_model(Timer& timer){
             
             ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::tdModelShader(), this->model->meshes[i], GL_TEXTURE11, GL_TEXTURE12);
 
-            ShaderSystem::tdModelShader().setInt("skybox",6); glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.ID);
-            ShaderSystem::tdModelShader().setInt("prefilterMap",7); glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
+            ShaderSystem::tdModelShader().setInt("skybox",6); GL::bindTexture_CubeMap(skybox.ID, 6, "Scene::render_model");
+            ShaderSystem::tdModelShader().setInt("prefilterMap",7); GL::bindTexture_CubeMap(skybox.IDPrefiltered, 7, "Scene::render_model");
             
             ShaderSystem::tdModelShader().setVec3("viewPos", this->camera.cameraPos);
             ShaderSystem::tdModelShader().setMat4("view", this->camera.viewMatrix);
@@ -211,6 +212,8 @@ void Scene::render_model(Timer& timer){
 
         this->get_selected_mesh()->Draw();
     }
+
+    GL::releaseBoundTextures("Scene::render_model");
 
     if(this->get_selected_mesh()->face_selection_data.editMode){
         ShaderSystem::color3d().use();

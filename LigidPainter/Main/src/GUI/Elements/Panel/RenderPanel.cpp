@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -86,13 +87,12 @@ void Panel::render(Timer &timer, bool doMouseTracking){
         ShaderSystem::textureRenderingShader().setVec2("scale", resultScale);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+        ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(graphics.ID, 0, "Panel::render preRender graphics");
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, graphics.ID);
-
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Pre-rendering mode : Rendering result texture");
+
+        GL::releaseBoundTextures("Panel::render preRender graphics");
 
         ShaderSystem::buttonShader().use();    
         

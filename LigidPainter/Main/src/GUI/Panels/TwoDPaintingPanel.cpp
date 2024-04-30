@@ -23,6 +23,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/GL/GL.hpp"
 #include "UTIL/Painting/Painter.hpp"
 
 #include "3D/ThreeD.hpp"

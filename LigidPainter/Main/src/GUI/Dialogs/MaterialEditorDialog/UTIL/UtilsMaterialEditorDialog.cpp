@@ -19,9 +19,12 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -160,15 +163,14 @@ void MaterialEditorDialog::renderSkyboxTxtr(){
     ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
     ShaderSystem::textureRenderingShader().setVec2("scale", this->materialDisplayer.resultScale);
     ShaderSystem::textureRenderingShader().setVec3("pos", this->materialDisplayer.resultPos);
-    ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+    ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(this->skyboxFBO.colorBuffer.ID, 0, "MaterialEditorDialog::renderSkyboxTxtr");
     ShaderSystem::textureRenderingShader().setFloat("opacity", this->dialogControl.mixVal);
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, this->skyboxFBO.colorBuffer.ID);
-
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Material editor dialog : Render skybox");
+
+    GL::releaseBoundTextures("MaterialEditorDialog::renderSkyboxTxtr");
 
     ShaderSystem::buttonShader().use();
 

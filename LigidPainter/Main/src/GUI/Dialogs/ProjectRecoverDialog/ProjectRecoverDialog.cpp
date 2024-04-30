@@ -35,25 +35,6 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <vector>
 #include <filesystem>
 
-static void drawBG(
-                    unsigned int bgTexture
-                )
-{
-    ShaderSystem::defaultFramebufferShader().use();
-    ShaderSystem::defaultFramebufferShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
-    ShaderSystem::defaultFramebufferShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
-    ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
-    
-    ShaderSystem::defaultFramebufferShader().setVec2("resolution", Settings::defaultFramebuffer()->resolution);
-    ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, bgTexture);
-
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Project recovering dialog - Draw BG");
-    
-    ShaderSystem::buttonShader().use();
-}
 
 ProjectRecoverDialog::ProjectRecoverDialog(int){
     //Create the panel

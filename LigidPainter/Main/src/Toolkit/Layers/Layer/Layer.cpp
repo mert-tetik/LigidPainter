@@ -11,7 +11,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ---------------------------------------------------------------------------
 */
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
@@ -21,6 +21,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 #include <iostream>
 #include <vector>
+
+#include "UTIL/GL/GL.hpp"
 
 #include "GUI/Elements.hpp"
 #include "GUI/Dialogs.hpp"
@@ -257,11 +259,11 @@ void LayerGUI::render_layer_bg(Layer* layer){
         //Bottom
         ShaderSystem::color2d().setVec3("pos", glm::vec3(layerButton.resultPos.x, layerButton.resultPos.y + layerButton.resultScale.y + layerButton.resultScale.y * 4.f,   1.f)); 
         ShaderSystem::color2d().setVec2("scale", glm::vec2(layerButton.resultScale * 4.f));
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier bottom");
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : Barrier bottom");
         //Top
         ShaderSystem::color2d().setVec3("pos", glm::vec3(layerButton.resultPos.x, layerButton.resultPos.y - layerButton.resultScale.y - layerButton.resultScale.y * 4.f,   1.f)); 
         ShaderSystem::color2d().setVec2("scale", glm::vec2(layerButton.resultScale * 4.f));
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier bottom");
+        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : Barrier top");
     }
 
     if(layer->layerType == "material"){
@@ -271,14 +273,16 @@ void LayerGUI::render_layer_bg(Layer* layer){
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
         ShaderSystem::textureRenderingShader().setVec3("pos", layerButton.resultPos);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, material->displayingTexture.ID);
+        ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(material->displayingTexture.ID, 0, "LayerGUI::render_layer_bg - material");
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
         if(material->displayingTexture.ID)
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Pre-rendering mode : Rendering result texture");
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : material");
         
+        GL::releaseBoundTextures("LayerGUI::render_layer_bg - material");
+
         ShaderSystem::buttonShader().use();    
     }   
 
@@ -290,13 +294,15 @@ void LayerGUI::render_layer_bg(Layer* layer){
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
         ShaderSystem::textureRenderingShader().setVec3("pos", layerButton.resultPos);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, brush->displayingTexture.ID);
+        ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(brush->displayingTexture.ID, 0, "LayerGUI::render_layer_bg- vectpr");
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
         if(brush->displayingTexture.ID)
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Pre-rendering mode : Rendering result texture");
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : vector");
+
+        GL::releaseBoundTextures("LayerGUI::render_layer_bg - vector");
         
         ShaderSystem::buttonShader().use();    
     }   
@@ -308,13 +314,15 @@ void LayerGUI::render_layer_bg(Layer* layer){
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
         ShaderSystem::textureRenderingShader().setVec3("pos", layerButton.resultPos);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, capture_txtr->ID);
+        ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(capture_txtr->ID, 0, "LayerGUI::render_layer_bg - painting");
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
         if(capture_txtr->ID)
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Pre-rendering mode : Rendering result texture");
+            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : painting");
+
+        GL::releaseBoundTextures("LayerGUI::render_layer_bg - painting");
         
         ShaderSystem::buttonShader().use();    
     }   
@@ -351,13 +359,15 @@ void LayerGUI::render_layer_bg(Layer* layer){
             ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
             ShaderSystem::textureRenderingShader().setVec2("scale", scale);
             ShaderSystem::textureRenderingShader().setVec3("pos", pos);
-            ShaderSystem::textureRenderingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, txtr.ID);
+            ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(txtr.ID, 0, "LayerGUI::render_layer_bg - texture layer");
             ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
             ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
             ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
         
             if(txtr.ID)
-                LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Pre-rendering mode : Rendering result texture");
+                LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : texture layer");
+
+            GL::releaseBoundTextures("LayerGUI::render_layer_bg - texture layer");
         }
 
         ShaderSystem::buttonShader().use();    

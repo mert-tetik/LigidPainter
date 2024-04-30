@@ -50,7 +50,7 @@ bool Texture::exportTexture(std::string path,const std::string format){
     
     //getData function with unsigned byte
     glActiveTexture(GL_TEXTURE16);
-    glBindTexture(GL_TEXTURE_2D,ID);
+    glBindTexture(GL_TEXTURE_2D, ID);
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     
     const int channels = 4;

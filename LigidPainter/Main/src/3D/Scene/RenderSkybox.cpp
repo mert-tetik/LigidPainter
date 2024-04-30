@@ -16,6 +16,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "3D/ThreeD.hpp"
 #include "3D/Camera/Camera.hpp"
@@ -34,29 +35,31 @@ void Scene::render_skybox(){
     ShaderSystem::skyboxShader().setFloat("lod", skybox.lod);
     ShaderSystem::skyboxShader().setVec3("bgColor", skybox.bgColor);
     ShaderSystem::skyboxShader().setFloat("opacity", skybox.opacity);
-    ShaderSystem::skyboxShader().setInt("skybox",0);
-    
+    ShaderSystem::skyboxShader().setInt("skybox",0); GL::bindTexture_CubeMap(skybox.IDPrefiltered, 0, "Scene::render_skybox : Render skybox");
     ShaderSystem::skyboxShader().setInt("gradient", 0);
     ShaderSystem::skyboxShader().setFloat("gradientOffset", 0.f);
     
     //Render the skybox
-    skybox.draw(true);
+    skybox.draw();
+    
+    GL::releaseBoundTextures("Scene::render_skybox : Render skybox");
 
     // Render the background image
     getBox()->bindBuffers();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, dialog_displayer.panel.sections[0].elements[5].button.texture.ID);
-    ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(getContext()->windowScale / glm::ivec2(2), 0.1));
-    ShaderSystem::buttonShader().setVec2("scale", getContext()->windowScale / glm::ivec2(2));
-    ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
-    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", dialog_displayer.panel.sections[0].elements[6].rangeBar.value);
-    ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
-    ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Renderer::renderSkybox");
-    glBindTexture(GL_TEXTURE_2D, 0);
-    ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
-    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
+
+    ShaderSystem::textureRenderingShader().use();
+    ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
+    ShaderSystem::textureRenderingShader().setVec2("scale", *Settings::videoScale());
+    ShaderSystem::textureRenderingShader().setVec3("pos", glm::vec3(*Settings::videoScale() / glm::vec2(2), 0.1));
+    ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(dialog_displayer.panel.sections[0].elements[5].button.texture.ID, 0, "Scene::render_skybox : Render bg texture");
+    ShaderSystem::textureRenderingShader().setFloat("opacity", dialog_displayer.panel.sections[0].elements[6].rangeBar.value);
+    ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
+    ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
+
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Scene::render_skybox : Render bg texture");
+    
+    GL::releaseBoundTextures("Scene::render_skybox : Render bg texture");
+
     glClear(GL_DEPTH_BUFFER_BIT);
     getBox()->unbindBuffers();
 }

@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Threads/Threads.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -60,6 +61,8 @@ void Material::updateMaterialDisplayingTexture(
                                                 int specificUpdateI
                                             )
 { 
+    Shader initial_bound_shader = ShaderUTIL::get_bound_shader();
+
     //Resolution of the material displaying texture
     const int displayRes = customFBO.colorBuffer.getResolution().x;
 
@@ -110,8 +113,8 @@ void Material::updateMaterialDisplayingTexture(
     ShaderSystem::PBRDisplayOnly().setMat4("modelMatrix", glm::mat4(1.f));
     
     ShaderSystem::PBRDisplayOnly().setVec3("viewPos",matCam.cameraPos);
-    ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.ID);
-    ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", 1); glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, getScene()->skybox.IDPrefiltered);
+    ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); GL::bindTexture_CubeMap(getScene()->skybox.ID, 0, "Material::updateMaterialDisplayingTexture");
+    ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", 1); GL::bindTexture_CubeMap(getScene()->skybox.IDPrefiltered, 1, "Material::updateMaterialDisplayingTexture");
     ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", 2);
     ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", 3);
     ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", 4);
@@ -122,52 +125,21 @@ void Material::updateMaterialDisplayingTexture(
     
     for (size_t i = 0; i < displayModel.meshes.size(); i++)
     {
-        //Bind the channels of the material
-        if(!this->materialModifiers.size()){
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-            glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-            glActiveTexture(GL_TEXTURE5);
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-            glActiveTexture(GL_TEXTURE6);
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-            glActiveTexture(GL_TEXTURE7);
-            glBindTexture(GL_TEXTURE_2D, appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID);
-        }
-        else{
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].albedo.ID);
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].roughness.ID);
-            glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].metallic.ID);
-            glActiveTexture(GL_TEXTURE5);
-            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].normalMap.ID);
-            glActiveTexture(GL_TEXTURE6);
-            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].heightMap.ID);
-            glActiveTexture(GL_TEXTURE7);
-            glBindTexture(GL_TEXTURE_2D, displayModel.meshes[i].ambientOcclusion.ID);
-        }
+        GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].albedo.ID, 2, "Material::updateMaterialDisplayingTexture");
+        GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].roughness.ID, 3, "Material::updateMaterialDisplayingTexture");
+        GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].metallic.ID, 4, "Material::updateMaterialDisplayingTexture");
+        GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].normalMap.ID, 5, "Material::updateMaterialDisplayingTexture");
+        GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].heightMap.ID, 6, "Material::updateMaterialDisplayingTexture");
+        GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].ambientOcclusion.ID, 7, "Material::updateMaterialDisplayingTexture");
         
         //Draw the sphere
         displayModel.meshes[i].Draw();
     }
     
     ShaderSystem::PBRDisplayOnly().setInt("displayingMode", 0);
-    
-    //!Finish (prepare rendering the GUI)
-
-    //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
-    ShaderSystem::buttonShader().use();
-
-    //Bind the default framebuffer
+    GL::releaseBoundTextures("Material::updateMaterialDisplayingTexture");
+    initial_bound_shader.use();
     Settings::defaultFramebuffer()->FBO.bind();
-
-    //Set the OpenGL viewport to default
     Settings::defaultFramebuffer()->setViewport();
-
     getBox()->bindBuffers();
 }

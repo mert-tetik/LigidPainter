@@ -23,11 +23,14 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Library/Library.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -304,25 +307,20 @@ Texture BakingDialog::bake(Skybox skybox, unsigned int resolution){
 
     ShaderSystem::bakingShader().use();
     ShaderSystem::bakingShader().setVec3("viewPos", cam.cameraPos); 
-    ShaderSystem::bakingShader().setInt("skybox", 0); 
-    ShaderSystem::bakingShader().setInt("prefilterMap", 1); 
-    ShaderSystem::bakingShader().setInt("albedoTxtr", 2); 
-    ShaderSystem::bakingShader().setInt("roughnessTxtr", 3); 
-    ShaderSystem::bakingShader().setInt("metallicTxtr", 4); 
-    ShaderSystem::bakingShader().setInt("normalMapTxtr", 5); 
-    ShaderSystem::bakingShader().setInt("heightMapTxtr", 6); 
-    ShaderSystem::bakingShader().setInt("ambientOcclusionTxtr", 7); 
+    ShaderSystem::bakingShader().setInt("skybox", 0); GL::bindTexture_CubeMap(skybox.ID, 0, "BakingDialog::bake");
+    ShaderSystem::bakingShader().setInt("prefilterMap", 1); GL::bindTexture_CubeMap(skybox.IDPrefiltered, 1, "BakingDialog::bake");
+    ShaderSystem::bakingShader().setInt("albedoTxtr", 2); GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].albedo.ID, 2, "BakingDialog::bake"); 
+    ShaderSystem::bakingShader().setInt("roughnessTxtr", 3); GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].roughness.ID, 3, "BakingDialog::bake"); 
+    ShaderSystem::bakingShader().setInt("metallicTxtr", 4); GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].metallic.ID, 4, "BakingDialog::bake"); 
+    ShaderSystem::bakingShader().setInt("normalMapTxtr", 5); GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].normalMap.ID, 5, "BakingDialog::bake"); 
+    ShaderSystem::bakingShader().setInt("heightMapTxtr", 6); GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].heightMap.ID, 6, "BakingDialog::bake"); 
+    ShaderSystem::bakingShader().setInt("ambientOcclusionTxtr", 7); GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].ambientOcclusion.ID, 7, "BakingDialog::bake"); 
     ShaderSystem::bakingShader().setInt("modeIndex", this->selectedBakeMode); 
     ShaderSystem::bakingShader().setInt("useLights", this->aoCheckbox.clickState1); 
 
     ShaderSystem::bakingShader().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f)); 
     ShaderSystem::bakingShader().setMat4("perspectiveProjection", projectionMatrix); 
     ShaderSystem::bakingShader().setMat4("view", view); 
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.ID);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, skybox.IDPrefiltered);
 
     Texture txtr = Texture(nullptr, resolution, resolution);
     txtr.title = "baked_" + getScene()->model->meshes[selectMeshButton.selectedMeshI].materialName;
@@ -348,20 +346,9 @@ Texture BakingDialog::bake(Skybox skybox, unsigned int resolution){
     
     glDepthFunc(GL_LEQUAL);
     
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].albedo.ID);
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].roughness.ID);
-    glActiveTexture(GL_TEXTURE4);
-    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].metallic.ID);
-    glActiveTexture(GL_TEXTURE5);
-    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].normalMap.ID);
-    glActiveTexture(GL_TEXTURE6);
-    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].heightMap.ID);
-    glActiveTexture(GL_TEXTURE7);
-    glBindTexture(GL_TEXTURE_2D, getScene()->model->meshes[selectMeshButton.selectedMeshI].ambientOcclusion.ID);
-    
     getScene()->model->meshes[selectMeshButton.selectedMeshI].Draw();
+
+    GL::releaseBoundTextures("BakingDialog::bake");
 
     glDeleteFramebuffers(1, &FBO);
     glDeleteRenderbuffers(1, &RBO);

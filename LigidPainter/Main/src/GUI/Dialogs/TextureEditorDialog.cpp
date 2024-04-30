@@ -31,6 +31,7 @@
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Threads/Threads.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -229,16 +230,13 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
         if(resizeElements[0].comboBox.selectedIndex == 0)
             txtrRes = displayRes;
 
-        ShaderSystem::txtrEditorResizeShader().setInt("txtr", 0);
+        ShaderSystem::txtrEditorResizeShader().setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 0");
         ShaderSystem::txtrEditorResizeShader().setVec2("txtrResolution", txtrRes);
         ShaderSystem::txtrEditorResizeShader().setVec2("destTxtrResolution", displayRes);
         
         ShaderSystem::txtrEditorResizeShader().setInt("wrapingIndex", resizeElements[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorResizeShader().setVec3("wrapingColor", resizeElements[1].button.color);
         ShaderSystem::txtrEditorResizeShader().setVec2("originPoint", originPoint);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, receivedTexture->ID);
 
         unsigned int wrapParam = GL_REPEAT;
 
@@ -265,6 +263,8 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 0");
 
+        GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 0");
+
     }
     else if(this->selectedSection == 1){
         ShaderSystem::txtrEditorBlurShader().use();
@@ -272,15 +272,12 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
         ShaderSystem::txtrEditorBlurShader().setVec3("pos", pos);
         ShaderSystem::txtrEditorBlurShader().setVec2("scale", scale);
     
-        ShaderSystem::txtrEditorBlurShader().setInt("txtr", 0);
+        ShaderSystem::txtrEditorBlurShader().setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 1");
         ShaderSystem::txtrEditorBlurShader().setVec2("txtrResolution", displayRes);
         ShaderSystem::txtrEditorBlurShader().setInt("blurIndex", bluringElement[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorBlurShader().setFloat("directionalDirection", bluringElement[1].rangeBar.value);
         ShaderSystem::txtrEditorBlurShader().setVec2("radialPos", glm::vec2(bluringElement[2].rangeBar.value, bluringElement[3].rangeBar.value));
         ShaderSystem::txtrEditorBlurShader().setFloat("strength", bluringElement[4].rangeBar.value);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, receivedTexture->ID);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
@@ -288,6 +285,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 1");
 
+        GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 1");
     }
     else if(this->selectedSection == 2){
         ShaderSystem::txtrEditorColoringShader().use();
@@ -295,7 +293,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
         ShaderSystem::txtrEditorColoringShader().setVec3("pos", pos);
         ShaderSystem::txtrEditorColoringShader().setVec2("scale", scale);
     
-        ShaderSystem::txtrEditorColoringShader().setInt("txtr", 0);
+        ShaderSystem::txtrEditorColoringShader().setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 2");
         ShaderSystem::txtrEditorColoringShader().setVec2("txtrResolution", displayRes);
 
         ShaderSystem::txtrEditorColoringShader().setInt("coloringIndex", coloringElements[0].comboBox.selectedIndex);
@@ -304,15 +302,13 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
         ShaderSystem::txtrEditorColoringShader().setVec3("singleColor", coloringElements[5].button.color);
         ShaderSystem::txtrEditorColoringShader().setFloat("brightness", coloringElements[6].rangeBar.value);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, receivedTexture->ID);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 2");
 
+        GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 2");
     }
     else if(this->selectedSection == 3){
         ShaderSystem::txtrEditorNormalMapShader().use();
@@ -320,7 +316,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
         ShaderSystem::txtrEditorNormalMapShader().setVec3("pos", pos);
         ShaderSystem::txtrEditorNormalMapShader().setVec2("scale", scale);
     
-        ShaderSystem::txtrEditorNormalMapShader().setInt("txtr", 0);
+        ShaderSystem::txtrEditorNormalMapShader().setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 3");
         ShaderSystem::txtrEditorNormalMapShader().setVec2("txtrResolution", displayRes);
         ShaderSystem::txtrEditorNormalMapShader().setInt("mode", normalMapElements[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorNormalMapShader().setInt("grayScale", normalMapElements[1].comboBox.selectedIndex);
@@ -328,15 +324,13 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
         ShaderSystem::txtrEditorNormalMapShader().setFloat("blurVal", normalMapElements[3].rangeBar.value);
         ShaderSystem::txtrEditorNormalMapShader().setFloat("rot", normalMapElements[4].rangeBar.value);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, receivedTexture->ID);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 3");
-
+        
+        GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 3");
     }
     else if(this->selectedSection == 4){
         ShaderSystem::txtrEditorDistortionShader().use();
@@ -344,8 +338,8 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
         ShaderSystem::txtrEditorDistortionShader().setVec3("pos", pos);
         ShaderSystem::txtrEditorDistortionShader().setVec2("scale", scale);
     
-        ShaderSystem::txtrEditorDistortionShader().setInt("txtr", 0);
-        ShaderSystem::txtrEditorDistortionShader().setInt("distortionTxtr", 1);
+        ShaderSystem::txtrEditorDistortionShader().setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 4");
+        ShaderSystem::txtrEditorDistortionShader().setInt("distortionTxtr", 1); GL::bindTexture_2D(distortionElements[8].button.texture.ID, 1, "TextureEditorDialog::updateDisplayingTexture 4");
         ShaderSystem::txtrEditorDistortionShader().setVec2("txtrResolution", displayRes);
         ShaderSystem::txtrEditorDistortionShader().setInt("distortionIndex", distortionElements[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorDistortionShader().setFloat("fbmRoughness", distortionElements[1].rangeBar.value);
@@ -357,18 +351,13 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
         ShaderSystem::txtrEditorDistortionShader().setFloat("rainScale", distortionElements[7].rangeBar.value);
         ShaderSystem::txtrEditorDistortionShader().setFloat("strength", distortionElements[9].rangeBar.value);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, receivedTexture->ID);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, distortionElements[8].button.texture.ID);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 4");
-
+        
+        GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 4");
     }
     else if(this->selectedSection == 5){
         if(this->filterBtn.filter.shader.ID){
@@ -378,49 +367,39 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
             this->filterBtn.filter.shader.setVec2("scale", scale);
         
             this->filterBtn.filter.shader.setFloat("strength", this->filterBtn.filter.strength);
-            this->filterBtn.filter.shader.setInt("txtr", 0);
+            this->filterBtn.filter.shader.setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 5");
             this->filterBtn.filter.shader.setVec2("txtrResolution", displayRes);
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, receivedTexture->ID);
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 
             LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 5");
+        
+            GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 5");
         }
     }
 
+    Texture destTxtrObj = destTxtr;
+    Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
+    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+    
     ShaderSystem::grayScaleIDMaskingShader().use();
     ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", projection);
     ShaderSystem::grayScaleIDMaskingShader().setVec3("pos", pos);
     ShaderSystem::grayScaleIDMaskingShader().setVec2("scale", scale);
-    ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0);
-    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1);
-    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
+    ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0); GL::bindTexture_2D(this->maskTextureButton.texture.ID, 0, "TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader");
+    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1); GL::bindTexture_2D(receivedTexture->ID, 1, "TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader");
+    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2); GL::bindTexture_2D((this->selectedSection == 6) ? this->textureBtn.texture.ID : copiedDestTxtr.ID, 2, "TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader");
     ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 0);
     ShaderSystem::grayScaleIDMaskingShader().setInt("normalMapMode", 0);
     ShaderSystem::grayScaleIDMaskingShader().setInt("invert", 0);
     ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f);
     
-    Texture destTxtrObj = destTxtr;
-    Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
-    glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, this->maskTextureButton.texture.ID);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, receivedTexture->ID);
-    glActiveTexture(GL_TEXTURE2);
-    if(this->selectedSection == 6){
-        glBindTexture(GL_TEXTURE_2D, this->textureBtn.texture.ID);
-    }
-    else
-        glBindTexture(GL_TEXTURE_2D, copiedDestTxtr.ID);
-
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Masking result");
     
+    GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader");
+
     //Finish
     Settings::defaultFramebuffer()->FBO.bind();
     ShaderSystem::buttonShader().use();

@@ -24,6 +24,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp" 
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -238,15 +239,14 @@ void ObjectTexturingDialog::show(Timer& timer){
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", this->panel.resultScale);
         ShaderSystem::textureRenderingShader().setVec3("pos", this->panel.resultPos);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+        ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(this->displayingTexture.ID, 0, "ObjectTexturingDialog::show : Rendering displaying texture");
         ShaderSystem::textureRenderingShader().setFloat("opacity", this->dialogControl.mixVal);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->displayingTexture.ID);
-
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Object texturing dialog : Rendering displaying texture");
+
+        GL::releaseBoundTextures("ObjectTexturingDialog::show : Rendering displaying texture");
 
         ShaderSystem::buttonShader().use();
 
@@ -452,21 +452,25 @@ void ObjectTexturingDialog::show(Timer& timer){
 
                     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::objectTexturingAssign(), getScene()->model->meshes[i], GL_TEXTURE0, GL_TEXTURE1);
 
-                    glActiveTexture(GL_TEXTURE0);
+                    /*
                     if(channelI == 0)
-                        glBindTexture(GL_TEXTURE_2D, result_channels[i].albedo.ID);
+                        GL::bindTexture_2D(result_channels[i].albedo.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
                     if(channelI == 1)
-                        glBindTexture(GL_TEXTURE_2D, result_channels[i].roughness.ID);
+                        GL::bindTexture_2D(result_channels[i].roughness.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
                     if(channelI == 2)
-                        glBindTexture(GL_TEXTURE_2D, result_channels[i].metallic.ID);
+                        GL::bindTexture_2D(result_channels[i].metallic.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
                     if(channelI == 3)
-                        glBindTexture(GL_TEXTURE_2D, result_channels[i].normalMap.ID);
+                        GL::bindTexture_2D(result_channels[i].normalMap.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
                     if(channelI == 4)
-                        glBindTexture(GL_TEXTURE_2D, result_channels[i].heightMap.ID);
+                        GL::bindTexture_2D(result_channels[i].heightMap.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
                     if(channelI == 5)
-                        glBindTexture(GL_TEXTURE_2D, result_channels[i].ambientOcclusion.ID);
-                    
+                        GL::bindTexture_2D(result_channels[i].ambientOcclusion.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
+                    */
+
                     getScene()->model->meshes[i].Draw();
+
+                    GL::releaseBoundTextures("Updating displaying texture");
+                    
                     
                     glEnable(GL_DEPTH_TEST);
 

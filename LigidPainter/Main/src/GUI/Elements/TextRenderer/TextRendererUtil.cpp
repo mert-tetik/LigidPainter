@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/GL/GL.hpp"
 
 /// @brief 
 /// @return position gap between the text start pos and ending pos  
@@ -181,15 +182,18 @@ void TextRenderer::renderLeftToRight(
 			ShaderSystem::buttonShader().setVec3("pos",glm::vec3(xpos + w/1.7,ypos - (h/1.7) + Settings::videoScale()->y / 210, textDataPos.z));
  
 			//Draw the char
-			glBindTexture(GL_TEXTURE_2D,ch.TextureID);
+			GL::bindTexture_2D(ch.TextureID, 0, "TextRenderer : Render character");
 			
 			if(textDataMinX < xpos)
 				LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TextRenderer::renderLeftToRight");
+
 
 			//To the right
 			pos.x += (ch.Advance >> 6) * textDataScale;
 		}
 	}
+	
+	GL::releaseBoundTextures("TextRenderer : Render character");
 }
 
 /// @brief Is not used rn

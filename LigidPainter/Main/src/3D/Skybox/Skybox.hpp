@@ -65,11 +65,8 @@ public:
 
     /*!
         @brief Renders the skybox
-        @param bindTxtr binds the prefiltered texture before rendering if true.
-                        Is set to false when rendering while prefiltering 
-                        the skybox texture ( @ref ID )
     */
-    void draw(bool bindTxtr);
+    void draw();
     
     /*!
         @brief Creates the @ref IDPrefiltered. (Prefilters the skybox texture ( @ref ID ))

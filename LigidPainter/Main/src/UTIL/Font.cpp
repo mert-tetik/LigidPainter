@@ -92,7 +92,7 @@ void Font::loadFont(const char* path){
 			// generate texture
 			unsigned int texture;
 			glGenTextures(1, &texture);
-			glBindTexture(GL_TEXTURE_2D, texture);
+			glBindTexture(GL_TEXTURE_2D, texture); //
 			
 			glTexImage2D(
 				GL_TEXTURE_2D,

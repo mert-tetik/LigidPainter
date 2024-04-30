@@ -31,6 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Project/Project.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -122,6 +123,8 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, f
             getScene()->get_selected_mesh()->Draw();
 
             this->render(timer, false, true, radius, false);
+
+            GL::releaseBoundTextures("ThreeDPoint : render");
 
             unsigned char* stencilData = new unsigned char[4];
 

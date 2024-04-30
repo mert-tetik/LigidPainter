@@ -117,7 +117,7 @@ unsigned int Skybox::createPrefilterMap(){
 									GL_TEXTURE_CUBE_MAP_POSITIVE_X + txtrI, IDPrefiltered, mip);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			draw(false); //Draw the skybox
+			draw(); //Draw the skybox
 		}
 	}
 	

@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/GL/GL.hpp"
 #include "UTIL/Painting/Painter.hpp"
 
 #include "GUI/GUI.hpp"
@@ -312,6 +313,8 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
     
     getScene()->get_selected_mesh()->Draw();
+
+    GL::releaseBoundTextures("VectorScene : render3DVectors");
 
     // Render all the vectors
     int clickedPointI = -1; 

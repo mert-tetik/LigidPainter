@@ -141,7 +141,7 @@ void NewTextureDialog::show(Timer& timer){
             //Generate the texture
             glActiveTexture(GL_TEXTURE0);
             glGenTextures(1,&txtr.ID);
-            glBindTexture(GL_TEXTURE_2D,txtr.ID);
+            glBindTexture(GL_TEXTURE_2D,txtr.ID);//
 
             //Texture params
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

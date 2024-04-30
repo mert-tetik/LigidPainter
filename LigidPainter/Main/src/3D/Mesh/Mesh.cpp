@@ -12,6 +12,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include <glad/glad.h> // holds all OpenGL type declarations
+#include <LigidGL/LigidGL.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -183,11 +184,14 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     this->indices = indices;
     this->materialName = materialName;
 
+    LigidWindow* bound_context = LigidGL::getBoundContext();
+
     getContext()->window.makeContextCurrent();
     this->setupMesh(&this->VBO, &this->VAO, &this->EBO);   
     getSecondContext()->window.makeContextCurrent();
     this->setupMesh(&this->VBO_2, &this->VAO_2, &this->EBO_2);   
-    getContext()->window.makeContextCurrent();
+
+    bound_context->makeContextCurrent();
 
     if(initTxtrs){
         this->albedo = Texture(nullptr, 1024, 1024, GL_LINEAR);

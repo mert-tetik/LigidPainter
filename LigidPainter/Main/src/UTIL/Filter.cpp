@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "UTIL/Library/Library.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "GUI/GUI.hpp"
 
@@ -108,16 +109,15 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
     this->shader.setVec3("pos", pos); 
     this->shader.setMat4("projection", projection); 
     
-    this->shader.setInt("txtr", 0); 
+    this->shader.setInt("txtr", 0); GL::bindTexture_2D(sampleTxtr.ID, 0, "Filter::generateDisplayingTexture");
     this->shader.setVec2("txtrResolution", txtrRes); 
     this->shader.setFloat("strength", this->strength); 
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, sampleTxtr.ID);
-
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::generatingDisplayingTexture");
+
     
     //Finish
+    GL::releaseBoundTextures("Filter::generateDisplayingTexture");
     Settings::defaultFramebuffer()->FBO.bind();
     ShaderSystem::buttonShader().use();
 
@@ -153,14 +153,13 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
     this->shader.setVec3("pos", pos); //Cover the screen
     this->shader.setMat4("projection", projection); //Cover the screen
     
-    this->shader.setInt("txtr", 0); //Cover the screen
-    this->shader.setVec2("txtrResolution", txtrRes); //Cover the screen
+    this->shader.setInt("txtr", 0); GL::bindTexture_2D(duplicatedTxtr.ID, 0, "Filter::applyFilter");
+    this->shader.setVec2("txtrResolution", txtrRes); 
     this->shader.setFloat("strength", this->strength); 
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, duplicatedTxtr.ID);
-
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : applying filter");
+
+    GL::releaseBoundTextures("Filter::applyFilter");
 
     if(maskTexture.ID != 0 && glIsTexture(maskTexture.ID) == GL_TRUE){
         ShaderSystem::grayScaleIDMaskingShader().use();
@@ -180,14 +179,13 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
         
         captureFBO.bind();
         
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, maskTexture.ID);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, duplicatedTxtr.ID);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, copiedDestTxtr.ID);
+        GL::bindTexture_2D(maskTexture.ID, 0, "Filter::applyFilter : masking filter 1");
+        GL::bindTexture_2D(duplicatedTxtr.ID, 1, "Filter::applyFilter : masking filter 1");
+        GL::bindTexture_2D(copiedDestTxtr.ID, 2, "Filter::applyFilter : masking filter 1");
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : masking filter 1");
+
+        GL::releaseBoundTextures("Filter::applyFilter : masking filter 1"); 
     }
 
     if(maskTexture2.ID != 0 && glIsTexture(maskTexture2.ID) == GL_TRUE){
@@ -206,14 +204,13 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
         
         captureFBO.bind();
         
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, maskTexture2.ID);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, duplicatedTxtr.ID);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, copiedDestTxtr.ID);
+        GL::bindTexture_2D(maskTexture2.ID, 0, "Filter::applyFilter : masking filter 2");
+        GL::bindTexture_2D(duplicatedTxtr.ID, 1, "Filter::applyFilter : masking filter 2");
+        GL::bindTexture_2D(copiedDestTxtr.ID, 2, "Filter::applyFilter : masking filter 2");
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : masking filter 2");
+        
+        GL::releaseBoundTextures("Filter::applyFilter : masking filter 2"); 
     }
     
 

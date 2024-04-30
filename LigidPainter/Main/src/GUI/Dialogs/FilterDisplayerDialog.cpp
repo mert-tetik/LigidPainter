@@ -20,10 +20,13 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "3D/ThreeD.hpp" 
+
 #include "GUI/GUI.hpp" 
+
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include <string>
 #include <iostream>
@@ -83,16 +86,12 @@ void FilterDisplayerDialog::show(Timer& timer){
         ShaderSystem::splitTexturesShader().setVec3("pos"         ,   panel.sections[0].elements[1].button.resultPos);
         ShaderSystem::splitTexturesShader().setVec2("scale"       ,   glm::vec2(std::min(panel.sections[0].elements[1].button.resultScale.x, panel.sections[0].elements[1].button.resultScale.y)));
 
-        ShaderSystem::splitTexturesShader().setInt("texture1", 0);
-        ShaderSystem::splitTexturesShader().setInt("texture2", 1);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, appTextures.filterDisplayerImage.ID);
-
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, filter.displayingTxtr.ID);
+        ShaderSystem::splitTexturesShader().setInt("texture1", 0); GL::bindTexture_2D(appTextures.filterDisplayerImage.ID, 0, "FilterDisplayerDialog::show");
+        ShaderSystem::splitTexturesShader().setInt("texture2", 1); GL::bindTexture_2D(filter.displayingTxtr.ID, 1, "FilterDisplayerDialog::show");
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter displayer dialog : Rendering the filter");
+
+        GL::releaseBoundTextures("FilterDisplayerDialog::show");
 
         ShaderSystem::buttonShader().use();
         

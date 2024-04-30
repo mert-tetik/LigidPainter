@@ -29,6 +29,7 @@ Box.hpp : Is used to render a single 2D square.
 #include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "3D/ThreeDBox/ThreeDBox.hpp"
     
@@ -187,6 +188,8 @@ void ThreeDBox::projectToModel(std::vector<Vertex>& vertices, glm::vec3 center){
     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
 
     getScene()->get_selected_mesh()->Draw();
+
+    GL::releaseBoundTextures("ThreeDBox : projectToModel");
     
     float* pxs = new float[resolution * resolution * 4]; 
     

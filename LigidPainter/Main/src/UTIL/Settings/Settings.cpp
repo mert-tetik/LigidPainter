@@ -12,12 +12,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include "UTIL/Util.hpp"
-#include "3D/ThreeD.hpp"
-#include "GUI/GUI.hpp"
-#include "GUI/Panels.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/GL/GL.hpp"
+
+#include "3D/ThreeD.hpp"
+
+#include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
+
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
 #include <vector>
@@ -194,13 +198,12 @@ namespace Settings{
         ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
         
         ShaderSystem::defaultFramebufferShader().setVec2("resolution", this->resolution);
-        ShaderSystem::defaultFramebufferShader().setInt("txtr", 0);
+        ShaderSystem::defaultFramebufferShader().setInt("txtr", 0); GL::bindTexture_2D(this->FBO.colorBuffer.ID, 0, "DefaultFramebuffer::render");
         
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, this->FBO.colorBuffer.ID);
-
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "DefaultFramebuffer::render");
-        
+
+
+        GL::releaseBoundTextures("DefaultFramebuffer::render");
         glBindFramebuffer(GL_FRAMEBUFFER, this->FBO.ID);
         
         glEnable(GL_DEPTH_TEST);

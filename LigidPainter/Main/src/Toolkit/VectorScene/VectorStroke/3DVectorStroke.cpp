@@ -20,12 +20,16 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "UTIL/Util.hpp"
-#include "GUI/GUI.hpp"
-#include "3D/ThreeD.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/GL/GL.hpp"
+
+#include "GUI/GUI.hpp"
+
+#include "3D/ThreeD.hpp"
+
 
 #include <string>
 #include <fstream>
@@ -70,6 +74,8 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
     
     getScene()->get_selected_mesh()->Draw();
+
+    GL::releaseBoundTextures("VectorStroke3D : projectToModel");
     
     float* pxs = new float[resolution * resolution * 4]; 
     float* pxsNormal = new float[resolution * resolution * 4]; 

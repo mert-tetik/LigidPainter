@@ -27,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "3D/Skybox/Skybox.hpp"
 #include "3D/Model/Model.hpp"
@@ -86,11 +87,11 @@ void Skybox::createDisplayingTxtr(){
 	glm::mat4 modelMatrix = glm::mat4(1);
 	ShaderSystem::skyboxBall().setMat4("modelMatrix",modelMatrix);
 	
-	ShaderSystem::skyboxBall().setInt("skybox",0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP,ID);
+	ShaderSystem::skyboxBall().setInt("skybox",0); GL::bindTexture_CubeMap(this->ID, 0, "Skybox::createDisplayingTxtr");
 	
 	getSphereModel()->Draw();
+
+	GL::releaseBoundTextures("Skybox::createDisplayingTxtr");
 
 	//Finish
 	Settings::defaultFramebuffer()->FBO.bind();

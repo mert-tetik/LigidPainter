@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/GL/GL.hpp"
 
 Texture::Texture(){
 
@@ -47,15 +48,11 @@ Texture::Texture(unsigned char* pixels, int w, int h, unsigned int filterParam, 
 
     LigidGL::cleanGLErrors();
 
-    glActiveTexture(GL_TEXTURE0);
-    LigidGL::testGLError("Texture::Texture : Activate the texture slot 0");
-    
     glGenTextures(1,&ID);
     LigidGL::testGLError("Texture::Texture : Generate the texture");
 
-    glBindTexture(GL_TEXTURE_2D, ID);
-    LigidGL::testGLError("Texture::Texture : Bind the texture");
-    
+    GL::bindTexture_2D(ID, 0, "Texture::Texture");
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
     LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam)");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);
@@ -72,6 +69,8 @@ Texture::Texture(unsigned char* pixels, int w, int h, unsigned int filterParam, 
 	
     glGenerateMipmap(GL_TEXTURE_2D);
     LigidGL::testGLError("Texture::Texture : Generate mipmap");
+
+    GL::releaseBoundTextures("Texture::Texture");
 }
 
 Texture::Texture(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat){
@@ -83,8 +82,7 @@ Texture::Texture(char* pixels, int w, int h, unsigned int filterParam, unsigned 
     glGenTextures(1,&ID);
     LigidGL::testGLError("Texture::Texture : Generate the texture");
 
-    glBindTexture(GL_TEXTURE_2D, ID);
-    LigidGL::testGLError("Texture::Texture : Bind the texture");
+    GL::bindTexture_2D(ID, 0, "Texture::Texture");
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
     LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam)");
@@ -102,6 +100,8 @@ Texture::Texture(char* pixels, int w, int h, unsigned int filterParam, unsigned 
 	
     glGenerateMipmap(GL_TEXTURE_2D);
     LigidGL::testGLError("Texture::Texture : Generate mipmap");
+
+    GL::releaseBoundTextures("Texture::Texture");
 }
 
 
@@ -160,10 +160,7 @@ void Texture::update(char* pixels, unsigned char* uPixels, bool use_unsigned, in
 
     LigidGL::cleanGLErrors();
 
-    glActiveTexture(GL_TEXTURE0);
-    LigidGL::testGLError("Texture::update : Activate texture slot 0");
-    glBindTexture(GL_TEXTURE_2D, ID);
-    LigidGL::testGLError("Texture::update : Bind texture");
+    GL::bindTexture_2D(ID, 0, "Texture::update");
     
     // Check if the texture size matches the provided data size
     if(glIsTexture(ID) == GL_TRUE){
@@ -267,4 +264,6 @@ void Texture::update(char* pixels, unsigned char* uPixels, bool use_unsigned, in
         glGenerateMipmap(GL_TEXTURE_2D);
         LigidGL::testGLError("Texture::update : Generate mipmap");
     }
+
+    GL::releaseBoundTextures("Texture::update");
 }
