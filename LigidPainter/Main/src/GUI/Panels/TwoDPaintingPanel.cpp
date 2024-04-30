@@ -116,6 +116,7 @@ void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
         LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "2D Painting scene : painted texture");
         getBox()->bindBuffers();
 
+        GL::releaseBoundTextures("panel_twoD_painting_render");
         ShaderSystem::buttonShader().use();
     }
     else{

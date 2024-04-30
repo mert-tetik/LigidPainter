@@ -1317,8 +1317,8 @@ void Texture::render_mesh(Mesh& mesh, MaterialChannels channels, Camera cam){
     ShaderSystem::PBRDisplayOnly().setMat4("modelMatrix", glm::mat4(1.f));
     
     ShaderSystem::PBRDisplayOnly().setVec3("viewPos", cam.cameraPos);
-    ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); GL::bindTexture_2D(getScene()->skybox.ID, 0, "Texture::renderMesh");
-    ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", 1); GL::bindTexture_2D(getScene()->skybox.IDPrefiltered, 1, "Texture::renderMesh");
+    ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); GL::bindTexture_CubeMap(getScene()->skybox.ID, 0, "Texture::renderMesh");
+    ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", 1); GL::bindTexture_CubeMap(getScene()->skybox.IDPrefiltered, 1, "Texture::renderMesh");
     ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", 2); GL::bindTexture_2D(channels.albedo.ID, 2, "Texture::renderMesh");
     ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", 3); GL::bindTexture_2D(channels.roughness.ID, 3, "Texture::renderMesh");
     ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", 4); GL::bindTexture_2D(channels.metallic.ID, 4, "Texture::renderMesh");

@@ -469,8 +469,7 @@ void ObjectTexturingDialog::show(Timer& timer){
 
                     getScene()->model->meshes[i].Draw();
 
-                    GL::releaseBoundTextures("Updating displaying texture");
-                    
+                    GL::releaseBoundTextures("ObjectTexturingDialog : Updating displaying texture");
                     
                     glEnable(GL_DEPTH_TEST);
 

@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/GL/GL.hpp"
 
 glm::vec3 Mesh::getCenterPosition(){
     glm::vec3 center = glm::vec3(0.f);
@@ -483,6 +484,8 @@ void Mesh::updatePosNormalTexture(){
         //Draw the selected mesh in 3D
         ShaderSystem::renderModelData().setInt("primitiveCount", this->indices.size() / 3);
         this->Draw();
+        
+        GL::releaseBoundTextures("Mesh : updatePosNormalTexture");
     }
     
     //!Finished
