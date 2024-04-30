@@ -354,23 +354,30 @@ public:
     /// @param w width
     /// @param h height
     Texture(char* pixels, int w, int h);
-    Texture(char* pixels, int w, int h, unsigned int filterParam);
-    Texture(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat);
-    Texture(unsigned char* pixels, int w, int h, unsigned int filterParam, int proceduralID);
+    Texture(char* pixels, int w, int h, GLenum filterParam);
+    Texture(char* pixels, int w, int h, GLenum filterParam, int proceduralID);
+    Texture(char* pixels, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat);
+    
+    Texture(unsigned char* pixels, int w, int h);
+    Texture(unsigned char* pixels, int w, int h, GLenum filterParam);
+    Texture(unsigned char* pixels, int w, int h, GLenum filterParam, int proceduralID);
+    Texture(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat);
+    
+    Texture(char* pixels, unsigned char* uPixels, bool use_unsigned, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat, GLenum textureWrap, GLenum target);
 
     void update(char* pixels, int w, int h);
-    void update(char* pixels, int w, int h, unsigned int filterParam);
-    void update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format);
-    void update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat);
-    void update(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat, unsigned int wrap);
+    void update(char* pixels, int w, int h, GLenum filterParam);
+    void update(char* pixels, int w, int h, GLenum filterParam, GLenum format);
+    void update(char* pixels, int w, int h, GLenum filterParam, GLenum format, unsigned internalFormat);
+    void update(char* pixels, int w, int h, GLenum filterParam, GLenum format, unsigned internalFormat, GLenum wrap);
     
     void update(unsigned char* pixels, int w, int h);
-    void update(unsigned char* pixels, int w, int h, unsigned int filterParam);
-    void update(unsigned char* pixels, int w, int h, unsigned int filterParam, unsigned int format);
-    void update(unsigned char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat);
-    void update(unsigned char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned internalFormat, unsigned int wrap);
+    void update(unsigned char* pixels, int w, int h, GLenum filterParam);
+    void update(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum format);
+    void update(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum format, unsigned internalFormat);
+    void update(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum format, unsigned internalFormat, GLenum wrap);
     
-    void update(char* pixels, unsigned char* uPixels, bool use_unsigned, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap);
+    void update(char* pixels, unsigned char* uPixels, bool use_unsigned, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat, GLenum wrap);
 
 
     /// @brief Load a texture by importing the texture in the given path via STBI

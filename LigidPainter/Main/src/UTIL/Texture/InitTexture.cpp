@@ -27,83 +27,97 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/GL/GL.hpp"
 
+//------
 Texture::Texture(){
 
 }
-
 Texture::Texture(unsigned int ID){
     this->ID = ID;
 }
+//------
 
+//------
 Texture::Texture(char* pixels, int w, int h){
     *this = Texture(pixels, w, h, GL_LINEAR, GL_RGBA, GL_RGBA8);
 }
+Texture::Texture(unsigned char* pixels, int w, int h){
+    *this = Texture(pixels, w, h, GL_LINEAR, GL_RGBA, GL_RGBA8);
+}
+//------
 
-Texture::Texture(char* pixels, int w, int h, unsigned int filterParam){
+//------
+Texture::Texture(char* pixels, int w, int h, GLenum filterParam){
     *this = Texture(pixels, w, h, filterParam, GL_RGBA, GL_RGBA8);
 }
-
-Texture::Texture(unsigned char* pixels, int w, int h, unsigned int filterParam, int proceduralID){
-    this->proceduralProps.proceduralID = proceduralID;
-
-    LigidGL::cleanGLErrors();
-
-    glGenTextures(1,&ID);
-    LigidGL::testGLError("Texture::Texture : Generate the texture");
-
-    GL::bindTexture_2D(ID, 0, "Texture::Texture");
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
-    LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);
-    LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-    LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT)");
-    
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    LigidGL::testGLError("Texture::Texture : Allocate memory for the texture");
-	
-    glGenerateMipmap(GL_TEXTURE_2D);
-    LigidGL::testGLError("Texture::Texture : Generate mipmap");
-
-    GL::releaseBoundTextures("Texture::Texture");
+Texture::Texture(unsigned char* pixels, int w, int h, GLenum filterParam){
+    *this = Texture(pixels, w, h, filterParam, GL_RGBA, GL_RGBA8);
 }
+//------
 
-Texture::Texture(char* pixels, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat){
+//------
+Texture::Texture(char* pixels, int w, int h, GLenum filterParam, int proceduralID){
+    this->proceduralProps.proceduralID = proceduralID;
+    *this = Texture(pixels, w, h, filterParam);
+}
+Texture::Texture(unsigned char* pixels, int w, int h, GLenum filterParam, int proceduralID){
+    this->proceduralProps.proceduralID = proceduralID;
+    *this = Texture(pixels, w, h, filterParam);
+}
+//------
+
+//------
+Texture::Texture(char* pixels, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat){
+    *this = Texture(pixels, nullptr, false, w, h, filterParam, format, internalFormat, GL_MIRRORED_REPEAT, GL_TEXTURE_2D);
+}
+Texture::Texture(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat){
+    *this = Texture(nullptr, pixels, true, w, h, filterParam, format, internalFormat, GL_MIRRORED_REPEAT, GL_TEXTURE_2D);
+}
+//------
+
+Texture::Texture(char* pixels, unsigned char* uPixels, bool use_unsigned, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat, GLenum textureWrap, GLenum target){
     LigidGL::cleanGLErrors();
     
     glActiveTexture(GL_TEXTURE0);
     LigidGL::testGLError("Texture::Texture : Activate the texture slot 0");
     
-    glGenTextures(1,&ID);
+    glGenTextures(1, &ID);
     LigidGL::testGLError("Texture::Texture : Generate the texture");
 
     GL::bindTexture_2D(ID, 0, "Texture::Texture");
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam);
-    LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam);
-    LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-    LigidGL::testGLError("Texture::Texture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT)");
+    if(filterParam){
+        glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filterParam);
+        LigidGL::testGLError("Texture::Texture : glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filterParam)");
+        glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filterParam);
+        LigidGL::testGLError("Texture::Texture : glTexParameteri(target, GL_TEXTURE_MAG_FILTER, filterParam)");
+    }
+    if(textureWrap){
+        glTexParameteri(target, GL_TEXTURE_WRAP_S, textureWrap);
+        LigidGL::testGLError("Texture::Texture : glTexParameteri(target, GL_TEXTURE_WRAP_S, textureWrap)");
+        glTexParameteri(target, GL_TEXTURE_WRAP_T, textureWrap);
+        LigidGL::testGLError("Texture::Texture : glTexParameteri(target, GL_TEXTURE_WRAP_T, textureWrap)");
+        glTexParameteri(target, GL_TEXTURE_WRAP_R, textureWrap);
+        LigidGL::testGLError("Texture::Texture : glTexParameteri(target, GL_TEXTURE_WRAP_R, textureWrap)");
+    }
     
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);
-    LigidGL::testGLError("Texture::Texture : Allocate memory for the texture");
+    if(use_unsigned){
+        glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, w, h, 0, format, GL_UNSIGNED_BYTE, uPixels);
+        LigidGL::testGLError("Texture::Texture : Allocate memory for the texture");
+    }
+    else{
+        glTexImage2D(target, 0, internalFormat, w, h, 0, format, GL_BYTE, pixels);
+        LigidGL::testGLError("Texture::Texture : Allocate memory for the texture");
+    }
 	
-    glGenerateMipmap(GL_TEXTURE_2D);
+    glGenerateMipmap(target);
     LigidGL::testGLError("Texture::Texture : Generate mipmap");
 
     GL::releaseBoundTextures("Texture::Texture");
 }
 
+
+// ------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------
 
 //------
 void Texture::update(char* pixels, int w, int h){

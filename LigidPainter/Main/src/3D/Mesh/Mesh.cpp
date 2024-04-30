@@ -220,6 +220,8 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
             this->face_selection_data.selectedPrimitiveIDs.resize(this->indices.size() / 3);
             std::fill(this->face_selection_data.selectedPrimitiveIDs.begin(), this->face_selection_data.selectedPrimitiveIDs.end(), 0);
 
+            int resolution = std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size()));
+
             glGenTextures(1, &this->face_selection_data.selectedFaces.ID);
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, this->face_selection_data.selectedFaces.ID);
