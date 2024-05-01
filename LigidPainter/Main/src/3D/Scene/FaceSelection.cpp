@@ -195,8 +195,6 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
 
     ShaderSystem::buttonShader().use();
 
-    getBox()->bindBuffers();
-
     glDepthFunc(GL_LEQUAL);
 
     return changes_done;
@@ -440,8 +438,6 @@ static void select_object(Mesh* mesh){
 }
 
 static void render_selection_cursor(float radius){
-    getBox()->bindBuffers();
-    
     /* Use the circle shader */
     ShaderSystem::circleShader().use();
 
@@ -451,7 +447,7 @@ static void render_selection_cursor(float radius){
     ShaderSystem::circleShader().setVec2("scale", glm::vec2(UTIL::new_value_range(radius, 0, 1024, 0, Settings::videoScale()->x)));
 
     /* Render the circle s*/
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Rendering 2D brush cursor");
+    getBox()->draw("Rendering 2D brush cursor");
 
     /* Clear the depth buffer of the current framebuffers*/
     glClear(GL_DEPTH_BUFFER_BIT);

@@ -135,12 +135,12 @@ void BakingDialog::renderElements(Timer& timer, glm::vec3 pos, glm::vec2 scale, 
     ShaderSystem::buttonShader().setInt("outlineExtra" , false); 
     ShaderSystem::buttonShader().setVec4("properties.color", glm::vec4(0)); //Invisible
     ShaderSystem::buttonShader().setVec3("properties.outline.color", glm::vec4(0)); //Invisible
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier bottom");
+    getBox()->draw("Panel : Barrier bottom");
     
     //Left
     ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x - resultScale.x - resultScale.x * 2.f, resultPos.y,   1.f));
     ShaderSystem::buttonShader().setVec2("scale", glm::vec2(resultScale * 2.f));
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier top");
+    getBox()->draw("Panel : Barrier top");
 
     modeImageDisplayer1.scale = glm::vec2(scale.x, scale.y);
     modeImageDisplayer1.pos = glm::vec3(pos.x - modeImageDisplayer1.scale.x * 2.f * easeInOut(rendererModeMixVal), pos.y - scale.y + modeImageDisplayer1.scale.y, pos.z + 0.01f); 

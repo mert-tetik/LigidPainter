@@ -157,7 +157,7 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
     //Painting
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::doPaint : Rendering 2D painted");
+    getBox()->draw("Painter::doPaint : Rendering 2D painted");
     
     //Finish
     GL::releaseBoundTextures("paintingUTIL : window_paint");
@@ -273,7 +273,7 @@ static void project_window_painting_texture(
         vertex_buffer_data.box->bindBuffers();
         
         ShaderSystem::projectingPaintedTextureShader().setInt("primitiveCount", 2);
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Painting : Projecting painted texture (For 2D Scene)");
+        getBox()->draw("Painting : Projecting painted texture (For 2D Scene)");
     }
 
     GL::releaseBoundTextures("paintingUTIL::project_window_painting_texture");
@@ -450,7 +450,6 @@ static void process_3D_point(
     else if(crs_pos != glm::vec2(-1.f))
         strokes->push_back(crs_pos);
 
-    getBox()->bindBuffers();
     ShaderSystem::twoDPainting().use();
 }
 
@@ -522,7 +521,6 @@ void update_depth_texture(Texture depth_texture, Camera cam, Mesh* mesh){
 } 
 
 void generate_projected_painting_texture(Framebuffer* FBO, bool mirror_X, bool mirror_Y, bool mirror_Z, bool use_low_resolution_buffers){
-    getBox()->bindBuffers();
         
     if(mirror_X || mirror_Y || mirror_Z){
         // Generate and bind the capturing framebuffer
@@ -563,7 +561,7 @@ void generate_projected_painting_texture(Framebuffer* FBO, bool mirror_X, bool m
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8Active", mirror_X && mirror_Y && mirror_Z);
         ShaderSystem::projectedPaintingTextureMixerShader().setInt("txtr8", GL::bindTexture_2D((use_low_resolution_buffers) ? XYZ_side.paintingBuffers.projected_painting_texture_low.ID : XYZ_side.paintingBuffers.projected_painting_texture.ID, "PaintingUTIL : generate_projected_painting_texture"));
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::generateMirroredProjectedPaintingTexture : Render result");
+        getBox()->draw("Painter::generateMirroredProjectedPaintingTexture : Render result");
 
         GL::releaseBoundTextures("PaintingUTIL : generate_projected_painting_texture");
     }
@@ -808,7 +806,7 @@ static void updateTheTexture(
 
     GL::bindTexture_2D(txtr.ID, "paintingUTIL : updateTheTexture");
     
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Rendering the original texture (background)");
+    getBox()->draw("Painter::updateTheTexture : Rendering the original texture (background)");
 
     ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
 
@@ -858,7 +856,7 @@ static void updateTheTexture(
     else{
         
         settings.vertex_buffer.box->bindBuffers();
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Painter::updateTheTexture : Applying painting to the texture");
+        getBox()->draw("Painter::updateTheTexture : Applying painting to the texture");
     }
     
     GL::releaseBoundTextures("paintingUTIL : updateTheTexture");

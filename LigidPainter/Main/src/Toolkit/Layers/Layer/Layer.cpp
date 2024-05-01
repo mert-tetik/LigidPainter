@@ -259,11 +259,11 @@ void LayerGUI::render_layer_bg(Layer* layer){
         //Bottom
         ShaderSystem::color2d().setVec3("pos", glm::vec3(layerButton.resultPos.x, layerButton.resultPos.y + layerButton.resultScale.y + layerButton.resultScale.y * 4.f,   1.f)); 
         ShaderSystem::color2d().setVec2("scale", glm::vec2(layerButton.resultScale * 4.f));
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : Barrier bottom");
+        getBox()->draw("LayerGUI::render_layer_bg : Barrier bottom");
         //Top
         ShaderSystem::color2d().setVec3("pos", glm::vec3(layerButton.resultPos.x, layerButton.resultPos.y - layerButton.resultScale.y - layerButton.resultScale.y * 4.f,   1.f)); 
         ShaderSystem::color2d().setVec2("scale", glm::vec2(layerButton.resultScale * 4.f));
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : Barrier top");
+        getBox()->draw("LayerGUI::render_layer_bg : Barrier top");
     }
 
     if(layer->layerType == "material"){
@@ -279,7 +279,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
         if(material->displayingTexture.ID)
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : material");
+            getBox()->draw("LayerGUI::render_layer_bg : material");
         
         GL::releaseBoundTextures("LayerGUI::render_layer_bg - material");
 
@@ -300,7 +300,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
         if(brush->displayingTexture.ID)
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : vector");
+            getBox()->draw("LayerGUI::render_layer_bg : vector");
 
         GL::releaseBoundTextures("LayerGUI::render_layer_bg - vector");
         
@@ -320,7 +320,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
         if(capture_txtr->ID)
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : painting");
+            getBox()->draw("LayerGUI::render_layer_bg : painting");
 
         GL::releaseBoundTextures("LayerGUI::render_layer_bg - painting");
         
@@ -365,7 +365,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
             ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
         
             if(txtr.ID)
-                LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "LayerGUI::render_layer_bg : texture layer");
+                getBox()->draw("LayerGUI::render_layer_bg : texture layer");
 
             GL::releaseBoundTextures("LayerGUI::render_layer_bg - texture layer");
         }

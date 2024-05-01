@@ -102,7 +102,6 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     glViewport(0, 0, textureResolution, textureResolution);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    getBox()->bindBuffers();
     
     Shader blurShader;
     if(algorithmI == 0)
@@ -123,7 +122,7 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     if(algorithmI == 1)
         blurShader.setInt("horizontal", 0);
 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "blurTheTexture first draw");
+    getBox()->draw( "blurTheTexture first draw");
 
     if(algorithmI == 1){
         textureObject.duplicateTextureSub(textureCopy_bluring);
@@ -132,10 +131,9 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
         glViewport(0, 0, textureResolution, textureResolution);
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        getBox()->bindBuffers();
         
         blurShader.setInt("horizontal", 1);
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "blurTheTexture second draw");
+        getBox()->draw( "blurTheTexture second draw");
     }
 
     GL::releaseBoundTextures("UpdateMaterialChannel : blurTheTexture");
@@ -639,7 +637,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                 Filter filter = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].button.filter;
 
                 // Apply the filter 
-                getBox()->bindBuffers();
                 filter.applyFilter(currentTexture.ID, albedoFilterMaskTexture_procedural, maskTexture_procedural);
             }
 
@@ -711,9 +708,8 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                 FBO.bind();
             }
             
-            getBox()->bindBuffers();
             // Render the result to the framebuffer
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "MaterialModifier::updateMaterialChannels for math layer");
+            getBox()->draw("MaterialModifier::updateMaterialChannels for math layer");
 
             GL::releaseBoundTextures("MaterialModifier::updateMaterialChannels");
 
@@ -740,8 +736,5 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                                 );
             }
         }
-        
-        getBox()->bindBuffers();
     }
-
 }

@@ -52,7 +52,6 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
         this->render2DVectors(timer, doMouseTracking && !twoD_mode_wrap_checkBox.hover && !this->interaction_panel.hover);
     }
 
-    getBox()->bindBuffers();
     ShaderSystem::buttonShader().use();
 
     // Rendering interaction panel
@@ -263,8 +262,6 @@ void VectorScene::render2DVectors(Timer& timer, bool doMouseTracking){
     if(doMouseTracking && Mouse::activeCursor()->cursorType == Mouse::defaultCursor()->cursorType && doMouseTracking)
         Mouse::setCursor(*Mouse::inkPenCursor());
 
-    getBox()->bindBuffers();
-
     // Render the vectors
     bool anyPointMovingCondition = false;
     for (int i = this->strokes_2D.size() - 1; i >= 0; i--)
@@ -345,7 +342,6 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
         this->update3DVectorBuffers();
     }
 
-    getBox()->bindBuffers();
     ShaderSystem::buttonShader().use();
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();

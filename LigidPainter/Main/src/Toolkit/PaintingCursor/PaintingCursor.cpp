@@ -45,7 +45,7 @@ void render_painting_cursor(float radius){
     getContext()->window.setCursorVisibility(false);
 
     /* Render the circle s*/
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Rendering 2D brush cursor");
+    getBox()->draw("Rendering 2D brush cursor");
 
     /* Clear the depth buffer of the current framebuffers*/
     glClear(GL_DEPTH_BUFFER_BIT);

@@ -212,7 +212,7 @@ void TextureField::render2DTextureField(
 
             ShaderSystem::vectoralCurve().setFloat("EDGE", 0.0005f);
 
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Texture field : Rotation button : Drawing line to cursor");
+            getBox()->draw("Texture field : Rotation button : Drawing line to cursor");
 
             ShaderSystem::buttonShader().use();
         }

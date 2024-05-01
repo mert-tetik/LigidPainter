@@ -357,7 +357,6 @@ std::vector<MaterialIDColor> Texture::getMaterialIDPalette(){
 
         Framebuffer FBO = Framebuffer(materialIDColor.grayScaleTxtr, GL_TEXTURE_2D, "Texture::getMaterialIDPalette");
         FBO.bind();
-        getBox()->bindBuffers();
 
         glViewport(0,0,512,512);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -375,7 +374,7 @@ std::vector<MaterialIDColor> Texture::getMaterialIDPalette(){
         ShaderSystem::colorIDMaskingShader().setVec3("pbc", glm::vec3(res[i] == glm::vec3(1.f,0.f,1.f), res[i] == glm::vec3(0.f,0.f,1.f), res[i] == glm::vec3(0.f,1.f,1.f)));
         ShaderSystem::colorIDMaskingShader().setVec3("gyo", glm::vec3(res[i] == glm::vec3(0.f,1.f,0.f), res[i] == glm::vec3(1.f,1.f,0.f), res[i] == glm::vec3(1.f,0.5f,0.f)));
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::getMaterialIDPalette : Generating gray scale texture");
+        getBox()->draw("Texture::getMaterialIDPalette : Generating gray scale texture");
 
         GL::releaseBoundTextures("Texture::getMaterialIDPalette");
         Settings::defaultFramebuffer()->FBO.bind();
@@ -432,7 +431,6 @@ void Texture::removeSeams(Mesh& mesh){
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    getBox()->bindBuffers();
     
     glm::mat4 projection = glm::ortho(0.f, 1.f, 1.f, 0.f); 
     ShaderSystem::boundaryExpandingShader().use();
@@ -444,7 +442,7 @@ void Texture::removeSeams(Mesh& mesh){
     ShaderSystem::boundaryExpandingShader().setInt("whiteUVTexture", GL::bindTexture_2D(mesh.uvMask.ID, "Texture::removeSeams"));
     ShaderSystem::boundaryExpandingShader().setInt("originalTexture", GL::bindTexture_2D(remove_seams_copy_txtr.ID, "Texture::removeSeams"));
     
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Texture::removeSeams : Rendering result");
+    getBox()->draw("Texture::removeSeams : Rendering result");
 
     GL::releaseBoundTextures("Texture::removeSeams");
     Settings::defaultFramebuffer()->FBO.bind();
@@ -475,7 +473,6 @@ void Texture::removeUnselectedFaces(Mesh& mesh){
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    getBox()->bindBuffers();
     
     glm::mat4 projection = glm::ortho(0.f, 1.f, 0.f, 1.f); 
     ShaderSystem::removeUnselectedFacesShader().use();
@@ -491,7 +488,6 @@ void Texture::removeUnselectedFaces(Mesh& mesh){
 
     GL::releaseBoundTextures("Texture : removeUnselectedFaces");
 
-    getBox()->bindBuffers();
 
     Settings::defaultFramebuffer()->FBO.bind();
 }
@@ -553,7 +549,6 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        getBox()->bindBuffers();
         
         glm::mat4 projection = glm::ortho(0.f, (float)textureRes, (float)textureRes, 0.f); 
         ShaderSystem::bluringShader().use();
@@ -566,7 +561,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         ShaderSystem::bluringShader().setVec2("scale"       ,       glm::vec2((float)textureRes / 2.f));
         ShaderSystem::bluringShader().setFloat("blurVal"     ,     this->proceduralProps.smartProperties.x * 35.f);
         
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::generateProceduralTexture : Edge wear : Blurred normal vec");
+        getBox()->draw("Texture::generateProceduralTexture : Edge wear : Blurred normal vec");
 
         GL::releaseBoundTextures("Texture::generateProceduralTexture");
 
@@ -589,7 +584,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         ShaderSystem::edgeWearShader().setVec3("pos", glm::vec3((float)textureRes / 2.f, (float)textureRes / 2.f, 0.9f));
         ShaderSystem::edgeWearShader().setVec2("scale", glm::vec2((float)textureRes / 2.f));
         
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::generateProceduralTexture : Edge wear : Result");
+        getBox()->draw("Texture::generateProceduralTexture : Edge wear : Result");
         
         GL::releaseBoundTextures("Texture::generateProceduralTexture");
 
@@ -607,7 +602,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         destTxtr.duplicateTexture(destTxtrCopy);
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::generateProceduralTexture : Edge wear : Blurring result");
+        getBox()->draw("Texture::generateProceduralTexture : Edge wear : Blurring result");
 
         GL::releaseBoundTextures("Texture::generateProceduralTexture");
 
@@ -699,7 +694,6 @@ void Texture::generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResol
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    getBox()->bindBuffers();
     
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution.x, (float)textureResolution.y, 0.f); 
     ShaderSystem::heightToNormalMap().use();
@@ -713,7 +707,7 @@ void Texture::generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResol
     ShaderSystem::heightToNormalMap().setVec3("pos", glm::vec3((float)textureResolution.x / 2.f, (float)textureResolution.y / 2.f, 0.9f));
     ShaderSystem::heightToNormalMap().setVec2("scale", glm::vec2((glm::vec2)textureResolution / 2.f));
 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Texture::generateNormalMap : Render result");
+    getBox()->draw("Texture::generateNormalMap : Render result");
 
     GL::releaseBoundTextures("Texture::generateNormalMap");
 
@@ -735,7 +729,6 @@ void Texture::applyNormalMap(float proceduralNormalStrength, bool proceduralNorm
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    getBox()->bindBuffers();
     
     ShaderSystem::heightToNormalMap().use();
     ShaderSystem::heightToNormalMap().setInt("heightMap", GL::bindTexture_2D(tx.ID, "Texture::applyNormalMap"));
@@ -749,7 +742,7 @@ void Texture::applyNormalMap(float proceduralNormalStrength, bool proceduralNorm
     ShaderSystem::heightToNormalMap().setVec2("scale", glm::vec2(0.5f));
 
     // Draw
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Texture::applyNormalMap : Rendering the result");
+    getBox()->draw("Texture::applyNormalMap : Rendering the result");
 
     // Finish
     GL::releaseBoundTextures("Texture::applyNormalMap");
@@ -889,7 +882,6 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
         ShaderSystem::buttonShader().use();
 
-        getBox()->bindBuffers();
         //glDeleteTextures(1, &proc);
     }
 
@@ -923,7 +915,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam);
         
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::generateProceduralDisplayingTexture : Rendering procedural texture");
+        getBox()->draw("Texture::generateProceduralDisplayingTexture : Rendering procedural texture");
 
         GL::releaseBoundTextures("Texture::generateProceduralDisplayingTexture");
     }
@@ -1187,9 +1179,8 @@ void Texture::flipTexture(bool horizontal, bool vertical){
     ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(copiedTxtr.ID, "Texture::flipTxtr"));
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
-    getBox()->bindBuffers();
 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::flipTexture : Rendering result");
+    getBox()->draw("Texture::flipTexture : Rendering result");
 
     // Finish
     GL::releaseBoundTextures("Texture::flipTxtr");
@@ -1223,9 +1214,8 @@ void Texture::resize(const glm::ivec2 newResolution){
     ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(copiedTxtr.ID, "Texture::resize"));
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
-    getBox()->bindBuffers();
 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::resize : Rendering result");
+    getBox()->draw("Texture::resize : Rendering result");
 
     // Finish
     GL::releaseBoundTextures("Texture::resize");
@@ -1287,7 +1277,7 @@ void Texture::mix(Texture txtr2, Texture mask, bool maskAlpha, bool normalMapMod
     ShaderSystem::grayScaleIDMaskingShader().setInt("invert", invert);
     ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f);
     
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Texture::mix : Rendering result");
+    getBox()->draw("Texture::mix : Rendering result");
     
     //Finish
     GL::releaseBoundTextures("Texture mix");

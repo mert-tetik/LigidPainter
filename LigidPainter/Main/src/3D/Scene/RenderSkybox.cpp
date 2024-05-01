@@ -45,7 +45,6 @@ void Scene::render_skybox(){
     GL::releaseBoundTextures("Scene::render_skybox : Render skybox");
 
     // Render the background image
-    getBox()->bindBuffers();
 
     ShaderSystem::textureRenderingShader().use();
     ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
@@ -56,7 +55,7 @@ void Scene::render_skybox(){
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Scene::render_skybox : Render bg texture");
+    getBox()->draw("Scene::render_skybox : Render bg texture");
     
     GL::releaseBoundTextures("Scene::render_skybox : Render bg texture");
 

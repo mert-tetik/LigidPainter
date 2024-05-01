@@ -167,7 +167,7 @@ void FilterSelectionDialog::show(Timer &timer, Filter& receivedFilter, int displ
         ShaderSystem::splitTexturesShader().setInt("texture1", GL::bindTexture_2D(appTextures.filterDisplayerImage.ID, "FilterSelectionDialog::show"));
         ShaderSystem::splitTexturesShader().setInt("texture2", GL::bindTexture_2D(this->selectedFilter.displayingTxtr.ID, "FilterSelectionDialog::show"));
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter selection dialog : Split filters");
+        getBox()->draw("Filter selection dialog : Split filters");
 
         GL::releaseBoundTextures("FilterSelectionDialog::show");
 

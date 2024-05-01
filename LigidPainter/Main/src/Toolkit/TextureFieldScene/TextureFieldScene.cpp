@@ -35,7 +35,6 @@ extern bool textureField_alreadyInteracted;
 
 void TextureFieldScene::render(Timer& timer, bool doMouseTracking, bool threeD_only, bool editMode){
     
-    getBox()->bindBuffers();
     glClear(GL_DEPTH_BUFFER_BIT);
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();

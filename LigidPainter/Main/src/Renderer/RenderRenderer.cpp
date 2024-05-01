@@ -58,9 +58,6 @@ void Renderer::render(){
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    //Bind 2D square vertex buffers
-    getBox()->bindBuffers();
-    
     Debugger::block("Render : Toolkits"); // Start
     render_toolkits_before_panels(timer);
     Debugger::block("Render : Toolkits"); // End

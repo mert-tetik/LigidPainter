@@ -94,7 +94,7 @@ void Button::render(
    
     
     //Render
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Button::render");
+    getBox()->draw("Button::render");
 }
 
 
@@ -173,7 +173,7 @@ bool Button::renderTheTexture(
         ShaderSystem::buttonShader().setVec2("scale"  ,     resultScaleTexture * glm::sign(resultScale));
         
         //Draw the texture
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Button::renderTheTexture");
+        getBox()->draw("Button::renderTheTexture");
         
         GL::releaseBoundTextures("Button::renderTheTexture");
 

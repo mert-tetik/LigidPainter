@@ -168,7 +168,6 @@ void TextureField::renderWrappedTextureField(
         renderWrapPointDecidingScene(timer, bindedFBO);
     }
 
-    getBox()->bindBuffers();
     ShaderSystem::buttonShader().use();
     glClear(GL_DEPTH_BUFFER_BIT);
 }
@@ -551,7 +550,6 @@ void TextureField::renderWrappedModifyElements(Timer& timer, bool doMouseTrackin
     // Prep rendering gui elements
     glClear(GL_DEPTH_BUFFER_BIT);
     ShaderSystem::buttonShader().use();
-    getBox()->bindBuffers();
 
     // Positioning the elements
     this->wrap_flipHorizontalButton.pos = this->wrap_deleteButton.pos;
@@ -583,7 +581,6 @@ void TextureField::renderWrapPointDecidingScene(Timer& timer, Framebuffer binded
 
     // Get ready to render gui elements
     bindedFBO.bind();
-    getBox()->bindBuffers();
     ShaderSystem::buttonShader().use();
     glClear(GL_DEPTH_BUFFER_BIT);
     Settings::defaultFramebuffer()->setViewport();

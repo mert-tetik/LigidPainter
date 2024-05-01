@@ -183,7 +183,7 @@ void TextRenderer::renderLeftToRight(
 			ShaderSystem::buttonShader().setInt("properties.txtr", GL::bindTexture_2D(ch.TextureID, "TextRenderer : Render character"));
 			
 			if(textDataMinX < xpos)
-				LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TextRenderer::renderLeftToRight");
+				getBox()->draw("TextRenderer::renderLeftToRight");
 			
 			GL::releaseBoundTextures("TextRenderer : Render character");
 
@@ -279,12 +279,12 @@ void TextRenderer::renderInsertionPointCursor(int &textPosCharIndex){
 			}
 
 			//Render the multiselection insertion point cursor 
-			LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TextRenderer::renderInsertionPointCursor : multiselection insertion point cursor ");
+			getBox()->draw("TextRenderer::renderInsertionPointCursor : multiselection insertion point cursor ");
 		}
 		else{
 			//Draw the insertion point cursor
 			if(this->timer.seconds % 2 == 0) //Hide and show the insertion point cursor every half second
-				LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TextRenderer::renderInsertionPointCursor : insertion point cursor");
+				getBox()->draw("TextRenderer::renderInsertionPointCursor : insertion point cursor");
 		}
 	}
 }

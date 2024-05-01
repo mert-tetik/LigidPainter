@@ -43,8 +43,6 @@ void panels_render(Timer& timer)
 
     glDepthFunc(GL_LEQUAL);
 
-    getBox()->bindBuffers();
-
     Debugger::block("GUI : panelPositioning"); // Start
     panels_transform();
     Debugger::block("GUI : panelPositioning"); // End

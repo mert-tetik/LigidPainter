@@ -43,7 +43,7 @@ void render_dots(glm::vec2 pos, glm::vec2 scale, glm::vec2 dotPos, float dotSize
     ShaderSystem::dotsShader().setFloat("scroll", dotSize);
 
     /* Render the dots */
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Rendering dots to window");
+    getBox()->draw("Rendering dots to window");
 
     /* Clear the depth buffer of the current framebuffers*/
     glClear(GL_DEPTH_BUFFER_BIT);

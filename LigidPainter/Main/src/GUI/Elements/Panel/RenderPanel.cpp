@@ -78,8 +78,6 @@ void Panel::render(Timer &timer, bool doMouseTracking){
         
         glm::mat4 projection = glm::ortho(0.f, (float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
 
-        getBox()->bindBuffers();
-
         // Render the panel's graphics
         ShaderSystem::textureRenderingShader().use();
         ShaderSystem::textureRenderingShader().setMat4("projection", projection);
@@ -90,7 +88,7 @@ void Panel::render(Timer &timer, bool doMouseTracking){
         ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(graphics.ID, "Panel::render preRender graphics"));
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Pre-rendering mode : Rendering result texture");
+        getBox()->draw("Panel : Pre-rendering mode : Rendering result texture");
 
         GL::releaseBoundTextures("Panel::render preRender graphics");
 
@@ -274,7 +272,7 @@ static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::v
     ShaderSystem::buttonShader().setVec3  ("properties.outline.color2" , color2); 
     ShaderSystem::buttonShader().setFloat ("properties.outline.thickness" , outlineThickness);
     
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Draw the panel");
+    getBox()->draw("Panel : Draw the panel");
 }
 
 static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale){
@@ -285,23 +283,23 @@ static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale){
     ShaderSystem::color2d().setVec3("pos", glm::vec3(resultPos.x,   resultPos.y + resultScale.y + resultScale.y * 2.f,   1.f)); 
     ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale.y * 2.f));
     ShaderSystem::color2d().setVec4("color" , glm::vec4(0.f)); 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier bottom");
+    getBox()->draw("Panel : Barrier bottom");
     
     //Top
     ShaderSystem::color2d().setVec3("pos", glm::vec3(resultPos.x, resultPos.y - resultScale.y - resultScale.y * 2.f,   1.f));
     ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale.y * 2.f));
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier top");
+    getBox()->draw("Panel : Barrier top");
 
     if(false){
         //Left
         ShaderSystem::color2d().setVec3("pos", glm::vec3(resultPos.x - resultScale.x - resultScale.x * 2.f, resultPos.y,   1.f));
         ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale.x * 2.f));
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier left");
+        getBox()->draw("Panel : Barrier left");
         
         //Right
         ShaderSystem::color2d().setVec3("pos", glm::vec3(resultPos.x + resultScale.x + resultScale.x * 2.f, resultPos.y,   1.f));
         ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale.x * 2.f));
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Barrier right");
+        getBox()->draw("Panel : Barrier right");
     }
     ShaderSystem::buttonShader().use();
 }

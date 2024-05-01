@@ -110,7 +110,7 @@ void VectorStroke::renderCurve(float edge, glm::vec2 start, glm::vec2 dest, glm:
     ShaderSystem::vectoralCurve().setInt("lineCapturingMode", 0);
     ShaderSystem::vectoralCurve().setFloat("EDGE", edge);
     
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "VectorStroke::draw : Rendering the curve");
+    getBox()->draw("VectorStroke::draw : Rendering the curve");
 
     glClear(GL_DEPTH_BUFFER_BIT);
 

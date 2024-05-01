@@ -255,7 +255,6 @@ void BrushModificationDialog::updateDisplayingTexture(BrushProperties* brushProp
 
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
-    getBox()->bindBuffers();
 }
 
 void BrushModificationDialog::inToOut(BrushProperties* brushProperties){

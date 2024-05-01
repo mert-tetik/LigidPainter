@@ -78,7 +78,6 @@ void MaterialEditorDialog::updateSkyboxTxtr(){
     getSphereModel()->Draw();
 
     ShaderSystem::buttonShader().use();
-    getBox()->bindBuffers();
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }
@@ -168,7 +167,7 @@ void MaterialEditorDialog::renderSkyboxTxtr(){
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Material editor dialog : Render skybox");
+    getBox()->draw("Material editor dialog : Render skybox");
 
     GL::releaseBoundTextures("MaterialEditorDialog::renderSkyboxTxtr");
 

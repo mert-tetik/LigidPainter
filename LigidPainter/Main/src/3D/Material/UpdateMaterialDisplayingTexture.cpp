@@ -135,5 +135,4 @@ void Material::updateMaterialDisplayingTexture(
     initial_bound_shader.use();
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
-    getBox()->bindBuffers();
 }

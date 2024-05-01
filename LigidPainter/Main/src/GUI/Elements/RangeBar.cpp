@@ -64,7 +64,7 @@ void RangeBar::render(
     ShaderSystem::buttonShader().setVec3("properties.outline.color2" ,     outlineColor2     );  
     ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness);
     
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "RangeBar::render");
+    getBox()->draw("RangeBar::render");
 }
 
 //Manual constructor

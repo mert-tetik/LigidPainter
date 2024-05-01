@@ -56,7 +56,6 @@ void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
         Settings::defaultFramebuffer()->FBO.bind();
         Settings::defaultFramebuffer()->setViewport();
         ShaderSystem::buttonShader().use();
-        getBox()->bindBuffers();
 
         //Render the 2D painting panel
         panel_twoD_painting.sections[0].elements[0].button.text = "";
@@ -105,9 +104,7 @@ void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("view", glm::mat4(1.));
         ShaderSystem::twoDPaintingModeAreaShader().setMat4("modelMatrix", glm::mat4(1.));
         
-        twoD_painting_box.bindBuffers();
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "2D Painting scene : painted texture");
-        getBox()->bindBuffers();
+        twoD_painting_box.draw("2D Painting scene : painted texture");
 
         GL::releaseBoundTextures("panel_twoD_painting_render");
         ShaderSystem::buttonShader().use();
@@ -132,22 +129,22 @@ static void render_barriers(){
     ShaderSystem::buttonShader().setInt("outlineExtra" , false); 
     ShaderSystem::buttonShader().setVec4("properties.color", glm::vec4(0)); //Invisible
     ShaderSystem::buttonShader().setVec3("properties.outline.color", glm::vec4(0)); //Invisible
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Bottom");
+    getBox()->draw("2D Painting panel : Barrier : Bottom");
 
     //Top Barrier
     ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x,   panel_twoD_painting.resultPos.y - panel_twoD_painting.resultScale.y - 5000,   1.f));
     ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Top");
+    getBox()->draw("2D Painting panel : Barrier : Top");
     
     //Left Barrier
     ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x  - panel_twoD_painting.resultScale.x  - 5000,   panel_twoD_painting.resultPos.y,   1.f));
     ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Left");
+    getBox()->draw("2D Painting panel : Barrier : Left");
     
     //Right Barrier
     ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x  + panel_twoD_painting.resultScale.x  + 5000,   panel_twoD_painting.resultPos.y,   1.f));
     ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "2D Painting panel : Barrier : Right");
+    getBox()->draw("2D Painting panel : Barrier : Right");
 }
 
 static void transform_scene(){

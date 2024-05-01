@@ -127,8 +127,7 @@ void Video::render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opac
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
-    getBox()->bindBuffers();
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Video::render : Rendering result");
+    getBox()->draw("Video::render : Rendering result");
 
     // Bind already bound shader at the start
     bound_shader.use();

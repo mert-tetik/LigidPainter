@@ -89,7 +89,7 @@ void FilterDisplayerDialog::show(Timer& timer){
         ShaderSystem::splitTexturesShader().setInt("texture1", GL::bindTexture_2D(appTextures.filterDisplayerImage.ID, "FilterDisplayerDialog::show"));
         ShaderSystem::splitTexturesShader().setInt("texture2", GL::bindTexture_2D(filter.displayingTxtr.ID, "FilterDisplayerDialog::show"));
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter displayer dialog : Rendering the filter");
+        getBox()->draw("Filter displayer dialog : Rendering the filter");
 
         GL::releaseBoundTextures("FilterDisplayerDialog::show");
 

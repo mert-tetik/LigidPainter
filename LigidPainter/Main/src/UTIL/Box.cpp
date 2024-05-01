@@ -173,8 +173,8 @@ void Box::customMeshUpdate(glm::vec3 pos, glm::vec2 scale){
 
 void Box::bindBuffers(){
     //Bind vertex objects
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, this->VBO);
+    glBindVertexArray(this->VAO);
 }
 
 void Box::unbindBuffers(){
@@ -183,19 +183,19 @@ void Box::unbindBuffers(){
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Box::draw(glm::vec3 pos,glm::vec2 scale){
-    
-    ShaderSystem::buttonShader().setVec3("pos",pos);
-    ShaderSystem::buttonShader().setVec2("scale",scale);
+void Box::draw(std::string location){
+    GLint currentVboId;
 
+    // Query the currently bound buffer for the GL_ARRAY_BUFFER target
+    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &currentVboId);
+
+    // Compare the current VBO ID with the ID you want to check
+    bool isBound = (this->VBO == static_cast<GLuint>(currentVboId));
+    
     //Bind vertex objects
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    if(!isBound)
+        this->bindBuffers();
 
     //Draw the box
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Box::draw");
-
-    //Bind default buffers
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
-    glBindVertexArray(0);
+    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, location);
 }

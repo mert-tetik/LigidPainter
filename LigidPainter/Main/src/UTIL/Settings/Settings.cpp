@@ -185,7 +185,6 @@ namespace Settings{
     }
 
     void DefaultFramebuffer::render(){
-        getBox()->bindBuffers();
         glDisable(GL_DEPTH_TEST);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -200,7 +199,7 @@ namespace Settings{
         ShaderSystem::defaultFramebufferShader().setVec2("resolution", this->resolution);
         ShaderSystem::defaultFramebufferShader().setInt("txtr", GL::bindTexture_2D(this->FBO.colorBuffer.ID, "DefaultFramebuffer::render"));
         
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "DefaultFramebuffer::render");
+        getBox()->draw("DefaultFramebuffer::render");
 
 
         GL::releaseBoundTextures("DefaultFramebuffer::render");

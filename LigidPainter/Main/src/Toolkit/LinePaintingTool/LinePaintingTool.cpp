@@ -72,7 +72,7 @@ void line_painting(Timer& timer, bool applyStroke, bool firstFrame){
         
         ShaderSystem::vectoralCurve().setFloat("EDGE", 0.0005f);
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Straight line painting vector");
+        getBox()->draw("Straight line painting vector");
         
         ShaderSystem::buttonShader().use();
     }

@@ -19,8 +19,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/Elements.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 #include <string>
 #include <iostream>
@@ -78,7 +80,7 @@ void CheckBox::render(
         ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness); 
 
 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "CheckBox::render");
+    getBox()->draw("CheckBox::render");
 }
 
 

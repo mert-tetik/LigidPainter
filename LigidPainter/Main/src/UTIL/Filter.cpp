@@ -113,7 +113,7 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
     this->shader.setVec2("txtrResolution", txtrRes); 
     this->shader.setFloat("strength", this->strength); 
 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::generatingDisplayingTexture");
+    getBox()->draw("Filter::generatingDisplayingTexture");
 
     //Finish
     GL::releaseBoundTextures("Filter::generateDisplayingTexture");
@@ -156,7 +156,7 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
     this->shader.setVec2("txtrResolution", txtrRes); 
     this->shader.setFloat("strength", this->strength); 
 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : applying filter");
+    getBox()->draw("Filter::applyFilter : applying filter");
 
     GL::releaseBoundTextures("Filter::applyFilter");
 
@@ -178,7 +178,7 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
         
         captureFBO.bind();
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : masking filter 1");
+        getBox()->draw("Filter::applyFilter : masking filter 1");
 
         GL::releaseBoundTextures("Filter::applyFilter : masking filter 1"); 
     }
@@ -199,7 +199,7 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
         
         captureFBO.bind();
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : masking filter 2");
+        getBox()->draw("Filter::applyFilter : masking filter 2");
         
         GL::releaseBoundTextures("Filter::applyFilter : masking filter 2"); 
     }

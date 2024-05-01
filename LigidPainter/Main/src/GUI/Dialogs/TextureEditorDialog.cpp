@@ -258,7 +258,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam);
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 0");
+        getBox()->draw("Image editor dialog : Selected section 0");
 
         GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 0");
 
@@ -280,7 +280,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 1");
+        getBox()->draw("Image editor dialog : Selected section 1");
 
         GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 1");
     }
@@ -303,7 +303,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 2");
+        getBox()->draw("Image editor dialog : Selected section 2");
 
         GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 2");
     }
@@ -325,7 +325,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 3");
+        getBox()->draw("Image editor dialog : Selected section 3");
         
         GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 3");
     }
@@ -352,7 +352,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 4");
+        getBox()->draw("Image editor dialog : Selected section 4");
         
         GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 4");
     }
@@ -371,7 +371,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 
-            LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Selected section 5");
+            getBox()->draw("Image editor dialog : Selected section 5");
         
             GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 5");
         }
@@ -393,7 +393,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
     ShaderSystem::grayScaleIDMaskingShader().setInt("invert", 0);
     ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f);
     
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Image editor dialog : Masking result");
+    getBox()->draw("Image editor dialog : Masking result");
     
     GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader");
 

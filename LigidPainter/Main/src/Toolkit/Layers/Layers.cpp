@@ -217,8 +217,6 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
     glClearColor(baseColor.r, baseColor.g, baseColor.b, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    getBox()->bindBuffers();
-
     for (size_t i = 0; i < this->layers.size(); i++)
     {
         ShaderSystem::layersUpdate().use();
@@ -248,7 +246,7 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
         ShaderSystem::layersUpdate().setInt("ambientOcclusionMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
         ShaderSystem::layersUpdate().setFloat("ambientOcclusionOpacity", this->layers[i]->alpha.ambientOcclusion_Alpha.alphaValue);
    
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "layers_update_result");
+        getBox()->draw("layers_update_result");
 
         GL::releaseBoundTextures("LayerScene::update_result");
     }

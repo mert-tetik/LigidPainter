@@ -50,7 +50,7 @@ static void drawBG()
     ShaderSystem::defaultFramebufferShader().setVec2("resolution", Settings::defaultFramebuffer()->resolution);
     ShaderSystem::defaultFramebufferShader().setInt("txtr", GL::bindTexture_2D(Settings::defaultFramebuffer()->bgTxtr.ID, "DialogControl : drawBG"));
 
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "DialogControl : drawBG");
+    getBox()->draw("DialogControl : drawBG");
 
     GL::releaseBoundTextures("DialogControl : drawBG");
     
@@ -80,7 +80,6 @@ void DialogControl::updateStart(){
 
     globalFirstFrameActivated = false;
 
-    getBox()->bindBuffers();
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }

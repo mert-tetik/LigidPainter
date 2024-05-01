@@ -19,7 +19,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/Elements.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Settings/Settings.hpp"
 
 #include <string>
 #include <fstream>
@@ -69,5 +71,5 @@ void ComboBox::render(glm::vec3 resultPos,glm::vec2 resultScale,float resultRadi
     ShaderSystem::buttonShader().setFloat("properties.outline.thickness" ,    resultOutlineThickness + aClickedMixVal*4.f ); 
     
     
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "ComboBox::render");
+    getBox()->draw("ComboBox::render");
 }

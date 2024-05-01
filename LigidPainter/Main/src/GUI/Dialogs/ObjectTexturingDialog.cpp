@@ -244,7 +244,7 @@ void ObjectTexturingDialog::show(Timer& timer){
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
-        LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Object texturing dialog : Rendering displaying texture");
+        getBox()->draw("Object texturing dialog : Rendering displaying texture");
 
         GL::releaseBoundTextures("ObjectTexturingDialog::show : Rendering displaying texture");
 
@@ -596,7 +596,6 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
     //Set the OpenGL viewport to default
     Settings::defaultFramebuffer()->setViewport();
 
-    getBox()->bindBuffers();
 }
 
 #define MIX_CHANNELS(mask, normalMapMode, invert)   getScene()->model->meshes[meshI].albedo.mix(albedo, mask, false, normalMapMode, invert);\

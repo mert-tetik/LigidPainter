@@ -680,7 +680,7 @@ public:
     void unbindBuffers();
     
     /// @brief Draw the square (is not used) 
-    void draw(glm::vec3 pos, glm::vec2 scale);
+    void draw(std::string location);
 };
 
 
