@@ -26,8 +26,10 @@ Box.hpp : Is used to render a single 2D square.
 #include <vector>
 
 #include "UTIL/Util.hpp"
-#include "3D/ThreeD.hpp"
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/GL/GL.hpp"
+
+#include "3D/ThreeD.hpp"
     
 Box::Box(){}
 
@@ -197,5 +199,5 @@ void Box::draw(std::string location){
         this->bindBuffers();
 
     //Draw the box
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, location);
+    GL::makeDrawCall(GL_TRIANGLES, 0, 6, location);
 }

@@ -112,26 +112,6 @@ size_t LigidGL::getRamLeft(){
     return status.ullAvailPhys;
 }
 
-bool LigidGL::makeDrawCall(GLenum mode, GLint first, GLsizei count, std::string debugTitle){
-    
-    while (glGetError() != GL_NO_ERROR){}
-
-    Debugger::block("Draw Call :" + debugTitle + " start"); // Start
-    Debugger::block("Draw Call :" + debugTitle + " start"); // End
-
-    Debugger::block("Draw Call :" + debugTitle); // Start
-    glDrawArrays(mode, first, count);
-    Debugger::block("Draw Call :" + debugTitle); // End
-
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR) {
-        LGDLOG::start << "ERROR : Draw call failed : " << debugTitle <<  " : OpenGL Error " << error << LGDLOG::end;
-        return false;
-    }
-    
-    return true;
-}
-
 void LigidGL::cleanGLErrors(){
     while (glGetError() != GL_NO_ERROR){}
 }

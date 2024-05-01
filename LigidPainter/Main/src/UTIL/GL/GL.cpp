@@ -140,3 +140,10 @@ void GL::releaseBoundTextures(std::string location){
         }
     }
 }
+
+bool GL::makeDrawCall(GLenum mode, GLint first, GLsizei count, std::string debugTitle){
+    LigidGL::cleanGLErrors();
+
+    glDrawArrays(mode, first, count);
+    return !LigidGL::testGLError("Draw call : " + debugTitle);
+}

@@ -27,6 +27,7 @@ SceneAxisDisplayer.hpp : Is used to render a single 2D square.
 
 #include "UTIL/Util.hpp"
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "3D/SceneAxisDisplayer/SceneAxisDisplayer.hpp"
 #include "3D/Mesh/Mesh.hpp"
@@ -137,7 +138,7 @@ void SceneAxisDisplayer::draw(){
     this->bindBuffers();
 
     //Draw the SceneAxisDisplayer
-    LigidGL::makeDrawCall(GL_LINES, 0, 6, "Scene axis displayer draw");
+    GL::makeDrawCall(GL_LINES, 0, 6, "Scene axis displayer draw");
 
     this->unbindBuffers();
 }

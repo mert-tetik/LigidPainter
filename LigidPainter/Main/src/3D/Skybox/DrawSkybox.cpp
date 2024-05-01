@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "3D/Skybox/Skybox.hpp"
 
@@ -47,7 +48,7 @@ void Skybox::draw(){ //Draw the skybox
 	LigidGL::testGLError("Skybox::draw : binding VBO");
 
 	//Draw the skybox
-	LigidGL::makeDrawCall(GL_TRIANGLES, 0, 108, "Skybox draw");
+	GL::makeDrawCall(GL_TRIANGLES, 0, 108, "Skybox draw");
 
 	//Bind default buffers
 	glBindBuffer(GL_ARRAY_BUFFER, 0); 

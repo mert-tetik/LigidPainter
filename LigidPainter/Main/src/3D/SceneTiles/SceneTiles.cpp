@@ -27,6 +27,7 @@ SceneTiles.hpp : Is used to render a single 2D square.
 
 #include "UTIL/Util.hpp"
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "3D/SceneTiles/SceneTiles.hpp"
 #include "3D/Mesh/Mesh.hpp"
@@ -134,7 +135,7 @@ void SceneTiles::draw(){
     this->bindBuffers();
 
     //Draw the SceneAxisDisplayer
-    LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "SceneTiles::draw");
+    GL::makeDrawCall(GL_TRIANGLES, 0, 6, "SceneTiles::draw");
 
     this->unbindBuffers();
 }

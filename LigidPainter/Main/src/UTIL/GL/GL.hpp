@@ -33,7 +33,14 @@ namespace GL{
     */
     int bindTexture_CubeMap(unsigned int texture, std::string location);
 
+    /*!
+        @brief Unbinds the bound textures in the current context
+    */
     void releaseBoundTextures(std::string location);
+
+    /* --------------------- VERTEX -------------------- */
+    bool makeDrawCall(GLenum mode, GLint first, GLsizei count, std::string debugTitle);
+    
 }
 
 #endif
