@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "GUI/GUI.hpp"
 
@@ -264,17 +265,16 @@ bool boxSelectionInteraction(Timer &timer, Mesh* mesh){
 }
 
 void updatePrimitivesArrayTexture(Mesh* mesh, bool update_all){
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, mesh->face_selection_data.selectedFaces.ID);
+    GL::bindTexture_2D(mesh->face_selection_data.selectedFaces.ID, 0, "updatePrimitivesArrayTexture");
+
+    LigidGL::cleanGLErrors();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    LigidGL::testGLError("updatePrimitivesArrayTexture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    LigidGL::testGLError("updatePrimitivesArrayTexture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);");
 
     if(mesh->face_selection_data.changedIndices.size() > 50 || update_all){
-        while (glGetError() != GL_NO_ERROR)
-        {
-        }
-
         int prim_txtr_res = int(ceil(sqrt(mesh->face_selection_data.selectedPrimitiveIDs.size())));
     
         unsigned char* pxs = new unsigned char[prim_txtr_res * prim_txtr_res];
@@ -287,11 +287,9 @@ void updatePrimitivesArrayTexture(Mesh* mesh, bool update_all){
         }
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, prim_txtr_res, prim_txtr_res, GL_RED, GL_UNSIGNED_BYTE, pxs);
+        LigidGL::testGLError("updatePrimitivesArrayTexture : glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, prim_txtr_res, prim_txtr_res, GL_RED, GL_UNSIGNED_BYTE, pxs);");
         glGenerateMipmap(GL_TEXTURE_2D);
-
-        if(glGetError() == 1281){
-            LGDLOG::start << "ERROR : Face selection : This mesh's vertex data is too high to apply a face selection." << LGDLOG::end;
-        }
+        LigidGL::testGLError("updatePrimitivesArrayTexture : glGenerateMipmap(GL_TEXTURE_2D);");
 
         delete[] pxs;
     }
@@ -307,9 +305,11 @@ void updatePrimitivesArrayTexture(Mesh* mesh, bool update_all){
             glm::ivec2 offset = glm::ivec2((float)mesh->face_selection_data.changedIndices[i] - (prim_height * prim_txtr_res), prim_height);// 3529 - 3528
 
             glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);
+            LigidGL::testGLError("updatePrimitivesArrayTexture : glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);");
         }
     }
     
+    GL::releaseBoundTextures("updatePrimitivesArrayTexture");
     mesh->face_selection_data.changedIndices.clear();
 }
 

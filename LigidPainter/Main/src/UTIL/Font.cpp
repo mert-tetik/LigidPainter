@@ -89,34 +89,11 @@ void Font::loadFont(const char* path){
 				continue;
 			}
 			
-			// generate texture
-			unsigned int texture;
-			glGenTextures(1, &texture);
-			glBindTexture(GL_TEXTURE_2D, texture); //
-			
-			glTexImage2D(
-				GL_TEXTURE_2D,
-				0,
-				GL_RED,
-				face->glyph->bitmap.width,
-				face->glyph->bitmap.rows,
-				0,
-				GL_RED,
-				GL_UNSIGNED_BYTE,
-				face->glyph->bitmap.buffer
-			);
-
-			// set texture options
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-			glGenerateMipmap(GL_TEXTURE_2D);
+			Texture texture = Texture(nullptr, nullptr, false, face->glyph->bitmap.width, face->glyph->bitmap.rows, GL_LINEAR, GL_RED, GL_R8, GL_MIRRORED_REPEAT, GL_TEXTURE_2D);
 
 			//Create character stucture using font char data received
 			character Character = {
-				texture,
+				texture.ID,
 				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
 				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
 				static_cast<unsigned int>(face->glyph->advance.x)
@@ -125,8 +102,6 @@ void Font::loadFont(const char* path){
 			// Now store character for later use
 			characters.insert(std::pair<char, character>(c, Character));
 		}
-
-		glBindTexture(GL_TEXTURE_2D, 0);
 
 		LGDLOG::start<< "Loaded " << path << LGDLOG::end; 
 		

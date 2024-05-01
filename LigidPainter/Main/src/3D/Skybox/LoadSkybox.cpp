@@ -26,6 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/GL/GL.hpp"
 
 #include "3D/Skybox/Skybox.hpp"
 
@@ -54,8 +55,7 @@ void Skybox::load(std::string path) //Path to the folder
 
 		if (data) //Loaded
 		{
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
+			GL::bindTexture_CubeMap(this->ID, 0, "Skybox::load");
 
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -63,7 +63,8 @@ void Skybox::load(std::string path) //Path to the folder
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
 			
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, 
+			glTexImage2D(
+							GL_TEXTURE_CUBE_MAP_POSITIVE_X+i, 
 							0, 
 							GL_RGB8, 
 							width, 
@@ -72,10 +73,12 @@ void Skybox::load(std::string path) //Path to the folder
 							GL_RGB, 
 							GL_UNSIGNED_BYTE, 
 							data
-			);
+						);
 			
 			LGDLOG::start<< "Loaded " << faces[i] << LGDLOG::end;
 			stbi_image_free(data);
+		
+			GL::releaseBoundTextures("Skybox::load");
 		}
 		else //An error occured while loading
 		{

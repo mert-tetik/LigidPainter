@@ -37,27 +37,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Skybox::createDisplayingTxtr(){
 	
-	// Generate the displaying texture
-	glActiveTexture(GL_TEXTURE0);
-	if(displayingTexture == 0)
-		glGenTextures(1,&displayingTexture);
-	glBindTexture(GL_TEXTURE_2D,displayingTexture);
-	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-	
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 100, 100, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-	glGenerateMipmap(GL_TEXTURE_2D);
+	if(!displayingTexture.ID){
+		displayingTexture = Texture((char*)nullptr, 100, 100);
+	}
 
 	// Create the capture framebuffer object
 	Framebuffer FBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(100)), "Skybox displaying texture");
 	FBO.bind();
 
-	//	
-	glViewport(0,0,100,100);
+	glViewport(0, 0, displayingTexture.getResolution().x, displayingTexture.getResolution().y);
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

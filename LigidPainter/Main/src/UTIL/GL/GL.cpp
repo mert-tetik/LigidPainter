@@ -42,6 +42,7 @@ bool is_texture_bound_in_different_context(unsigned int texture, LigidWindow* bo
     return result;
 }
 
+
 void GL::bindTexture(unsigned int texture, int slot, unsigned int target, std::string location){
 
     // Get already bound OpenGL context

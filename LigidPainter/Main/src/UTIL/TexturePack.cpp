@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/GL/GL.hpp"
 #include "GUI/GUI.hpp"
 
 TexturePack::TexturePack(){
@@ -238,8 +239,7 @@ void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
     }
 
     if(alphaMap.ID){
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, txtr.ID);
+        GL::bindTexture_2D(txtr.ID, 0, "txtrPack");
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, txtr.getResolution().x, txtr.getResolution().y, 0, GL_RGBA, GL_BYTE, pixels);
     }
 
@@ -270,6 +270,7 @@ void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
     }
 
     //Finish
+    GL::releaseBoundTextures("txtrPack");
     Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1, &FBO);
     delete[] pixels;
@@ -324,8 +325,7 @@ static void assertSprite(Texture& srcTxtr, Texture sprite, std::vector<Region>& 
     glm::ivec2 srcTxtrRes = srcTxtr.getResolution();
     glm::ivec2 spriteTxtrRes = sprite.getResolution();
     
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, srcTxtr.ID);
+    GL::bindTexture_2D(srcTxtr.ID, 0, "txtrPack");
 
     glTexImage2D(
                     GL_TEXTURE_2D, 
@@ -340,6 +340,8 @@ static void assertSprite(Texture& srcTxtr, Texture sprite, std::vector<Region>& 
                 );
     
     assertSprite(srcTxtr, sprite, regions);
+
+    GL::releaseBoundTextures("txtrPack");
 }
 
 Texture TexturePack::generateSpriteTexture(){
@@ -372,8 +374,7 @@ Texture TexturePack::generateSpriteTexture(){
         pos.x += scale.x;
         pos.y += scale.y;
         
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, regions[i].sprite.ID);
+        GL::bindTexture_2D(regions[i].sprite.ID, 0, "txtrPack");
         ShaderSystem::textureRenderingShader().setMat4("projection", glm::ortho(0.f, (float)txtrRes.x, (float)txtrRes.y, 0.f));
         ShaderSystem::textureRenderingShader().setVec3("pos", glm::vec3(pos, 0.1));
         ShaderSystem::textureRenderingShader().setVec2("scale", scale);
@@ -384,6 +385,8 @@ Texture TexturePack::generateSpriteTexture(){
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TexturePack::generateSpriteTexture : Drawing a region");
     }
+
+    GL::releaseBoundTextures("txtrPack");
     
     Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1, &FBO);
@@ -431,7 +434,7 @@ void TexturePack::apply(Texture txtr, float scale, float count, float rotationJi
                 Texture& sprite = this->textures[intHash % this->textures.size()]; 
 
                 glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, sprite.ID);
+                GL::bindTexture_2D(sprite.ID, 0, "txtrPack");
                 ShaderSystem::textureRenderingShader().setMat4("projection", glm::ortho(0.f, (float)range, 0.f, (float)range));
                 ShaderSystem::textureRenderingShader().setVec3("pos", glm::vec3((float)x, (float)y, 0.1));
                 ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(glm::mix((float)intHash / 20.f, range / 20.f, sizeJitter) * (scale / 10.f)));
@@ -440,6 +443,8 @@ void TexturePack::apply(Texture txtr, float scale, float count, float rotationJi
                 ShaderSystem::textureRenderingShader().setInt("txtr",     0    );
                 LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TexturePack::apply : Drawing a sprite");
             }
+
+            GL::releaseBoundTextures("txtrPack");
         }
     }
 

@@ -221,13 +221,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
             std::fill(this->face_selection_data.selectedPrimitiveIDs.begin(), this->face_selection_data.selectedPrimitiveIDs.end(), 0);
 
             int resolution = std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size()));
-            //this->face_selection_data.selectedFaces = Texture((char*)nullptr, nullptr, false, resolution, resolution, 0, GL_RED, GL_R8, 0, GL_TEXTURE_2D);
-
-            glGenTextures(1, &this->face_selection_data.selectedFaces.ID);
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, this->face_selection_data.selectedFaces.ID);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size())), std::ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size())), 0, GL_RED, GL_UNSIGNED_BYTE, nullptr);
-            glGenerateMipmap(GL_TEXTURE_2D);
+            this->face_selection_data.selectedFaces = Texture(nullptr, nullptr, false, resolution, resolution, GL_NEAREST, GL_RED, GL_R8, 0, GL_TEXTURE_2D);
         }
     }
     generateUVMask();

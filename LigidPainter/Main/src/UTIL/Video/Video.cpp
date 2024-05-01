@@ -26,34 +26,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Video/Video.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/GL/GL.hpp"
 
 void Video::generate_color_buffer(){
     if(this->resolution.x == 0 || this->resolution.y == 0 || this->channels == 0){
         return;
     }
 
-    LigidGL::cleanGLErrors();
-
-    glActiveTexture(GL_TEXTURE0);
-    LigidGL::testGLError("Video::generate_color_buffer : Activate the texture slot 0");
-    
-    glGenTextures(1,&this->color_buffer.ID);
-    LigidGL::testGLError("Video::generate_color_buffer : Generate the texture");
-
-    glBindTexture(GL_TEXTURE_2D, this->color_buffer.ID);
-    LigidGL::testGLError("Video::generate_color_buffer : Bind the texture");
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    LigidGL::testGLError("Video::generate_color_buffer : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterParam)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    LigidGL::testGLError("Video::generate_color_buffer : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterParam)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    LigidGL::testGLError("Video::generate_color_buffer : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    LigidGL::testGLError("Video::generate_color_buffer : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT)");
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-    LigidGL::testGLError("Video::generate_color_buffer : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT)");
-    
     unsigned int format;
     unsigned int internal_format;
     if(this->channels == 1){
@@ -73,23 +52,13 @@ void Video::generate_color_buffer(){
         internal_format = GL_RGBA8; 
     }
 
-    glTexImage2D(GL_TEXTURE_2D, 0, internal_format, this->resolution.x, this->resolution.y, 0, format, GL_BYTE, nullptr);
-    LigidGL::testGLError("Video::generate_color_buffer : Allocate memory for the texture");
-	
-    glGenerateMipmap(GL_TEXTURE_2D);
-    LigidGL::testGLError("Video::generate_color_buffer : Generate mipmap");
+    this->color_buffer = Texture(nullptr, nullptr, false, this->resolution.x, this->resolution.y, GL_NEAREST, format, internal_format, GL_MIRRORED_REPEAT, GL_TEXTURE_2D);
 }
 
 void Video::update_color_buffer(){
 
     LigidGL::cleanGLErrors();
 
-    glActiveTexture(GL_TEXTURE0);
-    LigidGL::testGLError("Video::update_color_buffer : Activate the texture slot 0");
-    
-    glBindTexture(GL_TEXTURE_2D, this->color_buffer.ID);
-    LigidGL::testGLError("Video::update_color_buffer : Bind the texture");
-
     unsigned int format;
     unsigned int internal_format;
     if(this->channels == 1){
@@ -108,10 +77,8 @@ void Video::update_color_buffer(){
         format = GL_RGBA; 
         internal_format = GL_RGBA8; 
     }
-    
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, this->resolution.x, this->resolution.y, format, GL_UNSIGNED_BYTE, this->frames[this->frame]);
-    LigidGL::testGLError("Video::generate_color_buffer : glTexSubImage2D");
 
+    this->color_buffer.update(this->frames[this->frame], this->resolution.x, this->resolution.y, GL_NEAREST, format, internal_format);
 }
 
 void Video::render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opacity, int render_mode, bool update_frame_value)
@@ -155,7 +122,7 @@ void Video::render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opac
     ShaderSystem::textureRenderingShader().setVec2("scale", resultScale);
     ShaderSystem::textureRenderingShader().setVec3("pos", resultPos);
 
-    ShaderSystem::textureRenderingShader().setInt("txtr", 0); glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, this->color_buffer.ID);
+    ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(this->color_buffer.ID, 0, "Video::render");
     ShaderSystem::textureRenderingShader().setFloat("opacity", opacity);
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);

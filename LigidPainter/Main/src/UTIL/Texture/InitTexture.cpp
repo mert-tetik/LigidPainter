@@ -182,16 +182,13 @@ void Texture::update(char* pixels, unsigned char* uPixels, bool use_unsigned, in
         
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &currentWidth);
         LigidGL::testGLError("Texture::update : Get texture's width data");
-        
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &currentHeight);
         LigidGL::testGLError("Texture::update : Get texture's height data");
 
         glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &currentInternalFormat);
         LigidGL::testGLError("Texture::update : Get texture's internal format data");
-
         glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, &currentFilterParam);
         LigidGL::testGLError("Texture::update: Get texture's min filter");
-
         glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &currentWrap);
         LigidGL::testGLError("Texture::update: Get texture's wrap s");
 

@@ -383,9 +383,6 @@ public:
     /// @brief Load a texture by importing the texture in the given path via STBI
     bool load(const char* path);
 
-    /// @brief Load & resize a texture in the given texture resolution param by importing the texture in the given path via STBI
-    bool load(const char* path, glm::ivec2 textureResolution);
-
     /// @brief Returns texture data in the given path & doesn't write anything to the member variables
     unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip);
     
@@ -393,8 +390,6 @@ public:
     /// @param path folder path (will be completed as : @param path + / + @ref title + . + format (in lowercase))
     /// @param format is PNG JPEG BMP TGA
     bool exportTexture(std::string path,const std::string format);
-    
-    bool exportTexture(std::string path, unsigned char* pixels, glm::ivec2 scale, const std::string format);
 
 
     /// @brief writes the texture data to the given @param pixels parameter

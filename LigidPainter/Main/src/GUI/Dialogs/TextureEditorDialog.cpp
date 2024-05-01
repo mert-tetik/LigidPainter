@@ -183,7 +183,7 @@ TextureEditorDialog::TextureEditorDialog(int){
     distortionElements[8].button.textureSelection2D = true;
 }
 
-void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsigned int destTxtr){
+void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Texture destTxtr){
     
     //Displaying resolution
     glm::vec2 txtrRes = receivedTexture->getResolution();
@@ -195,10 +195,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
     glm::vec3 pos = glm::vec3(displayRes.x / 2.f, displayRes.y / 2.f, 0.9f);
     glm::vec2 scale = glm::vec2(displayRes.x / 2.f, displayRes.y / 2.f);
     
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, destTxtr);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, displayRes.x, displayRes.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-    glGenerateMipmap(GL_TEXTURE_2D);
+    destTxtr.update((char*)nullptr, displayRes.x, displayRes.y);
 
     //Create the framebuffer
     unsigned int captureFBO;
@@ -206,7 +203,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, unsi
     glBindFramebuffer(GL_FRAMEBUFFER,captureFBO);
     
     //Bind the displaying texture to the capture framebuffer
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, destTxtr, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, destTxtr.ID, 0);
 
     //Clear the capture frame buffer(displaying texture) with color alpha zero
     glClearColor(0,0,0,0);
@@ -432,14 +429,14 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
             resizeElements[6].textBox.text = std::to_string(receivedTexture->getResolution().y);
             resizeElements[6].textBox.activeChar = resizeElements[6].textBox.text.size()-1; 
             resizeElements[6].textBox.activeChar2 = resizeElements[6].textBox.text.size()-1;
-            this->updateDisplayingTexture(receivedTexture, this->displayingTexture.ID);
+            this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
         }
 
         for (size_t i = 0; i < this->sectionPanel.sections[0].elements.size(); i++)
         {
             if(this->sectionPanel.sections[0].elements[i].button.clickState1 && this->selectedSection != i){
                 this->selectedSection = i;
-                this->updateDisplayingTexture(receivedTexture, this->displayingTexture.ID);
+                this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
                 break;
             }
         }
@@ -679,13 +676,13 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
         anyInteraction = true; 
 
         if(anyInteraction)
-            this->updateDisplayingTexture(receivedTexture, this->displayingTexture.ID);
+            this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
 
         if(this->saveButton.clicked){
             registerImageEditorAction("Texture manipulated via texture editor dialog", Texture(), *receivedTexture);
 
             Texture txtr = receivedTexture->duplicateTexture();
-            this->updateDisplayingTexture(&txtr, receivedTexture->ID);
+            this->updateDisplayingTexture(&txtr, *receivedTexture);
             
             for (size_t i = 0; i < Library::getTextureArraySize(); i++)
             {

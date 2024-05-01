@@ -121,12 +121,6 @@ void NewTextureDialog::show(Timer& timer){
         
         if(panel.sections[0].elements[3].button.clicked && !panel.sections[0].elements[2].comboBox.pressed){
             
-            //Create the texture class
-            Texture txtr;
-
-            //Set the text of the texture as the title textbox's text
-            txtr.title = panel.sections[0].elements[1].textBox.text;
-            
             //Pixels of the texture
             std::vector<GLubyte> colorData(textureRes * textureRes * 4, 0); // RGBA format
             
@@ -138,21 +132,8 @@ void NewTextureDialog::show(Timer& timer){
                 colorData[i * 4 + 3] = 255; // Alpha component
             }
             
-            //Generate the texture
-            glActiveTexture(GL_TEXTURE0);
-            glGenTextures(1,&txtr.ID);
-            glBindTexture(GL_TEXTURE_2D,txtr.ID);//
-
-            //Texture params
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_MIRRORED_REPEAT);
-            
-            //Write the texture
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, textureRes, textureRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, &colorData[0]);
-            glGenerateMipmap(GL_TEXTURE_2D);
+            //Create the texture class
+            Texture txtr = Texture(&colorData[0], textureRes, textureRes, GL_NEAREST);
             
             //Send the created texture to the library
             Library::addTexture(txtr, "New texture via generation");

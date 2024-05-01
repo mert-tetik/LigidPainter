@@ -29,7 +29,7 @@ public:
     unsigned int IDPrefiltered = 0;
     
     /*! @brief Displaying texture OpenGL texture buffer object ID (Captures a skybox ball)*/
-	unsigned int displayingTexture = 0;
+	Texture displayingTexture;
 	
     /*! @brief Used to rotate the skybox */
     glm::mat4 transformMatrix = glm::mat4(1);
