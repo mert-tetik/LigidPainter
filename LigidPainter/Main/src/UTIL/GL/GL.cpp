@@ -42,16 +42,41 @@ bool is_texture_bound_in_different_context(unsigned int texture, LigidWindow* bo
     return result;
 }
 
+int find_unused_texture_slot() {
+    int unusedKey = 0;
+    while (texture_slot_data.find(unusedKey) != texture_slot_data.end()) {
+        unusedKey++;
+    }
 
-void GL::bindTexture(unsigned int texture, int slot, unsigned int target, std::string location){
+    int maxTextureUnits;
+    glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
+    
+    if(unusedKey >= maxTextureUnits)
+        return -1;
+
+    return unusedKey;
+}
+
+int GL::bindTexture(unsigned int texture, unsigned int target, std::string location){
 
     // Get already bound OpenGL context
     LigidWindow* bound_context = LigidGL::getBoundContext();
     
+    int slot = find_unused_texture_slot();
+
+    if(slot == -1){
+        LGDLOG::start << "ERROR *CRITICAL* : GL::bindTexture : No more texture units available left! LigidPainter will be waiting until sufficient amount of units are free." << LGDLOG::end;
+
+        while (slot == -1)
+        {
+            slot = find_unused_texture_slot();
+        }
+    }
+    
     // If no OpenGL context is bound
     if(bound_context == nullptr){
         LGDLOG::start << "ERROR : GL::bindTexture : No OpenGL context is bound! At the location : " << location  << LGDLOG::end; 
-        return;
+        return slot;
     }
 
     // Don't let the code proceed while the texture is bound in another context 😡
@@ -77,14 +102,16 @@ void GL::bindTexture(unsigned int texture, int slot, unsigned int target, std::s
         glBindTexture(target, 0);
         texture_slot_data.erase(slot);
     }
+
+    return slot;
 }
 
-void GL::bindTexture_2D(unsigned int texture, int slot, std::string location){
-    GL::bindTexture(texture, slot, GL_TEXTURE_2D, location);
+int GL::bindTexture_2D(unsigned int texture, std::string location){
+    return GL::bindTexture(texture, GL_TEXTURE_2D, location);
 }
 
-void GL::bindTexture_CubeMap(unsigned int texture, int slot, std::string location){
-    GL::bindTexture(texture, slot, GL_TEXTURE_CUBE_MAP, location);
+int GL::bindTexture_CubeMap(unsigned int texture, std::string location){
+    return GL::bindTexture(texture, GL_TEXTURE_CUBE_MAP, location);
 }
 
 void GL::releaseBoundTextures(std::string location){

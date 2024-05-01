@@ -77,13 +77,10 @@ Texture::Texture(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum
 Texture::Texture(char* pixels, unsigned char* uPixels, bool use_unsigned, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat, GLenum textureWrap, GLenum target){
     LigidGL::cleanGLErrors();
     
-    glActiveTexture(GL_TEXTURE0);
-    LigidGL::testGLError("Texture::Texture : Activate the texture slot 0");
-    
     glGenTextures(1, &ID);
     LigidGL::testGLError("Texture::Texture : Generate the texture");
 
-    GL::bindTexture_2D(ID, 0, "Texture::Texture");
+    GL::bindTexture_2D(ID, "Texture::Texture");
     
     if(filterParam){
         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filterParam);
@@ -174,7 +171,7 @@ void Texture::update(char* pixels, unsigned char* uPixels, bool use_unsigned, in
 
     LigidGL::cleanGLErrors();
 
-    GL::bindTexture_2D(ID, 0, "Texture::update");
+    GL::bindTexture_2D(ID, "Texture::update");
     
     // Check if the texture size matches the provided data size
     if(glIsTexture(ID) == GL_TRUE){

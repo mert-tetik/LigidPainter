@@ -248,11 +248,10 @@ void RangeBar::render(
             resultOutlineThickness
         ); 
 
-    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     1    );
-    ShaderSystem::buttonShader().setInt("properties.txtr"  ,     0    );
+    ShaderSystem::buttonShader().setInt("states.renderTexture", 1);
+    ShaderSystem::buttonShader().setInt("properties.txtr", GL::bindTexture_2D(appTextures.arrowL.ID, "RangeBar left arrow")); 
 
-    //Render the left arrow
-    GL::bindTexture_2D(appTextures.arrowL.ID, 0, "RangeBar left arrow");    
+    //Render the left arrow    
 
     render(
             glm::vec3(resultPos.x - resultScale.x + (arrowBtnScale.x), resultPos.y, resultPos.z), 
@@ -281,7 +280,7 @@ void RangeBar::render(
     }
     
     //Render the right arrow
-    GL::bindTexture_2D(appTextures.arrowL.ID, 0, "RangeBar right arrow");
+    ShaderSystem::buttonShader().setInt("properties.txtr", GL::bindTexture_2D(appTextures.arrowR.ID, "RangeBar right arrow")); 
     
     render(
             glm::vec3(resultPos.x + resultScale.x - (arrowBtnScale.x), resultPos.y, resultPos.z), 

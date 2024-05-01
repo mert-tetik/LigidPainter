@@ -239,7 +239,7 @@ void ObjectTexturingDialog::show(Timer& timer){
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", this->panel.resultScale);
         ShaderSystem::textureRenderingShader().setVec3("pos", this->panel.resultPos);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(this->displayingTexture.ID, 0, "ObjectTexturingDialog::show : Rendering displaying texture");
+        ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(this->displayingTexture.ID, "ObjectTexturingDialog::show : Rendering displaying texture"));
         ShaderSystem::textureRenderingShader().setFloat("opacity", this->dialogControl.mixVal);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
@@ -450,7 +450,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                     ShaderSystem::objectTexturingAssign().setMat4("view", getScene()->camera.viewMatrix);
                     ShaderSystem::objectTexturingAssign().setInt("txtr", 0);
 
-                    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::objectTexturingAssign(), getScene()->model->meshes[i], GL_TEXTURE0, GL_TEXTURE1);
+                    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::objectTexturingAssign(), getScene()->model->meshes[i]);
 
                     /*
                     if(channelI == 0)

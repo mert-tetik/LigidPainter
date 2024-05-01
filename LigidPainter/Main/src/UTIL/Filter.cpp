@@ -109,13 +109,12 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
     this->shader.setVec3("pos", pos); 
     this->shader.setMat4("projection", projection); 
     
-    this->shader.setInt("txtr", 0); GL::bindTexture_2D(sampleTxtr.ID, 0, "Filter::generateDisplayingTexture");
+    this->shader.setInt("txtr", GL::bindTexture_2D(sampleTxtr.ID, "Filter::generateDisplayingTexture"));
     this->shader.setVec2("txtrResolution", txtrRes); 
     this->shader.setFloat("strength", this->strength); 
 
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::generatingDisplayingTexture");
 
-    
     //Finish
     GL::releaseBoundTextures("Filter::generateDisplayingTexture");
     Settings::defaultFramebuffer()->FBO.bind();
@@ -153,7 +152,7 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
     this->shader.setVec3("pos", pos); //Cover the screen
     this->shader.setMat4("projection", projection); //Cover the screen
     
-    this->shader.setInt("txtr", 0); GL::bindTexture_2D(duplicatedTxtr.ID, 0, "Filter::applyFilter");
+    this->shader.setInt("txtr", GL::bindTexture_2D(duplicatedTxtr.ID, "Filter::applyFilter"));
     this->shader.setVec2("txtrResolution", txtrRes); 
     this->shader.setFloat("strength", this->strength); 
 
@@ -162,26 +161,22 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
     GL::releaseBoundTextures("Filter::applyFilter");
 
     if(maskTexture.ID != 0 && glIsTexture(maskTexture.ID) == GL_TRUE){
+        Texture destTxtrObj = txtr;
+        Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
+        
         ShaderSystem::grayScaleIDMaskingShader().use();
         ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", projection);
         ShaderSystem::grayScaleIDMaskingShader().setVec3("pos", pos);
         ShaderSystem::grayScaleIDMaskingShader().setVec2("scale", scale);
-        ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0);
-        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1);
-        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
+        ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", GL::bindTexture_2D(maskTexture.ID, "Filter::applyFilter : masking filter 1"));
+        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", GL::bindTexture_2D(duplicatedTxtr.ID, "Filter::applyFilter : masking filter 1"));
+        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", GL::bindTexture_2D(copiedDestTxtr.ID, "Filter::applyFilter : masking filter 1"));
         ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f); 
         ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 0);
         ShaderSystem::grayScaleIDMaskingShader().setInt("normalMapMode", 0);
         ShaderSystem::grayScaleIDMaskingShader().setInt("invert", 0);
         
-        Texture destTxtrObj = txtr;
-        Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
-        
         captureFBO.bind();
-        
-        GL::bindTexture_2D(maskTexture.ID, 0, "Filter::applyFilter : masking filter 1");
-        GL::bindTexture_2D(duplicatedTxtr.ID, 1, "Filter::applyFilter : masking filter 1");
-        GL::bindTexture_2D(copiedDestTxtr.ID, 2, "Filter::applyFilter : masking filter 1");
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : masking filter 1");
 
@@ -189,24 +184,20 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
     }
 
     if(maskTexture2.ID != 0 && glIsTexture(maskTexture2.ID) == GL_TRUE){
+        Texture destTxtrObj = txtr;
+        Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
+        
         ShaderSystem::grayScaleIDMaskingShader().use();
         ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", projection);
         ShaderSystem::grayScaleIDMaskingShader().setVec3("pos", pos);
         ShaderSystem::grayScaleIDMaskingShader().setVec2("scale", scale);
-        ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0);
-        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1);
-        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2);
+        ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", GL::bindTexture_2D(maskTexture2.ID, "Filter::applyFilter : masking filter 2"));
+        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", GL::bindTexture_2D(duplicatedTxtr.ID, "Filter::applyFilter : masking filter 2"));
+        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", GL::bindTexture_2D(copiedDestTxtr.ID, "Filter::applyFilter : masking filter 2"));
         ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f); 
         ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 0);
         
-        Texture destTxtrObj = txtr;
-        Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
-        
         captureFBO.bind();
-        
-        GL::bindTexture_2D(maskTexture2.ID, 0, "Filter::applyFilter : masking filter 2");
-        GL::bindTexture_2D(duplicatedTxtr.ID, 1, "Filter::applyFilter : masking filter 2");
-        GL::bindTexture_2D(copiedDestTxtr.ID, 2, "Filter::applyFilter : masking filter 2");
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter::applyFilter : masking filter 2");
         

@@ -122,7 +122,7 @@ void Video::render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opac
     ShaderSystem::textureRenderingShader().setVec2("scale", resultScale);
     ShaderSystem::textureRenderingShader().setVec3("pos", resultPos);
 
-    ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(this->color_buffer.ID, 0, "Video::render");
+    ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(this->color_buffer.ID, "Video::render"));
     ShaderSystem::textureRenderingShader().setFloat("opacity", opacity);
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);

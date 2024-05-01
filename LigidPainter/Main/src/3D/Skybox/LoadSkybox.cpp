@@ -55,7 +55,7 @@ void Skybox::load(std::string path) //Path to the folder
 
 		if (data) //Loaded
 		{
-			GL::bindTexture_CubeMap(this->ID, 0, "Skybox::load");
+			GL::bindTexture_CubeMap(this->ID, "Skybox::load");
 
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);

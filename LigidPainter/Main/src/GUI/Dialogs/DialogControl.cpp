@@ -48,7 +48,7 @@ static void drawBG()
     ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
     
     ShaderSystem::defaultFramebufferShader().setVec2("resolution", Settings::defaultFramebuffer()->resolution);
-    ShaderSystem::defaultFramebufferShader().setInt("txtr", 0); GL::bindTexture_2D(Settings::defaultFramebuffer()->bgTxtr.ID, 0, "DialogControl : drawBG");
+    ShaderSystem::defaultFramebufferShader().setInt("txtr", GL::bindTexture_2D(Settings::defaultFramebuffer()->bgTxtr.ID, "DialogControl : drawBG"));
 
     LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "DialogControl : drawBG");
 

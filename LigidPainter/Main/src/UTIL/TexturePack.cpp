@@ -239,7 +239,7 @@ void TexturePack::saperateSprites(Texture txtr, Texture alphaMap){
     }
 
     if(alphaMap.ID){
-        GL::bindTexture_2D(txtr.ID, 0, "txtrPack");
+        GL::bindTexture_2D(txtr.ID, "txtrPack");
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, txtr.getResolution().x, txtr.getResolution().y, 0, GL_RGBA, GL_BYTE, pixels);
     }
 
@@ -325,7 +325,7 @@ static void assertSprite(Texture& srcTxtr, Texture sprite, std::vector<Region>& 
     glm::ivec2 srcTxtrRes = srcTxtr.getResolution();
     glm::ivec2 spriteTxtrRes = sprite.getResolution();
     
-    GL::bindTexture_2D(srcTxtr.ID, 0, "txtrPack");
+    GL::bindTexture_2D(srcTxtr.ID, "txtrPack");
 
     glTexImage2D(
                     GL_TEXTURE_2D, 
@@ -374,13 +374,12 @@ Texture TexturePack::generateSpriteTexture(){
         pos.x += scale.x;
         pos.y += scale.y;
         
-        GL::bindTexture_2D(regions[i].sprite.ID, 0, "txtrPack");
         ShaderSystem::textureRenderingShader().setMat4("projection", glm::ortho(0.f, (float)txtrRes.x, (float)txtrRes.y, 0.f));
         ShaderSystem::textureRenderingShader().setVec3("pos", glm::vec3(pos, 0.1));
         ShaderSystem::textureRenderingShader().setVec2("scale", scale);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0);
+        ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(regions[i].sprite.ID, "txtrPack"));
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TexturePack::generateSpriteTexture : Drawing a region");
@@ -434,13 +433,13 @@ void TexturePack::apply(Texture txtr, float scale, float count, float rotationJi
                 Texture& sprite = this->textures[intHash % this->textures.size()]; 
 
                 glActiveTexture(GL_TEXTURE0);
-                GL::bindTexture_2D(sprite.ID, 0, "txtrPack");
                 ShaderSystem::textureRenderingShader().setMat4("projection", glm::ortho(0.f, (float)range, 0.f, (float)range));
                 ShaderSystem::textureRenderingShader().setVec3("pos", glm::vec3((float)x, (float)y, 0.1));
                 ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(glm::mix((float)intHash / 20.f, range / 20.f, sizeJitter) * (scale / 10.f)));
                 ShaderSystem::textureRenderingShader().setFloat("rotation", glm::mix((float)randX * 360.f, 0.f, rotationJitter));
                 ShaderSystem::textureRenderingShader().setFloat("opacity", glm::mix((float)randX, 1.f, opacityJitter));
-                ShaderSystem::textureRenderingShader().setInt("txtr",     0    );
+                ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(sprite.ID, "txtrPack"));
+                
                 LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TexturePack::apply : Drawing a sprite");
             }
 

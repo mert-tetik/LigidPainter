@@ -227,7 +227,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         if(resizeElements[0].comboBox.selectedIndex == 0)
             txtrRes = displayRes;
 
-        ShaderSystem::txtrEditorResizeShader().setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 0");
+        ShaderSystem::txtrEditorResizeShader().setInt("txtr", GL::bindTexture_2D(receivedTexture->ID, "TextureEditorDialog::updateDisplayingTexture 0")); 
         ShaderSystem::txtrEditorResizeShader().setVec2("txtrResolution", txtrRes);
         ShaderSystem::txtrEditorResizeShader().setVec2("destTxtrResolution", displayRes);
         
@@ -269,7 +269,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         ShaderSystem::txtrEditorBlurShader().setVec3("pos", pos);
         ShaderSystem::txtrEditorBlurShader().setVec2("scale", scale);
     
-        ShaderSystem::txtrEditorBlurShader().setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 1");
+        ShaderSystem::txtrEditorBlurShader().setInt("txtr", GL::bindTexture_2D(receivedTexture->ID, "TextureEditorDialog::updateDisplayingTexture 1")); 
         ShaderSystem::txtrEditorBlurShader().setVec2("txtrResolution", displayRes);
         ShaderSystem::txtrEditorBlurShader().setInt("blurIndex", bluringElement[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorBlurShader().setFloat("directionalDirection", bluringElement[1].rangeBar.value);
@@ -290,7 +290,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         ShaderSystem::txtrEditorColoringShader().setVec3("pos", pos);
         ShaderSystem::txtrEditorColoringShader().setVec2("scale", scale);
     
-        ShaderSystem::txtrEditorColoringShader().setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 2");
+        ShaderSystem::txtrEditorColoringShader().setInt("txtr", GL::bindTexture_2D(receivedTexture->ID, "TextureEditorDialog::updateDisplayingTexture 2")); 
         ShaderSystem::txtrEditorColoringShader().setVec2("txtrResolution", displayRes);
 
         ShaderSystem::txtrEditorColoringShader().setInt("coloringIndex", coloringElements[0].comboBox.selectedIndex);
@@ -313,7 +313,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         ShaderSystem::txtrEditorNormalMapShader().setVec3("pos", pos);
         ShaderSystem::txtrEditorNormalMapShader().setVec2("scale", scale);
     
-        ShaderSystem::txtrEditorNormalMapShader().setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 3");
+        ShaderSystem::txtrEditorNormalMapShader().setInt("txtr", GL::bindTexture_2D(receivedTexture->ID, "TextureEditorDialog::updateDisplayingTexture 3")); 
         ShaderSystem::txtrEditorNormalMapShader().setVec2("txtrResolution", displayRes);
         ShaderSystem::txtrEditorNormalMapShader().setInt("mode", normalMapElements[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorNormalMapShader().setInt("grayScale", normalMapElements[1].comboBox.selectedIndex);
@@ -335,8 +335,8 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         ShaderSystem::txtrEditorDistortionShader().setVec3("pos", pos);
         ShaderSystem::txtrEditorDistortionShader().setVec2("scale", scale);
     
-        ShaderSystem::txtrEditorDistortionShader().setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 4");
-        ShaderSystem::txtrEditorDistortionShader().setInt("distortionTxtr", 1); GL::bindTexture_2D(distortionElements[8].button.texture.ID, 1, "TextureEditorDialog::updateDisplayingTexture 4");
+        ShaderSystem::txtrEditorDistortionShader().setInt("txtr", GL::bindTexture_2D(receivedTexture->ID, "TextureEditorDialog::updateDisplayingTexture 4")); 
+        ShaderSystem::txtrEditorDistortionShader().setInt("distortionTxtr", GL::bindTexture_2D(distortionElements[8].button.texture.ID, "TextureEditorDialog::updateDisplayingTexture 4")); 
         ShaderSystem::txtrEditorDistortionShader().setVec2("txtrResolution", displayRes);
         ShaderSystem::txtrEditorDistortionShader().setInt("distortionIndex", distortionElements[0].comboBox.selectedIndex);
         ShaderSystem::txtrEditorDistortionShader().setFloat("fbmRoughness", distortionElements[1].rangeBar.value);
@@ -364,7 +364,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
             this->filterBtn.filter.shader.setVec2("scale", scale);
         
             this->filterBtn.filter.shader.setFloat("strength", this->filterBtn.filter.strength);
-            this->filterBtn.filter.shader.setInt("txtr", 0); GL::bindTexture_2D(receivedTexture->ID, 0, "TextureEditorDialog::updateDisplayingTexture 5");
+            this->filterBtn.filter.shader.setInt("txtr", GL::bindTexture_2D(receivedTexture->ID, "TextureEditorDialog::updateDisplayingTexture 5")); 
             this->filterBtn.filter.shader.setVec2("txtrResolution", displayRes);
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -385,9 +385,9 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
     ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", projection);
     ShaderSystem::grayScaleIDMaskingShader().setVec3("pos", pos);
     ShaderSystem::grayScaleIDMaskingShader().setVec2("scale", scale);
-    ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0); GL::bindTexture_2D(this->maskTextureButton.texture.ID, 0, "TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader");
-    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1); GL::bindTexture_2D(receivedTexture->ID, 1, "TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader");
-    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2); GL::bindTexture_2D((this->selectedSection == 6) ? this->textureBtn.texture.ID : copiedDestTxtr.ID, 2, "TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader");
+    ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", GL::bindTexture_2D(this->maskTextureButton.texture.ID, "TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader")); 
+    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", GL::bindTexture_2D(receivedTexture->ID, "TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader")); 
+    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", GL::bindTexture_2D((this->selectedSection == 6) ? this->textureBtn.texture.ID : copiedDestTxtr.ID, "TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader")); 
     ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 0);
     ShaderSystem::grayScaleIDMaskingShader().setInt("normalMapMode", 0);
     ShaderSystem::grayScaleIDMaskingShader().setInt("invert", 0);

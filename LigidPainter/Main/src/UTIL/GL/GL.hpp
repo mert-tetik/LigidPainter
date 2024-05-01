@@ -23,15 +23,15 @@ namespace GL{
                       GL_TEXTURE_1D_ARRAY, GL_TEXTURE_2D_ARRAY, GL_TEXTURE_RECTANGLE, GL_TEXTURE_CUBE_MAP, GL_TEXTURE_CUBE_MAP_ARRAY, 
                       GL_TEXTURE_BUFFER, GL_TEXTURE_2D_MULTISAMPLE or GL_TEXTURE_2D_MULTISAMPLE_ARRAY.
     */
-    void bindTexture(unsigned int texture, int slot, unsigned int target, std::string location);
+    int bindTexture(unsigned int texture, unsigned int target, std::string location);
     /*! 
         @param slot 0 for GL_TEXTURE0, 10 for GL_TEXTURE10 etc.
     */
-    void bindTexture_2D(unsigned int texture, int slot, std::string location);
+    int bindTexture_2D(unsigned int texture, std::string location);
     /*! 
         @param slot 0 for GL_TEXTURE0, 10 for GL_TEXTURE10 etc.
     */
-    void bindTexture_CubeMap(unsigned int texture, int slot, std::string location);
+    int bindTexture_CubeMap(unsigned int texture, std::string location);
 
     void releaseBoundTextures(std::string location);
 }

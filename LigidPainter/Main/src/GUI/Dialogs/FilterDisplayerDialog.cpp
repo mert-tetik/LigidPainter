@@ -86,8 +86,8 @@ void FilterDisplayerDialog::show(Timer& timer){
         ShaderSystem::splitTexturesShader().setVec3("pos"         ,   panel.sections[0].elements[1].button.resultPos);
         ShaderSystem::splitTexturesShader().setVec2("scale"       ,   glm::vec2(std::min(panel.sections[0].elements[1].button.resultScale.x, panel.sections[0].elements[1].button.resultScale.y)));
 
-        ShaderSystem::splitTexturesShader().setInt("texture1", 0); GL::bindTexture_2D(appTextures.filterDisplayerImage.ID, 0, "FilterDisplayerDialog::show");
-        ShaderSystem::splitTexturesShader().setInt("texture2", 1); GL::bindTexture_2D(filter.displayingTxtr.ID, 1, "FilterDisplayerDialog::show");
+        ShaderSystem::splitTexturesShader().setInt("texture1", GL::bindTexture_2D(appTextures.filterDisplayerImage.ID, "FilterDisplayerDialog::show"));
+        ShaderSystem::splitTexturesShader().setInt("texture2", GL::bindTexture_2D(filter.displayingTxtr.ID, "FilterDisplayerDialog::show"));
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Filter displayer dialog : Rendering the filter");
 

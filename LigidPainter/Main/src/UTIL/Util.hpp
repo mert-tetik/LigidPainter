@@ -804,39 +804,26 @@ namespace ShaderUTIL{
     
     struct PaintingData{
         struct PaintingBuffers{
-            unsigned int albedo_txtr_slot;
             Texture albedo_txtr; 
-            unsigned int roughness_txtr_slot;
             Texture roughness_txtr;
-            unsigned int metallic_txtr_slot;
             Texture metallic_txtr;
-            unsigned int normal_map_txtr_slot;
             Texture normal_map_txtr;
-            unsigned int height_map_txtr_slot;
             Texture height_map_txtr;
-            unsigned int ao_txtr_slot;
             Texture ao_txtr;
             
             unsigned int brush_txtr_slot;
             Texture brush_txtr; // This texture contains the projected brush strokes
         
             PaintingBuffers(){}
-            PaintingBuffers(unsigned int albedo_txtr_slot, Texture albedo_txtr,  unsigned int roughness_txtr_slot, Texture roughness_txtr, unsigned int metallic_txtr_slot, Texture metallic_txtr, unsigned int normal_map_txtr_slot, Texture normal_map_txtr, unsigned int height_map_txtr_slot, Texture height_map_txtr, unsigned int ao_txtr_slot, Texture ao_txtr,unsigned int brush_txtr_slot, Texture brush_txtr){
+            PaintingBuffers(Texture albedo_txtr,  Texture roughness_txtr, Texture metallic_txtr, Texture normal_map_txtr, Texture height_map_txtr, Texture ao_txtr, Texture brush_txtr){
 
-                this->albedo_txtr_slot = albedo_txtr_slot;
                 this->albedo_txtr = albedo_txtr; 
-                this->roughness_txtr_slot = roughness_txtr_slot;
                 this->roughness_txtr = roughness_txtr;
-                this->metallic_txtr_slot = metallic_txtr_slot;
                 this->metallic_txtr = metallic_txtr;
-                this->normal_map_txtr_slot = normal_map_txtr_slot;
                 this->normal_map_txtr = normal_map_txtr;
-                this->height_map_txtr_slot = height_map_txtr_slot;
                 this->height_map_txtr = height_map_txtr;
-                this->ao_txtr_slot = ao_txtr_slot;
                 this->ao_txtr = ao_txtr;
 
-                this->brush_txtr_slot = brush_txtr_slot; 
                 this->brush_txtr = brush_txtr; 
             }
         };
@@ -889,7 +876,7 @@ namespace ShaderUTIL{
 
     void set_shader_struct_painting_data(Shader shader, PaintingData painting_data);
 
-    void set_shader_struct_face_selection_data(Shader shader, Mesh& mesh, unsigned int txtr_slot1, unsigned int txtr_slot2);
+    void set_shader_struct_face_selection_data(Shader shader, Mesh& mesh);
 };
 
 #endif

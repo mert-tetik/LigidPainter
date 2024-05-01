@@ -310,7 +310,7 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
     ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
     
-    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
+    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh());
     
     getScene()->get_selected_mesh()->Draw();
 

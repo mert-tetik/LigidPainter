@@ -163,7 +163,7 @@ void MaterialEditorDialog::renderSkyboxTxtr(){
     ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
     ShaderSystem::textureRenderingShader().setVec2("scale", this->materialDisplayer.resultScale);
     ShaderSystem::textureRenderingShader().setVec3("pos", this->materialDisplayer.resultPos);
-    ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(this->skyboxFBO.colorBuffer.ID, 0, "MaterialEditorDialog::renderSkyboxTxtr");
+    ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(this->skyboxFBO.colorBuffer.ID, "MaterialEditorDialog::renderSkyboxTxtr"));
     ShaderSystem::textureRenderingShader().setFloat("opacity", this->dialogControl.mixVal);
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);

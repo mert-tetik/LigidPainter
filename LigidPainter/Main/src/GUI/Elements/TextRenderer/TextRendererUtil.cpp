@@ -178,22 +178,20 @@ void TextRenderer::renderLeftToRight(
 			float h = ch.Size.y * textDataScale;
 
 			//Set the transform values
-			ShaderSystem::buttonShader().setVec2("scale",glm::vec2(w/1.7,h/1.7));
-			ShaderSystem::buttonShader().setVec3("pos",glm::vec3(xpos + w/1.7,ypos - (h/1.7) + Settings::videoScale()->y / 210, textDataPos.z));
- 
-			//Draw the char
-			GL::bindTexture_2D(ch.TextureID, 0, "TextRenderer : Render character");
+			ShaderSystem::buttonShader().setVec2("scale", glm::vec2(w/1.7,h/1.7));
+			ShaderSystem::buttonShader().setVec3("pos", glm::vec3(xpos + w/1.7,ypos - (h/1.7) + Settings::videoScale()->y / 210, textDataPos.z));
+			ShaderSystem::buttonShader().setInt("properties.txtr", GL::bindTexture_2D(ch.TextureID, "TextRenderer : Render character"));
 			
 			if(textDataMinX < xpos)
 				LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "TextRenderer::renderLeftToRight");
-
+			
+			GL::releaseBoundTextures("TextRenderer : Render character");
 
 			//To the right
 			pos.x += (ch.Advance >> 6) * textDataScale;
 		}
 	}
 	
-	GL::releaseBoundTextures("TextRenderer : Render character");
 }
 
 /// @brief Is not used rn

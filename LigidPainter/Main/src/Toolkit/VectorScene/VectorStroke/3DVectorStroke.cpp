@@ -71,7 +71,7 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
     ShaderSystem::renderModelData().setMat4("modelMatrix",getScene()->transformMatrix);
     ShaderSystem::renderModelData().setInt("state", 1);
 
-    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
+    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *getScene()->get_selected_mesh());
     
     getScene()->get_selected_mesh()->Draw();
 

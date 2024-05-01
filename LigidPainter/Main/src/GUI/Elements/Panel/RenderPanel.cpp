@@ -87,7 +87,7 @@ void Panel::render(Timer &timer, bool doMouseTracking){
         ShaderSystem::textureRenderingShader().setVec2("scale", resultScale);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(graphics.ID, 0, "Panel::render preRender graphics");
+        ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(graphics.ID, "Panel::render preRender graphics"));
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Panel : Pre-rendering mode : Rendering result texture");

@@ -159,8 +159,8 @@ bool Button::renderTheTexture(
         resultPosTexture.z += 0.02f; 
 
         //Tell the button shader to render the texture
-        ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     1    );
-        ShaderSystem::buttonShader().setInt("properties.txtr"  ,     0    );
+        ShaderSystem::buttonShader().setInt("states.renderTexture", 1);
+        ShaderSystem::buttonShader().setInt("properties.txtr", GL::bindTexture_2D(texture.ID, "Button::renderTheTexture"));
 
         if(this->stretchTexture){
             resultPosTexture.x = this->resultPos.x;
@@ -172,9 +172,6 @@ bool Button::renderTheTexture(
         ShaderSystem::buttonShader().setVec3("pos"    ,     resultPosTexture);
         ShaderSystem::buttonShader().setVec2("scale"  ,     resultScaleTexture * glm::sign(resultScale));
         
-        //Bind the texture to the slot 0
-        GL::bindTexture_2D(texture.ID, 0, "Button::renderTheTexture");
-
         //Draw the texture
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "Button::renderTheTexture");
         

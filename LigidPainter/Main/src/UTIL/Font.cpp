@@ -73,9 +73,6 @@ void Font::loadFont(const char* path){
 		LGDLOG::start<< "ERROR::FREETYPE: Failed to load font " << path << LGDLOG::end;
 	}
 	else {
-		//Activate the texture slot 0
-		glActiveTexture(GL_TEXTURE0);
-		
 		//FreeType indicate the resolution of a single char texture
 		FT_Set_Pixel_Sizes(face, 0, 48); 
 		
@@ -89,7 +86,7 @@ void Font::loadFont(const char* path){
 				continue;
 			}
 			
-			Texture texture = Texture(nullptr, nullptr, false, face->glyph->bitmap.width, face->glyph->bitmap.rows, GL_LINEAR, GL_RED, GL_R8, GL_MIRRORED_REPEAT, GL_TEXTURE_2D);
+			Texture texture = Texture(nullptr, face->glyph->bitmap.buffer, true, face->glyph->bitmap.width, face->glyph->bitmap.rows, GL_LINEAR, GL_RED, GL_R8, GL_MIRRORED_REPEAT, GL_TEXTURE_2D);
 
 			//Create character stucture using font char data received
 			character Character = {

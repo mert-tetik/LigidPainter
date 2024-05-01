@@ -263,7 +263,7 @@ void ProjectRecoverDialog::show(Timer& timer){
 
                         if(std::filesystem::is_regular_file(path)){
                             Texture txtr;
-                            txtr.load(path.c_str(), glm::ivec2(256));
+                            txtr.load(path.c_str());
 
                             std::string title = UTIL::removeExtension(UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher()));
 

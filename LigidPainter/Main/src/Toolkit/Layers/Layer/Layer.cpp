@@ -273,7 +273,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
         ShaderSystem::textureRenderingShader().setVec3("pos", layerButton.resultPos);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(material->displayingTexture.ID, 0, "LayerGUI::render_layer_bg - material");
+        ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(material->displayingTexture.ID, "LayerGUI::render_layer_bg - material"));
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
@@ -294,7 +294,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
         ShaderSystem::textureRenderingShader().setVec3("pos", layerButton.resultPos);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(brush->displayingTexture.ID, 0, "LayerGUI::render_layer_bg- vectpr");
+        ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(brush->displayingTexture.ID, "LayerGUI::render_layer_bg- vectpr"));
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
@@ -314,7 +314,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
         ShaderSystem::textureRenderingShader().setVec3("pos", layerButton.resultPos);
-        ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(capture_txtr->ID, 0, "LayerGUI::render_layer_bg - painting");
+        ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(capture_txtr->ID, "LayerGUI::render_layer_bg - painting"));
         ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
         ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
         ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
@@ -359,7 +359,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
             ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
             ShaderSystem::textureRenderingShader().setVec2("scale", scale);
             ShaderSystem::textureRenderingShader().setVec3("pos", pos);
-            ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(txtr.ID, 0, "LayerGUI::render_layer_bg - texture layer");
+            ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(txtr.ID, "LayerGUI::render_layer_bg - texture layer"));
             ShaderSystem::textureRenderingShader().setFloat("opacity", 1.0f);
             ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
             ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);

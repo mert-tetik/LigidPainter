@@ -61,7 +61,7 @@ unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int 
 
 void Texture::getData(char* pixels){
     glActiveTexture(GL_TEXTURE0);
-    GL::bindTexture_2D(this->ID, 0, "Texture::getData");
+    GL::bindTexture_2D(this->ID, "Texture::getData");
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
     
     GL::releaseBoundTextures("Texture::getData");
@@ -69,7 +69,7 @@ void Texture::getData(char* pixels){
 
 void Texture::getData(unsigned char* pixels){
     glActiveTexture(GL_TEXTURE0);
-    GL::bindTexture_2D(this->ID, 0, "Texture::getData");
+    GL::bindTexture_2D(this->ID, "Texture::getData");
 	glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     
     GL::releaseBoundTextures("Texture::getData");
@@ -94,7 +94,7 @@ glm::ivec2 Texture::getResolution(){
     
     if (currentTexture != ID) {
         // Bind the texture if it's not already bound
-        GL::bindTexture_2D(this->ID, UTIL::get_texture_slot_index(activeTextureUnit), "Texture::getResolution dest");
+        GL::bindTexture_2D(this->ID, "Texture::getResolution dest");
     }
 
     // Retrieve the texture width
@@ -123,7 +123,7 @@ glm::ivec2 Texture::getResolution(){
 
     // Restore the original texture binding (if it was changed)
     if (currentTexture != ID){
-        GL::bindTexture_2D(currentTexture, UTIL::get_texture_slot_index(activeTextureUnit), "Texture::getResolution already bound");
+        GL::bindTexture_2D(currentTexture, "Texture::getResolution already bound");
     }
 
     return glm::ivec2(w, h);
@@ -139,7 +139,7 @@ unsigned int Texture::duplicateTexture(){
     unsigned int newTexture;
     //Get the resolution data of the texture
     glGenTextures(1, &newTexture);
-    GL::bindTexture_2D(this->ID, 0, "Texture::duplicateTexture");
+    GL::bindTexture_2D(this->ID, "Texture::duplicateTexture");
 
     GLint wrapParam_S;
     GLint wrapParam_T;
@@ -154,7 +154,7 @@ unsigned int Texture::duplicateTexture(){
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalFormat);
     
     //Create the duplicated texture
-    GL::bindTexture_2D(newTexture, 0, "Texture::duplicateTexture");
+    GL::bindTexture_2D(newTexture, "Texture::duplicateTexture");
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -180,7 +180,7 @@ unsigned int Texture::duplicateTexture(){
 void Texture::duplicateTexture(Texture& txtr){
     
     //Get the resolution data of the texture
-    GL::bindTexture_2D(this->ID, 0, "Texture::duplicateTexture");
+    GL::bindTexture_2D(this->ID, "Texture::duplicateTexture");
     
     GLint wrapParam_S;
     GLint wrapParam_T;
@@ -195,7 +195,7 @@ void Texture::duplicateTexture(Texture& txtr){
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalFormat);
     
     //Create the duplicated texture
-    GL::bindTexture_2D(txtr.ID, 0, "Texture::duplicateTexture");
+    GL::bindTexture_2D(txtr.ID, "Texture::duplicateTexture");
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -220,7 +220,7 @@ void Texture::duplicateTexture(Texture& txtr){
 void Texture::duplicateTextureSub(Texture& txtr){
     
     //Get the resolution data of the texture
-    GL::bindTexture_2D(this->ID, 0, "Texture::duplicateTextureSub");
+    GL::bindTexture_2D(this->ID, "Texture::duplicateTextureSub");
     
     GLint wrapParam_S;
     GLint wrapParam_T;
@@ -235,7 +235,7 @@ void Texture::duplicateTextureSub(Texture& txtr){
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalFormat);
     
     //Create the duplicated texture
-    GL::bindTexture_2D(txtr.ID, 0, "Texture::duplicateTextureSub");
+    GL::bindTexture_2D(txtr.ID, "Texture::duplicateTextureSub");
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParam_S);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam_T);
@@ -369,7 +369,7 @@ std::vector<MaterialIDColor> Texture::getMaterialIDPalette(){
         ShaderSystem::colorIDMaskingShader().setVec3("pos", glm::vec3(0.5f));
         ShaderSystem::colorIDMaskingShader().setVec2("scale", glm::vec2(0.5f));
 
-        ShaderSystem::colorIDMaskingShader().setInt("IDTexture", 0); GL::bindTexture_2D(this->ID, 0, "Texture::getMaterialIDPalette");
+        ShaderSystem::colorIDMaskingShader().setInt("IDTexture", GL::bindTexture_2D(this->ID, "Texture::getMaterialIDPalette"));
 
         ShaderSystem::colorIDMaskingShader().setVec3("wbr", glm::vec3(res[i] == glm::vec3(1.f,1.f,1.f), res[i] == glm::vec3(0.f,0.f,0.f), res[i] == glm::vec3(1.f,0.f,0.f)));
         ShaderSystem::colorIDMaskingShader().setVec3("pbc", glm::vec3(res[i] == glm::vec3(1.f,0.f,1.f), res[i] == glm::vec3(0.f,0.f,1.f), res[i] == glm::vec3(0.f,1.f,1.f)));
@@ -441,8 +441,8 @@ void Texture::removeSeams(Mesh& mesh){
     ShaderSystem::boundaryExpandingShader().setVec3("pos"         ,       glm::vec3(0.5f, 0.5f, 0.9f));
     ShaderSystem::boundaryExpandingShader().setVec2("scale"       ,       glm::vec2(0.5f, 0.5f));
 
-    ShaderSystem::boundaryExpandingShader().setInt("whiteUVTexture", 0); GL::bindTexture_2D(mesh.uvMask.ID, 0, "Texture::removeSeams");
-    ShaderSystem::boundaryExpandingShader().setInt("originalTexture", 1); GL::bindTexture_2D(remove_seams_copy_txtr.ID, 1, "Texture::removeSeams");
+    ShaderSystem::boundaryExpandingShader().setInt("whiteUVTexture", GL::bindTexture_2D(mesh.uvMask.ID, "Texture::removeSeams"));
+    ShaderSystem::boundaryExpandingShader().setInt("originalTexture", GL::bindTexture_2D(remove_seams_copy_txtr.ID, "Texture::removeSeams"));
     
     LigidGL::makeDrawCall(GL_TRIANGLES, 0 , 6, "Texture::removeSeams : Rendering result");
 
@@ -483,9 +483,9 @@ void Texture::removeUnselectedFaces(Mesh& mesh){
     ShaderSystem::removeUnselectedFacesShader().setMat4("perspectiveProjection", glm::mat4(0.f));
     ShaderSystem::removeUnselectedFacesShader().setMat4("view", glm::mat4(0.f));
     
-    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::removeUnselectedFacesShader(), mesh, GL_TEXTURE1, GL_TEXTURE2);
+    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::removeUnselectedFacesShader(), mesh);
 
-    ShaderSystem::removeUnselectedFacesShader().setInt("txtr", 0); GL::bindTexture_2D(remove_unselected_faces_copy_txtr.ID, 0, "Texture : removeUnselectedFaces");
+    ShaderSystem::removeUnselectedFacesShader().setInt("txtr", GL::bindTexture_2D(remove_unselected_faces_copy_txtr.ID, "Texture : removeUnselectedFaces"));
 
     mesh.Draw();
 
@@ -557,8 +557,8 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         
         glm::mat4 projection = glm::ortho(0.f, (float)textureRes, (float)textureRes, 0.f); 
         ShaderSystem::bluringShader().use();
-        ShaderSystem::bluringShader().setInt("txtr", 0); GL::bindTexture_2D(normalMapTxtr.ID, 0, "Texture::generateProceduralTexture");
-        ShaderSystem::bluringShader().setInt("uvMask", 1); GL::bindTexture_2D(mesh.uvMask.ID, 1, "Texture::generateProceduralTexture");
+        ShaderSystem::bluringShader().setInt("txtr", GL::bindTexture_2D(normalMapTxtr.ID, "Texture::generateProceduralTexture"));
+        ShaderSystem::bluringShader().setInt("uvMask", GL::bindTexture_2D(mesh.uvMask.ID, "Texture::generateProceduralTexture"));
         ShaderSystem::bluringShader().setVec2("txtrRes", glm::vec2(textureRes));
         ShaderSystem::bluringShader().setMat4("projection"  ,       projection);
         ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
@@ -577,9 +577,9 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         glViewport(0, 0, textureRes, textureRes);
         
         ShaderSystem::edgeWearShader().use();
-        ShaderSystem::edgeWearShader().setInt("normalVectorTxtr", 0); GL::bindTexture_2D(normalMapTxtr.ID, 0, "Texture::generateProceduralTexture");
-        ShaderSystem::edgeWearShader().setInt("normalVectorTxtrBlurred", 1); GL::bindTexture_2D(normalMapTxtrBlurred.ID, 1, "Texture::generateProceduralTexture");
-        ShaderSystem::edgeWearShader().setInt("noiseTexture", 2); GL::bindTexture_2D(noiseTxtr.ID, 2, "Texture::generateProceduralTexture");
+        ShaderSystem::edgeWearShader().setInt("normalVectorTxtr", GL::bindTexture_2D(normalMapTxtr.ID, "Texture::generateProceduralTexture"));
+        ShaderSystem::edgeWearShader().setInt("normalVectorTxtrBlurred", GL::bindTexture_2D(normalMapTxtrBlurred.ID, "Texture::generateProceduralTexture"));
+        ShaderSystem::edgeWearShader().setInt("noiseTexture", GL::bindTexture_2D(noiseTxtr.ID, "Texture::generateProceduralTexture"));
         ShaderSystem::edgeWearShader().setInt("invert", this->proceduralProps.proceduralnverted);
         ShaderSystem::edgeWearShader().setFloat("brightness", this->proceduralProps.proceduralBrightness);
         ShaderSystem::edgeWearShader().setFloat("softness", this->proceduralProps.smartProperties.y);
@@ -595,8 +595,8 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
 
         //Bluring the result        
         ShaderSystem::bluringShader().use();
-        ShaderSystem::bluringShader().setInt("txtr", 0); GL::bindTexture_2D(destTxtrCopy.ID, 0, "Texture::generateProceduralTexture");
-        ShaderSystem::bluringShader().setInt("uvMask", 1); GL::bindTexture_2D(mesh.uvMask.ID, 1, "Texture::generateProceduralTexture");
+        ShaderSystem::bluringShader().setInt("txtr", GL::bindTexture_2D(destTxtrCopy.ID, "Texture::generateProceduralTexture"));
+        ShaderSystem::bluringShader().setInt("uvMask", GL::bindTexture_2D(mesh.uvMask.ID, "Texture::generateProceduralTexture"));
         ShaderSystem::bluringShader().setVec2("txtrRes", glm::vec2(textureRes));
         ShaderSystem::bluringShader().setMat4("projection"  ,       projection);
         ShaderSystem::bluringShader().setMat4("projectedPosProjection"  ,       projection);
@@ -638,7 +638,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         ShaderSystem::to2DProcedural().setMat4("perspectiveProjection", getScene()->projectionMatrix);
         ShaderSystem::to2DProcedural().setMat4("view", getScene()->camera.viewMatrix);
 
-        ShaderSystem::to2DProcedural().setInt("proceduralTexture", 1); GL::bindTexture_2D((this->proceduralProps.proceduralID == 1000) ? this->ID : this->proceduralProps.proceduralTextureID, 1, "Texture::generateProceduralTexture");
+        ShaderSystem::to2DProcedural().setInt("proceduralTexture", GL::bindTexture_2D((this->proceduralProps.proceduralID == 1000) ? this->ID : this->proceduralProps.proceduralTextureID, "Texture::generateProceduralTexture"));
         
         unsigned int wrapParam = GL_REPEAT; 
 
@@ -703,7 +703,7 @@ void Texture::generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResol
     
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution.x, (float)textureResolution.y, 0.f); 
     ShaderSystem::heightToNormalMap().use();
-    ShaderSystem::heightToNormalMap().setInt("heightMap", 0); GL::bindTexture_2D(this->ID, 0, "Texture::generateNormalMap");
+    ShaderSystem::heightToNormalMap().setInt("heightMap", GL::bindTexture_2D(this->ID, "Texture::generateNormalMap"));
     ShaderSystem::heightToNormalMap().setInt("alphaMode", alphaMode);
     ShaderSystem::heightToNormalMap().setInt("txtrRes", textureResolution.x);
     ShaderSystem::heightToNormalMap().setFloat("strength", proceduralNormalStrength);
@@ -738,7 +738,7 @@ void Texture::applyNormalMap(float proceduralNormalStrength, bool proceduralNorm
     getBox()->bindBuffers();
     
     ShaderSystem::heightToNormalMap().use();
-    ShaderSystem::heightToNormalMap().setInt("heightMap", 0); GL::bindTexture_2D(tx.ID, 0, "Texture::applyNormalMap");
+    ShaderSystem::heightToNormalMap().setInt("heightMap", GL::bindTexture_2D(tx.ID, "Texture::applyNormalMap"));
     ShaderSystem::heightToNormalMap().setInt("alphaMode", alphaMode);
     ShaderSystem::heightToNormalMap().setInt("txtrRes", resolution.x);
     ShaderSystem::heightToNormalMap().setFloat("strength", proceduralNormalStrength);
@@ -849,8 +849,8 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         ShaderSystem::PBRDisplayOnly().setMat4("modelMatrix", glm::mat4(1.f));
         
         ShaderSystem::PBRDisplayOnly().setVec3("viewPos",matCam.cameraPos);
-        ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); GL::bindTexture_CubeMap(getScene()->skybox.ID, 0, "Texture::generateNormalMap");
-        ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", 1); GL::bindTexture_CubeMap(getScene()->skybox.IDPrefiltered, 1, "Texture::generateNormalMap");
+        ShaderSystem::PBRDisplayOnly().setInt("skybox", GL::bindTexture_CubeMap(getScene()->skybox.ID, "Texture::generateNormalMap"));
+        ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", GL::bindTexture_CubeMap(getScene()->skybox.IDPrefiltered, "Texture::generateNormalMap"));
         ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", 2);
         ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", 3);
         ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", 4);
@@ -874,12 +874,12 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
             ShaderSystem::PBRDisplayOnly().use();
 
             //Bind the channels of the material
-            GL::bindTexture_2D(proc.ID, 2, "Texture::generateProceduralDisplayingTexture");
-            GL::bindTexture_2D(proc.ID, 3, "Texture::generateProceduralDisplayingTexture");
-            GL::bindTexture_2D(proc.ID, 4, "Texture::generateProceduralDisplayingTexture");
-            GL::bindTexture_2D(proc.ID, 5, "Texture::generateProceduralDisplayingTexture");
-            GL::bindTexture_2D(proc.ID, 6, "Texture::generateProceduralDisplayingTexture");
-            GL::bindTexture_2D(proc.ID, 7, "Texture::generateProceduralDisplayingTexture");
+            GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture");
+            GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture");
+            GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture");
+            GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture");
+            GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture");
+            GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture");
 
             model.meshes[i].Draw();
         }
@@ -912,7 +912,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         ShaderSystem::proceduralDisplayerShader().setFloat("proceduralBrightness", this->proceduralProps.proceduralBrightness);
         ShaderSystem::proceduralDisplayerShader().setInt("proceduralGrayScale", this->proceduralProps.proceduralGrayScale);
         ShaderSystem::proceduralDisplayerShader().setFloat("displayOpacity", 1.f);
-        ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", 0); GL::bindTexture_2D(this->proceduralProps.proceduralTextureID, 0, "Texture::generateProceduralDisplayingTexture");
+        ShaderSystem::proceduralDisplayerShader().setInt("proceduralTexture", GL::bindTexture_2D(this->proceduralProps.proceduralTextureID, "Texture::generateProceduralDisplayingTexture"));
 
         unsigned int wrapParam = GL_REPEAT; 
 
@@ -1184,7 +1184,7 @@ void Texture::flipTexture(bool horizontal, bool vertical){
     ShaderSystem::textureRenderingShader().setVec2("scale", scale);
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
-    ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(copiedTxtr.ID, 0, "Texture::flipTxtr");
+    ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(copiedTxtr.ID, "Texture::flipTxtr"));
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
     getBox()->bindBuffers();
@@ -1220,7 +1220,7 @@ void Texture::resize(const glm::ivec2 newResolution){
     ShaderSystem::textureRenderingShader().setVec2("scale", scale);
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
-    ShaderSystem::textureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(copiedTxtr.ID, 0, "Texture::resize");
+    ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(copiedTxtr.ID, "Texture::resize"));
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 
     getBox()->bindBuffers();
@@ -1278,9 +1278,9 @@ void Texture::mix(Texture txtr2, Texture mask, bool maskAlpha, bool normalMapMod
     Texture copiedTxtr = this->duplicateTexture();
     FBO.bind();
 
-    ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", 0); GL::bindTexture_2D(mask.ID, 0, "Texture::mix");
-    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", 1); GL::bindTexture_2D(copiedTxtr.ID, 1, "Texture::mix");
-    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", 2); GL::bindTexture_2D(txtr2.ID, 2, "Texture::mix");
+    ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", GL::bindTexture_2D(mask.ID, "Texture::mix"));
+    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", GL::bindTexture_2D(copiedTxtr.ID, "Texture::mix"));
+    ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", GL::bindTexture_2D(txtr2.ID, "Texture::mix"));
     
     ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", maskAlpha);
     ShaderSystem::grayScaleIDMaskingShader().setInt("normalMapMode", normalMapMode);
@@ -1317,14 +1317,14 @@ void Texture::render_mesh(Mesh& mesh, MaterialChannels channels, Camera cam){
     ShaderSystem::PBRDisplayOnly().setMat4("modelMatrix", glm::mat4(1.f));
     
     ShaderSystem::PBRDisplayOnly().setVec3("viewPos", cam.cameraPos);
-    ShaderSystem::PBRDisplayOnly().setInt("skybox", 0); GL::bindTexture_CubeMap(getScene()->skybox.ID, 0, "Texture::renderMesh");
-    ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", 1); GL::bindTexture_CubeMap(getScene()->skybox.IDPrefiltered, 1, "Texture::renderMesh");
-    ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", 2); GL::bindTexture_2D(channels.albedo.ID, 2, "Texture::renderMesh");
-    ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", 3); GL::bindTexture_2D(channels.roughness.ID, 3, "Texture::renderMesh");
-    ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", 4); GL::bindTexture_2D(channels.metallic.ID, 4, "Texture::renderMesh");
-    ShaderSystem::PBRDisplayOnly().setInt("normalMapTxtr", 5); GL::bindTexture_2D(channels.normalMap.ID, 5, "Texture::renderMesh");
-    ShaderSystem::PBRDisplayOnly().setInt("heightMapTxtr", 6); GL::bindTexture_2D(channels.heightMap.ID, 6, "Texture::renderMesh");
-    ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", 7); GL::bindTexture_2D(channels.ambientOcclusion.ID, 7, "Texture::renderMesh");
+    ShaderSystem::PBRDisplayOnly().setInt("skybox", GL::bindTexture_CubeMap(getScene()->skybox.ID, "Texture::renderMesh"));
+    ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", GL::bindTexture_CubeMap(getScene()->skybox.IDPrefiltered, "Texture::renderMesh"));
+    ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", GL::bindTexture_2D(channels.albedo.ID, "Texture::renderMesh"));
+    ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", GL::bindTexture_2D(channels.roughness.ID, "Texture::renderMesh"));
+    ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", GL::bindTexture_2D(channels.metallic.ID, "Texture::renderMesh"));
+    ShaderSystem::PBRDisplayOnly().setInt("normalMapTxtr", GL::bindTexture_2D(channels.normalMap.ID, "Texture::renderMesh"));
+    ShaderSystem::PBRDisplayOnly().setInt("heightMapTxtr", GL::bindTexture_2D(channels.heightMap.ID, "Texture::renderMesh"));
+    ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", GL::bindTexture_2D(channels.ambientOcclusion.ID, "Texture::renderMesh"));
     ShaderSystem::PBRDisplayOnly().setInt("displayingMode", 0);
 
     mesh.Draw();

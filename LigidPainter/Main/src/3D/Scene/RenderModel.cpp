@@ -69,19 +69,12 @@ void Scene::render_model(Timer& timer){
                                                             ShaderSystem::tdModelShader(),
                                                             ShaderUTIL::PaintingData(
                                                                                         ShaderUTIL::PaintingData::PaintingBuffers(
-                                                                                                                                    GL_TEXTURE0,
                                                                                                                                     (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].albedo : appTextures.noLayersWarningTexture,
-                                                                                                                                    GL_TEXTURE1,
                                                                                                                                     (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].roughness : appTextures.white,
-                                                                                                                                    GL_TEXTURE2,
                                                                                                                                     (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].metallic : appTextures.black,
-                                                                                                                                    GL_TEXTURE3,
                                                                                                                                     (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].normalMap : appTextures.noLayersWarningTexture,
-                                                                                                                                    GL_TEXTURE4,
                                                                                                                                     (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].heightMap : appTextures.white,
-                                                                                                                                    GL_TEXTURE5,
                                                                                                                                     (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].ambientOcclusion : appTextures.white,
-                                                                                                                                    GL_TEXTURE8,
                                                                                                                                     painting_projected_painting_FBO.colorBuffer
                                                                                                                                 ),   
                                                                                         ShaderUTIL::PaintingData::PaintingSmearData(
@@ -100,10 +93,10 @@ void Scene::render_model(Timer& timer){
                                                                                     )
                                                         );
             
-            ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::tdModelShader(), this->model->meshes[i], GL_TEXTURE11, GL_TEXTURE12);
+            ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::tdModelShader(), this->model->meshes[i]);
 
-            ShaderSystem::tdModelShader().setInt("skybox",6); GL::bindTexture_CubeMap(skybox.ID, 6, "Scene::render_model");
-            ShaderSystem::tdModelShader().setInt("prefilterMap",7); GL::bindTexture_CubeMap(skybox.IDPrefiltered, 7, "Scene::render_model");
+            ShaderSystem::tdModelShader().setInt("skybox", GL::bindTexture_CubeMap(skybox.ID, "Scene::render_model"));
+            ShaderSystem::tdModelShader().setInt("prefilterMap", GL::bindTexture_CubeMap(skybox.IDPrefiltered, "Scene::render_model"));
             
             ShaderSystem::tdModelShader().setVec3("viewPos", this->camera.cameraPos);
             ShaderSystem::tdModelShader().setMat4("view", this->camera.viewMatrix);
@@ -148,6 +141,8 @@ void Scene::render_model(Timer& timer){
             if(!(i != button_mesh_selection.selectedMeshI && this->model->meshes[i].face_selection_data.hideUnselected)){
                 this->model->meshes[i].Draw();
             }
+
+            GL::releaseBoundTextures("Scene::render_model");
         }   
     }
     else{
@@ -157,19 +152,12 @@ void Scene::render_model(Timer& timer){
                                                         ShaderSystem::solidPaintingShader(),
                                                         ShaderUTIL::PaintingData(
                                                                                     ShaderUTIL::PaintingData::PaintingBuffers(
-                                                                                                                                GL_TEXTURE0,
                                                                                                                                 (panel_library_selected_texture.ID) ? panel_library_selected_texture.ID : appTextures.black,
                                                                                                                                 0,
                                                                                                                                 0,
                                                                                                                                 0,
                                                                                                                                 0,
                                                                                                                                 0,
-                                                                                                                                0,
-                                                                                                                                0,
-                                                                                                                                0,
-                                                                                                                                0,
-                                                                                                                                0,
-                                                                                                                                GL_TEXTURE1,
                                                                                                                                 painting_projected_painting_FBO.colorBuffer
                                                                                                                             ),   
                                                                                     ShaderUTIL::PaintingData::PaintingSmearData(
@@ -208,12 +196,13 @@ void Scene::render_model(Timer& timer){
 
         ShaderSystem::solidPaintingShader().setInt("paintingMode", painting_paint_condition());
 
-        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::solidPaintingShader(), *this->get_selected_mesh(), GL_TEXTURE2, GL_TEXTURE3);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::solidPaintingShader(), *this->get_selected_mesh());
 
         this->get_selected_mesh()->Draw();
+        
+        GL::releaseBoundTextures("Scene::render_model");
     }
 
-    GL::releaseBoundTextures("Scene::render_model");
 
     if(this->get_selected_mesh()->face_selection_data.editMode){
         ShaderSystem::color3d().use();

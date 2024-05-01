@@ -198,7 +198,7 @@ namespace Settings{
         ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
         
         ShaderSystem::defaultFramebufferShader().setVec2("resolution", this->resolution);
-        ShaderSystem::defaultFramebufferShader().setInt("txtr", 0); GL::bindTexture_2D(this->FBO.colorBuffer.ID, 0, "DefaultFramebuffer::render");
+        ShaderSystem::defaultFramebufferShader().setInt("txtr", GL::bindTexture_2D(this->FBO.colorBuffer.ID, "DefaultFramebuffer::render"));
         
         LigidGL::makeDrawCall(GL_TRIANGLES, 0, 6, "DefaultFramebuffer::render");
 

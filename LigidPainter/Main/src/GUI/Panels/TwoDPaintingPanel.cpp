@@ -79,13 +79,6 @@ void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
                                                                                                                             0,
                                                                                                                             0,
                                                                                                                             0,
-                                                                                                                            0,
-                                                                                                                            0,
-                                                                                                                            0,
-                                                                                                                            0,
-                                                                                                                            0,
-                                                                                                                            0,
-                                                                                                                            GL_TEXTURE6,
                                                                                                                             painting_projected_painting_FBO.colorBuffer
                                                                                                                         ),   
                                                                                 ShaderUTIL::PaintingData::PaintingSmearData(

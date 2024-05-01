@@ -476,7 +476,7 @@ void Mesh::updatePosNormalTexture(){
         ShaderSystem::renderModelData().setMat4("modelMatrix",getScene()->transformMatrix);
         ShaderSystem::renderModelData().setInt("state", i + 1);
 
-        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *this, GL_TEXTURE0, GL_TEXTURE1);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *this);
 
         //Draw the selected mesh in 3D
         ShaderSystem::renderModelData().setInt("primitiveCount", this->indices.size() / 3);

@@ -265,7 +265,7 @@ bool boxSelectionInteraction(Timer &timer, Mesh* mesh){
 }
 
 void updatePrimitivesArrayTexture(Mesh* mesh, bool update_all){
-    GL::bindTexture_2D(mesh->face_selection_data.selectedFaces.ID, 0, "updatePrimitivesArrayTexture");
+    GL::bindTexture_2D(mesh->face_selection_data.selectedFaces.ID, "updatePrimitivesArrayTexture");
 
     LigidGL::cleanGLErrors();
 

@@ -70,7 +70,7 @@ void TextureField::renderWrappedTextureField(
         ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
         ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
-        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh());
         
         getScene()->get_selected_mesh()->Draw();
 
@@ -100,7 +100,7 @@ void TextureField::renderWrappedTextureField(
         ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
         ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
-        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh());
         
         getScene()->get_selected_mesh()->Draw();
 
@@ -501,7 +501,7 @@ void TextureField::renderWrappedTextureBox(bool generatingTextureMode){
     
     // --------------- Set fragment shader data ---------------
     ShaderSystem::threeDTextureRenderingShader().setFloat("depthToleranceValue", calculateDepthToleranceValue((threeDPointTopLeft.pos + threeDPointTopRight.pos + threeDPointBottomLeft.pos + threeDPointBottomRight.pos) / 4.f));
-    ShaderSystem::threeDTextureRenderingShader().setInt("txtr", 0); GL::bindTexture_2D(this->texture.ID, 0, "TextureField::renderWrappedTextureBox");
+    ShaderSystem::threeDTextureRenderingShader().setInt("txtr", GL::bindTexture_2D(this->texture.ID, "TextureField::renderWrappedTextureBox"));
     
     if(generatingTextureMode)
         ShaderSystem::threeDTextureRenderingShader().setFloat("opacity", 1.0f);
@@ -684,7 +684,7 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, bool doMo
     ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
     ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
 
-    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh(), GL_TEXTURE0, GL_TEXTURE1); 
+    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh()); 
     
     getScene()->get_selected_mesh()->Draw();
     

@@ -146,16 +146,15 @@ void Brush::updateDisplayTexture(float radius){
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        ShaderSystem::twoDPainting().setInt("brush.txtr", 0); 
+        ShaderSystem::twoDPainting().setInt("brush.txtr", GL::bindTexture_2D((this->properties.brushTexture.ID) ? this->properties.brushTexture.ID : appTextures.white.ID, "Brush::updateDisplayingTexture")); 
 
-        GL::bindTexture_2D((this->properties.brushTexture.ID) ? this->properties.brushTexture.ID : appTextures.white.ID, 0, "Brush::updateDisplayingTexture");
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
         GLfloat borderColor[] = { 0.f, 0.f, 0.f, 1.f };  // Replace r, g, b, a with the desired color values
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
         
-        ShaderSystem::twoDPainting().setInt("bgTxtr", 1); GL::bindTexture_2D(bgTxtr.ID, 1, "Brush::updateDisplayingTexture");
+        ShaderSystem::twoDPainting().setInt("bgTxtr", GL::bindTexture_2D(bgTxtr.ID, "Brush::updateDisplayingTexture"));
         
         //Stroke positions
         std::vector<glm::vec2> strokes;

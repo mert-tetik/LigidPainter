@@ -75,7 +75,7 @@ void Skybox::createDisplayingTxtr(){
 	glm::mat4 modelMatrix = glm::mat4(1);
 	ShaderSystem::skyboxBall().setMat4("modelMatrix",modelMatrix);
 	
-	ShaderSystem::skyboxBall().setInt("skybox",0); GL::bindTexture_CubeMap(this->ID, 0, "Skybox::createDisplayingTxtr");
+	ShaderSystem::skyboxBall().setInt("skybox", GL::bindTexture_CubeMap(this->ID, "Skybox::createDisplayingTxtr"));
 	
 	getSphereModel()->Draw();
 

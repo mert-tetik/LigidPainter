@@ -27,15 +27,15 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "3D/Mesh/Mesh.hpp"
 
-void ShaderUTIL::set_shader_struct_face_selection_data(Shader shader, Mesh& mesh, unsigned int txtr_slot1, unsigned int txtr_slot2){
+void ShaderUTIL::set_shader_struct_face_selection_data(Shader shader, Mesh& mesh){
     shader.use();
-    if(txtr_slot1 && mesh.face_selection_data.selectedFaces.ID && txtr_slot2 && mesh.face_selection_data.meshMask.ID){
+    if(mesh.face_selection_data.selectedFaces.ID && mesh.face_selection_data.meshMask.ID){
         shader.setFloat("face_selection_data.prim_txtr_res", mesh.face_selection_data.selectedFaces.getResolution().x);
         shader.setInt("face_selection_data.meshSelectionEditing", mesh.face_selection_data.editMode);
         shader.setInt("face_selection_data.hideUnselected", mesh.face_selection_data.hideUnselected);
         shader.setInt("face_selection_data.usingMeshSelection", mesh.face_selection_data.activated);
-        shader.setInt("face_selection_data.selectedPrimitiveIDS", UTIL::get_texture_slot_index(txtr_slot1)); GL::bindTexture_2D(mesh.face_selection_data.selectedFaces.ID, UTIL::get_texture_slot_index(txtr_slot1), "ShaderUTIL::set_shader_struct_face_selection_data");
-        shader.setInt("face_selection_data.meshMask", UTIL::get_texture_slot_index(txtr_slot2)); GL::bindTexture_2D(mesh.face_selection_data.meshMask.ID, UTIL::get_texture_slot_index(txtr_slot2), "ShaderUTIL::set_shader_struct_face_selection_data");
+        shader.setInt("face_selection_data.selectedPrimitiveIDS", GL::bindTexture_2D(mesh.face_selection_data.selectedFaces.ID, "ShaderUTIL::set_shader_struct_face_selection_data"));
+        shader.setInt("face_selection_data.meshMask", GL::bindTexture_2D(mesh.face_selection_data.meshMask.ID, "ShaderUTIL::set_shader_struct_face_selection_data"));
         shader.setInt("face_selection_data.primitiveCount", mesh.face_selection_data.selectedPrimitiveIDs.size());
     }
     else{
@@ -45,27 +45,14 @@ void ShaderUTIL::set_shader_struct_face_selection_data(Shader shader, Mesh& mesh
 
 void ShaderUTIL::set_shader_struct_painting_data(Shader shader, PaintingData painting_data){
     shader.use();
-    if(painting_data.painting_buffers.albedo_txtr.ID){
-        shader.setInt("painting_data.painting_buffers.albedo_txtr", UTIL::get_texture_slot_index(painting_data.painting_buffers.albedo_txtr_slot)); GL::bindTexture_2D(painting_data.painting_buffers.albedo_txtr.ID, UTIL::get_texture_slot_index(painting_data.painting_buffers.albedo_txtr_slot), "ShaderUTIL::set_shader_struct_painting_data");
-    }
-    if(painting_data.painting_buffers.roughness_txtr.ID){
-        shader.setInt("painting_data.painting_buffers.roughness_txtr", UTIL::get_texture_slot_index(painting_data.painting_buffers.roughness_txtr_slot)); GL::bindTexture_2D(painting_data.painting_buffers.roughness_txtr.ID, UTIL::get_texture_slot_index(painting_data.painting_buffers.roughness_txtr_slot), "ShaderUTIL::set_shader_struct_painting_data");
-    }
-    if(painting_data.painting_buffers.metallic_txtr.ID){
-        shader.setInt("painting_data.painting_buffers.metallic_txtr", UTIL::get_texture_slot_index(painting_data.painting_buffers.metallic_txtr_slot)); GL::bindTexture_2D(painting_data.painting_buffers.metallic_txtr.ID, UTIL::get_texture_slot_index(painting_data.painting_buffers.metallic_txtr_slot), "ShaderUTIL::set_shader_struct_painting_data");
-    }
-    if(painting_data.painting_buffers.normal_map_txtr.ID){
-        shader.setInt("painting_data.painting_buffers.normal_map_txtr", UTIL::get_texture_slot_index(painting_data.painting_buffers.normal_map_txtr_slot)); GL::bindTexture_2D(painting_data.painting_buffers.normal_map_txtr.ID, UTIL::get_texture_slot_index(painting_data.painting_buffers.normal_map_txtr_slot), "ShaderUTIL::set_shader_struct_painting_data");
-    }
-    if(painting_data.painting_buffers.height_map_txtr.ID){
-        shader.setInt("painting_data.painting_buffers.height_map_txtr", UTIL::get_texture_slot_index(painting_data.painting_buffers.height_map_txtr_slot)); GL::bindTexture_2D(painting_data.painting_buffers.height_map_txtr.ID, UTIL::get_texture_slot_index(painting_data.painting_buffers.height_map_txtr_slot), "ShaderUTIL::set_shader_struct_painting_data");
-    }
-    if(painting_data.painting_buffers.ao_txtr.ID){
-        shader.setInt("painting_data.painting_buffers.ao_txtr", UTIL::get_texture_slot_index(painting_data.painting_buffers.ao_txtr_slot)); GL::bindTexture_2D(painting_data.painting_buffers.ao_txtr.ID, UTIL::get_texture_slot_index(painting_data.painting_buffers.ao_txtr_slot), "ShaderUTIL::set_shader_struct_painting_data");
-    }
-    if(painting_data.painting_buffers.brush_txtr.ID){
-        shader.setInt("painting_data.painting_buffers.brush_txtr", UTIL::get_texture_slot_index(painting_data.painting_buffers.brush_txtr_slot)); GL::bindTexture_2D(painting_data.painting_buffers.brush_txtr.ID, UTIL::get_texture_slot_index(painting_data.painting_buffers.brush_txtr_slot), "ShaderUTIL::set_shader_struct_painting_data");
-    }
+
+    shader.setInt("painting_data.painting_buffers.albedo_txtr", GL::bindTexture_2D(painting_data.painting_buffers.albedo_txtr.ID, "ShaderUTIL::set_shader_struct_painting_data"));
+    shader.setInt("painting_data.painting_buffers.roughness_txtr", GL::bindTexture_2D(painting_data.painting_buffers.roughness_txtr.ID, "ShaderUTIL::set_shader_struct_painting_data"));
+    shader.setInt("painting_data.painting_buffers.metallic_txtr", GL::bindTexture_2D(painting_data.painting_buffers.metallic_txtr.ID, "ShaderUTIL::set_shader_struct_painting_data"));
+    shader.setInt("painting_data.painting_buffers.normal_map_txtr", GL::bindTexture_2D(painting_data.painting_buffers.normal_map_txtr.ID, "ShaderUTIL::set_shader_struct_painting_data"));
+    shader.setInt("painting_data.painting_buffers.height_map_txtr", GL::bindTexture_2D(painting_data.painting_buffers.height_map_txtr.ID, "ShaderUTIL::set_shader_struct_painting_data"));
+    shader.setInt("painting_data.painting_buffers.ao_txtr", GL::bindTexture_2D(painting_data.painting_buffers.ao_txtr.ID, "ShaderUTIL::set_shader_struct_painting_data"));
+    shader.setInt("painting_data.painting_buffers.brush_txtr", GL::bindTexture_2D(painting_data.painting_buffers.brush_txtr.ID, "ShaderUTIL::set_shader_struct_painting_data"));
     
     shader.setFloat("painting_data.smear_data.transform_strength", painting_data.smear_data.transform_strength);
     shader.setFloat("painting_data.smear_data.blur_strength", painting_data.smear_data.blur_strength);

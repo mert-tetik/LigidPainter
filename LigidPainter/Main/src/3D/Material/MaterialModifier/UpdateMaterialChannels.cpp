@@ -112,8 +112,8 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
 
     glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
     blurShader.use();
-    blurShader.setInt("txtr", 0); GL::bindTexture_2D(textureCopy_bluring.ID, 0, "UpdateMaterialChannel : blurTheTexture");
-    blurShader.setInt("uvMask", 1); GL::bindTexture_2D(mesh.uvMask.ID, 1, "UpdateMaterialChannel : blurTheTexture");
+    blurShader.setInt("txtr", GL::bindTexture_2D(textureCopy_bluring.ID, "UpdateMaterialChannel : blurTheTexture"));
+    blurShader.setInt("uvMask", GL::bindTexture_2D(mesh.uvMask.ID, "UpdateMaterialChannel : blurTheTexture"));
     blurShader.setVec2("txtrRes", glm::vec2(textureResolution));
     blurShader.setMat4("projection"  ,       projection);
     blurShader.setMat4("projectedPosProjection"  ,       projection);
@@ -239,13 +239,14 @@ static void genAmbientOcclusion(
         ShaderSystem::depth3D().setMat4("projection", projection);
         ShaderSystem::depth3D().setMat4("modelMatrix", glm::mat4(1.f));
 
-        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::depth3D(), Mesh(), GL_TEXTURE0, GL_TEXTURE1);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::depth3D(), Mesh());
 
         if(singleMesh)
             mesh.Draw();
         else
             model.Draw();
 
+        GL::releaseBoundTextures("UpdateMaterialChannel : genAmbientOcclusion");
         aoFBO.bind();
         glViewport(0, 0, aoTxtrRes.x, aoTxtrRes.y);
         
@@ -254,10 +255,10 @@ static void genAmbientOcclusion(
         ShaderSystem::AOGen().setMat4("perspectiveProjection", projection); 
         ShaderSystem::AOGen().setMat4("view", view); 
         
-        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::AOGen(), mesh, GL_TEXTURE2, GL_TEXTURE3);
+        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::AOGen(), mesh);
         
-        ShaderSystem::AOGen().setInt("depthTexture", 0); GL::bindTexture_2D(aoDepthTxtr.ID, 0, "UpdateMaterialChannel : genAmbientOcclusion");
-        ShaderSystem::AOGen().setInt("srcTxtr", 1); GL::bindTexture_2D(aoTxtrDup.ID, 1, "UpdateMaterialChannel : genAmbientOcclusion");
+        ShaderSystem::AOGen().setInt("depthTexture", GL::bindTexture_2D(aoDepthTxtr.ID, "UpdateMaterialChannel : genAmbientOcclusion"));
+        ShaderSystem::AOGen().setInt("srcTxtr", GL::bindTexture_2D(aoTxtrDup.ID, "UpdateMaterialChannel : genAmbientOcclusion"));
         ShaderSystem::AOGen().setFloat("aoOffset", aoOffset);
         
         mesh.Draw();
@@ -302,9 +303,9 @@ static void setUniforms(
 
     /* Channel Properties */
     modifierShader.setInt("state", channelI); //Set the state
-    modifierShader.setInt("mask", 0); GL::bindTexture_2D(maskTexture_procedural, 0, "UpdateMaterialChannel : setUniforms");
-    modifierShader.setInt("previousTxtr", 1); GL::bindTexture_2D((curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode) ? previousTexture.ID : appTextures.black.ID, 1, "UpdateMaterialChannel : setUniforms");
-    modifierShader.setInt( "depthTxtr" , 2); GL::bindTexture_2D((curModI != material.materialModifiers.size()-1) ? prevDepthTexture.ID : appTextures.black.ID, 2, "UpdateMaterialChannel : setUniforms");
+    modifierShader.setInt("mask", GL::bindTexture_2D(maskTexture_procedural, "UpdateMaterialChannel : setUniforms"));
+    modifierShader.setInt("previousTxtr", GL::bindTexture_2D((curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode) ? previousTexture.ID : appTextures.black.ID, "UpdateMaterialChannel : setUniforms"));
+    modifierShader.setInt( "depthTxtr" , GL::bindTexture_2D((curModI != material.materialModifiers.size()-1) ? prevDepthTexture.ID : appTextures.black.ID, "UpdateMaterialChannel : setUniforms"));
     
     if(material.materialModifiers[curModI].modifierIndex != SOLID_MATERIAL_MODIFIER)
         modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-4].elements[channelI].rangeBar.value);
@@ -313,11 +314,11 @@ static void setUniforms(
 
     modifierShader.setFloat( "depthValue" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[0].rangeBar.value);
 
-    ShaderUTIL::set_shader_struct_face_selection_data(modifierShader, mesh, GL_TEXTURE3, GL_TEXTURE4);
+    ShaderUTIL::set_shader_struct_face_selection_data(modifierShader, mesh);
 
     if(material.materialModifiers[curModI].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
         /* Selected texture */
-        modifierShader.setInt("theTexture", 5); GL::bindTexture_2D(textureModifierSelectedTexture_procedural, 5, "UpdateMaterialChannel : setUniforms");
+        modifierShader.setInt("theTexture", GL::bindTexture_2D(textureModifierSelectedTexture_procedural, "UpdateMaterialChannel : setUniforms"));
     }
     else if(material.materialModifiers[curModI].modifierIndex == DUST_MATERIAL_MODIFIER){
         /* Noise */
@@ -691,9 +692,9 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             modifierShader.setInt( "operationIndex" , material.materialModifiers[curModI].sections[0].elements[0].comboBox.selectedIndex);
             modifierShader.setInt( "useRightSideTxtr" , material.materialModifiers[curModI].sections[0].elements[4].checkBox.clickState1);
             modifierShader.setFloat( "rightSideVal" , material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value);
-            modifierShader.setInt( "previousTxtr" , 0); GL::bindTexture_2D((curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode) ? previousTexture.ID : appTextures.black.ID, 0, "MaterialModifier::updateMaterialChannels");
-            modifierShader.setInt( "rightSideTxtr" , 1); GL::bindTexture_2D(mathModifierTexture_procedural.ID, 1, "MaterialModifier::updateMaterialChannels");
-            modifierShader.setInt( "mask" , 2); GL::bindTexture_2D(maskTexture_procedural.ID, 2, "MaterialModifier::updateMaterialChannels");
+            modifierShader.setInt( "previousTxtr" , GL::bindTexture_2D((curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode) ? previousTexture.ID : appTextures.black.ID, "MaterialModifier::updateMaterialChannels"));
+            modifierShader.setInt( "rightSideTxtr" , GL::bindTexture_2D(mathModifierTexture_procedural.ID, "MaterialModifier::updateMaterialChannels"));
+            modifierShader.setInt( "mask" , GL::bindTexture_2D(maskTexture_procedural.ID, "MaterialModifier::updateMaterialChannels"));
             modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[1].elements[channelI].rangeBar.value);
         
             {
