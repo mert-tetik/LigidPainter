@@ -33,6 +33,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Model::generateDisplayingTexture(){
     
+    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
+
     const int displayRes = 512;
 
     //Generating the displaying texture
@@ -41,7 +43,6 @@ void Model::generateDisplayingTexture(){
     else
         displayingTxtr.update((char*)nullptr, displayRes, displayRes, GL_LINEAR);
 
-    Framebuffer FBO = Framebuffer(displayingTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)), "Generating model displaying texture");
 
     glDisable(GL_CULL_FACE);
 
@@ -62,7 +63,7 @@ void Model::generateDisplayingTexture(){
     
     //!Update the model displaying texture
     
-    FBO.bind();
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(displayingTxtr, displayingTxtr.getResolution(), "Generating model displaying texture");
 
     //Set the OpenGL viewport to the resolution of the model displaying texture
     glViewport(0,0,displayRes,displayRes);
@@ -87,16 +88,10 @@ void Model::generateDisplayingTexture(){
     //!Finish (prepare rendering the GUI)
 
     //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
-    ShaderSystem::buttonShader().use();
+    already_bound_shader.use();
 
-    //Bind the default framebuffer
-    Settings::defaultFramebuffer()->FBO.bind();
-    
-    //Set the OpenGL viewport to default
-    Settings::defaultFramebuffer()->setViewport();    
-    
     /* Delete the framebuffer & the renderbuffer*/
-    FBO.deleteBuffers(false, true);
+    FBOPOOL::releaseFBO(FBO);
 }
 
 static float getBig(glm::vec3 vec){

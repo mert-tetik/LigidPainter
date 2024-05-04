@@ -37,8 +37,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <unordered_set>
 
-static Framebuffer px_read_FBO;
-
 static bool boxSelectionInteraction(Timer &timer, Mesh* mesh);
 static void render_selection_cursor(float radius);
 static void select_object(Mesh* mesh);
@@ -57,11 +55,6 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
 
     // Get the selected mesh
     Mesh* mesh = &model->meshes[meshI];
-
-    if(!px_read_FBO.ID){
-        px_read_FBO.generate();
-        px_read_FBO.purpose = "face_selection_interaction : px_read_FBO";
-    }
 
     for (size_t i = 0; i < mesh->face_selection_data.selectedPrimitiveIDs.size(); i++)
     {
@@ -99,9 +92,6 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
         if(*Mouse::LClick() && registerHistory)
             registerFaceSelectionAction("Face selection - Painting", mesh->face_selection_data.selectedPrimitiveIDs, meshI);
     
-        px_read_FBO.setColorBuffer(mesh->face_selection_data.modelPrimitives, GL_TEXTURE_2D);
-        px_read_FBO.bind();
-
         glm::vec2 pos;
         glm::ivec2 scale;
         
@@ -151,6 +141,7 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
                 scale.x > 0 && scale.y > 0
             )
         {
+            Framebuffer FBO = FBOPOOL::requestFBO(mesh->face_selection_data.modelPrimitives, "face_selection_interaction : px_read_FBO");
             glReadPixels(
                             pos.x, 
                             pos.y, 
@@ -160,6 +151,7 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
                             GL_FLOAT,
                             pxs
                         );
+            FBOPOOL::releaseFBO(FBO);
         }
         else{
             for (size_t i = 0; i < scale.x * scale.y; i++)
@@ -371,9 +363,6 @@ static void select_object(Mesh* mesh){
         }
     }
     else{
-        px_read_FBO.setColorBuffer(mesh->objectIDs, GL_TEXTURE_2D);
-        px_read_FBO.bind();
-
         glm::vec2 pos;
         pos.x = UTIL::new_value_range(Mouse::cursorPos()->x, 0, getContext()->windowScale.x, 0, mesh->objectIDs.getResolution().x);
         pos.y = UTIL::new_value_range(Mouse::cursorPos()->y, 0, getContext()->windowScale.y, 0, mesh->objectIDs.getResolution().y);
@@ -381,6 +370,8 @@ static void select_object(Mesh* mesh){
 
         float* pxs = new float[2]; 
         
+        Framebuffer FBO = FBOPOOL::requestFBO(mesh->face_selection_data.modelPrimitives, "face_selection_interaction : px_read_FBO");
+            
         glReadPixels(
                         pos.x, 
                         pos.y, 
@@ -390,6 +381,8 @@ static void select_object(Mesh* mesh){
                         GL_FLOAT,
                         pxs
                     );
+
+        FBOPOOL::releaseFBO(FBO);
 
         objI = pxs[0];
         meshI = pxs[1] - 1;

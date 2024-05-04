@@ -216,7 +216,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
             for (PaintedBufferData painted_buffer : get_painted_buffers(settings)){
                 char clrPx[4] = {painted_buffer.clr.r * 127, painted_buffer.clr.g * 127, painted_buffer.clr.b * 127, 1.};
                 one_px_txtr.update(clrPx, 1, 1);
-                button_painting_filter_mode_filter.filter.applyFilter(painted_buffer.txtr.ID, painting_projected_painting_FBO.colorBuffer, one_px_txtr);
+                button_painting_filter_mode_filter.filter.applyFilter(painted_buffer.txtr, painting_projected_painting_FBO.colorBuffer, one_px_txtr);
             }
         }
         else{

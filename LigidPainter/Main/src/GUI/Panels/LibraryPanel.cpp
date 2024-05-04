@@ -210,7 +210,7 @@ void panel_library_render(
                     //Clicked to duplicate button
                     else if(res == 1){
                         Texture duplicatedTexture = *Library::getTexture(i);
-                        duplicatedTexture.ID = Library::getTexture(i)->duplicateTexture();
+                        duplicatedTexture = Library::getTexture(i)->duplicateTexture();
                         duplicatedTexture.title += "_duplicated";
                         Library::addTexture(duplicatedTexture, "New texture via duplication");
                     }

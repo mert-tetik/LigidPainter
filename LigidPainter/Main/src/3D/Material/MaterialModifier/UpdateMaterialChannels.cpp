@@ -44,7 +44,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //4 = height map
 //5 = ambient Occlusion
 
-static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, Framebuffer& FBO, Texture& currentTexture, Texture& previousTexture){
+static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, Texture& currentTexture, Texture& previousTexture){
     glDisable(GL_DEPTH_TEST);
 
     //Get the channel's texture from material
@@ -80,26 +80,17 @@ static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, 
 
     currentTexture.update((char*)nullptr, textureResolution, textureResolution);    
     
-    //That framebuffer will be used to get the results of the shader 
-    FBO = Framebuffer(currentTexture, GL_TEXTURE_2D, "ChannelPrep (material update)");
 
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 
-Texture textureCopy_bluring;
-static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution, float blurVal, int algorithmI){
-    Texture textureObject = Texture(txtr);
+static void blurTheTexture(Texture txtr, Mesh& mesh, int textureResolution, float blurVal, int algorithmI){
     
-    if(!textureCopy_bluring.ID)
-        textureCopy_bluring = Texture((char*)nullptr, textureResolution, textureResolution);
+    Texture textureCopy = txtr.get_temp_copy_txtr();
     
-    textureCopy_bluring.update((char*)nullptr, textureResolution, textureResolution);
+    Framebuffer FBO = FBOPOOL::requestFBO(txtr, "Bluring texture (material update)");
     
-    textureObject.duplicateTextureSub(textureCopy_bluring);
-
-    Framebuffer FBO = Framebuffer(txtr, GL_TEXTURE_2D, "Bluring texture (material update)");
-    glViewport(0, 0, textureResolution, textureResolution);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -109,23 +100,24 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
     else if(algorithmI == 1)
         blurShader = ShaderSystem::twoPassBlur();    
 
-    glm::mat4 projection = glm::ortho(0.f, (float)textureResolution, (float)textureResolution, 0.f); 
     blurShader.use();
-    blurShader.setInt("txtr", GL::bindTexture_2D(textureCopy_bluring.ID, "UpdateMaterialChannel : blurTheTexture"));
+    blurShader.setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
+    blurShader.setMat4("projectedPosProjection", glm::ortho(0.f, 1.f, 1.f, 0.f));
+    blurShader.setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
+    blurShader.setVec2("scale", glm::vec2(0.5f));
+    
+    blurShader.setInt("txtr", GL::bindTexture_2D(textureCopy.ID, "UpdateMaterialChannel : blurTheTexture"));
     blurShader.setInt("uvMask", GL::bindTexture_2D(mesh.uvMask.ID, "UpdateMaterialChannel : blurTheTexture"));
     blurShader.setVec2("txtrRes", glm::vec2(textureResolution));
-    blurShader.setMat4("projection"  ,       projection);
-    blurShader.setMat4("projectedPosProjection"  ,       projection);
-    blurShader.setVec3("pos"         ,       glm::vec3((float)textureResolution / 2.f, (float)textureResolution / 2.f, 0.9f));
-    blurShader.setVec2("scale"       ,       glm::vec2((float)textureResolution / 2.f));
-    blurShader.setFloat("blurVal"     ,     blurVal);
+    blurShader.setFloat("blurVal", blurVal);
+    
     if(algorithmI == 1)
         blurShader.setInt("horizontal", 0);
 
-    getBox()->draw( "blurTheTexture first draw");
+    getBox()->draw("blurTheTexture first draw");
 
     if(algorithmI == 1){
-        textureObject.duplicateTextureSub(textureCopy_bluring);
+        txtr.duplicateTextureSub(textureCopy);
         
         FBO.bind();
         glViewport(0, 0, textureResolution, textureResolution);
@@ -133,19 +125,14 @@ static void blurTheTexture(unsigned int& txtr, Mesh& mesh, int textureResolution
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         blurShader.setInt("horizontal", 1);
-        getBox()->draw( "blurTheTexture second draw");
+        getBox()->draw("blurTheTexture second draw");
     }
 
     GL::releaseBoundTextures("UpdateMaterialChannel : blurTheTexture");
-
-    Settings::defaultFramebuffer()->FBO.bind();
-    
-    FBO.deleteBuffers(false, false);
+    FBOPOOL::releaseFBO(FBO);
 }
 
-static Framebuffer aoFBO;
 static Texture aoDepthTxtr;
-static Framebuffer aoDepthFBO;
 static Texture aoTxtrDup;
 
 static void genAmbientOcclusion(
@@ -171,11 +158,9 @@ static void genAmbientOcclusion(
 
     glm::ivec2 aoTxtrRes = aoTxtr.getResolution();
     
-    if(!aoFBO.ID){
-        aoFBO = Framebuffer(aoTxtr, GL_TEXTURE_2D, "aoFBO");
+    if(!aoDepthTxtr.ID){
         aoDepthTxtr = Texture((char*)nullptr, 1024, 1024, GL_NEAREST, GL_RGBA, GL_RGBA32F);
         aoTxtrDup = Texture((char*)nullptr, aoTxtrRes.x, aoTxtrRes.y);
-        aoDepthFBO = Framebuffer(aoDepthTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)), "aoDepthFBO");
     }
 
     aoTxtrDup.update((char*)nullptr, aoTxtrRes.x, aoTxtrRes.y);
@@ -183,16 +168,7 @@ static void genAmbientOcclusion(
     if(usePrevAO)
         aoTxtr.duplicateTextureSub(aoTxtrDup);
 
-    aoFBO.bind();
-    aoFBO.setColorBuffer(aoTxtr, GL_TEXTURE_2D);
-
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0, 0, aoTxtrRes.x, aoTxtrRes.y);
-
-    //viewport
-    
-    aoFBO.bind();
+    aoTxtr.update((char*)nullptr, aoTxtr.getResolution().x, aoTxtr.getResolution().y);
 
     for (size_t i = 0; i < 6; i++)
     {
@@ -223,49 +199,56 @@ static void genAmbientOcclusion(
             camPos = glm::vec3(0.f, 0.f, 5.f);
         if(i == 5)
             camPos = glm::vec3(0.f, 0.f, -5.f);
-
+        
         glm::mat4 view = glm::lookAt(camPos, glm::vec3(0.f), glm::vec3(0.f, 1.f, 0.f));
         glm::mat4 projection = glm::perspective(glm::radians(35.f), 1.f, 0.1f, 100.f);
-        //glm::mat4 projection = glm::ortho(0.f,5.f,0.f,5.f);
 
-        aoDepthFBO.bind();
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0, 0, 1024, 1024);
-        
-        ShaderSystem::depth3D().use();
-        ShaderSystem::depth3D().setMat4("view", view);
-        ShaderSystem::depth3D().setMat4("projection", projection);
-        ShaderSystem::depth3D().setMat4("modelMatrix", glm::mat4(1.f));
+        {
 
-        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::depth3D(), Mesh());
+            Framebuffer FBO = FBOPOOL::requestFBO(aoDepthTxtr, "aoDepthFBO genAmbientOcclusion");
 
-        if(singleMesh)
+            glClearColor(0,0,0,0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            
+            ShaderSystem::depth3D().use();
+            ShaderSystem::depth3D().setMat4("view", view);
+            ShaderSystem::depth3D().setMat4("projection", projection);
+            ShaderSystem::depth3D().setMat4("modelMatrix", glm::mat4(1.f));
+
+            ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::depth3D(), Mesh());
+
+            if(singleMesh)
+                mesh.Draw();
+            else
+                model.Draw();
+
+            GL::releaseBoundTextures("UpdateMaterialChannel : genAmbientOcclusion");
+            FBOPOOL::releaseFBO(FBO);
+        }
+
+        {
+            Framebuffer FBO = FBOPOOL::requestFBO(aoTxtr, "aoDepthFBO genAmbientOcclusion");
+            
+            ShaderSystem::AOGen().use();
+            ShaderSystem::AOGen().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f)); 
+            ShaderSystem::AOGen().setMat4("perspectiveProjection", projection); 
+            ShaderSystem::AOGen().setMat4("view", view); 
+            
+            ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::AOGen(), mesh);
+            
+            ShaderSystem::AOGen().setInt("depthTexture", GL::bindTexture_2D(aoDepthTxtr.ID, "UpdateMaterialChannel : genAmbientOcclusion"));
+            ShaderSystem::AOGen().setInt("srcTxtr", GL::bindTexture_2D(aoTxtrDup.ID, "UpdateMaterialChannel : genAmbientOcclusion"));
+            ShaderSystem::AOGen().setFloat("aoOffset", aoOffset);
+            
             mesh.Draw();
-        else
-            model.Draw();
 
-        GL::releaseBoundTextures("UpdateMaterialChannel : genAmbientOcclusion");
-        aoFBO.bind();
-        glViewport(0, 0, aoTxtrRes.x, aoTxtrRes.y);
-        
-        ShaderSystem::AOGen().use();
-        ShaderSystem::AOGen().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f)); 
-        ShaderSystem::AOGen().setMat4("perspectiveProjection", projection); 
-        ShaderSystem::AOGen().setMat4("view", view); 
-        
-        ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::AOGen(), mesh);
-        
-        ShaderSystem::AOGen().setInt("depthTexture", GL::bindTexture_2D(aoDepthTxtr.ID, "UpdateMaterialChannel : genAmbientOcclusion"));
-        ShaderSystem::AOGen().setInt("srcTxtr", GL::bindTexture_2D(aoTxtrDup.ID, "UpdateMaterialChannel : genAmbientOcclusion"));
-        ShaderSystem::AOGen().setFloat("aoOffset", aoOffset);
-        
-        mesh.Draw();
-
-        GL::releaseBoundTextures("UpdateMaterialChannel : genAmbientOcclusion");
+            GL::releaseBoundTextures("UpdateMaterialChannel : genAmbientOcclusion");
+            FBOPOOL::releaseFBO(FBO);
+        }
     }
     
     if(smoothness > 0.1f)
-        blurTheTexture(aoTxtr.ID, mesh, aoTxtrRes.x, smoothness, useSecondBlurAlgorithm);
+        blurTheTexture(aoTxtr, mesh, aoTxtrRes.x, smoothness, useSecondBlurAlgorithm);
     
     aoTxtr.removeSeams(mesh);
 
@@ -537,7 +520,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
         //Set the OpenGL viewport to the texture resolution
         glViewport(0,0,textureResolution,textureResolution);
     
-        Framebuffer FBO;
         Texture currentTexture;
         // Create the FBO & set the current texture and previous texture
         channelPrep(
@@ -548,10 +530,10 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                         getScene()->projectionMatrix, 
                         getScene()->camera.viewMatrix, 
                         channelI, 
-                        FBO, 
                         currentTexture, 
                         previousTexture
                     );
+
         
         // Generate the procedural texture of the selected texture for the texture modifier
         if(material.materialModifiers[curModI].modifierIndex == TEXTURE_MATERIAL_MODIFIER){
@@ -567,7 +549,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
         }
 
         // Bind the capture framebuffer after creating it in the channelPrep function
-        FBO.bind();
+        Framebuffer FBO = FBOPOOL::requestFBO(currentTexture, "MaterialModifier::updateMaterialChannels");
         
         // Use the shader of the modifier
         modifierShader.use(); 
@@ -598,16 +580,16 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             mesh.Draw();
 
             //Delete the framebuffer after completing the channel
-            FBO.deleteBuffers(false, false);
+            FBOPOOL::releaseFBO(FBO);
 
             //Generating the normal map based on the height map
             if(channelI == 4){
                 //Blur the height map option
                 if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[1].checkBox.clickState1)
-                    blurTheTexture(mesh.heightMap.ID, mesh, textureResolution, 1.f, 0);
+                    blurTheTexture(mesh.heightMap, mesh, textureResolution, 1.f, 0);
                 
                 //Generate the normal map
-                mesh.heightMap.generateNormalMap(mesh.normalMap.ID, textureResolution, 10.f, false);
+                mesh.heightMap.generateNormalMap(mesh.normalMap, 10.f, false, false);
                 
                 //Remove the seams of the normal map texture
                 mesh.normalMap.removeSeams(mesh);
@@ -637,7 +619,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                 Filter filter = material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-2].elements[0].button.filter;
 
                 // Apply the filter 
-                filter.applyFilter(currentTexture.ID, albedoFilterMaskTexture_procedural, maskTexture_procedural);
+                filter.applyFilter(currentTexture, albedoFilterMaskTexture_procedural, maskTexture_procedural);
             }
 
             GL::releaseBoundTextures("MaterialModifier::updateMaterialChannels::setUniforms");
@@ -713,7 +695,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
 
             GL::releaseBoundTextures("MaterialModifier::updateMaterialChannels");
 
-            FBO.deleteBuffers(false, false);
+            FBOPOOL::releaseFBO(FBO);
         }
         
         if(material.materialModifiers[curModI].modifierIndex != MATH_MATERIAL_MODIFIER){

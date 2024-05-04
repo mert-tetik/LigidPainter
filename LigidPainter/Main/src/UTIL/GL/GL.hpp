@@ -37,6 +37,8 @@ namespace GL{
         @brief Unbinds the bound textures in the current context
     */
     void releaseBoundTextures(std::string location);
+    
+    void releaseTextureFromSlot(int slot, std::string location);
 
     /* --------------------- VERTEX -------------------- */
     bool makeDrawCall(GLenum mode, GLint first, GLsizei count, std::string debugTitle);

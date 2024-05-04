@@ -47,21 +47,17 @@ void TextureField::renderWrappedTextureField(
                                                 bool doMouseTracking
                                             )
 {
-    // Get the currently binded framebuffer
-    Framebuffer bindedFBO;
-    bindedFBO.makeCurrentlyBindedFBO();
-
     // Unactive the texture field if its not the editMode or r mouse button or middle mosue button button is pressed  
     if((*Mouse::RPressed() || *Mouse::MPressed()) || !editMode)
         this->active = false; 
     
     if(this->threeDPointTopLeft.pos == glm::vec3(0.f) && this->threeDPointBottomRight.pos == glm::vec3(0.f) && *Mouse::LClick() && editMode){
         // If no point is selected
-        this->placeFirstPoint(bindedFBO);
+        this->placeFirstPoint();
     }
     else if(this->threeDPointBottomRight.pos == glm::vec3(0.f) && *Mouse::LClick() && editMode){
         // If the start point is selected
-        this->placeSecondPoint(bindedFBO);
+        this->placeSecondPoint();
     }
     else{
         // Render the model first with alpha zero to depth test
@@ -127,7 +123,7 @@ void TextureField::renderWrappedTextureField(
                 !textureField_alreadyInteracted
             )
         {
-            this->checkIfWrappedTextureClicked(bindedFBO, !this->isAnyWrapPointActive() && doMouseTracking);
+            this->checkIfWrappedTextureClicked(!this->isAnyWrapPointActive() && doMouseTracking);
         }
         
         if(this->active){
@@ -165,7 +161,7 @@ void TextureField::renderWrappedTextureField(
     }
 
     if((this->threeDPointTopLeft.pos == glm::vec3(0.f) || this->threeDPointBottomRight.pos == glm::vec3(0.f)) && !generatingTextureMode && editMode){
-        renderWrapPointDecidingScene(timer, bindedFBO);
+        renderWrapPointDecidingScene(timer);
     }
 
     ShaderSystem::buttonShader().use();
@@ -321,7 +317,7 @@ void TextureField::unplaceWrapPoints(){
 
 glm::vec2 threeDPointTopLeftCursorPos;
 
-void TextureField::placeFirstPoint(Framebuffer bindedFBO){
+void TextureField::placeFirstPoint(){
     // Retrieve the position value of the 3D model here
     float* posData = new float[4]; 
     float* normalData = new float[4]; 
@@ -340,12 +336,11 @@ void TextureField::placeFirstPoint(Framebuffer bindedFBO){
     }
 
     //Finish
-    bindedFBO.bind();
     delete[] posData;
     delete[] normalData;
 }
 
-void TextureField::placeSecondPoint(Framebuffer bindedFBO){
+void TextureField::placeSecondPoint(){
     // Retrieve the position values of the 3D model here
     float* posData = new float[4]; 
     float* normalData = new float[4]; 
@@ -438,7 +433,6 @@ void TextureField::placeSecondPoint(Framebuffer bindedFBO){
     }
 
     // Finish
-    bindedFBO.bind();
     delete[] posData;
     delete[] normalData;
 }
@@ -575,12 +569,11 @@ void TextureField::renderWrappedModifyElements(Timer& timer, bool doMouseTrackin
 bool textureFields_decidingWrapPointsMode = false;
 static Button cancelBtn(ELEMENT_STYLE_STYLIZED, glm::vec2(2.f,1.5f), "Cancel", Texture(), 0.f, false);
 
-void TextureField::renderWrapPointDecidingScene(Timer& timer, Framebuffer bindedFBO){
+void TextureField::renderWrapPointDecidingScene(Timer& timer){
     // Set the decidingWrapPointsMode flag to true (this flag prevents camera movements in the callback.cpp)
     textureFields_decidingWrapPointsMode = true;
 
     // Get ready to render gui elements
-    bindedFBO.bind();
     ShaderSystem::buttonShader().use();
     glClear(GL_DEPTH_BUFFER_BIT);
     Settings::defaultFramebuffer()->setViewport();
@@ -643,7 +636,7 @@ bool TextureField::isAnyWrapPointActive(){
 static Texture threeDPointsStencilTexture;
 static Framebuffer threeDPointsStencilFBO;
 
-void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, bool doMouseTracking){
+void TextureField::checkIfWrappedTextureClicked(bool doMouseTracking){
     // Positioning the first modifying button (delete button) (other modifying buttons labeled with wrap_ will be positioned according to this)
     wrap_deleteButton.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f; 
     wrap_deleteButton.pos.x -= (wrap_deleteButton.scale.x + wrap_flipHorizontalButton.scale.x + wrap_flipVerticalButton.scale.x + wrap_unwrapModeButton.scale.x + wrap_detailModeButton.scale.x) / 1.5f; 
@@ -718,6 +711,5 @@ void TextureField::checkIfWrappedTextureClicked(Framebuffer bindedFBO, bool doMo
 
     // Finish
     delete[] stencilData;
-    bindedFBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }

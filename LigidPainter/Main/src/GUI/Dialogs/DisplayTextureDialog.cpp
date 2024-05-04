@@ -63,8 +63,6 @@ DisplayTextureDialog::DisplayTextureDialog(int){
 
     this->displayingCam.cameraPos = glm::vec3(0,0,-3.5f);
     this->displayingCam.radius = 3.5f;
-
-    this->displayingFBO = Framebuffer(Texture((char*)nullptr, 512, 512), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(512)), "Material displayer dialog - displaying");
 }
 
 void DisplayTextureDialog::show(Timer& timer, Texture texture){

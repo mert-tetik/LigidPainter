@@ -32,7 +32,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-static Framebuffer material_displaying_FBO;
 void Material::updateMaterialDisplayingTexture(
                                                 float textureRes,
                                                 bool updateMaterial,
@@ -41,13 +40,7 @@ void Material::updateMaterialDisplayingTexture(
                                                 bool useCustomCam
                                             )
 {
-    // Init displaying capture framebuffer
-    if(!material_displaying_FBO.ID)
-        material_displaying_FBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(128)), "Material displaying fbo");
-
-    material_displaying_FBO.setColorBuffer(this->displayingTexture, GL_TEXTURE_2D);
-
-    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, material_displaying_FBO, *getMaterialDisplayerModel(), -1);
+    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, this->displayingTexture, *getMaterialDisplayerModel(), -1);
 }
 
 void Material::updateMaterialDisplayingTexture(
@@ -56,15 +49,12 @@ void Material::updateMaterialDisplayingTexture(
                                                 Camera matCam,
                                                 int displayingMode,
                                                 bool useCustomCam,
-                                                Framebuffer customFBO,
+                                                Texture custom_display_txtr,
                                                 Model& displayModel,
                                                 int specificUpdateI
                                             )
 { 
     Shader initial_bound_shader = ShaderUTIL::get_bound_shader();
-
-    //Resolution of the material displaying texture
-    const int displayRes = customFBO.colorBuffer.getResolution().x;
 
     if(!useCustomCam){
         matCam.cameraPos = glm::vec3(0,0,3.5f);
@@ -97,10 +87,7 @@ void Material::updateMaterialDisplayingTexture(
     }
     
     //!Update the material displaying texture
-    customFBO.bind();
-
-    //Set the OpenGL viewport to the resolution of the material displaying texture
-    glViewport(0,0,displayRes,displayRes);
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(custom_display_txtr, custom_display_txtr.getResolution(), "Material::updateMaterialDisplayingTexture");
 
     //Clear the capture framebuffer (displaying texture) with alpha zero color
     glClearColor(0,0,0,0);
@@ -133,6 +120,5 @@ void Material::updateMaterialDisplayingTexture(
     
     ShaderSystem::PBRDisplayOnly().setInt("displayingMode", 0);
     initial_bound_shader.use();
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
+    FBOPOOL::releaseFBO(FBO);
 }

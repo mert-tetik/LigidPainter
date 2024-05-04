@@ -64,7 +64,7 @@ unsigned int Skybox::createPrefilterMap(){
 		LigidGL::testGLError("Skybox::createPrefilterMap : glGenTextures(1, &IDPrefiltered)");
 	}
 	
-	GL::bindTexture_2D(this->IDPrefiltered, "Skybox::createPrefilterMap");
+	GL::bindTexture_CubeMap(this->IDPrefiltered, "Skybox::createPrefilterMap");
 	for (unsigned int txtrI = 0; txtrI < 6; ++txtrI)
 	{
 		//Every side
@@ -142,7 +142,7 @@ unsigned int Skybox::createPrefilterMap(){
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);  
 	LigidGL::testGLError("Skybox::createPrefilterMap : glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS); ");
 
-	GL::bindTexture_2D(this->IDPrefiltered, "Skybox::createPrefilterMap");
+	GL::bindTexture_CubeMap(this->IDPrefiltered, "Skybox::createPrefilterMap");
 
 	//Delete the framebuffer
 	glDeleteFramebuffers(1,&captureFBO);

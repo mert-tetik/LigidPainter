@@ -38,7 +38,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 static Texture threeDPointsStencilTexture;
-static Framebuffer threeDPointsStencilFBO;
 
 bool aPointWasAlreadyActivated = false;
 
@@ -56,9 +55,6 @@ static float calculateDepthToleranceValue(glm::vec3 origin){
 }
 
 bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, float radius, bool canMove){
-
-    Framebuffer bindedFBO;
-    bindedFBO.makeCurrentlyBindedFBO();
 
     glm::mat4 transMat = glm::mat4(1.f);
     transMat = glm::translate(transMat, this->pos);
@@ -104,10 +100,10 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, f
 
             if(!threeDPointsStencilTexture.ID){
                 threeDPointsStencilTexture = Texture((char*)nullptr, resolution, resolution);
-                threeDPointsStencilFBO = Framebuffer(threeDPointsStencilTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "threeDPointsStencilFBO");
             }
 
-            threeDPointsStencilFBO.bind();
+            Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(threeDPointsStencilTexture, threeDPointsStencilTexture.getResolution(), "threeDPointsStencilFBO");
+            
             glClearColor(0,0,0,0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -147,8 +143,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, f
 
             delete[] stencilData;
 
-            bindedFBO.bind();
-            Settings::defaultFramebuffer()->setViewport();
+            FBOPOOL::releaseFBO(FBO);
         }
     }
 
@@ -179,7 +174,6 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, f
         float* normalData = new float[4];
 
         getScene()->get_selected_mesh()->getPosNormalOverPoint(glm::vec2(screenPos.x + Mouse::mouseOffset()->x, getContext()->windowScale.y - screenPos.y - Mouse::mouseOffset()->y), posData, normalData, true);
-        bindedFBO.bind();
 
         if(posData[3] != 0.f){
             this->pos.x = posData[0];

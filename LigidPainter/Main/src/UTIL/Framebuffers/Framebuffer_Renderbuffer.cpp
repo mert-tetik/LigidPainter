@@ -27,6 +27,8 @@ Box.hpp : Is used to render a single 2D square.
 
 #include "UTIL/Util.hpp"
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Framebuffers/Framebuffer_Pool.hpp"
+#include "UTIL/Texture/Texture.hpp"
 #include "GUI/GUI.hpp"
     
 // --------- Renderbuffer -----------
@@ -179,10 +181,10 @@ Framebuffer::Framebuffer(){
 
 }
 
-#define TEST_FRAMEBUFFER \
+#define TEST_FRAMEBUFFER(location) \
 GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER); \
 if(status != GL_FRAMEBUFFER_COMPLETE){\
-    std::cout << "ERROR : Framebuffer is not valid. Error code: " << status << " / " << purpose << std::endl; \
+    std::cout << "ERROR : " + (std::string)location + " : Framebuffer is not valid. Error code: " << status << " / " << purpose << std::endl; \
 }
 
 
@@ -205,8 +207,8 @@ Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, std::s
     LigidGL::testGLError("Init FBO : attaching colorBuffer to FBO" + std::string(" : ") + this->purpose);
     
     Debugger::block("Init FBO" + std::string(" : ") + this->purpose); // End
-
-    TEST_FRAMEBUFFER
+    
+    TEST_FRAMEBUFFER("Framebuffer::Framebuffer")
 }
 
 Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer, std::string purpose){
@@ -232,7 +234,7 @@ Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Render
     
     Debugger::block("Init FBO" + std::string(" : ") + this->purpose); // End
 
-    TEST_FRAMEBUFFER
+    TEST_FRAMEBUFFER("Framebuffer::Framebuffer")
 }
 
 void Framebuffer::update(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer){
@@ -255,7 +257,7 @@ void Framebuffer::update(Texture colorBuffer, unsigned int textureTarget, Render
 
     Debugger::block("Update FBO" + std::string(" : ") + this->purpose); // End
 
-    TEST_FRAMEBUFFER
+    TEST_FRAMEBUFFER("Framebuffer::update")
 }
 
 void Framebuffer::generate(){

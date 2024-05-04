@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/GL/GL.hpp"
+#include "UTIL/Framebuffers/Framebuffer_Pool.hpp"
 
 #include <string>
 #include <iostream>
@@ -42,6 +43,8 @@ void MaterialEditorDialog::deactivate(){
 }
 
 void MaterialEditorDialog::updateSkyboxTxtr(){
+    Shader already_bound_shader;
+    
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(this->displayerCamera.cameraPos, 
                                  glm::vec3(0), 
@@ -68,18 +71,17 @@ void MaterialEditorDialog::updateSkyboxTxtr(){
     ShaderSystem::skyboxModelShader().setInt("gradient", 1);
     ShaderSystem::skyboxModelShader().setFloat("gradientOffset", 0.8f);
 
-    glm::ivec2 res = this->skyboxFBO.colorBuffer.getResolution();
+    // Get the FBO
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(this->skyboxDisplayingTexture, this->skyboxDisplayingTexture.getResolution(), "MaterialEditorDialog::updateSkyboxTxtr");
 
-    this->skyboxFBO.bind();
+    glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glViewport(0,0,res.x,res.y);
 
     //Render the skybox
     getSphereModel()->Draw();
 
-    ShaderSystem::buttonShader().use();
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
+    already_bound_shader.use();
+    FBOPOOL::releaseFBO(FBO);
 }
 
 static Model customModel;
@@ -162,7 +164,7 @@ void MaterialEditorDialog::renderSkyboxTxtr(){
     ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
     ShaderSystem::textureRenderingShader().setVec2("scale", this->materialDisplayer.resultScale);
     ShaderSystem::textureRenderingShader().setVec3("pos", this->materialDisplayer.resultPos);
-    ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(this->skyboxFBO.colorBuffer.ID, "MaterialEditorDialog::renderSkyboxTxtr"));
+    ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(this->skyboxDisplayingTexture.ID, "MaterialEditorDialog::renderSkyboxTxtr"));
     ShaderSystem::textureRenderingShader().setFloat("opacity", this->dialogControl.mixVal);
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);

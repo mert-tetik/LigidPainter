@@ -230,13 +230,10 @@ void Panel::updateGraphics(Timer &timer){
 
     this->graphics.update((char*)nullptr, displayRes.x, displayRes.y, GL_NEAREST);
 
-    Framebuffer captureGraphicsFBO = Framebuffer(this->graphics, GL_TEXTURE_2D, "Panel update graphics");
-    captureGraphicsFBO.bind();
+    Framebuffer FBO = FBOPOOL::requestFBO(this->graphics, "Panel update graphics");
 
     glClearColor(this->color.r, this->color.g, this->color.b, 0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glViewport(0, 0, displayRes.x, displayRes.y);
 
     glm::mat4 projection = glm::ortho(
                                         resultPos.x - resultScale.x, 
@@ -252,9 +249,7 @@ void Panel::updateGraphics(Timer &timer){
     projection = glm::ortho(0.f, (float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
     ShaderSystem::buttonShader().setMat4("projection", projection);
 
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-    captureGraphicsFBO.deleteBuffers(false, false);
+    FBOPOOL::releaseFBO(FBO);
 }
 
 static void drawThePanel(glm::vec3 pos, glm::vec2 scale, glm::vec4 color, glm::vec4 color2, float outlineThickness, float cornerRadius){

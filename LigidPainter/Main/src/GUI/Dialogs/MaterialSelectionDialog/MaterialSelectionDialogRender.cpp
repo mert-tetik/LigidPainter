@@ -62,7 +62,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         bool anyMatClicked = this->renderMatDisplayer(timer);
         if(anyMatClicked){
             if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1)
-                this->selectedMatPanel.sections[0].elements[0].button.texture = this->displayingFBO.colorBuffer;
+                this->selectedMatPanel.sections[0].elements[0].button.texture = this->displayingTexture;
             else if(selectedMatMode < matModePanel.sections[0].elements.size()){
                 if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
                     this->selectedMatPanel.sections[0].elements[0].button.texture = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].displayingTexture;
@@ -102,7 +102,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
             }
             if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
                 if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1)
-                    matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, anyMatClicked, this->displayingCam, 0, true, this->displayingFBO, *getMaterialDisplayerModel(), -1);
+                    matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, anyMatClicked, this->displayingCam, 0, true, this->displayingTexture, *getMaterialDisplayerModel(), -1);
             }
         }    
 

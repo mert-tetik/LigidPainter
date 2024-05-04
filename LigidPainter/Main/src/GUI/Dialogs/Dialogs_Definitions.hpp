@@ -24,9 +24,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
-
-#include "UTIL/Util.hpp"
 #include "3D/ThreeD.hpp"
+#include "UTIL/Texture/Texture.hpp"
+#include "UTIL/Framebuffers/Framebuffer_Pool.hpp"
 #include "UTIL/Settings/Settings.hpp"
 
 //Forward declarations
@@ -343,9 +343,9 @@ public:
    Button selectedModifierResultMode;
    int selectedResultModeIndex = 0;
 
-   Framebuffer displayingFBO;
+   Texture displayingTexture;
    Skybox skybox;
-   Framebuffer skyboxFBO;
+   Texture skyboxDisplayingTexture;
 
    Camera displayerCamera;
     
@@ -456,7 +456,6 @@ public:
 
    Camera sceneCam;
    Texture displayingTexture;
-   Framebuffer displayingFBO;
 
    Texture meshMask;
 
@@ -489,7 +488,7 @@ class MaterialDisplayerDialog
    
    DialogControl dialogControl;
    
-   Framebuffer displayingFBO;
+   Texture displayingTexture;
    Camera displayingCam;
 
    //Constructors
@@ -511,7 +510,6 @@ class DisplayTextureDialog
 
    DialogControl dialogControl;
    
-   Framebuffer displayingFBO;
    Camera displayingCam;
 
    //Constructors
@@ -534,7 +532,7 @@ public:
    
    DialogControl dialogControl;
    
-   Framebuffer displayingFBO;
+   Texture displayingTexture;
    Camera displayingCam;
 
    int selectedMatMode = 0;

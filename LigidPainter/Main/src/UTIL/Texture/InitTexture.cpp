@@ -26,6 +26,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/GL/GL.hpp"
+#include "UTIL/Framebuffers/Framebuffer_Pool.hpp"
+#include "UTIL/Texture/Texture.hpp"
 
 //------
 Texture::Texture(){
@@ -80,7 +82,7 @@ Texture::Texture(char* pixels, unsigned char* uPixels, bool use_unsigned, int w,
     glGenTextures(1, &ID);
     LigidGL::testGLError("Texture::Texture : Generate the texture");
 
-    GL::bindTexture_2D(ID, "Texture::Texture");
+    int txtr_slot = GL::bindTexture_2D(ID, "Texture::Texture");
     
     if(filterParam){
         glTexParameteri(target, GL_TEXTURE_MIN_FILTER, filterParam);
@@ -109,7 +111,7 @@ Texture::Texture(char* pixels, unsigned char* uPixels, bool use_unsigned, int w,
     glGenerateMipmap(target);
     LigidGL::testGLError("Texture::Texture : Generate mipmap");
 
-    GL::releaseBoundTextures("Texture::Texture");
+    GL::releaseTextureFromSlot(txtr_slot, "Texture::Texture");
 }
 
 
@@ -161,9 +163,8 @@ void Texture::update(unsigned char* pixels, int w, int h, unsigned int filterPar
 //------
 
 
-static Framebuffer clear_fbo;
-static Framebuffer clear_fbo_2;
 void Texture::update(char* pixels, unsigned char* uPixels, bool use_unsigned, int w, int h, unsigned int filterParam, unsigned int format, unsigned int internalFormat, unsigned int wrap) {
+    
     if (!this->ID) {
         std::cout << "ERROR : Updating texture : Invalid ID : " << ID << std::endl;
         return;
@@ -171,7 +172,7 @@ void Texture::update(char* pixels, unsigned char* uPixels, bool use_unsigned, in
 
     LigidGL::cleanGLErrors();
 
-    GL::bindTexture_2D(ID, "Texture::update");
+    int txtr_slot = GL::bindTexture_2D(ID, "Texture::update");
     
     // Check if the texture size matches the provided data size
     if(glIsTexture(ID) == GL_TRUE){
@@ -196,26 +197,13 @@ void Texture::update(char* pixels, unsigned char* uPixels, bool use_unsigned, in
                 Framebuffer bound_fbo;
                 bound_fbo.makeCurrentlyBindedFBO();
 
+                Framebuffer FBO = FBOPOOL::requestFBO(*this, "Texture::update");
+
                 // Pixels was nullptr
                 glClearColor(0,0,0,0);
-                
-                if(!clear_fbo.ID){
-                    clear_fbo.generate();
-                    clear_fbo.purpose = "Texture::update : clear_fbo";
-                    clear_fbo_2.generate();
-                    clear_fbo_2.purpose = "Texture::update : clear_fbo_2";
-                }
-
-                if(getContext()->window.isContextCurrent()){
-                    clear_fbo.setColorBuffer(*this, GL_TEXTURE_2D);
-                    clear_fbo.bind();
-                }
-                else if(getSecondContext()->window.isContextCurrent()){
-                    clear_fbo_2.setColorBuffer(*this, GL_TEXTURE_2D);
-                    clear_fbo_2.bind();
-                }
-
                 glClear(GL_COLOR_BUFFER_BIT);
+
+                FBOPOOL::releaseFBO(FBO);
 
                 bound_fbo.bind();
             }
@@ -273,5 +261,5 @@ void Texture::update(char* pixels, unsigned char* uPixels, bool use_unsigned, in
         LigidGL::testGLError("Texture::update : Generate mipmap");
     }
 
-    GL::releaseBoundTextures("Texture::update");
+    GL::releaseTextureFromSlot(txtr_slot, "Texture::update");
 }

@@ -36,20 +36,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Settings/Settings.hpp"
 
 void Skybox::createDisplayingTxtr(){
-	
+	Shader already_bound_shader = ShaderUTIL::get_bound_shader();
+
 	if(!displayingTexture.ID){
 		displayingTexture = Texture((char*)nullptr, 100, 100);
 	}
 
 	// Create the capture framebuffer object
-	Framebuffer FBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(100)), "Skybox displaying texture");
-	FBO.bind();
+	Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(this->displayingTexture, this->displayingTexture.getResolution(), "Skybox displaying texture");
 
-	glViewport(0, 0, displayingTexture.getResolution().x, displayingTexture.getResolution().y);
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	ShaderSystem::skyboxBall().use();
 	glm::vec3 viewPos = glm::vec3(1.5f,0,0);
 	
 	glm::mat4 view = glm::lookAt(	
@@ -65,25 +63,17 @@ void Skybox::createDisplayingTxtr(){
 													0.1f
 												);
 
-
+	ShaderSystem::skyboxBall().use();
 	ShaderSystem::skyboxBall().setVec3("viewPos",viewPos);
 	ShaderSystem::skyboxBall().setMat4("view",view);
 	ShaderSystem::skyboxBall().setMat4("projection",projectionMatrix);
-
-	//ShaderSystem::skyboxBall().setInt("useTransformUniforms",0);
-
-	glm::mat4 modelMatrix = glm::mat4(1);
-	ShaderSystem::skyboxBall().setMat4("modelMatrix",modelMatrix);
-	
+	ShaderSystem::skyboxBall().setMat4("modelMatrix",glm::mat4(1));
 	ShaderSystem::skyboxBall().setInt("skybox", GL::bindTexture_CubeMap(this->ID, "Skybox::createDisplayingTxtr"));
 	
 	getSphereModel()->Draw();
 
-	GL::releaseBoundTextures("Skybox::createDisplayingTxtr");
-
 	//Finish
-	Settings::defaultFramebuffer()->FBO.bind();
-	Settings::defaultFramebuffer()->setViewport();
-
-	FBO.deleteBuffers(false, true);
+	GL::releaseBoundTextures("Skybox::createDisplayingTxtr");
+	FBOPOOL::releaseFBO(FBO);
+	already_bound_shader.use();
 }

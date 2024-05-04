@@ -485,7 +485,6 @@ public:
     float yaw = 0.f;
     float pitch = 0.f;
     bool twoSides = false;
-    Framebuffer FBO;
 
     bool rHover = false;
     bool gHover = false;
@@ -493,6 +492,8 @@ public:
     bool rHoverN = false;
     bool gHoverN = false;
     bool bHoverN = false;
+
+    Texture captureTxtr;
 
     Gizmo(){}
 

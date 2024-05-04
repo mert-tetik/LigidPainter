@@ -32,7 +32,9 @@ void Gizmo::render(
                         Timer &timer, //Timer that handles the animations
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
-                        
+
+    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
+
     this->doMouseTracking = doMouseTracking;
 
     // pos value % of the video scale
@@ -85,9 +87,6 @@ void Gizmo::render(
 
     getBox()->draw("Gizmo : Render to screen");
 
-    if(!FBO.ID){
-        FBO = Framebuffer(Texture((char*)nullptr, Settings::videoScale()->x, Settings::videoScale()->y), GL_TEXTURE_2D, "Gizmo FBO");
-    }
 
     this->rHover = false;
     this->gHover = false;
@@ -98,7 +97,11 @@ void Gizmo::render(
     
     if(this->hover){
 
-        FBO.bind();
+        if(!this->captureTxtr.ID){
+            this->captureTxtr = Texture((char*)nullptr, Settings::videoScale()->x, Settings::videoScale()->y);
+        }
+
+        Framebuffer FBO = FBOPOOL::requestFBO(this->captureTxtr, "Gizmo FBO");
 
         ShaderSystem::gizmo().setInt("rHover", false);
         ShaderSystem::gizmo().setInt("gHover", false);
@@ -158,10 +161,8 @@ void Gizmo::render(
             }
         }
         
-
-        Settings::defaultFramebuffer()->FBO.bind();
-        Settings::defaultFramebuffer()->setViewport();
+        FBOPOOL::releaseFBO(FBO);
     }
 
-    ShaderSystem::buttonShader().use();
+    already_bound_shader.use();
 }

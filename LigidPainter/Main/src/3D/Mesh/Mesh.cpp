@@ -83,8 +83,6 @@ void Mesh::generateDisplayingTexture(){
 
     this->displayingTxtr.title = "MeshDisplayingTxtr";
 
-    Framebuffer FBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(displayRes)), "Generating mesh displaying texture");
-
     glm::vec3 meshCenter = this->getCenterPosition();
     
     glm::vec3 meshMostFar = this->getMostDistantPointFromAPoint(meshCenter);
@@ -108,10 +106,7 @@ void Mesh::generateDisplayingTexture(){
     
     //!Update the material displaying texture
     
-    FBO.bind();
-
-    //Set the OpenGL viewport to the resolution of the material displaying texture
-    glViewport(0,0,displayRes,displayRes);
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(this->displayingTxtr, this->displayingTxtr.getResolution(), "");
 
     //Clear the capture framebuffer (displaying texture) with alpha zero color
     glClearColor(0,0,0,0);
@@ -125,8 +120,8 @@ void Mesh::generateDisplayingTexture(){
     //Throw the camera data to the shader
     ShaderSystem::solidShadingShader().setMat4("projection", projectionMatrix);
     ShaderSystem::solidShadingShader().setMat4("view", view);
-    glm::mat4 modelMat = glm::mat4(1.f);
     
+    glm::mat4 modelMat = glm::mat4(1.f);
     modelMat = glm::scale(modelMat, glm::vec3(1.f / glm::distance(meshMostFar, this->getCenterPosition())));
 
     ShaderSystem::solidShadingShader().setMat4("modelMatrix", modelMat);
@@ -141,23 +136,16 @@ void Mesh::generateDisplayingTexture(){
     //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
     ShaderSystem::buttonShader().use();
 
-    //Bind the default framebuffer
-    Settings::defaultFramebuffer()->FBO.bind();
-    
-    //Set the OpenGL viewport to default
-    Settings::defaultFramebuffer()->setViewport();    
-    
-    FBO.deleteBuffers(false, true);
+    FBOPOOL::releaseFBO(FBO);
 }
 
 void Mesh::generateUVMask(){
+    
     const int resolution = 2024;
     
     this->uvMask = Texture((char*)nullptr, resolution, resolution, GL_LINEAR);
 
-    Framebuffer FBO = Framebuffer(this->uvMask, GL_TEXTURE_2D, "Generating mesh uv mask");
-    FBO.bind();
-    glViewport(0, 0, resolution, resolution);
+    Framebuffer FBO = FBOPOOL::requestFBO(this->uvMask, "Generating mesh uv mask");
 
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -169,12 +157,12 @@ void Mesh::generateUVMask(){
 
     this->Draw();
 
-    Settings::defaultFramebuffer()->FBO.bind();
-    FBO.deleteBuffers(false, false);
+    FBOPOOL::releaseFBO(FBO);
 }
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, bool initTxtrs)
 {
+    
     if(!vertices.size())
         vertices.push_back(Vertex());
 
@@ -190,7 +178,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     getContext()->window.makeContextCurrent();
     this->setupMesh(&this->VBO, &this->VAO, &this->EBO);   
     getSecondContext()->window.makeContextCurrent();
-    this->setupMesh(&this->VBO_2, &this->VAO_2, &this->EBO_2);   
+    this->setupMesh(&this->VBO_2, &this->VAO_2, &this->EBO_2);
 
     bound_context->makeContextCurrent();
 
@@ -224,6 +212,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
             this->face_selection_data.selectedFaces = Texture(nullptr, nullptr, false, resolution, resolution, GL_NEAREST, GL_RED, GL_R8, 0, GL_TEXTURE_2D);
         }
     }
+    
     generateUVMask();
 
     generateDisplayingTexture();
@@ -390,7 +379,6 @@ void Mesh::setupMesh(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO)
     
 }
 
-static Framebuffer getPosNormalOverPoint_FBO;
 void Mesh::getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& normalData, bool readNormal){
         
     const unsigned int resolution = this->meshPosTxtr.getResolution().x; 
@@ -398,27 +386,26 @@ void Mesh::getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& no
     pointPos.x = UTIL::new_value_range(pointPos.x, 0, getContext()->windowScale.x, 0, resolution);
     pointPos.y = UTIL::new_value_range(pointPos.y, 0, getContext()->windowScale.y, 0, resolution);
 
-    if(!getPosNormalOverPoint_FBO.ID){
-        getPosNormalOverPoint_FBO.generate();
-        getPosNormalOverPoint_FBO.purpose = "Mesh::getPosNormalOverPoint getPosNormalOverPoint_FBO";
+    {
+        Framebuffer FBO = FBOPOOL::requestFBO(this->meshPosTxtr, "Mesh::getPosNormalOverPoint : position");
+
+        glReadPixels(
+                        pointPos.x, 
+                        pointPos.y, 
+                        1, 
+                        1,
+                        GL_RGBA,
+                        GL_FLOAT,
+                        posData
+                    );
+
+        FBOPOOL::releaseFBO(FBO);
     }
-
-    getPosNormalOverPoint_FBO.setColorBuffer(this->meshPosTxtr, GL_TEXTURE_2D);
-    getPosNormalOverPoint_FBO.bind();
     
-    glReadPixels(
-                    pointPos.x, 
-                    pointPos.y, 
-                    1, 
-                    1,
-                    GL_RGBA,
-                    GL_FLOAT,
-                    posData
-                );
+    if(readNormal)
+    {
+        Framebuffer FBO = FBOPOOL::requestFBO(this->meshNormalTxtr, "Mesh::getPosNormalOverPoint : normal");
 
-    getPosNormalOverPoint_FBO.setColorBuffer(this->meshNormalTxtr, GL_TEXTURE_2D);
-
-    if(readNormal){
         glReadPixels(
                         pointPos.x, 
                         pointPos.y, 
@@ -428,6 +415,8 @@ void Mesh::getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& no
                         GL_FLOAT,
                         normalData
                     );
+
+        FBOPOOL::releaseFBO(FBO);
     }
     
     normalData[0] = normalData[0] * 2.f - 1.f;
@@ -439,7 +428,6 @@ void Mesh::getPosNormalOverPoint(glm::vec2 pointPos, float*& posData, float*& no
     posData[2] = posData[2] * 2.f - 1.f;
 }
 
-static Framebuffer updatePosNormalTexture_FBO;
 void Mesh::updatePosNormalTexture(){
     
     glEnable(GL_DEPTH_TEST);
@@ -448,13 +436,6 @@ void Mesh::updatePosNormalTexture(){
     
     unsigned int resolution = this->meshPosTxtr.getResolution().x; 
     
-    if(!updatePosNormalTexture_FBO.ID){
-        updatePosNormalTexture_FBO = Framebuffer(this->meshPosTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "updatePosNormalTexture_FBO");
-    }
-    updatePosNormalTexture_FBO.setColorBuffer(this->meshPosTxtr, GL_TEXTURE_2D);
-    
-    updatePosNormalTexture_FBO.bind();
-
     for (size_t i = 0; i < 2; i++)
     {
         Texture txtr = this->meshPosTxtr;
@@ -462,7 +443,7 @@ void Mesh::updatePosNormalTexture(){
             txtr = this->meshNormalTxtr;
 
         //Bind the texture (Painter class public member variable)
-        updatePosNormalTexture_FBO.setColorBuffer(txtr, GL_TEXTURE_2D);
+        Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(txtr, txtr.getResolution(), "Mesh::updatePosNormalTexture");
 
         //Clear the texture
         glViewport(0, 0, resolution, resolution);
@@ -483,6 +464,7 @@ void Mesh::updatePosNormalTexture(){
         this->Draw();
         
         GL::releaseBoundTextures("Mesh : updatePosNormalTexture");
+        FBOPOOL::releaseFBO(FBO);
     }
     
     //!Finished
@@ -525,20 +507,16 @@ ThreeDPoint Mesh::getCurrentPosNormalDataOverCursor(){
     return point;
 }
 
-static Framebuffer updateObjectIDsTexture_FBO;
 void Mesh::updateObjectIDsTexture(){
+    
+    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
+    
     glDepthFunc(GL_LESS);
     
     const unsigned int resolution = this->objectIDs.getResolution().x;
 
-    if(!updateObjectIDsTexture_FBO.ID)
-        updateObjectIDsTexture_FBO = Framebuffer(this->objectIDs, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "updateObjectIDsTexture");
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(this->objectIDs, this->objectIDs.getResolution(), "Mesh::updateObjectIDsTexture");
     
-    updateObjectIDsTexture_FBO.setColorBuffer(this->objectIDs, GL_TEXTURE_2D);
-    updateObjectIDsTexture_FBO.bind();
-    
-    //Clear the object ids texture
-    glViewport(0, 0, resolution, resolution);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -562,27 +540,21 @@ void Mesh::updateObjectIDsTexture(){
     //!Finished
 
     //Set back to default shader
-    ShaderSystem::buttonShader().use();
+    already_bound_shader.use();
 
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
+    FBOPOOL::releaseFBO(FBO);
 
     glDepthFunc(GL_LEQUAL);
 }
 
-static Framebuffer updateModelPrimitivesTexture_FBO;
 void Mesh::updateModelPrimitivesTexture(){
+    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
+    
     // Generate & bind the framebuffer object to render the model primitives into the modelPrimitives texture
-    if(!updateModelPrimitivesTexture_FBO.ID)
-        updateModelPrimitivesTexture_FBO = Framebuffer(this->face_selection_data.modelPrimitives, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, this->face_selection_data.modelPrimitives.getResolution()), "Face selection");
-
-    updateModelPrimitivesTexture_FBO.setColorBuffer(this->face_selection_data.modelPrimitives, GL_TEXTURE_2D);
-    updateModelPrimitivesTexture_FBO.bind();
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(this->face_selection_data.modelPrimitives, this->face_selection_data.modelPrimitives.getResolution(), "Mesh::updateModelPrimitivesTexture");
 
     glClearColor(0.,0.,0.,0.);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glViewport(0, 0, this->face_selection_data.modelPrimitives.getResolution().x, this->face_selection_data.modelPrimitives.getResolution().y);
 
     // Seting the primitive ID rendering shader 
     ShaderSystem::primitiveIDShader().use();
@@ -596,10 +568,9 @@ void Mesh::updateModelPrimitivesTexture(){
     this->Draw();
 
     //Set back to default shader
-    ShaderSystem::buttonShader().use();
+    already_bound_shader.use();
 
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
+    FBOPOOL::releaseFBO(FBO);
 
     glDepthFunc(GL_LEQUAL);
 }

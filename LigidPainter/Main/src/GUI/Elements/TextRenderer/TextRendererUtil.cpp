@@ -147,6 +147,8 @@ void TextRenderer::renderLeftToRight(
 
 	float overallX = getTextLastCharOffset();
 	
+	int txtr_unit = GL::bindTexture_2D(0, "TextRenderer : Render character");
+
 	std::string::const_iterator c;
 	for (c = textDataText.begin(); c != textDataText.end(); c++)
 	{
@@ -180,18 +182,17 @@ void TextRenderer::renderLeftToRight(
 			//Set the transform values
 			ShaderSystem::buttonShader().setVec2("scale", glm::vec2(w/1.7,h/1.7));
 			ShaderSystem::buttonShader().setVec3("pos", glm::vec3(xpos + w/1.7,ypos - (h/1.7) + Settings::videoScale()->y / 210, textDataPos.z));
-			ShaderSystem::buttonShader().setInt("properties.txtr", GL::bindTexture_2D(ch.TextureID, "TextRenderer : Render character"));
+			ShaderSystem::buttonShader().setInt("properties.txtr", txtr_unit); glActiveTexture(GL_TEXTURE0 + txtr_unit); glBindTexture(GL_TEXTURE_2D, ch.TextureID);
 			
 			if(textDataMinX < xpos)
 				getBox()->draw("TextRenderer::renderLeftToRight");
 			
-			GL::releaseBoundTextures("TextRenderer : Render character");
-
 			//To the right
 			pos.x += (ch.Advance >> 6) * textDataScale;
 		}
 	}
 	
+	GL::releaseTextureFromSlot(txtr_unit, "TextRenderer : Render character");
 }
 
 /// @brief Is not used rn

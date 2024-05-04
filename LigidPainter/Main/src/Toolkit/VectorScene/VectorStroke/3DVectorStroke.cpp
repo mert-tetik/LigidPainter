@@ -40,7 +40,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <cstdlib>
 
 static Texture projectToModelTxtr;
-static Framebuffer projectToModelFBO;
 
 void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3 center){
     
@@ -52,18 +51,14 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
 
     const unsigned int resolution = 1024;
 
-    if(!projectToModelFBO.ID){
+    if(!projectToModelTxtr.ID){
         projectToModelTxtr = Texture((char*)nullptr, resolution, resolution);
-        projectToModelFBO = Framebuffer(projectToModelTxtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "ThreeDBox::projectToModel fbo");;
     }
 
-    projectToModelFBO.bind();
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(projectToModelTxtr, projectToModelTxtr.getResolution(), "ThreeDBox::projectToModel fbo");
 
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    //glViewport(0, 0, getContext()->windowScale.x / (Settings::videoScale()->x / resolution), getContext()->windowScale.y / (Settings::videoScale()->y / resolution));
-    glViewport(0, 0, resolution, resolution);
 
     ShaderSystem::renderModelData().use();
     ShaderSystem::renderModelData().setMat4("view", view);
@@ -143,8 +138,7 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
         }
     }
 
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
+    FBOPOOL::releaseFBO(FBO);
 
     delete[] pxs;
 }

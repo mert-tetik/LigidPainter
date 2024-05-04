@@ -138,12 +138,12 @@ public:
 
     /*! @brief Places the first (top left) point on the 3D model 
         (Call if mouse click & edit mode) */
-    void placeFirstPoint(Framebuffer bindedFBO);
+    void placeFirstPoint();
     
     /*! @brief Places the second (bottom right) point on the 3D model.
                 Then auto-places rest of the points in a way to form a square 
         (Call if mouse click & edit mode) */
-    void placeSecondPoint(Framebuffer bindedFBO);
+    void placeSecondPoint();
 
     /*! @brief Renders all the points (detailed points too if detail mode is active)*/
     void renderPoints(Timer& timer,bool doMouseTracking);
@@ -163,7 +163,7 @@ public:
     
     /*! @brief Checks if the cursor is located on top of the wrapped texture
         (called if mouse left button clicked & other conditions are set like no panel was hovered too)*/
-    void checkIfWrappedTextureClicked(Framebuffer bindedFBO, bool doMouseTracking);
+    void checkIfWrappedTextureClicked(bool doMouseTracking);
 
 
     /*! Updates the threeDWrapBox */
@@ -185,7 +185,7 @@ public:
     /*! @brief Renders info texts about placing first points of the wrapped texture field
                Only called if top left and bottom right points set to vec3(0)
                And also renders a cancel button that can disable the wrap mode*/
-    void renderWrapPointDecidingScene(Timer& timer, Framebuffer bindedFBO);
+    void renderWrapPointDecidingScene(Timer& timer);
 
 };
 

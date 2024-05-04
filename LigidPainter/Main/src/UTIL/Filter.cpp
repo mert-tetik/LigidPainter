@@ -77,7 +77,8 @@ int Filter::load(std::string path){
 }
 
 void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
-    
+    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
+
     // This texture will be displayed
     Texture sampleTxtr = appTextures.filterDisplayerImage;
     // Resolution of the sample texture
@@ -92,13 +93,11 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
         this->displayingTxtr.update((char*)nullptr, displayRes.x, displayRes.y, GL_LINEAR);
 
     //Create the framebuffer
-    Framebuffer captureFBO = Framebuffer(this->displayingTxtr, GL_TEXTURE_2D, "Filter generateDisplayingTexture");
+    Framebuffer FBO = FBOPOOL::requestFBO(this->displayingTxtr, "Filter generateDisplayingTexture");
 
     //Clear the capture frame buffer(displaying texture) with color alpha zero
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    glViewport(0, 0, displayRes.x, displayRes.y);
     
     this->shader.use();
 
@@ -117,40 +116,32 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
 
     //Finish
     GL::releaseBoundTextures("Filter::generateDisplayingTexture");
-    Settings::defaultFramebuffer()->FBO.bind();
-    ShaderSystem::buttonShader().use();
-
-    captureFBO.deleteBuffers(false, false);
+    already_bound_shader.use();
+    FBOPOOL::releaseFBO(FBO);
 }
 
-void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTexture2){
+void Filter::applyFilter(Texture txtr, Texture maskTexture, Texture maskTexture2){
 
-    Texture txtrObject = txtr;
-    glm::vec2 txtrRes = txtrObject.getResolution();
+    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
 
-    Texture duplicatedTxtr = txtrObject.duplicateTexture();  
-
+    glm::vec2 txtrRes = txtr.getResolution();
     //Displaying resolution
     glm::vec2 displayRes = txtrRes;
-     
+
+    Texture duplicatedTxtr = txtr.get_temp_copy_txtr();  
+
     //Create the framebuffer
-    Framebuffer captureFBO = Framebuffer(txtr, GL_TEXTURE_2D, "Filter apply filter");
-    captureFBO.bind();
+    Framebuffer FBO = FBOPOOL::requestFBO(txtr, "Filter generateDisplayingTexture");
 
     //Clear the capture frame buffer(displaying texture) with color alpha zero
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glViewport(0, 0, displayRes.x, displayRes.y);
-    
     this->shader.use();
 
-    glm::vec2 scale = displayRes / glm::vec2(2);
-    glm::vec3 pos = glm::vec3(displayRes / glm::vec2(2),1.f);
-    glm::mat4 projection = glm::ortho(0.f, displayRes.x, displayRes.y, 0.f);
-    this->shader.setVec2("scale", scale); //Cover the screen
-    this->shader.setVec3("pos", pos); //Cover the screen
-    this->shader.setMat4("projection", projection); //Cover the screen
+    this->shader.setVec2("scale", glm::vec2(0.5f)); //Cover the screen
+    this->shader.setVec3("pos", glm::vec3(0.5f)); //Cover the screen
+    this->shader.setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f)); //Cover the screen
     
     this->shader.setInt("txtr", GL::bindTexture_2D(duplicatedTxtr.ID, "Filter::applyFilter"));
     this->shader.setVec2("txtrResolution", txtrRes); 
@@ -159,59 +150,17 @@ void Filter::applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTex
     getBox()->draw("Filter::applyFilter : applying filter");
 
     GL::releaseBoundTextures("Filter::applyFilter");
+    FBOPOOL::releaseFBO(FBO);
 
-    if(maskTexture.ID != 0 && glIsTexture(maskTexture.ID) == GL_TRUE){
-        Texture destTxtrObj = txtr;
-        Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
-        
-        ShaderSystem::grayScaleIDMaskingShader().use();
-        ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", projection);
-        ShaderSystem::grayScaleIDMaskingShader().setVec3("pos", pos);
-        ShaderSystem::grayScaleIDMaskingShader().setVec2("scale", scale);
-        ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", GL::bindTexture_2D(maskTexture.ID, "Filter::applyFilter : masking filter 1"));
-        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", GL::bindTexture_2D(duplicatedTxtr.ID, "Filter::applyFilter : masking filter 1"));
-        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", GL::bindTexture_2D(copiedDestTxtr.ID, "Filter::applyFilter : masking filter 1"));
-        ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f); 
-        ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 0);
-        ShaderSystem::grayScaleIDMaskingShader().setInt("normalMapMode", 0);
-        ShaderSystem::grayScaleIDMaskingShader().setInt("invert", 0);
-        
-        captureFBO.bind();
-
-        getBox()->draw("Filter::applyFilter : masking filter 1");
-
-        GL::releaseBoundTextures("Filter::applyFilter : masking filter 1"); 
+    if(maskTexture.ID && glIsTexture(maskTexture.ID) == GL_TRUE){
+        txtr.mix(duplicatedTxtr, maskTexture, false, false, true);
     }
-
-    if(maskTexture2.ID != 0 && glIsTexture(maskTexture2.ID) == GL_TRUE){
-        Texture destTxtrObj = txtr;
-        Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
-        
-        ShaderSystem::grayScaleIDMaskingShader().use();
-        ShaderSystem::grayScaleIDMaskingShader().setMat4("projection", projection);
-        ShaderSystem::grayScaleIDMaskingShader().setVec3("pos", pos);
-        ShaderSystem::grayScaleIDMaskingShader().setVec2("scale", scale);
-        ShaderSystem::grayScaleIDMaskingShader().setInt("maskTexture", GL::bindTexture_2D(maskTexture2.ID, "Filter::applyFilter : masking filter 2"));
-        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_black", GL::bindTexture_2D(duplicatedTxtr.ID, "Filter::applyFilter : masking filter 2"));
-        ShaderSystem::grayScaleIDMaskingShader().setInt("texture_white", GL::bindTexture_2D(copiedDestTxtr.ID, "Filter::applyFilter : masking filter 2"));
-        ShaderSystem::grayScaleIDMaskingShader().setFloat("offset", 0.5f); 
-        ShaderSystem::grayScaleIDMaskingShader().setInt("maskAlpha", 0);
-        
-        captureFBO.bind();
-
-        getBox()->draw("Filter::applyFilter : masking filter 2");
-        
-        GL::releaseBoundTextures("Filter::applyFilter : masking filter 2"); 
+    if(maskTexture2.ID && glIsTexture(maskTexture2.ID) == GL_TRUE){
+        txtr.mix(duplicatedTxtr, maskTexture2, false, false, true);
     }
-    
 
     //Finish
-    Settings::defaultFramebuffer()->FBO.bind();
-    ShaderSystem::buttonShader().use();
-
-    glDeleteTextures(1, &duplicatedTxtr.ID);
-    
-    captureFBO.deleteBuffers(false, false);
+    already_bound_shader.use();
 }
 
 #define LGDFILTER_WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \

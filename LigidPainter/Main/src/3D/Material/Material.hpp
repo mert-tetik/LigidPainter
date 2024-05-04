@@ -16,6 +16,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define LGD_MATERIAL_HPP
 
 #include "UTIL/Util.hpp"
+#include "UTIL/Framebuffers/Framebuffer_Pool.hpp"
+#include "UTIL/Texture/Texture.hpp"
 #include "UTIL/Shader/Shader.hpp"
 #include <iostream>
 
@@ -160,7 +162,7 @@ public:
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
     void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam);
-    void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam, Framebuffer customFBO, Model &displayModel, int specificUpdateI);
+    void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam, Texture custom_display_texture, Model &displayModel, int specificUpdateI);
 
     void apply_material(Model& model, Mesh &mesh, int textureResolution, bool noPrevTxtrMode);
 

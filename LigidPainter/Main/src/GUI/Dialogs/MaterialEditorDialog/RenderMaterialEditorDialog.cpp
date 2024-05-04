@@ -72,7 +72,7 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
 
         this->renderSkyboxTxtr();
         
-        this->materialDisplayer.texture = this->displayingFBO.colorBuffer;
+        this->materialDisplayer.texture = this->displayingTexture;
         this->materialDisplayer.render(timer, false);
         
         this->renderZoomIndicator(timer, mouseTrackingFlag);
@@ -92,7 +92,7 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
             int specificUpdateI = -1;
             if(this->selectedResultModeIndex == 1)
                 specificUpdateI = this->selectedMaterialModifierIndex;
-            material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), specificUpdateI);
+            material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingTexture, *this->getDisplayModel(), specificUpdateI);
         }
         
         this->prevUpdateTheMaterial = this->updateTheMaterial;
@@ -122,7 +122,7 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
 
 
         // Update the displaying texture
-        material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingFBO, *this->getDisplayModel(), -1);
+        material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingTexture, *this->getDisplayModel(), -1);
 
         glClear(GL_DEPTH_BUFFER_BIT);
         

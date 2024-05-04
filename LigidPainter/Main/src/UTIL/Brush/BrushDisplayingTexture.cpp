@@ -75,7 +75,8 @@ static std::vector<glm::vec2> getWaveVector(double amplitude, double lower, int 
 }
 
 void Brush::updateDisplayTexture(float radius){
-    
+    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
+
     int frameCounter = 0;
     
     // Create the wave array
@@ -90,16 +91,9 @@ void Brush::updateDisplayTexture(float radius){
 
     glm::vec2 displayRes = displayingTexture.getResolution();
 
-    // Create and bind the capturing framebuffer
-    Framebuffer captureFBO = Framebuffer(displayingTexture, GL_TEXTURE_2D, "Brush::updateDisplayTexture");
-    captureFBO.bind();
-
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //Cover the whole monitor (since we are painting to the screen)
-    glViewport(0, 0, displayRes.x, displayRes.y);
-    
     glm::vec2 scale = glm::vec2(0.5f);
     glm::vec3 pos = glm::vec3(0.5f, 0.5f, 1.f);
     glm::mat4 projection = glm::ortho(0.f, 1.f, 0.f, 1.f);
@@ -134,15 +128,13 @@ void Brush::updateDisplayTexture(float radius){
     glBlendFunc(GL_ONE,GL_ONE);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
-    captureFBO.bind();
+    // Create and bind the capturing framebuffer
+    Framebuffer FBO = FBOPOOL::requestFBO(displayingTexture, "Brush::updateDisplayTexture");
 
     for (int i = 0; i < wave.size() / strokeSize; i++)
     {
 
         ShaderSystem::twoDPainting().setInt("frame", i);
-
-        Texture bgTxtr = displayingTexture.duplicateTexture();
-        captureFBO.bind();
 
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -154,7 +146,7 @@ void Brush::updateDisplayTexture(float radius){
         GLfloat borderColor[] = { 0.f, 0.f, 0.f, 1.f };  // Replace r, g, b, a with the desired color values
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
         
-        ShaderSystem::twoDPainting().setInt("bgTxtr", GL::bindTexture_2D(bgTxtr.ID, "Brush::updateDisplayingTexture"));
+        ShaderSystem::twoDPainting().setInt("bgTxtr", GL::bindTexture_2D(0, "Brush::updateDisplayingTexture"));
         
         //Stroke positions
         std::vector<glm::vec2> strokes;
@@ -175,7 +167,7 @@ void Brush::updateDisplayTexture(float radius){
         //Painting
         getBox()->draw("Brush::updateDisplayingTexture : Painting the stroke");
 
-        glDeleteTextures(1, &bgTxtr.ID);
+        GL::releaseBoundTextures("Brush::updateDisplayingTexture");
     }
 
     glEnable(GL_BLEND);
@@ -184,9 +176,6 @@ void Brush::updateDisplayTexture(float radius){
     glDepthFunc(GL_LEQUAL);
     
     //Finish
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
-    ShaderSystem::buttonShader().use();
-
-    captureFBO.deleteBuffers(false, false);
+    already_bound_shader.use();
+    FBOPOOL::releaseFBO(FBO);
 }

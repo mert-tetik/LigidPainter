@@ -30,9 +30,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/Texture/Texture.hpp"
 #include "GUI/GUI.hpp"
-
-
 
 bool Texture::load(const char* path){
 

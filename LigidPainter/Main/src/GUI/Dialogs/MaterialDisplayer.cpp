@@ -65,7 +65,7 @@ MaterialDisplayerDialog::MaterialDisplayerDialog(int){
     
     this->panel.sections[0].elements[1].button.color2 = this->panel.sections[0].elements[1].button.color;
 
-    this->displayingFBO = Framebuffer(Texture((char*)nullptr, 512, 512), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(512)), "Material displayer dialog - displaying");
+    this->displayingTexture = Texture((char*)nullptr, 512, 512);
 }
 
 void MaterialDisplayerDialog::show(Timer& timer, Material material){
@@ -79,19 +79,19 @@ void MaterialDisplayerDialog::show(Timer& timer, Material material){
         this->displayingCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
 
         //Render the panel
-        this->panel.sections[0].elements[1].button.texture = this->displayingFBO.colorBuffer;
+        this->panel.sections[0].elements[1].button.texture = this->displayingTexture;
         panel.render(timer,true);
         
         //Close the dialog
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){
             if(!dialogControl.firstFrameActivated){
                 this->dialogControl.unActivate();
-                material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, Camera(), 0, false, this->displayingFBO, *getMaterialDisplayerModel(), -1);
+                material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, Camera(), 0, false, this->displayingTexture, *getMaterialDisplayerModel(), -1);
             }
         }
         
         if(this->dialogControl.active)
-            material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, this->displayingCam, 0, true, this->displayingFBO, *getMaterialDisplayerModel(), -1);
+            material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, this->displayingCam, 0, true, this->displayingTexture, *getMaterialDisplayerModel(), -1);
         
         dialogControl.updateEnd(timer, 0.15f);
 

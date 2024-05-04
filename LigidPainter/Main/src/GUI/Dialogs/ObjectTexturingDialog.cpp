@@ -129,8 +129,6 @@ ObjectTexturingDialog::ObjectTexturingDialog(int){
 
     this->displayingTexture = Texture((char*)nullptr, DISPLAY_RESOLUTION.x, DISPLAY_RESOLUTION.y);
 
-    this->displayingFBO = Framebuffer(this->displayingTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, DISPLAY_RESOLUTION), "Object texturing dialog - displaying");
-
     this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
     this->sceneCam.radius = 3.5f;
 
@@ -439,10 +437,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                         aoHistoryUsed = prevAoHistoryUsed;
                     }
 
-                    Framebuffer FBO = Framebuffer(colorBuffer, GL_TEXTURE_2D, "Object texturing dialog assigning");
-                    FBO.bind();
-
-                    glViewport(0,0,res.x,res.y);
+                    Framebuffer FBO = FBOPOOL::requestFBO(colorBuffer, "Object texturing dialog assigning");
 
                     ShaderSystem::objectTexturingAssign().use();
                     ShaderSystem::objectTexturingAssign().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
@@ -452,30 +447,13 @@ void ObjectTexturingDialog::show(Timer& timer){
 
                     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::objectTexturingAssign(), getScene()->model->meshes[i]);
 
-                    /*
-                    if(channelI == 0)
-                        GL::bindTexture_2D(result_channels[i].albedo.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-                    if(channelI == 1)
-                        GL::bindTexture_2D(result_channels[i].roughness.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-                    if(channelI == 2)
-                        GL::bindTexture_2D(result_channels[i].metallic.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-                    if(channelI == 3)
-                        GL::bindTexture_2D(result_channels[i].normalMap.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-                    if(channelI == 4)
-                        GL::bindTexture_2D(result_channels[i].heightMap.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-                    if(channelI == 5)
-                        GL::bindTexture_2D(result_channels[i].ambientOcclusion.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-                    */
-
                     getScene()->model->meshes[i].Draw();
 
                     GL::releaseBoundTextures("ObjectTexturingDialog : Updating displaying texture");
                     
                     glEnable(GL_DEPTH_TEST);
 
-                    FBO.deleteBuffers(false, false);
-                    Settings::defaultFramebuffer()->FBO.bind();
-                    Settings::defaultFramebuffer()->setViewport();
+                    FBOPOOL::releaseFBO(FBO);
                 }
             }    
         }
@@ -558,6 +536,8 @@ void ObjectTexturingDialog::show(Timer& timer){
 
 
 void ObjectTexturingDialog::updateDisplayingTexture(){
+    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
+
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(this->sceneCam.cameraPos, 
                                  this->sceneCam.originPos, 
@@ -571,7 +551,7 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
                                                     1000.f  //Far (the material is pretty close to the camera actually  ) 
                                                 );
     
-    this->displayingFBO.bind();
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(this->displayingTexture, this->displayingTexture.getResolution(), "ObjectTexturingDialog::updateDisplayingTexture");
     
     //Set the OpenGL viewport to the resolution of the material displaying texture
     glViewport(0,0, DISPLAY_RESOLUTION.x, DISPLAY_RESOLUTION.y);
@@ -580,21 +560,29 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    /*
+    if(channelI == 0)
+        GL::bindTexture_2D(result_channels[i].albedo.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
+    if(channelI == 1)
+        GL::bindTexture_2D(result_channels[i].roughness.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
+    if(channelI == 2)
+        GL::bindTexture_2D(result_channels[i].metallic.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
+    if(channelI == 3)
+        GL::bindTexture_2D(result_channels[i].normalMap.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
+    if(channelI == 4)
+        GL::bindTexture_2D(result_channels[i].heightMap.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
+    if(channelI == 5)
+        GL::bindTexture_2D(result_channels[i].ambientOcclusion.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
+    */
+
     getScene()->render_scene(Timer()); //result_channels
 
     // 190 - 1727
     // 114 - 967
     
     //!Finish (prepare rendering the GUI)
-
-    //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
-    ShaderSystem::buttonShader().use();
-
-    //Bind the default framebuffer
-    Settings::defaultFramebuffer()->FBO.bind();
-    
-    //Set the OpenGL viewport to default
-    Settings::defaultFramebuffer()->setViewport();
+    already_bound_shader.use();
+    FBOPOOL::releaseFBO(FBO);
 
 }
 

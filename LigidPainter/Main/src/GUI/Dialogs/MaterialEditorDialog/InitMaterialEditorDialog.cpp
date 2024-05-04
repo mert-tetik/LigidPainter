@@ -120,10 +120,9 @@ MaterialEditorDialog::MaterialEditorDialog(int)
     this->barButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(bgPanel.scale.x, bgPanel.scale.y / 20), "Material Editor", Texture(), 0.f, false);
     barButton.pos = glm::vec3(bgPanel.pos.x, bgPanel.pos.y - bgPanel.scale.y - barButton.scale.y, bgPanel.pos.z);
 
-    this->displayingFBO = Framebuffer(Texture((char*)nullptr, 1024, 1024, GL_LINEAR), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)), "Material editor dialog - model fbo");
-    this->skyboxFBO = Framebuffer(Texture((char*)nullptr, 1024, 1024, GL_LINEAR), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(1024)), "Material editor dialog - skybox fbo");
+    this->displayingTexture = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+    this->skyboxDisplayingTexture = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
     
-
     twoDModelModeBtn = Button(ELEMENT_STYLE_SOLID,glm::vec2(0.8f, Settings::videoScale()->x / Settings::videoScale()->y),"", appTextures.twoDIcon, 1.f,false);
     twoDModelModeBtn.textScale = 0.6f;
     twoDModelModeBtn.outline = false;

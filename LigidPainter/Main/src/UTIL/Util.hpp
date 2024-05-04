@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Texture/Texture.hpp"
 
 //forward declerations :
 
@@ -258,204 +259,6 @@ public:
     void transition(bool state ,float &value,float timeInSeconds);
 };
 
-struct ProceduralProperties{
-    /// @brief Indicates which procedural texture shader function will be used (indexing the getProcedural function in the Shaders/Include/Procedural.frag)
-    ///         -1 : Using the proceduralTextureID
-    ///         1000 : Using the ID (Smart texture selected)
-    int proceduralID = -1;
-    float proceduralScale = 1.f;
-    float proceduralStretch = 1.f;
-    float proceduralScaleModelPos = 1.f;
-    bool proceduralMirroredRepeat = false;
-    int proceduralnverted = 0;
-    bool proceduralNormalMap = false;
-    bool proceduralNormalGrayScale = false;
-    float proceduralNormalStrength = 10.f;
-    unsigned int proceduralTextureID = 0;
-    bool proceduralUseTexCoords = false;
-    bool proceduralGrayScale = false;
-    float proceduralBrightness = 1.f;
-    glm::vec4 smartProperties;
-
-    float txtrPackScale = 1.f;
-    float txtrPackCount = 1.f;
-    float txtrPackRotation_Jitter = 1.f;
-    float txtrPackSize_Jitter = 1.f;
-    float txtrPackOpacity_Jitter = 1.f;
-    float txtrPackScatter = 1.f;
-
-    int textureSelectionDialog_selectedTextureIndex = 0;
-    int textureSelectionDialog_selectedMode = 0;
-
-    bool operator==(const ProceduralProperties& props) const{
-        return 
-            this->proceduralID == props.proceduralID && 
-            this->proceduralScale == props.proceduralScale && 
-            this->proceduralStretch == props.proceduralStretch && 
-            this->proceduralScaleModelPos == props.proceduralScaleModelPos && 
-            this->proceduralMirroredRepeat == props.proceduralMirroredRepeat && 
-            this->proceduralnverted == props.proceduralnverted && 
-            this->proceduralNormalMap == props.proceduralNormalMap && 
-            this->proceduralNormalGrayScale == props.proceduralNormalGrayScale && 
-            this->proceduralNormalStrength == props.proceduralNormalStrength && 
-            this->proceduralTextureID == props.proceduralTextureID && 
-            this->proceduralUseTexCoords == props.proceduralUseTexCoords && 
-            this->proceduralGrayScale == props.proceduralGrayScale && 
-            this->proceduralBrightness == props.proceduralBrightness && 
-            this->smartProperties == props.smartProperties && 
-            this->txtrPackScale == props.txtrPackScale && 
-            this->txtrPackCount == props.txtrPackCount && 
-            this->txtrPackRotation_Jitter == props.txtrPackRotation_Jitter && 
-            this->txtrPackSize_Jitter == props.txtrPackSize_Jitter && 
-            this->txtrPackOpacity_Jitter == props.txtrPackOpacity_Jitter && 
-            this->txtrPackScatter == props.txtrPackScatter &&
-            this->textureSelectionDialog_selectedTextureIndex == props.textureSelectionDialog_selectedTextureIndex &&
-            this->textureSelectionDialog_selectedMode == props.textureSelectionDialog_selectedMode;
-    }
-    
-    bool operator!=(const ProceduralProperties& props) const{
-        return !(*this == props); 
-    }
-};
-
-class Texture
-{
-private:
-    // --- util functions --- 
-
-    std::string generateTMPTitle();
-    std::string getTMPTitleWithGreatestIndex();
-
-public:
-    /// @brief OpenGL texture buffer object id
-    unsigned int ID = 0;
-
-    /// @brief OpenGL texture buffer object id for the copy context in order to use for multithreading
-    ///        Generally used for the library elements
-    unsigned int copyContextID = 0;
-
-    ProceduralProperties proceduralProps;
-
-    /// @brief Title of the texture (myTexture)
-    std::string title = "";
-
-    /// @brief unique id (unique to the other texture elements in the library.textures)
-    ///        (used to generate tmp file names)
-    int uniqueId;
-
-    /// @brief default constructor (ID is generated when @ref load is called)
-    Texture();
-    
-    /// @brief create a texture class with existing OpenGL texture buffer object id
-    Texture(unsigned int ID);
-    
-    /// @brief Create a texture class using texture data & generate OpenGL texture buffer object id (channels is always rgba)
-    /// @param pixels pixels of the texture
-    /// @param w width
-    /// @param h height
-    Texture(char* pixels, int w, int h);
-    Texture(char* pixels, int w, int h, GLenum filterParam);
-    Texture(char* pixels, int w, int h, GLenum filterParam, int proceduralID);
-    Texture(char* pixels, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat);
-    
-    Texture(unsigned char* pixels, int w, int h);
-    Texture(unsigned char* pixels, int w, int h, GLenum filterParam);
-    Texture(unsigned char* pixels, int w, int h, GLenum filterParam, int proceduralID);
-    Texture(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat);
-    
-    Texture(char* pixels, unsigned char* uPixels, bool use_unsigned, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat, GLenum textureWrap, GLenum target);
-
-    void update(char* pixels, int w, int h);
-    void update(char* pixels, int w, int h, GLenum filterParam);
-    void update(char* pixels, int w, int h, GLenum filterParam, GLenum format);
-    void update(char* pixels, int w, int h, GLenum filterParam, GLenum format, unsigned internalFormat);
-    void update(char* pixels, int w, int h, GLenum filterParam, GLenum format, unsigned internalFormat, GLenum wrap);
-    
-    void update(unsigned char* pixels, int w, int h);
-    void update(unsigned char* pixels, int w, int h, GLenum filterParam);
-    void update(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum format);
-    void update(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum format, unsigned internalFormat);
-    void update(unsigned char* pixels, int w, int h, GLenum filterParam, GLenum format, unsigned internalFormat, GLenum wrap);
-    
-    void update(char* pixels, unsigned char* uPixels, bool use_unsigned, int w, int h, GLenum filterParam, GLenum format, GLenum internalFormat, GLenum wrap);
-
-
-    /// @brief Load a texture by importing the texture in the given path via STBI
-    bool load(const char* path);
-
-    /// @brief Returns texture data in the given path & doesn't write anything to the member variables
-    unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip);
-    
-    /// @brief Exports the texture to the given directory path
-    /// @param path folder path (will be completed as : @param path + / + @ref title + . + format (in lowercase))
-    /// @param format is PNG JPEG BMP TGA
-    bool exportTexture(std::string path,const std::string format);
-
-
-    /// @brief writes the texture data to the given @param pixels parameter
-    /// glm::ivec2 textureRes = txtr.getResolution();
-    /// char* pixels = new pixels[textureRes.x * textureRes.y * 4];
-    /// getData(pixels); //Write the data to the pixels variable
-    void getData(char* pixels);
-    void getData(unsigned char* pixels);
-    
-    /// @brief @return the resolution value of the texture 
-    glm::ivec2 getResolution();
-
-    /// @brief creates a copy of the texture and returns the OpenGL texture buffer object ID of the duplicated texture.
-    ///         Use that way : Texture newTexture(duplicatedTexture.duplicateTexture());
-    unsigned int duplicateTexture();
-    void duplicateTexture(Texture &txtr);
-    void duplicateTextureSub(Texture &txtr);
-    
-    /// @brief Write the tmp file of the texture from the tmp folder
-    void writeTMP(std::string tmpTitle);
-    
-    /// @brief Read the tmp file of the texture from the tmp folder and delete the readen file
-    void readTMP(std::string tmpTitle);
-
-    std::vector<MaterialIDColor> getMaterialIDPalette();
-
-    bool writeTextureData(std::ofstream& wf);
-    
-    bool readTextureData(std::ifstream& rf, bool threeDMode, unsigned int versionCode, bool generate_txtr);
-
-    void copyDataToTheCopyContext();
-
-
-    // -------- Texture Manipulation --------
-
-    /// @brief Expands the texture's boundaries according to the mesh uv mask
-    void removeSeams(Mesh& mesh);
-
-    void removeUnselectedFaces(Mesh& mesh);
-    
-    /// @brief Writes the normal map version of the texture into the normalMap param (normalMap has to be initialized) 
-    void generateNormalMap(unsigned int& normalMap, int textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale);
-    
-    /// @brief Writes the normal map version of the texture into the normalMap param (normalMap has to be initialized) 
-    void generateNormalMap(unsigned int& normalMap, glm::ivec2 textureResolution, float proceduralNormalStrength, bool proceduralNormalGrayScale, bool alphaMode);
-    
-    /// @brief Writes the normal map version of the texture into itself
-    void applyNormalMap(float proceduralNormalStrength, bool proceduralNormalGrayScale, bool alphaMode);
-    
-    /// @brief Generates procedural texture result using the mesh param
-    Texture generateProceduralTexture(Mesh &mesh, int textureRes);
-    void generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textureRes);
-
-    /// @brief Generates 2D displaying texture using the proceduralProps & writes the texture into the this->ID
-    /// @param displayMode 0 : solid 2D, 1 : Material ball PBR, 2 : Custom mesh PBR
-    void generateProceduralDisplayingTexture(int displayingTextureRes, int displayMode, float radius, float rotation);
-    void generateProceduralDisplayingTexture(int displayingTextureRes, int displayMode);
-
-    void flipTexture(bool horizontal, bool vertical);
-
-    void resize(const glm::ivec2 newResolution);
-
-    void mix(Texture txtr2, Texture mask, bool maskAlpha, bool normalMapMode, bool invert);
-
-    void render_mesh(Mesh& mesh, MaterialChannels channels, Camera cam);
-};
 
 struct BrushProperties{
     float radius = 0.01f;
@@ -504,46 +307,6 @@ public:
     void updateDisplayTexture(float radius);
 };
 
-class Renderbuffer{
-public:
-    unsigned int ID = 0, internalformat = 0, attachment = 0;
-    
-    Renderbuffer();
-    Renderbuffer(unsigned int ID, unsigned int internalformat, unsigned int attachment);
-    Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution);
-    Renderbuffer(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution, int samples);
-
-    void update(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution);
-    void update(unsigned int internalformat, unsigned int attachment, glm::ivec2 resolution, int samples);
-
-    glm::ivec2 getResolution();
-};
-
-class Framebuffer{
-public:
-    unsigned int ID = 0;
-
-    Texture colorBuffer;
-    Renderbuffer renderBuffer;
-    std::string purpose;
-
-    Framebuffer();
-    Framebuffer(Texture colorBuffer, unsigned int textureTarget, std::string purpose);
-    Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer, std::string purpose);
-    void update(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer);
-
-
-    void generate();
-    void bind();
-    void setColorBuffer(Texture colorBuffer, unsigned int textureTarget);
-    void setColorBuffer(std::vector<Texture> colorBuffers, unsigned int textureTarget);
-    void setRenderbuffer(Renderbuffer rbo);
-    void removeRenderbuffer();
-    void deleteBuffers(bool delColorBuffer, bool delRenderBuffer);
-    
-    void makeCurrentlyBindedFBO();
-};
-
 /// @brief Image filter library element. 
 class Filter{ 
 public:
@@ -566,7 +329,7 @@ public:
     void generateDisplayingTexture(glm::vec2 displayResolution);
 
     /// @brief Applies the @ref (*this).shader to the given texture
-    void applyFilter(unsigned int txtr, Texture maskTexture, Texture maskTexture2);
+    void applyFilter(Texture txtr, Texture maskTexture, Texture maskTexture2);
 
     bool writeFilterData(std::ofstream& wf);
 

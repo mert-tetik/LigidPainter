@@ -64,6 +64,9 @@ public:
         if(!getContext()->window.shareContext(getSecondContext()->window)){
             LGDLOG::start << "ERROR *CRITICAL* : Can't share OpenGL contexts between main context & second context. Multi-threading features won't be used!" << LGDLOG::end; 
         }
+        if(!getContext()->window.shareContext(getCopyContext()->window)){
+            LGDLOG::start << "ERROR *CRITICAL* : Can't share OpenGL contexts between main context & copy context. Multi-threading features won't be used!" << LGDLOG::end; 
+        }
 
         getContext()->window.makeContextCurrent();
 
