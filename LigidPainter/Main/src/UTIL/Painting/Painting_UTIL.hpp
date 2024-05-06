@@ -109,7 +109,7 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     }
     
     //Bind the painting texture to the painting framebuffer
-    window_paint_FBO.colorBuffer.duplicateTexture(painting_BG_texture);
+    window_paint_FBO.colorBuffer.duplicateTexture(painting_BG_texture, "void window_paint");
 
     window_paint_FBO.bind();
 
@@ -567,9 +567,9 @@ void generate_projected_painting_texture(Framebuffer* FBO, bool mirror_X, bool m
     }
     else{
         if(use_low_resolution_buffers)
-            O_side.paintingBuffers.projected_painting_texture_low.duplicateTexture(FBO->colorBuffer);
+            O_side.paintingBuffers.projected_painting_texture_low.duplicateTexture(FBO->colorBuffer, "generate_projected_painting_texture");
         else
-            O_side.paintingBuffers.projected_painting_texture.duplicateTexture(FBO->colorBuffer);
+            O_side.paintingBuffers.projected_painting_texture.duplicateTexture(FBO->colorBuffer, "generate_projected_painting_texture");
     }
 }
 
@@ -596,7 +596,7 @@ Camera twoD_painting_calculate_camera(PaintSettings settings, MirrorSide mirrorS
 }
 
 void twoD_painting_generate_mirrored_window_painting_texture(MirrorSide* mirrorSide){
-    O_side.paintingBuffers.window_painting_texture.duplicateTexture(mirrorSide->paintingBuffers.window_painting_texture);
+    O_side.paintingBuffers.window_painting_texture.duplicateTexture("twoD_painting_generate_mirrored_window_painting_texture");
 
     bool horizontal = false;
     bool vertical = false;

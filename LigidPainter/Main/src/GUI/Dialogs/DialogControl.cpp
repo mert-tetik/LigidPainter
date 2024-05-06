@@ -63,11 +63,6 @@ void DialogControl::updateStart(){
     getContext()->updateGUIProjectionMatrix(getContext()->windowScale.x, getContext()->windowScale.y);
     getScene()->updateProjectionMatrix(0.f);
     
-    // Prevent rendering the application if the window is minimized
-    while (getContext()->window.isMinimized()){
-        getContext()->window.pollEvents();
-    }
-    
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

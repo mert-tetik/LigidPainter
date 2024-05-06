@@ -338,7 +338,7 @@ void registerBrushChangedAction(const std::string title, const Texture icon, Bru
 }
 
 void registerImageEditorAction(const std::string title, const Texture icon, Texture texture){
-    actions_Library.push_back(LibraryAction(title, TEXTURE_IMAGE_EDITOR_ACTION, icon, texture, Texture(texture.duplicateTexture())));
+    actions_Library.push_back(LibraryAction(title, TEXTURE_IMAGE_EDITOR_ACTION, icon, texture, Texture(texture.duplicateTexture("registerImageEditorAction"))));
     newLibraryAction = true;
 }
 
@@ -381,7 +381,7 @@ void registerMaterialAction(const std::string title, Material material){
 
 
 void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton){
-    Texture previousBtnTexture = previousButton.texture.duplicateTexture();
+    Texture previousBtnTexture = previousButton.texture.duplicateTexture("registerButtonAction");
     previousBtnTexture.proceduralProps = previousButton.texture.proceduralProps;
     previousBtnTexture.title = previousButton.texture.title;
 

@@ -32,7 +32,7 @@ void Texture::flipTexture(bool horizontal, bool vertical){
     Shader already_bound_shader = ShaderUTIL::get_bound_shader();
 
     // Get copy texture
-    Texture copiedTxtr = this->get_temp_copy_txtr();
+    Texture copiedTxtr = this->get_temp_copy_txtr("Texture::flipTexture");
     
     // Get framebuffer
     Framebuffer FBO = FBOPOOL::requestFBO(*this, "Texture::flipTexture");

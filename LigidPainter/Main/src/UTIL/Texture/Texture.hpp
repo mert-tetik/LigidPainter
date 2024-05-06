@@ -230,10 +230,10 @@ public:
 
     /*----------------- DUPLICATION ----------------*/
     /*! @brief Get context specific another texture with the same pixel data as the original*/
-    Texture get_temp_copy_txtr();
-    Texture duplicateTexture();
-    void duplicateTexture(Texture &txtr);
-    void duplicateTextureSub(Texture &txtr);
+    Texture get_temp_copy_txtr(std::string location);
+    Texture duplicateTexture(std::string location);
+    void duplicateTexture(Texture &txtr, std::string location);
+    void duplicateTextureSub(Texture &txtr, std::string location);
 };
 
 #endif

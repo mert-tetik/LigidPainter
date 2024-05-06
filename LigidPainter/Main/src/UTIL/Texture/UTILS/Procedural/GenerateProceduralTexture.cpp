@@ -72,7 +72,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam);
 
         // Get the FBO
-        Framebuffer FBO = FBOPOOL::requestFBO(destTxtr.ID, "Texture::generateProceduralTexture");
+        Framebuffer FBO = FBOPOOL::requestFBO(destTxtr, "Texture::generateProceduralTexture");
 
         // Clear destTxtr
         glClearColor(0,0,0,0);
@@ -90,7 +90,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         destTxtr.applyNormalMap(this->proceduralProps.proceduralNormalStrength, this->proceduralProps.proceduralNormalGrayScale, false); 
     }
 
-    destTxtr.removeSeams(mesh);
+    //destTxtr.removeSeams(mesh);
 
     already_bound_shader.use();
 }

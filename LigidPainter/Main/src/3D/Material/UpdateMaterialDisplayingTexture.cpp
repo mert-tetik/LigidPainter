@@ -49,6 +49,18 @@ void Material::updateMaterialDisplayingTexture(
                                                 Camera matCam,
                                                 int displayingMode,
                                                 bool useCustomCam,
+                                                Model& displayModel
+                                            )
+{
+    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, this->displayingTexture, displayModel, -1);
+}
+
+void Material::updateMaterialDisplayingTexture(
+                                                float textureRes,
+                                                bool updateMaterial,
+                                                Camera matCam,
+                                                int displayingMode,
+                                                bool useCustomCam,
                                                 Texture custom_display_txtr,
                                                 Model& displayModel,
                                                 int specificUpdateI

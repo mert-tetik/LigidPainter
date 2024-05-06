@@ -30,7 +30,7 @@ void Texture::mix(Texture mix_txtr, Texture mask, bool maskAlpha, bool normalMap
     
     Shader already_bound_shader = ShaderUTIL::get_bound_shader();
 
-    Texture duplicated_txtr = this->get_temp_copy_txtr(); 
+    Texture duplicated_txtr = this->get_temp_copy_txtr("Texture::mix"); 
 
     // Get a FBO and bind it & update the viewport resolution
     Framebuffer FBO = FBOPOOL::requestFBO(*this, "Texture::mix");

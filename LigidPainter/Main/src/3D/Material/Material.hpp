@@ -162,6 +162,7 @@ public:
 
     /// @brief Interpret the @ref materialModifiers and write the shader results to the material channels then update the displaying texture
     void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam);
+    void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam, Model& displayModel);
     void updateMaterialDisplayingTexture(float textureRes, bool updateMaterial, Camera matCam, int displayingMode, bool useCustomCam, Texture custom_display_texture, Model &displayModel, int specificUpdateI);
 
     void apply_material(Model& model, Mesh &mesh, int textureResolution, bool noPrevTxtrMode);

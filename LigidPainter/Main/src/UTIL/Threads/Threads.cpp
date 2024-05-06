@@ -63,20 +63,8 @@ MaterialThread material_thread;
 ThreadElements readMaterialThreadElements;
 
 void MaterialThread::update_thread_result(){
-    if(this->readyToService && !this->active && this->model != nullptr && this->material != nullptr){
-        Mesh* mesh = &this->model->meshes[this->mesh_index];
-        
-        mesh->albedo.update(this->material_channels_pxs.albedo, 1024, 1024);
-        mesh->roughness.update(this->material_channels_pxs.roughness, 1024, 1024);
-        mesh->metallic.update(this->material_channels_pxs.metallic, 1024, 1024);
-        mesh->normalMap.update(this->material_channels_pxs.normalMap, 1024, 1024);
-        mesh->heightMap.update(this->material_channels_pxs.heightMap, 1024, 1024);
-        mesh->ambientOcclusion.update(this->material_channels_pxs.ao, 1024, 1024);
-        
-        this->material->updateMaterialDisplayingTexture(512, false, Camera(), 0, false);
-    
+    if(this->readyToService && !this->active && this->model != nullptr && this->material != nullptr){    
         this->readyToService = false;
-        
     }
 }
 
@@ -136,17 +124,21 @@ void material_thread_function(){
                 texture->generateProceduralDisplayingTexture(512, true);
             }
             */
+            
             //material->updateMaterialDisplayingTexture(512, false, Camera(), 0, false);
             material_thread.material->apply_material(*material_thread.model, material_thread.model->meshes[material_thread.mesh_index], 1024, false);
+            material_thread.material->updateMaterialDisplayingTexture(1024, false, Camera(), 0, false, *material_thread.model);
+
 
             //std::cout << "RESULTT : " << (int)(glIsTexture(material_thread.model->meshes[material_thread.mesh_index].albedo.ID) == GL_TRUE) << std::endl;
-
+        /*
             material_thread.model->meshes[material_thread.mesh_index].albedo.getData(material_thread.material_channels_pxs.albedo);
             material_thread.model->meshes[material_thread.mesh_index].roughness.getData(material_thread.material_channels_pxs.roughness);
             material_thread.model->meshes[material_thread.mesh_index].metallic.getData(material_thread.material_channels_pxs.metallic);
             material_thread.model->meshes[material_thread.mesh_index].normalMap.getData(material_thread.material_channels_pxs.normalMap);
             material_thread.model->meshes[material_thread.mesh_index].heightMap.getData(material_thread.material_channels_pxs.heightMap);
             material_thread.model->meshes[material_thread.mesh_index].ambientOcclusion.getData(material_thread.material_channels_pxs.ao);
+          */
             // End
             material_thread.active = false;
 

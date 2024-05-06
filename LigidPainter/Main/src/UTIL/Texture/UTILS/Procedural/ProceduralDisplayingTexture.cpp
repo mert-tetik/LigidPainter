@@ -33,7 +33,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
     
     // If texture is not generated 
     if(!this->ID){
-        *this = Texture((char*)nullptr, displayingTextureRes, displayingTextureRes);
+        this->ID = Texture((char*)nullptr, displayingTextureRes, displayingTextureRes).ID;
     }
 
     // Update 
@@ -57,13 +57,6 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
 
         return;
     }
-    
-    // Get the capture framebuffer
-    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(*this, this->getResolution(), "Texture::generateProceduralDisplayingTexture");
-
-    // Clear the color buffer
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     // Set the rendering properties
     glDepthFunc(GL_LEQUAL);
@@ -116,12 +109,17 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
             ShaderSystem::PBRDisplayOnly().setInt("heightMapTxtr", GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture")); 
             ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture")); 
             
-            FBO.bind();
-            glViewport(0, 0, displayingTextureRes, displayingTextureRes);
+            // Get the capture framebuffer
+            Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(*this, this->getResolution(), "Texture::generateProceduralDisplayingTexture");
+
+            // Clear the color buffer
+            glClearColor(0,0,0,0);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             model.meshes[i].Draw();
             
             GL::releaseBoundTextures("Texture::generateProceduralDisplayingTexture");
+            FBOPOOL::releaseFBO(FBO);
         }
     }
 
@@ -152,11 +150,20 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapParam);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, wrapParam);
         
+        // Get the capture framebuffer
+        Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(*this, this->getResolution(), "Texture::generateProceduralDisplayingTexture");
+
+        // Clear the color buffer
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
         // Render result
         getBox()->draw("Texture::generateProceduralDisplayingTexture : Rendering procedural texture");
 
         // Release bound textures
         GL::releaseBoundTextures("Texture::generateProceduralDisplayingTexture");
+        FBOPOOL::releaseFBO(FBO);
+        
     }
 
     // Generate normal map
@@ -165,7 +172,6 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
     }
 
     // Finish
-    FBOPOOL::releaseFBO(FBO);
     already_bound_shader.use();
 }
 

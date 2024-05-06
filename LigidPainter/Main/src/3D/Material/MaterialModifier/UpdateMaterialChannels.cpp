@@ -76,7 +76,7 @@ static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, 
     else
         previousTexture.update((char*)nullptr, prevCurrentTextureRes.x, prevCurrentTextureRes.y);
     
-    currentTexture.duplicateTextureSub(previousTexture);
+    currentTexture.duplicateTextureSub(previousTexture, "update material channels - channelPrep");
 
     currentTexture.update((char*)nullptr, textureResolution, textureResolution);    
     
@@ -87,7 +87,7 @@ static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, 
 
 static void blurTheTexture(Texture txtr, Mesh& mesh, int textureResolution, float blurVal, int algorithmI){
     
-    Texture textureCopy = txtr.get_temp_copy_txtr();
+    Texture textureCopy = txtr.get_temp_copy_txtr("blurTheTexture");
     
     Framebuffer FBO = FBOPOOL::requestFBO(txtr, "Bluring texture (material update)");
     
@@ -117,9 +117,10 @@ static void blurTheTexture(Texture txtr, Mesh& mesh, int textureResolution, floa
     getBox()->draw("blurTheTexture first draw");
 
     if(algorithmI == 1){
-        txtr.duplicateTextureSub(textureCopy);
+        FBOPOOL::releaseFBO(FBO);
+        txtr.duplicateTextureSub(textureCopy, "update material channels - blurTheTexture");
+        FBO = FBOPOOL::requestFBO(txtr, "Bluring texture (material update)");
         
-        FBO.bind();
         glViewport(0, 0, textureResolution, textureResolution);
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -166,7 +167,7 @@ static void genAmbientOcclusion(
     aoTxtrDup.update((char*)nullptr, aoTxtrRes.x, aoTxtrRes.y);
 
     if(usePrevAO)
-        aoTxtr.duplicateTextureSub(aoTxtrDup);
+        aoTxtr.duplicateTextureSub(aoTxtrDup, "update material channels - genAmbientOcclusion 1");
 
     aoTxtr.update((char*)nullptr, aoTxtr.getResolution().x, aoTxtr.getResolution().y);
 
@@ -185,7 +186,7 @@ static void genAmbientOcclusion(
         if(i == 5 && !zN)
             break;
         
-        aoTxtr.duplicateTextureSub(aoTxtrDup);
+        aoTxtr.duplicateTextureSub(aoTxtrDup, "update material channels - genAmbientOcclusion 2");
         
         glm::vec3 camPos = glm::vec3(5.f, 0.f, 0.f);
 
@@ -511,7 +512,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
     else
         prevDepthTexture.update((char*)nullptr, prevPrevDepthTextureRes.x, prevPrevDepthTextureRes.y);
 
-    mesh.heightMap.duplicateTextureSub(prevDepthTexture);
+    mesh.heightMap.duplicateTextureSub(prevDepthTexture, "MaterialModifier::updateMaterialChannels");
     
     Texture maskTexture_procedural = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
@@ -548,9 +549,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             modifierShader.use();
         }
 
-        // Bind the capture framebuffer after creating it in the channelPrep function
-        Framebuffer FBO = FBOPOOL::requestFBO(currentTexture, "MaterialModifier::updateMaterialChannels");
-        
         // Use the shader of the modifier
         modifierShader.use(); 
  
@@ -575,7 +573,9 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                             mesh,
                             noPrevTxtrMode
                         );
-            
+
+            Framebuffer FBO = FBOPOOL::requestFBO(currentTexture, "MaterialModifier::updateMaterialChannels");
+
             // Render the result to the framebuffer
             mesh.Draw();
 
@@ -686,10 +686,10 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                 txtr.generateProceduralTexture(mesh, mathModifierTexture_procedural, textureResolution);
                 
                 modifierShader.use();
-
-                FBO.bind();
             }
             
+            Framebuffer FBO = FBOPOOL::requestFBO(currentTexture, "MaterialModifier::updateMaterialChannels");
+
             // Render the result to the framebuffer
             getBox()->draw("MaterialModifier::updateMaterialChannels for math layer");
 

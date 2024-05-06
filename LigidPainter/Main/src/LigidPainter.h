@@ -105,7 +105,7 @@ public:
 
         Debugger::block("LOAD : Init other threads"); //Start
         // Start the export thread
-        std::thread projectUpdatingThreadX(projectUpdatingThread);
+        //std::thread projectUpdatingThreadX(projectUpdatingThread);
         material_thread.thread = std::thread(material_thread_function);
         Debugger::block("LOAD : Init other threads"); //End
         
@@ -135,7 +135,7 @@ public:
         project_discard_update_flag = true;
 
         // Wait for the projectUpdatingThread to finish
-        projectUpdatingThreadX.join();
+        //projectUpdatingThreadX.join();
         material_thread.thread.join();
 
         getContext()->window.deleteContext();

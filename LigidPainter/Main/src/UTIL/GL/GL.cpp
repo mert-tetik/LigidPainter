@@ -31,12 +31,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 
 // Define a mutex to protect access to texture_slot_data
-std::mutex texture_slot_data_mutex;
-
 static std::map<int, std::pair<std::pair<unsigned int, std::string>, LigidWindow*>> texture_slot_data;
 static int maxTextureUnits = 0;
 
+std::mutex gl_mutex;
+
 bool is_texture_bound_in_different_context(unsigned int texture, LigidWindow* bound_context){
+    std::lock_guard<std::mutex> lock(gl_mutex);
+
     bool result = false;
     for (auto& texture_slot : texture_slot_data)
     {
@@ -48,6 +50,8 @@ bool is_texture_bound_in_different_context(unsigned int texture, LigidWindow* bo
 }
 
 int find_unused_texture_slot() {
+    std::lock_guard<std::mutex> lock(gl_mutex);
+
     int unusedKey = 0;
     while (texture_slot_data.find(unusedKey) != texture_slot_data.end()) {
         unusedKey++;
@@ -60,17 +64,16 @@ int find_unused_texture_slot() {
 }
 
 int GL::bindTexture(unsigned int texture, unsigned int target, std::string location){
+
     LigidGL::cleanGLErrors();
     
     if(maxTextureUnits <= 0){
         glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits);
-        bool error = LigidGL::testGLError(location + " : GL::bindTexture : glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits)");
-        if(error)
+        bool success = LigidGL::testGLError(location + " : GL::bindTexture : glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &maxTextureUnits)");
+        if(!success)
             maxTextureUnits = 0;
     }
     
-    texture_slot_data_mutex.lock();
-
     // Get already bound OpenGL context
     LigidWindow* bound_context = LigidGL::getBoundContext();
     
@@ -79,9 +82,11 @@ int GL::bindTexture(unsigned int texture, unsigned int target, std::string locat
     if(slot == -1){
         LGDLOG::start << "ERROR *CRITICAL* : GL::bindTexture : No more texture units available left! LigidPainter will be waiting until sufficient amount of units are free. " << texture_slot_data.size() << LGDLOG::end;
 
+        /*
         for (auto& texture_slot : texture_slot_data){
             LGDLOG::start << texture_slot.second.first.second << LGDLOG::end; 
         }
+        */
 
         while (slot == -1)
         {
@@ -92,11 +97,13 @@ int GL::bindTexture(unsigned int texture, unsigned int target, std::string locat
     // If no OpenGL context is bound
     if(bound_context == nullptr){
         LGDLOG::start << "ERROR : GL::bindTexture : No OpenGL context is bound! At the location : " << location  << LGDLOG::end; 
-        texture_slot_data_mutex.unlock();
         return slot;
     }
 
     // Don't let the code proceed while the texture is bound in another context 😡
+    if(is_texture_bound_in_different_context(texture, bound_context))
+        std::cout << "WARNING : GL::bindTexture : " + location + " : Texture is already bound in a different context. Waiting until it's released!" << std::endl;
+            
     while(is_texture_bound_in_different_context(texture, bound_context)){}
 
     bool success = true;
@@ -107,21 +114,23 @@ int GL::bindTexture(unsigned int texture, unsigned int target, std::string locat
     glBindTexture(target, texture);
     success = LigidGL::testGLError(location + " : GL::bindTexture : glBindTexture(target, texture) : slot = " + std::to_string(slot));
 
-    if(success){
-        if(texture != 0){
-            texture_slot_data[slot].first = std::make_pair(texture, location);
-            texture_slot_data[slot].second = bound_context;
+    {        
+        std::lock_guard<std::mutex> lock(gl_mutex);
+
+        if(success){
+            if(texture != 0){
+                texture_slot_data[slot].first = std::make_pair(texture, location);
+                texture_slot_data[slot].second = bound_context;
+            }
+            else
+                texture_slot_data.erase(slot);
         }
-        else
+        else{
+            glBindTexture(target, 0);
             texture_slot_data.erase(slot);
-    }
-    else{
-        std::cout << (int)(glIsTexture(texture) == GL_TRUE) << " " << getContext()->window.isContextCurrent() << " " << texture << " " << target << std::endl;
-        glBindTexture(target, 0);
-        texture_slot_data.erase(slot);
+        }
     }
 
-    texture_slot_data_mutex.unlock();
     return slot;
 }
 
@@ -134,7 +143,6 @@ int GL::bindTexture_CubeMap(unsigned int texture, std::string location){
 }
 
 void GL::releaseBoundTextures(std::string location){
-    texture_slot_data_mutex.lock();
 
     // Get already bound OpenGL context
     LigidWindow* bound_context = LigidGL::getBoundContext();
@@ -142,52 +150,60 @@ void GL::releaseBoundTextures(std::string location){
     // If no OpenGL context is bound
     if(bound_context == nullptr){
         LGDLOG::start << "ERROR : GL::releaseBoundTextures : No OpenGL context is bound! At the location : " << location  << LGDLOG::end; 
-        texture_slot_data_mutex.unlock();
         return;
     }
 
     LigidGL::cleanGLErrors();
     
-    for (auto it = texture_slot_data.begin(); it != texture_slot_data.end(); ) {
-        // Unbind the texture if contexts matches
-        if(bound_context == it->second.second){
-            glActiveTexture(GL_TEXTURE0 + it->first);
-            LigidGL::testGLError(location + " : GL::releaseBoundTextures : glActiveTexture(GL_TEXTURE0 + slot)");
+    {
+        std::lock_guard<std::mutex> lock(gl_mutex);
+        
+        for (auto it = texture_slot_data.begin(); it != texture_slot_data.end(); ) {
+            // Unbind the texture if contexts matches
+            if(bound_context == it->second.second){
+                glActiveTexture(GL_TEXTURE0 + it->first);
+                LigidGL::testGLError(location + " : GL::releaseBoundTextures : glActiveTexture(GL_TEXTURE0 + slot)");
 
-            glBindTexture(GL_TEXTURE_2D, 0);
-            LigidGL::testGLError(location + " : GL::releaseBoundTextures : glActiveTexture(GL_TEXTURE0)");
-            
-            it = texture_slot_data.erase(it);
+                glBindTexture(GL_TEXTURE_2D, 0);
+                LigidGL::testGLError(location + " : GL::releaseBoundTextures : glActiveTexture(GL_TEXTURE0)");
+                
+                it = texture_slot_data.erase(it);
+            }
+            else    
+                it++;
         }
     }
-    texture_slot_data_mutex.unlock();
 }
 
 void GL::releaseTextureFromSlot(int slot, std::string location){
-    texture_slot_data_mutex.lock();
+
+
     // Get already bound OpenGL context
     LigidWindow* bound_context = LigidGL::getBoundContext();
     
     // If no OpenGL context is bound
     if(bound_context == nullptr){
         LGDLOG::start << "ERROR : GL::releaseTextureFromSlot : No OpenGL context is bound! At the location : " << location  << LGDLOG::end; 
-        texture_slot_data_mutex.unlock();
         return;
     }
 
     LigidGL::cleanGLErrors();
 
-    auto it = texture_slot_data.find(slot);
-    if (it != texture_slot_data.end()) {
-        glActiveTexture(GL_TEXTURE0 + it->first);
-        LigidGL::testGLError(location + " : GL::releaseTextureFromSlot : glActiveTexture(GL_TEXTURE0 + it->first)");
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-        LigidGL::testGLError(location + " : GL::releaseTextureFromSlot : glActiveTexture(GL_TEXTURE0)");
+    {
+        std::lock_guard<std::mutex> lock(gl_mutex);
         
-        texture_slot_data.erase(it);
+        auto it = texture_slot_data.find(slot);
+        if (it != texture_slot_data.end()) {
+            glActiveTexture(GL_TEXTURE0 + it->first);
+            LigidGL::testGLError(location + " : GL::releaseTextureFromSlot : glActiveTexture(GL_TEXTURE0 + it->first)");
+
+            glBindTexture(GL_TEXTURE_2D, 0);
+            LigidGL::testGLError(location + " : GL::releaseTextureFromSlot : glActiveTexture(GL_TEXTURE0)");
+            
+            texture_slot_data.erase(it);
+        }
     }
-    texture_slot_data_mutex.unlock();
+
 }
 
 bool GL::makeDrawCall(GLenum mode, GLint first, GLsizei count, std::string debugTitle){

@@ -24,6 +24,7 @@ Box.hpp : Is used to render a single 2D square.
 #include <string>
 #include <iostream>
 #include <vector>
+#include <mutex>
 
 #include "UTIL/Util.hpp"
 #include "UTIL/Shader/Shader.hpp"
@@ -33,13 +34,14 @@ Box.hpp : Is used to render a single 2D square.
 
 static std::vector<std::pair<Framebuffer, bool>> FBO_POOL;
 
+std::mutex FBOPOOL_mutex;
+
 static bool is_texture_already_bound_to_a_FBO(Texture txtr, std::string location){
     /* Check all the framebuffers in the pool */
     for(auto& fbo : FBO_POOL){
         /* If the requested texture matches with a FBO's color buffer in the pool*/
         if(fbo.first.colorBuffer.ID == txtr.ID && txtr.ID && fbo.second)
         {
-            std::cout << fbo.first.purpose << " : " << location << std::endl;
             return true;
         }
     }
@@ -48,7 +50,9 @@ static bool is_texture_already_bound_to_a_FBO(Texture txtr, std::string location
 }
 
 static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, std::string location){
-    
+
+    std::lock_guard<std::mutex> lock(FBOPOOL_mutex);
+
     Framebuffer* res = nullptr;
 
     /* Wait until the texture is no longer bound to any FBO (wait the other thread) */
@@ -82,15 +86,15 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
     }
 
     /* If proper FBO found in the pool create one and add to the pool */
-    if(res == nullptr){
+    if(true){
         Framebuffer new_FBO;
 
         /* If a renderbuffer is not requested*/
         if(resolution == glm::ivec2(0)){
-            new_FBO = Framebuffer(Texture(), GL_TEXTURE_2D, "");
+            new_FBO = Framebuffer(txtr, GL_TEXTURE_2D, "");
         }
         else{
-            new_FBO = Framebuffer(Texture(), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution),"");
+            new_FBO = Framebuffer(txtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution),"");
         }
 
         
@@ -127,6 +131,7 @@ Framebuffer FBOPOOL::requestFBO_with_RBO(Texture txtr, glm::ivec2 resolution, st
 }
 
 void FBOPOOL::releaseFBO(Framebuffer released_FBO){
+    std::lock_guard<std::mutex> lock(FBOPOOL_mutex);
 
     /* Updating the currently used flag */
     for (auto& FBO_from_pool : FBO_POOL)

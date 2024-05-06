@@ -89,8 +89,10 @@ static Model customModel;
 Model* MaterialEditorDialog::getDisplayModel(){
     if(this->selectedModelModeIndex == 0)
         return getPlaneModel();
+
     if(this->selectedModelModeIndex == 1)
         return getMaterialDisplayerModel();
+        
     if(this->selectedModelModeIndex == 2){
         if(getScene()->model->meshes.size() != customModel.meshes.size()){
             customModel.meshes.clear();

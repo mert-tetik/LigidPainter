@@ -271,7 +271,7 @@ void BrushModificationDialog::inToOut(BrushProperties* brushProperties){
     brushProperties->fade = this->bgPanel.sections[0].elements[5].rangeBar.value;
     brushProperties->sinWavePattern = this->bgPanel.sections[0].elements[6].checkBox.clickState1;
     brushProperties->scatter = this->bgPanel.sections[0].elements[7].rangeBar.value;
-    this->bgPanel.sections[0].elements[8].button.texture.duplicateTextureSub(brushProperties->brushTexture);
+    this->bgPanel.sections[0].elements[8].button.texture.duplicateTextureSub(brushProperties->brushTexture, "BrushModificationDialog::inToOut");
 
     brushProperties->individualTexture = this->bgPanel.sections[0].elements[10].checkBox.clickState1;
     brushProperties->rotation = this->bgPanel.sections[0].elements[11].rangeBar.value;
@@ -293,7 +293,7 @@ void BrushModificationDialog::outToIn(BrushProperties* brushProperties){
     this->bgPanel.sections[0].elements[5].rangeBar.value = brushProperties->fade;
     this->bgPanel.sections[0].elements[6].checkBox.clickState1 = brushProperties->sinWavePattern;
     this->bgPanel.sections[0].elements[7].rangeBar.value = brushProperties->scatter;
-    brushProperties->brushTexture.duplicateTextureSub(this->bgPanel.sections[0].elements[8].button.texture);
+    brushProperties->brushTexture.duplicateTextureSub(this->bgPanel.sections[0].elements[8].button.texture, "BrushModificationDialog::outToIn");
     
     this->bgPanel.sections[0].elements[10].checkBox.clickState1 = brushProperties->individualTexture;
     this->bgPanel.sections[0].elements[11].rangeBar.value = brushProperties->rotation;

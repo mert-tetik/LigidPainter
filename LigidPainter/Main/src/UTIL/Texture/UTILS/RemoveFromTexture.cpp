@@ -32,7 +32,7 @@ void Texture::removeSeams(Mesh& mesh){
     Shader already_bound_shader = ShaderUTIL::get_bound_shader();
     
     // Get the copy of the texture
-    Texture copy_txtr = this->get_temp_copy_txtr();
+    Texture copy_txtr = this->get_temp_copy_txtr("Texture::removeSeams");
 
     // Get the FBO
     Framebuffer FBO = FBOPOOL::requestFBO(*this, "Texture::removeSeams");
@@ -73,7 +73,7 @@ void Texture::removeUnselectedFaces(Mesh& mesh){
     Framebuffer FBO = FBOPOOL::requestFBO(*this, "Texture::removeSeams");
     
     // Get the copy of the texture
-    Texture copy_txtr = this->get_temp_copy_txtr();
+    Texture copy_txtr = this->get_temp_copy_txtr("Texture::removeUnselectedFaces");
 
     // Clear the color buffer
     glClearColor(0,0,0,0);

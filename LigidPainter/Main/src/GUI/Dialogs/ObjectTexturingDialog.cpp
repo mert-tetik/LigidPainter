@@ -374,7 +374,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
                             meshTxtrHistory[i].albedo.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].albedo);
+                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].albedo, "ObjectTexturingDialog::show 1");
                         }
                     }
                     if(channelI == 1){
@@ -384,7 +384,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
                             meshTxtrHistory[i].roughness.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].roughness);
+                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].roughness, "ObjectTexturingDialog::show 2");
                         }
                     }
                     if(channelI == 2){
@@ -394,7 +394,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
                             meshTxtrHistory[i].metallic.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].metallic);
+                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].metallic, "ObjectTexturingDialog::show 3");
                         }
                     }
                     if(channelI == 3){
@@ -404,7 +404,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
                             meshTxtrHistory[i].normalMap.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].normalMap);
+                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].normalMap, "ObjectTexturingDialog::show 4");
                         }
                     }
                     if(channelI == 4){
@@ -414,7 +414,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
                             meshTxtrHistory[i].heightMap.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].heightMap);
+                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].heightMap, "ObjectTexturingDialog::show 5");
                         }
                     }
                     if(channelI == 5){
@@ -424,7 +424,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                             glm::ivec2 oTxtrRes = colorBuffer.getResolution();
                             
                             meshTxtrHistory[i].ambientOcclusion.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].ambientOcclusion);
+                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].ambientOcclusion, "ObjectTexturingDialog::show 6");
                         }
                     }
 
@@ -462,17 +462,17 @@ void ObjectTexturingDialog::show(Timer& timer){
             {
                 if(i < meshTxtrHistory.size()){
                     if(albedoHistoryUsed)
-                        meshTxtrHistory[i].albedo.duplicateTexture(getScene()->model->meshes[i].albedo);
+                        meshTxtrHistory[i].albedo.duplicateTexture(getScene()->model->meshes[i].albedo, "ObjectTexturingDialog::show 7");
                     if(roughnessHistoryUsed)
-                        meshTxtrHistory[i].roughness.duplicateTexture(getScene()->model->meshes[i].roughness);
+                        meshTxtrHistory[i].roughness.duplicateTexture(getScene()->model->meshes[i].roughness, "ObjectTexturingDialog::show 8");
                     if(metallicHistoryUsed)
-                        meshTxtrHistory[i].metallic.duplicateTexture(getScene()->model->meshes[i].metallic);
+                        meshTxtrHistory[i].metallic.duplicateTexture(getScene()->model->meshes[i].metallic, "ObjectTexturingDialog::show 9");
                     if(normalMapHistoryUsed)
-                        meshTxtrHistory[i].normalMap.duplicateTexture(getScene()->model->meshes[i].normalMap);
+                        meshTxtrHistory[i].normalMap.duplicateTexture(getScene()->model->meshes[i].normalMap, "ObjectTexturingDialog::show 10");
                     if(heightMapHistoryUsed)
-                        meshTxtrHistory[i].heightMap.duplicateTexture(getScene()->model->meshes[i].heightMap);
+                        meshTxtrHistory[i].heightMap.duplicateTexture(getScene()->model->meshes[i].heightMap, "ObjectTexturingDialog::show 11");
                     if(aoHistoryUsed)
-                        meshTxtrHistory[i].ambientOcclusion.duplicateTexture(getScene()->model->meshes[i].ambientOcclusion);
+                        meshTxtrHistory[i].ambientOcclusion.duplicateTexture(getScene()->model->meshes[i].ambientOcclusion, "ObjectTexturingDialog::show 12");
                 }
             }
             
@@ -655,7 +655,7 @@ void ObjectTexturingDialog::updateMeshTextures(){
                         maskDuplicated.update((char*)nullptr, maskRes.x, maskRes.y);
                     }
                     
-                    maskTxtr.duplicateTextureSub(maskDuplicated);
+                    maskTxtr.duplicateTextureSub(maskDuplicated, "ObjectTexturingDialog::updateMeshTextures");
                 
                     modifiedTxtrs[i].mix(orgTxtrs[i], maskDuplicated, false, i == 3, mixOptionsComboBox.selectedIndex == 2);
                 }
@@ -670,7 +670,7 @@ void ObjectTexturingDialog::updateMeshTextures(){
                     maskDuplicated.update((char*)nullptr, maskRes.x, maskRes.y);
                 }
                 
-                maskTxtr.duplicateTextureSub(maskDuplicated);
+                maskTxtr.duplicateTextureSub(maskDuplicated, "ObjectTexturingDialog::updateMeshTextures");
 
                 MIX_CHANNELS(maskDuplicated, mixOptionsComboBox.selectedIndex == 7 || mixOptionsComboBox.selectedIndex == 8, mixOptionsComboBox.selectedIndex != 8);
             }

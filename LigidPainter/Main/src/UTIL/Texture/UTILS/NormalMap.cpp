@@ -31,7 +31,7 @@ void Texture::generateNormalMap(Texture& normalMap, float proceduralNormalStreng
     Texture height_map = *this;
 
     if(normalMap.ID == this->ID)
-        height_map = this->get_temp_copy_txtr();
+        height_map = this->get_temp_copy_txtr("Texture::generateNormalMap");
         
 
     // Get the already bound shader to set back at the end

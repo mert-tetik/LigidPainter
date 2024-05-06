@@ -38,4 +38,6 @@ void main(){
     }
     else
         color = vec4(texture(originalTexture,TexCoords));
+    
+    color = vec4(texture(originalTexture,TexCoords));
 }

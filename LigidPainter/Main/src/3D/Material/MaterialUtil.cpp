@@ -47,7 +47,7 @@ Material Material::duplicateMaterial(){
             {
                 if(duplicatedMat.materialModifiers[modI].sections[secI].elements[elI].state == 0){
                     if(duplicatedMat.materialModifiers[modI].sections[secI].elements[elI].button.texture.ID){
-                        duplicatedMat.materialModifiers[modI].sections[secI].elements[elI].button.texture = this->materialModifiers[modI].sections[secI].elements[elI].button.texture.duplicateTexture();
+                        duplicatedMat.materialModifiers[modI].sections[secI].elements[elI].button.texture = this->materialModifiers[modI].sections[secI].elements[elI].button.texture.duplicateTexture("Material::duplicateMaterial - button textures");
                         duplicatedMat.materialModifiers[modI].sections[secI].elements[elI].button.texture.proceduralProps = this->materialModifiers[modI].sections[secI].elements[elI].button.texture.proceduralProps;
                     }
                 }
@@ -57,7 +57,7 @@ Material Material::duplicateMaterial(){
     
     for (size_t i = 0; i < duplicatedMat.materialModifiers.size(); i++)
     {
-        duplicatedMat.materialModifiers[i].maskTexture = this->materialModifiers[i].maskTexture.duplicateTexture();
+        duplicatedMat.materialModifiers[i].maskTexture = this->materialModifiers[i].maskTexture.duplicateTexture("Material::duplicateMaterial - mask textures");
         duplicatedMat.materialModifiers[i].maskTexture.proceduralProps = this->materialModifiers[i].maskTexture.proceduralProps;
     }
 

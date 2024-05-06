@@ -59,7 +59,7 @@ Brush::Brush(
     props.individualTexture = individualTexture;
     props.sinWavePattern = sinWavePattern;
     props.brushTexture.proceduralProps = texture.proceduralProps;
-    props.brushTexture = texture.duplicateTexture();
+    props.brushTexture = texture.duplicateTexture("Brush::Brush");
 
     *this = Brush(props, title);
 }
@@ -102,7 +102,7 @@ void Brush::update(
     this->properties.sinWavePattern = sinWavePattern;
     
     this->properties.brushTexture.proceduralProps = texture.proceduralProps;
-    this->properties.brushTexture = texture.duplicateTexture();
+    this->properties.brushTexture = texture.duplicateTexture("Brush::update");
 
     this->updateDisplayTexture(displayRadius);
 }

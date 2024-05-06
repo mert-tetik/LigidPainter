@@ -31,7 +31,7 @@ void Texture::resize(const glm::ivec2 newResolution){
     Shader already_bound_shader = ShaderUTIL::get_bound_shader();
     
     //Get copy of the texture
-    Texture copiedTxtr = this->get_temp_copy_txtr();
+    Texture copiedTxtr = this->get_temp_copy_txtr("Texture::resize");
 
     // Update the resolution of the texture
     this->update((char*)nullptr, newResolution.x, newResolution.y);

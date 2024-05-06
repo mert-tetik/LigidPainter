@@ -286,7 +286,7 @@ void Framebuffer::setColorBuffer(Texture colorBuffer, unsigned int textureTarget
     this->colorBuffer = colorBuffer;
     
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
-    LigidGL::testGLError("Framebuffer::setColorBuffer : Binding FBO" + std::string(" : ") + this->purpose);
+    bool success = LigidGL::testGLError("Framebuffer::setColorBuffer : Binding FBO" + std::string(" : ") + this->purpose);
     
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
     LigidGL::testGLError("Framebuffer::setColorBuffer : attaching colorBuffer to FBO" + std::string(" : ") + this->purpose);

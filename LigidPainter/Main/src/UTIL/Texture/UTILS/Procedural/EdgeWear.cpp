@@ -130,8 +130,9 @@ void apply_edge_wear(Mesh &mesh, Texture srcTxtr, Texture& destTxtr, int texture
 
     // Blur the result
     {
+        destTxtr.duplicateTexture(destTxtrCopy, "apply_edge_wear");
+        
         Framebuffer FBO = FBOPOOL::requestFBO(destTxtr, "apply_edge_wear");
-        destTxtr.duplicateTexture(destTxtrCopy);
         
         // Clear the destTxtr
         glClearColor(0,0,0,0);

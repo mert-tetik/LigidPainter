@@ -210,7 +210,7 @@ void panel_library_render(
                     //Clicked to duplicate button
                     else if(res == 1){
                         Texture duplicatedTexture = *Library::getTexture(i);
-                        duplicatedTexture = Library::getTexture(i)->duplicateTexture();
+                        duplicatedTexture = Library::getTexture(i)->duplicateTexture("panel_library_render");
                         duplicatedTexture.title += "_duplicated";
                         Library::addTexture(duplicatedTexture, "New texture via duplication");
                     }
@@ -285,7 +285,7 @@ void panel_library_render(
                     //Clicked to duplicate button
                     else if(res == 2 && i < Library::getBrushArraySize()){
                         Brush selectedBrush = *Library::getBrush(i);
-                        Texture dupTxtr = selectedBrush.properties.brushTexture.duplicateTexture();
+                        Texture dupTxtr = selectedBrush.properties.brushTexture.duplicateTexture("panel_library_render");
                         dupTxtr.proceduralProps = selectedBrush.properties.brushTexture.proceduralProps;
                         Library::addBrush(
                                             Brush(

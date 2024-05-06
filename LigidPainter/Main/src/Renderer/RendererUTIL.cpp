@@ -51,11 +51,6 @@ void Renderer::start_render(){
     //Handle user input and interact with the windowing system
     getContext()->window.pollEvents();
 
-    // Prevent rendering the application if the window is minimized
-    while (getContext()->window.isMinimized()){
-        getContext()->window.pollEvents();
-    }
-    
     // Update local timer data
     timer.tick = false;
     if(timer.runTimer(1.f)){

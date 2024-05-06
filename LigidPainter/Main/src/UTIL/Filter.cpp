@@ -128,7 +128,7 @@ void Filter::applyFilter(Texture txtr, Texture maskTexture, Texture maskTexture2
     //Displaying resolution
     glm::vec2 displayRes = txtrRes;
 
-    Texture duplicatedTxtr = txtr.get_temp_copy_txtr();  
+    Texture duplicatedTxtr = txtr.get_temp_copy_txtr("applyFilter");  
 
     //Create the framebuffer
     Framebuffer FBO = FBOPOOL::requestFBO(txtr, "Filter generateDisplayingTexture");
@@ -213,12 +213,12 @@ bool Filter::readFilterData(std::ifstream& rf, bool dont_gen_buffers){
     }
 
     if(!lib_match){
-        if(!dont_gen_buffers)
-            this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
+        //if(!dont_gen_buffers)
+        //    this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
     }
 
-    if(!dont_gen_buffers)
-        this->generateDisplayingTexture(glm::vec2(256));
+    //if(!dont_gen_buffers)
+    //    this->generateDisplayingTexture(glm::vec2(256));
 
     this->displayingTxtr.title = "ReadenFilterDisplayerTXTR";
     this->title = "ReadenFilter";

@@ -225,7 +225,6 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int v
 
     if(generate_txtr){
         glGenTextures(1, &this->ID);
-
         this->generateProceduralDisplayingTexture(512, threeDMode);
     }
 

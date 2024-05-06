@@ -378,7 +378,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
     }
 
     Texture destTxtrObj = destTxtr;
-    Texture copiedDestTxtr = destTxtrObj.duplicateTexture();
+    Texture copiedDestTxtr = destTxtrObj.duplicateTexture("TextureEditorDialog::show");
     glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
     
     ShaderSystem::grayScaleIDMaskingShader().use();
@@ -681,7 +681,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
         if(this->saveButton.clicked){
             registerImageEditorAction("Texture manipulated via texture editor dialog", Texture(), *receivedTexture);
 
-            Texture txtr = receivedTexture->duplicateTexture();
+            Texture txtr = receivedTexture->duplicateTexture("TextureEditorDialog::show");
             this->updateDisplayingTexture(&txtr, *receivedTexture);
             
             for (size_t i = 0; i < Library::getTextureArraySize(); i++)
