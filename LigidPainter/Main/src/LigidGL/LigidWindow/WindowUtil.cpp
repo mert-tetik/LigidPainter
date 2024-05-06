@@ -556,7 +556,7 @@ void LigidWindow::style(const int styleKey){
     if(styleKey == 3)
         SetWindowPos(this->window, nullptr, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), SWP_SHOWWINDOW);
     else
-        SetWindowPos(this->window, HWND_TOPMOST, 0, 0, 0, 0, SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE); 
+        SetWindowPos(this->window, nullptr, 0, 0, 0, 0, SWP_SHOWWINDOW); 
 }
 
 void* LigidWindow::getWindowUserPointer()

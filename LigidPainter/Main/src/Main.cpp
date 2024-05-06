@@ -12,6 +12,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 */
 
 #include<iostream>
+#include<assert.h>
 
 #include "LigidPainter.h"
 
