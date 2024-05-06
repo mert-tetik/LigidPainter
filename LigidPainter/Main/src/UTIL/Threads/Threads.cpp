@@ -69,14 +69,18 @@ void MaterialThread::update_thread_result(){
 }
 
 void MaterialThread::read_material_file(Material* material, Model* model, int mesh_index, std::string path){
-    this->use_thread(material, model, mesh_index, path);
+    this->use_thread(material, model, mesh_index, path, true);
 }
 
 void MaterialThread::apply_material(Material* material, Model* model, int mesh_index){
-    this->use_thread(material, model, mesh_index, "");
+    this->use_thread(material, model, mesh_index, "", false);
 }
 
-void MaterialThread::use_thread(Material* material, Model* model, int mesh_index, std::string path){   
+void MaterialThread::update_material_displaying_texture(Material* material, Model* model, int mesh_index){
+    this->use_thread(material, model, mesh_index, "", true);
+}
+
+void MaterialThread::use_thread(Material* material, Model* model, int mesh_index, std::string path, bool update_the_material_displaying_texture){   
     if(!this->active && !this->readyToService){
         this->active = true; // Make sure this flag is set to true in time
 
@@ -84,6 +88,7 @@ void MaterialThread::use_thread(Material* material, Model* model, int mesh_index
         this->path = path;
         this->model = model;
         this->mesh_index = mesh_index;
+        this->update_the_material_displaying_texture = update_the_material_displaying_texture;
         
         this->goodToGo = true;
     }
@@ -116,34 +121,16 @@ void material_thread_function(){
                 
                 FileHandler::readMaterialData(rf, *material_thread.material, &to_generate_txtrs);
             }
-
-            /*
-            for (Texture* texture : to_generate_txtrs)
-            {
-                glGenTextures(1, &texture->ID);
-                texture->generateProceduralDisplayingTexture(512, true);
-            }
-            */
             
-            //material->updateMaterialDisplayingTexture(512, false, Camera(), 0, false);
             material_thread.material->apply_material(*material_thread.model, material_thread.model->meshes[material_thread.mesh_index], 1024, false);
-            material_thread.material->updateMaterialDisplayingTexture(1024, false, Camera(), 0, false, *material_thread.model);
+            
+            if(material_thread.update_the_material_displaying_texture)
+                material_thread.material->updateMaterialDisplayingTexture(1024, false, Camera(), 0, false, *material_thread.model);
 
 
-            //std::cout << "RESULTT : " << (int)(glIsTexture(material_thread.model->meshes[material_thread.mesh_index].albedo.ID) == GL_TRUE) << std::endl;
-        /*
-            material_thread.model->meshes[material_thread.mesh_index].albedo.getData(material_thread.material_channels_pxs.albedo);
-            material_thread.model->meshes[material_thread.mesh_index].roughness.getData(material_thread.material_channels_pxs.roughness);
-            material_thread.model->meshes[material_thread.mesh_index].metallic.getData(material_thread.material_channels_pxs.metallic);
-            material_thread.model->meshes[material_thread.mesh_index].normalMap.getData(material_thread.material_channels_pxs.normalMap);
-            material_thread.model->meshes[material_thread.mesh_index].heightMap.getData(material_thread.material_channels_pxs.heightMap);
-            material_thread.model->meshes[material_thread.mesh_index].ambientOcclusion.getData(material_thread.material_channels_pxs.ao);
-          */
             // End
             material_thread.active = false;
-
             material_thread.goodToGo = false;
-            
             material_thread.readyToService = true;
         }
 

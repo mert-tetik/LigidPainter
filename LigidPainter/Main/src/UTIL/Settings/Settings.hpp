@@ -50,6 +50,7 @@ Scene* getScene();
 Model* getSphereModel();
 Model* getPlaneModel();
 Model* getMaterialDisplayerModel();
+Model* getMaterialDisplayingModel();
 Model* getTDBrushCursorModel();
 Box* getBox();
 VectorScene* getVectorScene();

@@ -156,8 +156,6 @@ void Library::addTexture(Texture texture, const std::string actionTitle){
 
     projectUpdatingThreadElements.updateTextures = true;
 
-    texture.copyDataToTheCopyContext();
-
     __textures.push_back(texture);
     
     Library::textureGiveUniqueId(__textures.size() - 1);
@@ -174,6 +172,9 @@ void Library::addMaterial(Material material, const std::string actionTitle){
     //Give unique ID to the material
 
     __materials.push_back(material);
+    
+    // Update the displaying texture of the new material
+    material_thread.update_material_displaying_texture(&__materials[__materials.size() - 1], getMaterialDisplayingModel(), 0);
     
     Library::nameControl();
 }
@@ -223,16 +224,8 @@ void Library::eraseTexture   (int index){
     __changed = true;
 
     registerTextureDeletionAction("Texture deleted", Texture(), __textures[index], index);
-    
-    /*
-    mainThreadUsingCopyContext = true;
-    getCopyContext()->window.makeContextCurrent();
-    glDeleteTextures(1, &__textures[index].copyContextID);
-
-    getContext()->window.makeContextCurrent();
-    glDeleteTextures(1, &__textures[index].ID);
-    mainThreadUsingCopyContext = false;
-    */
+        
+    //glDeleteTextures(1, &__textures[index].ID);
 
     __textures.erase(__textures.begin() + index);
 
@@ -340,16 +333,12 @@ void Library::clearTextures   (){
     __changed = true;
     
     mainThreadUsingCopyContext = true;
-    getCopyContext()->window.makeContextCurrent();
-    for (size_t i = 0; i < __textures.size(); i++)
-    {
-        glDeleteTextures(1, &__textures[i].copyContextID);
-    }
-    getContext()->window.makeContextCurrent();
+
     for (size_t i = 0; i < __textures.size(); i++)
     {
         glDeleteTextures(1, &__textures[i].ID);
     }
+
     mainThreadUsingCopyContext = false;
     
     __textures.clear();

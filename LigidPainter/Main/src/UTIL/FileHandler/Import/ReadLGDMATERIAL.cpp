@@ -31,9 +31,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
-#include "3D/ThreeD.hpp"
-#include "GUI/GUI.hpp"
 #include "UTIL/Library/Library.hpp"
+
+#include "3D/ThreeD.hpp"
+
+#include "GUI/GUI.hpp"
 
 #define LGDMATERIAL_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
                                 LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << LGDLOG::end;\
@@ -236,8 +238,7 @@ bool FileHandler::readMaterialData(std::ifstream& rf, Material& material, std::v
 
 bool FileHandler::readLGDMATERIALFile(
                                         std::string path, 
-                                        Material& material,
-                                        bool update_displaying_texture 
+                                        Material& material
                                     )
 {
     LGDLOG::start << "Loading Material : " << path  << LGDLOG::end;
@@ -261,9 +262,6 @@ bool FileHandler::readLGDMATERIALFile(
         if(!FileHandler::readMaterialData(rf, material, nullptr)){
             return false;
         }
-
-        if(update_displaying_texture)
-            material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
     }
 
     return true;

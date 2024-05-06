@@ -173,8 +173,6 @@ public:
     /// @param format is PNG JPEG BMP TGA
     bool exportTexture(std::string path,const std::string format);    
     
-    void copyDataToTheCopyContext();
-    
     /*----------------- PROVIDE DATA --------------------*/
     void getData(char* pixels);
     void getData(unsigned char* pixels);

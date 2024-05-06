@@ -376,7 +376,6 @@ void LogDialog::render(Timer& timer)
                         
                         /*
                             TODO
-                            Library::getTexture(i)->copyDataToTheCopyContext();
                             projectUpdatingThreadElements.updateTextures = true;
                         */
 

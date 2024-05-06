@@ -40,6 +40,7 @@ TextureFieldScene __textureFieldScene;
 Model __sphereModel;
 Model __planeModel;
 Model __materialDisplayerModel;
+Model __materialDisplayingModel;
 Model __getTDBrushCursorModel;
 Box __box;
 Box __box_2;
@@ -156,6 +157,9 @@ Model* getPlaneModel(){
 }
 Model* getMaterialDisplayerModel(){
     return &__materialDisplayerModel;
+}
+Model* getMaterialDisplayingModel(){
+    return &__materialDisplayingModel;
 }
 Model* getTDBrushCursorModel(){
     return &__getTDBrushCursorModel;

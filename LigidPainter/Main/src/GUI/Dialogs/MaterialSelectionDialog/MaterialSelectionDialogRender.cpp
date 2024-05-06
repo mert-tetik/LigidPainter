@@ -112,7 +112,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
                 if(!material_thread.active && !material_thread.readyToService){
                     material.material_selection_dialog_initialized = true;
                 }
-                material_thread.read_material_file(&material, getMaterialDisplayerModel(), 0, material.material_selection_dialog_path);
+                material_thread.read_material_file(&material, getMaterialDisplayingModel(), 0, material.material_selection_dialog_path);
             }
         }
 

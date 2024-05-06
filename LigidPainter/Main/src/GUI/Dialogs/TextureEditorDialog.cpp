@@ -687,7 +687,6 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
             for (size_t i = 0; i < Library::getTextureArraySize(); i++)
             {
                 if(receivedTexture->ID == Library::getTexture(i)->ID){
-                    Library::getTexture(i)->copyDataToTheCopyContext();
                     projectUpdatingThreadElements.updateTextures = true;
                 }
             }

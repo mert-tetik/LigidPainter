@@ -236,7 +236,6 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
                     for (size_t i = 0; i < Library::getTextureArraySize(); i++)
                     {
                         if(painted_buffer.txtr.ID == Library::getTexture(i)->ID){
-                            Library::getTexture(i)->copyDataToTheCopyContext();
                             projectUpdatingThreadElements.updateTextures = true;
                         }
                     }

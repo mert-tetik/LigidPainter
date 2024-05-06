@@ -177,7 +177,6 @@ void GL::releaseBoundTextures(std::string location){
 
 void GL::releaseTextureFromSlot(int slot, std::string location){
 
-
     // Get already bound OpenGL context
     LigidWindow* bound_context = LigidGL::getBoundContext();
     

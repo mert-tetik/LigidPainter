@@ -40,7 +40,7 @@ void Material::updateMaterialDisplayingTexture(
                                                 bool useCustomCam
                                             )
 {
-    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, this->displayingTexture, *getMaterialDisplayerModel(), -1);
+    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, this->displayingTexture, *getMaterialDisplayingModel(), -1);
 }
 
 void Material::updateMaterialDisplayingTexture(
@@ -86,17 +86,6 @@ void Material::updateMaterialDisplayingTexture(
                                                     100.f  //Far (the material is pretty close to the camera actually  ) 
                                                 );
     
-    //Generates the material channels from scratch if the updateMaterial boolean set to true 
-    if(updateMaterial)
-    {
-        //For every modifier the material has (Output every modifier the material has)
-        //TODO : Material - update material function
-        for (size_t meshI = 0; meshI < displayModel.meshes.size(); meshI++)
-        {
-            //material_thread.apply_material(this, &displayModel, meshI);
-            //this->apply_material(displayModel, displayModel.meshes[meshI], textureRes, specificUpdateI != -1);
-        }
-    }
     
     //!Update the material displaying texture
     Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(custom_display_txtr, custom_display_txtr.getResolution(), "Material::updateMaterialDisplayingTexture");

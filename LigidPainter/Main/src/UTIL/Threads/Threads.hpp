@@ -63,6 +63,7 @@ struct MaterialThread{
     std::string path;
     Model* model = nullptr;
     int mesh_index = 0;
+    bool update_the_material_displaying_texture = 0;
 
     MaterialChannelsPxs material_channels_pxs;
 
@@ -70,9 +71,10 @@ struct MaterialThread{
     
     void read_material_file(Material* material, Model* model, int mesh_index, std::string path);
     void apply_material(Material* material, Model* model, int mesh_index);
+    void update_material_displaying_texture(Material* material, Model* model, int mesh_index);
     
 private:
-    void use_thread(Material* material, Model* model, int mesh_index, std::string path);
+    void use_thread(Material* material, Model* model, int mesh_index, std::string path, bool update_the_material_displaying_texture);
 
 };
 

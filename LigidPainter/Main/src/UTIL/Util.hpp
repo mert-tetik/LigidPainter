@@ -497,7 +497,7 @@ namespace FileHandler{
     /*! @brief Read material data and write the data to material param*/
     bool readMaterialData(std::ifstream& rf, Material& material, std::vector<Texture*>* to_generate_txtrs);
     /*! @brief Read a *.lgdmaterial file and write the data to material param */
-    bool readLGDMATERIALFile(std::string path, Material& material, bool update_displaying_texture);
+    bool readLGDMATERIALFile(std::string path, Material& material);
 
     
     /*! @brief Write a *.lgdbrush file to the path (path could lead to both folder or a file) */

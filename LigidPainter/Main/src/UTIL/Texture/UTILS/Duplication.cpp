@@ -77,7 +77,7 @@ void Texture::duplicateTextureSub(Texture& txtr, std::string location){
     LigidGL::cleanGLErrors();
 
     //Get the resolution data of the texture
-    int ID_slot = GL::bindTexture_2D(this->ID, location);
+    int ID_slot = GL::bindTexture_2D(this->ID, "Texture::duplicateTextureSub " + location);
     
     // Get wrap data
     GLint wrapParam_S, wrapParam_T, wrapParam_R;
@@ -97,13 +97,13 @@ void Texture::duplicateTextureSub(Texture& txtr, std::string location){
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalFormat);
     LigidGL::testGLError("Texture::duplicateTextureSub " + location + "glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalFormat)");
     
-    GL::releaseTextureFromSlot(ID_slot, "");
+    GL::releaseTextureFromSlot(ID_slot, "Texture::duplicateTextureSub " + location);
     
     //Copy the texture
-    Framebuffer FBO = FBOPOOL::requestFBO(*this, location);
+    Framebuffer FBO = FBOPOOL::requestFBO(*this, "Texture::duplicateTextureSub " + location);
 
     // Bind the requested texture
-    int txtrID_slot = GL::bindTexture_2D(txtr.ID, location);
+    int txtrID_slot = GL::bindTexture_2D(txtr.ID, "Texture::duplicateTextureSub " + location);
 
     // Set texture params to txtr.ID    
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapParam_S);
@@ -115,7 +115,7 @@ void Texture::duplicateTextureSub(Texture& txtr, std::string location){
     
     glCopyTexImage2D(GL_TEXTURE_2D, 0, internalFormat, 0, 0, width, height, 0);
     
-    GL::releaseTextureFromSlot(txtrID_slot, "");
+    GL::releaseTextureFromSlot(txtrID_slot, "Texture::duplicateTextureSub " + location);
     FBOPOOL::releaseFBO(FBO);
 
     // Set variables
