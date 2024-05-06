@@ -173,8 +173,6 @@ Box* getBox(){
     return &__box;
 }
 
-std::atomic<bool> mainThreadUsingCopyContext = false;
-
 namespace Settings{
     Properties* properties(){
         return &__settingsProperties;

@@ -177,9 +177,11 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 
     getContext()->window.makeContextCurrent();
     this->setupMesh(&this->VBO, &this->VAO, &this->EBO);   
-    getSecondContext()->window.makeContextCurrent();
-    this->setupMesh(&this->VBO_2, &this->VAO_2, &this->EBO_2);
 
+    while(!getSecondContext()->window.makeContextCurrent()){}
+    
+    this->setupMesh(&this->VBO_2, &this->VAO_2, &this->EBO_2);
+    
     bound_context->makeContextCurrent();
 
     if(initTxtrs){
@@ -212,7 +214,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
             this->face_selection_data.selectedFaces = Texture(nullptr, nullptr, false, resolution, resolution, GL_NEAREST, GL_RED, GL_R8, 0, GL_TEXTURE_2D);
         }
     }
-    
+
     generateUVMask();
 
     generateDisplayingTexture();

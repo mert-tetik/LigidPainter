@@ -27,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Project/Project.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 #include "Toolkit/Layers/Layers.hpp"
 
@@ -47,10 +48,10 @@ void panel_navigation_render(Timer& timer ,bool doMouseTracking)
 
     // If shortcuts were used
     if(shortcuts_CTRL_S())
-        project_update(true, false);
+        project_updating_thread_update_project = true;
 
     if(shortcuts_CTRL_SHIFT_S())
-        project_save_as("");
+        project_updating_thread_save_as_project = true;
 
     //If pressed to "Project" button
     if(panel_navigation.sections[0].elements[1].button.clicked){ 
@@ -60,7 +61,7 @@ void panel_navigation_render(Timer& timer ,bool doMouseTracking)
         
         //Save
         if(res == 0){
-            project_update(true, false);
+            project_updating_thread_update_project = true;
         }
         
         //Save as

@@ -44,7 +44,6 @@ class Gizmo;
 Context* getContext();
 Context* getCopyContext();
 Context* getSecondContext();
-extern std::atomic<bool> mainThreadUsingCopyContext;
 
 Scene* getScene();
 Model* getSphereModel();

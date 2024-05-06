@@ -42,6 +42,8 @@ struct ThreadElements{
     std::condition_variable exportCV;
 };
 
+extern std::atomic<bool> project_updating_thread_update_project;
+extern std::atomic<bool> project_updating_thread_save_as_project;
 extern ThreadElements projectUpdatingThreadElements; 
 void projectUpdatingThread();
 

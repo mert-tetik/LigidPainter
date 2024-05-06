@@ -36,14 +36,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void project_save_as(std::string dstPath)
 {
-    // Save the project before duplicating the project folder    
-    project_update(true, false);
-    
-    while(true){
-        if(!projectUTIL_processing)
-            break;
-    }
-    projectUTIL_processing = true;
+    std::lock_guard<std::mutex> lock(project_mutex);
 
     // Ask for a destination path from the user if not provided
     if(dstPath == ""){
@@ -52,7 +45,6 @@ void project_save_as(std::string dstPath)
 
     // If user didn't select a valid path (or the dstPath param is not valid)
     if(dstPath == "" || !std::filesystem::is_directory(dstPath) || !std::filesystem::exists(dstPath)){
-        projectUTIL_processing = false;
         return;
     }
 
@@ -73,7 +65,6 @@ void project_save_as(std::string dstPath)
     // Create the destination folder
     if(!std::filesystem::create_directories(dstProjectPath)){
         LGDLOG::start << "ERROR : Save as : Can't create the destination folder" << LGDLOG::end;
-        projectUTIL_processing = false;
         return;
     }
 
@@ -85,6 +76,4 @@ void project_save_as(std::string dstPath)
     else{
         LGDLOG::start << "ERROR : Save as : Couldn't copy the contents properly and 'save as' action aborted" << LGDLOG::end;
     }
-
-    projectUTIL_processing = false;
 }

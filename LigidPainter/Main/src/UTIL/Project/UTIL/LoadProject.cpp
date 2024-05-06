@@ -44,6 +44,8 @@ static void LOAD_filters(const std::string filters_folder_path);
 static void LOAD_texturePacks(const std::string texture_packs_folder_path);
 
 bool project_load_library_elements(std::string folderPath, std::string ligidFilePath){
+    std::lock_guard<std::mutex> lock(project_mutex);
+    
     try
     {
         //Load the textures
@@ -130,19 +132,11 @@ bool project_load_library_elements(std::string folderPath, std::string ligidFile
 
 
 bool project_load(std::string ligidFilePath){
-    
-    while(true){
-        if(!projectUTIL_processing)
-            break;
-    }
-    
-    projectUTIL_processing = true;
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
         LGDLOG::start<< "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << LGDLOG::end;
         projectUpdatingThreadElements.updateTextures = false;
-        projectUTIL_processing = false;
         return false;
     }
 
@@ -152,7 +146,6 @@ bool project_load(std::string ligidFilePath){
     project_load_library_elements(project_path(), ligidFilePath);
 
     projectUpdatingThreadElements.updateTextures = false;
-    projectUTIL_processing = false;
     return true;
 }
 

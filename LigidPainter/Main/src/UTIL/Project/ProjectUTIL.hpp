@@ -19,8 +19,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include <GUI/Dialogs.hpp>
 
-extern std::atomic<bool> projectUTIL_processing;
-
 /// @brief Checks if this->folderPath is valid. If not tries to create the folder into the same path. 
 ///        If this fails too informs the user and asks for a new path. (Called in updateProject function)
 /// @return if you're good to go

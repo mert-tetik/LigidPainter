@@ -126,6 +126,7 @@ void Renderer::initRenderer(){
     Debugger::block("LOAD : Box"); //Start 305233920 291.12 MB
     getSecondContext()->window.makeContextCurrent();
     getBox()->init();
+    
     getContext()->window.makeContextCurrent();
     getBox()->init();
     Debugger::block("LOAD : Box"); //Start 305233920 291.12 MB

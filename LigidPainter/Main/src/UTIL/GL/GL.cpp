@@ -34,6 +34,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static std::map<int, std::pair<std::pair<unsigned int, std::string>, LigidWindow*>> texture_slot_data;
 static int maxTextureUnits = 0;
 
+static double wait_time = 0.;
+
 std::mutex gl_mutex;
 
 bool is_texture_bound_in_different_context(unsigned int texture, LigidWindow* bound_context){
@@ -87,10 +89,13 @@ int GL::bindTexture(unsigned int texture, unsigned int target, std::string locat
             LGDLOG::start << texture_slot.second.first.second << LGDLOG::end; 
         }
         */
+        wait_time = LigidGL::getTime();
 
         while (slot == -1)
         {
             slot = find_unused_texture_slot();
+            if(LigidGL::getTime() - wait_time > 5)
+                break;
         }
     }
     
@@ -101,10 +106,15 @@ int GL::bindTexture(unsigned int texture, unsigned int target, std::string locat
     }
 
     // Don't let the code proceed while the texture is bound in another context 😡
-    if(is_texture_bound_in_different_context(texture, bound_context))
+    if(is_texture_bound_in_different_context(texture, bound_context)){
+        wait_time = LigidGL::getTime();
         std::cout << "WARNING : GL::bindTexture : " + location + " : Texture is already bound in a different context. Waiting until it's released!" << std::endl;
-            
-    while(is_texture_bound_in_different_context(texture, bound_context)){}
+    }
+    
+    while(is_texture_bound_in_different_context(texture, bound_context)){
+        if(LigidGL::getTime() - wait_time > 5)
+            break;
+    }
 
     bool success = true;
 

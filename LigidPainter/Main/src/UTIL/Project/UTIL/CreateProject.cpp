@@ -43,13 +43,9 @@ void completeFolder(std::string path, int action);
 
 
 bool project_create(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths){
-
-    while(true){
-        if(!projectUTIL_processing)
-            break;
-    }
-    projectUTIL_processing = true;
     
+    std::lock_guard<std::mutex> lock(project_mutex);
+
     //Make sure destination path doesn't have / at the end
     if(destinationPath[destinationPath.size()-1] == '/' || destinationPath[destinationPath.size()-1] == '\\') 
         destinationPath.pop_back();
@@ -63,7 +59,6 @@ bool project_create(std::string destinationPath, std::string name, std::vector<s
                             MESSAGEBOX_BUTTON_OK
                         );
                         
-        projectUTIL_processing = false;
         
         return false;
     }
@@ -80,7 +75,6 @@ bool project_create(std::string destinationPath, std::string name, std::vector<s
 
         //If pressed the 'no' abort the process
         if(res == 0){
-            projectUTIL_processing = false;
             return false;
         }
 
@@ -176,7 +170,6 @@ bool project_create(std::string destinationPath, std::string name, std::vector<s
         LGDLOG::start << "ERROR : Creating project folder : Failed to write ligid file." << LGDLOG::end;
     }
     
-    projectUTIL_processing = false;
     return true;
 }
 

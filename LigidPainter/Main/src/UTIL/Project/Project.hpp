@@ -15,7 +15,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #define UTIL_PROJECT_HPP
 
 #include <string>
+#include <mutex>
 
+extern std::mutex project_mutex;
 std::string project_path();
 std::string project_title();
 std::string project_recover_path(int slot);
@@ -28,13 +30,13 @@ extern bool project_discard_update_flag;
 /// @return true if success
 bool project_create(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths);
 
-/// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
-void project_update(bool updateTextures, bool multithreadingMode);
-
 /// @brief load an existing project using ligid file path
 /// @param ligidFilePath path to the ligid file
 /// @return 
 bool project_load(std::string ligidFilePath);
+
+/// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
+void project_update(bool updateTextures, bool recover_update_mode);
 
 void project_save_as(std::string dstPath);
 

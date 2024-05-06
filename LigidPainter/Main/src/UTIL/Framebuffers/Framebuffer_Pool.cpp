@@ -33,6 +33,7 @@ Box.hpp : Is used to render a single 2D square.
 #include "GUI/GUI.hpp"
 
 static std::vector<std::pair<Framebuffer, bool>> FBO_POOL;
+static double wait_time = 0.;
 
 std::mutex FBOPOOL_mutex;
 
@@ -56,9 +57,15 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
     Framebuffer* res = nullptr;
 
     /* Wait until the texture is no longer bound to any FBO (wait the other thread) */
-    if(is_texture_already_bound_to_a_FBO(txtr, location))
+    if(is_texture_already_bound_to_a_FBO(txtr, location)){
+        wait_time = LigidGL::getTime();
         std::cout << "WARNING : request_from_FBO_POOL : " + location + " : Texture is already bound to a framebuffer. Waiting until it's released!" << std::endl;
-    while(is_texture_already_bound_to_a_FBO(txtr, location)){}
+    }
+
+    while(is_texture_already_bound_to_a_FBO(txtr, location)){
+        if(LigidGL::getTime() - wait_time > 5)
+            break;
+    }
 
     /* Find proper FBO for the request */
     for(auto& fbo : FBO_POOL)

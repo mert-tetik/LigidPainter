@@ -33,20 +33,45 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 ThreadElements projectUpdatingThreadElements;
 
-void projectUpdatingThread(){
-    while (projectUpdatingThreadElements.isRunning) {
-        {
-            std::lock_guard<std::mutex> lock(projectUpdatingThreadElements.mutex);
+std::atomic<bool> project_updating_thread_update_project = false;
+std::atomic<bool> project_updating_thread_save_as_project = false;
 
-            if(project_path() != ""){
-                project_update(true, true);
-            }
+void projectUpdatingThread(){
+
+    /* Make copy context current for this thread */
+    getCopyContext()->window.makeContextCurrent();
+
+    while (projectUpdatingThreadElements.isRunning) {
+        
+        std::lock_guard<std::mutex> lock(projectUpdatingThreadElements.mutex);
+
+        /* Auto update every *durationSec* seconds*/
+        if(project_path() != ""){
+            project_update(true, true);
         }
 
         // Sleep between exports
         const int durationSec = 15;
         for (size_t i = 0; i < durationSec; i++)
         {
+            /* Update on user request */
+            if(project_updating_thread_update_project){
+                if(project_path() != ""){
+                    project_update(true, false);
+                }
+                project_updating_thread_update_project = false;
+            }
+            
+            /* Save as on user request */
+            if(project_updating_thread_save_as_project){
+                if(project_path() != ""){
+                    project_update(true, false);
+                    
+                    project_save_as("");
+                }
+                project_updating_thread_save_as_project = false;
+            }
+
             if(!projectUpdatingThreadElements.isRunning)
                 break;
                 
@@ -109,6 +134,9 @@ void material_thread_function(){
     while (readMaterialThreadElements.isRunning){
         std::lock_guard<std::mutex> lock(readMaterialThreadElements.mutex);
 
+        if(getSecondContext()->window.isContextCurrent())
+            getSecondContext()->window.releaseContext();
+        
         if(material_thread.goodToGo && material_thread.material != nullptr){        
             // Start 
             material_thread.active = true;

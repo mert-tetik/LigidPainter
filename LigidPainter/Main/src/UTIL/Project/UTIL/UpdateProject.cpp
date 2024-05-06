@@ -39,7 +39,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static const std::string copyFolderTitle = "Updating_Folder-Remove_if_you_see";
 
 // Forward declared utility functions
-static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode);
+static void PROJECT_updateTextures(std::string textureFolderPath, bool recover_update_mode);
 static void PROJECT_updateMaterials(std::string materialFolderPath);
 static void PROJECT_updateBrushes(std::string brushFolderPath);
 static void PROJECT_updateModels(std::string brushFolderPath);
@@ -47,25 +47,19 @@ static void PROJECT_updateModels(std::string brushFolderPath);
 // Goes from 1 to 3
 static int currentRecoverSlot = 1;
 
-void project_update(bool updateTextures, bool multithreadingMode){
+void project_update(bool updateTextures, bool recover_update_mode){
     
-    // Multithreading compat
-    while(true){
-        if(!projectUTIL_processing)
-            break;
-    }
-    projectUTIL_processing = true;
+    std::lock_guard<std::mutex> lock(project_mutex);
 
     // Check if the project path is valid
     if(!projectUTIL_folder_path_check()){
         LGDLOG::start<< "ERROR : CAN'T UPDATE THE PROJECT FOLDER : Project path is not valid : " << project_path() << LGDLOG::end;
-        projectUTIL_processing = false;
         return;
     }
     
     // Process the destination path
     std::string destinationPath = project_path();
-    if(multithreadingMode){
+    if(recover_update_mode){
         destinationPath = project_recover_path(currentRecoverSlot);   
         
         currentRecoverSlot++;
@@ -79,7 +73,7 @@ void project_update(bool updateTextures, bool multithreadingMode){
     if(updateTextures && !project_discard_update_flag){
         std::string textureFolderPath = destinationPath + UTIL::folderDistinguisher() + "Textures";
         UTIL::createFolderIfDoesntExist(textureFolderPath);
-        PROJECT_updateTextures(textureFolderPath, multithreadingMode);
+        PROJECT_updateTextures(textureFolderPath, recover_update_mode);
     }
     
     //----------------- Materials
@@ -114,7 +108,7 @@ void project_update(bool updateTextures, bool multithreadingMode){
 
         // Write the ligid file 
         if(!projectUTIL_write_ligid_file(lgdPath)){
-            if(!multithreadingMode)
+            if(!recover_update_mode)
                 LGDLOG::start << "Saving project folder : Failed to write the ligid file!" << LGDLOG::end; 
             else
                 std::cout << "Writing recover files : Failed to write the ligid file!" << std::endl; 
@@ -123,10 +117,12 @@ void project_update(bool updateTextures, bool multithreadingMode){
 
     if(project_discard_update_flag)
         LGDLOG::start << "INFO : Updating project discarded" << LGDLOG::end;
-    else if(!multithreadingMode)
+
+    if(!recover_update_mode)
         LGDLOG::start << "Project saved successfuly" << LGDLOG::end;
-    
-    projectUTIL_processing = false;
+    else
+        std::cout << "Project saved successfuly" << std::endl;
+
     project_discard_update_flag = false;
 }
 
@@ -232,15 +228,11 @@ static void PROJECT_updateMaterials(std::string materialFolderPath){
     PROJECT_UPDATE_PROTOCOL_END(materialFolderPath)
 }
 
-static void PROJECT_updateTextures(std::string textureFolderPath, bool multithreadingMode){
+static void PROJECT_updateTextures(std::string textureFolderPath, bool recover_update_mode){
     
     // Create updating folder 
     PROJECT_UPDATE_PROTOCOL_START(textureFolderPath)
 
-    // Use the copy OpenGL context
-    if(multithreadingMode && !mainThreadUsingCopyContext)
-        getCopyContext()->window.makeContextCurrent();
-    
     bool error = false;
 
     // Write the textures
@@ -248,32 +240,17 @@ static void PROJECT_updateTextures(std::string textureFolderPath, bool multithre
     {
         if(i < Library::getTextureArraySize()){
             // Get the texture
-            Texture threadSafeTxtr = Library::getTextureObj(i);
-            
-            // Get the related texture ID from another OpenGL context If multi-threading mode  
-            if(multithreadingMode)
-                threadSafeTxtr.ID = threadSafeTxtr.copyContextID;
-
-            // Abort exporting if main thread is using the copy context and we're in the multi-threading mode
-            if(mainThreadUsingCopyContext && multithreadingMode){
-                error = true;
-                LGDLOG::start << "ERROR : Updating project : OpenGL context is shared at the same time" << LGDLOG::end;
-                break;
-            }
+            Texture txtr = Library::getTextureObj(i);
 
             if(!project_discard_update_flag){
                 // Write texture data
-                if(!threadSafeTxtr.exportTexture(updateFolderPath, "PNG")){
+                if(!txtr.exportTexture(updateFolderPath, "PNG")){
                     LGDLOG::start << "WARNING! : Updating project : faced with an issue while writing a texture file!" << LGDLOG::end;
                     error = true;
                 }
             }
         }
     }
-
-    // Release the copy OpenGL context
-    if(multithreadingMode && !mainThreadUsingCopyContext)
-        getCopyContext()->window.releaseContext();
 
     // Move the files from updating folder to main folder and remove the updating folder
     PROJECT_UPDATE_PROTOCOL_END(textureFolderPath)

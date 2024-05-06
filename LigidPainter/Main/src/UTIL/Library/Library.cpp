@@ -332,15 +332,11 @@ void Library::eraseTexturePack     (int index){
 void Library::clearTextures   (){
     __changed = true;
     
-    mainThreadUsingCopyContext = true;
-
     for (size_t i = 0; i < __textures.size(); i++)
     {
         glDeleteTextures(1, &__textures[i].ID);
     }
 
-    mainThreadUsingCopyContext = false;
-    
     __textures.clear();
 
     projectUpdatingThreadElements.updateTextures = true;

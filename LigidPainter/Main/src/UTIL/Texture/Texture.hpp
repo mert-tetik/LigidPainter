@@ -112,10 +112,6 @@ public:
     /// @brief OpenGL texture buffer object id
     unsigned int ID = 0;
 
-    /// @brief OpenGL texture buffer object id for the copy context in order to use for multithreading
-    ///        Generally used for the library elements
-    unsigned int copyContextID = 0;
-
     ProceduralProperties proceduralProps;
 
     /// @brief Title of the texture (myTexture)

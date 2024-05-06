@@ -259,46 +259,29 @@ void ExportDialog::show(Timer& timer){
 
         if(subPanel.selectedElement == 0){
             if(this->libraryTexturesPanel.sections[0].elements[this->libraryTexturesPanel.sections[0].elements.size() - 1].button.clicked){
-                while(true){
-                    if(!projectUTIL_processing)
-                        break;
-                }
-                projectUTIL_processing = true;
                 exportLibraryTextures(
                                             this->libraryTexturesPanel.sections[0].elements[0].textBox.text,
                                             this->libraryTexturesPanel.sections[0].elements[1].comboBox.texts[this->libraryTexturesPanel.sections[0].elements[1].comboBox.selectedIndex]
                                         );
-                projectUTIL_processing = false;
             }
         }
         if(subPanel.selectedElement == 1){
             if(this->libraryMaterialsPanel.sections[0].elements[this->libraryMaterialsPanel.sections[0].elements.size() - 1].button.clicked){
-                while(true){
-                    if(!projectUTIL_processing)
-                        break;
-                }
-                projectUTIL_processing = true;
+
                 exportLibraryMaterials(
                                             this->libraryMaterialsPanel.sections[0].elements[0].textBox.text,
                                             std::stoi(this->libraryMaterialsPanel.sections[0].elements[1].comboBox.texts[this->libraryMaterialsPanel.sections[0].elements[1].comboBox.selectedIndex]),
                                             this->libraryMaterialsPanel.sections[0].elements[2].comboBox.texts[this->libraryMaterialsPanel.sections[0].elements[2].comboBox.selectedIndex],
                                             this->libraryMaterialsPanel.sections[0].elements[3].comboBox.texts[this->libraryMaterialsPanel.sections[0].elements[3].comboBox.selectedIndex]
                                         );
-                projectUTIL_processing = false;
             }
         }
         if(subPanel.selectedElement == 2){
             if(this->layersPanel.sections[0].elements[this->layersPanel.sections[0].elements.size() - 1].button.clicked){
-                while(true){
-                    if(!projectUTIL_processing)
-                        break;
-                }
-                projectUTIL_processing = true;
                 exportLayers(                                            
                                 this->layersPanel.sections[0].elements[0].textBox.text,
                                 this->layersPanel.sections[0].elements[1].comboBox.texts[this->libraryTexturesPanel.sections[0].elements[1].comboBox.selectedIndex]
                             );
-                projectUTIL_processing = false;
             }
         }
         

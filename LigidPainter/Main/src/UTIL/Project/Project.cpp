@@ -35,7 +35,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <ctime>
 
 static std::string path;
-std::atomic<bool> projectUTIL_processing = false;
+std::mutex project_mutex;
 bool project_discard_update_flag = false;
 
 std::string project_path(){
