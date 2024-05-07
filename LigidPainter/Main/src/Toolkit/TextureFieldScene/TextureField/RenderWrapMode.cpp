@@ -68,7 +68,7 @@ void TextureField::renderWrappedTextureField(
 
         ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh());
         
-        getScene()->get_selected_mesh()->Draw();
+        getScene()->get_selected_mesh()->Draw("TextureField::renderWrappedTextureField");
 
         GL::releaseBoundTextures("TextureField : renderWrappedTextureField 1");
 
@@ -98,7 +98,7 @@ void TextureField::renderWrappedTextureField(
 
         ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh());
         
-        getScene()->get_selected_mesh()->Draw();
+        getScene()->get_selected_mesh()->Draw("TextureField::renderWrappedTextureField");
 
         GL::releaseBoundTextures("TextureField : renderWrappedTextureField 2");
 
@@ -676,7 +676,7 @@ void TextureField::checkIfWrappedTextureClicked(bool doMouseTracking){
 
     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh()); 
     
-    getScene()->get_selected_mesh()->Draw();
+    getScene()->get_selected_mesh()->Draw("TextureField::renderWrappedTextureField");
     
     // Then render the wrapped image
     ShaderSystem::color3d().use();

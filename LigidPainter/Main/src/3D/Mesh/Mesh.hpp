@@ -142,7 +142,7 @@ public:
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, bool initTxtrs);
     
     /*! @brief Renders the mesh*/
-    void Draw();
+    void Draw(std::string location);
 
     unsigned int VBO, EBO, VAO; //Vertex buffer object, element buffer object
     unsigned int VBO_2, EBO_2, VAO_2; //Vertex buffer object, element buffer object

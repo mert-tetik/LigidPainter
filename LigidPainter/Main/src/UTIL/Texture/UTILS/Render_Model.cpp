@@ -54,7 +54,7 @@ void Texture::render_mesh(Mesh& mesh, MaterialChannels channels, Camera cam){
     ShaderSystem::PBRDisplayOnly().setInt("displayingMode", 0);
 
     // Render result
-    mesh.Draw();
+    mesh.Draw("Texture::render_mesh");
 
     // Finish 
     GL::releaseBoundTextures("Texture::render_mesh"); // Release bound textures

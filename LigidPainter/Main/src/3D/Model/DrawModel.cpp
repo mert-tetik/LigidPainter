@@ -32,6 +32,6 @@ void Model::Draw()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     for(unsigned int i = 0; i < meshes.size(); i++){
-        meshes[i].Draw();
+        meshes[i].Draw("Model::draw");
     }
 }

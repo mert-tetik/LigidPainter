@@ -116,7 +116,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, f
 
             ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh());
 
-            getScene()->get_selected_mesh()->Draw();
+            getScene()->get_selected_mesh()->Draw("ThreeDPoint::render");
 
             this->render(timer, false, true, radius, false);
 

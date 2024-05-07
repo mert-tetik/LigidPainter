@@ -89,7 +89,7 @@ void Texture::removeUnselectedFaces(Mesh& mesh){
     int txtr_unit = GL::bindTexture_2D(copy_txtr.ID, "Texture : removeUnselectedFaces");
     ShaderSystem::removeUnselectedFacesShader().setInt("txtr", txtr_unit);
 
-    mesh.Draw();
+    mesh.Draw("Texture::removeUnselectedFaces");
 
     // Finish
     GL::releaseTextureFromSlot(txtr_unit, "Texture::removeUnselectedFaces");

@@ -62,7 +62,7 @@ static void renderCursor(glm::vec3 pos, glm::vec3 normal, float radius){
                     
         ShaderSystem::color3d().setMat4("modelMatrix", transform);
 
-        getTDBrushCursorModel()->meshes[i].Draw();
+        getTDBrushCursorModel()->meshes[i].Draw("3DCursor : renderCursor");
     }
 } 
 

@@ -219,7 +219,7 @@ static void genAmbientOcclusion(
             ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::depth3D(), Mesh());
 
             if(singleMesh)
-                mesh.Draw();
+                mesh.Draw("UpdateMaterialChannel : genAmbientOcclusion 1");
             else
                 model.Draw();
 
@@ -241,7 +241,7 @@ static void genAmbientOcclusion(
             ShaderSystem::AOGen().setInt("srcTxtr", GL::bindTexture_2D(aoTxtrDup.ID, "UpdateMaterialChannel : genAmbientOcclusion"));
             ShaderSystem::AOGen().setFloat("aoOffset", aoOffset);
             
-            mesh.Draw();
+            mesh.Draw("UpdateMaterialChannel : genAmbientOcclusion 2");
 
             GL::releaseBoundTextures("UpdateMaterialChannel : genAmbientOcclusion");
             FBOPOOL::releaseFBO(FBO);
@@ -577,7 +577,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             Framebuffer FBO = FBOPOOL::requestFBO(currentTexture, "MaterialModifier::updateMaterialChannels");
 
             // Render the result to the framebuffer
-            mesh.Draw();
+            mesh.Draw("UpdateMaterialChannel : render result");
 
             //Delete the framebuffer after completing the channel
             FBOPOOL::releaseFBO(FBO);

@@ -309,7 +309,7 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
     
     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh());
     
-    getScene()->get_selected_mesh()->Draw();
+    getScene()->get_selected_mesh()->Draw("VectorScene::render3DVectors");
 
     GL::releaseBoundTextures("VectorScene : render3DVectors");
 

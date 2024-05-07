@@ -79,7 +79,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Render result
-        mesh.Draw();
+        mesh.Draw("Texture::generateProceduralTexture");
 
         GL::releaseBoundTextures("Mesh::generateProceduralTexture");
         FBOPOOL::releaseFBO(FBO);

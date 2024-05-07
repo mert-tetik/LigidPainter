@@ -91,6 +91,16 @@ void MaterialThread::update_thread_result(){
     if(this->readyToService && !this->active && this->material != nullptr){    
         this->readyToService = false;
 
+        material_thread.materialChannels->albedo.update(material_thread.material_channels_pxs.albedo, 1024, 1024);
+        material_thread.materialChannels->roughness.update(material_thread.material_channels_pxs.roughness, 1024, 1024);
+        material_thread.materialChannels->metallic.update(material_thread.material_channels_pxs.metallic, 1024, 1024);
+        material_thread.materialChannels->normalMap.update(material_thread.material_channels_pxs.normalMap, 1024, 1024);
+        material_thread.materialChannels->heightMap.update(material_thread.material_channels_pxs.heightMap, 1024, 1024);
+        material_thread.materialChannels->ambientOcclusion.update(material_thread.material_channels_pxs.ao, 1024, 1024);
+
+        if(material_thread.update_the_material_displaying_texture)
+            material_thread.material->updateMaterialDisplayingTexture(1024, false, Camera(), 0, false, (material_thread.model != nullptr) ? *material_thread.model : Model());
+
         if(material_thread.update_layer_scene_result)
             material_thread.mesh->layerScene.update_result(1024, glm::vec3(0.f), *material_thread.mesh);
     }
@@ -128,6 +138,7 @@ void MaterialThread::use_thread(Material* material, Model* model, Mesh* mesh, Ma
     }
 }
 
+static MaterialChannels material_channels;
 
 void material_thread_function(){    
     // Create the copy context for another threads    
@@ -158,11 +169,26 @@ void material_thread_function(){
                 
                 FileHandler::readMaterialData(rf, *material_thread.material, &to_generate_txtrs);
             }
-            
-            material_thread.material->apply_material((material_thread.model != nullptr) ? *material_thread.model : Model(), *material_thread.mesh, material_thread.materialChannels, 1024, false);
-            
-            if(material_thread.update_the_material_displaying_texture)
-                material_thread.material->updateMaterialDisplayingTexture(1024, false, Camera(), 0, false, (material_thread.model != nullptr) ? *material_thread.model : Model());
+
+            if(!material_channels.albedo.ID){
+                material_channels.albedo = Texture((char*)nullptr, 1024, 1024);
+                material_channels.roughness = Texture((char*)nullptr, 1024, 1024);
+                material_channels.metallic = Texture((char*)nullptr, 1024, 1024);
+                material_channels.normalMap = Texture((char*)nullptr, 1024, 1024);
+                material_channels.heightMap = Texture((char*)nullptr, 1024, 1024);
+                material_channels.ambientOcclusion = Texture((char*)nullptr, 1024, 1024);
+            }
+
+            material_thread.material->apply_material((material_thread.model != nullptr) ? *material_thread.model : Model(), *material_thread.mesh, &material_channels, 1024, false);
+
+            material_channels.albedo.getData(material_thread.material_channels_pxs.albedo);
+            material_channels.roughness.getData(material_thread.material_channels_pxs.roughness);
+            material_channels.metallic.getData(material_thread.material_channels_pxs.metallic);
+            material_channels.normalMap.getData(material_thread.material_channels_pxs.normalMap);
+            material_channels.heightMap.getData(material_thread.material_channels_pxs.heightMap);
+            material_channels.ambientOcclusion.getData(material_thread.material_channels_pxs.ao);
+
+
 
             // End
             material_thread.active = false;

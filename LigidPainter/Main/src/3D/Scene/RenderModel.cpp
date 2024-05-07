@@ -139,7 +139,7 @@ void Scene::render_model(Timer& timer){
             ShaderSystem::tdModelShader().setInt("paintingMode", painting_paint_condition());
 
             if(!(i != button_mesh_selection.selectedMeshI && this->model->meshes[i].face_selection_data.hideUnselected)){
-                this->model->meshes[i].Draw();
+                this->model->meshes[i].Draw("Scene::render_model : PBR");
             }
 
             GL::releaseBoundTextures("Scene::render_model");
@@ -198,7 +198,7 @@ void Scene::render_model(Timer& timer){
 
         ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::solidPaintingShader(), *this->get_selected_mesh());
 
-        this->get_selected_mesh()->Draw();
+        this->get_selected_mesh()->Draw("Scene::render_model : single texture");
         
         GL::releaseBoundTextures("Scene::render_model");
     }
@@ -212,7 +212,7 @@ void Scene::render_model(Timer& timer){
         ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
         ShaderSystem::color3d().setFloat("depthToleranceValue", 0.0001f);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        this->get_selected_mesh()->Draw();
+        this->get_selected_mesh()->Draw("Scene::render_model wireframe");
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 

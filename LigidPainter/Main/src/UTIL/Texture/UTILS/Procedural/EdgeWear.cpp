@@ -66,7 +66,7 @@ void apply_edge_wear(Mesh &mesh, Texture srcTxtr, Texture& destTxtr, int texture
         ShaderSystem::normalVectorShader().setMat4("view", getScene()->camera.viewMatrix);
 
         // Render the result
-        mesh.Draw();
+        mesh.Draw("Texture::apply_edge_wear");
 
         FBOPOOL::releaseFBO(FBO);
     }

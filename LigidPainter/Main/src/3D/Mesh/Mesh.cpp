@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <string>
 #include <vector>
+#include <mutex>
 
 #include "3D/Mesh/Mesh.hpp"
 
@@ -129,7 +130,7 @@ void Mesh::generateDisplayingTexture(){
     ShaderSystem::solidShadingShader().setVec3("viewPos", camPos);
     
     //Draw the sphere
-    this->Draw();
+    this->Draw("Mesh::generateDisplayingTexture");
     
     //!Finish (prepare rendering the GUI)
 
@@ -155,14 +156,13 @@ void Mesh::generateUVMask(){
     ShaderSystem::uvMaskShader().setMat4("orthoProjection", glm::ortho(0.f, 1.f, 0.f, 1.f));
     ShaderSystem::uvMaskShader().setFloat("depthToleranceValue", 0);
 
-    this->Draw();
+    this->Draw("Mesh::generateUVMask");
 
     FBOPOOL::releaseFBO(FBO);
 }
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, bool initTxtrs)
 {
-    
     if(!vertices.size())
         vertices.push_back(Vertex());
 
@@ -221,41 +221,32 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 }
 
 // Render the mesh
-void Mesh::Draw() 
+void Mesh::Draw(std::string location) 
 {
-
     LigidGL::cleanGLErrors();
-
-    Debugger::block("Mesh::Draw start"); // Start
-    Debugger::block("Mesh::Draw start"); // End
-
-    Debugger::block("Mesh::Draw"); // End
 
     // draw mesh
     glBindBuffer(GL_ARRAY_BUFFER, (getContext()->window.isContextCurrent()) ? VBO : VBO_2);
-    LigidGL::testGLError("Mesh::Draw : Binding VBO");
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding VBO");
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, (getContext()->window.isContextCurrent()) ? EBO : EBO_2);
-    LigidGL::testGLError("Mesh::Draw : Binding EBO"); 
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding EBO"); 
     
     glBindVertexArray((getContext()->window.isContextCurrent()) ? VAO : VAO_2);
-    LigidGL::testGLError("Mesh::Draw : Binding VAO");
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding VAO");
     
     glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
-    LigidGL::testGLError("Mesh::Draw : Drawing Elements");
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Drawing Elements");
 
     glBindVertexArray(0);
-    LigidGL::testGLError("Mesh::Draw : Binding 0 vertex buffer");
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding 0 vertex buffer");
     
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding 0 element array buffer");
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    LigidGL::testGLError("Mesh::Draw : Binding 0 array buffer");
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding 0 array buffer");
     
-    
-    Debugger::block("Mesh::Draw"); // End
-    
-    // always good practice to set everything back to defaults once configured.
 }
 
 void Mesh::processHeightMap(){
@@ -463,7 +454,7 @@ void Mesh::updatePosNormalTexture(){
 
         //Draw the selected mesh in 3D
         ShaderSystem::renderModelData().setInt("primitiveCount", this->indices.size() / 3);
-        this->Draw();
+        this->Draw("Mesh::updatePosNormalTexture");
         
         GL::releaseBoundTextures("Mesh : updatePosNormalTexture");
         FBOPOOL::releaseFBO(FBO);
@@ -536,7 +527,7 @@ void Mesh::updateObjectIDsTexture(){
             ShaderSystem::modelObjectID().setVec2("objIndices[" + std::to_string(objI) + "]", this->objects[objI].vertIndices / glm::ivec2(3));
         }
         
-        this->Draw();
+        this->Draw("Mesh::updateObjectIDsTexture");
     }
     
     //!Finished
@@ -567,7 +558,7 @@ void Mesh::updateModelPrimitivesTexture(){
     glDepthFunc(GL_LESS);
 
     ShaderSystem::primitiveIDShader().setInt("emptyFlag", false);
-    this->Draw();
+    this->Draw("Mesh::updateModelPrimitivesTexture");
 
     //Set back to default shader
     already_bound_shader.use();

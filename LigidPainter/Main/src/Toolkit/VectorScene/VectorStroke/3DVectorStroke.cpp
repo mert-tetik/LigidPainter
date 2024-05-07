@@ -68,7 +68,7 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
 
     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *getScene()->get_selected_mesh());
     
-    getScene()->get_selected_mesh()->Draw();
+    getScene()->get_selected_mesh()->Draw("VectorStroke3D::projectToModel");
 
     GL::releaseBoundTextures("VectorStroke3D : projectToModel");
     
@@ -89,7 +89,7 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     ShaderSystem::renderModelData().setInt("primitiveCount", getScene()->get_selected_mesh()->indices.size() / 3);
-    getScene()->get_selected_mesh()->Draw();
+    getScene()->get_selected_mesh()->Draw("VectorStroke3D::projectToModel");
     
     glReadPixels(
                     0, 

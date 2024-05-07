@@ -447,7 +447,7 @@ void ObjectTexturingDialog::show(Timer& timer){
 
                     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::objectTexturingAssign(), getScene()->model->meshes[i]);
 
-                    getScene()->model->meshes[i].Draw();
+                    getScene()->model->meshes[i].Draw("ObjectTexturingDialog::show");
 
                     GL::releaseBoundTextures("ObjectTexturingDialog : Updating displaying texture");
                     

@@ -182,7 +182,7 @@ void ThreeDBox::projectToModel(std::vector<Vertex>& vertices, glm::vec3 center){
 
     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *getScene()->get_selected_mesh());
 
-    getScene()->get_selected_mesh()->Draw();
+    getScene()->get_selected_mesh()->Draw("ThreeDBox::projectToModel");
 
     GL::releaseBoundTextures("ThreeDBox : projectToModel");
     

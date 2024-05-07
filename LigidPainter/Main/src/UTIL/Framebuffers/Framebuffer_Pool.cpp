@@ -63,8 +63,10 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
     }
 
     while(is_texture_already_bound_to_a_FBO(txtr, location)){
-        if(LigidGL::getTime() - wait_time > 5)
+        if(LigidGL::getTime() - wait_time > 5){
+            std::cout << "BROKE AHH NEGE" << std::endl;
             break;
+        }
     }
 
     /* Find proper FBO for the request */

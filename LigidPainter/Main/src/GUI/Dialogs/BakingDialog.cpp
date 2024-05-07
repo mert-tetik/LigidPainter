@@ -346,7 +346,7 @@ Texture BakingDialog::bake(Skybox skybox, unsigned int resolution){
     
     glDepthFunc(GL_LEQUAL);
     
-    getScene()->model->meshes[selectMeshButton.selectedMeshI].Draw();
+    getScene()->model->meshes[selectMeshButton.selectedMeshI].Draw("BakingDialog::bake");
 
     GL::releaseBoundTextures("BakingDialog::bake");
 

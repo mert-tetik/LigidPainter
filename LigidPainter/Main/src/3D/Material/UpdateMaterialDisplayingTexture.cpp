@@ -114,7 +114,7 @@ void Material::updateMaterialDisplayingTexture(
         ShaderSystem::PBRDisplayOnly().setInt("displayingMode", displayingMode);
         
         //Draw the sphere
-        displayModel.meshes[i].Draw();
+        displayModel.meshes[i].Draw("Material::updateMaterialDisplayingTexture");
         
         GL::releaseBoundTextures("Material::updateMaterialDisplayingTexture");
     }

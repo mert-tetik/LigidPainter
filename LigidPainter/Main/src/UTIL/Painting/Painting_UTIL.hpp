@@ -245,7 +245,7 @@ static void project_window_painting_texture(
                 glBlendEquationSeparate(GL_MAX, GL_MAX);
             }
 
-            vertex_buffer_data.model_mesh->Draw();
+            vertex_buffer_data.model_mesh->Draw("Painting_UTIL : project_window_painting_texture");
             
             if(wrapMode){
                 glDisable(GL_BLEND);
@@ -379,7 +379,7 @@ static glm::vec2 process_3D_point_calculate_2D_location(Camera cam, ThreeDPoint 
 
     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::renderModelData(), *mesh);
     
-    mesh->Draw();
+    mesh->Draw("process_3D_point_calculate_2D_location");
 
     GL::releaseBoundTextures("process_3D_point_calculate_2D_location");
 
@@ -506,7 +506,7 @@ void update_depth_texture(Texture depth_texture, Camera cam, Mesh* mesh){
     
     ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::depth3D(), *mesh);
     
-    mesh->Draw();
+    mesh->Draw("update_depth_texture");
 
     GL::releaseBoundTextures("paintingUTIL : update_depth_texture");
 
@@ -849,7 +849,7 @@ static void updateTheTexture(
 
     if(settings.vertex_buffer.paint_model){
         //Draw the UV of the selected model
-        settings.vertex_buffer.model_mesh->Draw();         
+        settings.vertex_buffer.model_mesh->Draw("updateTheTexture");         
         
         captureTexture.removeSeams(*settings.vertex_buffer.model_mesh);
     }
