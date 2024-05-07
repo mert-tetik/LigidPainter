@@ -163,9 +163,9 @@ bool Material::operator!=(const Material& material) const{
     return !(*this == material);
 }
 
-void Material::apply_material(Model& model, Mesh &mesh, int textureResolution, bool noPrevTxtrMode){
+void Material::apply_material(Model& model, Mesh &mesh, MaterialChannels* materialChannels, int textureResolution, bool noPrevTxtrMode){
     for (int i = this->materialModifiers.size() - 1; i >= 0; --i)    
     {
-        this->materialModifiers[i].updateMaterialChannels(*this, i, model, mesh, textureResolution, noPrevTxtrMode);
+        this->materialModifiers[i].updateMaterialChannels(*this, i, model, mesh, materialChannels, textureResolution, noPrevTxtrMode);
     }
 }

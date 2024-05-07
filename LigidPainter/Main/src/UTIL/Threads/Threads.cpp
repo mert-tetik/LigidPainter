@@ -88,32 +88,41 @@ MaterialThread material_thread;
 ThreadElements readMaterialThreadElements;
 
 void MaterialThread::update_thread_result(){
-    if(this->readyToService && !this->active && this->model != nullptr && this->material != nullptr){    
+    if(this->readyToService && !this->active && this->material != nullptr){    
         this->readyToService = false;
+
+        if(material_thread.update_layer_scene_result)
+            material_thread.mesh->layerScene.update_result(1024, glm::vec3(0.f), *material_thread.mesh);
     }
 }
 
-void MaterialThread::read_material_file(Material* material, Model* model, int mesh_index, std::string path){
-    this->use_thread(material, model, mesh_index, path, true);
+void MaterialThread::read_material_file(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path){
+    this->use_thread(material, model, mesh, materialChannels, path, true, false);
 }
 
-void MaterialThread::apply_material(Material* material, Model* model, int mesh_index){
-    this->use_thread(material, model, mesh_index, "", false);
+void MaterialThread::apply_material(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels){
+    this->use_thread(material, model, mesh, materialChannels, "", false, false);
 }
 
-void MaterialThread::update_material_displaying_texture(Material* material, Model* model, int mesh_index){
-    this->use_thread(material, model, mesh_index, "", true);
+void MaterialThread::update_material_displaying_texture(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels){
+    this->use_thread(material, model, mesh, materialChannels, "", true, false);
 }
 
-void MaterialThread::use_thread(Material* material, Model* model, int mesh_index, std::string path, bool update_the_material_displaying_texture){   
+void MaterialThread::layer_stuff(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels){
+    this->use_thread(material, model, mesh, materialChannels, "", false, true);
+}
+
+void MaterialThread::use_thread(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path, bool update_the_material_displaying_texture, bool update_layer_scene_result){   
     if(!this->active && !this->readyToService){
         this->active = true; // Make sure this flag is set to true in time
 
         this->material = material;
         this->path = path;
         this->model = model;
-        this->mesh_index = mesh_index;
+        this->mesh = mesh;
+        this->materialChannels = materialChannels;
         this->update_the_material_displaying_texture = update_the_material_displaying_texture;
+        this->update_layer_scene_result = update_layer_scene_result;
         
         this->goodToGo = true;
     }
@@ -150,11 +159,10 @@ void material_thread_function(){
                 FileHandler::readMaterialData(rf, *material_thread.material, &to_generate_txtrs);
             }
             
-            material_thread.material->apply_material(*material_thread.model, material_thread.model->meshes[material_thread.mesh_index], 1024, false);
+            material_thread.material->apply_material((material_thread.model != nullptr) ? *material_thread.model : Model(), *material_thread.mesh, material_thread.materialChannels, 1024, false);
             
             if(material_thread.update_the_material_displaying_texture)
-                material_thread.material->updateMaterialDisplayingTexture(1024, false, Camera(), 0, false, *material_thread.model);
-
+                material_thread.material->updateMaterialDisplayingTexture(1024, false, Camera(), 0, false, (material_thread.model != nullptr) ? *material_thread.model : Model());
 
             // End
             material_thread.active = false;

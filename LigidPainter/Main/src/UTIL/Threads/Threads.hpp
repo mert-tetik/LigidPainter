@@ -64,23 +64,27 @@ struct MaterialThread{
     Material* material = nullptr;
     std::string path;
     Model* model = nullptr;
-    int mesh_index = 0;
+    Mesh* mesh = nullptr;
+    MaterialChannels* materialChannels;
     bool update_the_material_displaying_texture = 0;
+    bool update_layer_scene_result = 0;
 
     MaterialChannelsPxs material_channels_pxs;
 
     void update_thread_result();
     
-    void read_material_file(Material* material, Model* model, int mesh_index, std::string path);
-    void apply_material(Material* material, Model* model, int mesh_index);
-    void update_material_displaying_texture(Material* material, Model* model, int mesh_index);
+    void read_material_file(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path);
+    void apply_material(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels);
+    void update_material_displaying_texture(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels);
+    void layer_stuff(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels);
     
 private:
-    void use_thread(Material* material, Model* model, int mesh_index, std::string path, bool update_the_material_displaying_texture);
+    void use_thread(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path, bool update_the_material_displaying_texture, bool update_layer_scene_result);
 
 };
 
 extern MaterialThread material_thread;
+extern ThreadElements readMaterialThreadElements;
 
 void material_thread_function();
 

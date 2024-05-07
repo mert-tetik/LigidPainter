@@ -22,8 +22,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+#include "UTIL/Threads/Threads.hpp"
+
 #include "GUI/Elements.hpp"
 #include "GUI/Dialogs.hpp"
+
 #include "Toolkit/Layers/Layers.hpp"
 
 MaterialLayer::MaterialLayer(const unsigned int resolution){
@@ -93,20 +96,6 @@ void MaterialLayer::type_specific_modification(Timer& timer, bool doMouseTrackin
 }
 
 void MaterialLayer::type_specific_generate_result(const unsigned int resolution, Mesh& mesh){
-    Mesh resMesh = mesh;
-    resMesh.albedo = this->result.albedo;
-    resMesh.roughness = this->result.roughness;
-    resMesh.metallic = this->result.metallic;
-    resMesh.normalMap = this->result.normalMap;
-    resMesh.heightMap = this->result.heightMap;
-    resMesh.ambientOcclusion = this->result.ambientOcclusion;
-    resMesh.VBO = mesh.VBO;
-    resMesh.EBO = mesh.EBO;
-    resMesh.VAO = mesh.VAO;
-    resMesh.indices = mesh.indices;
-    resMesh.vertices = mesh.vertices;
-
     //this->material.apply_material(Model(), resMesh, resolution, false);
-
-    mesh.layerScene.update_result(resolution, glm::vec3(0.f), mesh);
+    material_thread.layer_stuff(&this->material, nullptr, &mesh, &this->result);
 }

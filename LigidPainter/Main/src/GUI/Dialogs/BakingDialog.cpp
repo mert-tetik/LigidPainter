@@ -309,12 +309,12 @@ Texture BakingDialog::bake(Skybox skybox, unsigned int resolution){
     ShaderSystem::bakingShader().setVec3("viewPos", cam.cameraPos); 
     ShaderSystem::bakingShader().setInt("skybox", GL::bindTexture_CubeMap(skybox.ID, "BakingDialog::bake"));
     ShaderSystem::bakingShader().setInt("prefilterMap", GL::bindTexture_CubeMap(skybox.IDPrefiltered, "BakingDialog::bake"));
-    ShaderSystem::bakingShader().setInt("albedoTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].albedo.ID, "BakingDialog::bake"));
-    ShaderSystem::bakingShader().setInt("roughnessTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].roughness.ID, "BakingDialog::bake"));
-    ShaderSystem::bakingShader().setInt("metallicTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].metallic.ID, "BakingDialog::bake"));
-    ShaderSystem::bakingShader().setInt("normalMapTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].normalMap.ID, "BakingDialog::bake"));
-    ShaderSystem::bakingShader().setInt("heightMapTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].heightMap.ID, "BakingDialog::bake"));
-    ShaderSystem::bakingShader().setInt("ambientOcclusionTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].ambientOcclusion.ID, "BakingDialog::bake"));
+    ShaderSystem::bakingShader().setInt("albedoTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].material_channels.albedo.ID, "BakingDialog::bake"));
+    ShaderSystem::bakingShader().setInt("roughnessTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].material_channels.roughness.ID, "BakingDialog::bake"));
+    ShaderSystem::bakingShader().setInt("metallicTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].material_channels.metallic.ID, "BakingDialog::bake"));
+    ShaderSystem::bakingShader().setInt("normalMapTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].material_channels.normalMap.ID, "BakingDialog::bake"));
+    ShaderSystem::bakingShader().setInt("heightMapTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].material_channels.heightMap.ID, "BakingDialog::bake"));
+    ShaderSystem::bakingShader().setInt("ambientOcclusionTxtr", GL::bindTexture_2D(getScene()->model->meshes[selectMeshButton.selectedMeshI].material_channels.ambientOcclusion.ID, "BakingDialog::bake"));
     ShaderSystem::bakingShader().setInt("modeIndex", this->selectedBakeMode); 
     ShaderSystem::bakingShader().setInt("useLights", this->aoCheckbox.clickState1); 
 

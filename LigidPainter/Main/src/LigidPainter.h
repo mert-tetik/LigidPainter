@@ -123,10 +123,6 @@ public:
         Settings::loadAppTextures();
         Debugger::block("LOAD : App Textures"); //End
 
-        
-
-
-        
         //--Load the app textures
         Debugger::block("LOAD : App Videos"); //Start 160567296 153.13 MB
         Settings::loadAppVideos();
@@ -175,6 +171,7 @@ public:
         // Signal the projectUpdatingThread to exit
         //projectUpdatingThreadElements.exportCV.notify_one();
         projectUpdatingThreadElements.isRunning = false;
+        readMaterialThreadElements.isRunning = false;
 
         project_discard_update_flag = true;
 

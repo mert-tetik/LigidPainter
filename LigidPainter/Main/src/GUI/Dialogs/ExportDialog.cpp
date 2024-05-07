@@ -392,27 +392,27 @@ static void exportLibraryMaterials(std::string destPath, int resolution, std::st
             Texture channelTxtr;
             
             if(channelI == 0){
-                channelTxtr = matMesh.albedo;
+                channelTxtr = matMesh.material_channels.albedo;
                 channelTxtr.title = "albedo";
             }
             if(channelI == 1){
-                channelTxtr = matMesh.roughness;
+                channelTxtr = matMesh.material_channels.roughness;
                 channelTxtr.title = "roughness";
             }
             if(channelI == 2){
-                channelTxtr = matMesh.metallic;
+                channelTxtr = matMesh.material_channels.metallic;
                 channelTxtr.title = "metallic";
             }
             if(channelI == 3){
-                channelTxtr = matMesh.normalMap;
+                channelTxtr = matMesh.material_channels.normalMap;
                 channelTxtr.title = "normalMap";
             }
             if(channelI == 4){
-                channelTxtr = matMesh.heightMap;
+                channelTxtr = matMesh.material_channels.heightMap;
                 channelTxtr.title = "heightMap";
             }
             if(channelI == 5){
-                channelTxtr = matMesh.ambientOcclusion;
+                channelTxtr = matMesh.material_channels.ambientOcclusion;
                 channelTxtr.title = "ambientOcclusion";
             }
 
@@ -483,23 +483,23 @@ static void exportLayers(std::string destPath, std::string format){
             return;
         }
 
-        mesh.albedo.title = "albedo";
-        mesh.albedo.exportTexture(texturesFolderPath, format);
+        mesh.material_channels.albedo.title = "albedo";
+        mesh.material_channels.albedo.exportTexture(texturesFolderPath, format);
 
-        mesh.roughness.title = "roughness";
-        mesh.roughness.exportTexture(texturesFolderPath, format);
+        mesh.material_channels.roughness.title = "roughness";
+        mesh.material_channels.roughness.exportTexture(texturesFolderPath, format);
 
-        mesh.metallic.title = "metallic";
-        mesh.metallic.exportTexture(texturesFolderPath, format);
+        mesh.material_channels.metallic.title = "metallic";
+        mesh.material_channels.metallic.exportTexture(texturesFolderPath, format);
 
-        mesh.normalMap.title = "normalMap";
-        mesh.normalMap.exportTexture(texturesFolderPath, format);
+        mesh.material_channels.normalMap.title = "normalMap";
+        mesh.material_channels.normalMap.exportTexture(texturesFolderPath, format);
 
-        mesh.heightMap.title = "heightMap";
-        mesh.heightMap.exportTexture(texturesFolderPath, format);
+        mesh.material_channels.heightMap.title = "heightMap";
+        mesh.material_channels.heightMap.exportTexture(texturesFolderPath, format);
 
-        mesh.ambientOcclusion.title = "ambientOcclusion";
-        mesh.ambientOcclusion.exportTexture(texturesFolderPath, format); 
+        mesh.material_channels.ambientOcclusion.title = "ambientOcclusion";
+        mesh.material_channels.ambientOcclusion.exportTexture(texturesFolderPath, format); 
     }
 
 }

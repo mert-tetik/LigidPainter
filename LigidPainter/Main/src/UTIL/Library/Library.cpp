@@ -174,7 +174,7 @@ void Library::addMaterial(Material material, const std::string actionTitle){
     __materials.push_back(material);
     
     // Update the displaying texture of the new material
-    material_thread.update_material_displaying_texture(&__materials[__materials.size() - 1], getMaterialDisplayingModel(), 0);
+    material_thread.update_material_displaying_texture(&__materials[__materials.size() - 1], getMaterialDisplayingModel(), &getMaterialDisplayingModel()->meshes[0], &getMaterialDisplayingModel()->meshes[0].material_channels);
     
     Library::nameControl();
 }
@@ -283,12 +283,12 @@ void Library::eraseModel     (int index){
         glDeleteBuffers(1, &__TDModels[index].meshes[mshI].VBO);
         glDeleteBuffers(1, &__TDModels[index].meshes[mshI].EBO);
         
-        glDeleteTextures(1, &__TDModels[index].meshes[mshI].albedo.ID);
-        glDeleteTextures(1, &__TDModels[index].meshes[mshI].roughness.ID);
-        glDeleteTextures(1, &__TDModels[index].meshes[mshI].metallic.ID);
-        glDeleteTextures(1, &__TDModels[index].meshes[mshI].normalMap.ID);
-        glDeleteTextures(1, &__TDModels[index].meshes[mshI].heightMap.ID);
-        glDeleteTextures(1, &__TDModels[index].meshes[mshI].ambientOcclusion.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].material_channels.albedo.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].material_channels.roughness.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].material_channels.metallic.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].material_channels.normalMap.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].material_channels.heightMap.ID);
+        glDeleteTextures(1, &__TDModels[index].meshes[mshI].material_channels.ambientOcclusion.ID);
 
         glDeleteTextures(1, &__TDModels[index].meshes[mshI].uvMask.ID);
         glDeleteTextures(1, &__TDModels[index].meshes[mshI].displayingTxtr.ID);
@@ -378,12 +378,12 @@ void Library::clearModels     (){
             glDeleteBuffers(1, &__TDModels[i].meshes[mshI].VBO);
             glDeleteBuffers(1, &__TDModels[i].meshes[mshI].EBO);
 
-            glDeleteTextures(1, &__TDModels[i].meshes[mshI].albedo.ID);
-            glDeleteTextures(1, &__TDModels[i].meshes[mshI].roughness.ID);
-            glDeleteTextures(1, &__TDModels[i].meshes[mshI].metallic.ID);
-            glDeleteTextures(1, &__TDModels[i].meshes[mshI].normalMap.ID);
-            glDeleteTextures(1, &__TDModels[i].meshes[mshI].heightMap.ID);
-            glDeleteTextures(1, &__TDModels[i].meshes[mshI].ambientOcclusion.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].material_channels.albedo.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].material_channels.roughness.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].material_channels.metallic.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].material_channels.normalMap.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].material_channels.heightMap.ID);
+            glDeleteTextures(1, &__TDModels[i].meshes[mshI].material_channels.ambientOcclusion.ID);
             
             glDeleteTextures(1, &__TDModels[i].meshes[mshI].uvMask.ID);
             glDeleteTextures(1, &__TDModels[i].meshes[mshI].displayingTxtr.ID);

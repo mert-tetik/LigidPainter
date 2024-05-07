@@ -44,28 +44,28 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //4 = height map
 //5 = ambient Occlusion
 
-static void channelPrep(Material &material, Mesh &mesh, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, Texture& currentTexture, Texture& previousTexture){
+static void channelPrep(Material &material, MaterialChannels* materialChannels, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, Texture& currentTexture, Texture& previousTexture){
     glDisable(GL_DEPTH_TEST);
 
     //Get the channel's texture from material
     
     if(channelI == 0){
-        currentTexture = mesh.albedo;
+        currentTexture = materialChannels->albedo;
     }
     if(channelI == 1){
-        currentTexture = mesh.roughness;
+        currentTexture = materialChannels->roughness;
     }
     if(channelI == 2){
-        currentTexture = mesh.metallic;
+        currentTexture = materialChannels->metallic;
     }
     if(channelI == 3){
-        currentTexture = mesh.normalMap;
+        currentTexture = materialChannels->normalMap;
     }
     if(channelI == 4){
-        currentTexture = mesh.heightMap;
+        currentTexture = materialChannels->heightMap;
     }
     if(channelI == 5){
-        currentTexture = mesh.ambientOcclusion;
+        currentTexture = materialChannels->ambientOcclusion;
     }
 
     glm::ivec2 prevCurrentTextureRes = currentTexture.getResolution();
@@ -495,7 +495,7 @@ static Texture albedoFilterMaskTexture_procedural;
 static Texture previousTexture;
 static Texture prevDepthTexture;
 
-void MaterialModifier::updateMaterialChannels(Material &material, int curModI, Model& model, Mesh &mesh, int textureResolution, bool noPrevTxtrMode)
+void MaterialModifier::updateMaterialChannels(Material &material, int curModI, Model& model, Mesh &mesh, MaterialChannels* materialChannels, int textureResolution, bool noPrevTxtrMode)
 {
     if(this->hide)
         return;
@@ -505,14 +505,14 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
     //Set the orthographic projection to render the uvs
     glm::mat4 projection = glm::ortho(0.f, 1.f, 0.f, 1.f);
 
-    glm::ivec2 prevPrevDepthTextureRes = mesh.heightMap.getResolution(); 
+    glm::ivec2 prevPrevDepthTextureRes = materialChannels->heightMap.getResolution(); 
 
     if(!prevDepthTexture.ID)
         prevDepthTexture = Texture((char*)nullptr, prevPrevDepthTextureRes.x, prevPrevDepthTextureRes.y);
     else
         prevDepthTexture.update((char*)nullptr, prevPrevDepthTextureRes.x, prevPrevDepthTextureRes.y);
 
-    mesh.heightMap.duplicateTextureSub(prevDepthTexture, "MaterialModifier::updateMaterialChannels");
+    materialChannels->heightMap.duplicateTextureSub(prevDepthTexture, "MaterialModifier::updateMaterialChannels");
     
     Texture maskTexture_procedural = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
 
@@ -525,7 +525,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
         // Create the FBO & set the current texture and previous texture
         channelPrep(
                         material, 
-                        mesh, 
+                        materialChannels, 
                         textureResolution, 
                         curModI, 
                         getScene()->projectionMatrix, 
@@ -586,13 +586,13 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             if(channelI == 4){
                 //Blur the height map option
                 if(material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-3].elements[1].checkBox.clickState1)
-                    blurTheTexture(mesh.heightMap, mesh, textureResolution, 1.f, 0);
+                    blurTheTexture(materialChannels->heightMap, mesh, textureResolution, 1.f, 0);
                 
                 //Generate the normal map
-                mesh.heightMap.generateNormalMap(mesh.normalMap, 10.f, false, false);
+                materialChannels->heightMap.generateNormalMap(materialChannels->normalMap, 10.f, false, false);
                 
                 //Remove the seams of the normal map texture
-                mesh.normalMap.removeSeams(mesh);
+                materialChannels->normalMap.removeSeams(mesh);
             }
 
             glEnable(GL_DEPTH_TEST);
@@ -701,7 +701,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
         if(material.materialModifiers[curModI].modifierIndex != MATH_MATERIAL_MODIFIER){
             if(material.materialModifiers[curModI].sections[sections.size() - 1].elements[0].checkBox.clickState1){
                 genAmbientOcclusion(
-                                    mesh.ambientOcclusion, 
+                                    materialChannels->ambientOcclusion, 
                                     mesh, 
                                     model,
                                     material.materialModifiers[curModI].sections[sections.size() - 1].elements[1].checkBox.clickState1,

@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <string>
 #include <iostream>
 #include <vector>
+#include <mutex>
 
 #include "UTIL/GL/GL.hpp"
 
@@ -168,31 +169,35 @@ void LayerScene::add_new(Layer* layer){
 
 static Framebuffer layers_update_FBO;
 
+std::mutex layerscene_update_result_mutex;
+
 void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mesh& mesh){
     
+    std::lock_guard<std::mutex> lock(layerscene_update_result_mutex);
+
     // Init FBO
     if(!layers_update_FBO.ID){
         layers_update_FBO.generate();
         layers_update_FBO.purpose = "layers_update_FBO";
     }
 
-    if(!mesh.albedo.ID){
-        mesh.albedo = Texture((char*)nullptr, resolution, resolution);
-        mesh.roughness = Texture((char*)nullptr, resolution, resolution);
-        mesh.metallic = Texture((char*)nullptr, resolution, resolution);
-        mesh.normalMap = Texture((char*)nullptr, resolution, resolution);
-        mesh.heightMap = Texture((char*)nullptr, resolution, resolution);
-        mesh.ambientOcclusion = Texture((char*)nullptr, resolution, resolution);
+    if(!mesh.material_channels.albedo.ID){
+        mesh.material_channels.albedo = Texture((char*)nullptr, resolution, resolution);
+        mesh.material_channels.roughness = Texture((char*)nullptr, resolution, resolution);
+        mesh.material_channels.metallic = Texture((char*)nullptr, resolution, resolution);
+        mesh.material_channels.normalMap = Texture((char*)nullptr, resolution, resolution);
+        mesh.material_channels.heightMap = Texture((char*)nullptr, resolution, resolution);
+        mesh.material_channels.ambientOcclusion = Texture((char*)nullptr, resolution, resolution);
     }
     else{
-        glm::vec2 albedoRes = mesh.albedo.getResolution();
+        glm::vec2 albedoRes = mesh.material_channels.albedo.getResolution();
         if(albedoRes.x != resolution){
-            mesh.albedo.update((char*)nullptr, resolution, resolution);
-            mesh.roughness.update((char*)nullptr, resolution, resolution);
-            mesh.metallic.update((char*)nullptr, resolution, resolution);
-            mesh.normalMap.update((char*)nullptr, resolution, resolution);
-            mesh.heightMap.update((char*)nullptr, resolution, resolution);
-            mesh.ambientOcclusion.update((char*)nullptr, resolution, resolution);
+            mesh.material_channels.albedo.update((char*)nullptr, resolution, resolution);
+            mesh.material_channels.roughness.update((char*)nullptr, resolution, resolution);
+            mesh.material_channels.metallic.update((char*)nullptr, resolution, resolution);
+            mesh.material_channels.normalMap.update((char*)nullptr, resolution, resolution);
+            mesh.material_channels.heightMap.update((char*)nullptr, resolution, resolution);
+            mesh.material_channels.ambientOcclusion.update((char*)nullptr, resolution, resolution);
         }
     }
     
@@ -202,12 +207,12 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
     // Update FBO
     layers_update_FBO.setColorBuffer(
                                         {
-                                            mesh.albedo, 
-                                            mesh.roughness, 
-                                            mesh.metallic, 
-                                            mesh.normalMap, 
-                                            mesh.heightMap, 
-                                            mesh.ambientOcclusion
+                                            mesh.material_channels.albedo, 
+                                            mesh.material_channels.roughness, 
+                                            mesh.material_channels.metallic, 
+                                            mesh.material_channels.normalMap, 
+                                            mesh.material_channels.heightMap, 
+                                            mesh.material_channels.ambientOcclusion
                                         },
                                         GL_TEXTURE_2D
                                     );

@@ -185,12 +185,12 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     bound_context->makeContextCurrent();
 
     if(initTxtrs){
-        this->albedo = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
-        this->roughness = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
-        this->metallic = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
-        this->normalMap = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
-        this->heightMap = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
-        this->ambientOcclusion = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->material_channels.albedo = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->material_channels.roughness = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->material_channels.metallic = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->material_channels.normalMap = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->material_channels.heightMap = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
+        this->material_channels.ambientOcclusion = Texture((char*)nullptr, 1024, 1024, GL_LINEAR);
         this->objectIDs = Texture((char*)nullptr, 1024, 1024, GL_LINEAR, GL_RG, GL_RG32F);
         
         this->face_selection_data.modelPrimitives = Texture((char*)nullptr, 1024, 1024, GL_NEAREST, GL_RED, GL_R32F);
@@ -262,16 +262,16 @@ void Mesh::processHeightMap(){
 
     std::vector<Vertex> newVertArray = this->vertices;
 
-    char* txtr = new char[this->heightMap.getResolution().x * this->heightMap.getResolution().y * 4];
-    this->heightMap.getData(txtr);
+    char* txtr = new char[this->material_channels.heightMap.getResolution().x * this->material_channels.heightMap.getResolution().y * 4];
+    this->material_channels.heightMap.getData(txtr);
     if(getScene()->useHeightMap){
         for (size_t i = 0; i < this->vertices.size(); i++)
         {
             glm::vec2 uv = this->vertices[i].TexCoords;
-            glm::ivec2 pixelDest = this->vertices[i].TexCoords * glm::vec2(this->heightMap.getResolution()); 
+            glm::ivec2 pixelDest = this->vertices[i].TexCoords * glm::vec2(this->material_channels.heightMap.getResolution()); 
             
-            int pixelIndex = (pixelDest.y * this->heightMap.getResolution().x + pixelDest.x) * 4; // Each pixel has 4 components (R, G, B, A)
-            if(pixelIndex < this->heightMap.getResolution().x * this->heightMap.getResolution().y * 4){
+            int pixelIndex = (pixelDest.y * this->material_channels.heightMap.getResolution().x + pixelDest.x) * 4; // Each pixel has 4 components (R, G, B, A)
+            if(pixelIndex < this->material_channels.heightMap.getResolution().x * this->material_channels.heightMap.getResolution().y * 4){
                 char red = txtr[pixelIndex];
                 char green = txtr[pixelIndex + 1];
                 char blue = txtr[pixelIndex + 2];

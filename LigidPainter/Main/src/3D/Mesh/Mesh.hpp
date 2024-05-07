@@ -103,20 +103,7 @@ public:
         Texture modelPrimitives;
     };
 
-    /*----- Channels of the material -----
-
-        Only manipulated by the material 
-          modifiers and no other stuff
-       (results of the material modifiers)
-      (don't try to equate to another txtr) 
-    
-    */
-    Texture albedo;
-    Texture roughness;
-    Texture metallic; 
-    Texture normalMap;
-    Texture heightMap;
-    Texture ambientOcclusion;
+    MaterialChannels material_channels;
     Texture materialIDTxtr;
     std::vector<MaterialIDColor> materialIDColors;
     std::string materialIDTxtrPath;

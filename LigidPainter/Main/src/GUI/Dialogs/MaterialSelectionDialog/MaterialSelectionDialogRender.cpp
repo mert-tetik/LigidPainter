@@ -101,8 +101,14 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
                 assignMaterialsToMap();
             }
             if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
-                if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1)
-                    matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, anyMatClicked, this->displayingCam, 0, true, this->displayingTexture, *getMaterialDisplayerModel(), -1);
+                if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1){
+                    if(anyMatClicked){
+                        material_thread.update_material_displaying_texture(&matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex], getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
+                    }
+                    else{
+                        matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, false, this->displayingCam, 0, true, this->displayingTexture, *getMaterialDisplayerModel(), -1);
+                    }
+                }
             }
         }    
 
@@ -112,7 +118,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
                 if(!material_thread.active && !material_thread.readyToService){
                     material.material_selection_dialog_initialized = true;
                 }
-                material_thread.read_material_file(&material, getMaterialDisplayingModel(), 0, material.material_selection_dialog_path);
+                material_thread.read_material_file(&material, getMaterialDisplayingModel(), &getMaterialDisplayingModel()->meshes[0], &getMaterialDisplayingModel()->meshes[0].material_channels, material.material_selection_dialog_path);
             }
         }
 
