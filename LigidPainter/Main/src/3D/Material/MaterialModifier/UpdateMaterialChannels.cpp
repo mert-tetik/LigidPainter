@@ -79,10 +79,6 @@ static void channelPrep(Material &material, MaterialChannels* materialChannels, 
     currentTexture.duplicateTextureSub(previousTexture, "update material channels - channelPrep");
 
     currentTexture.update((char*)nullptr, textureResolution, textureResolution);    
-    
-
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 static void blurTheTexture(Texture txtr, Mesh& mesh, int textureResolution, float blurVal, int algorithmI){
@@ -494,6 +490,7 @@ static Texture mathModifierTexture_procedural;
 static Texture albedoFilterMaskTexture_procedural;
 static Texture previousTexture;
 static Texture prevDepthTexture;
+static Texture maskTexture_procedural;
 
 void MaterialModifier::updateMaterialChannels(Material &material, int curModI, Model& model, Mesh &mesh, MaterialChannels* materialChannels, int textureResolution, bool noPrevTxtrMode)
 {
@@ -514,7 +511,11 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
 
     materialChannels->heightMap.duplicateTextureSub(prevDepthTexture, "MaterialModifier::updateMaterialChannels");
     
-    Texture maskTexture_procedural = material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, textureResolution);
+    if(!maskTexture_procedural.ID)
+        maskTexture_procedural = Texture((char*)nullptr, textureResolution, textureResolution);
+    else
+        maskTexture_procedural.update((char*)nullptr, textureResolution, textureResolution);
+    material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, maskTexture_procedural, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
         
@@ -575,6 +576,9 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
                         );
 
             Framebuffer FBO = FBOPOOL::requestFBO(currentTexture, "MaterialModifier::updateMaterialChannels");
+
+            glClearColor(0,0,0,0);
+            glClear(GL_COLOR_BUFFER_BIT);
 
             // Render the result to the framebuffer
             mesh.Draw("UpdateMaterialChannel : render result");

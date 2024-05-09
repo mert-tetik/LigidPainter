@@ -31,7 +31,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "GUI/GUI.hpp"
 
 // Define a mutex to protect access to texture_slot_data
-static std::map<int, std::pair<std::pair<unsigned int, std::string>, LigidWindow*>> texture_slot_data;
+static std::map<LigidWindow* ,std::map<int, std::pair<unsigned int, std::string>>> texture_slot_data;
 static int maxTextureUnits = 0;
 
 static double wait_time = 0.;
@@ -44,18 +44,32 @@ bool is_texture_bound_in_different_context(unsigned int texture, LigidWindow* bo
     bool result = false;
     for (auto& texture_slot : texture_slot_data)
     {
-        if(texture_slot.second.first.first == texture && texture_slot.second.second != bound_context){
-            result = true;
+        for (auto& texture_slot2 : texture_slot_data[texture_slot.first]){
+            if(texture_slot2.second.first == texture && texture_slot.first != bound_context){
+                result = true;
+            }
         }
+
     }
     return result;
 }
 
 int find_unused_texture_slot() {
-    std::lock_guard<std::mutex> lock(gl_mutex);
 
     int unusedKey = 0;
-    while (texture_slot_data.find(unusedKey) != texture_slot_data.end()) {
+    
+    std::map<int, std::pair<unsigned int, std::string>> all_in_one;
+
+    for (auto data : texture_slot_data)
+    {
+        for (auto data2 : texture_slot_data[data.first]){
+
+            all_in_one[data2.first] = data2.second;
+        }
+        
+    }
+    
+    while (all_in_one.find(unusedKey) != all_in_one.end()) {
         unusedKey++;
     }
 
@@ -79,30 +93,10 @@ int GL::bindTexture(unsigned int texture, unsigned int target, std::string locat
     // Get already bound OpenGL context
     LigidWindow* bound_context = LigidGL::getBoundContext();
     
-    int slot = find_unused_texture_slot();
-
-    if(slot == -1){
-        LGDLOG::start << "ERROR *CRITICAL* : GL::bindTexture : No more texture units available left! LigidPainter will be waiting until sufficient amount of units are free. " << texture_slot_data.size() << LGDLOG::end;
-
-        /*
-        for (auto& texture_slot : texture_slot_data){
-            LGDLOG::start << texture_slot.second.first.second << LGDLOG::end; 
-        }
-        */
-        wait_time = LigidGL::getTime();
-
-        while (slot == -1)
-        {
-            slot = find_unused_texture_slot();
-            if(LigidGL::getTime() - wait_time > 5)
-                break;
-        }
-    }
-    
     // If no OpenGL context is bound
     if(bound_context == nullptr){
         LGDLOG::start << "ERROR : GL::bindTexture : No OpenGL context is bound! At the location : " << location  << LGDLOG::end; 
-        return slot;
+        return std::max(maxTextureUnits - 1, 0);
     }
 
     // Don't let the code proceed while the texture is bound in another context 😡
@@ -116,32 +110,40 @@ int GL::bindTexture(unsigned int texture, unsigned int target, std::string locat
             break;
     }
 
-    bool success = true;
-
-    glActiveTexture(GL_TEXTURE0 + slot);
-    LigidGL::testGLError(location + " : GL::bindTexture : glActiveTexture(GL_TEXTURE0 + slot) : slot = " + std::to_string(slot));
-
-    glBindTexture(target, texture);
-    success = LigidGL::testGLError(location + " : GL::bindTexture : glBindTexture(target, texture) : slot = " + std::to_string(slot));
 
     {        
         std::lock_guard<std::mutex> lock(gl_mutex);
 
-        if(success){
-            if(texture != 0){
-                texture_slot_data[slot].first = std::make_pair(texture, location);
-                texture_slot_data[slot].second = bound_context;
+        int slot = find_unused_texture_slot();
+
+        if(slot == -1){
+            LGDLOG::start << "ERROR *CRITICAL* : GL::bindTexture : No more texture units available left! " << texture_slot_data.size() << LGDLOG::end;
+
+            /*
+            for (auto& texture_slot : texture_slot_data){
+                LGDLOG::start << texture_slot.second.first.second << LGDLOG::end; 
             }
-            else
-                texture_slot_data.erase(slot);
+            */
+
+           slot = std::max(maxTextureUnits - 1, 0);
         }
-        else{
-            glBindTexture(target, 0);
-            texture_slot_data.erase(slot);
+        
+        bool success = true;
+        glActiveTexture(GL_TEXTURE0 + slot);
+        LigidGL::testGLError(location + " : GL::bindTexture : glActiveTexture(GL_TEXTURE0 + slot) : slot = " + std::to_string(slot));
+
+        glBindTexture(target, texture);
+        success = LigidGL::testGLError(location + " : GL::bindTexture : glBindTexture(target, texture) : slot = " + std::to_string(slot));
+
+        if(texture != 0){
+            texture_slot_data[bound_context][slot] = std::make_pair(texture, location);
         }
+        else
+            texture_slot_data[bound_context].erase(slot);
+        
+        return slot;
     }
 
-    return slot;
 }
 
 int GL::bindTexture_2D(unsigned int texture, std::string location){
@@ -168,20 +170,16 @@ void GL::releaseBoundTextures(std::string location){
     {
         std::lock_guard<std::mutex> lock(gl_mutex);
         
-        for (auto it = texture_slot_data.begin(); it != texture_slot_data.end(); ) {
-            // Unbind the texture if contexts matches
-            if(bound_context == it->second.second){
-                glActiveTexture(GL_TEXTURE0 + it->first);
-                LigidGL::testGLError(location + " : GL::releaseBoundTextures : glActiveTexture(GL_TEXTURE0 + slot)");
+        for (auto it : texture_slot_data[bound_context]) 
+        {
+            glActiveTexture(GL_TEXTURE0 + it.first);
+            LigidGL::testGLError(location + " : GL::releaseBoundTextures : glActiveTexture(GL_TEXTURE0 + slot)");
 
-                glBindTexture(GL_TEXTURE_2D, 0);
-                LigidGL::testGLError(location + " : GL::releaseBoundTextures : glActiveTexture(GL_TEXTURE0)");
-                
-                it = texture_slot_data.erase(it);
-            }
-            else    
-                it++;
+            glBindTexture(GL_TEXTURE_2D, 0);
+            LigidGL::testGLError(location + " : GL::releaseBoundTextures : glActiveTexture(GL_TEXTURE0)");
         }
+
+        texture_slot_data[bound_context].clear();
     }
 }
 
@@ -201,15 +199,15 @@ void GL::releaseTextureFromSlot(int slot, std::string location){
     {
         std::lock_guard<std::mutex> lock(gl_mutex);
         
-        auto it = texture_slot_data.find(slot);
-        if (it != texture_slot_data.end()) {
+        auto it = texture_slot_data[bound_context].find(slot);
+        if (it != texture_slot_data[bound_context].end()) {
             glActiveTexture(GL_TEXTURE0 + it->first);
             LigidGL::testGLError(location + " : GL::releaseTextureFromSlot : glActiveTexture(GL_TEXTURE0 + it->first)");
 
             glBindTexture(GL_TEXTURE_2D, 0);
             LigidGL::testGLError(location + " : GL::releaseTextureFromSlot : glActiveTexture(GL_TEXTURE0)");
             
-            texture_slot_data.erase(it);
+            texture_slot_data[bound_context].erase(it);
         }
     }
 

@@ -64,7 +64,6 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
 
     while(is_texture_already_bound_to_a_FBO(txtr, location)){
         if(LigidGL::getTime() - wait_time > 5){
-            std::cout << "BROKE AHH NEGE" << std::endl;
             break;
         }
     }
@@ -76,8 +75,10 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
         if(!fbo.second){
             /* If renderbuffer is not requested*/
             if(resolution == glm::ivec2(0)){
-                res = &fbo.first;
-                fbo.second = true;
+                if(fbo.first.renderBuffer.ID == 0){
+                    res = &fbo.first;
+                    fbo.second = true;
+                }
             }
             
             /* If renderbuffer is requested*/
