@@ -44,6 +44,7 @@ class Gizmo;
 Context* getContext();
 Context* getCopyContext();
 Context* getSecondContext();
+Context* getLoadingContext();
 
 Scene* getScene();
 Model* getSphereModel();

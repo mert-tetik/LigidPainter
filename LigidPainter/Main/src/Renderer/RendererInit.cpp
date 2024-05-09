@@ -111,42 +111,16 @@ void Renderer::initRenderer(){
     getScene()->updateTransformMatrix();
     getScene()->updateProjectionMatrix(0.f);
     Debugger::block("LOAD : Init context"); //End
-
-    Debugger::block("LOAD : Models"); //Start
-    
-    //Load the 3D models 345235456
-    getScene()->model->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true, false);
-    getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true, true);
-    getPlaneModel()->loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true, true);
-    getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj", true, true);
-    getMaterialDisplayingModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj", true, true);
-    getTDBrushCursorModel()->loadModel("./LigidPainter/Resources/3D Models/TDBrushCursor.fbx", true, true);
-    
-    Debugger::block("LOAD : Models"); //End
-    
-    Debugger::block("LOAD : Skybox"); //Start 305233920 291.12 MB
-    
-    //Init the skybox    
-    getScene()->skybox.init();
-    //Load the default skybox
-    getScene()->skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox's itself
-    getScene()->skybox.createPrefilterMap(); //Create prefiltered skybox
-    getScene()->skybox.createDisplayingTxtr(); //Create displaying texture
-    
-    Debugger::block("LOAD : Skybox"); //End 
     
     Debugger::block("LOAD : Font"); //Start 2654208
-    
     //Load the fonts
     fonts.Arial.loadFont("./LigidPainter/Resources/Fonts/Arial.ttf");
-    
     Debugger::block("LOAD : Font"); //End
 
     //Init the text renderer
     Debugger::block("LOAD : Text Renderer"); //Start
     textRenderer = TextRenderer(fonts.Arial);
     Debugger::block("LOAD : Text Renderer"); //End
-    
 
     Debugger::block("LOAD : Panels"); //Start 143695872 137 MB
     panels_init();
@@ -196,11 +170,6 @@ void Renderer::initRenderer(){
 
     Settings::defaultFramebuffer()->init(*Settings::videoScale());
     Debugger::block("LOAD : Rest"); //End
-
-    Debugger::block("LOAD : SOURCE LIB TEXTURES"); //Start 16916480
-    // Load the source library textures
-    Library::loadSourceLibTextures();
-    Debugger::block("LOAD : SOURCE LIB TEXTURES"); //End
 
     Debugger::block("LOAD : INIT VECTOR SCENE"); //Start
     *getVectorScene() = VectorScene({}, {}); 

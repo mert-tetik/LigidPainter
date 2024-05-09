@@ -15,6 +15,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <thread>
 #include <atomic>
 #include <mutex>
+#include <cstdlib> 
 
 #include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
@@ -26,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Project/Project.hpp"
 #include "UTIL/Threads/Threads.hpp"
+#include "UTIL/Library/Library.hpp"
 #include "UTIL/GL/GL.hpp"
 
 #include "Renderer.h"
@@ -66,16 +68,63 @@ static void render_intro(){
     getContext()->window.swapBuffers();
 }
 
+std::atomic<bool> shader_system_initialised = false;
+
+void load_ligidpainter(){
+    getLoadingContext()->window.makeContextCurrent();
+
+    shader_system_initialised = false;
+    ShaderSystem::initShaderSystem();
+    shader_system_initialised = true;
+
+    //--Load the app textures
+    Debugger::block("LOAD : App Textures"); //Start 160567296 153.13 MB
+    Settings::loadAppTextures();
+    Debugger::block("LOAD : App Textures"); //End
+
+    //--Load the app textures
+    Debugger::block("LOAD : App Videos"); //Start 160567296 153.13 MB
+    Settings::loadAppVideos();
+    Debugger::block("LOAD : App Videos"); //End
+
+    //Load shaders 
+    Debugger::block("LOAD : SOURCE LIB TEXTURES"); //Start 16916480
+    // Load the source library textures
+    Library::loadSourceLibTextures();
+    Debugger::block("LOAD : SOURCE LIB TEXTURES"); //End
+
+    Debugger::block("LOAD : Models"); //Start
+    //Load the 3D models 345235456
+    getScene()->model->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true, false);
+    getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true, true);
+    getPlaneModel()->loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true, true);
+    getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj", true, true);
+    getMaterialDisplayingModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj", true, true);
+    getTDBrushCursorModel()->loadModel("./LigidPainter/Resources/3D Models/TDBrushCursor.fbx", true, true);
+    Debugger::block("LOAD : Models"); //End
+    
+    Debugger::block("LOAD : Skybox"); //Start 305233920 291.12 MB
+    getScene()->skybox.init(); // Skybox vertex buffers
+    getScene()->skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox textures
+    getScene()->skybox.createPrefilterMap(); //Create prefiltered skybox
+    getScene()->skybox.createDisplayingTxtr(); //Create displaying texture
+    Debugger::block("LOAD : Skybox"); //End 
+    
+    getLoadingContext()->window.releaseContext();
+}
+
 class LigidPainter{
 public:
     int run(){
 
-        // Create the copy context for another threads    
+        // Side OpenGL contexts
+        getLoadingContext()->window.createWindow(1, 1, L"Loading Context");
         getCopyContext()->window.createWindow(1, 1, L"Copy Thread");
-        
         getSecondContext()->window.createWindow(1, 1, L"Second Context");
+        // Create the main context
+        getContext()->window.createWindow(Settings::videoScale()->x, Settings::videoScale()->y, L"LigidPainter");
 
-        //Init GLAD
+        // Init GLAD
         if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
         {
             LGDLOG::start<< "Failed to initialize GLAD" << LGDLOG::end;
@@ -85,70 +134,65 @@ public:
         glm::ivec3 primaryMonitorData;
         LigidGL::getPrimaryMonitorData(primaryMonitorData.x, primaryMonitorData.y, primaryMonitorData.z);
 
+        // Update global monitor resolution value
         *Settings::videoScale() = glm::vec2(primaryMonitorData.x, primaryMonitorData.y);
 
-        //Create the window and make it's OpenGL context current    
-        getContext()->window.createWindow(Settings::videoScale()->x, Settings::videoScale()->y, L"LigidPainter");
+        // Release the lastly created context for sharing prep
         getContext()->window.releaseContext();
 
+        // Let side contexts share data with main contexts
         if(!getContext()->window.shareContext(getSecondContext()->window)){
-            LGDLOG::start << "ERROR *CRITICAL* : Can't share OpenGL contexts between main context & second context. Multi-threading features won't be used!" << LGDLOG::end; 
+            std::cerr << "ERROR *CRITICAL* : Can't share OpenGL contexts between main context & second context." << std::endl; 
+            abort();
         }
         if(!getContext()->window.shareContext(getCopyContext()->window)){
-            LGDLOG::start << "ERROR *CRITICAL* : Can't share OpenGL contexts between main context & copy context. Multi-threading features won't be used!" << LGDLOG::end; 
+            std::cerr << "ERROR *CRITICAL* : Can't share OpenGL contexts between main context & copy context." << std::endl; 
+            abort();
+        }
+        if(!getContext()->window.shareContext(getLoadingContext()->window))
+        {
+            std::cerr << "ERROR *CRITICAL* : Can't share OpenGL contexts between main context & loading context!" << std::endl; 
+            abort();
         }
 
+        // Make main context current for the main thread
         getContext()->window.makeContextCurrent();
 
-        //Init GLAD
-        if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
-        {
-            LGDLOG::start<< "Failed to initialize GLAD" << LGDLOG::end;
-        }    
-
+        // 
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
+        // Init boxes for both contexs (getBox function returns bound context specific box object)
         Debugger::block("LOAD : Box"); //Start 305233920 291.12 MB
         getSecondContext()->window.makeContextCurrent();
         getBox()->init();
-        
         getContext()->window.makeContextCurrent();
         getBox()->init();
         Debugger::block("LOAD : Box"); //Start 305233920 291.12 MB
-
+        
+        // Render the LigidPainter intro
         render_intro();
 
-        //--Load the app textures
-        Debugger::block("LOAD : App Textures"); //Start 160567296 153.13 MB
-        Settings::loadAppTextures();
-        Debugger::block("LOAD : App Textures"); //End
+        // Load textures in another thread
+        std::thread load_ligidpainter_thread(load_ligidpainter);
 
-        //--Load the app textures
-        Debugger::block("LOAD : App Videos"); //Start 160567296 153.13 MB
-        Settings::loadAppVideos();
-        Debugger::block("LOAD : App Videos"); //End
+        // Wait until shaders are initialised
+        while (!shader_system_initialised){}
 
-        //Load shaders 
-        Debugger::block("LOAD : Shaders"); //Start 12300288
-        ShaderSystem::initShaderSystem();
-        MaterialModifierShaders::init_shaders();
-        Debugger::block("LOAD : Shaders"); //End
-        
+        // Init renderer
         Debugger::block("LOAD : Overall renderer"); //Start
         Renderer renderer;
         renderer.initRenderer();
         Debugger::block("LOAD : Overall renderer"); //End
 
-        Debugger::block("LOAD : Init other threads"); //Start
-        // Start the export thread
-        //std::thread projectUpdatingThreadX(projectUpdatingThread);
-        material_thread.thread = std::thread(material_thread_function);
-        Debugger::block("LOAD : Init other threads"); //End
-        
         LGDLOG::start.clear();
 
         if(ligidPainter_ONLY_INIT)
             return 1;
+        
+        // Start the export thread
+        //std::thread projectUpdatingThreadX(projectUpdatingThread);
+        // Start the material processing thread
+        material_thread.thread = std::thread(material_thread_function);
 
         getContext()->window.style(0);
         getContext()->window.setWindowSize(Settings::videoScale()->x, Settings::videoScale()->y);
@@ -182,6 +226,7 @@ public:
         getContext()->window.deleteContext();
         getCopyContext()->window.deleteContext();
         getSecondContext()->window.deleteContext();
+        getLoadingContext()->window.deleteContext();
 
         return 1;
     }

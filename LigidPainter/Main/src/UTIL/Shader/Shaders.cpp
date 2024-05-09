@@ -17,8 +17,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
+#include <atomic>
+
 #include "UTIL/Util.hpp"
 #include "UTIL/Shader/Shader.hpp"
+#include "UTIL/Settings/Settings.hpp"
     
 Shader __tdModelShader;
 Shader __PBRDisplayOnly;

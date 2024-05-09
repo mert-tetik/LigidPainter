@@ -34,6 +34,7 @@ Settings::Properties __settingsProperties;
 Context __context; 
 Context __copyContext; 
 Context __secondContext; 
+Context __loadingContext; 
 Scene __scene; //3D Scene structure
 VectorScene __vectorScene;
 TextureFieldScene __textureFieldScene;
@@ -138,6 +139,9 @@ Context* getCopyContext(){
 }
 Context* getSecondContext(){
     return &__secondContext;
+}
+Context* getLoadingContext(){
+    return &__loadingContext;
 }
 Scene* getScene(){
     return &__scene;

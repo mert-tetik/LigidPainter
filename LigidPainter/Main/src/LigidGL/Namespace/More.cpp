@@ -138,6 +138,9 @@ LigidWindow* LigidGL::getBoundContext(){
 
     if(getCopyContext()->window.isContextCurrent())
         return &getCopyContext()->window;
+    
+    if(getLoadingContext()->window.isContextCurrent())
+        return &getLoadingContext()->window;
 
     return nullptr;
 }

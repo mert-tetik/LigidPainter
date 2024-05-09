@@ -38,16 +38,15 @@ std::atomic<bool> project_updating_thread_save_as_project = false;
 
 void projectUpdatingThread(){
 
-    /* Make copy context current for this thread */
-    getCopyContext()->window.makeContextCurrent();
-
     while (projectUpdatingThreadElements.isRunning) {
         
         std::lock_guard<std::mutex> lock(projectUpdatingThreadElements.mutex);
 
         /* Auto update every *durationSec* seconds*/
         if(project_path() != ""){
+            getCopyContext()->window.makeContextCurrent();
             project_update(true, true);
+            getCopyContext()->window.releaseContext();
         }
 
         // Sleep between exports
@@ -57,7 +56,9 @@ void projectUpdatingThread(){
             /* Update on user request */
             if(project_updating_thread_update_project){
                 if(project_path() != ""){
+                    getCopyContext()->window.makeContextCurrent();
                     project_update(true, false);
+                    getCopyContext()->window.releaseContext();
                 }
                 project_updating_thread_update_project = false;
             }
@@ -65,9 +66,11 @@ void projectUpdatingThread(){
             /* Save as on user request */
             if(project_updating_thread_save_as_project){
                 if(project_path() != ""){
+                    getCopyContext()->window.makeContextCurrent();
                     project_update(true, false);
                     
                     project_save_as("");
+                    getCopyContext()->window.releaseContext();
                 }
                 project_updating_thread_save_as_project = false;
             }
