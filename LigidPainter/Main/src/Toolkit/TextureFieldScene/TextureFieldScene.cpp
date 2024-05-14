@@ -38,8 +38,6 @@ void TextureFieldScene::render(Timer& timer, bool doMouseTracking, bool threeD_o
     glClear(GL_DEPTH_BUFFER_BIT);
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
-    ShaderSystem::buttonShader().use();
-    ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection);
 
     textureFields_decidingWrapPointsMode = false;
     textureField_alreadyInteracted = false;
@@ -67,8 +65,6 @@ void TextureFieldScene::render(Timer& timer, bool doMouseTracking, bool threeD_o
                                             );
         }
     }    
-
-    ShaderSystem::buttonShader().use();   
 }
 
 void TextureFieldScene::add_new(TextureField texture_field){

@@ -66,6 +66,9 @@ static void render_intro(){
     getBox()->draw("Rendering intro");
 
     getContext()->window.swapBuffers();
+
+    // Release the intro shader
+    ShaderUTIL::release_bound_shader();
 }
 
 std::atomic<bool> shader_system_initialised = false;

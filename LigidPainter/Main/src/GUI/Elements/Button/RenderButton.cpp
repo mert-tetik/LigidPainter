@@ -40,6 +40,7 @@ void Button::render(
                         bool doMouseTracking
                     ){
     
+    ShaderSystem::buttonShader().use();
 
     this->doMouseTracking = doMouseTracking;
 

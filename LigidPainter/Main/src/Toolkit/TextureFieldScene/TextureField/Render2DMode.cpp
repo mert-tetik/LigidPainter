@@ -214,7 +214,7 @@ void TextureField::render2DTextureField(
 
             getBox()->draw("Texture field : Rotation button : Drawing line to cursor");
 
-            ShaderSystem::buttonShader().use();
+            ShaderUTIL::release_bound_shader();
         }
         
         glDepthFunc(GL_LEQUAL);

@@ -42,6 +42,8 @@ void Scene::render_scene(Timer& timer){
         ShaderSystem::sceneTilesShader().setVec3("camPos", this->camera.cameraPos);
         this->tiles.draw();
         glClear(GL_DEPTH_BUFFER_BIT);
+
+        ShaderUTIL::release_bound_shader();
     }
     
     if(this->renderAxisDisplayer){
@@ -51,6 +53,8 @@ void Scene::render_scene(Timer& timer){
         ShaderSystem::sceneAxisDisplayerShader().setMat4("modelMatrix",glm::mat4(1));
         this->axisDisplayer.draw();
         glClear(GL_DEPTH_BUFFER_BIT);
+
+        ShaderUTIL::release_bound_shader();
     }
 
     Debugger::block("Rendering scene decorations"); // End

@@ -161,6 +161,7 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     
     //Finish
     GL::releaseBoundTextures("paintingUTIL : window_paint");
+    ShaderUTIL::release_bound_shader();
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
     glDepthFunc(GL_LESS);
@@ -277,6 +278,7 @@ static void project_window_painting_texture(
     }
 
     GL::releaseBoundTextures("paintingUTIL::project_window_painting_texture");
+    ShaderUTIL::release_bound_shader();
 
 }
 
@@ -382,6 +384,7 @@ static glm::vec2 process_3D_point_calculate_2D_location(Camera cam, ThreeDPoint 
     mesh->Draw("process_3D_point_calculate_2D_location");
 
     GL::releaseBoundTextures("process_3D_point_calculate_2D_location");
+    ShaderUTIL::release_bound_shader();
 
     float* pxs = new float[resolution * resolution * 4]; 
     
@@ -509,11 +512,9 @@ void update_depth_texture(Texture depth_texture, Camera cam, Mesh* mesh){
     mesh->Draw("update_depth_texture");
 
     GL::releaseBoundTextures("paintingUTIL : update_depth_texture");
+    ShaderUTIL::release_bound_shader();
 
     //!Finished
-    //Set back to default shader
-    ShaderSystem::buttonShader().use();
-
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 
@@ -564,6 +565,7 @@ void generate_projected_painting_texture(Framebuffer* FBO, bool mirror_X, bool m
         getBox()->draw("Painter::generateMirroredProjectedPaintingTexture : Render result");
 
         GL::releaseBoundTextures("PaintingUTIL : generate_projected_painting_texture");
+        ShaderUTIL::release_bound_shader();
     }
     else{
         if(use_low_resolution_buffers)
@@ -794,21 +796,16 @@ static void updateTheTexture(
     //Since the UV is between 0 - 1
     glm::mat4 orthoProjection = glm::ortho(0.f,1.f,0.f,1.f);
 
-    ShaderSystem::buttonShader().use();
-    
-    ShaderSystem::buttonShader().setMat4("projection", glm::ortho(0.f, destScale.x, destScale.y, 0.f));
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(destScale.x  / 2.f, destScale.y / 2.f, 0.1));
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(destScale / 2.f));
-    ShaderSystem::buttonShader().setFloat("properties.colorMixVal", 0.f);
-    ShaderSystem::buttonShader().setInt("states.renderTexture",     1    );
-    ShaderSystem::buttonShader().setVec2("properties.txtrScale", glm::vec2(1.f));
-    ShaderSystem::buttonShader().setInt("properties.txtr",     0    );
-
-    GL::bindTexture_2D(txtr.ID, "paintingUTIL : updateTheTexture");
+    ShaderSystem::textureRenderingShader().use();
+    ShaderSystem::textureRenderingShader().setMat4("projection", glm::ortho(0.f, destScale.x, destScale.y, 0.f));
+    ShaderSystem::textureRenderingShader().setVec3("pos", glm::vec3(destScale.x  / 2.f, destScale.y / 2.f, 0.1));
+    ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(destScale / 2.f));
+    ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(txtr.ID, "Scene::render_skybox : Render bg texture"));
+    ShaderSystem::textureRenderingShader().setFloat("opacity", 1.f);
+    ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
+    ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
     
     getBox()->draw("Painter::updateTheTexture : Rendering the original texture (background)");
-
-    ShaderSystem::buttonShader().setInt("states.renderTexture"  ,     0    );
 
     ShaderSystem::textureUpdatingShader().use();
     ShaderSystem::textureUpdatingShader().setInt("channel_index", channelI);
@@ -860,6 +857,7 @@ static void updateTheTexture(
     }
     
     GL::releaseBoundTextures("paintingUTIL : updateTheTexture");
+    ShaderUTIL::release_bound_shader();
 
     //Delete the capture framebuffer
     captureFBO.deleteBuffers(false, false);

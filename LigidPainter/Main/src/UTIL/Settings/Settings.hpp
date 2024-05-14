@@ -28,6 +28,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 struct Scene;
 
+Context* getContext();
+Context* getCopyContext();
+Context* getSecondContext();
+Context* getLoadingContext();
+
 struct Context{
     LigidWindow window;
     glm::ivec2 windowScale;
@@ -36,15 +41,17 @@ struct Context{
     void updateGUIProjectionMatrix(float window_width, float window_height){
         //Update the UI projection using window size
         this->ortho_projection = glm::ortho(0.f, window_width, window_height, 0.f);
+
+        ShaderSystem::buttonShader().use();
+        ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection); 
+        
+        ShaderUTIL::release_bound_shader();
     }
 };
 
 class Gizmo;
 
-Context* getContext();
-Context* getCopyContext();
-Context* getSecondContext();
-Context* getLoadingContext();
+
 
 Scene* getScene();
 Model* getSphereModel();

@@ -87,8 +87,6 @@ void Video::render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opac
         return; 
     }
 
-    Shader bound_shader = ShaderUTIL::get_bound_shader();
-    
     // Pos value, % of the video scale
     glm::vec3 resultPos = glm::vec3( 
                             UTIL::getPercent(*Settings::videoScale(), glm::vec2(position.x, position.y)), //Don't include the depth
@@ -130,6 +128,5 @@ void Video::render(Timer& timer, glm::vec3 position, glm::vec2 scale, float opac
     getBox()->draw("Video::render : Rendering result");
 
     // Bind already bound shader at the start
-    bound_shader.use();
+    ShaderUTIL::release_bound_shader();
 }
-

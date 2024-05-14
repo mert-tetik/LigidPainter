@@ -45,8 +45,8 @@ void render_dots(glm::vec2 pos, glm::vec2 scale, glm::vec2 dotPos, float dotSize
     /* Render the dots */
     getBox()->draw("Rendering dots to window");
 
+    ShaderUTIL::release_bound_shader();
+
     /* Clear the depth buffer of the current framebuffers*/
     glClear(GL_DEPTH_BUFFER_BIT);
-
-    ShaderSystem::buttonShader().use();
 }

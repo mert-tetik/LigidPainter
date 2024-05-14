@@ -261,7 +261,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         getBox()->draw("Image editor dialog : Selected section 0");
 
         GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 0");
-
+        ShaderUTIL::release_bound_shader();
     }
     else if(this->selectedSection == 1){
         ShaderSystem::txtrEditorBlurShader().use();
@@ -283,6 +283,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         getBox()->draw("Image editor dialog : Selected section 1");
 
         GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 1");
+        ShaderUTIL::release_bound_shader();
     }
     else if(this->selectedSection == 2){
         ShaderSystem::txtrEditorColoringShader().use();
@@ -306,6 +307,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         getBox()->draw("Image editor dialog : Selected section 2");
 
         GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 2");
+        ShaderUTIL::release_bound_shader();
     }
     else if(this->selectedSection == 3){
         ShaderSystem::txtrEditorNormalMapShader().use();
@@ -328,6 +330,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         getBox()->draw("Image editor dialog : Selected section 3");
         
         GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 3");
+        ShaderUTIL::release_bound_shader();
     }
     else if(this->selectedSection == 4){
         ShaderSystem::txtrEditorDistortionShader().use();
@@ -355,6 +358,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
         getBox()->draw("Image editor dialog : Selected section 4");
         
         GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 4");
+        ShaderUTIL::release_bound_shader();
     }
     else if(this->selectedSection == 5){
         if(this->filterBtn.filter.shader.ID){
@@ -374,6 +378,7 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
             getBox()->draw("Image editor dialog : Selected section 5");
         
             GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture 5");
+            ShaderUTIL::release_bound_shader();
         }
     }
 
@@ -396,10 +401,10 @@ void TextureEditorDialog::updateDisplayingTexture(Texture* receivedTexture, Text
     getBox()->draw("Image editor dialog : Masking result");
     
     GL::releaseBoundTextures("TextureEditorDialog::updateDisplayingTexture grayScaleIDMaskingShader");
+    ShaderUTIL::release_bound_shader();
 
     //Finish
     Settings::defaultFramebuffer()->FBO.bind();
-    ShaderSystem::buttonShader().use();
     glDeleteFramebuffers(1, &captureFBO);
     glDeleteTextures(1, &copiedDestTxtr.ID);
     Settings::defaultFramebuffer()->setViewport();

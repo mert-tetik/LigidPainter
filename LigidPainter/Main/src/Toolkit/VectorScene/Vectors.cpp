@@ -52,8 +52,6 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
         this->render2DVectors(timer, doMouseTracking && !twoD_mode_wrap_checkBox.hover && !this->interaction_panel.hover);
     }
 
-    ShaderSystem::buttonShader().use();
-
     // Rendering interaction panel
     interaction_panel.pos.x = panel_library.pos.x + panel_library.scale.x + interaction_panel.scale.x + 1;
     interaction_panel.pos.y = panel_painting_modes.pos.y + panel_painting_modes.scale.y + interaction_panel.scale.y + 1;
@@ -312,6 +310,7 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
     getScene()->get_selected_mesh()->Draw("VectorScene::render3DVectors");
 
     GL::releaseBoundTextures("VectorScene : render3DVectors");
+    ShaderUTIL::release_bound_shader();
 
     // Render all the vectors
     int clickedPointI = -1; 
@@ -342,7 +341,6 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
         this->update3DVectorBuffers();
     }
 
-    ShaderSystem::buttonShader().use();
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
 }
@@ -495,7 +493,6 @@ void VectorScene::apply_strokes(
             }
         }
 
-        ShaderSystem::buttonShader().use();
         Settings::defaultFramebuffer()->FBO.bind();
         Settings::defaultFramebuffer()->setViewport();
     }

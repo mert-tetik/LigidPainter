@@ -43,8 +43,6 @@ void MaterialEditorDialog::deactivate(){
 }
 
 void MaterialEditorDialog::updateSkyboxTxtr(){
-    Shader already_bound_shader;
-    
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(this->displayerCamera.cameraPos, 
                                  glm::vec3(0), 
@@ -80,7 +78,7 @@ void MaterialEditorDialog::updateSkyboxTxtr(){
     //Render the skybox
     getSphereModel()->Draw();
 
-    already_bound_shader.use();
+    ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
 }
 
@@ -174,8 +172,7 @@ void MaterialEditorDialog::renderSkyboxTxtr(){
     getBox()->draw("Material editor dialog : Render skybox");
 
     GL::releaseBoundTextures("MaterialEditorDialog::renderSkyboxTxtr");
-
-    ShaderSystem::buttonShader().use();
+    ShaderUTIL::release_bound_shader();
 
     if(*Mouse::RPressed() || dialogControl.firstFrameActivated){
         this->updateSkyboxTxtr();

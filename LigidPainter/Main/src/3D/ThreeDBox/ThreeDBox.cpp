@@ -184,6 +184,7 @@ void ThreeDBox::projectToModel(std::vector<Vertex>& vertices, glm::vec3 center){
 
     getScene()->get_selected_mesh()->Draw("ThreeDBox::projectToModel");
 
+    ShaderUTIL::release_bound_shader();
     GL::releaseBoundTextures("ThreeDBox : projectToModel");
     
     float* pxs = new float[resolution * resolution * 4]; 

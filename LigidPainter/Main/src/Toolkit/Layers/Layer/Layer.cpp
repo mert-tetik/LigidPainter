@@ -264,6 +264,8 @@ void LayerGUI::render_layer_bg(Layer* layer){
         ShaderSystem::color2d().setVec3("pos", glm::vec3(layerButton.resultPos.x, layerButton.resultPos.y - layerButton.resultScale.y - layerButton.resultScale.y * 4.f,   1.f)); 
         ShaderSystem::color2d().setVec2("scale", glm::vec2(layerButton.resultScale * 4.f));
         getBox()->draw("LayerGUI::render_layer_bg : Barrier top");
+
+        ShaderUTIL::release_bound_shader();
     }
 
     if(layer->layerType == "material"){
@@ -282,8 +284,6 @@ void LayerGUI::render_layer_bg(Layer* layer){
             getBox()->draw("LayerGUI::render_layer_bg : material");
         
         GL::releaseBoundTextures("LayerGUI::render_layer_bg - material");
-
-        ShaderSystem::buttonShader().use();    
     }   
 
     if(layer->layerType == "vector"){
@@ -304,7 +304,6 @@ void LayerGUI::render_layer_bg(Layer* layer){
 
         GL::releaseBoundTextures("LayerGUI::render_layer_bg - vector");
         
-        ShaderSystem::buttonShader().use();    
     }   
 
     if(layer->layerType == "painting"){
@@ -323,8 +322,6 @@ void LayerGUI::render_layer_bg(Layer* layer){
             getBox()->draw("LayerGUI::render_layer_bg : painting");
 
         GL::releaseBoundTextures("LayerGUI::render_layer_bg - painting");
-        
-        ShaderSystem::buttonShader().use();    
     }   
 
     if(layer->layerType == "texture"){
@@ -369,10 +366,9 @@ void LayerGUI::render_layer_bg(Layer* layer){
 
             GL::releaseBoundTextures("LayerGUI::render_layer_bg - texture layer");
         }
-
-        ShaderSystem::buttonShader().use();    
     }   
 
+    ShaderUTIL::release_bound_shader();
     glClear(GL_DEPTH_BUFFER_BIT);
 }
 

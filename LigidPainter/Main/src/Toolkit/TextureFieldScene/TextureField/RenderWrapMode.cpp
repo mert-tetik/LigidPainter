@@ -71,6 +71,7 @@ void TextureField::renderWrappedTextureField(
         getScene()->get_selected_mesh()->Draw("TextureField::renderWrappedTextureField");
 
         GL::releaseBoundTextures("TextureField : renderWrappedTextureField 1");
+        ShaderUTIL::release_bound_shader();
 
         // Render the points
         if(!generatingTextureMode && editMode){
@@ -101,6 +102,7 @@ void TextureField::renderWrappedTextureField(
         getScene()->get_selected_mesh()->Draw("TextureField::renderWrappedTextureField");
 
         GL::releaseBoundTextures("TextureField : renderWrappedTextureField 2");
+        ShaderUTIL::release_bound_shader();
 
         // Render the wrapped texture
         if(this->threeDPointTopLeft.pos != glm::vec3(0.f) && this->threeDPointBottomRight.pos != glm::vec3(0.f))
@@ -163,8 +165,6 @@ void TextureField::renderWrappedTextureField(
     if((this->threeDPointTopLeft.pos == glm::vec3(0.f) || this->threeDPointBottomRight.pos == glm::vec3(0.f)) && !generatingTextureMode && editMode){
         renderWrapPointDecidingScene(timer);
     }
-
-    ShaderSystem::buttonShader().use();
     glClear(GL_DEPTH_BUFFER_BIT);
 }
 
@@ -543,7 +543,6 @@ bool TextureField::didAnyWrapPointMove(){
 void TextureField::renderWrappedModifyElements(Timer& timer, bool doMouseTracking){
     // Prep rendering gui elements
     glClear(GL_DEPTH_BUFFER_BIT);
-    ShaderSystem::buttonShader().use();
 
     // Positioning the elements
     this->wrap_flipHorizontalButton.pos = this->wrap_deleteButton.pos;
@@ -574,7 +573,6 @@ void TextureField::renderWrapPointDecidingScene(Timer& timer){
     textureFields_decidingWrapPointsMode = true;
 
     // Get ready to render gui elements
-    ShaderSystem::buttonShader().use();
     glClear(GL_DEPTH_BUFFER_BIT);
     Settings::defaultFramebuffer()->setViewport();
     
@@ -688,6 +686,7 @@ void TextureField::checkIfWrappedTextureClicked(bool doMouseTracking){
     this->threeDWrapBox.draw();
     
     GL::releaseBoundTextures("TextureField : checkIfWrappedTextureClicked");
+    ShaderUTIL::release_bound_shader();
 
     // Get the pixel value on top of the cursor
     unsigned char* stencilData = new unsigned char[4];

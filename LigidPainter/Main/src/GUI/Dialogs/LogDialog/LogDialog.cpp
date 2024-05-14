@@ -138,8 +138,6 @@ void LogDialog::render(Timer& timer)
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    ShaderSystem::buttonShader().use();
-
     if(Mouse::mouseOffset()->x || Mouse::mouseOffset()->y)
         sleepingCounter = timer.seconds;
 

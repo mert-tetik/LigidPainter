@@ -112,6 +112,8 @@ void VectorStroke::renderCurve(float edge, glm::vec2 start, glm::vec2 dest, glm:
     
     getBox()->draw("VectorStroke::draw : Rendering the curve");
 
+    ShaderUTIL::release_bound_shader();
+
     glClear(GL_DEPTH_BUFFER_BIT);
 
 }
@@ -130,8 +132,6 @@ void VectorStroke::draw(Timer& timer, float edge, bool doMouseTracking, std::vec
     this->renderCurve(edge / 5.f, this->endPoint.pos, this->offsetPoint.pos, this->offsetPoint.pos);
 
     // Rendering the points
-    ShaderSystem::buttonShader().use();
-
     glm::vec4 endClr = glm::vec4(1.f);
     glm::vec4 startClr = glm::vec4(1.f);
 

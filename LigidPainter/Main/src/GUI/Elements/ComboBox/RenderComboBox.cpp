@@ -36,8 +36,9 @@ void ComboBox::render(
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
     
-    selectionDone = false;
+    ShaderSystem::buttonShader().use();
 
+    selectionDone = false;
     
     float zOffset = 0.f;
     if(this->pressed){

@@ -73,8 +73,8 @@ void line_painting(Timer& timer, bool applyStroke, bool firstFrame){
         ShaderSystem::vectoralCurve().setFloat("EDGE", 0.0005f);
 
         getBox()->draw("Straight line painting vector");
-        
-        ShaderSystem::buttonShader().use();
+    
+        ShaderUTIL::release_bound_shader();
     }
     else{
         /*        

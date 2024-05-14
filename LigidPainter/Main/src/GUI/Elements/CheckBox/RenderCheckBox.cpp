@@ -29,6 +29,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void CheckBox::render(Timer &timer,bool doMouseTracking){
     
+    ShaderSystem::buttonShader().use();
+
     this->doMouseTracking = doMouseTracking;
 
     //Original position in the screen coordinates

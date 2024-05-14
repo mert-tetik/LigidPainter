@@ -386,6 +386,7 @@ Texture TexturePack::generateSpriteTexture(){
     }
 
     GL::releaseBoundTextures("txtrPack");
+    ShaderUTIL::release_bound_shader();
     
     Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1, &FBO);
@@ -450,7 +451,9 @@ void TexturePack::apply(Texture txtr, float scale, float count, float rotationJi
     Settings::defaultFramebuffer()->FBO.bind();
     glDeleteFramebuffers(1, &FBO);
 
+    ShaderUTIL::release_bound_shader();
+
     //Set the OpenGL viewport to default
-        Settings::defaultFramebuffer()->setViewport();
+    Settings::defaultFramebuffer()->setViewport();
 }
 

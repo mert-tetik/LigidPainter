@@ -151,6 +151,7 @@ unsigned int Skybox::createPrefilterMap(){
 	LigidGL::testGLError("Skybox::createPrefilterMap : glDeleteRenderbuffers(1,&captureRBO)");
 
 	GL::releaseBoundTextures("Skybox::createPrefilterMap");
+	ShaderUTIL::release_bound_shader();
 
 	return IDPrefiltered;
 }

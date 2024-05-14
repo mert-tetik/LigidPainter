@@ -36,8 +36,6 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Settings/Settings.hpp"
 
 void Skybox::createDisplayingTxtr(){
-	Shader already_bound_shader = ShaderUTIL::get_bound_shader();
-
 	if(!displayingTexture.ID){
 		displayingTexture = Texture((char*)nullptr, 100, 100);
 	}
@@ -75,5 +73,5 @@ void Skybox::createDisplayingTxtr(){
 	//Finish
 	GL::releaseBoundTextures("Skybox::createDisplayingTxtr");
 	FBOPOOL::releaseFBO(FBO);
-	already_bound_shader.use();
+	ShaderUTIL::release_bound_shader();
 }

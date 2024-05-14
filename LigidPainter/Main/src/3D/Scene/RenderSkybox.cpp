@@ -43,6 +43,7 @@ void Scene::render_skybox(){
     skybox.draw();
     
     GL::releaseBoundTextures("Scene::render_skybox : Render skybox");
+    ShaderUTIL::release_bound_shader();
 
     // Render the background image
 
@@ -58,7 +59,7 @@ void Scene::render_skybox(){
     getBox()->draw("Scene::render_skybox : Render bg texture");
     
     GL::releaseBoundTextures("Scene::render_skybox : Render bg texture");
+    ShaderUTIL::release_bound_shader();
 
     glClear(GL_DEPTH_BUFFER_BIT);
-    getBox()->unbindBuffers();
 }

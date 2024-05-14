@@ -548,9 +548,6 @@ void TextureSelectionDialog::renderPanels(Timer& timer){
     if(selectedTextureCustomMeshDisplayingMode.clicked)
         activeSelectedTextureDisplayingMode = 2;
 
-    // Set the button shader program back
-    ShaderSystem::buttonShader().use();
-
     // ------------- Rendering the smart texture property panels ------------
 
     if(smartPositionTexturePanelActive){

@@ -254,6 +254,7 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
         getBox()->draw("layers_update_result");
 
         GL::releaseBoundTextures("LayerScene::update_result");
+        ShaderUTIL::release_bound_shader();
     }
     
 }

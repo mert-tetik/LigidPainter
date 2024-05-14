@@ -50,6 +50,5 @@ void render_painting_cursor(float radius){
     /* Clear the depth buffer of the current framebuffers*/
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    /* Use the button shader back */
-    ShaderSystem::buttonShader().use();
+    ShaderUTIL::release_bound_shader();
 }

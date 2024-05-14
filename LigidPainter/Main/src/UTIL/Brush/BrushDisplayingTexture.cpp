@@ -75,8 +75,6 @@ static std::vector<glm::vec2> getWaveVector(double amplitude, double lower, int 
 }
 
 void Brush::updateDisplayTexture(float radius){
-    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
-
     int frameCounter = 0;
     
     // Create the wave array
@@ -176,6 +174,6 @@ void Brush::updateDisplayTexture(float radius){
     glDepthFunc(GL_LEQUAL);
     
     //Finish
-    already_bound_shader.use();
+    ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
 }

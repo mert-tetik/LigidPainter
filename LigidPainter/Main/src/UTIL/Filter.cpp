@@ -77,8 +77,6 @@ int Filter::load(std::string path){
 }
 
 void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
-    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
-
     // This texture will be displayed
     Texture sampleTxtr = appTextures.filterDisplayerImage;
     // Resolution of the sample texture
@@ -116,13 +114,11 @@ void Filter::generateDisplayingTexture(glm::vec2 displayResolution){
 
     //Finish
     GL::releaseBoundTextures("Filter::generateDisplayingTexture");
-    already_bound_shader.use();
+    ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
 }
 
 void Filter::applyFilter(Texture txtr, Texture maskTexture, Texture maskTexture2){
-
-    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
 
     glm::vec2 txtrRes = txtr.getResolution();
     //Displaying resolution
@@ -160,7 +156,7 @@ void Filter::applyFilter(Texture txtr, Texture maskTexture, Texture maskTexture2
     }
 
     //Finish
-    already_bound_shader.use();
+    ShaderUTIL::release_bound_shader();
 }
 
 #define LGDFILTER_WRITEBITS(var, type, loc) if(!wf.write(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \

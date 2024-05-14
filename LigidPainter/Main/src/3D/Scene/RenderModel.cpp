@@ -143,6 +143,7 @@ void Scene::render_model(Timer& timer){
             }
 
             GL::releaseBoundTextures("Scene::render_model");
+            ShaderUTIL::release_bound_shader();
         }   
     }
     else{
@@ -201,9 +202,10 @@ void Scene::render_model(Timer& timer){
         this->get_selected_mesh()->Draw("Scene::render_model : single texture");
         
         GL::releaseBoundTextures("Scene::render_model");
+        ShaderUTIL::release_bound_shader();
     }
 
-
+    // Render the wireframe if face selection edit mode is active
     if(this->get_selected_mesh()->face_selection_data.editMode){
         ShaderSystem::color3d().use();
         ShaderSystem::color3d().setMat4("view", this->camera.viewMatrix);
@@ -214,6 +216,8 @@ void Scene::render_model(Timer& timer){
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         this->get_selected_mesh()->Draw("Scene::render_model wireframe");
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        ShaderUTIL::release_bound_shader();
     }
 
     if(this->get_selected_mesh()->face_selection_data.editMode && !panels_any_hovered())    

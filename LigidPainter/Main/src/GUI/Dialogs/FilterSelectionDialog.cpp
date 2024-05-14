@@ -170,9 +170,7 @@ void FilterSelectionDialog::show(Timer &timer, Filter& receivedFilter, int displ
         getBox()->draw("Filter selection dialog : Split filters");
 
         GL::releaseBoundTextures("FilterSelectionDialog::show");
-
-        ShaderSystem::buttonShader().use();
-
+        ShaderUTIL::release_bound_shader();
 
         //If pressed any of the texture select the texture
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)

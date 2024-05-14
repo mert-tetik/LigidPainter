@@ -117,6 +117,8 @@ void TextBox::render(
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
     
+    ShaderSystem::buttonShader().use();
+    
     this->clicked = false;
     
     this->doMouseTracking = doMouseTracking;

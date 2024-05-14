@@ -387,7 +387,6 @@ void ProjectRecoverDialog::show(Timer& timer){
             break;
     }
 
-    ShaderSystem::buttonShader().use();
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();  
 

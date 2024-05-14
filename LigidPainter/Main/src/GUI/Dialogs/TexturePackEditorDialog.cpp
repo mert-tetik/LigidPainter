@@ -219,8 +219,6 @@ void TexturePackEditorDialog::show(Timer &timer, TexturePack& receivedTexturePac
             }
         }
 
-        ShaderSystem::buttonShader().use();
-
         //If pressed any of the texture select the texture
         for (size_t i = 0; i < this->textureSelectingPanel.sections[0].elements.size(); i++)
         {
@@ -283,7 +281,6 @@ void TexturePackEditorDialog::show(Timer &timer, TexturePack& receivedTexturePac
 
         if(this->subPanel.sections[0].elements[5].button.clicked){
             Library::addTexture(receivedTexturePack.generateSpriteTexture(), "New texture via texture pack");
-            ShaderSystem::buttonShader().use();
         }
 
         //End the dialog

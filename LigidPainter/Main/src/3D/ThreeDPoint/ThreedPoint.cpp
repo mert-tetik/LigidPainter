@@ -121,6 +121,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, f
             this->render(timer, false, true, radius, false);
 
             GL::releaseBoundTextures("ThreeDPoint : render");
+            ShaderUTIL::release_bound_shader();
 
             unsigned char* stencilData = new unsigned char[4];
 
@@ -144,6 +145,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, f
             delete[] stencilData;
 
             FBOPOOL::releaseFBO(FBO);
+            ShaderUTIL::release_bound_shader();
         }
     }
 

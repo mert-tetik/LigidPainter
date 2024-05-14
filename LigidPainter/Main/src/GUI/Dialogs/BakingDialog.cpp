@@ -129,18 +129,18 @@ void BakingDialog::show(Timer& timer, Skybox skybox){
 void BakingDialog::renderElements(Timer& timer, glm::vec3 pos, glm::vec2 scale, glm::vec3 resultPos, glm::vec2 resultScale){
     
     //Right
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x + resultScale.x + resultScale.x * 2.f, resultPos.y,   1.f)); 
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(resultScale * 2.f));
-    ShaderSystem::buttonShader().setFloat("properties.radius", 0.f); 
-    ShaderSystem::buttonShader().setInt("outlineExtra" , false); 
-    ShaderSystem::buttonShader().setVec4("properties.color", glm::vec4(0)); //Invisible
-    ShaderSystem::buttonShader().setVec3("properties.outline.color", glm::vec4(0)); //Invisible
+    ShaderSystem::color2d().use();
+    ShaderSystem::color2d().setVec3("pos", glm::vec3(resultPos.x + resultScale.x + resultScale.x * 2.f, resultPos.y,   1.f)); 
+    ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale * 2.f));
+    ShaderSystem::color2d().setVec4("color", glm::vec4(0.f));
     getBox()->draw("Panel : Barrier bottom");
     
     //Left
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(resultPos.x - resultScale.x - resultScale.x * 2.f, resultPos.y,   1.f));
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(resultScale * 2.f));
+    ShaderSystem::color2d().setVec3("pos", glm::vec3(resultPos.x - resultScale.x - resultScale.x * 2.f, resultPos.y,   1.f));
+    ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale * 2.f));
     getBox()->draw("Panel : Barrier top");
+
+    ShaderUTIL::release_bound_shader();
 
     modeImageDisplayer1.scale = glm::vec2(scale.x, scale.y);
     modeImageDisplayer1.pos = glm::vec3(pos.x - modeImageDisplayer1.scale.x * 2.f * easeInOut(rendererModeMixVal), pos.y - scale.y + modeImageDisplayer1.scale.y, pos.z + 0.01f); 
@@ -325,23 +325,9 @@ Texture BakingDialog::bake(Skybox skybox, unsigned int resolution){
     Texture txtr = Texture((char*)nullptr, resolution, resolution);
     txtr.title = "baked_" + getScene()->model->meshes[selectMeshButton.selectedMeshI].materialName;
 
-    /* Capturing FBO */
-    unsigned int FBO; 
-    glGenFramebuffers(1,&FBO);
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, txtr.ID, 0);
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(txtr.ID, txtr.getResolution(), "BakingDialog::bake");
+
     glClearColor(0,0,0,0);
-
-    unsigned int RBO;
-    glGenRenderbuffers(1,&RBO);
-    glBindRenderbuffer(GL_RENDERBUFFER,RBO);
-    
-    //Set the renderbuffer to store depth
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, resolution, resolution);
-    
-    //Give the renderbuffer to the framebuffer
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, RBO);
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     glDepthFunc(GL_LEQUAL);
@@ -349,9 +335,8 @@ Texture BakingDialog::bake(Skybox skybox, unsigned int resolution){
     getScene()->model->meshes[selectMeshButton.selectedMeshI].Draw("BakingDialog::bake");
 
     GL::releaseBoundTextures("BakingDialog::bake");
-
-    glDeleteFramebuffers(1, &FBO);
-    glDeleteRenderbuffers(1, &RBO);
+    ShaderUTIL::release_bound_shader();
+    FBOPOOL::releaseFBO(FBO);
 
     return txtr;
 }

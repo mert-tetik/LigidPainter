@@ -55,7 +55,6 @@ void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
         
         Settings::defaultFramebuffer()->FBO.bind();
         Settings::defaultFramebuffer()->setViewport();
-        ShaderSystem::buttonShader().use();
 
         //Render the 2D painting panel
         panel_twoD_painting.sections[0].elements[0].button.text = "";
@@ -107,7 +106,7 @@ void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
         twoD_painting_box.draw("2D Painting scene : painted texture");
 
         GL::releaseBoundTextures("panel_twoD_painting_render");
-        ShaderSystem::buttonShader().use();
+        ShaderUTIL::release_bound_shader();
     }
     else{
         //Render the 2D painting panel
@@ -122,29 +121,31 @@ void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
 }
 
 static void render_barriers(){
+    ShaderSystem::color2d().use();
+
     //Bottom Barrier
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x,   panel_twoD_painting.resultPos.y + panel_twoD_painting.resultScale.y + 5000,   1.f)); 
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
-    ShaderSystem::buttonShader().setFloat("properties.radius", 0.f); 
-    ShaderSystem::buttonShader().setInt("outlineExtra" , false); 
-    ShaderSystem::buttonShader().setVec4("properties.color", glm::vec4(0)); //Invisible
-    ShaderSystem::buttonShader().setVec3("properties.outline.color", glm::vec4(0)); //Invisible
+    ShaderSystem::color2d().setMat4("projection", getContext()->ortho_projection);
+    ShaderSystem::color2d().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x,   panel_twoD_painting.resultPos.y + panel_twoD_painting.resultScale.y + 5000, 1.f)); 
+    ShaderSystem::color2d().setVec2("scale", glm::vec2(5000));
+    ShaderSystem::color2d().setVec4("color" , glm::vec4(0.f)); 
     getBox()->draw("2D Painting panel : Barrier : Bottom");
 
     //Top Barrier
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x,   panel_twoD_painting.resultPos.y - panel_twoD_painting.resultScale.y - 5000,   1.f));
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
+    ShaderSystem::color2d().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x,   panel_twoD_painting.resultPos.y - panel_twoD_painting.resultScale.y - 5000,   1.f));
+    ShaderSystem::color2d().setVec2("scale", glm::vec2(5000));
     getBox()->draw("2D Painting panel : Barrier : Top");
     
     //Left Barrier
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x  - panel_twoD_painting.resultScale.x  - 5000,   panel_twoD_painting.resultPos.y,   1.f));
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
+    ShaderSystem::color2d().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x  - panel_twoD_painting.resultScale.x  - 5000,   panel_twoD_painting.resultPos.y,   1.f));
+    ShaderSystem::color2d().setVec2("scale", glm::vec2(5000));
     getBox()->draw("2D Painting panel : Barrier : Left");
     
     //Right Barrier
-    ShaderSystem::buttonShader().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x  + panel_twoD_painting.resultScale.x  + 5000,   panel_twoD_painting.resultPos.y,   1.f));
-    ShaderSystem::buttonShader().setVec2("scale", glm::vec2(5000));
+    ShaderSystem::color2d().setVec3("pos", glm::vec3(panel_twoD_painting.resultPos.x  + panel_twoD_painting.resultScale.x  + 5000,   panel_twoD_painting.resultPos.y,   1.f));
+    ShaderSystem::color2d().setVec2("scale", glm::vec2(5000));
     getBox()->draw("2D Painting panel : Barrier : Right");
+
+    ShaderUTIL::release_bound_shader();
 }
 
 static void transform_scene(){

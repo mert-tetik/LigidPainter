@@ -126,6 +126,7 @@ static void blurTheTexture(Texture txtr, Mesh& mesh, int textureResolution, floa
     }
 
     GL::releaseBoundTextures("UpdateMaterialChannel : blurTheTexture");
+    ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
 }
 
@@ -220,6 +221,7 @@ static void genAmbientOcclusion(
                 model.Draw();
 
             GL::releaseBoundTextures("UpdateMaterialChannel : genAmbientOcclusion");
+            ShaderUTIL::release_bound_shader();
             FBOPOOL::releaseFBO(FBO);
         }
 
@@ -240,6 +242,7 @@ static void genAmbientOcclusion(
             mesh.Draw("UpdateMaterialChannel : genAmbientOcclusion 2");
 
             GL::releaseBoundTextures("UpdateMaterialChannel : genAmbientOcclusion");
+            ShaderUTIL::release_bound_shader();
             FBOPOOL::releaseFBO(FBO);
         }
     }
@@ -546,8 +549,6 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
 
             Texture txtr = material.materialModifiers[curModI].sections[0].elements[channelI + 1].button.texture;
             txtr.generateProceduralTexture(mesh, textureModifierSelectedTexture_procedural, textureResolution);
-            
-            modifierShader.use();
         }
 
         // Use the shader of the modifier
@@ -585,6 +586,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
 
             //Delete the framebuffer after completing the channel
             FBOPOOL::releaseFBO(FBO);
+            ShaderUTIL::release_bound_shader();
 
             //Generating the normal map based on the height map
             if(channelI == 4){
@@ -700,6 +702,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             GL::releaseBoundTextures("MaterialModifier::updateMaterialChannels");
 
             FBOPOOL::releaseFBO(FBO);
+            ShaderUTIL::release_bound_shader();
         }
         
         if(material.materialModifiers[curModI].modifierIndex != MATH_MATERIAL_MODIFIER){

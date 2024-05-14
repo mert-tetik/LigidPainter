@@ -139,6 +139,7 @@ void VectorStroke3D::projectToModel(std::vector<VertexUTIL>& vertices, glm::vec3
     }
 
     FBOPOOL::releaseFBO(FBO);
+    ShaderUTIL::release_bound_shader();
 
     delete[] pxs;
 }
@@ -203,6 +204,8 @@ void VectorStroke3D::renderLine(){
         glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(getSphereModel()->meshes[0].indices.size()), GL_UNSIGNED_INT, 0, this->lineVertices.size());
         LigidGL::testGLError("VectorStroke3D::draw : Drawing Elements");
     }
+
+    ShaderUTIL::release_bound_shader();
 }
 
 bool VectorStroke3D::draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke3D>& strokes, int curI){

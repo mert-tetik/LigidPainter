@@ -138,6 +138,9 @@ void RangeBar::render(
                         Timer &timer, //Timer that handles the animations
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
+                        
+    ShaderSystem::buttonShader().use();
+
     this->doMouseTracking = doMouseTracking;
 
     // pos value % of the video scale

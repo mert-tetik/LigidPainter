@@ -109,6 +109,7 @@ void render_3D_cursor(float radius)
             renderCursor(des_point.pos, des_point.normal, radius);
     }
     
+    ShaderUTIL::release_bound_shader();
 
     delete[] posData;
     delete[] normalData;

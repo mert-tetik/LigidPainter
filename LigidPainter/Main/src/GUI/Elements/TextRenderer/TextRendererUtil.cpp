@@ -143,6 +143,8 @@ void TextRenderer::renderLeftToRight(
                                         glm::vec3 pos
                                     ){
 
+	ShaderSystem::buttonShader().use();
+
 	glm::vec3 startingPoint = pos;
 
 	float overallX = getTextLastCharOffset();

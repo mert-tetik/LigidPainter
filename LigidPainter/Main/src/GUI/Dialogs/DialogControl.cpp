@@ -53,8 +53,6 @@ static void drawBG()
     getBox()->draw("DialogControl : drawBG");
 
     GL::releaseBoundTextures("DialogControl : drawBG");
-    
-    ShaderSystem::buttonShader().use();
 }
 
 void DialogControl::updateStart(){
@@ -71,7 +69,6 @@ void DialogControl::updateStart(){
 
     ShaderSystem::buttonShader().use();
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", mixVal);
-    ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection);
 
     globalFirstFrameActivated = false;
 

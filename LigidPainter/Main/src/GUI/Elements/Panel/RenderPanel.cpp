@@ -34,8 +34,7 @@ bool updateThePreRenderedPanels = false;
     
 void Panel::render(Timer &timer, bool doMouseTracking){
     
-    Debugger::block("GUI : Panel : Panel rendering start"); // Start
-    Debugger::block("GUI : Panel : Panel rendering start"); // End
+    ShaderSystem::buttonShader().use();
 
     Debugger::block("GUI : Panel : Prep"); // Start
     this->doMouseTracking = doMouseTracking;
@@ -91,9 +90,8 @@ void Panel::render(Timer &timer, bool doMouseTracking){
         getBox()->draw("Panel : Pre-rendering mode : Rendering result texture");
 
         GL::releaseBoundTextures("Panel::render preRender graphics");
+        ShaderUTIL::release_bound_shader();
 
-        ShaderSystem::buttonShader().use();    
-        
         if(this->clearDepthBuffer)
             glClear(GL_DEPTH_BUFFER_BIT);
     }
@@ -241,13 +239,13 @@ void Panel::updateGraphics(Timer &timer){
                                         (resultPos.y + resultScale.y) , 
                                         resultPos.y - resultScale.y
                                     );
+    
     ShaderSystem::buttonShader().setMat4("projection", projection);
 
     drawPanel(resultPos, this->resultScale, timer);
     
     //Finish
-    projection = glm::ortho(0.f, (float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f);
-    ShaderSystem::buttonShader().setMat4("projection", projection);
+    ShaderSystem::buttonShader().setMat4("projection", getContext()->ortho_projection);
 
     FBOPOOL::releaseFBO(FBO);
 }
@@ -296,6 +294,7 @@ static void drawTheBarriers(glm::vec3 resultPos, glm::vec2 resultScale){
         ShaderSystem::color2d().setVec2("scale", glm::vec2(resultScale.x * 2.f));
         getBox()->draw("Panel : Barrier right");
     }
+
     ShaderSystem::buttonShader().use();
 }
 

@@ -92,9 +92,8 @@ void FilterDisplayerDialog::show(Timer& timer){
         getBox()->draw("Filter displayer dialog : Rendering the filter");
 
         GL::releaseBoundTextures("FilterDisplayerDialog::show");
+        ShaderUTIL::release_bound_shader();
 
-        ShaderSystem::buttonShader().use();
-        
         dialogControl.updateEnd(timer,0.15f);
         if(dialogControl.mixVal == 0.f)
             break;

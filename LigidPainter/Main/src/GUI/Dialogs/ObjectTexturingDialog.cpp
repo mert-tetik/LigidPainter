@@ -245,8 +245,7 @@ void ObjectTexturingDialog::show(Timer& timer){
         getBox()->draw("Object texturing dialog : Rendering displaying texture");
 
         GL::releaseBoundTextures("ObjectTexturingDialog::show : Rendering displaying texture");
-
-        ShaderSystem::buttonShader().use();
+        ShaderUTIL::release_bound_shader();
 
         // Render the elements
         this->maskMaterialBtn.render(timer, !this->materialSelection && !this->textureSelection);
@@ -450,6 +449,7 @@ void ObjectTexturingDialog::show(Timer& timer){
                     getScene()->model->meshes[i].Draw("ObjectTexturingDialog::show");
 
                     GL::releaseBoundTextures("ObjectTexturingDialog : Updating displaying texture");
+                    ShaderUTIL::release_bound_shader();
                     
                     glEnable(GL_DEPTH_TEST);
 
@@ -536,8 +536,6 @@ void ObjectTexturingDialog::show(Timer& timer){
 
 
 void ObjectTexturingDialog::updateDisplayingTexture(){
-    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
-
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(this->sceneCam.cameraPos, 
                                  this->sceneCam.originPos, 
@@ -581,7 +579,7 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
     // 114 - 967
     
     //!Finish (prepare rendering the GUI)
-    already_bound_shader.use();
+    ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
 
 }

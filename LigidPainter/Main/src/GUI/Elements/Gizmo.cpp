@@ -33,8 +33,6 @@ void Gizmo::render(
                         bool doMouseTracking //If there is need to check if mouse hover
                     ){
 
-    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
-
     this->doMouseTracking = doMouseTracking;
 
     // pos value % of the video scale
@@ -87,6 +85,7 @@ void Gizmo::render(
 
     getBox()->draw("Gizmo : Render to screen");
 
+    ShaderUTIL::release_bound_shader();
 
     this->rHover = false;
     this->gHover = false;
@@ -164,5 +163,5 @@ void Gizmo::render(
         FBOPOOL::releaseFBO(FBO);
     }
 
-    already_bound_shader.use();
+    ShaderUTIL::release_bound_shader();
 }

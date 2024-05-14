@@ -29,6 +29,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/GL/GL.hpp"
 
+std::mutex mesh_mutex;
+
 glm::vec3 Mesh::getCenterPosition(){
     glm::vec3 center = glm::vec3(0.f);
     for (const Vertex& vertex : this->vertices) {
@@ -125,18 +127,13 @@ void Mesh::generateDisplayingTexture(){
     glm::mat4 modelMat = glm::mat4(1.f);
     modelMat = glm::scale(modelMat, glm::vec3(1.f / glm::distance(meshMostFar, this->getCenterPosition())));
 
-    ShaderSystem::solidShadingShader().setMat4("modelMatrix", modelMat);
-    
+    ShaderSystem::solidShadingShader().setMat4("modelMatrix", modelMat);    
     ShaderSystem::solidShadingShader().setVec3("viewPos", camPos);
     
-    //Draw the sphere
+
     this->Draw("Mesh::generateDisplayingTexture");
     
-    //!Finish (prepare rendering the GUI)
-
-    //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
-    ShaderSystem::buttonShader().use();
-
+    ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
 }
 
@@ -159,10 +156,12 @@ void Mesh::generateUVMask(){
     this->Draw("Mesh::generateUVMask");
 
     FBOPOOL::releaseFBO(FBO);
+    ShaderUTIL::release_bound_shader();
 }
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, bool initTxtrs)
 {
+    std::cout << "" << std::endl;
     if(!vertices.size())
         vertices.push_back(Vertex());
 
@@ -175,7 +174,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 
     LigidWindow* bound_context = LigidGL::getBoundContext();
 
-    getContext()->window.makeContextCurrent();
+    bound_context->makeContextCurrent();
     this->setupMesh(&this->VBO, &this->VAO, &this->EBO);   
 
     while(!getSecondContext()->window.makeContextCurrent()){}
@@ -223,6 +222,8 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 // Render the mesh
 void Mesh::Draw(std::string location) 
 {
+    std::unique_lock<std::mutex> lock(mesh_mutex);
+
     LigidGL::cleanGLErrors();
 
     // draw mesh
@@ -250,6 +251,7 @@ void Mesh::Draw(std::string location)
 }
 
 void Mesh::processHeightMap(){
+    std::unique_lock<std::mutex> lock(mesh_mutex);
 
     std::vector<Vertex> newVertArray = this->vertices;
 
@@ -458,12 +460,10 @@ void Mesh::updatePosNormalTexture(){
         
         GL::releaseBoundTextures("Mesh : updatePosNormalTexture");
         FBOPOOL::releaseFBO(FBO);
+        ShaderUTIL::release_bound_shader();
     }
     
-    //!Finished
-
-    //Set back to default shader
-    ShaderSystem::buttonShader().use();
+    ShaderUTIL::release_bound_shader();
 
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
@@ -502,8 +502,6 @@ ThreeDPoint Mesh::getCurrentPosNormalDataOverCursor(){
 
 void Mesh::updateObjectIDsTexture(){
     
-    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
-    
     glDepthFunc(GL_LESS);
     
     const unsigned int resolution = this->objectIDs.getResolution().x;
@@ -533,7 +531,7 @@ void Mesh::updateObjectIDsTexture(){
     //!Finished
 
     //Set back to default shader
-    already_bound_shader.use();
+    ShaderUTIL::release_bound_shader();
 
     FBOPOOL::releaseFBO(FBO);
 
@@ -541,8 +539,6 @@ void Mesh::updateObjectIDsTexture(){
 }
 
 void Mesh::updateModelPrimitivesTexture(){
-    Shader already_bound_shader = ShaderUTIL::get_bound_shader();
-    
     // Generate & bind the framebuffer object to render the model primitives into the modelPrimitives texture
     Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(this->face_selection_data.modelPrimitives, this->face_selection_data.modelPrimitives.getResolution(), "Mesh::updateModelPrimitivesTexture");
 
@@ -561,7 +557,7 @@ void Mesh::updateModelPrimitivesTexture(){
     this->Draw("Mesh::updateModelPrimitivesTexture");
 
     //Set back to default shader
-    already_bound_shader.use();
+    ShaderUTIL::release_bound_shader();
 
     FBOPOOL::releaseFBO(FBO);
 
@@ -569,6 +565,8 @@ void Mesh::updateModelPrimitivesTexture(){
 }
 
 void Mesh::update_vertex_buffers(){
+    std::unique_lock<std::mutex> lock(mesh_mutex);
+
     if(!vertices.size())
         vertices.push_back(Vertex());
 

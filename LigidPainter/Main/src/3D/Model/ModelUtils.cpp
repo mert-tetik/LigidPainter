@@ -82,13 +82,10 @@ void Model::generateDisplayingTexture(){
     
     ShaderSystem::solidShadingShader().setVec3("viewPos", camPos);
     
-    //Draw the sphere
+    // Render result (the model)
     this->Draw();
     
-    //!Finish (prepare rendering the GUI)
-
-    //Use the button shader (Is necessary since that process is done in the middle of GUI rendering) 
-    already_bound_shader.use();
+    ShaderUTIL::release_bound_shader();
 
     /* Delete the framebuffer & the renderbuffer*/
     FBOPOOL::releaseFBO(FBO);

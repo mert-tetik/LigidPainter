@@ -66,8 +66,6 @@ void Material::updateMaterialDisplayingTexture(
                                                 int specificUpdateI
                                             )
 { 
-    Shader initial_bound_shader = ShaderUTIL::get_bound_shader();
-
     if(!useCustomCam){
         matCam.cameraPos = glm::vec3(0,0,3.5f);
         matCam.radius = -3.5f;
@@ -120,6 +118,6 @@ void Material::updateMaterialDisplayingTexture(
     }
     
     ShaderSystem::PBRDisplayOnly().setInt("displayingMode", 0);
-    initial_bound_shader.use();
+    ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
 }

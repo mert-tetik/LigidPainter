@@ -182,10 +182,9 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
     // Set back to default
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
+    ShaderUTIL::release_bound_shader();
 
     render_selection_cursor(mesh->face_selection_data.radius);
-
-    ShaderSystem::buttonShader().use();
 
     glDepthFunc(GL_LEQUAL);
 
@@ -445,6 +444,6 @@ static void render_selection_cursor(float radius){
     /* Clear the depth buffer of the current framebuffers*/
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    /* Use the button shader back */
-    ShaderSystem::buttonShader().use();
+    /* Release the circleShader */
+    ShaderUTIL::release_bound_shader();
 }
