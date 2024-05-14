@@ -72,6 +72,7 @@ static void render_intro(){
 }
 
 std::atomic<bool> shader_system_initialised = false;
+std::atomic<bool> load_ligidpainter_done = false;
 
 void load_ligidpainter(){
     getLoadingContext()->window.makeContextCurrent();
@@ -112,6 +113,9 @@ void load_ligidpainter(){
     Debugger::block("LOAD : Skybox"); //End 
     
     getLoadingContext()->window.releaseContext();
+
+    load_ligidpainter_done = true;
+    return;
 }
 
 class LigidPainter{
@@ -220,6 +224,8 @@ public:
                 //exportCV.notify_one();
             }
         }
+        
+        while(!load_ligidpainter_done){}
 
         if(std::filesystem::exists(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp"))
             std::filesystem::remove_all(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp");
@@ -234,6 +240,7 @@ public:
         // Wait for the projectUpdatingThread to finish
         //projectUpdatingThreadX.join();
         material_thread.thread.join();
+        load_ligidpainter_thread.join();
 
         getContext()->window.deleteContext();
         getCopyContext()->window.deleteContext();
