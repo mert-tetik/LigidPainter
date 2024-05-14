@@ -82,7 +82,7 @@ void load_ligidpainter(){
 
     //--Load the app textures
     Debugger::block("LOAD : App Textures"); //Start 160567296 153.13 MB
-    Settings::loadAppTextures();
+    Settings::loadAppTextures(); 
     Debugger::block("LOAD : App Textures"); //End
 
     //--Load the app textures
@@ -95,19 +95,17 @@ void load_ligidpainter(){
     // Load the source library textures
     Library::loadSourceLibTextures();
     Debugger::block("LOAD : SOURCE LIB TEXTURES"); //End
-
+    
     Debugger::block("LOAD : Models"); //Start
     //Load the 3D models 345235456
     getScene()->model->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true, false);
     getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true, true);
-    getPlaneModel()->loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true, true);
     getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj", true, true);
     getMaterialDisplayingModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj", true, true);
     getTDBrushCursorModel()->loadModel("./LigidPainter/Resources/3D Models/TDBrushCursor.fbx", true, true);
     Debugger::block("LOAD : Models"); //End
-    
+
     Debugger::block("LOAD : Skybox"); //Start 305233920 291.12 MB
-    getScene()->skybox.init(); // Skybox vertex buffers
     getScene()->skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox textures
     getScene()->skybox.createPrefilterMap(); //Create prefiltered skybox
     getScene()->skybox.createDisplayingTxtr(); //Create displaying texture
@@ -174,6 +172,17 @@ public:
         
         // Render the LigidPainter intro
         render_intro();
+
+        getScene()->model->meshes.push_back(Mesh({}, {}, "", false));
+        getSphereModel()->meshes.push_back(Mesh({}, {}, "", false));
+        getPlaneModel()->meshes.push_back(Mesh({}, {}, "", false));
+        getMaterialDisplayerModel()->meshes.push_back(Mesh({}, {}, "", false));
+        getMaterialDisplayingModel()->meshes.push_back(Mesh({}, {}, "", false));
+        getTDBrushCursorModel()->meshes.push_back(Mesh({}, {}, "", false));
+
+        getScene()->skybox.init(); // Skybox vertex buffers
+
+        Settings::initAppTextures();
 
         // Load textures in another thread
         std::thread load_ligidpainter_thread(load_ligidpainter);

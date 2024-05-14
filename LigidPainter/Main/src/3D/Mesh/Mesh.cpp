@@ -161,7 +161,6 @@ void Mesh::generateUVMask(){
 
 Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::string materialName, bool initTxtrs)
 {
-    std::cout << "" << std::endl;
     if(!vertices.size())
         vertices.push_back(Vertex());
 
@@ -206,6 +205,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
     generateUVMask();
 
     generateDisplayingTexture();
+
 }
 
 

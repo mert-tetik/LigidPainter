@@ -135,6 +135,8 @@ void ShaderSystem::initShaderSystem(){
     __objectTexturingAssign.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert" , "LigidPainter/Resources/Shaders/aFrag/ObjectTexturingAssign.frag");
     __color3DInstancing.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model_instancing.vert","LigidPainter/Resources/Shaders/aFrag/Color.frag");
     __removeUnselectedFacesShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert","LigidPainter/Resources/Shaders/aFrag/RemoveUnselectedFaces.frag");
+
+    MaterialModifierShaders::init_shaders();
 }
 
 Shader ShaderSystem::tdModelShader(){

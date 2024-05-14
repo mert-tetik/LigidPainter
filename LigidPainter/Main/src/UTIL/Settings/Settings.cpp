@@ -49,6 +49,77 @@ Settings::DefaultFramebuffer __defaultFramebuffer;
 
 glm::vec2 __videoScale;
 
+void Settings::initAppTextures(){
+    glGenTextures(1, &appTextures.TDModelIcon.ID);
+    glGenTextures(1, &appTextures.softenIcon.ID);
+    glGenTextures(1, &appTextures.smearIcon.ID);
+    glGenTextures(1, &appTextures.modifierIcon.ID);
+    glGenTextures(1, &appTextures.environmentIcon.ID);
+    glGenTextures(1, &appTextures.dropperIcon.ID);
+    glGenTextures(1, &appTextures.colorIcon.ID);
+    glGenTextures(1, &appTextures.brushIcon.ID);
+    glGenTextures(1, &appTextures.textureIcon.ID);
+    glGenTextures(1, &appTextures.arrowR.ID);
+    glGenTextures(1, &appTextures.arrowL.ID);
+    glGenTextures(1, &appTextures.arrowB.ID);
+    glGenTextures(1, &appTextures.arrowT.ID);
+    glGenTextures(1, &appTextures.threeDIcon.ID);
+    glGenTextures(1, &appTextures.twoDIcon.ID);
+    glGenTextures(1, &appTextures.exportIcon.ID);
+    glGenTextures(1, &appTextures.areaPaintingIcon.ID);
+    glGenTextures(1, &appTextures.gearIcon.ID);
+    glGenTextures(1, &appTextures.nodeDisplayingMode.ID);
+    glGenTextures(1, &appTextures.paintingDisplayingMode.ID);
+    glGenTextures(1, &appTextures.solidPaintingDisplayingMode.ID);
+    glGenTextures(1, &appTextures.ligidPainterIcon.ID);
+    glGenTextures(1, &appTextures.logButtonL.ID);
+    glGenTextures(1, &appTextures.logButtonR.ID);
+    glGenTextures(1, &appTextures.logButtonM.ID);
+    glGenTextures(1, &appTextures.colorGearIcon.ID);
+    glGenTextures(1, &appTextures.filterIcon.ID);
+    glGenTextures(1, &appTextures.resizingIcon.ID);
+    glGenTextures(1, &appTextures.blurIcon.ID);
+    glGenTextures(1, &appTextures.distortionIcon.ID);
+    glGenTextures(1, &appTextures.normalMapIcon.ID);
+    glGenTextures(1, &appTextures.packageIcon.ID);
+    glGenTextures(1, &appTextures.inkPenIcon.ID);
+    glGenTextures(1, &appTextures.bucketIcon.ID);
+    glGenTextures(1, &appTextures.bakingIcon.ID);
+    glGenTextures(1, &appTextures.materialIcon.ID);
+    glGenTextures(1, &appTextures.trashIcon.ID);
+    glGenTextures(1, &appTextures.materialChannelsIcon.ID);
+    glGenTextures(1, &appTextures.paintingOverIcon.ID);
+    glGenTextures(1, &appTextures.mirrorIcon.ID);
+    glGenTextures(1, &appTextures.eyeClosedIcon.ID);
+    glGenTextures(1, &appTextures.eyeOpenedIcon.ID);
+    glGenTextures(1, &appTextures.stripes1Icon.ID);
+    glGenTextures(1, &appTextures.stripes2Icon.ID);
+    glGenTextures(1, &appTextures.X.ID);
+    glGenTextures(1, &appTextures.flipH.ID);
+    glGenTextures(1, &appTextures.flipV.ID);
+    glGenTextures(1, &appTextures.plus.ID);
+    glGenTextures(1, &appTextures.minus.ID);
+    glGenTextures(1, &appTextures.greetingDialogImage.ID);
+    glGenTextures(1, &appTextures.newVersionBanner.ID);
+    glGenTextures(1, &appTextures.filterDisplayerImage.ID);
+    glGenTextures(1, &appTextures.noLayersWarningTexture.ID);
+    glGenTextures(1, &appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID);
+    glGenTextures(1, &appTextures.materialChannelMissingTexture.ID);
+    glGenTextures(1, &appTextures.baking_LigidRay.ID);
+    glGenTextures(1, &appTextures.baking_Default.ID);
+    glGenTextures(1, &appTextures.mascotCat_default.ID);
+    glGenTextures(1, &appTextures.mascotCat_smile.ID);
+    glGenTextures(1, &appTextures.mascotCat_rock.ID);
+    glGenTextures(1, &appTextures.mascotCat_relaxed.ID);
+    glGenTextures(1, &appTextures.mascotCat_dizzy.ID);
+    glGenTextures(1, &appTextures.mascotCat_thinking.ID);
+    glGenTextures(1, &appTextures.mascotCat_bread.ID);
+    glGenTextures(1, &appTextures.mascotCat_crying.ID);
+    glGenTextures(1, &appTextures.mascotCat_sleeping.ID);
+    glGenTextures(1, &appTextures.mascotCat_pawL.ID);
+    glGenTextures(1, &appTextures.mascotCat_pawR.ID);
+}
+
 void Settings::loadAppTextures(){
     appTextures.TDModelIcon.load("./LigidPainter/Resources/Icons/TDModel.png");
     appTextures.softenIcon.load("./LigidPainter/Resources/Icons/Soften.png");
@@ -107,7 +178,6 @@ void Settings::loadAppTextures(){
     appTextures.materialChannelMissingTexture.load("./LigidPainter/Resources/Images/MaterialChannelMissingTexture.jpg");
     appTextures.baking_LigidRay.load("./LigidPainter/Resources/Images/Baking_LigidRay.jpg");
     appTextures.baking_Default.load("./LigidPainter/Resources/Images/Baking_Default.jpg");
-    
     appTextures.mascotCat_default.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/default.png");
     appTextures.mascotCat_smile.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/smiling.png");
     appTextures.mascotCat_rock.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/rock.png");

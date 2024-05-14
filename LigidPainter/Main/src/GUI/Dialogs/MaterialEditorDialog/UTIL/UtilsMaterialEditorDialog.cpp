@@ -103,9 +103,7 @@ Model* MaterialEditorDialog::getDisplayModel(){
         for (size_t i = 0; i < customModel.meshes.size(); i++)
         {
             customModel.meshes[i].indices = getScene()->model->meshes[i].indices;
-            customModel.meshes[i].VBO = getScene()->model->meshes[i].VBO;
-            customModel.meshes[i].EBO = getScene()->model->meshes[i].EBO;
-            customModel.meshes[i].VAO = getScene()->model->meshes[i].VAO;
+            customModel.meshes[i].vertex_buffers = getScene()->model->meshes[i].vertex_buffers;
             customModel.meshes[i].objects = getScene()->model->meshes[i].objects;
             customModel.meshes[i].uvMask = getScene()->model->meshes[i].uvMask;
         }

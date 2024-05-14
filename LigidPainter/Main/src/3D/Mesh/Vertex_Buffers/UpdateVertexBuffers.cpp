@@ -26,6 +26,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/Mesh/Mesh.hpp"
 #include "GUI/GUI.hpp"
 
+static void _update_vertex_buffers(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+
 void Mesh::update_vertex_buffers(){
 
     LigidWindow* current_context = LigidGL::getBoundContext();
@@ -41,18 +43,35 @@ void Mesh::update_vertex_buffers(){
     if(!indices.size())
         indices.push_back(0);
 
+    for (auto it : this->vertex_buffers)
+    {
+        if(it.first->makeContextCurrent()){
+            _update_vertex_buffers(
+                                    &it.second.VBO, 
+                                    &it.second.VAO, 
+                                    &it.second.EBO, 
+                                    this->vertices,
+                                    this->indices
+                                );
+        }
+    }
+
+    current_context->makeContextCurrent();
+}
+
+static void _update_vertex_buffers(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices){
     LigidGL::cleanGLErrors();
     
-    glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buffers[current_context].VBO);
+    glBindBuffer(GL_ARRAY_BUFFER, *VBO);
     LigidGL::testGLError("Mesh::update_vertex_buffers : Binding VBO");
     
-    glBindVertexArray(this->vertex_buffers[current_context].VAO);
+    glBindVertexArray(*VAO);
     LigidGL::testGLError("Mesh::update_vertex_buffers : Binding VAO");
 
     glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(Vertex), &vertices[0]);  
     LigidGL::testGLError("Mesh::update_vertex_buffers : GL_ARRAY_BUFFER data");
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->vertex_buffers[current_context].EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *EBO);
     LigidGL::testGLError("Mesh::update_vertex_buffers : Binding EBO");
 
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, indices.size() * sizeof(unsigned int), &indices[0]);  

@@ -187,6 +187,7 @@ namespace Settings{
     };
 
     void loadAppTextures();
+    void initAppTextures();
     void loadAppVideos();
 
     Properties* properties();

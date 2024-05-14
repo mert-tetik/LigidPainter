@@ -195,10 +195,10 @@ void VectorStroke3D::renderLine(){
     LigidGL::cleanGLErrors();
     if(getSphereModel()->meshes.size()){
         // draw mesh
-        glBindBuffer(GL_ARRAY_BUFFER, getSphereModel()->meshes[0].VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, getSphereModel()->meshes[0].vertex_buffers[LigidGL::getBoundContext()].VBO);
         LigidGL::testGLError("VectorStroke3D::draw : Binding VBO");
 
-        glBindVertexArray(getSphereModel()->meshes[0].VAO);
+        glBindVertexArray(getSphereModel()->meshes[0].vertex_buffers[LigidGL::getBoundContext()].VAO);
         LigidGL::testGLError("VectorStroke3D::draw : Binding VAO");
 
         glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(getSphereModel()->meshes[0].indices.size()), GL_UNSIGNED_INT, 0, this->lineVertices.size());

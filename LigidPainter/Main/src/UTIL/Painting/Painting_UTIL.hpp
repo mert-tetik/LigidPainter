@@ -720,7 +720,7 @@ static Material prevCustomMaterial;
 static int prevMeshVBO = 0;
 static int prevMeshIndicesSize = 0;
 static void update_custom_material_mesh(PaintSettings::ColorBuffer color_buffer, Mesh* mesh, glm::ivec2 resolution){
-    if(prevCustomMaterial != color_buffer.material || prevMeshVBO != mesh->VBO || prevMeshIndicesSize != mesh->indices.size()){
+    /*if(prevCustomMaterial != color_buffer.material || prevMeshVBO != mesh->vertex_buffers.VBO || prevMeshIndicesSize != mesh->indices.size()){
         customMatMesh.EBO = mesh->EBO;
         customMatMesh.VBO = mesh->VBO;
         customMatMesh.VAO = mesh->VAO;
@@ -748,7 +748,7 @@ static void update_custom_material_mesh(PaintSettings::ColorBuffer color_buffer,
 
     prevCustomMaterial = color_buffer.material;
     prevMeshVBO = mesh->VBO;
-    prevMeshIndicesSize = mesh->indices.size();
+    prevMeshIndicesSize = mesh->indices.size();*/
 }
 
 static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 textureRes, unsigned int &selectedTextureID){
