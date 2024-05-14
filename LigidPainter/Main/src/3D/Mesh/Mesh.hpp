@@ -23,6 +23,12 @@ struct MaterialIDColor{
     Texture grayScaleTxtr;
 };
 
+struct MeshVertexBuffers{
+    unsigned int VBO;
+    unsigned int VAO;
+    unsigned int EBO;
+};
+
 struct Vertex {
     // position
     glm::vec3 Position = glm::vec3(0.f);
@@ -127,11 +133,14 @@ public:
     std::vector<MeshObject> objects;
 
     /*! @brief Vertices of the mesh */
-    std::vector<Vertex>       vertices;
+    std::vector<Vertex> vertices;
 
     /*! @brief Indices of the mesh */
     std::vector<unsigned int> indices;
     
+    /*! @brief Buffers for each OpenGL contexts */
+    std::map<LigidWindow*, MeshVertexBuffers> vertex_buffers;
+
     /*! @brief Title of the mesh */
     std::string materialName;
     
@@ -143,9 +152,6 @@ public:
     
     /*! @brief Renders the mesh*/
     void Draw(std::string location);
-
-    unsigned int VBO, EBO, VAO; //Vertex buffer object, element buffer object
-    unsigned int VBO_2, EBO_2, VAO_2; //Vertex buffer object, element buffer object
 
     void processHeightMap();
 
@@ -167,7 +173,7 @@ public:
     void update_vertex_buffers();
 
     /*! @brief initializes all the buffer objects/arrays */
-    void setupMesh(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO);
+    void initVertexBuffers(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO);
 
     void generateUVMask();
 };
