@@ -27,6 +27,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
+#include "GUI/GUI.hpp"
+
 #include "3D/Skybox/Skybox.hpp"
 
 #ifndef STB_IMAGE_IMPLEMENTATION
@@ -87,21 +89,23 @@ void Skybox::init(){
 			1.0f, -1.0f,  1.0f
 	};
 
-	//Generate the cubemap texture
-	glGenTextures(1, &ID);
-	LigidGL::testGLError("Skybox::init : Generating texture");
+	LigidWindow* current_context = LigidGL::getBoundContext();
+	if(current_context == nullptr){
+		LGDLOG::start << "ERROR : Skybox::init no context is bound" << LGDLOG::end;
+		return;
+	}
 
 	//Generate vertex objects
-	glGenVertexArrays(1, &VAO);
+	glGenVertexArrays(1, &this->vertex_buffers[current_context].VAO);
 	LigidGL::testGLError("Skybox::init : Generating VAO");
-	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &this->vertex_buffers[current_context].VBO);
 	LigidGL::testGLError("Skybox::init : Generating VBO");
 	
 	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	glBindVertexArray(VAO);
+	glBindVertexArray(this->vertex_buffers[current_context].VAO);
 	LigidGL::testGLError("Skybox::init : Binding VAO");
 	
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buffers[current_context].VBO);
 	LigidGL::testGLError("Skybox::init : Binding VBO");
 	glBufferData(GL_ARRAY_BUFFER, 108 * sizeof(float), &skyboxVertices[0], GL_STATIC_DRAW);
 	LigidGL::testGLError("Skybox::init : Buffer data");

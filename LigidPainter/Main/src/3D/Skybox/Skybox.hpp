@@ -18,6 +18,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include "3D/Mesh/Mesh.hpp"
+
 #include <string>
 
 class Skybox{
@@ -80,12 +82,10 @@ public:
     */
     void createDisplayingTxtr();
 
+    bool skybox_fully_initialized = false;
+
 private:
-    /*! @brief Skybox vertex buffer object ID*/
-    unsigned int VBO;
-    
-    /*! @brief Skybox vertex array object ID*/
-    unsigned int VAO;
+    std::map<LigidWindow*, MeshVertexBuffers> vertex_buffers;
 };
 
 #endif

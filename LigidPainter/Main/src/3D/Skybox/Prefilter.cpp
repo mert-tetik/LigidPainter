@@ -90,12 +90,9 @@ unsigned int Skybox::createPrefilterMap(){
 	//Use the related program for rendering
 	ShaderSystem::prefilteringShader().use();
 	
-	ShaderSystem::prefilteringShader().setInt("environmentMap",0);
+	ShaderSystem::prefilteringShader().setInt("environmentMap", GL::bindTexture_CubeMap(this->ID, "Skybox::createPrefilterMap"));
 	ShaderSystem::prefilteringShader().setMat4("projection",captureProjection);
 	ShaderSystem::prefilteringShader().setMat4("transformMatrix",glm::mat4(1));
-
-	//Bind the skybox to the Slot 0
-	GL::bindTexture_2D(this->ID, "Skybox::createPrefilterMap");
 
 	//Bind the framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
@@ -133,16 +130,12 @@ unsigned int Skybox::createPrefilterMap(){
 	
 	//Set everything to default
 	Settings::defaultFramebuffer()->FBO.bind(); 
-	
-	//!Set viewport the default was there
 
 	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 	LigidGL::testGLError("Skybox::createPrefilterMap : glGenerateMipmap(GL_TEXTURE_CUBE_MAP)");
 
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);  
 	LigidGL::testGLError("Skybox::createPrefilterMap : glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS); ");
-
-	GL::bindTexture_CubeMap(this->IDPrefiltered, "Skybox::createPrefilterMap");
 
 	//Delete the framebuffer
 	glDeleteFramebuffers(1,&captureFBO);
@@ -152,6 +145,8 @@ unsigned int Skybox::createPrefilterMap(){
 
 	GL::releaseBoundTextures("Skybox::createPrefilterMap");
 	ShaderUTIL::release_bound_shader();
+
+	skybox_fully_initialized = true;
 
 	return IDPrefiltered;
 }

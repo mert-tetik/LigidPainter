@@ -30,7 +30,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "3D/Skybox/Skybox.hpp"
 
+#include "GUI/GUI.hpp"
+
 void Skybox::draw(){ //Draw the skybox
+
 	LigidGL::cleanGLErrors();
 
 	//Disable the depth testing
@@ -41,10 +44,16 @@ void Skybox::draw(){ //Draw the skybox
 	glDepthFunc(GL_LEQUAL);
 	LigidGL::testGLError("Skybox::draw : glDepthFunc(GL_LEQUAL)");
 
+	LigidWindow* current_context = LigidGL::getBoundContext();
+	if(current_context == nullptr){
+		LGDLOG::start << "ERROR : Skybox::init no context is bound" << LGDLOG::end;
+		return;
+	}
+
 	//Bind vertex objects
-	glBindVertexArray(VAO);
+	glBindVertexArray(this->vertex_buffers[current_context].VAO);
 	LigidGL::testGLError("Skybox::draw : binding VAO");
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBindBuffer(GL_ARRAY_BUFFER, this->vertex_buffers[current_context].VBO);
 	LigidGL::testGLError("Skybox::draw : binding VBO");
 
 	//Draw the skybox

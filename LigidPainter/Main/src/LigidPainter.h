@@ -108,6 +108,7 @@ void load_ligidpainter(){
 
     Debugger::block("LOAD : Skybox"); //Start 305233920 291.12 MB
     getScene()->skybox.load("./LigidPainter/Resources/Cubemap/Skybox/sky6"); //Skybox textures
+    getScene()->skybox.init(); // Skybox vertex buffers
     getScene()->skybox.createPrefilterMap(); //Create prefiltered skybox
     getScene()->skybox.createDisplayingTxtr(); //Create displaying texture
     Debugger::block("LOAD : Skybox"); //End 
@@ -115,6 +116,9 @@ void load_ligidpainter(){
     getLoadingContext()->window.releaseContext();
 
     load_ligidpainter_done = true;
+    
+    LGDLOG::start.clear();
+
     return;
 }
 
@@ -184,12 +188,13 @@ public:
         getMaterialDisplayingModel()->meshes.push_back(Mesh({}, {}, "", false));
         getTDBrushCursorModel()->meshes.push_back(Mesh({}, {}, "", false));
 
-        getScene()->skybox.init(); // Skybox vertex buffers
 
         Settings::initAppTextures();
 
         // Load textures in another thread
         std::thread load_ligidpainter_thread(load_ligidpainter);
+
+        getScene()->skybox.init(); // Skybox vertex buffers
 
         // Wait until shaders are initialised
         while (!shader_system_initialised){}

@@ -47,6 +47,13 @@ void Skybox::load(std::string path) //Path to the folder
 		path + "/nz.png"
 	};
 
+	LigidGL::cleanGLErrors();
+
+	if(!ID){
+		glGenTextures(1, &ID);
+		LigidGL::testGLError("Skybox::init : Generating texture");
+	}
+
 	int width, height, nrChannels;//Of the face of the skybox
 	for (unsigned int i = 0; i < faces.size(); i++)
 	{

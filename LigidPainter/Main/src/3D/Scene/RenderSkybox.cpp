@@ -27,6 +27,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Toolkit/VectorScene/VectorScene.hpp"
 
 void Scene::render_skybox(){
+    if(!this->skybox.skybox_fully_initialized)
+        return;
+        
     //Skybox shader
     ShaderSystem::skyboxShader().use();
     ShaderSystem::skyboxShader().setMat4("view", this->camera.viewMatrix);
