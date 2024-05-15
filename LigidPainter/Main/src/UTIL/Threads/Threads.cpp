@@ -175,9 +175,9 @@ void material_thread_function(){
                 
                 if(material_thread.actions[0].path.size()){
                     std::ifstream rf(material_thread.actions[0].path, std::ios::out | std::ios::binary); 
-                    std::vector<Texture *> to_generate_txtrs;
+                    //std::vector<Texture *> to_generate_txtrs;
                     
-                    FileHandler::readMaterialData(rf, *material_thread.actions[0].material, &to_generate_txtrs);
+                    FileHandler::readMaterialData(rf, *material_thread.actions[0].material, nullptr);
                 }
 
                 if(!material_channels.albedo.ID){
