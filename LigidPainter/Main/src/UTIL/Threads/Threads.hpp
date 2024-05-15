@@ -56,11 +56,7 @@ struct MaterialChannelsPxs{
     unsigned char ao[1024 * 1024 * 4];
 };
 
-struct MaterialThread{
-    std::atomic<bool> active = false;
-    std::atomic<bool> goodToGo = false;
-    std::atomic<bool> readyToService = false;
-    std::thread thread;
+struct MaterialThreadAction{
     Material* material = nullptr;
     std::string path;
     Model* model = nullptr;
@@ -68,7 +64,16 @@ struct MaterialThread{
     MaterialChannels* materialChannels;
     bool update_the_material_displaying_texture = 0;
     bool update_layer_scene_result = 0;
+};
 
+struct MaterialThread{
+    std::atomic<bool> active = false;
+    std::atomic<bool> goodToGo = false;
+    std::atomic<bool> readyToService = false;
+    std::thread thread;
+
+    std::vector<MaterialThreadAction> actions;
+    
     MaterialChannelsPxs material_channels_pxs;
 
     void update_thread_result();

@@ -128,7 +128,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         {
             if(matI < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size()){
                 if(!matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][matI].material_selection_dialog_initialized){
-                    appVideos.loading.render(timer, element.pos, element.scale, 1.f, 1, update_frame_value);
+                    appVideos.loading.render(timer, element.pos, glm::vec2(element.scale.y / (Settings::videoScale()->x / Settings::videoScale()->y), element.scale.y) / 1.2f, 1.f, 1, update_frame_value);
                     update_frame_value = false;
                 }
             }

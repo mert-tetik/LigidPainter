@@ -79,7 +79,7 @@ bool MaterialSelectionDialog::renderMatDisplayer(Timer& timer){
     matDisplayerPanel.sections[0].elements.clear();
     for (size_t i = 0; i < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size(); i++)
     {
-        matDisplayerPanel.sections[0].elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f), "", matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][i].displayingTexture, 0.f, true)));
+        matDisplayerPanel.sections[0].elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f), "", (matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][i].material_selection_dialog_initialized) ? matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][i].displayingTexture : 0, 0.f, true)));
     }
     for (size_t i = 0; i < matDisplayerPanel.sections[0].elements.size(); i++)
     {
