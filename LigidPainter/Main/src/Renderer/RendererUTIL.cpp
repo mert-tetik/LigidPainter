@@ -139,8 +139,5 @@ void Renderer::end_render(){
 
     getBox()->unbindBuffers(); //Finish rendering the UI
 
-    if(timer.seconds == 1)
-        dialog_greeting.show(timer);
-
     _ligid_renderer_render_first_frame = false;
 }

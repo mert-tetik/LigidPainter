@@ -113,7 +113,7 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
 
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         //Render the panel
         this->bgPanel.render(timer, true);

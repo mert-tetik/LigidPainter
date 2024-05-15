@@ -157,7 +157,7 @@ void TexturePackEditorDialog::show(Timer &timer, TexturePack& receivedTexturePac
     
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         updateTextureSelectingPanelElements(this->textureSelectingPanel, receivedTexturePack, this->selectedTextureMode);
 

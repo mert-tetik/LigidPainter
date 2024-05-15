@@ -59,7 +59,7 @@ void MeshSelectionDialog::show(Timer &timer, int& selectedMeshI){
 
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         //Render the panel
         this->bgPanel.render(timer, true);

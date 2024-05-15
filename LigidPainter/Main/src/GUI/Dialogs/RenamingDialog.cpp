@@ -51,7 +51,7 @@ void RenamingDialog::show(Timer& timer, glm::vec2 pos, float width, std::string*
     
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         Button bgBtn = Button(ELEMENT_STYLE_BASIC, this->rename_textbox.scale, "", Texture(), 0.f, false);
         bgBtn.scale.x /= 1.2f;

@@ -200,7 +200,7 @@ void ProjectRecoverDialog::show(Timer& timer){
 
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         project_discard_update_flag = true;
 

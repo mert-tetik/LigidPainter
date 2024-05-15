@@ -68,7 +68,7 @@ void MaterialLayer::type_specific_modification(Timer& timer, bool doMouseTrackin
 
     while (!getContext()->window.shouldClose())
     {
-        material_select_dialog_control.updateStart();
+        material_select_dialog_control.updateStart(true);
 
         materialSelectPanel.sections[0].elements[0].button.texture = this->material.displayingTexture;
         

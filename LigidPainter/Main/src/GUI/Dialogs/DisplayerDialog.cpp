@@ -116,7 +116,7 @@ void DisplayerDialog::show(Timer& timer, Skybox &skybox){
     while (!getContext()->window.shouldClose())
     {
         /* code */
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         //Render the panel
         panel.render(timer, true);

@@ -230,7 +230,7 @@ void ExportDialog::show(Timer& timer){
 
     while(!getContext()->window.shouldClose()){
 
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         //Render the panels
         panel.render(timer,false);

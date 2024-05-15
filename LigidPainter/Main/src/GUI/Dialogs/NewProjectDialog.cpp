@@ -147,145 +147,135 @@ NewProjectDialog::NewProjectDialog(int){
 
 void NewProjectDialog::show(Timer& timer){
     
-    dialogControl.activate();
+    dialogControl.updateStart(false);
 
-    while(!getContext()->window.shouldClose()){
+    //Render the panel
+    panel.render(timer,dialogControl.isComplete());
+    
+    // Sections background
+    sectionsBg.scale = panel.sections[0].elements[0].scale;
+    sectionsBg.pos = panel.sections[0].elements[0].pos;
+    sectionsBg.pos.y += panel.sections[0].elements[0].scale.y + sectionsBg.scale.y;
+    sectionsBg.render(timer, false);
 
-        dialogControl.updateStart();
+    // Properties section button
+    propertiesBtn.pos = panel.sections[0].elements[0].pos;
+    propertiesBtn.pos.x -= panel.sections[0].elements[0].scale.x - propertiesBtn.scale.x;
+    propertiesBtn.pos.y += panel.sections[0].elements[0].scale.y + propertiesBtn.scale.y;
+    if(propertiesBtn.hover)
+        propertiesBtn.textScale = 0.55f;
+    else
+        propertiesBtn.textScale = 0.5f;
+    propertiesBtn.render(timer, true);
+    
+    // 3D models section button
+    tdModelsBtn.pos = propertiesBtn.pos; 
+    tdModelsBtn.pos.x += propertiesBtn.scale.x + tdModelsBtn.scale.x;
+    if(tdModelsBtn.hover)
+        tdModelsBtn.textScale = 0.55f;
+    else
+        tdModelsBtn.textScale = 0.5f;
+    tdModelsBtn.render(timer, true);
 
-        //Render the panel
-        panel.render(timer,dialogControl.isComplete());
+    // Active selection indicator button
+    if(propertiesBtn.clicked)
+        this->activeSection = 0;
+    if(tdModelsBtn.clicked)
+        this->activeSection = 1;
+    timer.transition(this->activeSection, this->activeSectionIndicatorMixVal, 0.1f);
+    this->activeSectionIndicator.pos = propertiesBtn.pos;
+    this->activeSectionIndicator.pos.y += propertiesBtn.scale.y;
+    this->activeSectionIndicator.pos.x += (sin(this->activeSectionIndicatorMixVal) * 1.2f) * (tdModelsBtn.pos.x - propertiesBtn.pos.x);
+    this->activeSectionIndicator.render(timer, false);
+
+    // Properties section elements
+    if(this->activeSection == 0){
+        this->titleTextboxText.pos = panel.sections[0].elements[0].pos;
+        this->titleTextboxText.pos.y += 12.f;
+        this->titleTextboxText.render(timer, true);
+
+        this->pathTextboxText.pos = panel.sections[0].elements[0].pos;
+        this->pathTextboxText.pos.y += 20.f;
+        this->pathTextboxText.render(timer, true);
+
+        titleTextbox.pos = panel.sections[0].elements[0].pos;
+        titleTextbox.pos.y += 15.f;
+        titleTextbox.render(timer, true);
         
-        // Sections background
-        sectionsBg.scale = panel.sections[0].elements[0].scale;
-        sectionsBg.pos = panel.sections[0].elements[0].pos;
-        sectionsBg.pos.y += panel.sections[0].elements[0].scale.y + sectionsBg.scale.y;
-        sectionsBg.render(timer, false);
-
-        // Properties section button
-        propertiesBtn.pos = panel.sections[0].elements[0].pos;
-        propertiesBtn.pos.x -= panel.sections[0].elements[0].scale.x - propertiesBtn.scale.x;
-        propertiesBtn.pos.y += panel.sections[0].elements[0].scale.y + propertiesBtn.scale.y;
-        if(propertiesBtn.hover)
-            propertiesBtn.textScale = 0.55f;
-        else
-            propertiesBtn.textScale = 0.5f;
-        propertiesBtn.render(timer, true);
+        pathTextbox.pos = panel.sections[0].elements[0].pos;
+        pathTextbox.pos.y += 23.f;
+        pathTextbox.render(timer, true);
         
-        // 3D models section button
-        tdModelsBtn.pos = propertiesBtn.pos; 
-        tdModelsBtn.pos.x += propertiesBtn.scale.x + tdModelsBtn.scale.x;
-        if(tdModelsBtn.hover)
-            tdModelsBtn.textScale = 0.55f;
-        else
-            tdModelsBtn.textScale = 0.5f;
-        tdModelsBtn.render(timer, true);
+    }
+    else{
+        tdModelsPanel.render(timer, true);
 
-        // Active selection indicator button
-        if(propertiesBtn.clicked)
-            this->activeSection = 0;
-        if(tdModelsBtn.clicked)
-            this->activeSection = 1;
-        timer.transition(this->activeSection, this->activeSectionIndicatorMixVal, 0.1f);
-        this->activeSectionIndicator.pos = propertiesBtn.pos;
-        this->activeSectionIndicator.pos.y += propertiesBtn.scale.y;
-        this->activeSectionIndicator.pos.x += (sin(this->activeSectionIndicatorMixVal) * 1.2f) * (tdModelsBtn.pos.x - propertiesBtn.pos.x);
-        this->activeSectionIndicator.render(timer, false);
+        addTDModelBtn.pos = propertiesBtn.pos;
+        addTDModelBtn.pos.y += propertiesBtn.scale.y + addTDModelBtn.scale.y * 1.65f;
+        addTDModelBtn.pos.x += 2.f;
+        addTDModelBtn.render(timer, true);
+        
+        deleteTDModelBtn.pos = addTDModelBtn.pos;
+        deleteTDModelBtn.pos.x += addTDModelBtn.scale.x + deleteTDModelBtn.scale.x + 1.f;
+        deleteTDModelBtn.render(timer, true);
 
-        // Properties section elements
-        if(this->activeSection == 0){
-            this->titleTextboxText.pos = panel.sections[0].elements[0].pos;
-            this->titleTextboxText.pos.y += 12.f;
-            this->titleTextboxText.render(timer, true);
+        if(addTDModelBtn.clicked){
 
-            this->pathTextboxText.pos = panel.sections[0].elements[0].pos;
-            this->pathTextboxText.pos.y += 20.f;
-            this->pathTextboxText.render(timer, true);
-
-            titleTextbox.pos = panel.sections[0].elements[0].pos;
-            titleTextbox.pos.y += 15.f;
-            titleTextbox.render(timer, true);
+            std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
             
-            pathTextbox.pos = panel.sections[0].elements[0].pos;
-            pathTextbox.pos.y += 23.f;
-            pathTextbox.render(timer, true);
-            
-        }
-        else{
-            tdModelsPanel.render(timer, true);
-
-            addTDModelBtn.pos = propertiesBtn.pos;
-            addTDModelBtn.pos.y += propertiesBtn.scale.y + addTDModelBtn.scale.y * 1.65f;
-            addTDModelBtn.pos.x += 2.f;
-            addTDModelBtn.render(timer, true);
-            
-            deleteTDModelBtn.pos = addTDModelBtn.pos;
-            deleteTDModelBtn.pos.x += addTDModelBtn.scale.x + deleteTDModelBtn.scale.x + 1.f;
-            deleteTDModelBtn.render(timer, true);
-
-            if(addTDModelBtn.clicked){
-
-                std::string test = showFileSystemObjectSelectionDialog("Select a 3D model file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_MODEL, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
-                
-                if(test.size()){
-                    tdModelsPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(4, 2.f), test, Texture(), 0.f, true));
-                }
-            }
-
-            if(deleteTDModelBtn.clicked){
-                for (size_t i = 0; i < tdModelsPanel.sections[0].elements.size(); i++)
-                {
-                    if(tdModelsPanel.sections[0].elements[i].button.clickState1){
-                        tdModelsPanel.sections[0].elements.erase(tdModelsPanel.sections[0].elements.begin() + i);
-                        i--;
-                    }
-                }                   
+            if(test.size()){
+                tdModelsPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(4, 2.f), test, Texture(), 0.f, true));
             }
         }
 
-
-        // Create project button
-        createBtn.pos = panel.pos;
-        createBtn.pos.x += panel.scale.x - createBtn.scale.x*2.f;
-        createBtn.pos.y += panel.scale.y - createBtn.scale.y*2.f;
-        createBtn.render(timer, true);
-
-
-        
-        //If pressed to the last button of the panel (Create the project button)
-        if(createBtn.clicked){
-            
-            std::vector<std::string> TDModelPaths;
+        if(deleteTDModelBtn.clicked){
             for (size_t i = 0; i < tdModelsPanel.sections[0].elements.size(); i++)
             {
-                TDModelPaths.push_back(tdModelsPanel.sections[0].elements[i].button.text);
-            }        
-
-            //Create the project
-            if(project_create(   
-                                        pathTextbox.text, //Destination path
-                                        titleTextbox.text, //Title of the project
-                                        TDModelPaths  //3D model path
-                                    ))
-            {
-                project_load(pathTextbox.text + UTIL::folderDistinguisher() + titleTextbox.text + UTIL::folderDistinguisher() + titleTextbox.text + ".ligid");
-
-                this->dialogControl.unActivate();
-            }
-        
+                if(tdModelsPanel.sections[0].elements[i].button.clickState1){
+                    tdModelsPanel.sections[0].elements.erase(tdModelsPanel.sections[0].elements.begin() + i);
+                    i--;
+                }
+            }                   
         }
-        
-        //Close the dialog
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
-            this->dialogControl.unActivate();
-            this->dialogControl.mixVal = 0.f;
-            dialog_greeting.show(timer);
-            break;
-        }
-
-        dialogControl.updateEnd(timer,0.15f);
-
-        if(dialogControl.mixVal == 0.f)
-            break;
     }
+
+
+    // Create project button
+    createBtn.pos = panel.pos;
+    createBtn.pos.x += panel.scale.x - createBtn.scale.x*2.f;
+    createBtn.pos.y += panel.scale.y - createBtn.scale.y*2.f;
+    createBtn.render(timer, true);
+
+
+    
+    //If pressed to the last button of the panel (Create the project button)
+    if(createBtn.clicked){
+        
+        std::vector<std::string> TDModelPaths;
+        for (size_t i = 0; i < tdModelsPanel.sections[0].elements.size(); i++)
+        {
+            TDModelPaths.push_back(tdModelsPanel.sections[0].elements[i].button.text);
+        }        
+
+        //Create the project
+        if(project_create(   
+                                    pathTextbox.text, //Destination path
+                                    titleTextbox.text, //Title of the project
+                                    TDModelPaths  //3D model path
+                                ))
+        {
+            project_load(pathTextbox.text + UTIL::folderDistinguisher() + titleTextbox.text + UTIL::folderDistinguisher() + titleTextbox.text + ".ligid");
+
+            this->dialogControl.unActivate();
+        }
+    }
+    
+    //Close the dialog
+    if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick()){
+        this->dialogControl.unActivate();
+        if(project_path() == "")
+            dialog_greeting.dialogControl.activate();
+    }
+
+    dialogControl.updateEnd(timer,0.15f);
 }

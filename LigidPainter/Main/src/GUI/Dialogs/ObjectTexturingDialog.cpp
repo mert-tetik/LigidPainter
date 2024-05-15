@@ -144,7 +144,7 @@ void ObjectTexturingDialog::show(Timer& timer){
     
     while(!getContext()->window.shouldClose()){
 
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         this->sceneCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
 

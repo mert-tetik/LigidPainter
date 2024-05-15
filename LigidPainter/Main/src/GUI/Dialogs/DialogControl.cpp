@@ -55,17 +55,27 @@ static void drawBG()
     GL::releaseBoundTextures("DialogControl : drawBG");
 }
 
-void DialogControl::updateStart(){
-    getContext()->window.pollEvents();
-
-    getContext()->updateGUIProjectionMatrix(getContext()->windowScale.x, getContext()->windowScale.y);
-    getScene()->updateProjectionMatrix(0.f);
+void DialogControl::updateStart(bool loop_mode){
+    this->loop_mode = loop_mode;
     
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    if(loop_mode){
+        getContext()->window.pollEvents();
 
-    drawBG();
-    glClear(GL_DEPTH_BUFFER_BIT);
+        getContext()->updateGUIProjectionMatrix(getContext()->windowScale.x, getContext()->windowScale.y);
+        getScene()->updateProjectionMatrix(0.f);
+        
+        glClearColor(0,0,0,0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    else{
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
+    
+
+    if(loop_mode){
+        drawBG();
+        glClear(GL_DEPTH_BUFFER_BIT);
+    }
 
     ShaderSystem::buttonShader().use();
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", mixVal);
@@ -78,13 +88,15 @@ void DialogControl::updateStart(){
 
 void DialogControl::updateEnd(Timer &timer, float transitionDuration){
     
-    material_thread.update_thread_result();
+    if(loop_mode){
+        material_thread.update_thread_result();
 
-    // Update local timer data
-    timer.tick = false;
-    if(timer.runTimer(1.f)){
-        timer.tick = true;
-        std::cout << timer.FPS << std::endl;
+        // Update local timer data
+        timer.tick = false;
+        if(timer.runTimer(1.f)){
+            timer.tick = true;
+            std::cout << timer.FPS << std::endl;
+        }
     }
 
     timer.transition(active,mixVal,transitionDuration);
@@ -94,26 +106,28 @@ void DialogControl::updateEnd(Timer &timer, float transitionDuration){
 
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.);
 
-    getContext()->window.swapBuffers();
+    if(loop_mode){
+        getContext()->window.swapBuffers();
 
-    //Set mouse states to default
-    *Mouse::LClick() = false;
-    *Mouse::RClick() = false;
-    *Mouse::MClick() = false;
-    *Mouse::LDoubleClick() = false;
-    *Mouse::mouseOffset() = glm::vec2(0);
-    *Mouse::mods() = 0;
-    *Mouse::mouseScroll() = 0;
-    *Mouse::action() = 0;
-    Mouse::updateCursor();  
+        //Set mouse states to default
+        *Mouse::LClick() = false;
+        *Mouse::RClick() = false;
+        *Mouse::MClick() = false;
+        *Mouse::LDoubleClick() = false;
+        *Mouse::mouseOffset() = glm::vec2(0);
+        *Mouse::mods() = 0;
+        *Mouse::mouseScroll() = 0;
+        *Mouse::action() = 0;
+        Mouse::updateCursor();  
 
-    //Set keyboard states to default
-    textRenderer.keyInput = false;
-    textRenderer.mods = 0;
+        //Set keyboard states to default
+        textRenderer.keyInput = false;
+        textRenderer.mods = 0;
 
-    if(Settings::defaultFramebuffer()->FBO.ID != 0)
-        Settings::defaultFramebuffer()->render();
-    Settings::defaultFramebuffer()->setViewport();
+        if(Settings::defaultFramebuffer()->FBO.ID != 0)
+            Settings::defaultFramebuffer()->render();
+        Settings::defaultFramebuffer()->setViewport();
+    }
 
     glClear(GL_DEPTH_BUFFER_BIT);
 }

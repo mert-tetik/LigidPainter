@@ -51,7 +51,7 @@ void TextureSelectionDialog::show(Timer &timer, Texture& receivedTexture, int di
     // Rendering loop
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         // Updating the displaying texture
         this->selectTheTexture(this->displayingTexture, 512, this->activeSelectedTextureDisplayingMode, false);

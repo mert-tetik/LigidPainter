@@ -40,7 +40,7 @@ void DropperDialog::show(Timer& timer, Color* color){
 
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         // Dropper active pick color
         glm::vec4 pxColor;

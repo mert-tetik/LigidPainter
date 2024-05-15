@@ -34,11 +34,14 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 #include <ctime>
 
-static std::string path;
+static std::string path = "";
 std::mutex project_mutex;
 bool project_discard_update_flag = false;
 
 std::string project_path(){
+    if(path == "")
+        return "";
+        
     std::string res = std::filesystem::absolute(path).string();
     UTIL::correctFolderDistinguishers(res);
     return res;

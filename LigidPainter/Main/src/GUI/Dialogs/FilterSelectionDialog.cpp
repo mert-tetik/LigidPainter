@@ -143,7 +143,7 @@ void FilterSelectionDialog::show(Timer &timer, Filter& receivedFilter, int displ
 
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         updateTextureSelectingPanelElements(this->textureSelectingPanel);
 

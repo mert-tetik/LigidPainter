@@ -83,7 +83,7 @@ int show_context_menu(Timer &timer, std::vector<std::string> elements){
 
     while (!getContext()->window.shouldClose())
     {
-        contextmenu_dialogControl.updateStart();
+        contextmenu_dialogControl.updateStart(true);
         
         //Render the context panel
         contextPanel.render(timer, true);

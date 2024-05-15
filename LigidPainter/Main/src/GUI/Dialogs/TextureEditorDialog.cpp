@@ -416,7 +416,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
    
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         this->sectionPanel.pos = this->bgPanel.pos;
         this->sectionPanel.pos.z += 0.001f;

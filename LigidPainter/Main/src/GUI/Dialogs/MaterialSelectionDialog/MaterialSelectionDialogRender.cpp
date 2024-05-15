@@ -42,7 +42,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
     
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         this->displayingCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
 

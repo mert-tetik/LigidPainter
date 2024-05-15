@@ -74,7 +74,7 @@ void MaterialDisplayerDialog::show(Timer& timer, Material material){
 
     while (!getContext()->window.shouldClose())
     {
-        this->dialogControl.updateStart();
+        this->dialogControl.updateStart(true);
 
         this->displayingCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
 

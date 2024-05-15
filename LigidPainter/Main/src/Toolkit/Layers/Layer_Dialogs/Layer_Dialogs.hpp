@@ -76,7 +76,7 @@ static void LAYERDIALOG_show_alpha_settings_dialog(Timer& timer, LayerAlpha* lay
 
     while (!getContext()->window.shouldClose())
     {
-        alpha_settings_dialog_control.updateStart();
+        alpha_settings_dialog_control.updateStart(true);
        
         /* Set alpha map texture selection button's texture selection mode flag to true */
         alpha_settings_panel.sections[0].elements[1].button.textureSelection3D = true;
@@ -217,7 +217,7 @@ static void LAYERDIALOG_show_info_dialog(Timer& timer, Layer* layer, Button laye
 
     while (!getContext()->window.shouldClose())
     {
-        layer_info_dialog_control.updateStart();
+        layer_info_dialog_control.updateStart(true);
     
         /* Set main layer properties */
         layer_info_panel.sections[0].elements[0].button.text = "Title : " + layer->title;

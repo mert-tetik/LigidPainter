@@ -202,7 +202,7 @@ void SettingsDialog::show(Timer& timer){
 
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();   
+        dialogControl.updateStart(true);   
 
         this->setPropertiesToDialog();
 

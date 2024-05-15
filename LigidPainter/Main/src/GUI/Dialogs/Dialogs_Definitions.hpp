@@ -37,6 +37,8 @@ class MaterialSelectionDialog;
 class DialogControl
 {
 private:
+   bool loop_mode = false;
+   
 public:
    bool active = false;
    float mixVal = 0.;
@@ -46,7 +48,7 @@ public:
    DialogControl();
    DialogControl(bool active);
    
-   void updateStart();
+   void updateStart(bool loop_mode);
    void updateEnd(Timer &timer, float transitionDuration);
    void activate();
    void unActivate();

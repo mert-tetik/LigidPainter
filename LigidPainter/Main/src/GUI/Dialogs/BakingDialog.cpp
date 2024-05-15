@@ -71,7 +71,7 @@ void BakingDialog::show(Timer& timer, Skybox skybox){
     dialogControl.activate();
 
     while(!getContext()->window.shouldClose()){
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         if(dialogControl.firstFrameActivated){
             selectMeshButton.selectedMeshI = 0;

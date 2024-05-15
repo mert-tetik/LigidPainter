@@ -77,7 +77,7 @@ void ModelInfoDialog::show(Timer& timer, Model* model){
 
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         if(dialogControl.firstFrameActivated){
             int model_material_size = model->meshes.size();

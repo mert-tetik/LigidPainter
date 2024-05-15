@@ -70,7 +70,7 @@ void FilterDisplayerDialog::show(Timer& timer){
 
     while (!getContext()->window.shouldClose())
     {
-        dialogControl.updateStart();
+        dialogControl.updateStart(true);
 
         //Render the panel
         panel.render(timer,true);

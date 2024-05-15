@@ -141,6 +141,16 @@ void panels_render(Timer& timer)
     Debugger::block("GUI : Panels : Painting face selection check combo list"); // Start
     checkComboList_mesh_face_selection_render(timer, true || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
     Debugger::block("GUI : Panels : Painting face selection check combo list"); // End
+    
+    if(dialog_greeting.dialogControl.isActive()){
+        dialog_greeting.show(timer);
+    }
+    if(dialog_newProject.dialogControl.isActive()){
+        dialog_newProject.show(timer);
+    }
+    if(dialog_loadProject.dialogControl.isActive()){
+        dialog_loadProject.show(timer);
+    }
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
