@@ -179,18 +179,18 @@ void panel_library_render(
                     } 
                 }
                 if(Library::getSelectedElementIndex() == 1){ //Materials selected
-                    if(panel_library.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
-                        dialog_materialDisplayer.show(timer, Library::getMaterialObj(i));
+                    if(btn->button.hover && *Mouse::LDoubleClick()){
+                        dialog_materialDisplayer.show(timer, Library::getMaterial(i));
                     } 
                 }
                 if(Library::getSelectedElementIndex() == 6){ //Filters selected
-                    if(panel_library.sections[0].elements[i].button.hover && *Mouse::LDoubleClick()){
+                    if(btn->button.hover && *Mouse::LDoubleClick()){
                         dialog_filterDisplayer.dialogControl.activate();
                         dialog_filterDisplayer.filter = *Library::getFilter(i);
                     } 
                 }
                 if(Library::getSelectedElementIndex() == 8){ //Texture Packs selected
-                    if(panel_library.sections[0].elements[i].button.clicked){
+                    if(btn->button.hover && *Mouse::LClick()){
                         dialog_texturePackEditor.show(timer, *Library::getTexturePack(i));
                     } 
                 }

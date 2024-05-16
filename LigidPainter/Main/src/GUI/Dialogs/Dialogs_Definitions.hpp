@@ -38,7 +38,7 @@ class DialogControl
 {
 private:
    bool loop_mode = false;
-   
+
 public:
    bool active = false;
    float mixVal = 0.;
@@ -484,8 +484,8 @@ public:
 //!------------------------------MATERIAL DISPLAYER------------------------------
 
 class MaterialDisplayerDialog
- {
- public:
+{
+public:
    Panel panel;
    
    DialogControl dialogControl;
@@ -498,8 +498,8 @@ class MaterialDisplayerDialog
    MaterialDisplayerDialog(int);
 
    //Public member functions
-   void show(Timer& timer, Material material);
- };
+   void show(Timer& timer, Material* material);
+};
 
 //!------------------------------TEXTURE DISPLAYER------------------------------
 

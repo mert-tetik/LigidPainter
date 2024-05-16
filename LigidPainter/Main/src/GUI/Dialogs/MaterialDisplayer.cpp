@@ -12,7 +12,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
  ---------------------------------------------------------------------------
  */
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
@@ -20,10 +20,13 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "3D/ThreeD.hpp" 
+
 #include "GUI/GUI.hpp" 
+
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 #include <string>
 #include <iostream>
@@ -68,7 +71,7 @@ MaterialDisplayerDialog::MaterialDisplayerDialog(int){
     this->displayingTexture = Texture((char*)nullptr, 512, 512);
 }
 
-void MaterialDisplayerDialog::show(Timer& timer, Material material){
+void MaterialDisplayerDialog::show(Timer& timer, Material* material){
     
     this->dialogControl.activate();
 
@@ -86,12 +89,16 @@ void MaterialDisplayerDialog::show(Timer& timer, Material material){
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){
             if(!dialogControl.firstFrameActivated){
                 this->dialogControl.unActivate();
-                material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, Camera(), 0, false, this->displayingTexture, *getMaterialDisplayerModel(), -1);
+                material->updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, Camera(), 0, false, this->displayingTexture, *getMaterialDisplayerModel(), -1);
             }
         }
         
-        if(this->dialogControl.active)
-            material.updateMaterialDisplayingTexture(512, this->dialogControl.firstFrameActivated, this->displayingCam, 0, true, this->displayingTexture, *getMaterialDisplayerModel(), -1);
+        if(this->dialogControl.active){
+            if(this->dialogControl.firstFrameActivated)
+                material_thread.update_material_displaying_texture(material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
+            else
+                material->updateMaterialDisplayingTexture(512, false, this->displayingCam, 0, true, this->displayingTexture, *getMaterialDisplayerModel(), -1);
+        }
         
         dialogControl.updateEnd(timer, 0.15f);
 
