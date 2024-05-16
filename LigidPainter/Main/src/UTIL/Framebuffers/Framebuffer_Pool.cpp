@@ -32,18 +32,20 @@ Box.hpp : Is used to render a single 2D square.
 #include "UTIL/Texture/Texture.hpp"
 #include "GUI/GUI.hpp"
 
-static std::vector<std::pair<Framebuffer, bool>> FBO_POOL;
+static std::map<LigidWindow*, std::vector<std::pair<Framebuffer, bool>>> FBO_POOL;
 static double wait_time = 0.;
 
 std::mutex FBOPOOL_mutex;
 
 static bool is_texture_already_bound_to_a_FBO(Texture txtr, std::string location){
     /* Check all the framebuffers in the pool */
-    for(auto& fbo : FBO_POOL){
-        /* If the requested texture matches with a FBO's color buffer in the pool*/
-        if(fbo.first.colorBuffer.ID == txtr.ID && txtr.ID && fbo.second)
-        {
-            return true;
+    for(auto& c_fbo : FBO_POOL){
+        for(auto& fbo : c_fbo.second){
+            /* If the requested texture matches with a FBO's color buffer in the pool*/
+            if(fbo.first.colorBuffer.ID == txtr.ID && txtr.ID && fbo.second)
+            {
+                return true;
+            }
         }
     }
 
@@ -54,7 +56,14 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
 
     std::lock_guard<std::mutex> lock(FBOPOOL_mutex);
 
+    LigidWindow* bound_context = LigidGL::getBoundContext(); 
+    if(bound_context == nullptr){
+        LGDLOG::start << "ERROR : FBOPOOL::REQUEST_FBO : No context is currently bound" << LGDLOG::end;
+        return Framebuffer();
+    }
+
     Framebuffer* res = nullptr;
+
 
     /* Wait until the texture is no longer bound to any FBO (wait the other thread) */
     if(is_texture_already_bound_to_a_FBO(txtr, location)){
@@ -69,7 +78,7 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
     }
 
     /* Find proper FBO for the request */
-    for(auto& fbo : FBO_POOL)
+    for(auto& fbo : FBO_POOL[bound_context])
     {   
         /* If the FBO is not being used */
         if(!fbo.second){
@@ -96,7 +105,7 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
     }
 
     /* If proper FBO found in the pool create one and add to the pool */
-    if(true){
+    if(res == nullptr){
         Framebuffer new_FBO;
 
         /* If a renderbuffer is not requested*/
@@ -106,13 +115,12 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
         else{
             new_FBO = Framebuffer(txtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution),"");
         }
-
         
         /* Add generated FBO to pool */
-        FBO_POOL.push_back(std::make_pair(new_FBO, true));
+        FBO_POOL[bound_context].push_back(std::make_pair(new_FBO, true));
         
         /* Provide the generated FBO from the pool */
-        res = &FBO_POOL[FBO_POOL.size()-1].first;
+        res = &FBO_POOL[bound_context][FBO_POOL[bound_context].size()-1].first;
         
     }
 
@@ -144,12 +152,14 @@ void FBOPOOL::releaseFBO(Framebuffer released_FBO){
     std::lock_guard<std::mutex> lock(FBOPOOL_mutex);
 
     /* Updating the currently used flag */
-    for (auto& FBO_from_pool : FBO_POOL)
-    {
-        /* If adresses matches */
-        if(FBO_from_pool.first.ID == released_FBO.ID){
-            FBO_from_pool.first.setColorBuffer(0, GL_TEXTURE_2D); // Set currently using flag to false
-            FBO_from_pool.second = false; // Set currently using flag to false
+    for (auto& c_FBO_from_pool : FBO_POOL){
+        for (auto& FBO_from_pool : c_FBO_from_pool.second)
+        {
+            /* If adresses matches */
+            if(FBO_from_pool.first.ID == released_FBO.ID){
+                FBO_from_pool.first.setColorBuffer(0, GL_TEXTURE_2D); // Set currently using flag to false
+                FBO_from_pool.second = false; // Set currently using flag to false
+            }
         }
     }
     
