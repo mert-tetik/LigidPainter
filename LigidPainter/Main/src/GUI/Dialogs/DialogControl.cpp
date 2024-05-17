@@ -73,8 +73,9 @@ void DialogControl::updateStart(bool loop_mode){
     
 
     if(loop_mode){
+        glDisable(GL_DEPTH_TEST);
         drawBG();
-        glClear(GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
     }
 
     ShaderSystem::buttonShader().use();

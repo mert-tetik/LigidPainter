@@ -106,7 +106,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
                         material_thread.update_material_displaying_texture(&matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex], getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
                     }
                     else{
-                        matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, false, this->displayingCam, 0, true, this->displayingTexture, *getMaterialDisplayerModel(), -1);
+                        matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, false, this->displayingCam, 0, true, getMaterialDisplayerModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels, this->displayingTexture, -1);
                     }
                 }
             }

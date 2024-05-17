@@ -55,7 +55,7 @@ void checkComboList_painting_color_render(Timer& timer, bool doMouseTracking){
     display_mat.materialModifiers[0].sections[0].elements[10].button.color = glm::vec4(glm::vec3(checkComboList_painting_color.panel.sections[0].elements[12].rangeBar.value), 1.f); 
 
     if(prev_display_mat != display_mat){
-        display_mat.updateMaterialDisplayingTexture(512, true, Camera(), 0, false);
+        display_mat.updateMaterialDisplayingTexture(512, true, Camera(), 0, false, getMaterialDisplayerModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels);
     }
     
     prev_display_mat = display_mat;

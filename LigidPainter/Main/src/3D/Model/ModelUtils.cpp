@@ -107,6 +107,7 @@ static float getBig(glm::vec3 vec){
 }
 
 void Model::resize_meshes(){
+    
     glm::vec3 big = glm::vec3(0.f);
     glm::vec3 center = glm::vec3(0.f);
     int counter = 0;
@@ -127,6 +128,10 @@ void Model::resize_meshes(){
 
             counter++;
         }
+    }
+
+    if(big.x == 0 || big.y == 0 || big.z == 0){
+        return;
     }
 
     center /= counter;

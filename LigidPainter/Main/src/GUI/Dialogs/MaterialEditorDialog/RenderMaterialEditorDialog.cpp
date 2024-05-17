@@ -19,10 +19,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 #include <string>
 #include <iostream>
@@ -70,10 +73,22 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
 
         this->renderShortcutPanel(timer, mouseTrackingFlag, material);
 
+        if(material_thread.active){
+            ShaderSystem::buttonShader().use();
+            ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 0.4f);
+        }
+
         this->renderSkyboxTxtr();
-        
         this->materialDisplayer.texture = this->displayingTexture;
         this->materialDisplayer.render(timer, false);
+
+        if(material_thread.active){
+            ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
+
+            glDisable(GL_DEPTH_TEST);
+            appVideos.loading.render(timer, this->materialDisplayer.pos, glm::vec2(this->materialDisplayer.scale.y / (Settings::videoScale()->x / Settings::videoScale()->y), this->materialDisplayer.scale.y) / 6.f, 1.f, 1, true);
+            glEnable(GL_DEPTH_TEST);
+        }
         
         this->renderZoomIndicator(timer, mouseTrackingFlag);
 
@@ -92,7 +107,10 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
             int specificUpdateI = -1;
             if(this->selectedResultModeIndex == 1)
                 specificUpdateI = this->selectedMaterialModifierIndex;
-            material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), true, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingTexture, *this->getDisplayModel(), specificUpdateI);
+
+            material_thread.update_material_displaying_texture(material, this->getDisplayModel(), &this->getDisplayModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
+            
+            material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->getDisplayModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels, this->displayingTexture, specificUpdateI);
         }
         
         this->prevUpdateTheMaterial = this->updateTheMaterial;
@@ -110,8 +128,9 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
         //Close the dialog
         if(__materialEditorDialogESCFirstFramePressed || ((!bgPanel.hover && !barButton.hover && !dialog_log.isHovered()) && *Mouse::LClick()) || (barButton.hover && *Mouse::LDoubleClick())){
             this->displayModeComboBox.selectedIndex = 0;
+
             // Update the material displaying texture one more time before closing the dialog
-            material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, Camera(), 0, false);
+            material_thread.update_material_displaying_texture(material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
 
             updateThePreRenderedPanels = true;
 
@@ -120,14 +139,12 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
 
         __materialEditorDialogESCFirstFramePressed = false; 
 
-
         // Update the displaying texture
-        material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->displayingTexture, *this->getDisplayModel(), -1);
+        material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->getDisplayModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels, this->displayingTexture, -1);
 
         glClear(GL_DEPTH_BUFFER_BIT);
         
         dialogControl.updateEnd(timer,0.15f);
-        Settings::defaultFramebuffer()->update_bg_txtr();
         if(dialogControl.mixVal == 0.f){
             break;
         }

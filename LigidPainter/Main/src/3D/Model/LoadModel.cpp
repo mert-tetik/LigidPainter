@@ -69,8 +69,6 @@ bool Model::loadModel(std::string const &path, bool triangulate, bool initTxtrs)
     title = UTIL::removeExtension(title);
 
     this->newModelAdded = true;
-
-    meshes.clear();
  
     // read file via ASSIMP
     Assimp::Importer importer;
@@ -165,7 +163,6 @@ static AssimpObject processMesh(aiMesh *mesh, std::string title)
 // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
 static void processNode(aiNode *node, const aiScene *scene, std::vector<AssimpObject> &meshes)
 {
-
     // process each mesh located at the current node
     for(unsigned int i = 0; i < node->mNumMeshes; i++)
     {
@@ -190,9 +187,13 @@ static void parseMeshData(std::vector<AssimpObject> &objects, std::vector<Mesh> 
             biggestMatI = objects[i].materialIndex;
         }
     }
+
     for (size_t i = 0; i < biggestMatI + 1; i++)
     {
-        meshes.push_back(Mesh());
+        if(i < meshes.size())
+            meshes[i] = Mesh();
+        else
+            meshes.push_back(Mesh());
     }
 
     for (size_t i = 0; i < objects.size(); i++)

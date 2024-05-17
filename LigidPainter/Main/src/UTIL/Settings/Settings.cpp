@@ -277,7 +277,6 @@ namespace Settings{
         
         getBox()->draw("DefaultFramebuffer::render");
 
-
         GL::releaseBoundTextures("DefaultFramebuffer::render");
         glBindFramebuffer(GL_FRAMEBUFFER, this->FBO.ID);
         
@@ -311,7 +310,7 @@ namespace Settings{
         this->FBO.colorBuffer.update((char*)nullptr, resolution.x, resolution.y, GL_NEAREST);
 
         //--------- update bgTxtr --------- 
-        bgTxtr.update((char*)nullptr, resolution.x, resolution.y, GL_NEAREST);
+        bgTxtr.resize(glm::ivec2(resolution.x, resolution.y));
 
         //--------- update RBO --------- 
         this->FBO.renderBuffer.update(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution);
@@ -341,7 +340,7 @@ namespace Settings{
         // Set up the blit
         glBindFramebuffer(GL_READ_FRAMEBUFFER, 0); // Bind the default framebuffer as the source
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, framebuffer); // Bind the FBO as the destination
-        glBlitFramebuffer(0, 0, getContext()->windowScale.x, getContext()->windowScale.y, 0, 0, Settings::defaultFramebuffer()->resolution.x, Settings::defaultFramebuffer()->resolution.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        glBlitFramebuffer(0, 0, getContext()->windowScale.x, getContext()->windowScale.y, 0, 0, Settings::defaultFramebuffer()->bgTxtr.getResolution().x, Settings::defaultFramebuffer()->bgTxtr.getResolution().y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
         // Unbind the FBO
         glBindFramebuffer(GL_FRAMEBUFFER, 0);

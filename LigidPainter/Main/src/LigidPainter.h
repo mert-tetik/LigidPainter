@@ -101,6 +101,7 @@ void load_ligidpainter(){
     //Load the 3D models 345235456
     getScene()->model->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx", true, false);
     getSphereModel()->loadModel("./LigidPainter/Resources/3D Models/sphere.fbx",true, true);
+    getPlaneModel()->loadModel("./LigidPainter/Resources/3D Models/plane.fbx",true, true);
     getMaterialDisplayerModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj", true, true);
     getMaterialDisplayingModel()->loadModel("./LigidPainter/Resources/3D Models/MaterialDisplayer.obj", true, true);
     getTDBrushCursorModel()->loadModel("./LigidPainter/Resources/3D Models/TDBrushCursor.fbx", true, true);

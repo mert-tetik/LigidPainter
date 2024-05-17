@@ -102,7 +102,7 @@ void MaterialThread::update_thread_result(){
         material_thread.actions[0].materialChannels->ambientOcclusion.update(material_thread.material_channels_pxs.ao, 1024, 1024);
 
         if(material_thread.actions[0].update_the_material_displaying_texture)
-            material_thread.actions[0].material->updateMaterialDisplayingTexture(1024, false, Camera(), 0, false, (material_thread.actions[0].model != nullptr) ? *material_thread.actions[0].model : Model());
+            material_thread.actions[0].material->updateMaterialDisplayingTexture(1024, false, Camera(), 0, false, (material_thread.actions[0].model != nullptr && material_thread.actions[0].model->meshes.size()) ? material_thread.actions[0].model->meshes[0] : Mesh(), *material_thread.actions[0].materialChannels);
 
         if(material_thread.actions[0].update_layer_scene_result)
             material_thread.actions[0].mesh->layerScene.update_result(1024, glm::vec3(0.f), *material_thread.actions[0].mesh);

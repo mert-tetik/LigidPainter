@@ -92,22 +92,7 @@ Model* MaterialEditorDialog::getDisplayModel(){
         return getMaterialDisplayerModel();
 
     if(this->selectedModelModeIndex == 2){
-        if(getScene()->model->meshes.size() != customModel.meshes.size()){
-            customModel.meshes.clear();
-
-            for (size_t i = 0; i < getScene()->model->meshes.size(); i++){
-                customModel.meshes.push_back(Mesh({}, {1,2,3}, "", true));
-            }
-        }
-
-        for (size_t i = 0; i < customModel.meshes.size(); i++)
-        {
-            customModel.meshes[i].indices = getScene()->model->meshes[i].indices;
-            customModel.meshes[i].vertex_buffers = getScene()->model->meshes[i].vertex_buffers;
-            customModel.meshes[i].objects = getScene()->model->meshes[i].objects;
-            customModel.meshes[i].uvMask = getScene()->model->meshes[i].uvMask;
-        }
-        return &customModel;
+        return getScene()->model;
     }
 
     return getMaterialDisplayerModel();

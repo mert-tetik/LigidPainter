@@ -21,10 +21,12 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <glm/gtx/string_cast.hpp>
 
 #include "GUI/GUI.hpp"
+
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp" 
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/GL/GL.hpp"
+#include "UTIL/Threads/Threads.hpp"
 
 #include <string>
 #include <iostream>
@@ -176,8 +178,8 @@ void ObjectTexturingDialog::show(Timer& timer){
         }
 
         if(dialogControl.firstFrameActivated){
-            this->material.updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
-            
+            material_thread.update_material_displaying_texture(&this->material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
+
             this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
             this->sceneCam.radius = 3.5f;
             this->updateMeshTextures();

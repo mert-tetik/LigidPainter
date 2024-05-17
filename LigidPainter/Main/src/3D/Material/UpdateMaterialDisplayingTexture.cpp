@@ -37,10 +37,12 @@ void Material::updateMaterialDisplayingTexture(
                                                 bool updateMaterial,
                                                 Camera matCam,
                                                 int displayingMode,
-                                                bool useCustomCam
+                                                bool useCustomCam,
+                                                Mesh& displayMesh,
+                                                MaterialChannels material_channels
                                             )
 {
-    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, this->displayingTexture, *getMaterialDisplayingModel(), -1);
+    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, displayMesh, material_channels, this->displayingTexture, -1);
 }
 
 void Material::updateMaterialDisplayingTexture(
@@ -49,20 +51,9 @@ void Material::updateMaterialDisplayingTexture(
                                                 Camera matCam,
                                                 int displayingMode,
                                                 bool useCustomCam,
-                                                Model& displayModel
-                                            )
-{
-    updateMaterialDisplayingTexture(textureRes, updateMaterial, matCam, displayingMode, useCustomCam, this->displayingTexture, displayModel, -1);
-}
-
-void Material::updateMaterialDisplayingTexture(
-                                                float textureRes,
-                                                bool updateMaterial,
-                                                Camera matCam,
-                                                int displayingMode,
-                                                bool useCustomCam,
+                                                Mesh& displayMesh,
+                                                MaterialChannels material_channels,
                                                 Texture custom_display_txtr,
-                                                Model& displayModel,
                                                 int specificUpdateI
                                             )
 { 
@@ -99,20 +90,19 @@ void Material::updateMaterialDisplayingTexture(
     ShaderSystem::PBRDisplayOnly().setMat4("modelMatrix", glm::mat4(1.f));
     ShaderSystem::PBRDisplayOnly().setVec3("viewPos",matCam.cameraPos);
     
-    for (size_t i = 0; i < displayModel.meshes.size(); i++)
     {
         ShaderSystem::PBRDisplayOnly().setInt("skybox", GL::bindTexture_CubeMap(getScene()->skybox.ID, "Material::updateMaterialDisplayingTexture")); 
         ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", GL::bindTexture_CubeMap(getScene()->skybox.IDPrefiltered, "Material::updateMaterialDisplayingTexture")); 
-        ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].material_channels.albedo.ID, "Material::updateMaterialDisplayingTexture"));
-        ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].material_channels.roughness.ID, "Material::updateMaterialDisplayingTexture"));
-        ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].material_channels.metallic.ID, "Material::updateMaterialDisplayingTexture"));
-        ShaderSystem::PBRDisplayOnly().setInt("normalMapTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].material_channels.normalMap.ID, "Material::updateMaterialDisplayingTexture"));
-        ShaderSystem::PBRDisplayOnly().setInt("heightMapTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].material_channels.heightMap.ID, "Material::updateMaterialDisplayingTexture"));
-        ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : displayModel.meshes[i].material_channels.ambientOcclusion.ID, "Material::updateMaterialDisplayingTexture"));
+        ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : material_channels.albedo.ID, "Material::updateMaterialDisplayingTexture"));
+        ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : material_channels.roughness.ID, "Material::updateMaterialDisplayingTexture"));
+        ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : material_channels.metallic.ID, "Material::updateMaterialDisplayingTexture"));
+        ShaderSystem::PBRDisplayOnly().setInt("normalMapTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : material_channels.normalMap.ID, "Material::updateMaterialDisplayingTexture"));
+        ShaderSystem::PBRDisplayOnly().setInt("heightMapTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : material_channels.heightMap.ID, "Material::updateMaterialDisplayingTexture"));
+        ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", GL::bindTexture_2D((!this->materialModifiers.size()) ? appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.ID : material_channels.ambientOcclusion.ID, "Material::updateMaterialDisplayingTexture"));
         ShaderSystem::PBRDisplayOnly().setInt("displayingMode", displayingMode);
         
         //Draw the sphere
-        displayModel.meshes[i].Draw("Material::updateMaterialDisplayingTexture");
+        displayMesh.Draw("Material::updateMaterialDisplayingTexture");
         
         GL::releaseBoundTextures("Material::updateMaterialDisplayingTexture");
     }

@@ -249,7 +249,7 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                     layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr);
                     
                     FileHandler::readMaterialData(rf, *material, nullptr);
-                    material->updateMaterialDisplayingTexture(256, true, Camera(), 0, false);
+                    material->updateMaterialDisplayingTexture(256, true, Camera(), 0, false, getMaterialDisplayerModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels);
 
                 }
                 else if(layer->layerType == "vector"){
