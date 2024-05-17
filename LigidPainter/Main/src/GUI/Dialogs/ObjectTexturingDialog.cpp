@@ -148,7 +148,7 @@ void ObjectTexturingDialog::show(Timer& timer){
 
         dialogControl.updateStart(true);
 
-        this->sceneCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
+        this->sceneCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset(), false);
 
         if(getScene()->model->meshes.size() != result_channels.size()){
             for (size_t i = 0; i < result_channels.size(); i++)

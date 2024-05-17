@@ -72,7 +72,7 @@ static bool keep_pos_in_place(glm::vec3* pos, float radius_origin, float radius_
     return changed;
 }
 
-void Camera::interaction(float scroll, glm::vec2 mouseOffset){
+void Camera::interaction(float scroll, glm::vec2 mouseOffset, bool const_origin){
     const float sensitivity = 0.14f; //Mouse sensivity 
 
     bool moved = false;
@@ -84,7 +84,7 @@ void Camera::interaction(float scroll, glm::vec2 mouseOffset){
     if(this->isCamInverted())
         mouseOffset.x *= -1;
 
-    if((mouseR_CTRL || mouseM) && (mouseOffset.x || mouseOffset.y))
+    if((mouseR_CTRL || mouseM) && (mouseOffset.x || mouseOffset.y) && !const_origin)
     {
         moved = true;
 

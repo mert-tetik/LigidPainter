@@ -75,7 +75,7 @@ void DisplayTextureDialog::show(Timer& timer, Texture texture){
         this->dialogControl.updateStart(true);
 
         if(this->threeD_display_btn.hover || dialogControl.firstFrameActivated){
-            this->displayingCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
+            this->displayingCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset(), false);
             this->displayingCam.posShortcutInteraction(true);
             if(dialogControl.firstFrameActivated)
                 this->displayingCam.updateViewMatrix();

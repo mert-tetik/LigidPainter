@@ -47,7 +47,7 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
     {
         dialogControl.updateStart(true);
 
-        this->displayerCamera.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
+        this->displayerCamera.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset(), true);
 
         // Update the shortcut elements of the material
         for (size_t i = 0; i < material->materialShortcuts.size(); i++)

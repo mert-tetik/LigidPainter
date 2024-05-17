@@ -79,7 +79,7 @@ void MaterialDisplayerDialog::show(Timer& timer, Material* material){
     {
         this->dialogControl.updateStart(true);
 
-        this->displayingCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset());
+        this->displayingCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset(), true);
 
         //Render the panel
         this->panel.sections[0].elements[1].button.texture = this->displayingTexture;

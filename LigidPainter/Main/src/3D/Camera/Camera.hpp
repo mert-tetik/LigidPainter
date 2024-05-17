@@ -33,7 +33,7 @@ struct Camera{
     void setCameraPosition(glm::vec3 pos);
     void setCameraRadius(float radius);
 
-    void interaction(float scroll, glm::vec2 mouseOffset);
+    void interaction(float scroll, glm::vec2 mouseOffset, bool const_origin);
 
     void transition(glm::vec3 direction);
     void transition(glm::vec3 direction, glm::vec3 originPos);
