@@ -500,11 +500,13 @@ static std::string talk_msg = "";
 static int talk_duration = 0; 
 
 void LogDialog::make_cat_talk(Timer& timer, std::string text, const int duration){
-    if(!getContext()->window.shouldClose()){
-        talk_start_time = timer.seconds;
-        talk_msg = text;
-        talk_duration = duration;
-    }
+    talk_start_time = timer.seconds;
+    talk_msg = text;
+    talk_duration = duration;
+}
+
+bool LogDialog::is_cat_talking(){
+    return talk_msg != "";
 }
 
 static float speech_bubble_mixVal = 0.f;
@@ -538,11 +540,16 @@ static void render_talking_text(Timer& timer, Button logBtn, bool* windowShouldC
 
         if(getContext()->window.shouldClose())
         {
+            yesBtn.radius = 0.2f;
+            noBtn.radius = 0.2f;
+
             yesBtn.pos = pos;
-            yesBtn.pos.x -= yesBtn.scale.x * 2.5f;
+            yesBtn.pos.x -= yesBtn.scale.x * 1.5f;
+            yesBtn.pos.y += yesBtn.scale.y + scale.y + 1.f;
             
             noBtn.pos = pos;
-            noBtn.pos.x += noBtn.scale.x * 2.5f;
+            noBtn.pos.x += noBtn.scale.x * 1.5f;
+            noBtn.pos.y += noBtn.scale.y + scale.y + 1.f;
         
             yesBtn.render(timer, true);
             noBtn.render(timer, true);

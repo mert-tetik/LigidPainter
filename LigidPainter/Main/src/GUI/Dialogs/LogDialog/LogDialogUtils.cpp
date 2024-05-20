@@ -44,7 +44,8 @@ void LogDialog::update_messages_array(Timer& timer){
                 a.erase(a.begin(), a.begin() + i + 2);
                 i = 0;
                 const int notification_duration = 5;
-                this->make_cat_talk(timer, res, notification_duration);
+                if(!getContext()->window.shouldClose())
+                    this->make_cat_talk(timer, res, notification_duration);
                 this->messages.push_back(res);
             }
         }

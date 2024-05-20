@@ -921,9 +921,6 @@ class LogDialog
 private:
    size_t lastMessagesSize = 0;
 
-   std::string quitMSG = "";
-   std::string catMSG = "";
-   
    float petPoints = 0.f; 
    bool sleepingCat = false;
    size_t sleepingCounter = 0;
@@ -941,6 +938,9 @@ private:
 
    /*! @brief Make the cat talk whatever text says*/
    void make_cat_talk(Timer& timer, std::string text, const int duration);
+
+   /*! @brief Returns true if cat is currently talking*/
+   bool is_cat_talking();
 
    /*! @brief Generate texts and make the cat talk if needed*/
    void talking_interaction(Timer& timer);
