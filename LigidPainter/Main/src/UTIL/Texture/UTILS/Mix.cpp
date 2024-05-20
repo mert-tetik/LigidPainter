@@ -61,6 +61,7 @@ void Texture::mix(Texture mix_txtr, Texture mask, bool maskAlpha, bool normalMap
     GL::releaseTextureFromSlot(duplicated_txtr_unit, "Texture mix"); // Release the bound textures
     GL::releaseTextureFromSlot(mix_txtr_unit, "Texture mix"); // Release the bound textures
     FBOPOOL::releaseFBO(FBO); // Release the FBO
+    ShaderUTIL::release_bound_shader();
     already_bound_shader.use();
 }
 

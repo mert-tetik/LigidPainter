@@ -58,7 +58,7 @@ void Shader::use()
 
     // If no OpenGL context is bound
     if(bound_context == nullptr){
-        LGDLOG::start << "ERROR : Shader::use : No OpenGL context is bound!" << LGDLOG::end; 
+        LGDLOG::start << "ERROR : Shader::use : No OpenGL context is bound! : " << this->shader_name << LGDLOG::end; 
         return;
     }
 
@@ -70,7 +70,7 @@ void Shader::use()
     // Don't let the code proceed while the texture is bound in another context 😡
     if(is_shader_program_bound_in_another_context(ID, bound_context)){
         wait_time = LigidGL::getTime();
-        std::cout << "WARNING : Shader::use : Shader program  is already bound in a different context. Waiting until it's released!" << std::endl;
+        std::cout << "WARNING : Shader::use : Shader program  is already bound in a different context. Waiting until it's released! : " << this->shader_name << std::endl;
     }
     
     while(is_shader_program_bound_in_another_context(ID, bound_context)){

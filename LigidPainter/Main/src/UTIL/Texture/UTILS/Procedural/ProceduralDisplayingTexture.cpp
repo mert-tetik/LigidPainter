@@ -120,6 +120,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
             
             GL::releaseBoundTextures("Texture::generateProceduralDisplayingTexture");
             FBOPOOL::releaseFBO(FBO);
+            ShaderUTIL::release_bound_shader();
         }
     }
 
@@ -163,7 +164,7 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
         // Release bound textures
         GL::releaseBoundTextures("Texture::generateProceduralDisplayingTexture");
         FBOPOOL::releaseFBO(FBO);
-        
+        ShaderUTIL::release_bound_shader();
     }
 
     // Generate normal map

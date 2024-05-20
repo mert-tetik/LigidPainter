@@ -59,5 +59,6 @@ void Texture::render_mesh(Mesh& mesh, MaterialChannels channels, Camera cam){
     // Finish 
     GL::releaseBoundTextures("Texture::render_mesh"); // Release bound textures
     FBOPOOL::releaseFBO(FBO); // Release the FBO
+    ShaderUTIL::release_bound_shader();
     already_bound_shader.use(); // Use already bound shader program
 }

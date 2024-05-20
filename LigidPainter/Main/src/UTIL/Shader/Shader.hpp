@@ -38,6 +38,8 @@ public:
     /// @brief Id of the shader in an OpenGL context
     unsigned int ID = 0;
 
+    std::string shader_name = "";
+
     /// @brief Default constructor (is not used) 
     Shader();
 
@@ -45,16 +47,16 @@ public:
     std::string vertPath = "";
 
     /// @brief Creates shader program using source codes
-    void loadShader(std::string vertexCode, std::string fragmentCode);
+    void loadShader(std::string vertexCode, std::string fragmentCode, std::string shader_name);
     
     /// @brief Creates shader program using vertex shader path & fragment shader source code
-    void loadShaderPS(std::string vertexPath, std::string fragmentCode);
+    void loadShaderPS(std::string vertexPath, std::string fragmentCode, std::string shader_name);
     
     /// @brief Creates shader program using vertex shader source code & fragment shader path
-    void loadShaderSP(std::string vertexCode, std::string fragmentPath);
+    void loadShaderSP(std::string vertexCode, std::string fragmentPath, std::string shader_name);
     
     /// @brief Creates shader program using vertex shader path & fragment shader path
-    void loadShaderPP(std::string vertexPath, std::string fragmentPath);
+    void loadShaderPP(std::string vertexPath, std::string fragmentPath, std::string shader_name);
 
     /// @brief replace the #pragma LIGID_INCLUDE with the code in the given path (LIGID_INCLUDE(givenPath))
     /// @param code the code

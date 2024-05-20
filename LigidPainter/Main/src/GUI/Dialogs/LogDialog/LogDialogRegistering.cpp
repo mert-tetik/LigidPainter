@@ -125,8 +125,11 @@ void LogDialog::registerLibraryElementRenamingAction(const std::string title, co
     this->history_action_records.actions_Library.push_back(LibraryAction(title, LIBRARY_ELEMENT_RENAMING, icon, index, element, name));
 }
 
-void LogDialog::registerVectorAction(const std::string title){
-    //this->history_action_records.actions_Vectors.push_back(VectorsAction(title, VECTOR_ACTION, vectorStrokes));
+void LogDialog::registerVectorAction(const std::string title, VectorScene* vectorScene){
+    if(vectorScene == nullptr)
+        return;
+
+    //this->history_action_records.actions_Vectors[vectorScene].push_back(VectorsAction(title, *vectorScene));
 }
 
 void LogDialog::registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, int meshI){

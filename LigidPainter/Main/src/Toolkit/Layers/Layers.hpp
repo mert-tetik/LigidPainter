@@ -203,7 +203,6 @@ public:
 */
 class VectorLayer : public Layer {
 public:
-    std::vector<VectorStroke3D> strokes;
     VectorScene vector_scene;
 
     CheckComboList color_checkComboList;
@@ -218,7 +217,7 @@ public:
     void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
     void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
         if(strokes != nullptr)
-            *strokes = &this->strokes; 
+            *strokes = &this->vector_scene.strokes_3D; 
         if(vector_stroke_brush != nullptr)
             *vector_stroke_brush = &this->brush_properties_button.brush; 
     }

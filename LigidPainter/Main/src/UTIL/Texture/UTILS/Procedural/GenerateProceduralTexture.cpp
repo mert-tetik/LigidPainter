@@ -83,6 +83,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
 
         GL::releaseBoundTextures("Mesh::generateProceduralTexture");
         FBOPOOL::releaseFBO(FBO);
+        ShaderUTIL::release_bound_shader();
     }
 
     // ------- Generating Normal Map -------

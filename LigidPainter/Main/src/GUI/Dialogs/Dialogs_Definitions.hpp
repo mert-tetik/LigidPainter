@@ -906,10 +906,11 @@ namespace LGDLOG {
 #include "./GUI/Dialogs/LogDialog/HistoryActions/HistoryActions.hpp"
 
 struct HistoryActionRecords{
+   std::map<VectorScene*, std::vector<VectorsAction>> actions_Vectors;
+
    std::vector<LibraryAction> actions_Library;
    std::map<unsigned int, std::vector<PaintingAction>> actions_Painting;
    std::vector<PaintingAction> actions_MultiChannelPainting;
-   std::vector<VectorsAction> actions_Vectors;
    std::vector<FaceSelectionAction> actions_FaceSelection;
    std::vector<TextureFieldsAction> actions_TextureFields;
    std::vector<MaterialEditorAction> actions_MaterialEditor;
@@ -994,7 +995,7 @@ public:
                               bool aoPainted);
 
    // -- Vector --
-   void registerVectorAction(const std::string title);
+   void registerVectorAction(const std::string title, VectorScene* vectorScene);
 
    // -- Face Selection -- 
    void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, int meshI);

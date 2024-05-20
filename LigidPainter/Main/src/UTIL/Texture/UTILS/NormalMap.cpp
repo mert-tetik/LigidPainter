@@ -65,6 +65,7 @@ void Texture::generateNormalMap(Texture& normalMap, float proceduralNormalStreng
     // Finish
     GL::releaseTextureFromSlot(txtr_slot ,"Texture::generateNormalMap"); // Release bound textures
     FBOPOOL::releaseFBO(FBO); // Release the FBO
+    ShaderUTIL::release_bound_shader();
     already_bound_shader.use(); // Use the default shader program back
 }
 

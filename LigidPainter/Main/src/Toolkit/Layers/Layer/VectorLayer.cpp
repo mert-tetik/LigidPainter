@@ -57,9 +57,7 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
     
     panel_displaying_modes.sections[0].elements[0].button.clickState1 = true;
 
-    this->vector_scene.strokes_3D = this->strokes;
     this->vector_scene.render_scene(timer, true, true);
-    this->strokes = vector_scene.strokes_3D;
     
     this->color_checkComboList.pos = glm::vec3(this->vector_scene.interaction_panel.pos.x - this->vector_scene.interaction_panel.scale.x + this->color_checkComboList.scale.x, this->vector_scene.interaction_panel.pos.y + this->vector_scene.interaction_panel.scale.y + this->color_checkComboList.scale.y, 0.7f);
     this->color_checkComboList.render(timer, true);
@@ -83,12 +81,12 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
    
     bool same = true;
 
-    if(this->strokes.size() == last_strokes.size()){
-        for (size_t i = 0; i < this->strokes.size(); i++)
+    if(this->vector_scene.strokes_3D.size() == last_strokes.size()){
+        for (size_t i = 0; i < this->vector_scene.strokes_3D.size(); i++)
         {
-            if(last_strokes[i].endPoint.pos != this->strokes[i].endPoint.pos)
+            if(last_strokes[i].endPoint.pos != this->vector_scene.strokes_3D[i].endPoint.pos)
                 same = false;
-            if(last_strokes[i].startPoint.pos != this->strokes[i].startPoint.pos)
+            if(last_strokes[i].startPoint.pos != this->vector_scene.strokes_3D[i].startPoint.pos)
                 same = false;
         }
     }
@@ -97,7 +95,7 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
 
     if(!*Mouse::LPressed() && !same){
         this->update_result_buffers(resolution, mesh);
-        last_strokes = this->strokes;
+        last_strokes = this->vector_scene.strokes_3D;
     }
 }
 

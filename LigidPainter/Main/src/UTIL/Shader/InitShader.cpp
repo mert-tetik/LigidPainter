@@ -29,11 +29,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ///@brief Default constructor 
 Shader::Shader(){}
 
-void Shader::loadShader(std::string vertexCode, std::string fragmentCode){
+void Shader::loadShader(std::string vertexCode, std::string fragmentCode, std::string shader_name){
     if(vertexCode == "" || fragmentCode == ""){
         LGDLOG::start << "ERROR : Shader source code is empty" << LGDLOG::end;
         return;
     }
+
+    this->shader_name = shader_name;
 
     //Process the shader codes
     this->processShaderCode(vertexCode);
@@ -69,10 +71,12 @@ void Shader::loadShader(std::string vertexCode, std::string fragmentCode){
     glDeleteShader(fragment);
 }
 
-void Shader::loadShaderPS(std::string vertexPath, std::string fragmentCode){
+void Shader::loadShaderPS(std::string vertexPath, std::string fragmentCode, std::string shader_name){
     std::string vertexCode;
     std::ifstream vShaderFile;
     vShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
+
+    this->shader_name = shader_name;
     
     try
     {
@@ -92,14 +96,16 @@ void Shader::loadShaderPS(std::string vertexPath, std::string fragmentCode){
             << e.what() << LGDLOG::end;
     }
 
-    this->loadShader(vertexCode, fragmentCode);
+    this->loadShader(vertexCode, fragmentCode, shader_name);
 }
 
-void Shader::loadShaderSP(std::string vertexCode, std::string fragmentPath){
+void Shader::loadShaderSP(std::string vertexCode, std::string fragmentPath, std::string shader_name){
     std::string fragCode;
     std::ifstream fShaderFile;
     fShaderFile.exceptions (std::ifstream::failbit | std::ifstream::badbit);
     
+    this->shader_name = shader_name; 
+
     try
     {
         if(fragmentPath != "")
@@ -118,13 +124,14 @@ void Shader::loadShaderSP(std::string vertexCode, std::string fragmentPath){
             << e.what() << LGDLOG::end;
     }
 
-    this->loadShader(vertexCode, fragCode);
+    this->loadShader(vertexCode, fragCode, shader_name);
 }
 
-void Shader::loadShaderPP(std::string vertexPath, std::string fragmentPath){
+void Shader::loadShaderPP(std::string vertexPath, std::string fragmentPath, std::string shader_name){
     
     this->fragPath = fragmentPath;
     this->vertPath = vertexPath;
+    this->shader_name = shader_name;
 
     std::string fragCode;
     std::ifstream fShaderFile;
@@ -170,5 +177,5 @@ void Shader::loadShaderPP(std::string vertexPath, std::string fragmentPath){
             << e.what() << LGDLOG::end;
     }
 
-    this->loadShader(vertexCode, fragCode);
+    this->loadShader(vertexCode, fragCode, shader_name);
 }

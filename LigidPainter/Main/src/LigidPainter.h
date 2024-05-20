@@ -46,7 +46,7 @@ static void render_intro(){
     Shader introShader;
     Texture bgImage;
     bgImage.load("LigidPainter/Resources/Images/IntroImage.jpg");
-    introShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/IntroTxtrRendering.frag");
+    introShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/IntroTxtrRendering.frag", "introShader");
     introShader.use();
     introShader.setMat4("projection", glm::ortho(0.,1.,1.,0.));
     introShader.setVec3("pos", glm::vec3(0.5f));

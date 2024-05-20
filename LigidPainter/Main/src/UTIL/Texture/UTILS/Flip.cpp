@@ -66,6 +66,7 @@ void Texture::flipTexture(bool horizontal, bool vertical){
 
     // Finish
     GL::releaseTextureFromSlot(txtr_slot, "Texture::flipTxtr");
+    ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
     already_bound_shader.use();
 }

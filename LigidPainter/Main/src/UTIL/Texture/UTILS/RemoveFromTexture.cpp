@@ -60,6 +60,7 @@ void Texture::removeSeams(Mesh& mesh){
     // Finish
     GL::releaseTextureFromSlot(uvMask_unit, "Texture::removeSeams");
     GL::releaseTextureFromSlot(copy_txtr_unit, "Texture::removeSeams");
+    ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
     already_bound_shader.use();
 }
@@ -93,6 +94,7 @@ void Texture::removeUnselectedFaces(Mesh& mesh){
 
     // Finish
     GL::releaseTextureFromSlot(txtr_unit, "Texture::removeUnselectedFaces");
+    ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
     already_bound_shader.use();
 }

@@ -93,7 +93,7 @@ void VectorScene::delete_selected_points(bool threeD){
         if(!this->isAny2DPointsActive())
             return;
 
-        dialog_log.registerVectorAction("Selected point deleted");
+        dialog_log.registerVectorAction("Selected point deleted", this);
         while (this->isAny2DPointsActive()){
             for (size_t i = 0; i < this->strokes_2D.size(); i++)
             {
@@ -146,7 +146,7 @@ void VectorScene::delete_selected_points(bool threeD){
         if(!this->isAnyWrappedPointsActive())
             return;
         
-        dialog_log.registerVectorAction("Selected wrapped point deleted");
+        dialog_log.registerVectorAction("Selected wrapped point deleted", this);
         while(this->isAnyWrappedPointsActive()){
             for (size_t i = 0; i < this->strokes_3D.size(); i++)
             {
@@ -197,18 +197,18 @@ void VectorScene::delete_selected_points(bool threeD){
 
 void VectorScene::clear_points(bool threeD){
     if(!threeD){
-        dialog_log.registerVectorAction("Vector strokes cleared");
+        dialog_log.registerVectorAction("Vector strokes cleared", this);
         this->strokes_2D.clear();
     }
     else{
-        dialog_log.registerVectorAction("Wrapped Vector strokes cleared");
+        dialog_log.registerVectorAction("Wrapped Vector strokes cleared", this);
         this->strokes_3D.clear();
     }
 }
 
 void VectorScene::subdivide_selected_points(bool threeD){
     if(!threeD){
-        dialog_log.registerVectorAction("New point between the selected points");
+        dialog_log.registerVectorAction("New point between the selected points", this);
 
         for (size_t i = 0; i < this->strokes_2D.size(); i++)
         {
@@ -229,7 +229,7 @@ void VectorScene::subdivide_selected_points(bool threeD){
         }
     }
     else{
-        dialog_log.registerVectorAction("New point between the selected wrapped points");
+        dialog_log.registerVectorAction("New point between the selected wrapped points", this);
 
         for (size_t i = 0; i < this->strokes_3D.size(); i++)
         {
@@ -275,7 +275,7 @@ void VectorScene::render2DVectors(Timer& timer, bool doMouseTracking){
     }
 
     if(anyPointMovingCondition && !lastVecMovingConditionState)
-        dialog_log.registerVectorAction("Point moved");
+        dialog_log.registerVectorAction("Point moved", this);
 
     lastVecMovingConditionState = anyPointMovingCondition;
 
@@ -328,7 +328,7 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
     }
 
     if(anyPointMovingCondition && !lastVecMovingConditionState)
-        dialog_log.registerVectorAction("Wrapped point moved");
+        dialog_log.registerVectorAction("Wrapped point moved", this);
 
     lastVecMovingConditionState = anyPointMovingCondition;
 
@@ -348,7 +348,7 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
 void VectorScene::addNew2DVector(){
     VectorStroke vecStroke;
     if(!this->strokes_2D.size()){
-        dialog_log.registerVectorAction("First point created");
+        dialog_log.registerVectorAction("First point created", this);
         vecStroke.startPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f; 
         vecStroke.endPoint.pos = vecStroke.startPoint.pos;
         vecStroke.offsetPoint.pos = vecStroke.startPoint.pos;
@@ -356,13 +356,13 @@ void VectorScene::addNew2DVector(){
     }
     else{
         if(this->strokes_2D[this->strokes_2D.size() - 1].endPoint.pos == this->strokes_2D[this->strokes_2D.size() - 1].startPoint.pos){
-            dialog_log.registerVectorAction("New point");
+            dialog_log.registerVectorAction("New point", this);
             this->strokes_2D[this->strokes_2D.size() - 1].endPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
             this->strokes_2D[this->strokes_2D.size() - 1].offsetPoint.pos = this->strokes_2D[this->strokes_2D.size() - 1].startPoint.pos - (this->strokes_2D[this->strokes_2D.size() - 1].startPoint.pos - this->strokes_2D[this->strokes_2D.size() - 1].endPoint.pos) / 2.f;
             this->strokes_2D[this->strokes_2D.size() - 1].offsetPoint.pos += 0.001f; // Vectors can't be rendered if the offset point alligns perfectly :(
         }
         else{
-            dialog_log.registerVectorAction("New point");
+            dialog_log.registerVectorAction("New point", this);
             vecStroke.startPoint.pos = this->strokes_2D[this->strokes_2D.size() - 1].endPoint.pos; 
             vecStroke.endPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
             vecStroke.offsetPoint.pos = vecStroke.startPoint.pos - (vecStroke.startPoint.pos - vecStroke.endPoint.pos) /2.f;
@@ -380,18 +380,18 @@ void VectorScene::addNew3DVector(){
 
     VectorStroke3D vecStroke;
     if(!this->strokes_3D.size()){
-        dialog_log.registerVectorAction("First wrapped point created");
+        dialog_log.registerVectorAction("First wrapped point created", this);
         vecStroke.startPoint = getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor(); 
         vecStroke.endPoint = vecStroke.startPoint;
         this->strokes_3D.push_back(vecStroke);
     }
     else{
         if(this->strokes_3D[this->strokes_3D.size() - 1].endPoint.pos == this->strokes_3D[this->strokes_3D.size() - 1].startPoint.pos){
-            dialog_log.registerVectorAction("New wrapped point");
+            dialog_log.registerVectorAction("New wrapped point", this);
             this->strokes_3D[this->strokes_3D.size() - 1].endPoint = getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor();
         }
         else{
-            dialog_log.registerVectorAction("New wrapped point");
+            dialog_log.registerVectorAction("New wrapped point", this);
             vecStroke.startPoint = this->strokes_3D[this->strokes_3D.size() - 1].endPoint; 
             vecStroke.endPoint = getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor();
             this->strokes_3D.push_back(vecStroke);

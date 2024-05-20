@@ -154,22 +154,13 @@ struct PaintingAction{
 
 struct VectorsAction{
     std::string title;
-    std::vector<VectorStroke> vectorStrokes;
-    std::vector<VectorStroke3D> vectorStrokes3D;
-    unsigned int ID;
+    VectorScene vectorScene;
 
     VectorsAction(){}
 
-    VectorsAction(std::string title, unsigned int ID, std::vector<VectorStroke> vectorStrokes){
+    VectorsAction(std::string title, VectorScene vectorScene){
         this->title = title;
-        this->vectorStrokes = vectorStrokes;
-        this->ID = ID;
-    }
-    
-    VectorsAction(std::string title, unsigned int ID, std::vector<VectorStroke3D> vectorStrokes){
-        this->title = title;
-        this->vectorStrokes3D = vectorStrokes;
-        this->ID = ID;
+        this->vectorScene = vectorScene;
     }
 };
 

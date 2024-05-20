@@ -67,7 +67,7 @@ int Filter::load(std::string path){
         this->srcCode += line + "\n";
     }
     
-    this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
+    this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode, "Filter source");
 
     this->generateDisplayingTexture(glm::vec2(256));
 
