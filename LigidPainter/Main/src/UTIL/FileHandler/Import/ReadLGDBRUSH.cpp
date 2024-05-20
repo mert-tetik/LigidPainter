@@ -131,6 +131,8 @@ bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     brush.title = UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher());
     brush.title = UTIL::removeExtension(brush.title);
 
+    brush.updateDisplayTexture(0.1f);
+
     return true;   
 }
 
@@ -294,7 +296,7 @@ static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& propert
             else if(versionNumber == 2100)
                 versionCode = 1;
 
-            prop.texture.readTextureData(rf, false, versionCode, false);
+            prop.texture.readTextureData(rf, false, versionCode, true);
         }
         else{
             LGDLOG::start<< "ERROR! Reading lgdbrush file. Unknown property value type!" << LGDLOG::end;

@@ -128,9 +128,16 @@ void Brush::updateDisplayTexture(float radius){
 
     // Create and bind the capturing framebuffer
     Framebuffer FBO = FBOPOOL::requestFBO(displayingTexture, "Brush::updateDisplayTexture");
+    std::cout << "displayingTexture : " << displayingTexture.ID << std::endl;
+    glClear(GL_COLOR_BUFFER_BIT);
 
     for (int i = 0; i < wave.size() / strokeSize; i++)
     {
+
+        char* pxs = new char[displayingTexture.getResolution().x * displayingTexture.getResolution().y * 4];
+        displayingTexture.getData(pxs);
+        Texture copy_txtr = Texture(pxs, displayingTexture.getResolution().x, displayingTexture.getResolution().y);
+        delete[] pxs;
 
         ShaderSystem::twoDPainting().setInt("frame", i);
 
@@ -144,7 +151,7 @@ void Brush::updateDisplayTexture(float radius){
         GLfloat borderColor[] = { 0.f, 0.f, 0.f, 1.f };  // Replace r, g, b, a with the desired color values
         glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
         
-        ShaderSystem::twoDPainting().setInt("bgTxtr", GL::bindTexture_2D(0, "Brush::updateDisplayingTexture"));
+        ShaderSystem::twoDPainting().setInt("bgTxtr", GL::bindTexture_2D(copy_txtr.ID, "Brush::updateDisplayingTexture"));
         
         //Stroke positions
         std::vector<glm::vec2> strokes;
