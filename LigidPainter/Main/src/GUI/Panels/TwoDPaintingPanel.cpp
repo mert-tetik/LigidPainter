@@ -71,8 +71,8 @@ void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
                                                     ShaderSystem::twoDPaintingModeAreaShader(), 
                                                     ShaderUTIL::PaintingData(
                                                                                 ShaderUTIL::PaintingData::PaintingBuffers(
-                                                                                                                            GL_TEXTURE5,
-                                                                                                                            (getScene()->get_selected_mesh()->face_selection_data.meshMask.ID) ? getScene()->get_selected_mesh()->face_selection_data.meshMask : appTextures.black,
+                                                                                                                            (panel_library_selected_texture.ID) ? panel_library_selected_texture.ID : appTextures.black,
+                                                                                                                            0,
                                                                                                                             0,
                                                                                                                             0,
                                                                                                                             0,
