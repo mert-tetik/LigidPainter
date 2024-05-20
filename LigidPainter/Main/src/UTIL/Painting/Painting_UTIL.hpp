@@ -74,7 +74,7 @@ static void set_brush_properties (
     ShaderSystem::twoDPainting().setInt("brush.sinWavePattern", brushProperties.sinWavePattern);
     
     //Bind the texture of the brush
-    ShaderSystem::twoDPainting().setFloat("brush.txtr", GL::bindTexture_2D((brushProperties.brushTexture.ID) ? brushProperties.brushTexture.ID : appTextures.white.ID, "PaintingUTIL : generate_projected_painting_texture"));
+    ShaderSystem::twoDPainting().setInt("brush.txtr", GL::bindTexture_2D((brushProperties.brushTexture.ID) ? brushProperties.brushTexture.ID : appTextures.white.ID, "PaintingUTIL : generate_projected_painting_texture"));
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
@@ -97,21 +97,13 @@ static void set_brush_properties (
                                             if(settings.painting_mode == 6)\
                                                 data = settings.filter_mode.src;
 
-static Texture painting_BG_texture;
-static Framebuffer window_paint_FBO;
 static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> strokes, Brush brush, int frame_count, bool paint_offset_value){
-    if(!window_paint_FBO.ID){
-        window_paint_FBO = Framebuffer(*window_paint_texture, GL_TEXTURE_2D, "window_paint");
-        painting_BG_texture = Texture((char*)nullptr, 1, 1);
-    }
-    else{
-        window_paint_FBO.setColorBuffer(*window_paint_texture, GL_TEXTURE_2D);
-    }
     
     //Bind the painting texture to the painting framebuffer
-    window_paint_FBO.colorBuffer.duplicateTexture(painting_BG_texture, "void window_paint");
+    Texture copy_txtr = window_paint_texture->get_temp_copy_txtr("void window_paint");
 
-    window_paint_FBO.bind();
+    Framebuffer FBO = FBOPOOL::requestFBO(*window_paint_texture, "window_paint");
+    FBO.bind();
 
     float resolution = window_paint_texture->getResolution().x;
 
@@ -132,7 +124,7 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     ShaderSystem::twoDPainting().setVec2("paintingRes", glm::vec2(resolution)); 
     ShaderSystem::twoDPainting().setVec2("videoScale", getContext()->windowScale); 
     ShaderSystem::twoDPainting().setInt("frame", frame_count);
-    ShaderSystem::twoDPainting().setInt("bgTxtr", GL::bindTexture_2D(painting_BG_texture.ID, "paintingUTIL : window_paint"));
+    ShaderSystem::twoDPainting().setInt("bgTxtr", GL::bindTexture_2D(copy_txtr.ID, "paintingUTIL : window_paint"));
     ShaderSystem::twoDPainting().setInt("redChannelOnly", !paint_offset_value);
     ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(0.));
     
@@ -162,6 +154,8 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     //Finish
     GL::releaseBoundTextures("paintingUTIL : window_paint");
     ShaderUTIL::release_bound_shader();
+    FBOPOOL::releaseFBO(FBO);
+
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);
     glDepthFunc(GL_LESS);

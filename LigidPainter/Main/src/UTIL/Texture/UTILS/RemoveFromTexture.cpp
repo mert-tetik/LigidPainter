@@ -70,11 +70,11 @@ void Texture::removeUnselectedFaces(Mesh& mesh){
     // Get already bound shader to set it back at the end
     Shader already_bound_shader = ShaderUTIL::get_bound_shader();
     
-    // Get the FBO
-    Framebuffer FBO = FBOPOOL::requestFBO(*this, "Texture::removeSeams");
-    
     // Get the copy of the texture
     Texture copy_txtr = this->get_temp_copy_txtr("Texture::removeUnselectedFaces");
+    
+    // Get the FBO
+    Framebuffer FBO = FBOPOOL::requestFBO(*this, "Texture::removeSeams");
 
     // Clear the color buffer
     glClearColor(0,0,0,0);
