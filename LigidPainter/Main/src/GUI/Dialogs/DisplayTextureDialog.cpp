@@ -97,7 +97,7 @@ void DisplayTextureDialog::show(Timer& timer, Texture texture){
         twoD_display_btn.render(timer, true);
         
         //Close the dialog
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->panel.hover && *Mouse::LClick())){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
             if(!this->dialogControl.firstFrameActivated){
                 this->dialogControl.unActivate();
             }

@@ -106,7 +106,7 @@ void modifiersPanelInteractions(Panel& modifiersPanel, Material* material, int& 
 
                     if(modifiersPanel.sections[secI].elements[elementI].button.clicked){
 
-                        registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].button.text, *material);
+                        dialog_log.registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].button.text, *material);
 
                         if(secI == modifiersPanel.sections.size()-1 && elementI == modifiersPanel.sections[secI].elements.size()-1){
                             modifiersPanel.sections[secI].elements[0].button.filter.shader.ID = 0;
@@ -210,7 +210,7 @@ void modifiersPanelInteractions(Panel& modifiersPanel, Material* material, int& 
                 if(modifiersPanel.sections[secI].elements[elementI].state == 1){
                     if(modifiersPanel.sections[secI].elements[elementI].rangeBar.pointerPressed == true || modifiersPanel.sections[secI].elements[elementI].rangeBar.defaultPointBtnPressed || (modifiersPanel.sections[secI].elements[elementI].rangeBar.leftArrowHover && *Mouse::LClick()) || (modifiersPanel.sections[secI].elements[elementI].rangeBar.rightArrowHover && *Mouse::LClick())){
                         if(modifiersPanel.sections[secI].elements[elementI].rangeBar.hover && *Mouse::LClick() || modifiersPanel.sections[secI].elements[elementI].rangeBar.defaultPointBtnPressed || (modifiersPanel.sections[secI].elements[elementI].rangeBar.leftArrowHover && *Mouse::LClick()) || (modifiersPanel.sections[secI].elements[elementI].rangeBar.rightArrowHover && *Mouse::LClick()))
-                            registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].rangeBar.text, *material);
+                            dialog_log.registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].rangeBar.text, *material);
                         
                         updateTheMaterial = true;
                     }
@@ -219,7 +219,7 @@ void modifiersPanelInteractions(Panel& modifiersPanel, Material* material, int& 
                 //If checkbox clicked update the material
                 if(modifiersPanel.sections[secI].elements[elementI].state == 2){
                     if(modifiersPanel.sections[secI].elements[elementI].checkBox.hover && *Mouse::LClick() == true){
-                        registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].checkBox.text, *material);
+                        dialog_log.registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].checkBox.text, *material);
 
                         updateTheMaterial = true;
                     }
@@ -228,7 +228,7 @@ void modifiersPanelInteractions(Panel& modifiersPanel, Material* material, int& 
                 //If checkbox clicked update the material
                 if(modifiersPanel.sections[secI].elements[elementI].state == 3){
                     if(modifiersPanel.sections[secI].elements[elementI].comboBox.selectionDone){
-                        registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].checkBox.text, *material);
+                        dialog_log.registerMaterialAction("Modifier updated - " + modifiersPanel.sections[secI].elements[elementI].checkBox.text, *material);
 
                         updateTheMaterial = true;
                     }
@@ -241,7 +241,7 @@ void modifiersPanelInteractions(Panel& modifiersPanel, Material* material, int& 
         for (size_t elementI = 0; elementI < material->materialModifiers[selectedMaterialModifierIndex].sections[secI].elements.size(); elementI++){
             bool ctrlShiftWCondition = getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL) && getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && getContext()->window.isKeyPressed(LIGIDGL_KEY_W);
             if((material->materialModifiers[selectedMaterialModifierIndex].sections[secI].elements[elementI].button.hover || material->materialModifiers[selectedMaterialModifierIndex].sections[secI].elements[elementI].rangeBar.hover || material->materialModifiers[selectedMaterialModifierIndex].sections[secI].elements[elementI].checkBox.hover) && *Mouse::RClick() && ctrlShiftWCondition){
-                registerMaterialAction("New material shortcut", *material);
+                dialog_log.registerMaterialAction("New material shortcut", *material);
                 material->materialShortcuts.push_back(MaterialShortcut("New_Shortcut", &material->materialModifiers[selectedMaterialModifierIndex].sections[secI].elements[elementI], nullptr, selectedMaterialModifierIndex, secI, elementI));
             }
         }

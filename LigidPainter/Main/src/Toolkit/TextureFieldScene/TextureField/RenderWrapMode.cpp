@@ -78,7 +78,7 @@ void TextureField::renderWrappedTextureField(
             this->renderPoints(timer, doMouseTracking);
             
             if(getContext()->window.isKeyClicked(LIGIDGL_KEY_G) && this->isAnyWrapPointActive() && !textureField_alreadyInteracted)
-                registerTextureFieldAction("Wrapped texture field - Point moved", srcVector);
+                dialog_log.registerTextureFieldAction("Wrapped texture field - Point moved", srcVector);
             
             // Update the wrap box if any of the points moved & register move action
             if(this->didAnyWrapPointMove())
@@ -132,31 +132,31 @@ void TextureField::renderWrappedTextureField(
             this->renderWrappedModifyElements(timer, doMouseTracking);
         
             if(wrap_deleteButton.clicked){
-                registerTextureFieldAction("Texture field deleted", srcVector);
+                dialog_log.registerTextureFieldAction("Texture field deleted", srcVector);
                 srcVector.erase(srcVector.begin() + srcVectorI);
                 srcVectorI--;
             }
             else if(wrap_flipHorizontalButton.clicked){
-                registerTextureFieldAction("Wrapped texture field - flip in x axis", srcVector);
+                dialog_log.registerTextureFieldAction("Wrapped texture field - flip in x axis", srcVector);
                 this->threeDWrapBox.flipX = !this->threeDWrapBox.flipX;
 
                 this->updateWrapBox();
             }
             else if(wrap_flipVerticalButton.clicked){
-                registerTextureFieldAction("Wrapped texture field - flip in y axis", srcVector);
+                dialog_log.registerTextureFieldAction("Wrapped texture field - flip in y axis", srcVector);
                 this->threeDWrapBox.flipY = !this->threeDWrapBox.flipY;
 
                 this->updateWrapBox();
             }
             else if(wrap_unwrapModeButton.clicked){
-                registerTextureFieldAction("Texture field - Unwrapped", srcVector);
+                dialog_log.registerTextureFieldAction("Texture field - Unwrapped", srcVector);
                 this->wrapMode = false;
 
                 this->unplaceWrapPoints();
                 
             }
             else if(wrap_detailModeButton.hover && *Mouse::LClick()){
-                registerTextureFieldAction("Wrapped Texture field - Detail mode activated", srcVector);
+                dialog_log.registerTextureFieldAction("Wrapped Texture field - Detail mode activated", srcVector);
                 this->setDetailedWrapPoints();
             }
         }

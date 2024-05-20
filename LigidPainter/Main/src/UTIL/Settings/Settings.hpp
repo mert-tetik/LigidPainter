@@ -114,6 +114,10 @@ struct AppTextures{
     Texture flipV;
     Texture plus;
     Texture minus;
+    Texture loadingIcon;
+    Texture historyIcon;
+    Texture historyLibraryIcon;
+    Texture messageIcon;
     
     //--Textures
     Texture greetingDialogImage;  
@@ -142,6 +146,7 @@ struct AppTextures{
     Texture mascotCat_sleeping;
     Texture mascotCat_pawL;
     Texture mascotCat_pawR;
+    Texture mascotCat_speechBubble;
 };
 
 struct AppVideos{

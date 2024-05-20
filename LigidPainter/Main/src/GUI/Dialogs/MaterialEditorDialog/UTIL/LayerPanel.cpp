@@ -132,7 +132,7 @@ static void checkShortcutInteraction(Panel& layerPanel, Material* material){
             if((layerPanel.sections[0].elements[elementI].button.hover) && *Mouse::RClick() && ctrlShiftWCondition && elementI < material->materialModifiers.size()){
                 
                 // Create a new mask texture shortcut
-                registerMaterialAction("New material shortcut", *material);
+                dialog_log.registerMaterialAction("New material shortcut", *material);
                 material->materialShortcuts.push_back(MaterialShortcut("New_Shortcut", nullptr, &material->materialModifiers[elementI].maskTexture, elementI, -1, -1));
             }
         }
@@ -217,7 +217,7 @@ static void layerPanelInteractions(Panel& layerPanel, Panel& modifiersPanel, Mat
                     if(cursorPosY > btnPosY){        
                         if(i < material->materialModifiers.size() && checkI < material->materialModifiers.size()){
                             if(i != checkI){
-                                registerMaterialAction("Modifier moved", *material);
+                                dialog_log.registerMaterialAction("Modifier moved", *material);
                                 modMoved = true;
                             }
 
@@ -269,7 +269,7 @@ static void layerPanelInteractions(Panel& layerPanel, Panel& modifiersPanel, Mat
 
 static void moveModifierToTop(int index, Material* material, int& selectedMaterialModifierIndex){
     if(index != 0){
-        registerMaterialAction("Modifier moved to top", *material);
+        dialog_log.registerMaterialAction("Modifier moved to top", *material);
 
         MaterialModifier topModifier = material->materialModifiers[index - 1];
         MaterialModifier currentModifier = material->materialModifiers[index];
@@ -292,7 +292,7 @@ static void moveModifierToTop(int index, Material* material, int& selectedMateri
 
 static void moveModifierToBottom(int index, Material* material, int& selectedMaterialModifierIndex){
     if(index != material->materialModifiers.size()-1){
-        registerMaterialAction("Modifier moved to bottom", *material);
+        dialog_log.registerMaterialAction("Modifier moved to bottom", *material);
         
         MaterialModifier bottomModifier = material->materialModifiers[index + 1];
         MaterialModifier currentModifier = material->materialModifiers[index];
@@ -325,7 +325,7 @@ static void contextMenuInteractions(Material* material, Panel& modifiersPanel, P
                     
                     // Delete the material modifier button pressed
                     if(res == 0){            
-                        registerMaterialAction("Modifier deleted", *material);
+                        dialog_log.registerMaterialAction("Modifier deleted", *material);
 
                         // Delete the related shortcut
                         for (size_t i = 0; i < material->materialShortcuts.size(); i++)
@@ -378,7 +378,7 @@ static void contextMenuInteractions(Material* material, Panel& modifiersPanel, P
                     
                     //Change mask button pressed
                     else if(res == 3){ 
-                        registerMaterialAction("Modifier change mask", *material);
+                        dialog_log.registerMaterialAction("Modifier change mask", *material);
                         
                         dialog_textureSelection.show(timer, material->materialModifiers[elementI].maskTexture, 128, false);
 
@@ -401,70 +401,70 @@ static void contextMenuInteractions(Material* material, Panel& modifiersPanel, P
 
         // Texture Modifier
         if(res == 0){
-            registerMaterialAction("Texture modifier added", *material);
+            dialog_log.registerMaterialAction("Texture modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(TEXTURE_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Dust Modifier
         else if(res == 1){
-            registerMaterialAction("Dust modifier added", *material);
+            dialog_log.registerMaterialAction("Dust modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(DUST_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Asphalt Modifier
         else if(res == 2){
-            registerMaterialAction("Asphalt modifier added", *material);
+            dialog_log.registerMaterialAction("Asphalt modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(ASPHALT_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Liquid Modifier
         else if(res == 3){
-            registerMaterialAction("Liquid modifier added", *material);
+            dialog_log.registerMaterialAction("Liquid modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(LIQUID_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Moss Modifier
         else if(res == 4){
-            registerMaterialAction("Moss modifier added", *material);
+            dialog_log.registerMaterialAction("Moss modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(MOSS_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Rust Modifier
         else if(res == 5){
-            registerMaterialAction("Rust modifier added", *material);
+            dialog_log.registerMaterialAction("Rust modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(RUST_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Skin Modifier
         else if(res == 6){
-            registerMaterialAction("Skin modifier added", *material);
+            dialog_log.registerMaterialAction("Skin modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(SKIN_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Solid Modifier
         else if(res == 7){
-            registerMaterialAction("Solid modifier added", *material);
+            dialog_log.registerMaterialAction("Solid modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(SOLID_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
         
         // Wooden Modifier
         else if(res == 8){
-            registerMaterialAction("Wooden modifier added", *material);
+            dialog_log.registerMaterialAction("Wooden modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(WOODEN_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }
 
         // Math Modifier
         else if(res == 9){
-            registerMaterialAction("Math modifier added", *material);
+            dialog_log.registerMaterialAction("Math modifier added", *material);
             material->materialModifiers.insert(material->materialModifiers.begin(), MaterialModifier(MATH_MATERIAL_MODIFIER));
             newModifierAdded = true;
         }

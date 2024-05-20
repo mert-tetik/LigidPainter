@@ -122,7 +122,7 @@ void TextureSelectionDialog::show(Timer &timer, Texture& receivedTexture, int di
         }
 
         //End the dialog
-        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && *Mouse::LClick())){
+        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
             dialogControl.unActivate();
             selectedTextureIndex = 0;
         }

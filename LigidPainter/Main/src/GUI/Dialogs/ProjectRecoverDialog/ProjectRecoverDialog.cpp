@@ -340,7 +340,7 @@ void ProjectRecoverDialog::show(Timer& timer){
         }
 
         //End the dialog
-        if(((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->panel.hover && *Mouse::LClick()) && !projectSelectionMode) && !this->dialogControl.firstFrameActivated){
+        if(((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) && !projectSelectionMode) && !this->dialogControl.firstFrameActivated){
             dialogControl.unActivate();
         }
         

@@ -83,14 +83,14 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
         // Select all the faces
         if(shortcuts_CTRL_A()){
             if(registerHistory){
-                registerFaceSelectionAction("Select all the faces - Painting", mesh->face_selection_data.selectedPrimitiveIDs, meshI);
+                dialog_log.registerFaceSelectionAction("Select all the faces - Painting", mesh->face_selection_data.selectedPrimitiveIDs, meshI);
             }
 
             select_all_faces(&mesh->face_selection_data.selectedPrimitiveIDs, &mesh->face_selection_data.changedIndices);
         }
 
         if(*Mouse::LClick() && registerHistory)
-            registerFaceSelectionAction("Face selection - Painting", mesh->face_selection_data.selectedPrimitiveIDs, meshI);
+            dialog_log.registerFaceSelectionAction("Face selection - Painting", mesh->face_selection_data.selectedPrimitiveIDs, meshI);
     
         glm::vec2 pos;
         glm::ivec2 scale;

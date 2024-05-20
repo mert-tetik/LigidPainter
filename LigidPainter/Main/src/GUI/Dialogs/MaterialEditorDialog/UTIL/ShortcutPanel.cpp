@@ -146,7 +146,7 @@ static void shortcutPanelInteractions(Panel& shortcutPanel, Material* material, 
     
         // Rename button of the shortcut is clicked
         if(shortcutPanel.sections[i + 1].elements[shortcutPanel.sections[i + 1].elements.size() - 2].button.hover && *Mouse::LClick()){
-            registerMaterialAction("Material shortcut renamed", *material);
+            dialog_log.registerMaterialAction("Material shortcut renamed", *material);
             shortcutRenamingIndex = i;
             shortcutRenamingTextbox.text = material->materialShortcuts[i].title; 
             shortcutRenamingTextbox.activeChar = shortcutRenamingTextbox.text.size()-1; 
@@ -155,7 +155,7 @@ static void shortcutPanelInteractions(Panel& shortcutPanel, Material* material, 
         
         // Delete button of the shortcut is clicked
         if(shortcutPanel.sections[i + 1].elements[shortcutPanel.sections[i + 1].elements.size() - 1].button.hover && *Mouse::LClick()){
-            registerMaterialAction("Material shortcut removed", *material);
+            dialog_log.registerMaterialAction("Material shortcut removed", *material);
             material->materialShortcuts.erase(material->materialShortcuts.begin() + i);    
             break;
         }

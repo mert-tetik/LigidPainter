@@ -684,7 +684,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
             this->updateDisplayingTexture(receivedTexture, this->displayingTexture);
 
         if(this->saveButton.clicked){
-            registerImageEditorAction("Texture manipulated via texture editor dialog", Texture(), *receivedTexture);
+            dialog_log.registerImageEditorAction("Texture manipulated via texture editor dialog", Texture(), *receivedTexture);
 
             Texture txtr = receivedTexture->duplicateTexture("TextureEditorDialog::show");
             this->updateDisplayingTexture(&txtr, *receivedTexture);

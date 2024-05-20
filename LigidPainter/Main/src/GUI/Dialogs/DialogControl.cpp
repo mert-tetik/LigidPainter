@@ -108,6 +108,12 @@ void DialogControl::updateEnd(Timer &timer, float transitionDuration){
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.);
 
     if(loop_mode){
+        if(!Settings::properties()->cat_hide){
+            Debugger::block("GUI : Log Dialog"); // Start
+            dialog_log.render(timer);
+            Debugger::block("GUI : Log Dialog"); // End
+        }
+
         getContext()->window.swapBuffers();
 
         //Set mouse states to default

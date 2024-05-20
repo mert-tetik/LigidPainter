@@ -181,6 +181,8 @@ namespace UTIL{
     /// @brief Returns 10 for GL_TEXTURE10
     unsigned int get_texture_slot_index(unsigned int slot);
 
+    /// @brief Returns true if str has the first_word as first word. Str is automatically transformed into upper-case and first_word must be upper-case too.
+    bool doHaveWordAsFirstWord(const std::string& str, const std::string& first_word);
 }
 
 /// @brief Manages color.

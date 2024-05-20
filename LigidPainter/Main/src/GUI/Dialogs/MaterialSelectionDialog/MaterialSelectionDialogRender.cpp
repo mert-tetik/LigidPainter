@@ -138,7 +138,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         
 
         //Close the dialog
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && *Mouse::LClick())){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
             if(!dialogControl.firstFrameActivated){
                 this->dialogControl.unActivate();
             }

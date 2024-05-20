@@ -143,13 +143,14 @@ void TextRenderer::renderLeftToRight(
                                         glm::vec3 pos
                                     ){
 
-	ShaderSystem::buttonShader().use();
-
 	glm::vec3 startingPoint = pos;
 
 	float overallX = getTextLastCharOffset();
 	
 	int txtr_unit = GL::bindTexture_2D(0, "TextRenderer : Render character");
+	
+	ShaderSystem::buttonShader().setInt("properties.txtr", txtr_unit); 
+	glActiveTexture(GL_TEXTURE0 + txtr_unit); 
 
 	std::string::const_iterator c;
 	for (c = textDataText.begin(); c != textDataText.end(); c++)
@@ -184,10 +185,11 @@ void TextRenderer::renderLeftToRight(
 			//Set the transform values
 			ShaderSystem::buttonShader().setVec2("scale", glm::vec2(w/1.7,h/1.7));
 			ShaderSystem::buttonShader().setVec3("pos", glm::vec3(xpos + w/1.7,ypos - (h/1.7) + Settings::videoScale()->y / 210, textDataPos.z));
-			ShaderSystem::buttonShader().setInt("properties.txtr", txtr_unit); glActiveTexture(GL_TEXTURE0 + txtr_unit); glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-			
-			if(textDataMinX < xpos)
-				getBox()->draw("TextRenderer::renderLeftToRight");
+			glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+
+			if(textDataMinX < xpos){
+				glDrawArrays(GL_TRIANGLES, 0, 6);
+			}
 			
 			//To the right
 			pos.x += (ch.Advance >> 6) * textDataScale;
@@ -205,9 +207,6 @@ void TextRenderer::renderRightToLeft(glm::vec3 pos){
 
 
 void TextRenderer::rndrTxt(int textPosCharIndex){
-	glActiveTexture(GL_TEXTURE0);
-	
-	ShaderSystem::buttonShader().setInt("properties.txtr",0);
 	ShaderSystem::buttonShader().setInt("states.renderText",1);
 
 	glm::vec3 textPos = positionTheText();

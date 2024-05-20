@@ -402,3 +402,22 @@ float UTIL::new_value_range(float value, float min, float max, float new_min, fl
 unsigned int UTIL::get_texture_slot_index(unsigned int slot){
     return slot - GL_TEXTURE0;
 } 
+
+bool UTIL::doHaveWordAsFirstWord(const std::string& str, const std::string& first_word) {
+    // Find the first non-whitespace character
+    auto it = std::find_if(str.begin(), str.end(), [](unsigned char c) { return !std::isspace(c); });
+    
+    if (it != str.end()) {
+        // Extract the first word
+        auto start = it;
+        auto end = std::find_if(start, str.end(), [](unsigned char c) { return std::isspace(c); });
+        std::string firstWord(start, end);
+        
+        // Convert the first word to uppercase for case-insensitive comparison
+        std::transform(firstWord.begin(), firstWord.end(), firstWord.begin(), [](unsigned char c) { return std::toupper(c); });
+        
+        // Check if the first word is "ERROR"
+        return firstWord == first_word;
+    }
+    return false;
+}

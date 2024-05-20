@@ -150,7 +150,7 @@ void Library::addTexture(Texture texture, const std::string actionTitle){
     __changed = true;
     
     if(actionTitle != "")
-        registerTextureAdditionAction(actionTitle, Texture(), texture, __textures.size());
+        dialog_log.registerTextureAdditionAction(actionTitle, Texture(), texture, __textures.size());
 
     texture.uniqueId = 0; 
 
@@ -167,7 +167,7 @@ void Library::addMaterial(Material material, const std::string actionTitle){
     __changed = true;
 
     if(actionTitle != "")
-        registerMaterialAdditionAction(actionTitle, Texture(), material, __materials.size());
+        dialog_log.registerMaterialAdditionAction(actionTitle, Texture(), material, __materials.size());
     
     //Give unique ID to the material
 
@@ -183,7 +183,7 @@ void Library::addBrush(Brush brush, const std::string actionTitle){
     __changed = true;
 
     if(actionTitle != "")
-        registerBrushAdditionAction(actionTitle, Texture(), brush, __brushes.size());
+        dialog_log.registerBrushAdditionAction(actionTitle, Texture(), brush, __brushes.size());
     
     __brushes.push_back(brush);
     
@@ -223,7 +223,7 @@ void Library::eraseTexture   (int index){
 
     __changed = true;
 
-    registerTextureDeletionAction("Texture deleted", Texture(), __textures[index], index);
+    dialog_log.registerTextureDeletionAction("Texture deleted", Texture(), __textures[index], index);
         
     //glDeleteTextures(1, &__textures[index].ID);
 
@@ -241,7 +241,7 @@ void Library::eraseMaterial  (int index){
     
     __changed = true;
 
-    registerMaterialDeletionAction("Material deleted", Texture(), __materials[index], index);
+    dialog_log.registerMaterialDeletionAction("Material deleted", Texture(), __materials[index], index);
 
     //__materials[index].deleteBuffers();
     
@@ -257,7 +257,7 @@ void Library::eraseBrush     (int index){
 
     __changed = true;
 
-    registerBrushDeletionAction("Brush deleted", Texture(), __brushes[index], index);
+    dialog_log.registerBrushDeletionAction("Brush deleted", Texture(), __brushes[index], index);
 
     /*
     glDeleteTextures(1, &__brushes[index].displayingTexture.ID);

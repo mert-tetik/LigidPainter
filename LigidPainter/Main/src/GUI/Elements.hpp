@@ -789,4 +789,6 @@ public:
     void render(Timer &timer,bool doMouseTracking);
 };
 
+void render_sprite_image(Timer &timer, bool doMouseTracking, glm::vec3 pos, glm::vec2 scale, Texture image);
+
 #endif //ELEMENTS_HPP

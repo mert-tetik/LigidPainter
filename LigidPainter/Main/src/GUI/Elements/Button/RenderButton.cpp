@@ -79,13 +79,9 @@ void Button::render(
     
     if(this->clicked){
         if(this->textureSelection3D){
-            registerButtonAction(this->text + "button texture changed", Texture(), this, *this);
-
             dialog_textureSelection.show(timer, this->texture, selectionDialogTxtrRes, false);
         }
         if(this->textureSelection2D){
-            registerButtonAction(this->text + "button texture changed", Texture(), this, *this);
-            
             dialog_textureSelection.show(timer, this->texture, selectionDialogTxtrRes, true);
         }
         if(this->filterSelection){
@@ -143,11 +139,12 @@ void Button::render(
     }
 
     if(hoverDuration > 2 && this->infoText.size()){
+        glDisable(GL_DEPTH_TEST);
         Button infoBtn = Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f, 1.3f), this->infoText, Texture(), 0.f, false);
         infoBtn.pos.x = Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f;
-        infoBtn.pos.y = Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f;
-        infoBtn.pos.y += infoBtn.scale.y * 2.f;
+        infoBtn.pos.y = this->pos.y + this->scale.y + infoBtn.scale.y;
         infoBtn.pos.z = this->pos.z + 0.03f;
         infoBtn.render(timer, false);
+        glEnable(GL_DEPTH_TEST);
     }
 }

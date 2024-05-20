@@ -140,6 +140,7 @@ namespace ShaderSystem{
     Shader layersUpdate();
     Shader solidPaintingShader();
     Shader removeUnselectedFacesShader();
+    Shader spriteRenderingShader();
 
     void initShaderSystem();
 };

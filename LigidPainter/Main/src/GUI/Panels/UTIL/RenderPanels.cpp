@@ -159,8 +159,6 @@ void panels_render(Timer& timer)
         dialog_log.render(timer);
         Debugger::block("GUI : Log Dialog"); // End
     }
-    else
-        dialog_log.cryCounter = 5;
 
     updateThePreRenderedPanels = false;
 }

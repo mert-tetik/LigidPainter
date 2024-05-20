@@ -140,7 +140,7 @@ void NewTextureDialog::show(Timer& timer){
         }
 
         //End the dialog
-        if((panel.sections[0].elements[3].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick())){
+        if((panel.sections[0].elements[3].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
             if(!(panel.sections[0].elements[4].button.clicked)){
                 if(!panel.sections[0].elements[2].comboBox.pressed){
                     panel.sections[0].elements[0].button.color = glm::vec4(0,0,0,1);

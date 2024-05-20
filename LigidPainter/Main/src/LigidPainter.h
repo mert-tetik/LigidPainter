@@ -119,6 +119,7 @@ void load_ligidpainter(){
     load_ligidpainter_done = true;
     
     LGDLOG::start.clear();
+    dialog_log.messages.clear();
 
     return;
 }

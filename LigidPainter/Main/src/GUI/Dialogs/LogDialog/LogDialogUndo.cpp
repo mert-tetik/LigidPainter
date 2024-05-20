@@ -25,21 +25,24 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "3D/ThreeD.hpp" 
+
 #include "GUI/GUI.hpp" 
+
 #include "UTIL/Mouse/Mouse.hpp" 
 #include "UTIL/Library/Library.hpp" 
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp" 
+
+#include "./HistoryActions/HistoryActions.hpp"
 
 #include <string>
 #include <iostream>
 #include <vector>
 #include <filesystem>
 
-#include "GUI/Dialogs/LogDialog/Registering.hpp"
-
 void updatePrimitivesArrayTexture(Mesh* selectedMesh, bool update_all);
 
+/*
 void LogDialog::undo(){
     if(this->activeHistoryMode == HISTORY_VECTORS_MODE && actions_Vectors.size()){
         if(actions_Vectors[actions_Vectors.size() - 1].ID == VECTOR_ACTION){
@@ -51,7 +54,6 @@ void LogDialog::undo(){
             actions_Vectors.pop_back();
         }
         
-        unded = true;
     }
     if(this->activeHistoryMode == HISTORY_FACESELECTION_MODE && actions_FaceSelection.size()){
         FaceSelectionAction action = actions_FaceSelection[actions_FaceSelection.size() - 1];
@@ -74,7 +76,6 @@ void LogDialog::undo(){
         }
 
         actions_FaceSelection.pop_back();
-        unded = true;
     }
     if(this->activeHistoryMode == HISTORY_TEXTUREFIELDS_MODE && actions_TextureFields.size()){
         TextureFieldsAction action = actions_TextureFields[actions_TextureFields.size() - 1];
@@ -103,11 +104,10 @@ void LogDialog::undo(){
         
 
         actions_TextureFields.pop_back();
-        unded = true;
     }
     if(this->activeHistoryMode == HISTORY_MATERIALEDITOR_MODE && actions_MaterialEditor.size()){
         
-        /*MaterialEditorAction action = actions_MaterialEditor[actions_MaterialEditor.size() - 1];
+        MaterialEditorAction action = actions_MaterialEditor[actions_MaterialEditor.size() - 1];
         if(dialog_materialEditor.material)
             dialog_materialEditor.material->deleteBuffers();
 
@@ -123,10 +123,8 @@ void LogDialog::undo(){
         }
 
         Library::setChanged(true);
-        */
 
         actions_MaterialEditor.pop_back();
-        unded = true;
     }
     
     if(this->activeHistoryMode == HISTORY_PAINTING_MODE){
@@ -248,3 +246,4 @@ void LogDialog::undo(){
         actions_Library.pop_back();
     }
 }
+*/

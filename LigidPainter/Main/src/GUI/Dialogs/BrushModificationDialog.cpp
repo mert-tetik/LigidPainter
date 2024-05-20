@@ -191,7 +191,7 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
         }
 
         //End the dialog
-        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && !this->libraryBrushSelectionButton.hover && !this->libraryBrushSelectionPanel.hover && !this->brushDisplayBtn.hover && *Mouse::LClick())){
+        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && !this->libraryBrushSelectionButton.hover && !this->libraryBrushSelectionPanel.hover && !this->brushDisplayBtn.hover && !dialog_log.isHovered() && *Mouse::LClick())){
             dialogControl.unActivate();
         }
 

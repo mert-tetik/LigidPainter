@@ -284,7 +284,7 @@ void TexturePackEditorDialog::show(Timer &timer, TexturePack& receivedTexturePac
         }
 
         //End the dialog
-        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && *Mouse::LClick())){
+        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
             if(!this->subPanel.sections[0].elements[2].button.clicked){
                 dialogControl.unActivate();
                 selectedTextureIndex = 0;

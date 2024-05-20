@@ -125,7 +125,7 @@ void TextureField::render2DTextureField(
         }
 
         if(getContext()->window.isKeyClicked(LIGIDGL_KEY_R) || (rotateBtn.hover && *Mouse::LClick())){
-            registerTextureFieldAction("Texture field rotated", srcVector);
+            dialog_log.registerTextureFieldAction("Texture field rotated", srcVector);
         }
     }
 
@@ -162,7 +162,7 @@ void TextureField::render2DTextureField(
 
     if(*Mouse::LClick()){
         if(this->textureDisplayingButton.hover && this->active && !this->rotateBtn.hover){
-            registerTextureFieldAction("Texture field moved", srcVector);
+            dialog_log.registerTextureFieldAction("Texture field moved", srcVector);
         }
 
         this->active = this->is2DModeHovered();
@@ -221,7 +221,7 @@ void TextureField::render2DTextureField(
     }
 
     if(topLeft_ResizeButton.hover && *Mouse::LClick() || bottomLeft_ResizeButton.hover && *Mouse::LClick() || topRight_ResizeButton.hover && *Mouse::LClick() || bottomRight_ResizeButton.hover && *Mouse::LClick()){
-        registerTextureFieldAction("Texture field resized", srcVector);
+        dialog_log.registerTextureFieldAction("Texture field resized", srcVector);
     }
 
     resizing(
@@ -235,34 +235,34 @@ void TextureField::render2DTextureField(
             );
 
     if(this->deleteButton.clicked){
-        registerTextureFieldAction("Texture field deleted", srcVector);
+        dialog_log.registerTextureFieldAction("Texture field deleted", srcVector);
         srcVector.erase(srcVector.begin() + srcVectorI);
         srcVectorI--;
     }
     else if(this->scaleToTextureResolutionButton.clicked){
-        registerTextureFieldAction("Texture field scaled to the texture resolution", srcVector);
+        dialog_log.registerTextureFieldAction("Texture field scaled to the texture resolution", srcVector);
         glm::vec2 prevScale = scale;
         twoDScaleAccordingToTextureRes();
         pos.x -= prevScale.x -scale.x; 
     }
     else if(this->flipHorizontalButton.clicked){
-        registerTextureFieldAction("Texture field flipped horizontally", srcVector);
+        dialog_log.registerTextureFieldAction("Texture field flipped horizontally", srcVector);
         this->texture.flipTexture(true, false);
         Settings::defaultFramebuffer()->FBO.bind();
         flippedH = !flippedH;
     }
     else if(this->flipVerticalButton.clicked){
-        registerTextureFieldAction("Texture field flipped vertically", srcVector);
+        dialog_log.registerTextureFieldAction("Texture field flipped vertically", srcVector);
         this->texture.flipTexture(false, true);
         Settings::defaultFramebuffer()->FBO.bind();
         flippedV = !flippedV;
     }
     else if(this->cancelRotationButton.clicked){
-        registerTextureFieldAction("Texture field rotation set to 0", srcVector);
+        dialog_log.registerTextureFieldAction("Texture field rotation set to 0", srcVector);
         this->rotation = 0.f;
     }
     else if(this->wrapModeButton.clicked){
-        registerTextureFieldAction("Texture field - Wrap", srcVector);
+        dialog_log.registerTextureFieldAction("Texture field - Wrap", srcVector);
         this->wrapMode = true;
     }
 }

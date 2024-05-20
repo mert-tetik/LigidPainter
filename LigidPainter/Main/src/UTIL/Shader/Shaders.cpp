@@ -78,6 +78,7 @@ Shader __color3DInstancing;
 Shader __layersUpdate;
 Shader __solidPaintingShader;
 Shader __removeUnselectedFacesShader;
+Shader __spriteRenderingShader;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag");
@@ -124,6 +125,7 @@ void ShaderSystem::initShaderSystem(){
     __splitTexturesShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/SplitTextures.frag");
     __solidShadingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/SolidShading.frag");
     __solidPaintingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/SolidPainting.frag");
+    __spriteRenderingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/SpriteRender.frag");
     __textureRenderingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/TextureRendering.frag");
     __threeDTextureRenderingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert" , "LigidPainter/Resources/Shaders/aFrag/TextureRendering.frag");
     __edgeWearShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert" , "LigidPainter/Resources/Shaders/aFrag/EdgeWear.frag");
@@ -304,6 +306,9 @@ Shader ShaderSystem::solidPaintingShader(){
 }
 Shader ShaderSystem::removeUnselectedFacesShader(){
     return __removeUnselectedFacesShader;
+}
+Shader ShaderSystem::spriteRenderingShader(){
+    return __spriteRenderingShader;
 }
 
 

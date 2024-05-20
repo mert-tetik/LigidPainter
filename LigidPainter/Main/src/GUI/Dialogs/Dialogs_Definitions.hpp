@@ -12,7 +12,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 ---------------------------------------------------------------------------
 */
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
@@ -886,47 +886,34 @@ namespace LGDLOG {
 #define BRUSH_CHANGED_ACTION 14
 #define VECTOR_ACTION_3D 15
 
-#define HISTORY_LIBRARY_MODE 0
 #define HISTORY_PAINTING_MODE 1
 #define HISTORY_VECTORS_MODE 2
 #define HISTORY_FACESELECTION_MODE 4
 #define HISTORY_TEXTUREFIELDS_MODE 5
 #define HISTORY_MATERIALEDITOR_MODE 6 
 
-// -- Library --
-void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index);
-void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index);
-void registerMaterialDeletionAction(const std::string title, const Texture icon, Material material, const int index);
-void registerMaterialAdditionAction(const std::string title, const Texture icon, Material material, const int index);
-void registerBrushDeletionAction(const std::string title, const Texture icon, Brush brush, const int index);
-void registerBrushAdditionAction(const std::string title, const Texture icon, Brush brush, const int index);
-void registerBrushChangedAction(const std::string title, const Texture icon, Brush brush, const int index);
-void registerImageEditorAction(const std::string title, const Texture icon, Texture texture);
-void registerLibraryElementRenamingAction(const std::string title, const Texture icon, const int index, const std::string element, const std::string name);
+#define CAT_EMOTION_DEFAULT 0
+#define CAT_EMOTION_CRYING 1
+#define CAT_EMOTION_ROCK 2
+#define CAT_EMOTION_THINKING 3
+#define CAT_EMOTION_DIZZY 4
+#define CAT_EMOTION_SLEEPY 5
+#define CAT_EMOTION_RANDOM 6
+#define CAT_EMOTION_RELAXED 7
+#define CAT_EMOTION_THINKING 8
+#define CAT_EMOTION_SMILING 9
 
-// -- Painting --
-void registerPaintingAction(const std::string title, const Texture icon, Texture albedo, bool albedoPainted, 
-                            Texture roughness, bool roughnessPainted, Texture metallic, bool metallicPainted,
-                            Texture normal, bool normalPainted, Texture height, bool heightPainted, Texture ao,
-                            bool aoPainted);
+#include "./GUI/Dialogs/LogDialog/HistoryActions/HistoryActions.hpp"
 
-// -- Vector --
-void registerVectorAction(const std::string title);
-void registerVectorAction(const std::string title);
-
-// -- Face Selection -- 
-void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, int meshI);
-void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray);
-
-// -- Texture Field --
-void registerTextureFieldAction(const std::string title, std::vector<TextureField> fields);
-
-// -- Material Editor --
-void registerMaterialAction(const std::string title, Material material);
-
-
-void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton);
-void registerNodeAction(const std::string title, const Texture icon);
+struct HistoryActionRecords{
+   std::vector<LibraryAction> actions_Library;
+   std::map<unsigned int, std::vector<PaintingAction>> actions_Painting;
+   std::vector<PaintingAction> actions_MultiChannelPainting;
+   std::vector<VectorsAction> actions_Vectors;
+   std::vector<FaceSelectionAction> actions_FaceSelection;
+   std::vector<TextureFieldsAction> actions_TextureFields;
+   std::vector<MaterialEditorAction> actions_MaterialEditor;
+};
 
 class LogDialog
 {
@@ -936,66 +923,96 @@ private:
    std::string quitMSG = "";
    std::string catMSG = "";
    
-   /*! @brief Face of the cat*/
-   Texture msgFace;
-
    float petPoints = 0.f; 
    bool sleepingCat = false;
    size_t sleepingCounter = 0;
    int flipCount = 0;
-   int dizzyCounter = 0;
 
-   void talking(Timer& timer);
+   /*! @brief Cat is clicked & messages, history and stuff are revealed. */
+   bool menu_mode = false;
+   /*! @brief Goes from 0 to 1 gradually as menu_mode flag set to true. Goes 1 to 0 as the menu_mode set to false back. (Used for smooth transitions for menu_mode)*/
+   float menu_mode_mix_val = 0.f;
+   /*! @brief Menu bar that displays modes such as : Messages, general history, library history, multi-threading info*/
+   Panel menu_bar;
 
-public:
+   /*! @brief Change the face of the cat. Emotion param takes anything from CAT_EMOTION_*desired emotion* */
+   void assert_emotion(Timer& timer, const unsigned int emotion, const int duration);
+
+   /*! @brief Make the cat talk whatever text says*/
+   void make_cat_talk(Timer& timer, std::string text, const int duration);
+
+   /*! @brief Generate texts and make the cat talk if needed*/
+   void talking_interaction(Timer& timer);
+
+   /*---------- UTIL -----------*/
+   
+   /*! @brief Removes the text data from LGDLOG::start and moves it to the this->messages*/
+   void update_messages_array(Timer& timer);
+
+   int activeHistoryMode = 0;
+   /*! @brief Updates the current active history mode related to current state of the LigidPainter*/
+   void update_active_history_mode();
+
    Panel messagesPanel;
    Panel historyPanel;
-   
-   Button logBtn;
-   Button logBtnR;
-   Button logBtnL;
+   Panel libraryHistoryPanel;
+   Panel multiThreadInfoPanel;
+   Button logBtn; // The cat
+   /*! @brief Render the cat and panels and stuff. Anything related to graphics*/
+   void render_elements(Timer& timer);
 
-   bool libraryHistoryMode = true;
-   Button libraryHistoryBtn;
-   Button otherHistoryBtn;
+   HistoryActionRecords history_action_records;
+public:
+   /*! @brief All the messages generated in the app using LGDLOG::start is stored here.*/
+   std::vector<std::string> messages;
 
-   Button yesBtn;
-   Button noBtn;
-   
-   int activeHistoryMode = 0;
-
-   Button messageInfoBtn;
-   bool messageInfoActive = false;
-   float messageInfoBtnMixVal = 0.f;
-   size_t messageInfoBtnStartTime = 0.f;
-
-   int cryCounter = 0;
-
+   /*! @brief Position of the cat*/
    glm::vec2 pos = glm::vec2(54.531246, 4.722224);
 
-   float messagesPanelXAxisMixVal = 0.f;
-   float messagesPanelYAxisMixVal = 0.f;
-   float historyPanelXAxisMixVal = 0.f;
-   float historyPanelYAxisMixVal = 0.f;
-
-   bool messagesActive = false;
-   bool actionHistoryActive = false;
-
+   /*! @brief Indicates if the application should be closed. Controlled by getContext()::window::shouldClose()*/
    bool windowShouldClose = false;
-
-   DialogControl dialogControl;
 
    //Constructors
    LogDialog(){}
    LogDialog(int);
 
-   //Public member functions
+   // -- Library --
+   void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index);
+   void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index);
+   void registerMaterialDeletionAction(const std::string title, const Texture icon, Material material, const int index);
+   void registerMaterialAdditionAction(const std::string title, const Texture icon, Material material, const int index);
+   void registerBrushDeletionAction(const std::string title, const Texture icon, Brush brush, const int index);
+   void registerBrushAdditionAction(const std::string title, const Texture icon, Brush brush, const int index);
+   void registerBrushChangedAction(const std::string title, const Texture icon, Brush brush, const int index);
+   void registerImageEditorAction(const std::string title, const Texture icon, Texture texture);
+   void registerLibraryElementRenamingAction(const std::string title, const Texture icon, const int index, const std::string element, const std::string name);
+
+   // -- Painting --
+   void registerPaintingAction(const std::string title, const Texture icon, Texture albedo, bool albedoPainted, 
+                              Texture roughness, bool roughnessPainted, Texture metallic, bool metallicPainted,
+                              Texture normal, bool normalPainted, Texture height, bool heightPainted, Texture ao,
+                              bool aoPainted);
+
+   // -- Vector --
+   void registerVectorAction(const std::string title);
+
+   // -- Face Selection -- 
+   void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, int meshI);
+   void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray);
+
+   // -- Texture Field --
+   void registerTextureFieldAction(const std::string title, std::vector<TextureField> fields);
+
+   // -- Material Editor --
+   void registerMaterialAction(const std::string title, Material material);
+
+
+   void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton);
+   void registerNodeAction(const std::string title, const Texture icon);
+
+   /*! @brief Render the log dialog for a single frame*/
    void render(Timer& timer);
 
-   void render_elements(Timer& timer);
-
-   bool unded = false;
-   void undo();
-
+   /*! @brief Returns true if the log dialog is hovered*/
    bool isHovered();
 };

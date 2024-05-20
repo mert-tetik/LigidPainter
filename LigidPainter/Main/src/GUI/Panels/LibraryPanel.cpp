@@ -273,7 +273,7 @@ void panel_library_render(
                     
                     //Clicked to edit brush button
                     if(res == 0){
-                        registerBrushChangedAction("Edit brush", Texture(), *Library::getBrush(i), i);
+                        dialog_log.registerBrushChangedAction("Edit brush", Texture(), *Library::getBrush(i), i);
                         dialog_brushModification.show(timer, &Library::getBrush(i)->properties);
                     }
                     

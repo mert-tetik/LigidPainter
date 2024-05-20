@@ -690,7 +690,7 @@ void register_history_actions(int painting_mode, PaintSettings::PaintedBuffers p
         actionTitle = "Bucket painting";
     
     if(painted_buffers.material_painting){
-        registerPaintingAction(
+        dialog_log.registerPaintingAction(
                                     "Multi-channel painting", 
                                     Texture(), 
                                     painted_buffers.material_channel_albedo, painted_buffers.material_channel_albedo_active, 
@@ -702,7 +702,7 @@ void register_history_actions(int painting_mode, PaintSettings::PaintedBuffers p
                                 );
     }
     else{
-        registerPaintingAction(
+        dialog_log.registerPaintingAction(
                                     actionTitle, 
                                     Texture(), 
                                     painted_buffers.solid_painted_texture, true, 

@@ -118,6 +118,12 @@ void Settings::initAppTextures(){
     glGenTextures(1, &appTextures.mascotCat_sleeping.ID);
     glGenTextures(1, &appTextures.mascotCat_pawL.ID);
     glGenTextures(1, &appTextures.mascotCat_pawR.ID);
+    glGenTextures(1, &appTextures.mascotCat_speechBubble.ID);
+    
+    glGenTextures(1, &appTextures.loadingIcon.ID);
+    glGenTextures(1, &appTextures.historyIcon.ID);
+    glGenTextures(1, &appTextures.historyLibraryIcon.ID);
+    glGenTextures(1, &appTextures.messageIcon.ID);
 }
 
 void Settings::loadAppTextures(){
@@ -176,6 +182,10 @@ void Settings::loadAppTextures(){
     appTextures.noLayersWarningTexture.load("./LigidPainter/Resources/Images/NoLayersWarning.jpg");
     appTextures.noMaterialModifierIsConnectedToMaterialWarningImage.load("./LigidPainter/Resources/Images/NoMaterialModifierIsConnectedToMaterial.jpg");
     appTextures.materialChannelMissingTexture.load("./LigidPainter/Resources/Images/MaterialChannelMissingTexture.jpg");
+    appTextures.loadingIcon.load("./LigidPainter/Resources/Icons/Loading.png");
+    appTextures.historyIcon.load("./LigidPainter/Resources/Icons/History.png");
+    appTextures.historyLibraryIcon.load("./LigidPainter/Resources/Icons/HistoryLibrary.png");
+    appTextures.messageIcon.load("./LigidPainter/Resources/Icons/Message.png");
     appTextures.baking_LigidRay.load("./LigidPainter/Resources/Images/Baking_LigidRay.jpg");
     appTextures.baking_Default.load("./LigidPainter/Resources/Images/Baking_Default.jpg");
     appTextures.mascotCat_default.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/default.png");
@@ -189,6 +199,7 @@ void Settings::loadAppTextures(){
     appTextures.mascotCat_sleeping.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/sleeping.png");
     appTextures.mascotCat_pawL.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawL.png");
     appTextures.mascotCat_pawR.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawR.png");
+    appTextures.mascotCat_speechBubble.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/SpeechBubble.png");
     
     char whitePxs[4] = {127,127,127,127};
     char blackPxs[4] = {0,0,0,127};

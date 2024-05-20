@@ -99,7 +99,7 @@ void MeshSelectionDialog::show(Timer &timer, int& selectedMeshI){
         }
 
         //End the dialog
-        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && !this->subPanel.hover && *Mouse::LClick())){
+        if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->bgPanel.hover && !dialog_log.isHovered() && !this->subPanel.hover && *Mouse::LClick())){
             dialogControl.unActivate();
             this->selectedMeshIndex = 0;
         }

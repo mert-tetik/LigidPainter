@@ -459,7 +459,11 @@ void Panel::drawPanel(
                 lastElementScale = sections[sI].elements[i].scale.y; 
                 
                 //Don't render the unshown elements
-                if(this->sections[sI].elements[i].pos.y - this->sections[sI].elements[i].scale.y < (this->pos.y + this->additionalPos.y + this->scale.y) && this->sections[sI].elements[i].pos.y + this->sections[sI].elements[i].scale.y > (this->pos.y + this->additionalPos.y - this->scale.y)){
+                if(
+                        this->sections[sI].elements[i].pos.y - this->sections[sI].elements[i].scale.y < (this->pos.y + this->additionalPos.y + this->scale.y) && 
+                        this->sections[sI].elements[i].pos.y + this->sections[sI].elements[i].scale.y > (this->pos.y + this->additionalPos.y - this->scale.y)
+                    )
+                {
                     if(sections[sI].elements[i].scale.x && sections[sI].elements[i].scale.y && !this->dontRenderElements)
                         sections[sI].elements[i].render(timer,doMouseTracking && !sliderButton.hover);
                     

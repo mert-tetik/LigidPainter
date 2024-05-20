@@ -218,7 +218,7 @@ void SettingsDialog::show(Timer& timer){
         //End the dialog
         if  (
                 getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || //Escape key pressed 
-                ((!bgPanel.hover && *Mouse::LClick() && !dialog_log.isHovered())) && !dialogControl.firstFrameActivated //Mouse Lclick out of the panel
+                ((!bgPanel.hover && !dialog_log.isHovered() && *Mouse::LClick() && !dialog_log.isHovered())) && !dialogControl.firstFrameActivated //Mouse Lclick out of the panel
             )
         {
             dialogControl.unActivate();

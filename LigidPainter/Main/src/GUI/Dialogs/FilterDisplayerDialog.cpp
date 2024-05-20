@@ -76,7 +76,7 @@ void FilterDisplayerDialog::show(Timer& timer){
         panel.render(timer,true);
         
         //Close the dialog
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){
+        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){
             if(!dialogControl.firstFrameActivated)
                 this->dialogControl.unActivate();
         }
