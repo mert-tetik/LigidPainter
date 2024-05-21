@@ -253,8 +253,8 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
 
                 }
                 else if(layer->layerType == "vector"){
-                    std::vector<VectorStroke3D>* strokes;
-                    layer->get_type_specific_variable(nullptr, &strokes, nullptr, nullptr, nullptr);
+                    VectorScene* vectorScene;
+                    layer->get_type_specific_variable(nullptr, &vectorScene, nullptr, nullptr, nullptr);
 
                     uint64_t strokesSize; 
                     READBITS(strokesSize, uint64_t, "Mesh strokes size");        
@@ -277,7 +277,7 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                         READBITS(stroke.endPoint.normal.y, float, "Vector stroke end normal - Y");
                         READBITS(stroke.endPoint.normal.z, float, "Vector stroke end normal - Z");
                     
-                        strokes->push_back(stroke);
+                        vectorScene->strokes_3D.push_back(stroke);
                     }
                 } 
 

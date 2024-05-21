@@ -46,7 +46,7 @@ static void render_paws(Timer& timer, Button logBtn, Panel menu_bar);
 static void render_selected_panel(Timer& timer, Panel* messagesPanel, float messagesPanel_mixVal, std::vector<std::string>& messages, 
                                     Panel* historyPanel, float historyPanel_mixVal, Panel* libraryHistoryPanel, float libraryHistoryPanel_mixVal, 
                                     Panel* multiThreadInfoPanel, float multiThreadInfoPanel_mixVal, Panel menu_bar, float menu_mode_mix_val, 
-                                    HistoryActionRecords& history_action_records, int activeHistoryMode);
+                                    HistoryActionRecords& history_action_records, int activeHistoryMode, LogDialog* log_dialog);
 
 static void render_menu_bar(Timer& timer, Panel* menu_bar, bool* menu_mode, float* menu_mode_mix_val, Button logBtn, 
                             Panel messagesPanel, Panel historyPanel, Panel libraryHistoryPanel, Panel multiThreadInfoPanel);
@@ -137,7 +137,8 @@ void LogDialog::render_elements(Timer& timer)
                             this->menu_mode_mix_val,
 
                             this->history_action_records,
-                            this->activeHistoryMode
+                            this->get_active_history_mode(),
+                            this
                         );
 
     // Render the menu bar
@@ -308,7 +309,9 @@ static void render_selected_panel(
                                     float menu_mode_mix_val,
                                     
                                     HistoryActionRecords& history_action_records,
-                                    int activeHistoryMode
+                                    int activeHistoryMode,
+
+                                    LogDialog* log_dialog
                                 )
 {
     const float panel_scale = 15.f;
@@ -359,15 +362,18 @@ static void render_selected_panel(
             }
             */
         }
-        /*
         if(activeHistoryMode == HISTORY_VECTORS_MODE){
+            VectorScene* current_vector_scene = history_action_records.get_active_vectorScene();
             current_action_mode = "Vector";
-            for (size_t i = 0; i < history_action_records.actions_Vectors.size(); i++)
-            {
-                historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_Vectors[i].title, Texture(), 0., false));
+            
+            if(current_vector_scene != nullptr){
+                for (size_t i = 0; i < history_action_records.actions_Vectors[current_vector_scene].size(); i++)
+                {
+                    historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_Vectors[current_vector_scene][i].title, Texture(), 0., false));
+                }
             }
+
         }
-        */
         if(activeHistoryMode == HISTORY_FACESELECTION_MODE){
             current_action_mode = "Face Selection";
             for (size_t i = 0; i < history_action_records.actions_FaceSelection.size(); i++)
@@ -405,6 +411,11 @@ static void render_selected_panel(
         historyPanel->render(timer, true);
         ShaderSystem::buttonShader().use();
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
+
+        // If pressed to undo button
+        if(historyPanel->sections[0].elements[historyPanel->sections[0].elements.size() - 1].button.hover && *Mouse::LClick()){
+            log_dialog->undo_general_history();
+        }
     }
 
     if(libraryHistoryPanel_mixVal * menu_mode_mix_val){
@@ -470,7 +481,7 @@ static void render_menu_bar(Timer& timer, Panel* menu_bar, bool* menu_mode, floa
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
     if(
-            *Mouse::LClick() && 
+            *Mouse::LDoubleClick() && 
             !menu_bar->hover && 
             (!messagesPanel.hover || !menu_bar->sections[0].elements[0].button.clickState1) && 
             (!historyPanel.hover || !menu_bar->sections[0].elements[1].button.clickState1) && 
@@ -483,7 +494,7 @@ static void render_menu_bar(Timer& timer, Panel* menu_bar, bool* menu_mode, floa
     
     if(logBtn.hover && *Mouse::LClick())
     {
-        *menu_mode = true;
+        *menu_mode = !*menu_mode;
     }
     
     if((Mouse::mouseOffset()->x || Mouse::mouseOffset()->y) && *Mouse::LPressed() && *menu_mode_mix_val != 1.f)

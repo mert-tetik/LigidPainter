@@ -165,13 +165,14 @@ public:
         twoD_mode_wrap_checkBox = CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2), "Paint in wrap mode", 1.f); //
     }
 
+    void update3DVectorBuffers();
+    
 private:
     void render2DVectors(Timer& timer, bool doMouseTracking);
     void render3DVectors(Timer& timer, bool doMouseTracking);
 
     void addNew2DVector();
     void addNew3DVector();
-    void update3DVectorBuffers();
     bool isAny2DPointsActive();
     bool isAnyWrappedPointsActive();
 };

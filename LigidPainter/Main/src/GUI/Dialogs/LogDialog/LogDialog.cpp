@@ -60,8 +60,6 @@ void LogDialog::render(Timer& timer)
 
     this->talking_interaction(timer);    
     
-    this->update_active_history_mode();
-
     prevpPainterDisplayIndex = panel_displaying_modes.selectedElement;
     prevpPainterSelectedTxtr = panel_library_selected_texture.ID;
 

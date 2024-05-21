@@ -287,9 +287,9 @@ void LayerGUI::render_layer_bg(Layer* layer){
     }   
 
     if(layer->layerType == "vector"){
-        std::vector<VectorStroke3D>* strokes;
+        VectorScene* vectorScene;
         Brush* brush;
-        layer->get_type_specific_variable(nullptr, &strokes, &brush, nullptr, nullptr);
+        layer->get_type_specific_variable(nullptr, &vectorScene, &brush, nullptr, nullptr);
         ShaderSystem::textureRenderingShader().use();
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));

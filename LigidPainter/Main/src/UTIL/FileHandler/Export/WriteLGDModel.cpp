@@ -226,28 +226,28 @@ bool FileHandler::writeLGDMODELFile(std::string path, Model model){
                     FileHandler::writeMaterialData(wf, *material);
                 }
                 else if(layer->layerType == "vector"){
-                    std::vector<VectorStroke3D>* strokes;
-                    layer->get_type_specific_variable(nullptr, &strokes, nullptr, nullptr, nullptr);
+                    VectorScene* vectorScene;
+                    layer->get_type_specific_variable(nullptr, &vectorScene, nullptr, nullptr, nullptr);
 
-                    uint64_t strokesSize = strokes->size(); 
+                    uint64_t strokesSize = vectorScene->strokes_3D.size(); 
                     WRITEBITS(strokesSize, uint64_t, "Mesh strokes size");        
                     for (size_t strokeI = 0; strokeI < strokesSize; strokeI++)
                     {
-                        WRITEBITS((*strokes)[strokeI].startPoint.pos.x, float, "Vector stroke start position - X");
-                        WRITEBITS((*strokes)[strokeI].startPoint.pos.y, float, "Vector stroke start position - Y");
-                        WRITEBITS((*strokes)[strokeI].startPoint.pos.z, float, "Vector stroke start position - Z");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.pos.x, float, "Vector stroke start position - X");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.pos.y, float, "Vector stroke start position - Y");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.pos.z, float, "Vector stroke start position - Z");
                         
-                        WRITEBITS((*strokes)[strokeI].startPoint.normal.x, float, "Vector stroke start normal - X");
-                        WRITEBITS((*strokes)[strokeI].startPoint.normal.y, float, "Vector stroke start normal - Y");
-                        WRITEBITS((*strokes)[strokeI].startPoint.normal.z, float, "Vector stroke start normal - Z");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.normal.x, float, "Vector stroke start normal - X");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.normal.y, float, "Vector stroke start normal - Y");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.normal.z, float, "Vector stroke start normal - Z");
                         
-                        WRITEBITS((*strokes)[strokeI].endPoint.pos.x, float, "Vector stroke end position - X");
-                        WRITEBITS((*strokes)[strokeI].endPoint.pos.y, float, "Vector stroke end position - Y");
-                        WRITEBITS((*strokes)[strokeI].endPoint.pos.z, float, "Vector stroke end position - Z");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.pos.x, float, "Vector stroke end position - X");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.pos.y, float, "Vector stroke end position - Y");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.pos.z, float, "Vector stroke end position - Z");
                         
-                        WRITEBITS((*strokes)[strokeI].endPoint.normal.x, float, "Vector stroke end normal - X");
-                        WRITEBITS((*strokes)[strokeI].endPoint.normal.y, float, "Vector stroke end normal - Y");
-                        WRITEBITS((*strokes)[strokeI].endPoint.normal.z, float, "Vector stroke end normal - Z");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.normal.x, float, "Vector stroke end normal - X");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.normal.y, float, "Vector stroke end normal - Y");
+                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.normal.z, float, "Vector stroke end normal - Z");
                     }
                 } 
             }

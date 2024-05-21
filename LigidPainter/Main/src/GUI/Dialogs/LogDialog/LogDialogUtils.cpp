@@ -52,22 +52,25 @@ void LogDialog::update_messages_array(Timer& timer){
     }
 }
 
-void LogDialog::update_active_history_mode(){
-    if(panel_displaying_modes.selectedElement != 0){
-        this->activeHistoryMode = HISTORY_PAINTING_MODE;
+int LogDialog::get_active_history_mode(){
+    if(this->history_action_records.get_active_vectorScene() != nullptr){
+        return HISTORY_VECTORS_MODE;
     }
-    if(panel_painting_modes.selectedElement == 5){
-        this->activeHistoryMode = HISTORY_VECTORS_MODE;
+
+    if(panel_displaying_modes.selectedElement != 0){
+        return HISTORY_PAINTING_MODE;
     }
     if(getScene()->get_selected_mesh()->face_selection_data.editMode){
-        this->activeHistoryMode = HISTORY_FACESELECTION_MODE;
+        return HISTORY_FACESELECTION_MODE;
     }
     if(checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
-        this->activeHistoryMode = HISTORY_TEXTUREFIELDS_MODE;
+        return HISTORY_TEXTUREFIELDS_MODE;
     }
     if(dialog_materialEditor.dialogControl.isActive()){
-        this->activeHistoryMode = HISTORY_MATERIALEDITOR_MODE; 
+        return HISTORY_MATERIALEDITOR_MODE; 
     }
+
+    return -1;
 }
 
 bool LogDialog::isHovered(){
@@ -77,4 +80,27 @@ bool LogDialog::isHovered(){
             this->libraryHistoryPanel.hover || 
             this->multiThreadInfoPanel.hover || 
             this->logBtn.hover;
+}
+
+void LogDialog::undo_general_history(){
+    int active_history_mode = this->get_active_history_mode();
+
+    if(active_history_mode == -1)
+        return;
+
+    if(active_history_mode == HISTORY_PAINTING_MODE){
+        //this->history_action_records.undo_painting_actions();   
+    }
+    if(active_history_mode == HISTORY_VECTORS_MODE){
+        this->history_action_records.undo_vector_actions();   
+    }
+    if(active_history_mode == HISTORY_FACESELECTION_MODE){
+        //this->history_action_records.undo_face_selection_actions();   
+    }
+    if(active_history_mode == HISTORY_TEXTUREFIELDS_MODE){
+        //this->history_action_records.undo_texture_field_actions();   
+    }
+    if(active_history_mode == HISTORY_MATERIALEDITOR_MODE){
+        //this->history_action_records.undo_material_editor_actions();   
+    }
 }

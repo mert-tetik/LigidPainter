@@ -21,6 +21,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Panels.hpp"
 
+#include "UTIL/Project/Project.hpp"
+
 #include <string>
 #include <vector>
 
@@ -40,5 +42,9 @@ bool panels_any_hovered(){
             button_painting_brush.hover ||
             button_painting_filter_mode_filter.hover ||
             getScene()->get_selected_mesh()->layerScene.any_dialog_hovered() ||
+            dialog_log.isHovered() ||
+            dialog_greeting.dialogControl.isActive() ||
+            dialog_loadProject.dialogControl.isActive() ||
+            dialog_newProject.dialogControl.isActive() ||
             checkBox_wrap_mode.hover;
 }

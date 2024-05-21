@@ -60,6 +60,8 @@ Model* getMaterialDisplayerModel();
 Model* getMaterialDisplayingModel();
 Model* getTDBrushCursorModel();
 Box* getBox();
+
+#define GET_VECTOR_SCENE_RENDERING_CONDITION panel_painting_modes.selectedElement == 5 && panel_displaying_modes.selectedElement != 0 && !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1
 VectorScene* getVectorScene();
 TextureFieldScene* getTextureFieldScene();
 

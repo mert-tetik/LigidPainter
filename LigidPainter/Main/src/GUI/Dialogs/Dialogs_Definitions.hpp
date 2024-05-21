@@ -905,17 +905,6 @@ namespace LGDLOG {
 
 #include "./GUI/Dialogs/LogDialog/HistoryActions/HistoryActions.hpp"
 
-struct HistoryActionRecords{
-   std::map<VectorScene*, std::vector<VectorsAction>> actions_Vectors;
-
-   std::vector<LibraryAction> actions_Library;
-   std::map<unsigned int, std::vector<PaintingAction>> actions_Painting;
-   std::vector<PaintingAction> actions_MultiChannelPainting;
-   std::vector<FaceSelectionAction> actions_FaceSelection;
-   std::vector<TextureFieldsAction> actions_TextureFields;
-   std::vector<MaterialEditorAction> actions_MaterialEditor;
-};
-
 class LogDialog
 {
 private:
@@ -949,10 +938,6 @@ private:
    
    /*! @brief Removes the text data from LGDLOG::start and moves it to the this->messages*/
    void update_messages_array(Timer& timer);
-
-   int activeHistoryMode = 0;
-   /*! @brief Updates the current active history mode related to current state of the LigidPainter*/
-   void update_active_history_mode();
 
    Panel messagesPanel;
    Panel historyPanel;
@@ -1013,6 +998,11 @@ public:
 
    /*! @brief Render the log dialog for a single frame*/
    void render(Timer& timer);
+
+   void undo_general_history();
+
+   /*! @brief Returns the current active history mode related to current state of the LigidPainter. Returns -1 if no mode is selected*/
+   int get_active_history_mode(); 
 
    /*! @brief Returns true if the log dialog is hovered*/
    bool isHovered();

@@ -211,4 +211,28 @@ struct MaterialEditorAction{
     }
 };
 
+struct HistoryActionRecords{
+   std::map<VectorScene*, std::vector<VectorsAction>> actions_Vectors;
+   void undo_vector_actions(); 
+   VectorScene* get_active_vectorScene();
+
+   std::vector<LibraryAction> actions_Library;
+   void undo_library_actions(); 
+
+   std::map<unsigned int, std::vector<PaintingAction>> actions_Painting;
+   void undo_painting_actions(); 
+   
+   std::vector<PaintingAction> actions_MultiChannelPainting;
+   void undo_multi_channel_painting_actions(); 
+   
+   std::vector<FaceSelectionAction> actions_FaceSelection;
+   void undo_face_selection_actions(); 
+
+   std::vector<TextureFieldsAction> actions_TextureFields;
+   void undo_texture_field_actions(); 
+   
+   std::vector<MaterialEditorAction> actions_MaterialEditor;
+   void undo_material_editor_actions(); 
+};
+
 #endif

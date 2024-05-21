@@ -270,13 +270,14 @@ bool LayerScene::any_dialog_hovered(){
     return false;
 }
 
-bool LayerScene::any_vector_editing(){
+Layer* LayerScene::get_edited_vector_layer(){
     for (size_t i = 0; i < this->layers.size(); i++)
     {
         if((this->layers[i]->type_specific_modification_enabled && this->layers[i]->layerType == "vector"))
-            return true;
+            return this->layers[i];
     }
-    return false;
+
+    return nullptr;
 }
 
 MaterialChannels LayerScene::get_painting_channels(bool* success){

@@ -121,7 +121,7 @@ public:
     /*! @brief Generate result textures for the layer */
     virtual void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) = 0;
     virtual void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) = 0;
-    virtual void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) = 0;
+    virtual void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) = 0;
     virtual bool is_type_specific_panels_hovered() = 0;
 
     /*! 
@@ -148,7 +148,7 @@ public:
     
     void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) override;
     void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
         if(materialChannels != nullptr)
             *materialChannels = &this->channels;
     }
@@ -168,7 +168,7 @@ public:
     
     void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) override;
     void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
         if(painting_capture_txtr != nullptr)
             *painting_capture_txtr = &this->painting_capture_txtr;
     }
@@ -189,7 +189,7 @@ public:
     
     void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) override;
     void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
         if(material != nullptr)
             *material = &this->material; 
     }
@@ -215,9 +215,9 @@ public:
 
     void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) override;
     void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, std::vector<VectorStroke3D>** strokes, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
-        if(strokes != nullptr)
-            *strokes = &this->vector_scene.strokes_3D; 
+    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+        if(vectorScene != nullptr)
+            *vectorScene = &this->vector_scene; 
         if(vector_stroke_brush != nullptr)
             *vector_stroke_brush = &this->brush_properties_button.brush; 
     }
@@ -238,7 +238,7 @@ public:
     void add_new(Layer* layer);
     void update_result(unsigned int resolution, glm::vec3 baseColor, Mesh& mesh);
     bool any_dialog_hovered();
-    bool any_vector_editing();
+    Layer* get_edited_vector_layer();
     MaterialChannels get_painting_channels(bool* success);
     
     /*! @brief Returns only the main-selected layer. Returns nullptr if no layer was selected. layer_index is set to index value of the selected layer in the array and is not modified if no layer was main-selected*/

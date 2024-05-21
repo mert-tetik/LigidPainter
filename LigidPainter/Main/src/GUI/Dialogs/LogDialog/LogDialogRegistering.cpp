@@ -129,7 +129,7 @@ void LogDialog::registerVectorAction(const std::string title, VectorScene* vecto
     if(vectorScene == nullptr)
         return;
 
-    //this->history_action_records.actions_Vectors[vectorScene].push_back(VectorsAction(title, *vectorScene));
+    this->history_action_records.actions_Vectors[vectorScene].push_back(VectorsAction(title, *vectorScene));
 }
 
 void LogDialog::registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, int meshI){
