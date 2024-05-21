@@ -126,7 +126,7 @@ void Brush::updateDisplayTexture(float radius){
     glBlendFunc(GL_ONE,GL_ONE);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
-    Texture copy_txtr = displayingTexture.get_temp_copy_txtr(); 
+    Texture copy_txtr = displayingTexture.get_temp_copy_txtr("Brush::updateDisplayingTexture"); 
 
     // Create and bind the capturing framebuffer
     Framebuffer FBO = FBOPOOL::requestFBO(displayingTexture, "Brush::updateDisplayTexture");
