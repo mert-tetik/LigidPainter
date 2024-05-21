@@ -92,10 +92,16 @@ struct LibraryAction{
 
 struct PaintingAction{
     std::string title;
-    Texture icon;
+    Texture painted_texture;
 
-    bool multiChannelAction = false;
+    int unique_ID = -1;
 
+    PaintingAction(std::string title, Texture painted_texture);
+};
+
+struct MultiChannelPaintingAction{
+    std::string title;
+    
     Texture albedo; 
     bool albedoPainted;
     Texture roughness; 
@@ -109,31 +115,17 @@ struct PaintingAction{
     Texture ao; 
     bool aoPainted;
 
-    PaintingAction(
-                        std::string title, Texture icon, Texture texture 
-                    )
+    MultiChannelPaintingAction(
+                                std::string title,
+                                Texture albedo, bool albedoPainted, 
+                                Texture roughness, bool roughnessPainted, 
+                                Texture metallic, bool metallicPainted,
+                                Texture normal, bool normalPainted, 
+                                Texture height, bool heightPainted, 
+                                Texture ao, bool aoPainted
+                            )
     {
-        multiChannelAction = false;
-
         this->title = title;
-        this->icon = icon;
-        this->albedo = texture;
-    }
-
-    PaintingAction(
-                        std::string title, Texture icon,
-                        Texture albedo, bool albedoPainted, 
-                        Texture roughness, bool roughnessPainted, 
-                        Texture metallic, bool metallicPainted,
-                        Texture normal, bool normalPainted, 
-                        Texture height, bool heightPainted, 
-                        Texture ao, bool aoPainted
-                    )
-    {
-        multiChannelAction = true;
-
-        this->title = title;
-        this->icon = icon;
         
         this->albedo = albedo; 
         this->roughness = roughness; 
@@ -209,11 +201,12 @@ struct HistoryActionRecords{
    void undo_face_selection_actions(); 
    Mesh* get_active_face_selected_mesh();
 
+   std::map<unsigned int, std::vector<PaintingAction>> actions_Painting;
+   void undo_painting_actions(); 
+
    std::vector<LibraryAction> actions_Library;
    void undo_library_actions(); 
 
-   std::map<unsigned int, std::vector<PaintingAction>> actions_Painting;
-   void undo_painting_actions(); 
    
    std::vector<PaintingAction> actions_MultiChannelPainting;
    void undo_multi_channel_painting_actions(); 

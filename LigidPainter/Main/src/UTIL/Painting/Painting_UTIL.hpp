@@ -684,28 +684,18 @@ void register_history_actions(int painting_mode, PaintSettings::PaintedBuffers p
         actionTitle = "Bucket painting";
     
     if(painted_buffers.material_painting){
-        dialog_log.registerPaintingAction(
-                                    "Multi-channel painting", 
-                                    Texture(), 
-                                    painted_buffers.material_channel_albedo, painted_buffers.material_channel_albedo_active, 
-                                    painted_buffers.material_channel_roughness, painted_buffers.material_channel_roughness_active,
-                                    painted_buffers.material_channel_metallic, painted_buffers.material_channel_metallic_active,
-                                    painted_buffers.material_channel_normalMap, painted_buffers.material_channel_normalMap_active,
-                                    painted_buffers.material_channel_heightMap, painted_buffers.material_channel_heightMap_active,
-                                    painted_buffers.material_channel_ao, painted_buffers.material_channel_ao_active
-                                );
+        dialog_log.registerMultiChannelPaintingAction(
+                                                        "Multi-channel painting", 
+                                                        painted_buffers.material_channel_albedo, painted_buffers.material_channel_albedo_active, 
+                                                        painted_buffers.material_channel_roughness, painted_buffers.material_channel_roughness_active,
+                                                        painted_buffers.material_channel_metallic, painted_buffers.material_channel_metallic_active,
+                                                        painted_buffers.material_channel_normalMap, painted_buffers.material_channel_normalMap_active,
+                                                        painted_buffers.material_channel_heightMap, painted_buffers.material_channel_heightMap_active,
+                                                        painted_buffers.material_channel_ao, painted_buffers.material_channel_ao_active
+                                                    );
     }
     else{
-        dialog_log.registerPaintingAction(
-                                    actionTitle, 
-                                    Texture(), 
-                                    painted_buffers.solid_painted_texture, true, 
-                                    Texture(), false,
-                                    Texture(), false,
-                                    Texture(), false,
-                                    Texture(), false,
-                                    Texture(), false
-                                );
+        dialog_log.registerPaintingAction(actionTitle, painted_buffers.solid_painted_texture);
     }
 }
 

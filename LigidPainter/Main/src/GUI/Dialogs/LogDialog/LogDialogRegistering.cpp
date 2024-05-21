@@ -40,8 +40,16 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #ifndef LOGDIALOG_REGISTERING_HPP
 #define LOGDIALOG_REGISTERING_HPP
 
-void LogDialog::registerPaintingAction(
-                                        const std::string title, const Texture icon, 
+void LogDialog::registerPaintingAction(const std::string title, Texture painted_texture){
+    PaintingAction painting_action = PaintingAction(title, painted_texture);
+
+    painted_texture.writeTMP(std::to_string(painting_action.unique_ID));
+
+    this->history_action_records.actions_Painting[painted_texture.ID].push_back(painting_action);
+}
+
+void LogDialog::registerMultiChannelPaintingAction(
+                                        const std::string title, 
                                         Texture albedo, bool albedoPainted, 
                                         Texture roughness, bool roughnessPainted, 
                                         Texture metallic, bool metallicPainted,
@@ -50,41 +58,41 @@ void LogDialog::registerPaintingAction(
                                         Texture ao, bool aoPainted
                                     )
 {
-
+    /*
     if(albedoPainted){
-        albedo.writeTMP("_history_" + std::to_string(this->history_action_records.actions_Painting[albedo.ID].size()) + "_" + std::to_string(albedo.ID));
+        albedo.writeTMP(std::to_string(this->history_action_records.actions_Painting[albedo.ID].size()) + "_" + std::to_string(albedo.ID));
         this->history_action_records.actions_Painting[albedo.ID].push_back(PaintingAction(title, icon, albedo));
     }
 
     if(roughnessPainted){
-        roughness.writeTMP("_history_" + std::to_string(this->history_action_records.actions_Painting[roughness.ID].size()) + "_" + std::to_string(roughness.ID));
+        roughness.writeTMP(std::to_string(this->history_action_records.actions_Painting[roughness.ID].size()) + "_" + std::to_string(roughness.ID));
         this->history_action_records.actions_Painting[roughness.ID].push_back(PaintingAction(title, icon, roughness));
     }
     
     if(metallicPainted){
-        metallic.writeTMP("_history_" + std::to_string(this->history_action_records.actions_Painting[metallic.ID].size()) + "_" + std::to_string(metallic.ID));
+        metallic.writeTMP(std::to_string(this->history_action_records.actions_Painting[metallic.ID].size()) + "_" + std::to_string(metallic.ID));
         this->history_action_records.actions_Painting[metallic.ID].push_back(PaintingAction(title, icon, metallic));
     }
     
     if(normalPainted){
-        normal.writeTMP("_history_" + std::to_string(this->history_action_records.actions_Painting[normal.ID].size()) + "_" + std::to_string(normal.ID));
+        normal.writeTMP(std::to_string(this->history_action_records.actions_Painting[normal.ID].size()) + "_" + std::to_string(normal.ID));
         this->history_action_records.actions_Painting[normal.ID].push_back(PaintingAction(title, icon, normal));
     }
     
     if(heightPainted){
-        height.writeTMP("_history_" + std::to_string(this->history_action_records.actions_Painting[height.ID].size()) + "_" + std::to_string(height.ID));
+        height.writeTMP(std::to_string(this->history_action_records.actions_Painting[height.ID].size()) + "_" + std::to_string(height.ID));
         this->history_action_records.actions_Painting[height.ID].push_back(PaintingAction(title, icon, height));
     }
     
     if(aoPainted){
-        ao.writeTMP("_history_" + std::to_string(this->history_action_records.actions_Painting[ao.ID].size()) + "_" + std::to_string(ao.ID));
+        ao.writeTMP(std::to_string(this->history_action_records.actions_Painting[ao.ID].size()) + "_" + std::to_string(ao.ID));
         this->history_action_records.actions_Painting[ao.ID].push_back(PaintingAction(title, icon, ao));
     }
     
     if(roughnessPainted || metallicPainted || normalPainted || heightPainted || aoPainted){
         this->history_action_records.actions_MultiChannelPainting.push_back(PaintingAction(title, icon, albedo, albedoPainted, roughness, roughnessPainted, metallic, metallicPainted, normal, normalPainted, height, heightPainted, ao, aoPainted));
     }
-
+    */
 }
 
 //void LogDialog::registerMultiMatChannelPaintingAction(const std::string)

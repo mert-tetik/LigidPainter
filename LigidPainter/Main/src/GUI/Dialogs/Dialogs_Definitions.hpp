@@ -886,7 +886,8 @@ namespace LGDLOG {
 #define BRUSH_CHANGED_ACTION 14
 #define VECTOR_ACTION_3D 15
 
-#define HISTORY_PAINTING_MODE 1
+#define HISTORY_PAINTING_MODE 0
+#define HISTORY_MULTI_CHANNEL_PAINTING_MODE 1
 #define HISTORY_VECTORS_MODE 2
 #define HISTORY_FACESELECTION_MODE 4
 #define HISTORY_TEXTUREFIELDS_MODE 5
@@ -974,7 +975,9 @@ public:
    void registerLibraryElementRenamingAction(const std::string title, const Texture icon, const int index, const std::string element, const std::string name);
 
    // -- Painting --
-   void registerPaintingAction(const std::string title, const Texture icon, Texture albedo, bool albedoPainted, 
+   void registerPaintingAction(const std::string title, Texture painted_texture);
+
+   void registerMultiChannelPaintingAction(const std::string title, Texture albedo, bool albedoPainted, 
                               Texture roughness, bool roughnessPainted, Texture metallic, bool metallicPainted,
                               Texture normal, bool normalPainted, Texture height, bool heightPainted, Texture ao,
                               bool aoPainted);

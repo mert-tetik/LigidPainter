@@ -355,12 +355,12 @@ static void render_selected_panel(
 
         if(activeHistoryMode == HISTORY_PAINTING_MODE){
             current_action_mode = "Painting";
-            /*
-            for (size_t i = 0; i < history_action_records.actions_Painting.size(); i++)
-            {
-                historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), (history_action_records.actions_Painting)[i].title, Texture(), 0., false));
+            if(panel_library_selected_texture.ID && glIsTexture(panel_library_selected_texture.ID) == GL_TRUE){
+                for (size_t i = 0; i < history_action_records.actions_Painting[panel_library_selected_texture.ID].size(); i++)
+                {
+                    historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_Painting[panel_library_selected_texture.ID][i].title, Texture(), 0., false));
+                }
             }
-            */
         }
         if(activeHistoryMode == HISTORY_VECTORS_MODE){
             VectorScene* current_vector_scene = history_action_records.get_active_vectorScene();
