@@ -126,17 +126,17 @@ void Brush::updateDisplayTexture(float radius){
     glBlendFunc(GL_ONE,GL_ONE);
     glBlendEquationSeparate(GL_FUNC_ADD,GL_FUNC_ADD);	
 
+    Texture copy_txtr = displayingTexture.get_temp_copy_txtr(); 
+
     // Create and bind the capturing framebuffer
     Framebuffer FBO = FBOPOOL::requestFBO(displayingTexture, "Brush::updateDisplayTexture");
-    std::cout << "displayingTexture : " << displayingTexture.ID << std::endl;
     glClear(GL_COLOR_BUFFER_BIT);
 
     for (int i = 0; i < wave.size() / strokeSize; i++)
     {
-
         char* pxs = new char[displayingTexture.getResolution().x * displayingTexture.getResolution().y * 4];
         displayingTexture.getData(pxs);
-        Texture copy_txtr = Texture(pxs, displayingTexture.getResolution().x, displayingTexture.getResolution().y);
+        copy_txtr.update(pxs, displayingTexture.getResolution().x, displayingTexture.getResolution().y);
         delete[] pxs;
 
         ShaderSystem::twoDPainting().setInt("frame", i);
