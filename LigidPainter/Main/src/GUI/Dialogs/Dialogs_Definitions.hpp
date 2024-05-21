@@ -983,8 +983,7 @@ public:
    void registerVectorAction(const std::string title, VectorScene* vectorScene);
 
    // -- Face Selection -- 
-   void registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, int meshI);
-   void registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray);
+   void registerFaceSelectionAction(const std::string title, Mesh* mesh);
 
    // -- Texture Field --
    void registerTextureFieldAction(const std::string title, std::vector<TextureField> fields);

@@ -166,24 +166,13 @@ struct VectorsAction{
 
 struct FaceSelectionAction{
     std::string title;
-    std::vector<byte> primitivesArray;
-    std::vector<std::vector<byte>> primitivesArray_M;
-    int meshI;
-    unsigned int ID;
+    Mesh::FaceSelection face_selection_data;
 
     FaceSelectionAction(){}
 
-    FaceSelectionAction(std::string title, unsigned int ID, std::vector<byte> primitivesArray, int meshI){
+    FaceSelectionAction(std::string title, Mesh::FaceSelection face_selection_data){
         this->title = title;
-        this->ID = ID;
-        this->primitivesArray = primitivesArray;
-        this->meshI = meshI;
-    }
-    
-    FaceSelectionAction(std::string title, unsigned int ID, std::vector<std::vector<byte>> primitivesArray_M){
-        this->title = title;
-        this->ID = ID;
-        this->primitivesArray_M = primitivesArray_M;
+        this->face_selection_data = face_selection_data;
     }
 };
 
@@ -215,6 +204,10 @@ struct HistoryActionRecords{
    std::map<VectorScene*, std::vector<VectorsAction>> actions_Vectors;
    void undo_vector_actions(); 
    VectorScene* get_active_vectorScene();
+   
+   std::map<Mesh*, std::vector<FaceSelectionAction>> actions_FaceSelection;
+   void undo_face_selection_actions(); 
+   Mesh* get_active_face_selected_mesh();
 
    std::vector<LibraryAction> actions_Library;
    void undo_library_actions(); 
@@ -225,8 +218,6 @@ struct HistoryActionRecords{
    std::vector<PaintingAction> actions_MultiChannelPainting;
    void undo_multi_channel_painting_actions(); 
    
-   std::vector<FaceSelectionAction> actions_FaceSelection;
-   void undo_face_selection_actions(); 
 
    std::vector<TextureFieldsAction> actions_TextureFields;
    void undo_texture_field_actions(); 

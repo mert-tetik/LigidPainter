@@ -109,6 +109,9 @@ public:
         Texture modelPrimitives;
     };
 
+    void update_face_selection_buffers(bool update_all);
+
+
     MaterialChannels material_channels;
     Texture materialIDTxtr;
     std::vector<MaterialIDColor> materialIDColors;

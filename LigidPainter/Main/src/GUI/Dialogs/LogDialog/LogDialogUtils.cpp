@@ -53,15 +53,18 @@ void LogDialog::update_messages_array(Timer& timer){
 }
 
 int LogDialog::get_active_history_mode(){
+    
+    
     if(this->history_action_records.get_active_vectorScene() != nullptr){
         return HISTORY_VECTORS_MODE;
+    }
+    
+    if(this->history_action_records.get_active_face_selected_mesh() != nullptr){
+        return HISTORY_FACESELECTION_MODE;
     }
 
     if(panel_displaying_modes.selectedElement != 0){
         return HISTORY_PAINTING_MODE;
-    }
-    if(getScene()->get_selected_mesh()->face_selection_data.editMode){
-        return HISTORY_FACESELECTION_MODE;
     }
     if(checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
         return HISTORY_TEXTUREFIELDS_MODE;
@@ -95,7 +98,7 @@ void LogDialog::undo_general_history(){
         this->history_action_records.undo_vector_actions();   
     }
     if(active_history_mode == HISTORY_FACESELECTION_MODE){
-        //this->history_action_records.undo_face_selection_actions();   
+        this->history_action_records.undo_face_selection_actions();   
     }
     if(active_history_mode == HISTORY_TEXTUREFIELDS_MODE){
         //this->history_action_records.undo_texture_field_actions();   

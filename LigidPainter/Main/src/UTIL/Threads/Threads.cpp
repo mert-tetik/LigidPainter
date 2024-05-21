@@ -92,8 +92,6 @@ void projectUpdatingThread(){
     }
 }
 
-void updatePrimitivesArrayTexture(Mesh* mesh, bool update_all);
-
 MaterialThread material_thread;
 
 ThreadElements readMaterialThreadElements;

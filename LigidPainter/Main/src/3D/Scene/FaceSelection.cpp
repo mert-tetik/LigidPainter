@@ -43,7 +43,6 @@ static void select_object(Mesh* mesh);
 static void select_all_faces(std::vector<byte>* selectedPrimitiveIDs, std::vector<int>* changedIndices);
 static void unselect_all_faces(std::vector<byte>* selectedPrimitiveIDs, std::vector<int>* changedIndices);
 static void apply_pixels(float* pxs, glm::vec2 scale, std::vector<byte>* selectedPrimitiveIDs, std::vector<int>* changedIndices);
-void updatePrimitivesArrayTexture(Mesh* mesh, bool update_all);
 
 static Camera prev_cam;
 
@@ -83,14 +82,14 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
         // Select all the faces
         if(shortcuts_CTRL_A()){
             if(registerHistory){
-                dialog_log.registerFaceSelectionAction("Select all the faces - Painting", mesh->face_selection_data.selectedPrimitiveIDs, meshI);
+                dialog_log.registerFaceSelectionAction("Select all the faces - Painting", mesh);
             }
 
             select_all_faces(&mesh->face_selection_data.selectedPrimitiveIDs, &mesh->face_selection_data.changedIndices);
         }
 
         if(*Mouse::LClick() && registerHistory)
-            dialog_log.registerFaceSelectionAction("Face selection - Painting", mesh->face_selection_data.selectedPrimitiveIDs, meshI);
+            dialog_log.registerFaceSelectionAction("Face selection - Painting", mesh);
     
         glm::vec2 pos;
         glm::ivec2 scale;
@@ -176,7 +175,7 @@ bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool regi
     bool changes_done = mesh->face_selection_data.changedIndices.size();
 
     if(mesh->face_selection_data.changedIndices.size()){
-        updatePrimitivesArrayTexture(mesh, false);
+        mesh->update_face_selection_buffers(false);
     }
 
     // Set back to default
@@ -253,53 +252,53 @@ bool boxSelectionInteraction(Timer &timer, Mesh* mesh){
     return applyBox;
 }
 
-void updatePrimitivesArrayTexture(Mesh* mesh, bool update_all){
-    GL::bindTexture_2D(mesh->face_selection_data.selectedFaces.ID, "updatePrimitivesArrayTexture");
+void Mesh::update_face_selection_buffers(bool update_all){
+    GL::bindTexture_2D(this->face_selection_data.selectedFaces.ID, "update_face_selection_buffers");
 
     LigidGL::cleanGLErrors();
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    LigidGL::testGLError("updatePrimitivesArrayTexture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);");
+    LigidGL::testGLError("update_face_selection_buffers : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);");
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    LigidGL::testGLError("updatePrimitivesArrayTexture : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);");
+    LigidGL::testGLError("update_face_selection_buffers : glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);");
 
-    if(mesh->face_selection_data.changedIndices.size() > 50 || update_all){
-        int prim_txtr_res = int(ceil(sqrt(mesh->face_selection_data.selectedPrimitiveIDs.size())));
+    if(this->face_selection_data.changedIndices.size() > 50 || update_all){
+        int prim_txtr_res = int(ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size())));
     
         unsigned char* pxs = new unsigned char[prim_txtr_res * prim_txtr_res];
         for (size_t i = 0; i < prim_txtr_res * prim_txtr_res; i++)
         {
-            if(i < mesh->face_selection_data.selectedPrimitiveIDs.size())
-                pxs[i] = mesh->face_selection_data.selectedPrimitiveIDs[i] * 126;
+            if(i < this->face_selection_data.selectedPrimitiveIDs.size())
+                pxs[i] = this->face_selection_data.selectedPrimitiveIDs[i] * 126;
             else
-                pxs[i] = mesh->face_selection_data.selectedPrimitiveIDs[mesh->face_selection_data.selectedPrimitiveIDs.size()-1] * 126;
+                pxs[i] = this->face_selection_data.selectedPrimitiveIDs[this->face_selection_data.selectedPrimitiveIDs.size()-1] * 126;
         }
 
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, prim_txtr_res, prim_txtr_res, GL_RED, GL_UNSIGNED_BYTE, pxs);
-        LigidGL::testGLError("updatePrimitivesArrayTexture : glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, prim_txtr_res, prim_txtr_res, GL_RED, GL_UNSIGNED_BYTE, pxs);");
+        LigidGL::testGLError("update_face_selection_buffers : glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, prim_txtr_res, prim_txtr_res, GL_RED, GL_UNSIGNED_BYTE, pxs);");
         glGenerateMipmap(GL_TEXTURE_2D);
-        LigidGL::testGLError("updatePrimitivesArrayTexture : glGenerateMipmap(GL_TEXTURE_2D);");
+        LigidGL::testGLError("update_face_selection_buffers : glGenerateMipmap(GL_TEXTURE_2D);");
 
         delete[] pxs;
     }
 
-    for (size_t i = 0; i < mesh->face_selection_data.changedIndices.size(); i++)
+    for (size_t i = 0; i < this->face_selection_data.changedIndices.size(); i++)
     {
-        if(mesh->face_selection_data.changedIndices[i] < mesh->face_selection_data.selectedPrimitiveIDs.size() && mesh->face_selection_data.changedIndices[i] >= 0){
+        if(this->face_selection_data.changedIndices[i] < this->face_selection_data.selectedPrimitiveIDs.size() && this->face_selection_data.changedIndices[i] >= 0){
             unsigned char pxs[1];
-            pxs[0] = (unsigned char)(mesh->face_selection_data.selectedPrimitiveIDs[mesh->face_selection_data.changedIndices[i]] * 126);
+            pxs[0] = (unsigned char)(this->face_selection_data.selectedPrimitiveIDs[this->face_selection_data.changedIndices[i]] * 126);
 
-            float prim_txtr_res = int(ceil(sqrt(mesh->face_selection_data.selectedPrimitiveIDs.size()))); // 63
-            float prim_height = floor((float)mesh->face_selection_data.changedIndices[i] / prim_txtr_res); // 56
-            glm::ivec2 offset = glm::ivec2((float)mesh->face_selection_data.changedIndices[i] - (prim_height * prim_txtr_res), prim_height);// 3529 - 3528
+            float prim_txtr_res = int(ceil(sqrt(this->face_selection_data.selectedPrimitiveIDs.size()))); // 63
+            float prim_height = floor((float)this->face_selection_data.changedIndices[i] / prim_txtr_res); // 56
+            glm::ivec2 offset = glm::ivec2((float)this->face_selection_data.changedIndices[i] - (prim_height * prim_txtr_res), prim_height);// 3529 - 3528
 
             glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);
-            LigidGL::testGLError("updatePrimitivesArrayTexture : glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);");
+            LigidGL::testGLError("update_face_selection_buffers : glTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, 1, 1, GL_RED, GL_UNSIGNED_BYTE, pxs);");
         }
     }
     
-    GL::releaseBoundTextures("updatePrimitivesArrayTexture");
-    mesh->face_selection_data.changedIndices.clear();
+    GL::releaseBoundTextures("update_face_selection_buffers");
+    this->face_selection_data.changedIndices.clear();
 }
 
 static void select_all_faces(std::vector<byte>* selectedPrimitiveIDs, std::vector<int>* changedIndices){

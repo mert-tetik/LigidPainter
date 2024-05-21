@@ -132,12 +132,11 @@ void LogDialog::registerVectorAction(const std::string title, VectorScene* vecto
     this->history_action_records.actions_Vectors[vectorScene].push_back(VectorsAction(title, *vectorScene));
 }
 
-void LogDialog::registerFaceSelectionAction(const std::string title, std::vector<byte> primitivesArray, int meshI){
-    this->history_action_records.actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_PAINTER_ACTION, primitivesArray, meshI));
-}
+void LogDialog::registerFaceSelectionAction(const std::string title, Mesh* mesh){
+    if(mesh == nullptr)
+        return;
 
-void LogDialog::registerFaceSelectionActionObjectTexturingDialog(const std::string title, std::vector<std::vector<byte>> primitivesArray){
-    this->history_action_records.actions_FaceSelection.push_back(FaceSelectionAction(title, FACE_SELECTION_OBJECTTEXTURING_ACTION, primitivesArray));
+    this->history_action_records.actions_FaceSelection[mesh].push_back(FaceSelectionAction(title, mesh->face_selection_data));
 }
 
 void LogDialog::registerTextureFieldAction(const std::string title, std::vector<TextureField> fields){
