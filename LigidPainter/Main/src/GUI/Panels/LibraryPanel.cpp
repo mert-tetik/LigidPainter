@@ -205,6 +205,7 @@ void panel_library_render(
                     
                     //Clicked to rename button
                     if(res == 0){
+                        dialog_log.registerTextureAction("Texture renamed");
                         dialog_renaming.show(timer, glm::vec2(btn->pos.x, btn->pos.y + btn->scale.y/1.4f), btn->scale.x * 1.5f, &Library::getTexture(i)->title, 20);
                     }
                     //Clicked to duplicate button
@@ -241,6 +242,7 @@ void panel_library_render(
                     }
                     //Clicked to rename button
                     else if(res == 1){
+                        dialog_log.registerMaterialAction("Material renamed");
                         dialog_renaming.show(timer, glm::vec2(btn->pos.x, btn->pos.y + btn->scale.y/1.4f), btn->scale.x * 1.5f, &Library::getMaterial(i)->title, 20);
                     }
                     //Clicked to duplicate button
@@ -273,12 +275,13 @@ void panel_library_render(
                     
                     //Clicked to edit brush button
                     if(res == 0){
-                        dialog_log.registerBrushChangedAction("Edit brush", Texture(), *Library::getBrush(i), i);
+                        dialog_log.registerBrushAction("Brush Edited");
                         dialog_brushModification.show(timer, &Library::getBrush(i)->properties);
                     }
                     
                     //Clicked to rename button
                     else if(res == 1){
+                        dialog_log.registerBrushAction("Brush renamed");
                         dialog_renaming.show(timer, glm::vec2(btn->pos.x, btn->pos.y + btn->scale.y/1.4f), btn->scale.x * 1.5f, &Library::getBrush(i)->title, 20);
                     }
                     

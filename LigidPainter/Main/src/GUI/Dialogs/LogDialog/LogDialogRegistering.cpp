@@ -37,6 +37,10 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include <vector>
 #include <filesystem>
 
+extern std::vector<Texture> __textures;
+extern std::vector<Material> __materials;
+extern std::vector<Brush> __brushes;
+
 #ifndef LOGDIALOG_REGISTERING_HPP
 #define LOGDIALOG_REGISTERING_HPP
 
@@ -64,40 +68,28 @@ void LogDialog::registerMultiChannelPaintingAction(const std::string title, Mate
 
 //void LogDialog::registerMultiMatChannelPaintingAction(const std::string)
 
-void LogDialog::registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index){
-    this->history_action_records.actions_Library.push_back(LibraryAction(title, TEXTURE_DELETION_ACTION, icon, texture, index));
+extern size_t history_ID_val;
+static size_t generate_unique_ID(){
+    history_ID_val++;
+    return history_ID_val;
 }
 
-void LogDialog::registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index){
-    this->history_action_records.actions_Library.push_back(LibraryAction(title, TEXTURE_ADDITION_ACTION, icon, texture, index));
+void LogDialog::registerTextureAction(const std::string title){
+    this->history_action_records.actions_Library.push_back(LibraryAction(title, __textures));
 }
-
-void LogDialog::registerMaterialDeletionAction(const std::string title, const Texture icon, Material material, const int index){
-    this->history_action_records.actions_Library.push_back(LibraryAction(title, MATERIAL_DELETION_ACTION, icon, material, index));
+void LogDialog::registerMaterialAction(const std::string title){
+    this->history_action_records.actions_Library.push_back(LibraryAction(title, __materials));
 }
-
-void LogDialog::registerMaterialAdditionAction(const std::string title, const Texture icon, Material material, const int index){
-    this->history_action_records.actions_Library.push_back(LibraryAction(title, MATERIAL_ADDITION_ACTION, icon, material, index));
+void LogDialog::registerBrushAction(const std::string title){
+    this->history_action_records.actions_Library.push_back(LibraryAction(title, __brushes));
 }
+void LogDialog::registerTextureModificationAction(const std::string title, Texture texture){
+    LibraryAction library_action = LibraryAction(title, texture);
+    library_action.unique_id = generate_unique_ID();
 
-void LogDialog::registerBrushDeletionAction(const std::string title, const Texture icon, Brush brush, const int index){
-    this->history_action_records.actions_Library.push_back(LibraryAction(title, BRUSH_DELETION_ACTION, icon, brush, index));
-}
+    texture.writeTMP(std::to_string(library_action.unique_id));
 
-void LogDialog::registerBrushAdditionAction(const std::string title, const Texture icon, Brush brush, const int index){
-    this->history_action_records.actions_Library.push_back(LibraryAction(title, BRUSH_ADDITION_ACTION, icon, brush, index));
-}
-
-void LogDialog::registerBrushChangedAction(const std::string title, const Texture icon, Brush brush, const int index){
-    this->history_action_records.actions_Library.push_back(LibraryAction(title, BRUSH_CHANGED_ACTION, icon, brush, index));
-}
-
-void LogDialog::registerImageEditorAction(const std::string title, const Texture icon, Texture texture){
-    this->history_action_records.actions_Library.push_back(LibraryAction(title, TEXTURE_IMAGE_EDITOR_ACTION, icon, texture, Texture(texture.duplicateTexture("registerImageEditorAction"))));
-}
-
-void LogDialog::registerLibraryElementRenamingAction(const std::string title, const Texture icon, const int index, const std::string element, const std::string name){
-    this->history_action_records.actions_Library.push_back(LibraryAction(title, LIBRARY_ELEMENT_RENAMING, icon, index, element, name));
+    this->history_action_records.actions_Library.push_back(library_action);
 }
 
 void LogDialog::registerVectorAction(const std::string title, VectorScene* vectorScene){

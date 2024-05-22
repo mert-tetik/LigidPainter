@@ -150,7 +150,7 @@ void Library::addTexture(Texture texture, const std::string actionTitle){
     __changed = true;
     
     if(actionTitle != "")
-        dialog_log.registerTextureAdditionAction(actionTitle, Texture(), texture, __textures.size());
+        dialog_log.registerTextureAction(actionTitle);
 
     texture.uniqueId = 0; 
 
@@ -167,7 +167,7 @@ void Library::addMaterial(Material material, const std::string actionTitle){
     __changed = true;
 
     if(actionTitle != "")
-        dialog_log.registerMaterialAdditionAction(actionTitle, Texture(), material, __materials.size());
+        dialog_log.registerMaterialAction(actionTitle);
     
     //Give unique ID to the material
 
@@ -183,7 +183,7 @@ void Library::addBrush(Brush brush, const std::string actionTitle){
     __changed = true;
 
     if(actionTitle != "")
-        dialog_log.registerBrushAdditionAction(actionTitle, Texture(), brush, __brushes.size());
+        dialog_log.registerBrushAction(actionTitle);
     
     __brushes.push_back(brush);
     
@@ -223,10 +223,8 @@ void Library::eraseTexture   (int index){
 
     __changed = true;
 
-    dialog_log.registerTextureDeletionAction("Texture deleted", Texture(), __textures[index], index);
+    dialog_log.registerTextureAction("Texture deleted");
         
-    //glDeleteTextures(1, &__textures[index].ID);
-
     __textures.erase(__textures.begin() + index);
 
     projectUpdatingThreadElements.updateTextures = true;
@@ -241,14 +239,14 @@ void Library::eraseMaterial  (int index){
     
     __changed = true;
 
-    dialog_log.registerMaterialDeletionAction("Material deleted", Texture(), __materials[index], index);
+    dialog_log.registerMaterialAction("Material deleted");
 
     //__materials[index].deleteBuffers();
     
     __materials.erase(__materials.begin() + index);
 }
 
-void Library::eraseBrush     (int index){
+void Library::eraseBrush(int index){
 
     if(index >= __brushes.size()){
         LGDLOG::start<< "ERROR! : Couldn't erase the brush : Requested brush index is out of boundaries." << LGDLOG::end;
@@ -257,7 +255,7 @@ void Library::eraseBrush     (int index){
 
     __changed = true;
 
-    dialog_log.registerBrushDeletionAction("Brush deleted", Texture(), __brushes[index], index);
+    dialog_log.registerBrushAction("Brush deleted");
 
     /*
     glDeleteTextures(1, &__brushes[index].displayingTexture.ID);

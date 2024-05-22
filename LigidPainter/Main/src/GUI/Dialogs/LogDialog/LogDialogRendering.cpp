@@ -438,12 +438,13 @@ static void render_selected_panel(
 
     if(libraryHistoryPanel_mixVal * menu_mode_mix_val){
 
+        libraryHistoryPanel->sections[0].elements.clear();
         for (size_t i = 0; i < history_action_records.actions_Library.size(); i++)
         {
             libraryHistoryPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_Library[i].title, Texture(), 0., false));
         }
 
-        historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo / CTRL+Z", Texture(), 0., false));
+        libraryHistoryPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo / CTRL+Z", Texture(), 1., false));
         
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", libraryHistoryPanel_mixVal * menu_mode_mix_val);
         libraryHistoryPanel->scale.x = menu_bar.scale.x;
@@ -453,6 +454,10 @@ static void render_selected_panel(
         libraryHistoryPanel->render(timer, true);
         ShaderSystem::buttonShader().use();
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
+        
+        if(libraryHistoryPanel->sections[0].elements[libraryHistoryPanel->sections[0].elements.size() - 1].button.hover && *Mouse::LClick()){
+            log_dialog->history_action_records.undo_library_actions();
+        }
     }
     
     if(multiThreadInfoPanel_mixVal * menu_mode_mix_val){

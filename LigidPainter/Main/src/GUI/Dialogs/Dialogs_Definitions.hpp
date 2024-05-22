@@ -948,8 +948,9 @@ private:
    /*! @brief Render the cat and panels and stuff. Anything related to graphics*/
    void render_elements(Timer& timer);
 
-   HistoryActionRecords history_action_records;
 public:
+   HistoryActionRecords history_action_records;
+   
    /*! @brief All the messages generated in the app using LGDLOG::start is stored here.*/
    std::vector<std::string> messages;
 
@@ -964,15 +965,10 @@ public:
    LogDialog(int);
 
    // -- Library --
-   void registerTextureDeletionAction(const std::string title, const Texture icon, Texture texture, const int index);
-   void registerTextureAdditionAction(const std::string title, const Texture icon, Texture texture, const int index);
-   void registerMaterialDeletionAction(const std::string title, const Texture icon, Material material, const int index);
-   void registerMaterialAdditionAction(const std::string title, const Texture icon, Material material, const int index);
-   void registerBrushDeletionAction(const std::string title, const Texture icon, Brush brush, const int index);
-   void registerBrushAdditionAction(const std::string title, const Texture icon, Brush brush, const int index);
-   void registerBrushChangedAction(const std::string title, const Texture icon, Brush brush, const int index);
-   void registerImageEditorAction(const std::string title, const Texture icon, Texture texture);
-   void registerLibraryElementRenamingAction(const std::string title, const Texture icon, const int index, const std::string element, const std::string name);
+   void registerTextureAction(const std::string title);
+   void registerMaterialAction(const std::string title);
+   void registerBrushAction(const std::string title);
+   void registerTextureModificationAction(const std::string title, Texture texture);
 
    // -- Painting --
    void registerPaintingAction(const std::string title, Texture painted_texture);

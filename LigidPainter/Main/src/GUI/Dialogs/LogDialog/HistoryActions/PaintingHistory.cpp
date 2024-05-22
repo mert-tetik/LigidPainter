@@ -37,10 +37,10 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include <vector>
 #include <filesystem>
 
-static size_t ID_val = 3975392845189;
+size_t history_ID_val = 3975392845189;
 static size_t generate_unique_ID(){
-    ID_val++;
-    return ID_val;
+    history_ID_val++;
+    return history_ID_val;
 }
 
 PaintingAction::PaintingAction(std::string title, Texture painted_texture)

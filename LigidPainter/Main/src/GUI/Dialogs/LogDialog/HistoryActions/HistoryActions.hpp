@@ -30,63 +30,39 @@ struct BtnAction{
 
 struct LibraryAction{
     std::string title;
-    unsigned int ID;
-    Texture icon;
-    Texture texture;
-    Texture alteredTexture;
-    int textureIndex;
-    Material material;
-    Brush brush;
-    
-    std::string element;
-    std::string name;
+    unsigned int action_ID;
 
-    LibraryAction(std::string title, unsigned int ID, Texture icon, int index, std::string element, std::string name){
-        this->title = title;
-        this->ID = ID;
-        this->icon = icon;
-        this->textureIndex = index;
-        this->element = element;
-        this->name = name;
-    }
-    
-    LibraryAction(std::string title, unsigned int ID, Texture icon, Texture texture){
-        this->title = title;
-        this->ID = ID;
-        this->icon = icon;
-        this->texture = texture;
-    }
+    Texture texture;    
+    size_t unique_id;
 
-    LibraryAction(std::string title, unsigned int ID, Texture icon, Texture texture, Texture alteredTexture){
-        this->title = title;
-        this->ID = ID;
-        this->icon = icon;
-        this->texture = texture;
-        this->alteredTexture = alteredTexture;
-    }
+    std::vector<Texture> textures;    
+    std::vector<Material> materials;    
+    std::vector<Brush> brushes;    
     
-    LibraryAction(std::string title, unsigned int ID, Texture icon, Texture texture, int textureIndex){
-        this->title = title;
-        this->ID = ID;
-        this->icon = icon;
-        this->texture = texture;
-        this->textureIndex = textureIndex;
-    }
-    
-    LibraryAction(std::string title, unsigned int ID, Texture icon, Material material, int textureIndex){
-        this->title = title;
-        this->ID = ID;
-        this->icon = icon;
-        this->material = material;
-        this->textureIndex = textureIndex;
-    }
 
-    LibraryAction(std::string title, unsigned int ID, Texture icon, Brush brush, int textureIndex){
+    LibraryAction(std::string title, std::vector<Texture> textures){
         this->title = title;
-        this->ID = ID;
-        this->icon = icon;
-        this->brush = brush;
-        this->textureIndex = textureIndex;
+        this->textures = textures;
+
+        this->action_ID = 0;
+    }
+    LibraryAction(std::string title, std::vector<Material> materials){
+        this->title = title;
+        this->materials = materials;
+
+        this->action_ID = 1;
+    }
+    LibraryAction(std::string title, std::vector<Brush> brushes){
+        this->title = title;
+        this->brushes = brushes;
+
+        this->action_ID = 2;
+    }
+    LibraryAction(std::string title, Texture texture){
+        this->title = title;
+        this->texture = texture;
+
+        this->action_ID = 3;
     }
 };
 
@@ -94,7 +70,7 @@ struct PaintingAction{
     std::string title;
     Texture painted_texture;
 
-    int unique_ID = -1;
+    size_t unique_ID = -1;
 
     PaintingAction(std::string title, Texture painted_texture);
 };
@@ -103,7 +79,7 @@ struct MultiChannelPaintingAction{
     std::string title;
     MaterialChannels material_channels;
 
-    int unique_ID = -1;
+    size_t unique_ID = -1;
 
     MultiChannelPaintingAction(std::string title, MaterialChannels material_channels);
 };
