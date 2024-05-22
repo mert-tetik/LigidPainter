@@ -351,7 +351,7 @@ static void render_selected_panel(
         
         historyPanel->sections[0].elements.clear();
 
-        std::string current_action_mode = "";
+        std::string current_action_mode = "Empty";
 
         if(activeHistoryMode == HISTORY_PAINTING_MODE){
             current_action_mode = "Painting";
@@ -412,12 +412,14 @@ static void render_selected_panel(
             }
         }
 
-        historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo / CTRL+Z", Texture(), 0., false));
+        historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo / CTRL+Z", Texture(), 1.f, false));
         
-        Button current_action_mode_display_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(menu_bar.scale.x, 1.f * historyPanel_mixVal * menu_mode_mix_val), current_action_mode + " History Actions", Texture(), 0.f, false);
+        Button current_action_mode_display_btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(menu_bar.scale.x, 2.f * historyPanel_mixVal * menu_mode_mix_val), current_action_mode + " History Actions", Texture(), 0.f, false);
         current_action_mode_display_btn.pos = menu_bar.pos;
         current_action_mode_display_btn.pos.y += menu_bar.scale.y + current_action_mode_display_btn.scale.y;
+        current_action_mode_display_btn.radius /= 4.f;
         current_action_mode_display_btn.render(timer, false);
+
 
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", historyPanel_mixVal * menu_mode_mix_val);
         historyPanel->scale.x = menu_bar.scale.x;
