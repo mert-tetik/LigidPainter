@@ -210,8 +210,6 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
             Debugger::block("Painting : Update custom material mesh"); // End
         }
 
-        register_history_actions(settings.painting_mode, settings.painted_buffers);
-
         if(settings.painting_mode == 4){
             for (PaintedBufferData painted_buffer : get_painted_buffers(settings)){
                 char clrPx[4] = {painted_buffer.clr.r * 127, painted_buffer.clr.g * 127, painted_buffer.clr.b * 127, 1.};

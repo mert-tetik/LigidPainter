@@ -977,10 +977,7 @@ public:
    // -- Painting --
    void registerPaintingAction(const std::string title, Texture painted_texture);
 
-   void registerMultiChannelPaintingAction(const std::string title, Texture albedo, bool albedoPainted, 
-                              Texture roughness, bool roughnessPainted, Texture metallic, bool metallicPainted,
-                              Texture normal, bool normalPainted, Texture height, bool heightPainted, Texture ao,
-                              bool aoPainted);
+   void registerMultiChannelPaintingAction(const std::string title, MaterialChannels material_channels);
 
    // -- Vector --
    void registerVectorAction(const std::string title, VectorScene* vectorScene);

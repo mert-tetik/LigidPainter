@@ -667,38 +667,6 @@ void bucket_paint_texture(Texture texture, Color color, float opacity, Mesh* mes
     delete[] pxs;
 }
 
-void register_history_actions(int painting_mode, PaintSettings::PaintedBuffers painted_buffers){
-    std::string actionTitle = "Unknown painting mode";
-    
-    if(painting_mode == 0)
-        actionTitle = "Painting";
-    if(painting_mode == 1)
-        actionTitle = "Softening";
-    if(painting_mode == 2)
-        actionTitle = "Smearing";
-    if(painting_mode == 3)
-        actionTitle = "Normal map painting";
-    if(painting_mode == 4)
-        actionTitle = "Filter painting";
-    if(painting_mode == 6)
-        actionTitle = "Bucket painting";
-    
-    if(painted_buffers.material_painting){
-        dialog_log.registerMultiChannelPaintingAction(
-                                                        "Multi-channel painting", 
-                                                        painted_buffers.material_channel_albedo, painted_buffers.material_channel_albedo_active, 
-                                                        painted_buffers.material_channel_roughness, painted_buffers.material_channel_roughness_active,
-                                                        painted_buffers.material_channel_metallic, painted_buffers.material_channel_metallic_active,
-                                                        painted_buffers.material_channel_normalMap, painted_buffers.material_channel_normalMap_active,
-                                                        painted_buffers.material_channel_heightMap, painted_buffers.material_channel_heightMap_active,
-                                                        painted_buffers.material_channel_ao, painted_buffers.material_channel_ao_active
-                                                    );
-    }
-    else{
-        dialog_log.registerPaintingAction(actionTitle, painted_buffers.solid_painted_texture);
-    }
-}
-
 static Mesh customMatMesh;
 static Material prevCustomMaterial;
 static int prevMeshVBO = 0;

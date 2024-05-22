@@ -51,6 +51,14 @@ PaintingAction::PaintingAction(std::string title, Texture painted_texture)
     this->unique_ID = generate_unique_ID();
 }
 
+MultiChannelPaintingAction::MultiChannelPaintingAction(std::string title, MaterialChannels material_channels)
+{
+    this->title = title;
+    this->material_channels = material_channels; 
+ 
+    this->unique_ID = generate_unique_ID();
+}
+
 void HistoryActionRecords::undo_painting_actions(){
     unsigned int texture_ID = panel_library_selected_texture.ID; 
 
@@ -67,4 +75,42 @@ void HistoryActionRecords::undo_painting_actions(){
     panel_library_selected_texture.readTMP(std::to_string(this->actions_Painting[texture_ID][this->actions_Painting[texture_ID].size() - 1].unique_ID));
 
     this->actions_Painting[texture_ID].pop_back();
+}
+
+MaterialChannels HistoryActionRecords::get_actively_painted_material_channels(){
+    bool success = false;
+    MaterialChannels material_channels = getScene()->get_selected_mesh()->layerScene.get_painting_channels(&success);
+
+    if(success){
+        return material_channels;
+    }
+    else{
+        return MaterialChannels(0, 0, 0, 0, 0, 0);
+    }
+}
+
+void HistoryActionRecords::undo_multi_channel_painting_actions(){
+    MaterialChannels actively_painted_material_channels = this->get_actively_painted_material_channels(); 
+
+    if(actively_painted_material_channels.albedo.ID == 0 || glIsTexture(actively_painted_material_channels.albedo.ID) == GL_FALSE){
+        LGDLOG::start << "ERROR : HistoryActionRecords::undo_multi_channel_painting_actions : No material channels are selected" << LGDLOG::end;
+        return; 
+    }
+
+    if(!this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID].size()){
+        LGDLOG::start << "WARNING : HistoryActionRecords::undo_multi_channel_painting_actions : Multi channel painting history is empty" << LGDLOG::end;
+        return;
+    }
+
+    actively_painted_material_channels.albedo.readTMP(std::to_string(this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID][this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID].size() - 1].unique_ID) + "_0");
+    actively_painted_material_channels.roughness.readTMP(std::to_string(this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID][this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID].size() - 1].unique_ID) + "_1");
+    actively_painted_material_channels.metallic.readTMP(std::to_string(this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID][this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID].size() - 1].unique_ID) + "_2");
+    actively_painted_material_channels.normalMap.readTMP(std::to_string(this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID][this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID].size() - 1].unique_ID) + "_3");
+    actively_painted_material_channels.heightMap.readTMP(std::to_string(this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID][this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID].size() - 1].unique_ID) + "_4");
+    actively_painted_material_channels.ambientOcclusion.readTMP(std::to_string(this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID][this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID].size() - 1].unique_ID) + "_5");
+
+    this->actions_MultiChannelPainting[actively_painted_material_channels.albedo.ID].pop_back();
+
+    getScene()->get_selected_mesh()->layerScene.update_result(std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]), glm::vec3(0.f), *getScene()->get_selected_mesh());
+
 }

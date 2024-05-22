@@ -100,6 +100,9 @@ void LogDialog::undo_general_history(){
     if(active_history_mode == HISTORY_PAINTING_MODE){
         this->history_action_records.undo_painting_actions();   
     }
+    if(active_history_mode == HISTORY_MULTI_CHANNEL_PAINTING_MODE){
+        this->history_action_records.undo_multi_channel_painting_actions();   
+    }
     if(active_history_mode == HISTORY_VECTORS_MODE){
         this->history_action_records.undo_vector_actions();   
     }

@@ -362,6 +362,15 @@ static void render_selected_panel(
                 }
             }
         }
+        if(activeHistoryMode == HISTORY_MULTI_CHANNEL_PAINTING_MODE){
+            current_action_mode = "Multi-Channel Painting";
+            if(history_action_records.get_actively_painted_material_channels().albedo.ID && glIsTexture(history_action_records.get_actively_painted_material_channels().albedo.ID) == GL_TRUE){
+                for (size_t i = 0; i < history_action_records.actions_MultiChannelPainting[history_action_records.get_actively_painted_material_channels().albedo.ID].size(); i++)
+                {
+                    historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_MultiChannelPainting[history_action_records.get_actively_painted_material_channels().albedo.ID][i].title, Texture(), 0., false));
+                }
+            }
+        }
         if(activeHistoryMode == HISTORY_VECTORS_MODE){
             VectorScene* current_vector_scene = history_action_records.get_active_vectorScene();
             current_action_mode = "Vector";

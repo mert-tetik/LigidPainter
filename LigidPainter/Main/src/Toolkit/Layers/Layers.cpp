@@ -298,7 +298,8 @@ Layer* LayerScene::get_selected_layer(int* layer_index){
     for (size_t i = 0; i < this->layers.size(); i++)
     {
         if(this->layers[i]->mainSelected){
-            *layer_index = i;
+            if(layer_index != nullptr)
+                *layer_index = i;
             return this->layers[i];
         }
     }

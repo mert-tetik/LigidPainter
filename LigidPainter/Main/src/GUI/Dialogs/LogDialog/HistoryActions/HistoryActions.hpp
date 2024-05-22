@@ -101,47 +101,11 @@ struct PaintingAction{
 
 struct MultiChannelPaintingAction{
     std::string title;
-    
-    Texture albedo; 
-    bool albedoPainted;
-    Texture roughness; 
-    bool roughnessPainted;
-    Texture metallic; 
-    bool metallicPainted;
-    Texture normal; 
-    bool normalPainted;
-    Texture height; 
-    bool heightPainted;
-    Texture ao; 
-    bool aoPainted;
+    MaterialChannels material_channels;
 
-    MultiChannelPaintingAction(
-                                std::string title,
-                                Texture albedo, bool albedoPainted, 
-                                Texture roughness, bool roughnessPainted, 
-                                Texture metallic, bool metallicPainted,
-                                Texture normal, bool normalPainted, 
-                                Texture height, bool heightPainted, 
-                                Texture ao, bool aoPainted
-                            )
-    {
-        this->title = title;
-        
-        this->albedo = albedo; 
-        this->roughness = roughness; 
-        this->metallic = metallic; 
-        this->normal = normal; 
-        this->height = height; 
-        this->ao = ao; 
+    int unique_ID = -1;
 
-        this->albedoPainted = albedoPainted; 
-        this->roughnessPainted = roughnessPainted; 
-        this->metallicPainted = metallicPainted; 
-        this->normalPainted = normalPainted; 
-        this->heightPainted = heightPainted; 
-        this->aoPainted = aoPainted; 
-
-    }
+    MultiChannelPaintingAction(std::string title, MaterialChannels material_channels);
 };
 
 struct VectorsAction{
@@ -203,13 +167,13 @@ struct HistoryActionRecords{
 
    std::map<unsigned int, std::vector<PaintingAction>> actions_Painting;
    void undo_painting_actions(); 
+   
+   std::map<unsigned int, std::vector<MultiChannelPaintingAction>>  actions_MultiChannelPainting;
+   MaterialChannels get_actively_painted_material_channels();
+   void undo_multi_channel_painting_actions(); 
 
    std::vector<LibraryAction> actions_Library;
    void undo_library_actions(); 
-
-   
-   std::vector<PaintingAction> actions_MultiChannelPainting;
-   void undo_multi_channel_painting_actions(); 
    
 
    std::vector<TextureFieldsAction> actions_TextureFields;
