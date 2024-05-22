@@ -26,7 +26,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 
 #include "GUI/Elements.hpp"
-#include "GUI/Dialogs.hpp"
+
+class TextureFieldScene;
 
 /*! @brief Used to render and handle the movable, resizable or rotatable dynamic textures (Used for painting over) 
             WRAP MODE : Texture field is being wrapped around the 3D model in 3D scene instead of being rendered in 2D
@@ -51,7 +52,7 @@ public:
     TextureField(Texture texture);
 
     /*! @brief Render the texture field*/
-    void render(Timer& timer, std::vector<TextureField>& srcVector, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
+    void render(Timer& timer, TextureFieldScene* srcScene, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
 
     
     /*------------------------------- 2D TEXTURE FIELD  -------------------------------*/
@@ -95,7 +96,7 @@ public:
 
 
     /*! @brief Render the 2D texture field */
-    void render2DTextureField(Timer& timer, std::vector<TextureField>& srcVector, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
+    void render2DTextureField(Timer& timer, TextureFieldScene* srcScene, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
     
     /*------------------------------- WRAP MODE  -------------------------------*/
 
@@ -180,7 +181,7 @@ public:
     void renderWrappedModifyElements(Timer& timer, bool doMouseTracking);
 
     /*! @brief Render the wrapped texture field */
-    void renderWrappedTextureField(Timer& timer, std::vector<TextureField>& srcVector, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
+    void renderWrappedTextureField(Timer& timer, TextureFieldScene* srcScene, int& srcVectorI, bool editMode, bool generatingTextureMode, bool doMouseTracking);
 
     /*! @brief Renders info texts about placing first points of the wrapped texture field
                Only called if top left and bottom right points set to vec3(0)

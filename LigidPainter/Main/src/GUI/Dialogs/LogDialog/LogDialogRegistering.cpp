@@ -114,8 +114,11 @@ void LogDialog::registerFaceSelectionAction(const std::string title, Mesh* mesh)
     this->history_action_records.actions_FaceSelection[mesh].push_back(FaceSelectionAction(title, mesh->face_selection_data));
 }
 
-void LogDialog::registerTextureFieldAction(const std::string title, std::vector<TextureField> fields){
-    this->history_action_records.actions_TextureFields.push_back(TextureFieldsAction(title, fields));
+void LogDialog::registerTextureFieldAction(const std::string title, TextureFieldScene* texture_field_scene){
+    if(texture_field_scene == nullptr)
+        return;
+    
+    this->history_action_records.actions_TextureFields[texture_field_scene].push_back(TextureFieldsAction(title, *texture_field_scene));
 }
 
 void LogDialog::registerMaterialAction(const std::string title, Material material){

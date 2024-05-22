@@ -57,7 +57,7 @@ void TextureFieldScene::render(Timer& timer, bool doMouseTracking, bool threeD_o
         if((checkBox_wrap_mode.clickState1 && this->texture_fields[i].wrapMode) || !checkBox_wrap_mode.clickState1 || editMode){
             this->texture_fields[i].render(
                                                 timer, 
-                                                this->texture_fields, 
+                                                this, 
                                                 i, 
                                                 editMode, 
                                                 false, 
@@ -96,7 +96,7 @@ void TextureFieldScene::update_painting_over_texture(bool threeD_only){
     for (int i = 0; i < this->texture_fields.size(); i++)
     {
         if((threeD_only && this->texture_fields[i].wrapMode) || !threeD_only){
-            this->texture_fields[i].render(Timer(), this->texture_fields, i, false, true, false);
+            this->texture_fields[i].render(Timer(), this, i, false, true, false);
         }
     }    
 

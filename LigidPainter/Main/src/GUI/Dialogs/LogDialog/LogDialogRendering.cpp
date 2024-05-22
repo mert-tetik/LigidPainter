@@ -381,7 +381,17 @@ static void render_selected_panel(
                     historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_Vectors[current_vector_scene][i].title, Texture(), 0., false));
                 }
             }
-
+        }
+        if(activeHistoryMode == HISTORY_TEXTUREFIELDS_MODE){
+            TextureFieldScene* current_texture_field_scene = history_action_records.get_active_textureFieldScene();
+            current_action_mode = "Texture Field";
+            
+            if(current_texture_field_scene != nullptr){
+                for (size_t i = 0; i < history_action_records.actions_TextureFields[current_texture_field_scene].size(); i++)
+                {
+                    historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_TextureFields[current_texture_field_scene][i].title, Texture(), 0., false));
+                }
+            }
         }
         if(activeHistoryMode == HISTORY_FACESELECTION_MODE){
             Mesh* active_face_selected_mesh = history_action_records.get_active_face_selected_mesh();
@@ -392,13 +402,6 @@ static void render_selected_panel(
                 {
                     historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_FaceSelection[active_face_selected_mesh][i].title, Texture(), 0., false));
                 }
-            }
-        }
-        if(activeHistoryMode == HISTORY_TEXTUREFIELDS_MODE){
-            current_action_mode = "Texture Field";
-            for (size_t i = 0; i < history_action_records.actions_TextureFields.size(); i++)
-            {
-                historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_TextureFields[i].title, Texture(), 0., false));
             }
         }
         if(activeHistoryMode == HISTORY_MATERIALEDITOR_MODE){

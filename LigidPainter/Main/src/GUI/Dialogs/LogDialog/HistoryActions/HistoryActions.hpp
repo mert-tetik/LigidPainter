@@ -134,13 +134,13 @@ struct FaceSelectionAction{
 
 struct TextureFieldsAction{
     std::string title;
-    std::vector<TextureField> fields;
+    TextureFieldScene texture_field_scene;
 
     TextureFieldsAction(){}
 
-    TextureFieldsAction(std::string title, std::vector<TextureField> fields){
+    TextureFieldsAction(std::string title, TextureFieldScene texture_field_scene){
         this->title = title;
-        this->fields = fields;
+        this->texture_field_scene = texture_field_scene;
     }
 };
 
@@ -161,6 +161,10 @@ struct HistoryActionRecords{
    void undo_vector_actions(); 
    VectorScene* get_active_vectorScene();
    
+   std::map<TextureFieldScene*, std::vector<TextureFieldsAction>> actions_TextureFields;
+   void undo_texture_field_actions();
+   TextureFieldScene* get_active_textureFieldScene();
+   
    std::map<Mesh*, std::vector<FaceSelectionAction>> actions_FaceSelection;
    void undo_face_selection_actions(); 
    Mesh* get_active_face_selected_mesh();
@@ -172,12 +176,11 @@ struct HistoryActionRecords{
    MaterialChannels get_actively_painted_material_channels();
    void undo_multi_channel_painting_actions(); 
 
+
    std::vector<LibraryAction> actions_Library;
    void undo_library_actions(); 
    
 
-   std::vector<TextureFieldsAction> actions_TextureFields;
-   void undo_texture_field_actions(); 
    
    std::vector<MaterialEditorAction> actions_MaterialEditor;
    void undo_material_editor_actions(); 

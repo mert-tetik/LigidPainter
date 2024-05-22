@@ -20,6 +20,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <iostream>
 #include <vector>
 
+#include "GUI/Dialogs.hpp"
+
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/GL/GL.hpp"
 #include "UTIL/Texture/Texture.hpp"

@@ -23,7 +23,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <mutex>
 
+#include "GUI/Dialogs.hpp"
+
 #include "3D/Mesh/Mesh.hpp"
+
 #include "UTIL/Settings/Settings.hpp"
 
 static std::vector<Vertex> calculate_height_mapped_vertices(Texture& heightMap, std::vector<Vertex>& originalVertices, float strength);

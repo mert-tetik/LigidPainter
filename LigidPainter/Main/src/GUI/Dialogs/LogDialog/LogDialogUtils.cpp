@@ -59,6 +59,10 @@ int LogDialog::get_active_history_mode(){
         return HISTORY_VECTORS_MODE;
     }
     
+    if(this->history_action_records.get_active_textureFieldScene() != nullptr){
+        return HISTORY_TEXTUREFIELDS_MODE;
+    }
+    
     if(this->history_action_records.get_active_face_selected_mesh() != nullptr){
         return HISTORY_FACESELECTION_MODE;
     }
@@ -71,9 +75,6 @@ int LogDialog::get_active_history_mode(){
         return HISTORY_PAINTING_MODE;
     }
 
-    if(checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1){
-        return HISTORY_TEXTUREFIELDS_MODE;
-    }
 
     if(dialog_materialEditor.dialogControl.isActive()){
         return HISTORY_MATERIALEDITOR_MODE; 
@@ -110,7 +111,7 @@ void LogDialog::undo_general_history(){
         this->history_action_records.undo_face_selection_actions();   
     }
     if(active_history_mode == HISTORY_TEXTUREFIELDS_MODE){
-        //this->history_action_records.undo_texture_field_actions();   
+        this->history_action_records.undo_texture_field_actions();   
     }
     if(active_history_mode == HISTORY_MATERIALEDITOR_MODE){
         //this->history_action_records.undo_material_editor_actions();   

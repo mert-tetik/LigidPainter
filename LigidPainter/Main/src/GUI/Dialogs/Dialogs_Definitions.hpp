@@ -986,7 +986,7 @@ public:
    void registerFaceSelectionAction(const std::string title, Mesh* mesh);
 
    // -- Texture Field --
-   void registerTextureFieldAction(const std::string title, std::vector<TextureField> fields);
+   void registerTextureFieldAction(const std::string title, TextureFieldScene* textureFieldScene);
 
    // -- Material Editor --
    void registerMaterialAction(const std::string title, Material material);

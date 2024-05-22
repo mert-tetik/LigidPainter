@@ -100,7 +100,7 @@ bool textureField_alreadyInteracted = false;
 
 void TextureField::render(
                             Timer& timer, 
-                            std::vector<TextureField>& srcVector, 
+                            TextureFieldScene* srcScene, 
                             int& srcVectorI, 
                             bool editMode, 
                             bool generatingTextureMode, 
@@ -108,10 +108,10 @@ void TextureField::render(
                         )
 {
     if(this->wrapMode){
-        this->renderWrappedTextureField(timer, srcVector, srcVectorI, editMode, generatingTextureMode, doMouseTracking);
+        this->renderWrappedTextureField(timer, srcScene, srcVectorI, editMode, generatingTextureMode, doMouseTracking);
     }
 
     else{
-        this->render2DTextureField(timer, srcVector, srcVectorI, editMode, generatingTextureMode, doMouseTracking);
+        this->render2DTextureField(timer, srcScene, srcVectorI, editMode, generatingTextureMode, doMouseTracking);
     }
 }
