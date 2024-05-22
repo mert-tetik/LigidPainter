@@ -83,12 +83,12 @@ int LogDialog::get_active_history_mode(){
 }
 
 bool LogDialog::isHovered(){
-    return  this->menu_bar.hover || 
-            this->messagesPanel.hover || 
-            this->historyPanel.hover || 
-            this->libraryHistoryPanel.hover || 
-            this->multiThreadInfoPanel.hover || 
-            this->logBtn.hover;
+    return  Mouse::isMouseHover(this->menu_bar.resultScale, this->menu_bar.resultPos) || 
+            Mouse::isMouseHover(this->messagesPanel.resultScale, this->messagesPanel.resultPos) || 
+            Mouse::isMouseHover(this->historyPanel.resultScale, this->historyPanel.resultPos) || 
+            Mouse::isMouseHover(this->libraryHistoryPanel.resultScale, this->libraryHistoryPanel.resultPos) || 
+            Mouse::isMouseHover(this->multiThreadInfoPanel.resultScale, this->multiThreadInfoPanel.resultPos) || 
+            Mouse::isMouseHover(this->logBtn.resultScale, this->logBtn.resultPos);
 }
 
 void LogDialog::undo_general_history(){
