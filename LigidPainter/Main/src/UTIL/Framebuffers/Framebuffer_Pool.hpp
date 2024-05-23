@@ -74,6 +74,7 @@ public:
 
 namespace FBOPOOL{
     Framebuffer requestFBO(Texture txtr, std::string location);
+    Framebuffer requestFBO(std::vector<Texture> txtrs, std::string location);
     Framebuffer requestFBO_with_RBO(Texture txtr, glm::ivec2 resolution, std::string location);
 
     void releaseFBO(Framebuffer FBO);

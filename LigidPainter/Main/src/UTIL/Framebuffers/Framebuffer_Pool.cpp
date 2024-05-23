@@ -52,7 +52,10 @@ static bool is_texture_already_bound_to_a_FBO(Texture txtr, std::string location
     return false;
 }
 
-static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, std::string location){
+static Framebuffer request_from_FBO_POOL(std::vector<Texture> txtrs, glm::ivec2 resolution, std::string location){
+
+    if(!txtrs.size())
+        return Framebuffer();
 
     std::lock_guard<std::mutex> lock(FBOPOOL_mutex);
 
@@ -64,16 +67,18 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
 
     Framebuffer* res = nullptr;
 
-
     /* Wait until the texture is no longer bound to any FBO (wait the other thread) */
-    if(is_texture_already_bound_to_a_FBO(txtr, location)){
-        wait_time = LigidGL::getTime();
-        std::cout << "WARNING : request_from_FBO_POOL : " + location + " : Texture is already bound to a framebuffer. Waiting until it's released!" << std::endl;
-    }
-
-    while(is_texture_already_bound_to_a_FBO(txtr, location)){
-        if(LigidGL::getTime() - wait_time > 5){
-            break;
+    for (Texture txtr : txtrs)
+    {
+        if(is_texture_already_bound_to_a_FBO(txtr, location)){
+            wait_time = LigidGL::getTime();
+            std::cout << "WARNING : request_from_FBO_POOL : " + location + " : Texture is already bound to a framebuffer. Waiting until it's released!" << std::endl;
+        }
+        
+        while(is_texture_already_bound_to_a_FBO(txtr, location)){
+            if(LigidGL::getTime() - wait_time > 5){
+                break;
+            }
         }
     }
 
@@ -110,10 +115,10 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
 
         /* If a renderbuffer is not requested*/
         if(resolution == glm::ivec2(0)){
-            new_FBO = Framebuffer(txtr, GL_TEXTURE_2D, "");
+            new_FBO = Framebuffer(txtrs[0], GL_TEXTURE_2D,  location);
         }
         else{
-            new_FBO = Framebuffer(txtr, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution),"");
+            new_FBO = Framebuffer(txtrs[0], GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, resolution), location);
         }
         
         /* Add generated FBO to pool */
@@ -128,24 +133,31 @@ static Framebuffer request_from_FBO_POOL(Texture txtr, glm::ivec2 resolution, st
     res->purpose = location;
     
     /* Update the color buffer of the FBO*/
-    res->setColorBuffer(txtr, GL_TEXTURE_2D);
+    if(txtrs.size() == 1)
+        res->setColorBuffer(txtrs[0], GL_TEXTURE_2D);
+    else if(txtrs.size() > 1)
+        res->setColorBuffer(txtrs, GL_TEXTURE_2D);
 
     /* Bind the requested FBO*/
     res->bind();
 
     // Update the viewport according to requested txtr
-    glViewport(0, 0, txtr.getResolution().x, txtr.getResolution().y);
+    glViewport(0, 0, txtrs[0].getResolution().x, txtrs[0].getResolution().y);
 
     /* Provide the requested FBO */
     return *res;
 } 
 
 Framebuffer FBOPOOL::requestFBO(Texture txtr, std::string location){
-    return request_from_FBO_POOL(txtr, glm::ivec2(0), location);
+    return request_from_FBO_POOL({txtr}, glm::ivec2(0), location);
+}
+
+Framebuffer FBOPOOL::requestFBO(std::vector<Texture> txtrs, std::string location){
+    return request_from_FBO_POOL(txtrs, glm::ivec2(0), location);
 }
 
 Framebuffer FBOPOOL::requestFBO_with_RBO(Texture txtr, glm::ivec2 resolution, std::string location){
-    return request_from_FBO_POOL(txtr, resolution, location);
+    return request_from_FBO_POOL({txtr}, resolution, location);
 }
 
 void FBOPOOL::releaseFBO(Framebuffer released_FBO){

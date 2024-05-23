@@ -211,7 +211,7 @@ void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painti
         if(assignRelatedTexturesButton.clicked){
             dialog_materialSelection.show(timer, &this->material);    
          
-            this->updateMeshTextures(mesh, painting_layer, resolution);
+            material_thread.update_object_texturing_dialog_result(&this->material, getScene()->model, &mesh, &painting_layer->result, this->meshMask);
         }
 
         if(!this->panel.hover && *Mouse::LClick() && !dialog_log.isHovered() || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput)){
@@ -289,117 +289,6 @@ void ObjectTexturingDialog::updateDisplayingTexture(Mesh& mesh, PaintingLayer* p
     FBOPOOL::releaseFBO(FBO);
 }
 
-#define MIX_CHANNELS(mask, normalMapMode, invert)   painting_layer->result.albedo.mix(result_channels.albedo, mask, false, normalMapMode, invert);\
-                                                    painting_layer->result.roughness.mix(result_channels.roughness, mask, false, normalMapMode, invert);\
-                                                    painting_layer->result.metallic.mix(result_channels.metallic, mask, false, normalMapMode, invert);\
-                                                    painting_layer->result.normalMap.mix(result_channels.normalMap, mask, false, normalMapMode, invert);\
-                                                    painting_layer->result.heightMap.mix(result_channels.heightMap, mask, false, normalMapMode, invert);\
-                                                    painting_layer->result.ambientOcclusion.mix(result_channels.ambientOcclusion, mask, false, normalMapMode, invert)
-
-static MaterialChannels result_channels;
-
-void ObjectTexturingDialog::updateMeshTextures(Mesh& mesh, PaintingLayer* painting_layer, const unsigned int resolution){
-
-    // Init needed buffers
-    if(!result_channels.albedo.ID){
-        result_channels.albedo = Texture((char*)nullptr, 1, 1);
-        result_channels.roughness = Texture((char*)nullptr, 1, 1);
-        result_channels.metallic = Texture((char*)nullptr, 1, 1);
-        result_channels.normalMap = Texture((char*)nullptr, 1, 1);
-        result_channels.heightMap = Texture((char*)nullptr, 1, 1);
-        result_channels.ambientOcclusion = Texture((char*)nullptr, 1, 1);
-        
-    }
-
-    // Update needed buffers
-    result_channels.albedo.update((char*)nullptr, resolution, resolution);
-    result_channels.roughness.update((char*)nullptr, resolution, resolution);
-    result_channels.metallic.update((char*)nullptr, resolution, resolution);
-    result_channels.normalMap.update((char*)nullptr, resolution, resolution);
-    result_channels.heightMap.update((char*)nullptr, resolution, resolution);
-    result_channels.ambientOcclusion.update((char*)nullptr, resolution, resolution);
-    
-    // Create the mask result
-    material_thread.apply_material(&this->material, getScene()->model, getScene()->get_selected_mesh(), &result_channels);
-    
-    // Mask source to material result
-    MIX_CHANNELS(this->meshMask, false, false);
-    
-    // Update the layer result buffers with the altered layer result buffers
-    mesh.layerScene.update_result(resolution, glm::vec3(0.f), mesh);
-
-    /*
-    Texture maskTxtr;
-
-    // Mask channels via channel textures
-    if(mixOptionsComboBox.selectedIndex == 3){ // Roughness
-        maskTxtr = this->result_channels.roughness; 
-    }
-    if(mixOptionsComboBox.selectedIndex == 4){ // Metallic
-        maskTxtr = this->result_channels.metallic; 
-    }
-    if(mixOptionsComboBox.selectedIndex == 5){ // AO
-        maskTxtr = this->result_channels.ambientOcclusion; 
-    }
-    if(mixOptionsComboBox.selectedIndex == 6){ // Height Map
-        maskTxtr = this->result_channels.heightMap; 
-    }
-    if(mixOptionsComboBox.selectedIndex == 7 || mixOptionsComboBox.selectedIndex == 8){ // Normal Map
-        maskTxtr = this->result_channels.normalMap; 
-    }
-    
-    if(mixOptionsComboBox.selectedIndex){
-
-        if(mixOptionsComboBox.selectedIndex == 1 || mixOptionsComboBox.selectedIndex == 2){
-            std::vector<Texture> orgTxtrs = {albedo, roughness, metallic, normalMap, heightMap, ambientOcclusion};
-            std::vector<Texture> modifiedTxtrs = {this->result_channels.albedo, this->result_channels.roughness, this->result_channels.metallic, this->result_channels.normalMap, this->result_channels.heightMap, this->result_channels.ambientOcclusion};
-        
-            for (size_t i = 0; i < orgTxtrs.size(); i++)
-            {
-                maskTxtr = modifiedTxtrs[i];
-                glm::ivec2 maskRes = maskTxtr.getResolution();
-                if(maskDuplicated.ID == 0){
-                    maskDuplicated = Texture((char*)nullptr, maskRes.x, maskRes.y);
-                }
-                else{
-                    maskDuplicated.update((char*)nullptr, maskRes.x, maskRes.y);
-                }
-                
-                maskTxtr.duplicateTextureSub(maskDuplicated, "ObjectTexturingDialog::updateMeshTextures");
-            
-                modifiedTxtrs[i].mix(orgTxtrs[i], maskDuplicated, false, i == 3, mixOptionsComboBox.selectedIndex == 2);
-            }
-            
-        }
-        else{
-            glm::ivec2 maskRes = maskTxtr.getResolution();
-            if(maskDuplicated.ID == 0){
-                maskDuplicated = Texture((char*)nullptr, maskRes.x, maskRes.y);
-            }
-            else{
-                maskDuplicated.update((char*)nullptr, maskRes.x, maskRes.y);
-            }
-            
-            maskTxtr.duplicateTextureSub(maskDuplicated, "ObjectTexturingDialog::updateMeshTextures");
-
-            MIX_CHANNELS(maskDuplicated, mixOptionsComboBox.selectedIndex == 7 || mixOptionsComboBox.selectedIndex == 8, mixOptionsComboBox.selectedIndex != 8);
-        }
-    }
-
-    if(!albedoChannelCheckBox.clickState1)
-        this->result_channels.albedo.mix(albedo, appTextures.white, false, false, false);
-    if(!roughnessChannelCheckBox.clickState1)
-        this->result_channels.roughness.mix(roughness, appTextures.white, false, false, false);
-    if(!metallicChannelCheckBox.clickState1)
-        this->result_channels.metallic.mix(metallic, appTextures.white, false, false, false);
-    if(!normalMapChannelCheckBox.clickState1)
-        this->result_channels.normalMap.mix(normalMap, appTextures.white, false, false, false);
-    if(!heightMapChannelCheckBox.clickState1)
-        this->result_channels.heightMap.mix(heightMap, appTextures.white, false, false, false);
-    if(!aoChannelCheckBox.clickState1)
-        this->result_channels.ambientOcclusion.mix(ambientOcclusion, appTextures.white, false, false, false);
-        */
-}
 
 int ObjectTexturingDialog::getResolution(){
     for (size_t i = 0; i < getScene()->model->meshes.size(); i++)

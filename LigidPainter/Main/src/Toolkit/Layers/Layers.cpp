@@ -167,19 +167,11 @@ void LayerScene::add_new(Layer* layer){
     this->layers.push_back(layer);
 }
 
-static Framebuffer layers_update_FBO;
-
 std::mutex layerscene_update_result_mutex;
 
 void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mesh& mesh){
     
     std::lock_guard<std::mutex> lock(layerscene_update_result_mutex);
-
-    // Init FBO
-    if(!layers_update_FBO.ID){
-        layers_update_FBO.generate();
-        layers_update_FBO.purpose = "layers_update_FBO";
-    }
 
     if(!mesh.material_channels.albedo.ID){
         mesh.material_channels.albedo = Texture((char*)nullptr, resolution, resolution);
@@ -201,23 +193,18 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
         }
     }
     
-    // Bind FBO
-    layers_update_FBO.bind();
-
     // Update FBO
-    layers_update_FBO.setColorBuffer(
-                                        {
-                                            mesh.material_channels.albedo, 
-                                            mesh.material_channels.roughness, 
-                                            mesh.material_channels.metallic, 
-                                            mesh.material_channels.normalMap, 
-                                            mesh.material_channels.heightMap, 
-                                            mesh.material_channels.ambientOcclusion
-                                        },
-                                        GL_TEXTURE_2D
-                                    );
-
-    glViewport(0, 0, resolution, resolution);
+    Framebuffer FBO = FBOPOOL::requestFBO(
+                                            {
+                                                mesh.material_channels.albedo, 
+                                                mesh.material_channels.roughness, 
+                                                mesh.material_channels.metallic, 
+                                                mesh.material_channels.normalMap, 
+                                                mesh.material_channels.heightMap, 
+                                                mesh.material_channels.ambientOcclusion
+                                            },
+                                            "LayerScene::updateResult"
+                                        );
 
     glClearColor(baseColor.r, baseColor.g, baseColor.b, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -257,6 +244,7 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
         ShaderUTIL::release_bound_shader();
     }
     
+    FBOPOOL::releaseFBO(FBO);
 }
 
 bool LayerScene::any_dialog_hovered(){

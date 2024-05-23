@@ -208,7 +208,7 @@ Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, std::s
     
     Debugger::block("Init FBO" + std::string(" : ") + this->purpose); // End
     
-    TEST_FRAMEBUFFER("Framebuffer::Framebuffer")
+    TEST_FRAMEBUFFER("Framebuffer::Framebuffer : " + purpose)
 }
 
 Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer, std::string purpose){
@@ -234,7 +234,7 @@ Framebuffer::Framebuffer(Texture colorBuffer, unsigned int textureTarget, Render
     
     Debugger::block("Init FBO" + std::string(" : ") + this->purpose); // End
 
-    TEST_FRAMEBUFFER("Framebuffer::Framebuffer")
+    TEST_FRAMEBUFFER("Framebuffer::Framebuffer : " + purpose)
 }
 
 void Framebuffer::update(Texture colorBuffer, unsigned int textureTarget, Renderbuffer renderbuffer){
@@ -257,7 +257,7 @@ void Framebuffer::update(Texture colorBuffer, unsigned int textureTarget, Render
 
     Debugger::block("Update FBO" + std::string(" : ") + this->purpose); // End
 
-    TEST_FRAMEBUFFER("Framebuffer::update")
+    TEST_FRAMEBUFFER("Framebuffer::update : " + purpose)
 }
 
 void Framebuffer::generate(){

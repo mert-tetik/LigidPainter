@@ -34,6 +34,9 @@ void Texture::mix(Texture mix_txtr, Texture mask, bool maskAlpha, bool normalMap
 
     // Get a FBO and bind it & update the viewport resolution
     Framebuffer FBO = FBOPOOL::requestFBO(*this, "Texture::mix");
+
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT);
     
     // Set shader
     ShaderSystem::grayScaleIDMaskingShader().use();
