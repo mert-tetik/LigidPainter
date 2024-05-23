@@ -307,6 +307,8 @@ void panels_init(){
                             false
                         );
 
+    panel_add_layer.solidStyle = true;
+
     button_mesh_selection = Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f, 4.f), "", Texture(), 0.f, false);
     button_mesh_selection.meshSelection = true;
 
