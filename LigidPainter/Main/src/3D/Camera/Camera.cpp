@@ -166,10 +166,9 @@ void Camera::interaction(float scroll, glm::vec2 mouseOffset, bool const_origin)
         this->YNLocked = false;
         this->ZPLocked = false;
         this->ZNLocked = false;
-
-        this->updateViewMatrix();
     }
 
+    this->updateViewMatrix();
 }
 
 void Camera::transition(glm::vec3 direction){

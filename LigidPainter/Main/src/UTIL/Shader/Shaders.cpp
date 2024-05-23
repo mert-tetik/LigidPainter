@@ -79,10 +79,12 @@ Shader __layersUpdate;
 Shader __solidPaintingShader;
 Shader __removeUnselectedFacesShader;
 Shader __spriteRenderingShader;
+Shader __objectTexturingDialogPBR;
 
 void ShaderSystem::initShaderSystem(){
     __tdModelShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR.frag", "tdModelShader");
     __PBRDisplayOnly.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/PBR_Display_Only.frag", "PBRDisplayOnly");
+    __objectTexturingDialogPBR.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/ObjectTexturingDialogPBR.frag", "ObjectTexturingDialogPBR");
     __depth3D.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/Depth3D.frag", "depth3D");
     __alphaZero3D.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/AlphaZero3D.frag", "alphaZero3D");
     __renderModelData.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/RenderModelData.frag", "renderModelData");
@@ -309,6 +311,9 @@ Shader ShaderSystem::removeUnselectedFacesShader(){
 }
 Shader ShaderSystem::spriteRenderingShader(){
     return __spriteRenderingShader;
+}
+Shader ShaderSystem::objectTexturingDialogPBR(){
+    return __objectTexturingDialogPBR;
 }
 
 

@@ -35,10 +35,11 @@ PaintingLayer::PaintingLayer(const unsigned int resolution){
     this->painting_capture_txtr = Texture((char*)nullptr, 1024, 1024);
 }
 
-void PaintingLayer::type_specific_generate_result(const unsigned int resolution, Mesh& mesh){
-}
+void PaintingLayer::type_specific_generate_result(const unsigned int resolution, Mesh& mesh){}
 
 void PaintingLayer::type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
+    dialog_objectTexturing.show(timer, mesh, this, resolution);
+    
     this->type_specific_modification_enabled = false;
     return;
 }

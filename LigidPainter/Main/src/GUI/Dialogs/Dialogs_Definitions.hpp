@@ -431,40 +431,29 @@ public:
 class ObjectTexturingDialog
 {
 public:
-   Panel panel;
      
    DialogControl dialogControl;
 
+   Panel panel;
+
    Button maskMaterialBtn;
-   
+   CheckBox displayMaskCheckBox;
    Button assignRelatedTexturesButton;
-   Button undoButton;
    
-   Button materialDisplayerButton;
-   Button editMaterialButton;
-   Button selectMaterialButton;
-   Button defaultMaterialButton;
    CheckBox albedoChannelCheckBox;
    CheckBox roughnessChannelCheckBox;
    CheckBox metallicChannelCheckBox;
    CheckBox normalMapChannelCheckBox;
    CheckBox heightMapChannelCheckBox;
    CheckBox aoChannelCheckBox;
-   ComboBox mixOptionsComboBox;
    
    ComboBox displayingOptionsComboBox;
-
-   Panel elementSelectionPanel;
+   ComboBox displayBuffersComboBox;
 
    Camera sceneCam;
    Texture displayingTexture;
 
    Texture meshMask;
-
-   std::vector<MaterialChannels> result_channels;
-
-   bool materialSelection = false;
-   bool textureSelection = false;
 
    Material material;
 
@@ -473,11 +462,10 @@ public:
    ObjectTexturingDialog(int);
     
    //Public member function
-   void show(Timer& timer);
-   bool anyElementHover();
+   void show(Timer& timer, Mesh& mesh, PaintingLayer* painting_layer, const unsigned int resolution);
 
-   void updateDisplayingTexture();
-   void updateMeshTextures();
+   void updateDisplayingTexture(Mesh& mesh, PaintingLayer* painting_layer);
+   void updateMeshTextures(Mesh& mesh, PaintingLayer* painting_layer, const unsigned int resolution);
    int getResolution();
  };
 

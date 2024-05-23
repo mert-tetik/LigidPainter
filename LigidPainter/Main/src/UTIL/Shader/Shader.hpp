@@ -143,6 +143,7 @@ namespace ShaderSystem{
     Shader solidPaintingShader();
     Shader removeUnselectedFacesShader();
     Shader spriteRenderingShader();
+    Shader objectTexturingDialogPBR();
 
     void initShaderSystem();
 };

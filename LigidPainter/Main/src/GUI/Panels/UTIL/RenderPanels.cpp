@@ -134,11 +134,6 @@ void panels_render(Timer& timer)
             Debugger::block("GUI : Panels : Painting filter mode filter selection button"); // End
         }
     }
-    else{
-        Debugger::block("GUI : Panels : Texture selected objects button"); // Start
-        button_texture_selected_objects_render(timer, doMouseTracking);
-        Debugger::block("GUI : Panels : Texture selected objects button"); // End
-    }
 
     Debugger::block("GUI : Panels : Painting face selection check combo list"); // Start
     checkComboList_mesh_face_selection_render(timer, doMouseTracking || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);

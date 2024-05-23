@@ -51,9 +51,6 @@ void panel_selected_texture_display_render(Timer& timer, bool doMouseTracking);
 extern Panel panel_displaying_modes;
 void panel_displaying_modes_render(Timer& timer, bool doMouseTracking);
 
-extern Button button_texture_selected_objects;
-void button_texture_selected_objects_render(Timer& timer, bool doMouseTracking);
-
 extern Gizmo gizmo_scene;
 void gizmo_scene_render(Timer& timer, bool doMouseTracking);
 

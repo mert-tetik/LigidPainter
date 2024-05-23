@@ -73,40 +73,14 @@ ObjectTexturingDialog::ObjectTexturingDialog(int){
         false
     );
 
-    this->elementSelectionPanel = Panel(
-        {
-            {
-                Section()
-            }
-        },
-        glm::vec2(15.f, 35.f),
-        glm::vec3(50.f,50.f,0.8f),
-        ColorPalette::secondColor,
-        ColorPalette::thirdColor,
-        true,
-        true,
-        true,
-        true,
-        true,
-        1.f,
-        1.f,
-        {},
-        0.25f,
-        false
-    );
-
     this->maskMaterialBtn = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Material mask", Texture(), 1.f, false);
     this->maskMaterialBtn.textureSelection3D = true;
+    this->maskMaterialBtn.texture.proceduralProps.proceduralID = 24;
+    
+    this->displayMaskCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Display Mask", 0.f);
+    this->displayMaskCheckBox.clickState1 = true;
 
     this->assignRelatedTexturesButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Assign to related textures", Texture(), 1.f, false);
-    this->undoButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(3, 2.f), "Undo", Texture(), 1.f, false);
-
-    this->materialDisplayerButton = Button(ELEMENT_STYLE_SOLID, glm::vec2(6, 4.f), "", Texture(), 1.f, false);
-    this->editMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 3.f), "Edit material", Texture(), 1.f, false);
-    this->selectMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f, 4.f), "", appTextures.arrowB, 1.f, false);
-    this->selectMaterialButton.infoText = "Select a custom material from the library";
-    this->defaultMaterialButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(2.f, 3.f), "", appTextures.X, 1.f, false);
-    this->defaultMaterialButton.infoText = "Switch to default (solid) material";
     
     this->albedoChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Albedo", 0.f);
     this->albedoChannelCheckBox.clickState1 = true;
@@ -126,8 +100,9 @@ ObjectTexturingDialog::ObjectTexturingDialog(int){
     this->aoChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Ambient Occlusion", 0.f);
     this->aoChannelCheckBox.clickState1 = true;
     this->aoChannelCheckBox.infoText = "Enable / Disable modifying the Ambient Occlusion channel";
-    this->mixOptionsComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 1.5f), {"Opaque", "Black Only", "White Only", "Roughness Mask", "Metallic Mask", "AO Mask", "Height Map Mask", "Normal Map Mask", "Normal Map Mask Inverted"}, "Mix",  1.f);
-    this->displayingOptionsComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Heigth Map", "Ambient Occlusion"}, "Displaying",  1.f);
+    
+    this->displayingOptionsComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Heigth Map", "Ambient Occlusion"}, "Displaying Mode",  1.f);
+    this->displayBuffersComboBox = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(8.f, 2.f), {"Complete Layer Result", "Selected Layer Only"}, "Displaying Buffers",  1.f);
 
     this->displayingTexture = Texture((char*)nullptr, DISPLAY_RESOLUTION.x, DISPLAY_RESOLUTION.y);
 
@@ -135,12 +110,10 @@ ObjectTexturingDialog::ObjectTexturingDialog(int){
     this->sceneCam.radius = 3.5f;
 
     this->material = Material("ObjectTexturingMaterial_DisplayingTexture", {MaterialModifier(SOLID_MATERIAL_MODIFIER)});
+
 }
 
-static bool __materialEditBtn = false;
-static bool __materialSelectBtn = false;
-
-void ObjectTexturingDialog::show(Timer& timer){
+void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painting_layer, const unsigned int resolution){
         
     dialogControl.activate();
     
@@ -150,71 +123,31 @@ void ObjectTexturingDialog::show(Timer& timer){
 
         this->sceneCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset(), false);
 
-        if(getScene()->model->meshes.size() != result_channels.size()){
-            for (size_t i = 0; i < result_channels.size(); i++)
-            {
-                glDeleteTextures(1, &result_channels[i].albedo.ID);
-                glDeleteTextures(1, &result_channels[i].roughness.ID);
-                glDeleteTextures(1, &result_channels[i].metallic.ID);
-                glDeleteTextures(1, &result_channels[i].normalMap.ID);
-                glDeleteTextures(1, &result_channels[i].heightMap.ID);
-                glDeleteTextures(1, &result_channels[i].ambientOcclusion.ID);
-            }
-
-            result_channels.clear();
-
-            for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
-            {
-                MaterialChannels channel;
-                channel.albedo = Texture((char*)nullptr, 1024, 1024);
-                channel.roughness = Texture((char*)nullptr, 1024, 1024);
-                channel.metallic = Texture((char*)nullptr, 1024, 1024);
-                channel.normalMap = Texture((char*)nullptr, 1024, 1024);
-                channel.heightMap = Texture((char*)nullptr, 1024, 1024);
-                channel.ambientOcclusion = Texture((char*)nullptr, 1024, 1024);
-            
-                result_channels.push_back(channel);
-            }
-        }
-
         if(dialogControl.firstFrameActivated){
             material_thread.update_material_displaying_texture(&this->material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
 
             this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
             this->sceneCam.radius = 3.5f;
-            this->updateMeshTextures();
         }
 
         // Update the scene texture
-        updateDisplayingTexture();
+        this->updateDisplayingTexture(mesh, painting_layer);
 
         // Modifying the elements    
         this->panel.sections[0].elements[0].button.scale = this->panel.scale;
 
-        this->materialDisplayerButton.texture = this->material.displayingTexture;
-        
         this->maskMaterialBtn.pos = this->panel.pos;
         this->maskMaterialBtn.pos.x -= this->panel.scale.x - this->maskMaterialBtn.scale.x - 2.f;
-        this->maskMaterialBtn.pos.y += 15.f;
+        this->maskMaterialBtn.pos.y -= 6.f;
         
-        this->assignRelatedTexturesButton.pos = maskMaterialBtn.pos;
-        this->assignRelatedTexturesButton.pos.y += assignRelatedTexturesButton.scale.y + maskMaterialBtn.scale.y * 2.f;
+        this->displayMaskCheckBox.pos = maskMaterialBtn.pos;
+        this->displayMaskCheckBox.pos.y += displayMaskCheckBox.scale.y + maskMaterialBtn.scale.y * 1.f;
+
+        this->assignRelatedTexturesButton.pos = displayMaskCheckBox.pos;
+        this->assignRelatedTexturesButton.pos.y += assignRelatedTexturesButton.scale.y + displayMaskCheckBox.scale.y * 2.f;
         
-        this->undoButton.pos = assignRelatedTexturesButton.pos;
-        this->undoButton.pos.x += assignRelatedTexturesButton.scale.x + undoButton.scale.x * 1.5f;
-
-        this->materialDisplayerButton.pos = this->panel.pos;
-        this->materialDisplayerButton.pos.x += this->panel.scale.x - this->materialDisplayerButton.scale.x - 6.f;
-        this->materialDisplayerButton.pos.y -= 25.f;
-        this->editMaterialButton.pos = this->materialDisplayerButton.pos;
-        this->editMaterialButton.pos.y += this->editMaterialButton.scale.y + this->materialDisplayerButton.scale.y;
-        this->selectMaterialButton.pos = this->materialDisplayerButton.pos;
-        this->selectMaterialButton.pos.x += this->selectMaterialButton.scale.x + this->materialDisplayerButton.scale.x;
-        this->defaultMaterialButton.pos = this->selectMaterialButton.pos;
-        this->defaultMaterialButton.pos.y += this->selectMaterialButton.scale.y + this->defaultMaterialButton.scale.y;
-
-        this->albedoChannelCheckBox.pos = this->editMaterialButton.pos;
-        this->albedoChannelCheckBox.pos.y += this->albedoChannelCheckBox.scale.y + this->editMaterialButton.scale.y * 2.f;
+        this->albedoChannelCheckBox.pos = this->assignRelatedTexturesButton.pos;
+        this->albedoChannelCheckBox.pos.y += this->albedoChannelCheckBox.scale.y + this->assignRelatedTexturesButton.scale.y * 2.f;
         this->roughnessChannelCheckBox.pos = this->albedoChannelCheckBox.pos;
         this->roughnessChannelCheckBox.pos.y += this->roughnessChannelCheckBox.scale.y + this->albedoChannelCheckBox.scale.y;
         this->metallicChannelCheckBox.pos = this->roughnessChannelCheckBox.pos;
@@ -225,11 +158,12 @@ void ObjectTexturingDialog::show(Timer& timer){
         this->heightMapChannelCheckBox.pos.y += this->heightMapChannelCheckBox.scale.y + this->normalMapChannelCheckBox.scale.y;
         this->aoChannelCheckBox.pos = this->heightMapChannelCheckBox.pos;
         this->aoChannelCheckBox.pos.y += this->aoChannelCheckBox.scale.y + this->heightMapChannelCheckBox.scale.y;
-        this->mixOptionsComboBox.pos = this->aoChannelCheckBox.pos;
-        this->mixOptionsComboBox.pos.y += this->mixOptionsComboBox.scale.y + this->aoChannelCheckBox.scale.y * 2.f;
 
         this->displayingOptionsComboBox.pos = this->panel.pos;
         this->displayingOptionsComboBox.pos.y -= this->panel.scale.y - this->displayingOptionsComboBox.scale.y * 2.f;
+        this->displayingOptionsComboBox.pos.x += this->displayingOptionsComboBox.scale.x + 2.f / 2.f;
+        this->displayBuffersComboBox.pos = this->displayingOptionsComboBox.pos;
+        this->displayBuffersComboBox.pos.x -= this->displayingOptionsComboBox.scale.x + this->displayBuffersComboBox.scale.x + 2.f;
 
 
         //Render the panel
@@ -250,285 +184,40 @@ void ObjectTexturingDialog::show(Timer& timer){
         ShaderUTIL::release_bound_shader();
 
         // Render the elements
-        this->maskMaterialBtn.render(timer, !this->materialSelection && !this->textureSelection);
-        this->assignRelatedTexturesButton.render(timer, !this->materialSelection && !this->textureSelection);
-        if(albedoHistoryUsed || roughnessHistoryUsed || metallicHistoryUsed || normalMapHistoryUsed || heightMapHistoryUsed || aoHistoryUsed)
-            this->undoButton.render(timer, !this->materialSelection && !this->textureSelection);
-        this->materialDisplayerButton.render(timer, false);
-        this->editMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
-        this->selectMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
-        this->defaultMaterialButton.render(timer, !this->materialSelection && !this->textureSelection);
-        this->albedoChannelCheckBox.render(timer, !this->materialSelection && !this->textureSelection);
-        this->roughnessChannelCheckBox.render(timer, !this->materialSelection && !this->textureSelection);
-        this->metallicChannelCheckBox.render(timer, !this->materialSelection && !this->textureSelection);
-        this->normalMapChannelCheckBox.render(timer, !this->materialSelection && !this->textureSelection);
-        this->heightMapChannelCheckBox.render(timer, !this->materialSelection && !this->textureSelection);
-        this->aoChannelCheckBox.render(timer, !this->materialSelection && !this->textureSelection);
-        this->mixOptionsComboBox.render(timer, !this->materialSelection && !this->textureSelection);
+        this->maskMaterialBtn.render(timer, true);
+        this->displayMaskCheckBox.render(timer, true);
+        this->assignRelatedTexturesButton.render(timer, true);
 
-        this->displayingOptionsComboBox.render(timer, !this->materialSelection && !this->textureSelection);
+        this->albedoChannelCheckBox.render(timer, true);
+        this->roughnessChannelCheckBox.render(timer, true);
+        this->metallicChannelCheckBox.render(timer, true);
+        this->normalMapChannelCheckBox.render(timer, true);
+        this->heightMapChannelCheckBox.render(timer, true);
+        this->aoChannelCheckBox.render(timer, true);
 
-        if(this->maskMaterialBtn.clicked || mixOptionsComboBox.selectionDone || ((albedoChannelCheckBox.hover || roughnessChannelCheckBox.hover || metallicChannelCheckBox.hover || normalMapChannelCheckBox.hover || heightMapChannelCheckBox.hover || aoChannelCheckBox.hover) && *Mouse::LClick())){
-            this->updateMeshTextures();
-        }
+        this->displayingOptionsComboBox.render(timer, true);
+        this->displayBuffersComboBox.render(timer, true);
 
-        // Element interactions
-        if(this->selectMaterialButton.clicked){
-            dialog_materialSelection.show(timer, &this->material);
-            __materialSelectBtn = true;
-        }
-        else if(this->defaultMaterialButton.clicked){
-            this->material.deleteBuffers();
-            this->material = Material("ObjectTexturingMaterial_DisplayingTexture", {MaterialModifier(SOLID_MATERIAL_MODIFIER)});
-            this->updateMeshTextures();
-        }
-        else if(this->editMaterialButton.clicked){
-            dialog_materialEditor.show(timer, &this->material);
-            __materialEditBtn = true;
-        }
-        else if(assignRelatedTexturesButton.clicked){
-            for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
-            {
-                for (size_t channelI = 0; channelI < 6; channelI++)
-                {
-                    skipChannel:
-                    
-                    glDisable(GL_DEPTH_TEST);
-                    Texture colorBuffer;
-                    std::string colorBufferChannelTitle = ""; 
-                    if(channelI == 0){
-                        colorBuffer = getScene()->model->meshes[i].material_channels.albedo.ID;
-                        colorBufferChannelTitle = "albedo";
-                    }
-                    if(channelI == 1){
-                        colorBuffer = getScene()->model->meshes[i].material_channels.roughness.ID;
-                        colorBufferChannelTitle = "roughness";
-                    }
-                    if(channelI == 2){
-                        colorBuffer = getScene()->model->meshes[i].material_channels.metallic.ID;
-                        colorBufferChannelTitle = "metallic";
-                    }
-                    if(channelI == 3){
-                        colorBuffer = getScene()->model->meshes[i].material_channels.normalMap.ID;
-                        colorBufferChannelTitle = "normalMap";
-                    }
-                    if(channelI == 4){
-                        colorBuffer = getScene()->model->meshes[i].material_channels.heightMap.ID;
-                        colorBufferChannelTitle = "heightMap";
-                    }
-                    if(channelI == 5){
-                        colorBuffer = getScene()->model->meshes[i].material_channels.ambientOcclusion.ID;
-                        colorBufferChannelTitle = "ambientOcclusion";
-                    }
-
-                    if(!colorBuffer.ID || glIsTexture(colorBuffer.ID) == GL_FALSE){
-                        if(!colorBuffer.ID)
-                            LGDLOG::start << "WARNING! : Texture is missing for the " << colorBufferChannelTitle << " channel!" << LGDLOG::end;
-                        else
-                            LGDLOG::start << "WARNING! : Texture is invalid (OpenGL couldn't detect) for the " << colorBufferChannelTitle << " channel!" << LGDLOG::end;
-                        
-                        channelI++;
-                        
-                        if(channelI == 6)
-                            break;
-                        
-                        goto skipChannel;
-                    }
-
-                    glm::vec2 res = colorBuffer.getResolution();
-
-                    bool prevAlbedoHistoryUsed = albedoHistoryUsed, prevRoughnessHistoryUsed = roughnessHistoryUsed, prevMetallicHistoryUsed = metallicHistoryUsed, prevNormalMapHistoryUsed = normalMapHistoryUsed, prevHeightMapHistoryUsed = heightMapHistoryUsed, prevAoHistoryUsed = aoHistoryUsed;
-
-                    {
-                        if(meshTxtrHistory.size() < getScene()->model->meshes.size()){
-                            while (meshTxtrHistory.size() < getScene()->model->meshes.size())
-                            {
-                                Mesh msh;
-                                msh.material_channels.albedo = Texture((char*)nullptr, 1, 1);
-                                msh.material_channels.roughness = Texture((char*)nullptr, 1, 1);
-                                msh.material_channels.metallic = Texture((char*)nullptr, 1, 1);
-                                msh.material_channels.normalMap = Texture((char*)nullptr, 1, 1);
-                                msh.material_channels.heightMap = Texture((char*)nullptr, 1, 1);
-                                msh.material_channels.ambientOcclusion = Texture((char*)nullptr, 1, 1);
-                                
-                                meshTxtrHistory.push_back(msh);
-                            }
-                        }
-                        
-                        else if(meshTxtrHistory.size() > getScene()->model->meshes.size()){
-                            while (meshTxtrHistory.size() > getScene()->model->meshes.size()){
-                                glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].material_channels.albedo.ID);
-                                glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].material_channels.roughness.ID);
-                                glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].material_channels.metallic.ID);
-                                glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].material_channels.normalMap.ID);
-                                glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].material_channels.heightMap.ID);
-                                glDeleteTextures(1, &meshTxtrHistory[meshTxtrHistory.size() - 1].material_channels.ambientOcclusion.ID);
-                                meshTxtrHistory.pop_back();
-                            }
-                        }
-                    }
-
-                    if(channelI == 0){
-                        albedoHistoryUsed = albedoChannelCheckBox.clickState1;
-                        if(albedoHistoryUsed){
-                            glm::ivec2 hTxtrRes = meshTxtrHistory[i].material_channels.albedo.getResolution();
-                            glm::ivec2 oTxtrRes = colorBuffer.getResolution();
-                            
-                            meshTxtrHistory[i].material_channels.albedo.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].material_channels.albedo, "ObjectTexturingDialog::show 1");
-                        }
-                    }
-                    if(channelI == 1){
-                        roughnessHistoryUsed = roughnessChannelCheckBox.clickState1;
-                        if(roughnessHistoryUsed){
-                            glm::ivec2 hTxtrRes = meshTxtrHistory[i].material_channels.roughness.getResolution();
-                            glm::ivec2 oTxtrRes = colorBuffer.getResolution();
-                            
-                            meshTxtrHistory[i].material_channels.roughness.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].material_channels.roughness, "ObjectTexturingDialog::show 2");
-                        }
-                    }
-                    if(channelI == 2){
-                        metallicHistoryUsed = metallicChannelCheckBox.clickState1;
-                        if(metallicHistoryUsed){
-                            glm::ivec2 hTxtrRes = meshTxtrHistory[i].material_channels.metallic.getResolution();
-                            glm::ivec2 oTxtrRes = colorBuffer.getResolution();
-                            
-                            meshTxtrHistory[i].material_channels.metallic.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].material_channels.metallic, "ObjectTexturingDialog::show 3");
-                        }
-                    }
-                    if(channelI == 3){
-                        normalMapHistoryUsed = normalMapChannelCheckBox.clickState1;
-                        if(normalMapHistoryUsed){
-                            glm::ivec2 hTxtrRes = meshTxtrHistory[i].material_channels.normalMap.getResolution();
-                            glm::ivec2 oTxtrRes = colorBuffer.getResolution();
-                            
-                            meshTxtrHistory[i].material_channels.normalMap.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].material_channels.normalMap, "ObjectTexturingDialog::show 4");
-                        }
-                    }
-                    if(channelI == 4){
-                        heightMapHistoryUsed = heightMapChannelCheckBox.clickState1;
-                        if(heightMapHistoryUsed){
-                            glm::ivec2 hTxtrRes = meshTxtrHistory[i].material_channels.heightMap.getResolution();
-                            glm::ivec2 oTxtrRes = colorBuffer.getResolution();
-                            
-                            meshTxtrHistory[i].material_channels.heightMap.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].material_channels.heightMap, "ObjectTexturingDialog::show 5");
-                        }
-                    }
-                    if(channelI == 5){
-                        aoHistoryUsed = aoChannelCheckBox.clickState1;
-                        if(aoHistoryUsed){
-                            glm::ivec2 hTxtrRes = meshTxtrHistory[i].material_channels.ambientOcclusion.getResolution();
-                            glm::ivec2 oTxtrRes = colorBuffer.getResolution();
-                            
-                            meshTxtrHistory[i].material_channels.ambientOcclusion.update((char*)nullptr, oTxtrRes.x, oTxtrRes.y);
-                            colorBuffer.duplicateTextureSub(meshTxtrHistory[i].material_channels.ambientOcclusion, "ObjectTexturingDialog::show 6");
-                        }
-                    }
-
-                    if(!albedoHistoryUsed && !roughnessHistoryUsed && !metallicHistoryUsed && !normalMapHistoryUsed && !heightMapHistoryUsed && !aoHistoryUsed){
-                        albedoHistoryUsed = prevAlbedoHistoryUsed;
-                        roughnessHistoryUsed = prevRoughnessHistoryUsed;
-                        metallicHistoryUsed = prevMetallicHistoryUsed;
-                        normalMapHistoryUsed = prevNormalMapHistoryUsed;
-                        heightMapHistoryUsed = prevHeightMapHistoryUsed;
-                        aoHistoryUsed = prevAoHistoryUsed;
-                    }
-
-                    Framebuffer FBO = FBOPOOL::requestFBO(colorBuffer, "Object texturing dialog assigning");
-
-                    ShaderSystem::objectTexturingAssign().use();
-                    ShaderSystem::objectTexturingAssign().setMat4("orthoProjection", glm::ortho(0.f,1.f,0.f,1.f));
-                    ShaderSystem::objectTexturingAssign().setMat4("perspectiveProjection", getScene()->projectionMatrix);
-                    ShaderSystem::objectTexturingAssign().setMat4("view", getScene()->camera.viewMatrix);
-                    ShaderSystem::objectTexturingAssign().setInt("txtr", 0);
-
-                    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::objectTexturingAssign(), getScene()->model->meshes[i]);
-
-                    getScene()->model->meshes[i].Draw("ObjectTexturingDialog::show");
-
-                    GL::releaseBoundTextures("ObjectTexturingDialog : Updating displaying texture");
-                    ShaderUTIL::release_bound_shader();
-                    
-                    glEnable(GL_DEPTH_TEST);
-
-                    FBOPOOL::releaseFBO(FBO);
-                }
-            }    
-        }
-        else if(undoButton.clicked){
-            for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
-            {
-                if(i < meshTxtrHistory.size()){
-                    if(albedoHistoryUsed)
-                        meshTxtrHistory[i].material_channels.albedo.duplicateTexture(getScene()->model->meshes[i].material_channels.albedo, "ObjectTexturingDialog::show 7");
-                    if(roughnessHistoryUsed)
-                        meshTxtrHistory[i].material_channels.roughness.duplicateTexture(getScene()->model->meshes[i].material_channels.roughness, "ObjectTexturingDialog::show 8");
-                    if(metallicHistoryUsed)
-                        meshTxtrHistory[i].material_channels.metallic.duplicateTexture(getScene()->model->meshes[i].material_channels.metallic, "ObjectTexturingDialog::show 9");
-                    if(normalMapHistoryUsed)
-                        meshTxtrHistory[i].material_channels.normalMap.duplicateTexture(getScene()->model->meshes[i].material_channels.normalMap, "ObjectTexturingDialog::show 10");
-                    if(heightMapHistoryUsed)
-                        meshTxtrHistory[i].material_channels.heightMap.duplicateTexture(getScene()->model->meshes[i].material_channels.heightMap, "ObjectTexturingDialog::show 11");
-                    if(aoHistoryUsed)
-                        meshTxtrHistory[i].material_channels.ambientOcclusion.duplicateTexture(getScene()->model->meshes[i].material_channels.ambientOcclusion, "ObjectTexturingDialog::show 12");
-                }
+        if(this->maskMaterialBtn.clicked || !this->meshMask.ID || resolution != this->meshMask.getResolution().x || this->dialogControl.firstFrameActivated){
+            // Create the mask texture
+            if(!this->meshMask.ID){
+                this->meshMask = Texture((char*)nullptr, 1, 1);
             }
-            
-            albedoHistoryUsed = false;
-            roughnessHistoryUsed = false;
-            metallicHistoryUsed = false;
-            normalMapHistoryUsed = false;
-            heightMapHistoryUsed = false;
-            aoHistoryUsed = false;
-        }
-        
-        if(!this->editMaterialButton.clicked && __materialEditBtn || assignRelatedTexturesButton.clicked){
-            this->updateMeshTextures();
-            __materialEditBtn = false;
-        }
-        if(!this->selectMaterialButton.clicked && __materialSelectBtn){
-            this->updateMeshTextures();
-            __materialSelectBtn = false;
+
+            this->meshMask.update((char*)nullptr, resolution, resolution);
+            maskMaterialBtn.texture.generateProceduralTexture(*getScene()->get_selected_mesh(), this->meshMask, resolution);
         }
 
-        if(!this->panel.hover && *Mouse::LClick() && !dialog_log.isHovered() || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput) && !this->materialSelection && !this->textureSelection){
+        if(assignRelatedTexturesButton.clicked){
+            dialog_materialSelection.show(timer, &this->material);    
+         
+            this->updateMeshTextures(mesh, painting_layer, resolution);
+        }
+
+        if(!this->panel.hover && *Mouse::LClick() && !dialog_log.isHovered() || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput)){
             this->dialogControl.unActivate();
         }
         
-        if(this->materialSelection || this->textureSelection){
-            
-            if(this->selectMaterialButton.clicked){
-                this->elementSelectionPanel.sections[0].elements.clear();
-                
-                if(this->materialSelection){
-                    for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
-                    {
-                        this->elementSelectionPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getMaterialObj(i).title, Library::getMaterialObj(i).displayingTexture, 0.f, false));
-                    }
-                    
-                    this->elementSelectionPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(6, 2.f), "Default", Texture(), 0.f, false));
-                }
-                
-                if(this->textureSelection){
-                    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-                    {
-                        this->elementSelectionPanel.sections[0].elements.push_back(Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), Library::getTextureObj(i).title, Library::getTextureObj(i), 0.f, false));
-                    }
-                }
-            }
-            
-            this->elementSelectionPanel.render(timer, true);
-
-            if(!this->elementSelectionPanel.hover && *Mouse::LClick() || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)){
-                this->materialSelection = false; 
-                this->textureSelection = false;
-            }
-        }
-
         dialogControl.updateEnd(timer,0.15f);
         if(dialogControl.mixVal == 0.f)
             break;
@@ -537,7 +226,8 @@ void ObjectTexturingDialog::show(Timer& timer){
 
 
 
-void ObjectTexturingDialog::updateDisplayingTexture(){
+void ObjectTexturingDialog::updateDisplayingTexture(Mesh& mesh, PaintingLayer* painting_layer){
+    
     //Move the camera to the side
     glm::mat4 view = glm::lookAt(this->sceneCam.cameraPos, 
                                  this->sceneCam.originPos, 
@@ -554,114 +244,119 @@ void ObjectTexturingDialog::updateDisplayingTexture(){
     Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(this->displayingTexture, this->displayingTexture.getResolution(), "ObjectTexturingDialog::updateDisplayingTexture");
     
     //Set the OpenGL viewport to the resolution of the material displaying texture
-    glViewport(0,0, DISPLAY_RESOLUTION.x, DISPLAY_RESOLUTION.y);
+    glViewport(0,0, this->displayingTexture.getResolution().x, this->displayingTexture.getResolution().y);
 
     //Clear the capture framebuffer (displaying texture) with alpha zero color
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    /*
-    if(channelI == 0)
-        GL::bindTexture_2D(result_channels[i].albedo.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-    if(channelI == 1)
-        GL::bindTexture_2D(result_channels[i].roughness.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-    if(channelI == 2)
-        GL::bindTexture_2D(result_channels[i].metallic.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-    if(channelI == 3)
-        GL::bindTexture_2D(result_channels[i].normalMap.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-    if(channelI == 4)
-        GL::bindTexture_2D(result_channels[i].heightMap.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-    if(channelI == 5)
-        GL::bindTexture_2D(result_channels[i].ambientOcclusion.ID, 0, "ObjectTexturingDialog::show : Updating displaying texture");
-    */
+    MaterialChannels mat_channels;
+    if(this->displayBuffersComboBox.selectedIndex == 0){
+        mat_channels = mesh.material_channels;
+    }
+    else{
+        mat_channels = painting_layer->result;
+    }
 
-    getScene()->render_scene(Timer()); //result_channels
-
-    // 190 - 1727
-    // 114 - 967
+    // Set shader
+    ShaderSystem::objectTexturingDialogPBR().use();
+    ShaderSystem::objectTexturingDialogPBR().setMat4("view", this->sceneCam.viewMatrix);
+    ShaderSystem::objectTexturingDialogPBR().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::objectTexturingDialogPBR().setMat4("modelMatrix", glm::mat4(1.f));
     
+    ShaderSystem::objectTexturingDialogPBR().setVec3("viewPos", this->sceneCam.cameraPos);
+    ShaderSystem::objectTexturingDialogPBR().setInt("skybox", GL::bindTexture_CubeMap(getScene()->skybox.ID, "Texture::renderMesh"));
+    ShaderSystem::objectTexturingDialogPBR().setInt("prefilterMap", GL::bindTexture_CubeMap(getScene()->skybox.IDPrefiltered, "Texture::renderMesh"));
+    
+    ShaderSystem::objectTexturingDialogPBR().setInt("albedoTxtr", GL::bindTexture_2D(mat_channels.albedo.ID, "Texture::renderMesh"));
+    ShaderSystem::objectTexturingDialogPBR().setInt("roughnessTxtr", GL::bindTexture_2D(mat_channels.roughness.ID, "Texture::renderMesh"));
+    ShaderSystem::objectTexturingDialogPBR().setInt("metallicTxtr", GL::bindTexture_2D(mat_channels.metallic.ID, "Texture::renderMesh"));
+    ShaderSystem::objectTexturingDialogPBR().setInt("normalMapTxtr", GL::bindTexture_2D(mat_channels.normalMap.ID, "Texture::renderMesh"));
+    ShaderSystem::objectTexturingDialogPBR().setInt("heightMapTxtr", GL::bindTexture_2D(mat_channels.heightMap.ID, "Texture::renderMesh"));
+    ShaderSystem::objectTexturingDialogPBR().setInt("ambientOcclusionTxtr", GL::bindTexture_2D(mat_channels.ambientOcclusion.ID, "Texture::renderMesh"));
+
+    ShaderSystem::objectTexturingDialogPBR().setInt("displayingMode", 0);
+    
+    ShaderSystem::objectTexturingDialogPBR().setInt("mask_texture", GL::bindTexture_2D((this->displayMaskCheckBox.clickState1) ? this->meshMask.ID : appTextures.white.ID, "Texture::renderMesh"));
+    ShaderSystem::objectTexturingDialogPBR().setInt("channelI", this->displayingOptionsComboBox.selectedIndex);
+
+    // Render result
+    mesh.Draw("Texture::render_mesh");
+
     //!Finish (prepare rendering the GUI)
+    GL::releaseBoundTextures("Texture::render_mesh"); // Release bound textures
     ShaderUTIL::release_bound_shader();
     FBOPOOL::releaseFBO(FBO);
-
 }
 
-#define MIX_CHANNELS(mask, normalMapMode, invert)   getScene()->model->meshes[meshI].material_channels.albedo.mix(albedo, mask, false, normalMapMode, invert);\
-                                                    getScene()->model->meshes[meshI].material_channels.roughness.mix(roughness, mask, false, normalMapMode, invert);\
-                                                    getScene()->model->meshes[meshI].material_channels.metallic.mix(metallic, mask, false, normalMapMode, invert);\
-                                                    getScene()->model->meshes[meshI].material_channels.normalMap.mix(normalMap, mask, false, normalMapMode, invert);\
-                                                    getScene()->model->meshes[meshI].material_channels.heightMap.mix(heightMap, mask, false, normalMapMode, invert);\
-                                                    getScene()->model->meshes[meshI].material_channels.ambientOcclusion.mix(ambientOcclusion, mask, false, normalMapMode, invert)
+#define MIX_CHANNELS(mask, normalMapMode, invert)   painting_layer->result.albedo.mix(result_channels.albedo, mask, false, normalMapMode, invert);\
+                                                    painting_layer->result.roughness.mix(result_channels.roughness, mask, false, normalMapMode, invert);\
+                                                    painting_layer->result.metallic.mix(result_channels.metallic, mask, false, normalMapMode, invert);\
+                                                    painting_layer->result.normalMap.mix(result_channels.normalMap, mask, false, normalMapMode, invert);\
+                                                    painting_layer->result.heightMap.mix(result_channels.heightMap, mask, false, normalMapMode, invert);\
+                                                    painting_layer->result.ambientOcclusion.mix(result_channels.ambientOcclusion, mask, false, normalMapMode, invert)
 
-static Texture maskDuplicated;
+static MaterialChannels result_channels;
 
-void ObjectTexturingDialog::updateMeshTextures(){
-    for (size_t meshI = 0; meshI < getScene()->model->meshes.size(); meshI++)
-    {
-        Texture albedo = getScene()->model->meshes[meshI].material_channels.albedo; 
-        Texture roughness = getScene()->model->meshes[meshI].material_channels.roughness; 
-        Texture metallic = getScene()->model->meshes[meshI].material_channels.metallic; 
-        Texture normalMap = getScene()->model->meshes[meshI].material_channels.normalMap; 
-        Texture heightMap = getScene()->model->meshes[meshI].material_channels.heightMap; 
-        Texture ambientOcclusion = getScene()->model->meshes[meshI].material_channels.ambientOcclusion; 
+void ObjectTexturingDialog::updateMeshTextures(Mesh& mesh, PaintingLayer* painting_layer, const unsigned int resolution){
+
+    // Init needed buffers
+    if(!result_channels.albedo.ID){
+        result_channels.albedo = Texture((char*)nullptr, 1, 1);
+        result_channels.roughness = Texture((char*)nullptr, 1, 1);
+        result_channels.metallic = Texture((char*)nullptr, 1, 1);
+        result_channels.normalMap = Texture((char*)nullptr, 1, 1);
+        result_channels.heightMap = Texture((char*)nullptr, 1, 1);
+        result_channels.ambientOcclusion = Texture((char*)nullptr, 1, 1);
         
-        getScene()->model->meshes[meshI].material_channels.albedo = result_channels[meshI].albedo;
-        getScene()->model->meshes[meshI].material_channels.roughness = result_channels[meshI].roughness;
-        getScene()->model->meshes[meshI].material_channels.metallic = result_channels[meshI].metallic;
-        getScene()->model->meshes[meshI].material_channels.normalMap = result_channels[meshI].normalMap;
-        getScene()->model->meshes[meshI].material_channels.heightMap = result_channels[meshI].heightMap;
-        getScene()->model->meshes[meshI].material_channels.ambientOcclusion = result_channels[meshI].ambientOcclusion;
+    }
+
+    // Update needed buffers
+    result_channels.albedo.update((char*)nullptr, resolution, resolution);
+    result_channels.roughness.update((char*)nullptr, resolution, resolution);
+    result_channels.metallic.update((char*)nullptr, resolution, resolution);
+    result_channels.normalMap.update((char*)nullptr, resolution, resolution);
+    result_channels.heightMap.update((char*)nullptr, resolution, resolution);
+    result_channels.ambientOcclusion.update((char*)nullptr, resolution, resolution);
+    
+    // Create the mask result
+    material_thread.apply_material(&this->material, getScene()->model, getScene()->get_selected_mesh(), &result_channels);
+    
+    // Mask source to material result
+    MIX_CHANNELS(this->meshMask, false, false);
+    
+    // Update the layer result buffers with the altered layer result buffers
+    mesh.layerScene.update_result(resolution, glm::vec3(0.f), mesh);
+
+    /*
+    Texture maskTxtr;
+
+    // Mask channels via channel textures
+    if(mixOptionsComboBox.selectedIndex == 3){ // Roughness
+        maskTxtr = this->result_channels.roughness; 
+    }
+    if(mixOptionsComboBox.selectedIndex == 4){ // Metallic
+        maskTxtr = this->result_channels.metallic; 
+    }
+    if(mixOptionsComboBox.selectedIndex == 5){ // AO
+        maskTxtr = this->result_channels.ambientOcclusion; 
+    }
+    if(mixOptionsComboBox.selectedIndex == 6){ // Height Map
+        maskTxtr = this->result_channels.heightMap; 
+    }
+    if(mixOptionsComboBox.selectedIndex == 7 || mixOptionsComboBox.selectedIndex == 8){ // Normal Map
+        maskTxtr = this->result_channels.normalMap; 
+    }
+    
+    if(mixOptionsComboBox.selectedIndex){
+
+        if(mixOptionsComboBox.selectedIndex == 1 || mixOptionsComboBox.selectedIndex == 2){
+            std::vector<Texture> orgTxtrs = {albedo, roughness, metallic, normalMap, heightMap, ambientOcclusion};
+            std::vector<Texture> modifiedTxtrs = {this->result_channels.albedo, this->result_channels.roughness, this->result_channels.metallic, this->result_channels.normalMap, this->result_channels.heightMap, this->result_channels.ambientOcclusion};
         
-        //this->material.apply_material(*getScene()->model, getScene()->model->meshes[meshI], getResolution(), false);
-
-        Texture maskMat = maskMaterialBtn.texture.generateProceduralTexture(getScene()->model->meshes[meshI], this->getResolution());
-
-        // Mask channels
-        MIX_CHANNELS(maskMat, false, false);
-        
-        Texture maskTxtr;
-
-        // Mask channels via channel textures
-        if(mixOptionsComboBox.selectedIndex == 3){ // Roughness
-            maskTxtr = getScene()->model->meshes[meshI].material_channels.roughness; 
-        }
-        if(mixOptionsComboBox.selectedIndex == 4){ // Metallic
-            maskTxtr = getScene()->model->meshes[meshI].material_channels.metallic; 
-        }
-        if(mixOptionsComboBox.selectedIndex == 5){ // AO
-            maskTxtr = getScene()->model->meshes[meshI].material_channels.ambientOcclusion; 
-        }
-        if(mixOptionsComboBox.selectedIndex == 6){ // Height Map
-            maskTxtr = getScene()->model->meshes[meshI].material_channels.heightMap; 
-        }
-        if(mixOptionsComboBox.selectedIndex == 7 || mixOptionsComboBox.selectedIndex == 8){ // Normal Map
-            maskTxtr = getScene()->model->meshes[meshI].material_channels.normalMap; 
-        }
-        
-        if(mixOptionsComboBox.selectedIndex){
-
-            if(mixOptionsComboBox.selectedIndex == 1 || mixOptionsComboBox.selectedIndex == 2){
-                std::vector<Texture> orgTxtrs = {albedo, roughness, metallic, normalMap, heightMap, ambientOcclusion};
-                std::vector<Texture> modifiedTxtrs = {getScene()->model->meshes[meshI].material_channels.albedo, getScene()->model->meshes[meshI].material_channels.roughness, getScene()->model->meshes[meshI].material_channels.metallic, getScene()->model->meshes[meshI].material_channels.normalMap, getScene()->model->meshes[meshI].material_channels.heightMap, getScene()->model->meshes[meshI].material_channels.ambientOcclusion};
-            
-                for (size_t i = 0; i < orgTxtrs.size(); i++)
-                {
-                    maskTxtr = modifiedTxtrs[i];
-                    glm::ivec2 maskRes = maskTxtr.getResolution();
-                    if(maskDuplicated.ID == 0){
-                        maskDuplicated = Texture((char*)nullptr, maskRes.x, maskRes.y);
-                    }
-                    else{
-                        maskDuplicated.update((char*)nullptr, maskRes.x, maskRes.y);
-                    }
-                    
-                    maskTxtr.duplicateTextureSub(maskDuplicated, "ObjectTexturingDialog::updateMeshTextures");
-                
-                    modifiedTxtrs[i].mix(orgTxtrs[i], maskDuplicated, false, i == 3, mixOptionsComboBox.selectedIndex == 2);
-                }
-                
-            }
-            else{
+            for (size_t i = 0; i < orgTxtrs.size(); i++)
+            {
+                maskTxtr = modifiedTxtrs[i];
                 glm::ivec2 maskRes = maskTxtr.getResolution();
                 if(maskDuplicated.ID == 0){
                     maskDuplicated = Texture((char*)nullptr, maskRes.x, maskRes.y);
@@ -671,35 +366,39 @@ void ObjectTexturingDialog::updateMeshTextures(){
                 }
                 
                 maskTxtr.duplicateTextureSub(maskDuplicated, "ObjectTexturingDialog::updateMeshTextures");
-
-                MIX_CHANNELS(maskDuplicated, mixOptionsComboBox.selectedIndex == 7 || mixOptionsComboBox.selectedIndex == 8, mixOptionsComboBox.selectedIndex != 8);
+            
+                modifiedTxtrs[i].mix(orgTxtrs[i], maskDuplicated, false, i == 3, mixOptionsComboBox.selectedIndex == 2);
             }
+            
         }
+        else{
+            glm::ivec2 maskRes = maskTxtr.getResolution();
+            if(maskDuplicated.ID == 0){
+                maskDuplicated = Texture((char*)nullptr, maskRes.x, maskRes.y);
+            }
+            else{
+                maskDuplicated.update((char*)nullptr, maskRes.x, maskRes.y);
+            }
+            
+            maskTxtr.duplicateTextureSub(maskDuplicated, "ObjectTexturingDialog::updateMeshTextures");
 
-        if(!albedoChannelCheckBox.clickState1)
-            getScene()->model->meshes[meshI].material_channels.albedo.mix(albedo, appTextures.white, false, false, false);
-        if(!roughnessChannelCheckBox.clickState1)
-            getScene()->model->meshes[meshI].material_channels.roughness.mix(roughness, appTextures.white, false, false, false);
-        if(!metallicChannelCheckBox.clickState1)
-            getScene()->model->meshes[meshI].material_channels.metallic.mix(metallic, appTextures.white, false, false, false);
-        if(!normalMapChannelCheckBox.clickState1)
-            getScene()->model->meshes[meshI].material_channels.normalMap.mix(normalMap, appTextures.white, false, false, false);
-        if(!heightMapChannelCheckBox.clickState1)
-            getScene()->model->meshes[meshI].material_channels.heightMap.mix(heightMap, appTextures.white, false, false, false);
-        if(!aoChannelCheckBox.clickState1)
-            getScene()->model->meshes[meshI].material_channels.ambientOcclusion.mix(ambientOcclusion, appTextures.white, false, false, false);
-
-        getScene()->model->meshes[meshI].material_channels.albedo = albedo; 
-        getScene()->model->meshes[meshI].material_channels.roughness = roughness; 
-        getScene()->model->meshes[meshI].material_channels.metallic = metallic; 
-        getScene()->model->meshes[meshI].material_channels.normalMap = normalMap; 
-        getScene()->model->meshes[meshI].material_channels.heightMap = heightMap; 
-        getScene()->model->meshes[meshI].material_channels.ambientOcclusion = ambientOcclusion; 
+            MIX_CHANNELS(maskDuplicated, mixOptionsComboBox.selectedIndex == 7 || mixOptionsComboBox.selectedIndex == 8, mixOptionsComboBox.selectedIndex != 8);
+        }
     }
-}
 
-bool ObjectTexturingDialog::anyElementHover(){
-    return assignRelatedTexturesButton.hover || materialDisplayerButton.hover || editMaterialButton.hover || selectMaterialButton.hover;
+    if(!albedoChannelCheckBox.clickState1)
+        this->result_channels.albedo.mix(albedo, appTextures.white, false, false, false);
+    if(!roughnessChannelCheckBox.clickState1)
+        this->result_channels.roughness.mix(roughness, appTextures.white, false, false, false);
+    if(!metallicChannelCheckBox.clickState1)
+        this->result_channels.metallic.mix(metallic, appTextures.white, false, false, false);
+    if(!normalMapChannelCheckBox.clickState1)
+        this->result_channels.normalMap.mix(normalMap, appTextures.white, false, false, false);
+    if(!heightMapChannelCheckBox.clickState1)
+        this->result_channels.heightMap.mix(heightMap, appTextures.white, false, false, false);
+    if(!aoChannelCheckBox.clickState1)
+        this->result_channels.ambientOcclusion.mix(ambientOcclusion, appTextures.white, false, false, false);
+        */
 }
 
 int ObjectTexturingDialog::getResolution(){

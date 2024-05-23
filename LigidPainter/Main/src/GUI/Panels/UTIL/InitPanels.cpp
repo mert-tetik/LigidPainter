@@ -248,10 +248,6 @@ void panels_init(){
     
     // ---------------------------------------------------
 
-    button_texture_selected_objects = Button(ELEMENT_STYLE_BASIC, glm::vec2(4.f,3.f), "Texture Selected Objects", Texture(), 0.f, false);
-
-    // ---------------------------------------------------
-
     gizmo_scene = Gizmo("", 0, glm::vec3(0.f), glm::vec2(1.f, Settings::videoScale()->x / Settings::videoScale()->y), 0.f, false);
     gizmo_scene.scale *= 2.f;
     

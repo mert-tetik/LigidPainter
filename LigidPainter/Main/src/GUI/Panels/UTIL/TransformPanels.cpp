@@ -97,10 +97,6 @@ void panels_transform()
     button_painting_filter_mode_filter.pos.y = panel_painting_modes.pos.y + panel_painting_modes.scale.y + button_painting_filter_mode_filter.scale.y + 1;
     button_painting_filter_mode_filter.pos.z = panel_library.pos.z;
     
-    button_texture_selected_objects.pos.x = panel_library.pos.x + panel_library.scale.x + button_texture_selected_objects.scale.x + 1;
-    button_texture_selected_objects.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + button_texture_selected_objects.scale.y + 1;
-    button_texture_selected_objects.pos.z = panel_library.pos.z;
-
     panel_displaying_modes.pos.x = panel_layers.pos.x - panel_layers.scale.x - panel_displaying_modes.scale.x - 0.5f;
     panel_displaying_modes.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_displaying_modes.scale.y;
     

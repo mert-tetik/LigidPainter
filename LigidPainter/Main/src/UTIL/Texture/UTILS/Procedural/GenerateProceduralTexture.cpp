@@ -91,7 +91,7 @@ void Texture::generateProceduralTexture(Mesh &mesh, Texture& destTxtr, int textu
         destTxtr.applyNormalMap(this->proceduralProps.proceduralNormalStrength, this->proceduralProps.proceduralNormalGrayScale, false); 
     }
 
-    //destTxtr.removeSeams(mesh);
+    destTxtr.removeSeams(mesh);
 
     already_bound_shader.use();
 }

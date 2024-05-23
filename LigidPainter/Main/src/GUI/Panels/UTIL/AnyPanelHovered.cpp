@@ -31,7 +31,6 @@ extern bool _last_any_panels_hovered;
 
 bool panels_any_hovered(){
     return _any_panels_hovered || _last_any_panels_hovered ||
-            button_texture_selected_objects.hover ||
             gizmo_scene.hover ||
             button_mesh_selection.hover ||
             comboBox_layers_resolution.hover[0] ||
