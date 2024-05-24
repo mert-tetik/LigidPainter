@@ -209,6 +209,7 @@ void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painti
         }
 
         if(assignRelatedTexturesButton.clicked){
+            dialog_log.registerMultiChannelPaintingAction("Material applied to painting layer", painting_layer->result);
             dialog_materialSelection.show(timer, &this->material);    
          
             material_thread.update_object_texturing_dialog_result(&this->material, getScene()->model, &mesh, &painting_layer->result, this->meshMask);

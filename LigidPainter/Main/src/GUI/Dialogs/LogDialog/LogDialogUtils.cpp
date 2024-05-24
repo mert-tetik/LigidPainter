@@ -54,6 +54,9 @@ void LogDialog::update_messages_array(Timer& timer){
 
 int LogDialog::get_active_history_mode(){
     
+    if(dialog_objectTexturing.dialogControl.isActive()){
+        return HISTORY_MULTI_CHANNEL_PAINTING_MODE;
+    }
     
     if(this->history_action_records.get_active_vectorScene() != nullptr){
         return HISTORY_VECTORS_MODE;
