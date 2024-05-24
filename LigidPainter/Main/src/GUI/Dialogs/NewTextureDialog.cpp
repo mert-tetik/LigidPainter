@@ -154,7 +154,7 @@ void NewTextureDialog::show(Timer& timer){
         __newTxtrDialog_last_texture_selection_dialog_state = panel.sections[0].elements[4].button.clicked;
 
         //Render the panel
-        panel.render(timer,true);
+        panel.render(timer, !dialog_log.isHovered());
         
         //Invert the text color of the color button
         panel.sections[0].elements[0].button.textColor = glm::vec4(glm::vec3(1.) - glm::vec3(panel.sections[0].elements[0].button.color),1);

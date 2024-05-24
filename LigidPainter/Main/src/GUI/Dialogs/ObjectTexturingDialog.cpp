@@ -189,20 +189,20 @@ void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painti
         ShaderUTIL::release_bound_shader();
 
         // Render the elements
-        this->renderUnselectedFacesCheckBox.render(timer, true);
-        this->maskMaterialBtn.render(timer, true);
-        this->displayMaskCheckBox.render(timer, true);
-        this->assignRelatedTexturesButton.render(timer, true);
+        this->renderUnselectedFacesCheckBox.render(timer, !dialog_log.isHovered());
+        this->maskMaterialBtn.render(timer, !dialog_log.isHovered());
+        this->displayMaskCheckBox.render(timer, !dialog_log.isHovered());
+        this->assignRelatedTexturesButton.render(timer, !dialog_log.isHovered());
 
-        this->albedoChannelCheckBox.render(timer, true);
-        this->roughnessChannelCheckBox.render(timer, true);
-        this->metallicChannelCheckBox.render(timer, true);
-        this->normalMapChannelCheckBox.render(timer, true);
-        this->heightMapChannelCheckBox.render(timer, true);
-        this->aoChannelCheckBox.render(timer, true);
+        this->albedoChannelCheckBox.render(timer, !dialog_log.isHovered());
+        this->roughnessChannelCheckBox.render(timer, !dialog_log.isHovered());
+        this->metallicChannelCheckBox.render(timer, !dialog_log.isHovered());
+        this->normalMapChannelCheckBox.render(timer, !dialog_log.isHovered());
+        this->heightMapChannelCheckBox.render(timer, !dialog_log.isHovered());
+        this->aoChannelCheckBox.render(timer, !dialog_log.isHovered());
 
-        this->displayingOptionsComboBox.render(timer, true);
-        this->displayBuffersComboBox.render(timer, true);
+        this->displayingOptionsComboBox.render(timer, !dialog_log.isHovered());
+        this->displayBuffersComboBox.render(timer, !dialog_log.isHovered());
 
         if(this->maskMaterialBtn.clicked || !this->meshMask.ID || resolution != this->meshMask.getResolution().x || this->dialogControl.firstFrameActivated){
             // Create the mask texture

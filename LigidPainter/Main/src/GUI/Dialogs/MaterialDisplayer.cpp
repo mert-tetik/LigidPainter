@@ -83,7 +83,7 @@ void MaterialDisplayerDialog::show(Timer& timer, Material* material){
 
         //Render the panel
         this->panel.sections[0].elements[1].button.texture = this->displayingTexture;
-        panel.render(timer,true);
+        panel.render(timer, !dialog_log.isHovered());
         
         //Close the dialog
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){

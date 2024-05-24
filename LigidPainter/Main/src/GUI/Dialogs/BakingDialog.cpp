@@ -157,15 +157,15 @@ void BakingDialog::renderElements(Timer& timer, glm::vec3 pos, glm::vec2 scale, 
 
     this->vertexPositionCheckbox.pos = modeImage1ElementsBg.pos;
     this->vertexPositionCheckbox.pos.x -= scale.x - this->vertexPositionCheckbox.scale.x - 8.f;
-    this->vertexPositionCheckbox.render(timer, true);
+    this->vertexPositionCheckbox.render(timer, !dialog_log.isHovered());
     
     this->vertexNormalsCheckbox.pos = this->vertexPositionCheckbox.pos;
     this->vertexNormalsCheckbox.pos.x += this->vertexPositionCheckbox.scale.x + this->vertexNormalsCheckbox.scale.x;
-    this->vertexNormalsCheckbox.render(timer, true);
+    this->vertexNormalsCheckbox.render(timer, !dialog_log.isHovered());
     
     this->reflectanceCheckbox.pos = this->vertexNormalsCheckbox.pos;
     this->reflectanceCheckbox.pos.x += this->vertexNormalsCheckbox.scale.x + this->reflectanceCheckbox.scale.x;
-    this->reflectanceCheckbox.render(timer, true);
+    this->reflectanceCheckbox.render(timer, !dialog_log.isHovered());
 
     modeImageDisplayer2.scale = glm::vec2(scale.x, modeImageDisplayer1.scale.y);
     modeImageDisplayer2.pos = glm::vec3(pos.x + modeImageDisplayer1.scale.x * 2.f - modeImageDisplayer1.scale.x * 2.f * easeInOut(rendererModeMixVal), pos.y - scale.y + modeImageDisplayer2.scale.y, pos.z + 0.01f); 
@@ -182,15 +182,15 @@ void BakingDialog::renderElements(Timer& timer, glm::vec3 pos, glm::vec2 scale, 
 
     this->pbrResultCheckbox.pos = modeImage2ElementsBg.pos;
     this->pbrResultCheckbox.pos.x -= scale.x - this->pbrResultCheckbox.scale.x - 8.f;
-    this->pbrResultCheckbox.render(timer, true);
+    this->pbrResultCheckbox.render(timer, !dialog_log.isHovered());
     
     this->aoCheckbox.pos = this->pbrResultCheckbox.pos;
     this->aoCheckbox.pos.x += this->pbrResultCheckbox.scale.x + this->aoCheckbox.scale.x;
-    this->aoCheckbox.render(timer, true);
+    this->aoCheckbox.render(timer, !dialog_log.isHovered());
     
     this->normalMapCheckbox.pos = this->aoCheckbox.pos;
     this->normalMapCheckbox.pos.x += this->aoCheckbox.scale.x + this->reflectanceCheckbox.scale.x;
-    this->normalMapCheckbox.render(timer, true);
+    this->normalMapCheckbox.render(timer, !dialog_log.isHovered());
     
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", rendererModeMixVal); 
     renderModeLBtn.scale = glm::vec2(3.5f, modeImageDisplayer1.scale.y);
@@ -219,7 +219,7 @@ void BakingDialog::renderElements(Timer& timer, glm::vec3 pos, glm::vec2 scale, 
     this->selectMeshButton.scale.y = 5.f;
     this->selectMeshButton.pos = glm::vec3(pos.x, modeImage1ElementsBg.pos.y + modeImage1ElementsBg.scale.y + this->selectMeshButton.scale.y + 2.f, pos.z + 0.02f);
     
-    this->selectMeshButton.render(timer, true);
+    this->selectMeshButton.render(timer, !dialog_log.isHovered());
 
     this->bakeButton.pos = glm::vec3(modeImage1ElementsBg.pos.x, modeImage1ElementsBg.pos.y - this->bakeButton.scale.y - modeImage1ElementsBg.scale.y - 1.f, modeImage1ElementsBg.pos.z + 0.04f);
     this->bakeButton.render(timer, rendererMode == 0);
@@ -227,8 +227,8 @@ void BakingDialog::renderElements(Timer& timer, glm::vec3 pos, glm::vec2 scale, 
     Button textureResComboBoxBG = Button(ELEMENT_STYLE_BASIC, glm::vec2(6.f,2.f), "", Texture(), 1.f, false);
     textureResComboBox.pos = glm::vec3(bakeButton.pos.x, bakeButton.pos.y - textureResComboBox.scale.y - bakeButton.scale.y - 1.f, bakeButton.pos.z + 0.04f);
     textureResComboBoxBG.pos = textureResComboBox.pos;
-    textureResComboBoxBG.render(timer, true);
-    textureResComboBox.render(timer, true);
+    textureResComboBoxBG.render(timer, !dialog_log.isHovered());
+    textureResComboBox.render(timer, !dialog_log.isHovered());
 
     Button rendererMode0HeaderText = Button(ELEMENT_STYLE_SOLID, glm::vec2(7.f,2.f), "Baking Dialog - LigidPainter Renderer", Texture(), 1.f, false);
     rendererMode0HeaderText.pos = glm::vec3(modeImageDisplayer1.pos.x, modeImageDisplayer1.pos.y - modeImageDisplayer1.scale.y - rendererMode0HeaderText.scale.y, modeImageDisplayer1.pos.z);

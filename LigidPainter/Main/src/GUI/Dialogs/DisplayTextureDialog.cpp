@@ -82,11 +82,11 @@ void DisplayTextureDialog::show(Timer& timer, Texture texture){
         }
 
         //Render the panel
-        this->panel.render(timer,true);
+        this->panel.render(timer, !dialog_log.isHovered());
         
         threeD_display_btn.scale = glm::vec2(this->panel.scale.x / 2.f, this->panel.scale.y);
         threeD_display_btn.pos = glm::vec3(this->panel.pos.x - this->panel.scale.x + threeD_display_btn.scale.x, this->panel.pos.y, this->panel.pos.z);
-        threeD_display_btn.render(timer, true);
+        threeD_display_btn.render(timer, !dialog_log.isHovered());
 
         if(threeD_display_btn.hover || dialogControl.firstFrameActivated)
             this->threeD_display_btn.texture.render_mesh(*getScene()->get_selected_mesh(), MaterialChannels(texture, appTextures.white, appTextures.black, appTextures.white, appTextures.white, appTextures.white), this->displayingCam);
@@ -94,7 +94,7 @@ void DisplayTextureDialog::show(Timer& timer, Texture texture){
         twoD_display_btn.scale = glm::vec2(this->panel.scale.x / 2.f, this->panel.scale.y);
         twoD_display_btn.pos = glm::vec3(this->panel.pos.x + this->panel.scale.x - twoD_display_btn.scale.x, this->panel.pos.y, this->panel.pos.z);
         twoD_display_btn.texture = texture;
-        twoD_display_btn.render(timer, true);
+        twoD_display_btn.render(timer, !dialog_log.isHovered());
         
         //Close the dialog
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!this->panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){

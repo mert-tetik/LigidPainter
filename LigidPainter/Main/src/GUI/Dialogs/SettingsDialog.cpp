@@ -299,8 +299,8 @@ void SettingsDialog::renderPanel(Timer& timer){
     else if(this->selectedSettingsMode == 1)
         panel.sections = TDRendererSettings; 
     
-    bgPanel.render(timer,true);
-    panel.render(timer,true);
+    bgPanel.render(timer, !dialog_log.isHovered());
+    panel.render(timer, !dialog_log.isHovered());
     
     if(this->selectedSettingsMode == 0)
         systemSettings = panel.sections; 
@@ -312,13 +312,13 @@ void SettingsDialog::renderPanel(Timer& timer){
     systemSettingsBtn.pos.z += 0.001f;
     systemSettingsBtn.pos.y -= bgPanel.scale.y - systemSettingsBtn.scale.y;
     systemSettingsBtn.pos.x -= systemSettingsBtn.scale.y * 2.f;
-    this->systemSettingsBtn.render(timer, true);
+    this->systemSettingsBtn.render(timer, !dialog_log.isHovered());
     
     TDRendererSettingsBtn.pos = bgPanel.pos;
     TDRendererSettingsBtn.pos.z += 0.001f;
     TDRendererSettingsBtn.pos.y -= bgPanel.scale.y - systemSettingsBtn.scale.y;
     TDRendererSettingsBtn.pos.x += TDRendererSettingsBtn.scale.y * 2.f;
-    this->TDRendererSettingsBtn.render(timer, true);
+    this->TDRendererSettingsBtn.render(timer, !dialog_log.isHovered());
 
     // ------- Handle mode buttons interactions -------    
     std::vector<Button*> btns;

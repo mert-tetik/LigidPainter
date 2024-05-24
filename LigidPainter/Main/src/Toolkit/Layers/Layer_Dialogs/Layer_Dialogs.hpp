@@ -107,7 +107,7 @@ static void LAYERDIALOG_show_alpha_settings_dialog(Timer& timer, LayerAlpha* lay
         alpha_settings_panel.pos = layer_btn.pos;
         alpha_settings_panel.pos.x -= layer_btn.scale.x + alpha_settings_panel.scale.x;
         alpha_settings_panel.pos.y -= layer_btn.scale.y - alpha_settings_panel.scale.y;
-        alpha_settings_panel.render(timer, true);
+        alpha_settings_panel.render(timer, !dialog_log.isHovered());
 
         /* Set properties back to layer alpha data*/
         layer_alpha->general_Alpha.alphaValue = alpha_settings_panel.sections[0].elements[0].rangeBar.value;
@@ -204,7 +204,7 @@ static void info_panel_render_eye(Timer& timer, Element button){
 
     detailed_display_btn.color.a = 0.f; detailed_display_btn.color2.a = 0.f; detailed_display_btn.outlineExtra = false; 
 
-    detailed_display_btn.render(timer, true);
+    detailed_display_btn.render(timer, !dialog_log.isHovered());
 
     if(detailed_display_btn.hover && *Mouse::LClick()){
         dialog_textureDisplayer.show(timer, button.button.texture);
@@ -252,7 +252,7 @@ static void LAYERDIALOG_show_info_dialog(Timer& timer, Layer* layer, Button laye
         layer_info_panel.pos.x -= layer_btn.scale.x + layer_info_panel.scale.x;
         layer_info_panel.pos.y -= layer_btn.scale.y - layer_info_panel.scale.y;
         layer_info_panel.clearDepthBuffer = false;
-        layer_info_panel.render(timer, true);
+        layer_info_panel.render(timer, !dialog_log.isHovered());
 
         /* Render close-up display buttons for result textures*/
         info_panel_render_eye(timer, layer_info_panel.sections[0].elements[5]);

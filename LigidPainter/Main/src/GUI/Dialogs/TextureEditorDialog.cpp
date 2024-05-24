@@ -423,8 +423,8 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
         this->sectionPanel.pos.x -= this->bgPanel.scale.x - this->sectionPanel.scale.x;
 
         //Render the panel
-        this->bgPanel.render(timer, true);
-        this->sectionPanel.render(timer, true);
+        this->bgPanel.render(timer, !dialog_log.isHovered());
+        this->sectionPanel.render(timer, !dialog_log.isHovered());
         
         if(dialogControl.firstFrameActivated){
             resizeElements[5].textBox.text = std::to_string(receivedTexture->getResolution().x); 
@@ -515,7 +515,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
                 resizeElements[i].pos.x += displayerBtn.scale.x * 2.f;
                 resizeElements[i].pos.y -= displayerBtn.scale.y * .5f;
                 resizeElements[i].pos.y += 8.f * eCnt;
-                resizeElements[i].render(timer,true);
+                resizeElements[i].render(timer, !dialog_log.isHovered());
 
                 
                 eCnt++;
@@ -540,7 +540,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
                 bluringElement[i].pos.x += displayerBtn.scale.x * 2.f;
                 bluringElement[i].pos.y -= displayerBtn.scale.y * .5f;
                 bluringElement[i].pos.y += 8.f * eCnt;
-                bluringElement[i].render(timer,true);
+                bluringElement[i].render(timer, !dialog_log.isHovered());
                 eCnt++;
 
                 if(bluringElement[i].isInteracted())
@@ -572,7 +572,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
                 coloringElements[i].pos.x += displayerBtn.scale.x * 2.f;
                 coloringElements[i].pos.y -= displayerBtn.scale.y * .5f;
                 coloringElements[i].pos.y += 8.f * eCnt;
-                coloringElements[i].render(timer,true);
+                coloringElements[i].render(timer, !dialog_log.isHovered());
                 eCnt++;
                 
                 if(coloringElements[i].isInteracted())
@@ -589,7 +589,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
                 normalMapElements[i].pos.x += displayerBtn.scale.x * 2.f;
                 normalMapElements[i].pos.y -= displayerBtn.scale.y * .5f;
                 normalMapElements[i].pos.y += 8.f * eCnt;
-                normalMapElements[i].render(timer,true);
+                normalMapElements[i].render(timer, !dialog_log.isHovered());
                 eCnt++;
                 if(normalMapElements[i].isInteracted())
                     anyInteraction = true;
@@ -630,7 +630,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
                 distortionElements[i].pos.x += displayerBtn.scale.x * 2.f;
                 distortionElements[i].pos.y -= displayerBtn.scale.y * .5f;
                 distortionElements[i].pos.y += 8.f * eCnt;
-                distortionElements[i].render(timer,true);
+                distortionElements[i].render(timer, !dialog_log.isHovered());
                 eCnt++;
                 
                 if(distortionElements[i].isInteracted())
@@ -645,7 +645,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
             filterBtn.pos.x += displayerBtn.scale.x * 2.f;
             filterBtn.pos.y -= displayerBtn.scale.y * .5f;
             filterBtn.pos.y += 8.f;
-            filterBtn.render(timer,true);
+            filterBtn.render(timer, !dialog_log.isHovered());
 
             if(filterBtn.clicked){
                 anyInteraction = true;
@@ -658,7 +658,7 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
             textureBtn.pos.x += displayerBtn.scale.x * 2.f;
             textureBtn.pos.y -= displayerBtn.scale.y * .5f;
             textureBtn.pos.y += 8.f;
-            textureBtn.render(timer,true);
+            textureBtn.render(timer, !dialog_log.isHovered());
 
             if(textureBtn.clicked){
                 anyInteraction = true;
@@ -667,15 +667,15 @@ void TextureEditorDialog::show(Timer& timer, Skybox &skybox, Texture* receivedTe
 
         this->maskTextureButton.pos = displayerBtn.pos;
         this->maskTextureButton.pos.y += displayerBtn.scale.y * 1.15;
-        this->maskTextureButton.render(timer, true);
+        this->maskTextureButton.render(timer, !dialog_log.isHovered());
         
         this->saveButton.pos = displayerBtn.pos;
         this->saveButton.pos.y += displayerBtn.scale.y * 1.2 + maskTextureButton.scale.y * 3.f;
-        this->saveButton.render(timer, true);
+        this->saveButton.render(timer, !dialog_log.isHovered());
         
         this->saveAsButton.pos = saveButton.pos;
         this->saveAsButton.pos.y += saveButton.scale.y * 3.f;
-        this->saveAsButton.render(timer, true);
+        this->saveAsButton.render(timer, !dialog_log.isHovered());
 
         if(this->maskTextureButton.clicked)
         anyInteraction = true; 

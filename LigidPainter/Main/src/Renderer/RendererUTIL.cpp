@@ -91,6 +91,19 @@ void Renderer::start_render(){
 
 void Renderer::end_render(){
     
+    // ------- Rendering the framebuffer result ------- 
+    if(true){
+        Settings::defaultFramebuffer()->update_bg_txtr();
+    }
+
+    glClear(GL_DEPTH_BUFFER_BIT);
+
+    if(!Settings::properties()->cat_hide){
+        Debugger::block("GUI : Log Dialog"); // Start
+        dialog_log.render(timer);
+        Debugger::block("GUI : Log Dialog"); // End
+    }
+
     material_thread.update_thread_result();
     
     //Set mouse states to default
@@ -127,12 +140,6 @@ void Renderer::end_render(){
     //Sets the active cursor (mouse.activeCursor) as the cursor
     //Than changes the active cursor as default cursor
     Mouse::updateCursor();  
-
-    // ------- Rendering the framebuffer result ------- 
-    if(true){
-        Settings::defaultFramebuffer()->update_bg_txtr();
-    }
-
 
     //Swap the front and back buffers of the window
     getContext()->window.swapBuffers();

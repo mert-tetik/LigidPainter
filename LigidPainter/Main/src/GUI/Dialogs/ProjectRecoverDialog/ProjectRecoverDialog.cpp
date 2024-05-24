@@ -330,9 +330,9 @@ void ProjectRecoverDialog::show(Timer& timer){
             projectPanelExitBtn.pos.y += projectPanel.scale.y - projectPanelExitBtn.scale.y - 1.f;     
             projectPanelExitBtn.pos.x -= projectPanel.scale.x - projectPanelExitBtn.scale.x - 1.f;     
             
-            projectPanelExitBtn.render(timer, true);
-            projectPanelFileExplorerBtn.render(timer, true);
-            projectPanelSelectBtn.render(timer, true);
+            projectPanelExitBtn.render(timer, !dialog_log.isHovered());
+            projectPanelFileExplorerBtn.render(timer, !dialog_log.isHovered());
+            projectPanelSelectBtn.render(timer, !dialog_log.isHovered());
         }
 
         if(this->projectPanelFileExplorerBtn.clicked){

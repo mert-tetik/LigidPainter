@@ -60,23 +60,23 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
     this->vector_scene.render_scene(timer, true, true);
     
     this->color_checkComboList.pos = glm::vec3(this->vector_scene.interaction_panel.pos.x - this->vector_scene.interaction_panel.scale.x + this->color_checkComboList.scale.x, this->vector_scene.interaction_panel.pos.y + this->vector_scene.interaction_panel.scale.y + this->color_checkComboList.scale.y, 0.7f);
-    this->color_checkComboList.render(timer, true);
+    this->color_checkComboList.render(timer, doMouseTracking);
     
     this->mirror_checkComboList.pos = glm::vec3(this->color_checkComboList.pos.x + this->color_checkComboList.scale.x + this->mirror_checkComboList.scale.x, this->color_checkComboList.pos.y, this->color_checkComboList.pos.z);
-    this->mirror_checkComboList.render(timer, true);
+    this->mirror_checkComboList.render(timer, doMouseTracking);
    
     this->brush_properties_button.scale.y = mirror_checkComboList.scale.y;
     this->brush_properties_button.pos = glm::vec3(this->mirror_checkComboList.pos.x + this->mirror_checkComboList.scale.x + this->brush_properties_button.scale.x, this->mirror_checkComboList.pos.y, this->color_checkComboList.pos.z);
-    this->brush_properties_button.render(timer, true);
+    this->brush_properties_button.render(timer, doMouseTracking);
     
     if(this->vector_scene.interaction_panel.sections[0].elements[0].comboBox.selectedIndex == 2){
         this->smear_properties_panel.pos = glm::vec3(this->vector_scene.interaction_panel.pos.x - this->vector_scene.interaction_panel.scale.x + this->smear_properties_panel.scale.x, this->color_checkComboList.pos.y + this->color_checkComboList.scale.y + this->smear_properties_panel.scale.y, 0.7f);
-        this->smear_properties_panel.render(timer, true);
+        this->smear_properties_panel.render(timer, doMouseTracking);
     }
 
     if(this->vector_scene.interaction_panel.sections[0].elements[0].comboBox.selectedIndex == 4){
         this->filter_button.pos = glm::vec3(this->vector_scene.interaction_panel.pos.x - this->vector_scene.interaction_panel.scale.x + this->filter_button.scale.x, this->color_checkComboList.pos.y + this->color_checkComboList.scale.y + this->filter_button.scale.y, 0.7f);
-        this->filter_button.render(timer, true);
+        this->filter_button.render(timer, doMouseTracking);
     }
    
     bool same = true;

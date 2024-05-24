@@ -234,7 +234,7 @@ void ExportDialog::show(Timer& timer){
 
         //Render the panels
         panel.render(timer,false);
-        subPanel.render(timer,true);
+        subPanel.render(timer, !dialog_log.isHovered());
         
         float total_hover_mix = subPanel.sections[0].elements[0].button.hoverMixVal + subPanel.sections[0].elements[1].button.hoverMixVal + subPanel.sections[0].elements[2].button.hoverMixVal;
 
@@ -242,17 +242,17 @@ void ExportDialog::show(Timer& timer){
         if(subPanel.sections[0].elements[0].button.clickedMixVal){
             ShaderSystem::buttonShader().setFloat("properties.groupOpacity", (subPanel.sections[0].elements[0].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[0].button.hoverMixVal) / 20.f));
             this->libraryTexturesPanel.scale = panel_scale * (subPanel.sections[0].elements[0].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[0].button.hoverMixVal) / 20.f) + 0.1f;
-            this->libraryTexturesPanel.render(timer, true);
+            this->libraryTexturesPanel.render(timer, !dialog_log.isHovered());
         }
         if(subPanel.sections[0].elements[1].button.clickedMixVal){
             ShaderSystem::buttonShader().setFloat("properties.groupOpacity", (subPanel.sections[0].elements[1].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[1].button.hoverMixVal) / 20.f));
             this->libraryMaterialsPanel.scale = panel_scale * (subPanel.sections[0].elements[1].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[1].button.hoverMixVal) / 20.f) + 0.1f;
-            this->libraryMaterialsPanel.render(timer, true);
+            this->libraryMaterialsPanel.render(timer, !dialog_log.isHovered());
         }
         if(subPanel.sections[0].elements[2].button.clickedMixVal){
             ShaderSystem::buttonShader().setFloat("properties.groupOpacity", (subPanel.sections[0].elements[2].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[2].button.hoverMixVal) / 20.f));
             this->layersPanel.scale = panel_scale * (subPanel.sections[0].elements[2].button.clickedMixVal - (total_hover_mix - subPanel.sections[0].elements[2].button.hoverMixVal) / 20.f) + 0.1f;
-            this->layersPanel.render(timer, true);
+            this->layersPanel.render(timer, !dialog_log.isHovered());
         }
 
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);

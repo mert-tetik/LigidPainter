@@ -340,8 +340,8 @@ void panel_library_render(
             }
         }
 
-        add_btn.render(timer, true);
-        import_btn.render(timer, true);
+        add_btn.render(timer, doMouseTracking);
+        import_btn.render(timer, doMouseTracking);
     }
     
     glClear(GL_DEPTH_BUFFER_BIT);

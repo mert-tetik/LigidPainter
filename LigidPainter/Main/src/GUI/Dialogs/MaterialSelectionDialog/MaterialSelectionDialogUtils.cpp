@@ -105,7 +105,7 @@ bool MaterialSelectionDialog::renderMatDisplayer(Timer& timer){
 
     bool anyPressed = false;
 
-    this->matDisplayerPanel.render(timer, hasElements);
+    this->matDisplayerPanel.render(timer, hasElements && !dialog_log.isHovered());
     for (size_t i = 0; i < matDisplayerPanel.sections[0].elements.size(); i++)
     {
         if(matDisplayerPanel.sections[0].elements[i].button.hover){

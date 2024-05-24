@@ -73,7 +73,7 @@ void FilterDisplayerDialog::show(Timer& timer){
         dialogControl.updateStart(true);
 
         //Render the panel
-        panel.render(timer,true);
+        panel.render(timer, !dialog_log.isHovered());
         
         //Close the dialog
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || (panel.sections[0].elements[0].button.hover && *Mouse::LDoubleClick())){

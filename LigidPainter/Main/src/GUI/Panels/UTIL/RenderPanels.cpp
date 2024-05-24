@@ -151,11 +151,5 @@ void panels_render(Timer& timer)
 
     glClear(GL_DEPTH_BUFFER_BIT);
 
-    if(!Settings::properties()->cat_hide){
-        Debugger::block("GUI : Log Dialog"); // Start
-        dialog_log.render(timer);
-        Debugger::block("GUI : Log Dialog"); // End
-    }
-
     updateThePreRenderedPanels = false;
 }

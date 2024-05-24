@@ -148,14 +148,14 @@ void FilterSelectionDialog::show(Timer &timer, Filter& receivedFilter, int displ
         updateTextureSelectingPanelElements(this->textureSelectingPanel);
 
         //Render the panel
-        this->bgPanel.render(timer, true);
+        this->bgPanel.render(timer, !dialog_log.isHovered());
 
         //Render the texture mode selection panel
-        this->subPanel.render(timer, true);
+        this->subPanel.render(timer, !dialog_log.isHovered());
 
         selectedTextureDisplayingPanel.sections[0].elements[0].button.texture = displayingTexture;
 
-        this->textureSelectingPanel.render(timer, true);
+        this->textureSelectingPanel.render(timer, !dialog_log.isHovered());
 
         this->selectedTextureDisplayingPanel.render(timer, false);
 

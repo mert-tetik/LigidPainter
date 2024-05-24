@@ -166,7 +166,7 @@ void NewProjectDialog::show(Timer& timer){
         propertiesBtn.textScale = 0.55f;
     else
         propertiesBtn.textScale = 0.5f;
-    propertiesBtn.render(timer, true);
+    propertiesBtn.render(timer, !dialog_log.isHovered());
     
     // 3D models section button
     tdModelsBtn.pos = propertiesBtn.pos; 
@@ -175,7 +175,7 @@ void NewProjectDialog::show(Timer& timer){
         tdModelsBtn.textScale = 0.55f;
     else
         tdModelsBtn.textScale = 0.5f;
-    tdModelsBtn.render(timer, true);
+    tdModelsBtn.render(timer, !dialog_log.isHovered());
 
     // Active selection indicator button
     if(propertiesBtn.clicked)
@@ -192,32 +192,32 @@ void NewProjectDialog::show(Timer& timer){
     if(this->activeSection == 0){
         this->titleTextboxText.pos = panel.sections[0].elements[0].pos;
         this->titleTextboxText.pos.y += 12.f;
-        this->titleTextboxText.render(timer, true);
+        this->titleTextboxText.render(timer, !dialog_log.isHovered());
 
         this->pathTextboxText.pos = panel.sections[0].elements[0].pos;
         this->pathTextboxText.pos.y += 20.f;
-        this->pathTextboxText.render(timer, true);
+        this->pathTextboxText.render(timer, !dialog_log.isHovered());
 
         titleTextbox.pos = panel.sections[0].elements[0].pos;
         titleTextbox.pos.y += 15.f;
-        titleTextbox.render(timer, true);
+        titleTextbox.render(timer, !dialog_log.isHovered());
         
         pathTextbox.pos = panel.sections[0].elements[0].pos;
         pathTextbox.pos.y += 23.f;
-        pathTextbox.render(timer, true);
+        pathTextbox.render(timer, !dialog_log.isHovered());
         
     }
     else{
-        tdModelsPanel.render(timer, true);
+        tdModelsPanel.render(timer, !dialog_log.isHovered());
 
         addTDModelBtn.pos = propertiesBtn.pos;
         addTDModelBtn.pos.y += propertiesBtn.scale.y + addTDModelBtn.scale.y * 1.65f;
         addTDModelBtn.pos.x += 2.f;
-        addTDModelBtn.render(timer, true);
+        addTDModelBtn.render(timer, !dialog_log.isHovered());
         
         deleteTDModelBtn.pos = addTDModelBtn.pos;
         deleteTDModelBtn.pos.x += addTDModelBtn.scale.x + deleteTDModelBtn.scale.x + 1.f;
-        deleteTDModelBtn.render(timer, true);
+        deleteTDModelBtn.render(timer, !dialog_log.isHovered());
 
         if(addTDModelBtn.clicked){
 
@@ -244,7 +244,7 @@ void NewProjectDialog::show(Timer& timer){
     createBtn.pos = panel.pos;
     createBtn.pos.x += panel.scale.x - createBtn.scale.x*2.f;
     createBtn.pos.y += panel.scale.y - createBtn.scale.y*2.f;
-    createBtn.render(timer, true);
+    createBtn.render(timer, !dialog_log.isHovered());
 
 
     

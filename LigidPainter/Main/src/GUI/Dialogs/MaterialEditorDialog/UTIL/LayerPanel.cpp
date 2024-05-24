@@ -108,7 +108,7 @@ static void renderEyes(Timer& timer, Panel &layerPanel, Material* material, bool
                     eyeBtn.texture = appTextures.eyeClosedIcon;
 
                 // Render the eye
-                eyeBtn.render(timer, true);
+                eyeBtn.render(timer, !dialog_log.isHovered());
 
                 // If clicked to the eye update the material & unhide or hide 
                 if(eyeBtn.hover && *Mouse::LClick()){

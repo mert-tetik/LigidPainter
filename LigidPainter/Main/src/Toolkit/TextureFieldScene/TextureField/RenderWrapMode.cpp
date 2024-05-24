@@ -594,7 +594,7 @@ void TextureField::renderWrapPointDecidingScene(Timer& timer){
     text2.render(timer, false);
     
     // Rendering cancel button
-    cancelBtn.render(timer, true);
+    cancelBtn.render(timer, !dialog_log.isHovered());
 
     // Cancel initial point selection mode if the cancel button is clicked
     if(cancelBtn.clicked){

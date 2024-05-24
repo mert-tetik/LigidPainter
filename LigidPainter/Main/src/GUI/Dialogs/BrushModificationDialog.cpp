@@ -116,7 +116,7 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
         dialogControl.updateStart(true);
 
         //Render the panel
-        this->bgPanel.render(timer, true);
+        this->bgPanel.render(timer, !dialog_log.isHovered());
         this->brushDisplayBtn.texture = displayBrush.displayingTexture;
         this->brushDisplayBtn.scale.x = this->bgPanel.scale.x;
         this->brushDisplayBtn.pos = glm::vec3(this->bgPanel.pos.x, this->bgPanel.pos.y - this->bgPanel.scale.y - this->brushDisplayBtn.scale.y, this->bgPanel.pos.z);
@@ -127,7 +127,7 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
         this->libraryBrushSelectionButton.textureSizeScale = 1.4f;
         this->libraryBrushSelectionButton.scale.x = (this->libraryBrushSelectionButton.scale.y / (Settings::videoScale()->x / Settings::videoScale()->y)) + this->libraryBrushSelectionButton.clickedMixVal * this->bgPanel.scale.x / 1.5f;
         this->libraryBrushSelectionButton.pos = glm::vec3(this->bgPanel.pos.x - this->bgPanel.scale.x - this->libraryBrushSelectionButton.scale.x, this->bgPanel.pos.y - this->bgPanel.scale.y + this->libraryBrushSelectionButton.scale.y, this->bgPanel.pos.z);
-        this->libraryBrushSelectionButton.render(timer, true);
+        this->libraryBrushSelectionButton.render(timer, !dialog_log.isHovered());
         
         if(*Mouse::LClick() && !this->libraryBrushSelectionPanel.hover && !this->libraryBrushSelectionButton.hover)
             this->libraryBrushSelectionButton.clickState1 = false;
@@ -145,7 +145,7 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
             Button btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2), Library::getBrush(i)->title, Library::getBrush(i)->displayingTexture, 0.f, true);
             this->libraryBrushSelectionPanel.sections[0].elements.push_back(btn);
         }
-        this->libraryBrushSelectionPanel.render(timer, true);
+        this->libraryBrushSelectionPanel.render(timer, !dialog_log.isHovered());
         for (size_t i = 0; i < Library::getBrushArraySize(); i++)
         {
             if(this->libraryBrushSelectionPanel.sections[0].elements[i].button.hover && *Mouse::LClick()){

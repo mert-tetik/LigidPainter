@@ -203,8 +203,8 @@ void MaterialEditorDialog::renderNavPanel(Timer& timer, bool mouseTrackingFlag){
     this->customModelModeBtn.render(timer, mouseTrackingFlag);
     this->overallResultMode.render(timer, mouseTrackingFlag);
     this->selectedModifierResultMode.render(timer, mouseTrackingFlag);
-    this->displayModeComboBox.render(timer, true);
-    this->displayTxtrResComboBox.render(timer, true);
+    this->displayModeComboBox.render(timer, !dialog_log.isHovered());
+    this->displayTxtrResComboBox.render(timer, !dialog_log.isHovered());
 
     // Interactions
     if(twoDModelModeBtn.clicked){

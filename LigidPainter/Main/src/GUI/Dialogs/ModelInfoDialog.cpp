@@ -126,7 +126,7 @@ void ModelInfoDialog::show(Timer& timer, Model* model){
         
 
         //Render the panel
-        panel.render(timer, true);
+        panel.render(timer, !dialog_log.isHovered());
 
         for (size_t i = 1; i < panel.sections.size(); i++)
         {

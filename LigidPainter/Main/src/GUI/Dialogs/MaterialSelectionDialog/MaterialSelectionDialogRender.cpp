@@ -70,7 +70,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         }
 
         //Render the panels
-        this->bgPanel.render(timer,true);
+        this->bgPanel.render(timer, !dialog_log.isHovered());
         bool anyMatClicked = this->renderMatDisplayer(timer);
         if(anyMatClicked){
             if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1)
@@ -96,8 +96,8 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         else
             this->selectedMatPanel.sections[0].elements[4].scale.y = 2.f;
         
-        this->selectedMatPanel.render(timer,true);
-        this->matModePanel.render(timer, true);
+        this->selectedMatPanel.render(timer, !dialog_log.isHovered());
+        this->matModePanel.render(timer, !dialog_log.isHovered());
         
         if(material_thread.active && material_thread.actions.size()){
             Material* selected_material = this->get_selected_material();

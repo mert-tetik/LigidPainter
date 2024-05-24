@@ -453,18 +453,18 @@ void TextureSelectionDialog::selectTheTexture(Texture& receivedTexture, int disp
 
 void TextureSelectionDialog::renderPanels(Timer& timer){
     // Background panel
-    this->bgPanel.render(timer, true);
+    this->bgPanel.render(timer, !dialog_log.isHovered());
 
     // Texture property panel (right handed panel)
     if(this->selectedTextureMode == 3)
-        this->subPanelTxtrPack.render(timer, true);
+        this->subPanelTxtrPack.render(timer, !dialog_log.isHovered());
     else if(this->selectedTextureMode == 4)
-        this->subPanelSmartTextures.render(timer, true);
+        this->subPanelSmartTextures.render(timer, !dialog_log.isHovered());
     else
-        this->subPanel.render(timer, true);
+        this->subPanel.render(timer, !dialog_log.isHovered());
 
     // Texture modes panel (left handed panel)
-    textureModesPanel.render(timer, true);
+    textureModesPanel.render(timer, !dialog_log.isHovered());
 
     // Positioning the selected texture displayer panel & the texture selection panel (to the center)
     selectedTextureDisplayingPanel.scale.x = this->subPanel.scale.x;
@@ -477,7 +477,7 @@ void TextureSelectionDialog::renderPanels(Timer& timer){
 
     // Seting the selected texture displaying panel's row count
     this->textureSelectingPanel.rowCount = 7;    
-    this->textureSelectingPanel.render(timer, true);
+    this->textureSelectingPanel.render(timer, !dialog_log.isHovered());
 
     // Selected texture displaying panel
     this->selectedTextureDisplayingPanel.render(timer, false);
@@ -528,17 +528,17 @@ void TextureSelectionDialog::renderPanels(Timer& timer){
     if(zoomOutBtn.clicked && this->zoomVal != 0)
         this->zoomVal--;
 
-    selectedTextureSolidDisplayingModeBtn.render(timer, true);
-    selectedTextureMaterialBallDisplayingMode.render(timer, true);
-    selectedTextureCustomMeshDisplayingMode.render(timer, true);
+    selectedTextureSolidDisplayingModeBtn.render(timer, !dialog_log.isHovered());
+    selectedTextureMaterialBallDisplayingMode.render(timer, !dialog_log.isHovered());
+    selectedTextureCustomMeshDisplayingMode.render(timer, !dialog_log.isHovered());
     
     if(this->activeSelectedTextureDisplayingMode != 0){
-        zoomInBtn.render(timer, true);
-        zoomOutBtn.render(timer, true);
+        zoomInBtn.render(timer, !dialog_log.isHovered());
+        zoomOutBtn.render(timer, !dialog_log.isHovered());
         zoomValDisplayer.text = "Zoom : " + std::to_string(this->zoomVal);
         zoomValDisplayer.text.erase(zoomValDisplayer.text.end() - 4, zoomValDisplayer.text.end());
-        zoomValDisplayer.render(timer, true);
-        rotationRangeBar.render(timer, true);
+        zoomValDisplayer.render(timer, !dialog_log.isHovered());
+        rotationRangeBar.render(timer, !dialog_log.isHovered());
     }
 
     if(selectedTextureSolidDisplayingModeBtn.clicked)
@@ -551,26 +551,26 @@ void TextureSelectionDialog::renderPanels(Timer& timer){
     // ------------- Rendering the smart texture property panels ------------
 
     if(smartPositionTexturePanelActive){
-        this->smartPositionTexturePanel.render(timer, true);
+        this->smartPositionTexturePanel.render(timer, !dialog_log.isHovered());
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->smartPositionTexturePanel.hover && *Mouse::LClick())){
             smartPositionTexturePanelActive = false;
         }
     }
 
     if(smartStripesTexturePanelActive){
-        this->smartStripesTexturePanel.render(timer, true);
+        this->smartStripesTexturePanel.render(timer, !dialog_log.isHovered());
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->smartStripesTexturePanel.hover && *Mouse::LClick())){
             smartStripesTexturePanelActive = false;
         }
     }
     if(edgeWearTexturePanelActive){
-        this->edgeWearTexturePanel.render(timer, true);
+        this->edgeWearTexturePanel.render(timer, !dialog_log.isHovered());
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->edgeWearTexturePanel.hover && *Mouse::LClick())){
             edgeWearTexturePanelActive = false;
         }
     }
     if(smartDistanceTexturePanelActive){
-        this->smartDistanceTexturePanel.render(timer, true);
+        this->smartDistanceTexturePanel.render(timer, !dialog_log.isHovered());
         if((getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE)) || (!this->smartDistanceTexturePanel.hover && *Mouse::LClick())){
             smartDistanceTexturePanelActive = false;
         }
