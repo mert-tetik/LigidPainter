@@ -66,6 +66,7 @@ struct MaterialThreadAction{
     bool update_layer_scene_result = 0;
     bool object_texturing_dialog_mode = 0;
     Texture object_texturing_dialog_mask;
+    std::vector<bool> update_channel_flags;
 };
 
 struct MaterialThread{
@@ -84,13 +85,13 @@ struct MaterialThread{
     void apply_material(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels);
     void update_material_displaying_texture(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels);
     void layer_stuff(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels);
-    void update_object_texturing_dialog_result(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, Texture mask);
+    void update_object_texturing_dialog_result(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, Texture mask, std::vector<bool> update_channel_flags);
 
     
 private:
     void use_thread(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path, 
                     bool update_the_material_displaying_texture, bool update_layer_scene_result, bool object_texturing_dialog_mode, 
-                    Texture object_texturing_dialog_mask);
+                    Texture object_texturing_dialog_mask, std::vector<bool> update_channel_flags);
 
 };
 

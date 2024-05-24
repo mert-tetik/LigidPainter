@@ -218,7 +218,21 @@ void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painti
             dialog_log.registerMultiChannelPaintingAction("Material applied to painting layer", painting_layer->result);
             dialog_materialSelection.show(timer, &this->material);    
          
-            material_thread.update_object_texturing_dialog_result(&this->material, getScene()->model, &mesh, &painting_layer->result, this->meshMask);
+            material_thread.update_object_texturing_dialog_result(
+                                                                    &this->material, 
+                                                                    getScene()->model, 
+                                                                    &mesh, 
+                                                                    &painting_layer->result, 
+                                                                    this->meshMask, 
+                                                                    {
+                                                                        albedoChannelCheckBox.clickState1,
+                                                                        roughnessChannelCheckBox.clickState1,
+                                                                        metallicChannelCheckBox.clickState1,
+                                                                        normalMapChannelCheckBox.clickState1,
+                                                                        heightMapChannelCheckBox.clickState1,
+                                                                        aoChannelCheckBox.clickState1,
+                                                                    }
+                                                                );
         }
 
         if(!this->panel.hover && *Mouse::LClick() && !dialog_log.isHovered() || (getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) && textRenderer.keyInput)){
