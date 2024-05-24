@@ -540,6 +540,7 @@ private:
    bool renderMatDisplayer(Timer& timer);
    void assignMaterialsToMap();
    void updateSelectedMaterialInPanel();
+   Material* get_selected_material();
 
 };
 

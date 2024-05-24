@@ -36,6 +36,18 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
 std::map<std::string, std::vector<Material>> matSelection_materials;
 
+Material* MaterialSelectionDialog::get_selected_material(){
+    if(matModePanel.sections.size()){
+        if(selectedMatMode >= 0 && selectedMatMode < matModePanel.sections[0].elements.size()){
+            if(selectedMatIndex >= 0 && selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size()){
+                return &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex];
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 void MaterialSelectionDialog::show(Timer& timer, Material* material){
     
     dialogControl.activate();
@@ -63,15 +75,19 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         if(anyMatClicked){
             if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1)
                 this->selectedMatPanel.sections[0].elements[0].button.texture = this->displayingTexture;
-            else if(selectedMatMode < matModePanel.sections[0].elements.size()){
-                if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
-                    this->selectedMatPanel.sections[0].elements[0].button.texture = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].displayingTexture;
+            else{
+                Material* selected_material = this->get_selected_material();
+                if(selected_material != nullptr){
+                    this->selectedMatPanel.sections[0].elements[0].button.texture = selected_material->displayingTexture;
                 }
             }
             
             if(selectedMatMode < matModePanel.sections[0].elements.size()){
-                if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1)
-                    this->selectedMatPanel.sections[0].elements[1].button.text = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].title;
+                
+                Material* selected_material = this->get_selected_material();
+                if(selected_material != nullptr){
+                    this->selectedMatPanel.sections[0].elements[1].button.text = selected_material->title;
+                }
             }
         }
 
@@ -82,14 +98,37 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         
         this->selectedMatPanel.render(timer,true);
         this->matModePanel.render(timer, true);
+        
+        if(material_thread.active && material_thread.actions.size()){
+            Material* selected_material = this->get_selected_material();
+            if(selected_material != nullptr){
+                if(material_thread.actions[0].material == selected_material){
+                    Element* btn = &this->selectedMatPanel.sections[0].elements[0];
+                    appVideos.loading.render(timer, btn->pos, glm::vec2(btn->scale.y / (Settings::videoScale()->x / Settings::videoScale()->y), btn->scale.y) / 1.2f, 1.f, 1, true);
+                    btn->button.textureSizeScale = 100000000.f;
+                }
+            }
+
+        }
+        else{
+            Element* btn = &this->selectedMatPanel.sections[0].elements[0];
+            btn->button.textureSizeScale = 1.f;
+        }
 
         if(this->selectedMatPanel.sections[0].elements[3].button.clicked){
-            dialog_materialEditor.show(timer, &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex]);
+            Material* selected_material = this->get_selected_material();
+            if(selected_material != nullptr){
+                dialog_materialEditor.show(timer, selected_material);
+            }
         }
         else if(this->selectedMatPanel.sections[0].elements[4].button.clicked){
             if(material != nullptr){
                 material->deleteBuffers();
-                *material = matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].duplicateMaterial();
+
+                Material* selected_material = this->get_selected_material();
+                if(selected_material != nullptr){
+                    *material = selected_material->duplicateMaterial();
+                }
             }
             this->dialogControl.unActivate();
         }
@@ -100,13 +139,14 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
             if(!matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size()){
                 assignMaterialsToMap();
             }
-            if(selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size() && selectedMatIndex != -1){
+            Material* selected_material = this->get_selected_material();
+            if(selected_material != nullptr){
                 if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1){
                     if(anyMatClicked){
-                        material_thread.update_material_displaying_texture(&matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex], getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
+                        material_thread.update_material_displaying_texture(selected_material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
                     }
                     else{
-                        matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex].updateMaterialDisplayingTexture(512, false, this->displayingCam, 0, true, getMaterialDisplayerModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels, this->displayingTexture, -1);
+                        selected_material->updateMaterialDisplayingTexture(512, false, this->displayingCam, 0, true, getMaterialDisplayerModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels, this->displayingTexture, -1);
                     }
                 }
             }
@@ -127,9 +167,16 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         for (Element element : this->matDisplayerPanel.sections[0].elements)
         {
             if(matI < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size()){
-                if(!matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][matI].material_selection_dialog_initialized){
-                    appVideos.loading.render(timer, element.pos, glm::vec2(element.scale.y / (Settings::videoScale()->x / Settings::videoScale()->y), element.scale.y) / 1.2f, 1.f, 1, update_frame_value);
-                    update_frame_value = false;
+                if(material_thread.actions.size()){
+                    if(
+                            !matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][matI].material_selection_dialog_initialized ||
+                            (material_thread.actions[0].material == &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][matI] && 
+                            material_thread.active)
+                            )
+                    {
+                        appVideos.loading.render(timer, element.pos, glm::vec2(element.scale.y / (Settings::videoScale()->x / Settings::videoScale()->y), element.scale.y) / 1.2f, 1.f, 1, update_frame_value);
+                        update_frame_value = false;
+                    }
                 }
             }
         
