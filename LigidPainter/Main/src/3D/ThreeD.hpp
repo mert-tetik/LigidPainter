@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/Scene/Scene.hpp"
 #include "3D/SceneAxisDisplayer/SceneAxisDisplayer.hpp"
 #include "3D/SceneTiles/SceneTiles.hpp"
+#include "3D/Line/Line.hpp"
 #include "3D/Skybox/Skybox.hpp"
 #include "3D/ThreeDBox/ThreeDBox.hpp"
 #include "3D/ThreeDPoint/ThreeDPoint.hpp"

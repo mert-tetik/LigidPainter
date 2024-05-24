@@ -35,107 +35,35 @@ SceneTiles.hpp : Is used to render a single 2D square.
 SceneTiles::SceneTiles(){}
 
 void SceneTiles::init(){
+    const int tile_x_count = 200;
+    const int tile_z_count = 200;
+
+    const float tile_x_spacing = 1.f;
+    const float tile_z_spacing = 1.f;
+
+    const float single_line_length = 200.f;
+
+    const float y_axis_location = 0.f; // At the center
     
-    LigidGL::cleanGLErrors();
-
-    Debugger::block("SceneTiles::init : start");
-    Debugger::block("SceneTiles::init : start");
-
-    Debugger::block("SceneTiles::init");
-
-    const float tileSize = 1000.f;
-
-    std::vector<float> SceneTilesVertices = { 
-        // first triangle      
-        tileSize,  0.0f,  tileSize      ,      1,0      ,       0,0,0       ,       0,0,0       ,       0,0,0,        // top right
-        tileSize,  0.0f, -tileSize      ,      1,1      ,       0,0,0       ,       0,0,0       ,       0,0,0,        // bottom right
-       -tileSize,  0.0f,  tileSize      ,      0,0      ,       0,0,0       ,       0,0,0       ,       0,0,0,        // top left 
-        
-        // second triangle              
-        tileSize,  0.0f, -tileSize      ,      1,1      ,       0,0,0       ,       0,0,0       ,       0,0,0,        // bottom right
-       -tileSize,  0.0f, -tileSize      ,      0,1      ,       0,0,0       ,       0,0,0       ,       0,0,0,        // bottom left
-       -tileSize,  0.0f,  tileSize      ,      0,0      ,       0,0,0       ,       0,0,0       ,       0,0,0         // top left
-    };
-
-    //Generate vertex objects
-    glGenVertexArrays(1, &VAO);
-    LigidGL::testGLError("SceneTiles::init : Gen VAO");
-    glGenBuffers(1, &VBO);
-    LigidGL::testGLError("SceneTiles::init : Gen VBO");
+    this->x_start_line.startPoint = glm::vec3(-(tile_x_count / 2) * tile_x_spacing, y_axis_location, -(single_line_length / 2.f));
+    this->x_start_line.endPoint = glm::vec3(-(tile_x_count / 2) * tile_x_spacing, y_axis_location, +(single_line_length / 2.f));
     
-    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-    glBindVertexArray(VAO);
-    LigidGL::testGLError("SceneTiles::init : Bind VAO");
-    
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    LigidGL::testGLError("SceneTiles::init : Bind VBO");
-    glBufferData(GL_ARRAY_BUFFER, SceneTilesVertices.size() * sizeof(float), &SceneTilesVertices[0], GL_STATIC_DRAW);
-    LigidGL::testGLError("SceneTiles::init : VBO Data");
+    this->z_start_line.startPoint = glm::vec3(-(single_line_length / 2.f), y_axis_location, -(tile_z_count / 2) * tile_z_spacing);
+    this->z_start_line.endPoint = glm::vec3(+(single_line_length / 2.f), y_axis_location, -(tile_z_count / 2) * tile_z_spacing);
 
-    // vertex pos
-    glEnableVertexAttribArray(0);	
-    LigidGL::testGLError("SceneTiles::init : Enable vertex attrib array 0");
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-    LigidGL::testGLError("SceneTiles::init : Set vertex attrib pointer 0");
-
-    // vertex TextureMs coords
-    glEnableVertexAttribArray(1);	
-    LigidGL::testGLError("SceneTiles::init : Enable vertex attrib array 1");
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(float)));
-    LigidGL::testGLError("SceneTiles::init : Set vertex attrib pointer 1");
-    
-    // vertex normals
-    glEnableVertexAttribArray(2);	
-    LigidGL::testGLError("SceneTiles::init : Enable vertex attrib array 2");
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(5 * sizeof(float)));
-    LigidGL::testGLError("SceneTiles::init : Set vertex attrib pointer 2");
-    
-    // vertex tangent
-    glEnableVertexAttribArray(3);
-    LigidGL::testGLError("SceneTiles::init : Enable vertex attrib array 3");
-    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(8 * sizeof(float)));
-    LigidGL::testGLError("SceneTiles::init : Set vertex attrib pointer 3");
-    
-    // vertex bitangent
-    glEnableVertexAttribArray(4);
-    LigidGL::testGLError("SceneTiles::init : Enable vertex attrib array 4");
-    glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(11 * sizeof(float)));
-    LigidGL::testGLError("SceneTiles::init : Set vertex attrib pointer 4");
-
-
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
-    LigidGL::testGLError("SceneTiles::init : Binding default VBO");
-
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
-    glBindVertexArray(0);
-    LigidGL::testGLError("SceneTiles::init : Binding default VAO");
-    
-    Debugger::block("SceneTiles::init");
-}
-
-void SceneTiles::bindBuffers(){
-    glBindVertexArray(VAO);
-    LigidGL::testGLError("SceneTiles::bindBuffers : Bind VAO");
-    
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    LigidGL::testGLError("SceneTiles::bindBuffers : Bind VBO");
-}
-
-void SceneTiles::unbindBuffers(){
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
-    LigidGL::testGLError("SceneTiles::unbindBuffers : Binding default VBO");
-
-    glBindVertexArray(0);
-    LigidGL::testGLError("SceneTiles::unbindBuffers : Binding default VAO");
+    for (int x = 0; x < tile_x_count; x++)
+    {
+        this->x_offsets.push_back(glm::vec3(x * tile_x_spacing, 0.f, 0.f));
+    }
+    for (int z = 0; z < tile_z_count; z++)
+    {
+        this->z_offsets.push_back(glm::vec3(0.f, 0.f, z * tile_z_spacing));
+    }
 }
 
 void SceneTiles::draw(){
-    this->bindBuffers();
-
-    //Draw the SceneAxisDisplayer
-    GL::makeDrawCall(GL_TRIANGLES, 0, 6, "SceneTiles::draw");
-
-    this->unbindBuffers();
+    // Render the x axis
+    render_line(this->x_start_line, this->x_offsets, ShaderSystem::sceneTilesShader());
+    // Render the z axis
+    render_line(this->z_start_line, this->z_offsets, ShaderSystem::sceneTilesShader());
 }

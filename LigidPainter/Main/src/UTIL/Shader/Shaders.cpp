@@ -116,7 +116,7 @@ void ShaderSystem::initShaderSystem(){
     __normalVectorShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_model_UV.vert", "LigidPainter/Resources/Shaders/aFrag/NormalVector.frag", "normalVectorShader");
     __colorIDMaskingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/MaterialID.frag", "colorIDMaskingShader");
     __grayScaleIDMaskingShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/GrayScaleMasking.frag", "grayScaleIDMaskingShader");
-    __sceneTilesShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/SceneTiles.frag", "sceneTilesShader");
+    __sceneTilesShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_line.vert", "LigidPainter/Resources/Shaders/aFrag/SceneTiles.frag", "sceneTilesShader");
     __sceneAxisDisplayerShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/3D_model.vert", "LigidPainter/Resources/Shaders/aFrag/SceneAxisDisplayer.frag", "sceneAxisDisplayerShader");
     __paintOverTextureGen.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/aFrag/PaintOverTextureGen.frag", "paintOverTextureGen");
     __txtrEditorResizeShader.loadShaderPP("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", "LigidPainter/Resources/Shaders/TextureEditor/Resize.frag", "txtrEditorResizeShader");

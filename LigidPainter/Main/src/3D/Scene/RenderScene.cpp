@@ -40,6 +40,7 @@ void Scene::render_scene(Timer& timer){
         ShaderSystem::sceneTilesShader().setMat4("projection", this->projectionMatrix);
         ShaderSystem::sceneTilesShader().setMat4("modelMatrix",glm::mat4(1));
         ShaderSystem::sceneTilesShader().setVec3("camPos", this->camera.cameraPos);
+        
         this->tiles.draw();
         glClear(GL_DEPTH_BUFFER_BIT);
 

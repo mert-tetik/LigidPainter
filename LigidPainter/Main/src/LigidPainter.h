@@ -221,7 +221,7 @@ public:
         getContext()->window.setWindowSize(Settings::videoScale()->x, Settings::videoScale()->y);
         getContext()->window.setWindowPos(0, 0);
 
-        dialog_greeting.dialogControl.activate();    
+        //dialog_greeting.dialogControl.activate();    
 
         while((!dialog_log.windowShouldClose && !Settings::properties()->cat_hide) || (!getContext()->window.shouldClose() && Settings::properties()->cat_hide))
         {   
