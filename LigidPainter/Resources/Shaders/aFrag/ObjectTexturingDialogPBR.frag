@@ -1,8 +1,5 @@
 #version 400 core
 
-//Painting
-#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Painting.frag)
-
 //Functions related to PBR 
 #pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Physics_Math.frag)
 
@@ -12,6 +9,10 @@ in vec3 Pos;
 in vec3 Tangent;
 in vec3 Bitangent;
 in vec4 ProjectedPos;
+
+#pragma LIGID_INCLUDE(./LigidPainter/Resources/Shaders/Include/Face_Selection.frag)
+uniform FaceSelectionData face_selection_data;
+uniform int render_unselected_faces;
 
 //Position of the camera
 uniform vec3 viewPos;
@@ -49,6 +50,17 @@ float checkerPattern(
 }
 
 void main() {
+
+    gl_FragDepth = gl_FragCoord.z;
+
+    bool selectedPrim = face_selection_is_current_prim_selected(face_selection_data, TexCoords);
+    bool hoveredPrim = face_selection_is_current_prim_hovered(face_selection_data, TexCoords);
+
+    if(!selectedPrim && render_unselected_faces == 0){
+        fragColor.rgba = vec4(0.);
+        gl_FragDepth = 1.;
+        return;
+    }
 
     vec3 checker_val = vec3(checkerPattern(Pos.xy * 10.) / 4. + 0.5);
     //Material channels
@@ -121,4 +133,8 @@ void main() {
 
     float mask = texture2D(mask_texture, TexCoords).r * texture2D(mask_texture, TexCoords).a;
     fragColor.rgb = mix(fragColor.rgb / 4., fragColor.rgb, mask);
+
+    if(!selectedPrim && render_unselected_faces == 1){
+        fragColor.rgb = mix(fragColor.rgb, vec3(1.,0.,0.), 0.25);
+    }
 }

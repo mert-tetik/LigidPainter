@@ -77,6 +77,8 @@ ObjectTexturingDialog::ObjectTexturingDialog(int){
     this->maskMaterialBtn.textureSelection3D = true;
     this->maskMaterialBtn.texture.proceduralProps.proceduralID = 24;
     
+    this->renderUnselectedFacesCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Render unselected faces", 0.f);
+    
     this->displayMaskCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Display Mask", 0.f);
     this->displayMaskCheckBox.clickState1 = true;
 
@@ -136,9 +138,12 @@ void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painti
         // Modifying the elements    
         this->panel.sections[0].elements[0].button.scale = this->panel.scale;
 
-        this->maskMaterialBtn.pos = this->panel.pos;
-        this->maskMaterialBtn.pos.x -= this->panel.scale.x - this->maskMaterialBtn.scale.x - 2.f;
-        this->maskMaterialBtn.pos.y -= 6.f;
+        this->renderUnselectedFacesCheckBox.pos = this->panel.pos;
+        this->renderUnselectedFacesCheckBox.pos.x -= this->panel.scale.x - this->renderUnselectedFacesCheckBox.scale.x - 2.f;
+        this->renderUnselectedFacesCheckBox.pos.y -= 8.f;
+        
+        this->maskMaterialBtn.pos = renderUnselectedFacesCheckBox.pos;
+        this->maskMaterialBtn.pos.y += maskMaterialBtn.scale.y + renderUnselectedFacesCheckBox.scale.y * 2.f;
         
         this->displayMaskCheckBox.pos = maskMaterialBtn.pos;
         this->displayMaskCheckBox.pos.y += displayMaskCheckBox.scale.y + maskMaterialBtn.scale.y * 1.f;
@@ -184,6 +189,7 @@ void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painti
         ShaderUTIL::release_bound_shader();
 
         // Render the elements
+        this->renderUnselectedFacesCheckBox.render(timer, true);
         this->maskMaterialBtn.render(timer, true);
         this->displayMaskCheckBox.render(timer, true);
         this->assignRelatedTexturesButton.render(timer, true);
@@ -280,6 +286,9 @@ void ObjectTexturingDialog::updateDisplayingTexture(Mesh& mesh, PaintingLayer* p
     
     ShaderSystem::objectTexturingDialogPBR().setInt("mask_texture", GL::bindTexture_2D((this->displayMaskCheckBox.clickState1) ? this->meshMask.ID : appTextures.white.ID, "Texture::renderMesh"));
     ShaderSystem::objectTexturingDialogPBR().setInt("channelI", this->displayingOptionsComboBox.selectedIndex);
+    ShaderSystem::objectTexturingDialogPBR().setInt("render_unselected_faces", this->renderUnselectedFacesCheckBox.clickState1);
+
+    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::objectTexturingDialogPBR(), mesh);
 
     // Render result
     mesh.Draw("Texture::render_mesh");

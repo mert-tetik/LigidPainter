@@ -436,6 +436,7 @@ public:
 
    Panel panel;
 
+   CheckBox renderUnselectedFacesCheckBox;
    Button maskMaterialBtn;
    CheckBox displayMaskCheckBox;
    Button assignRelatedTexturesButton;
