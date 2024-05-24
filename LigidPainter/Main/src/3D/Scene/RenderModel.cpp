@@ -43,6 +43,23 @@ static float calculateDepthToleranceValue(glm::vec3 campos,glm::vec3 origin){
 static Camera prevCam;
 bool face_selection_interaction(Timer& timer, Model* model, int meshI, bool registerHistory);
 
+void render_wireframe_if_needed(Mesh& mesh, const Camera& camera, const glm::mat4& projectionMatrix, const glm::mat4& transformMatrix){
+    // Render the wireframe if face selection edit mode is active
+    if(mesh.face_selection_data.editMode){
+        ShaderSystem::color3d().use();
+        ShaderSystem::color3d().setMat4("view", camera.viewMatrix);
+        ShaderSystem::color3d().setMat4("projection", projectionMatrix);
+        ShaderSystem::color3d().setMat4("modelMatrix", transformMatrix);
+        ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
+        ShaderSystem::color3d().setFloat("depthToleranceValue", 0.0001f);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        mesh.Draw("Scene::render_model wireframe");
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        ShaderUTIL::release_bound_shader();
+    }
+}
+
 void Scene::render_model(Timer& timer){
 
     // Set backface culling property
@@ -142,6 +159,10 @@ void Scene::render_model(Timer& timer){
                 this->model->meshes[i].Draw("Scene::render_model : PBR");
             }
 
+            if(i == button_mesh_selection.selectedMeshI){
+                render_wireframe_if_needed(this->model->meshes[i], this->camera, this->projectionMatrix, this->transformMatrix);
+            }
+
             GL::releaseBoundTextures("Scene::render_model");
             ShaderUTIL::release_bound_shader();
         }   
@@ -200,23 +221,10 @@ void Scene::render_model(Timer& timer){
         ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::solidPaintingShader(), *this->get_selected_mesh());
 
         this->get_selected_mesh()->Draw("Scene::render_model : single texture");
+
+        render_wireframe_if_needed(*this->get_selected_mesh(), this->camera, this->projectionMatrix, this->transformMatrix);
         
         GL::releaseBoundTextures("Scene::render_model");
-        ShaderUTIL::release_bound_shader();
-    }
-
-    // Render the wireframe if face selection edit mode is active
-    if(this->get_selected_mesh()->face_selection_data.editMode){
-        ShaderSystem::color3d().use();
-        ShaderSystem::color3d().setMat4("view", this->camera.viewMatrix);
-        ShaderSystem::color3d().setMat4("projection", this->projectionMatrix);
-        ShaderSystem::color3d().setMat4("modelMatrix", this->transformMatrix);
-        ShaderSystem::color3d().setVec4("color", glm::vec4(1.f));
-        ShaderSystem::color3d().setFloat("depthToleranceValue", 0.0001f);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        this->get_selected_mesh()->Draw("Scene::render_model wireframe");
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
         ShaderUTIL::release_bound_shader();
     }
 
