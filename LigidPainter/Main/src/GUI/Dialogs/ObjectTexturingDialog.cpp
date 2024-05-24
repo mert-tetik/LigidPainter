@@ -77,12 +77,12 @@ ObjectTexturingDialog::ObjectTexturingDialog(int){
     this->maskMaterialBtn.textureSelection3D = true;
     this->maskMaterialBtn.texture.proceduralProps.proceduralID = 24;
     
-    this->renderUnselectedFacesCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Render unselected faces", 0.f);
+    this->renderUnselectedFacesCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(7.f, 2.f), "Render unselected faces", 0.f);
     
     this->displayMaskCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Display Mask", 0.f);
     this->displayMaskCheckBox.clickState1 = true;
 
-    this->assignRelatedTexturesButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Assign to related textures", Texture(), 1.f, false);
+    this->assignMaterialToRelatedLayerButton = Button(ELEMENT_STYLE_BASIC, glm::vec2(6, 2.f), "Assign Material To Related Layer", Texture(), 1.f, false);
     
     this->albedoChannelCheckBox = CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(6.f, 2.f), "Albedo", 0.f);
     this->albedoChannelCheckBox.clickState1 = true;
@@ -148,11 +148,11 @@ void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painti
         this->displayMaskCheckBox.pos = maskMaterialBtn.pos;
         this->displayMaskCheckBox.pos.y += displayMaskCheckBox.scale.y + maskMaterialBtn.scale.y * 1.f;
 
-        this->assignRelatedTexturesButton.pos = displayMaskCheckBox.pos;
-        this->assignRelatedTexturesButton.pos.y += assignRelatedTexturesButton.scale.y + displayMaskCheckBox.scale.y * 2.f;
+        this->assignMaterialToRelatedLayerButton.pos = displayMaskCheckBox.pos;
+        this->assignMaterialToRelatedLayerButton.pos.y += assignMaterialToRelatedLayerButton.scale.y + displayMaskCheckBox.scale.y * 2.f;
         
-        this->albedoChannelCheckBox.pos = this->assignRelatedTexturesButton.pos;
-        this->albedoChannelCheckBox.pos.y += this->albedoChannelCheckBox.scale.y + this->assignRelatedTexturesButton.scale.y * 2.f;
+        this->albedoChannelCheckBox.pos = this->assignMaterialToRelatedLayerButton.pos;
+        this->albedoChannelCheckBox.pos.y += this->albedoChannelCheckBox.scale.y + this->assignMaterialToRelatedLayerButton.scale.y * 2.f;
         this->roughnessChannelCheckBox.pos = this->albedoChannelCheckBox.pos;
         this->roughnessChannelCheckBox.pos.y += this->roughnessChannelCheckBox.scale.y + this->albedoChannelCheckBox.scale.y;
         this->metallicChannelCheckBox.pos = this->roughnessChannelCheckBox.pos;
@@ -192,7 +192,7 @@ void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painti
         this->renderUnselectedFacesCheckBox.render(timer, !dialog_log.isHovered());
         this->maskMaterialBtn.render(timer, !dialog_log.isHovered());
         this->displayMaskCheckBox.render(timer, !dialog_log.isHovered());
-        this->assignRelatedTexturesButton.render(timer, !dialog_log.isHovered());
+        this->assignMaterialToRelatedLayerButton.render(timer, !dialog_log.isHovered());
 
         this->albedoChannelCheckBox.render(timer, !dialog_log.isHovered());
         this->roughnessChannelCheckBox.render(timer, !dialog_log.isHovered());
@@ -214,7 +214,7 @@ void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painti
             maskMaterialBtn.texture.generateProceduralTexture(*getScene()->get_selected_mesh(), this->meshMask, resolution);
         }
 
-        if(assignRelatedTexturesButton.clicked){
+        if(assignMaterialToRelatedLayerButton.clicked){
             dialog_log.registerMultiChannelPaintingAction("Material applied to painting layer", painting_layer->result);
             dialog_materialSelection.show(timer, &this->material);    
          

@@ -439,7 +439,7 @@ public:
    CheckBox renderUnselectedFacesCheckBox;
    Button maskMaterialBtn;
    CheckBox displayMaskCheckBox;
-   Button assignRelatedTexturesButton;
+   Button assignMaterialToRelatedLayerButton;
    
    CheckBox albedoChannelCheckBox;
    CheckBox roughnessChannelCheckBox;
