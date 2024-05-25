@@ -162,7 +162,7 @@ public:
     bool load(const char* path);
 
     /// @brief Returns texture data in the given path & doesn't write anything to the member variables
-    unsigned char* getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip);
+    unsigned char* getTextureDataViaPath(const char* aPath, int &aWidth, int &aHeight, int &aChannels, int desiredChannels, bool flip);
     
     /// @brief Exports the texture to the given directory path
     /// @param path folder path (will be completed as : @param path + / + @ref title + . + format (in lowercase))

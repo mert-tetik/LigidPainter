@@ -45,6 +45,7 @@ Model __materialDisplayingModel;
 Model __getTDBrushCursorModel;
 Box __box;
 Box __box_2;
+Box __box_3;
 Settings::DefaultFramebuffer __defaultFramebuffer;
 
 glm::vec2 __videoScale;
@@ -267,6 +268,8 @@ Box* getBox(){
         return &__box;
     if(getSecondContext()->window.isContextCurrent())
         return &__box_2;
+    if(getLoadingContext()->window.isContextCurrent())
+        return &__box_3;
 
     return &__box;
 }

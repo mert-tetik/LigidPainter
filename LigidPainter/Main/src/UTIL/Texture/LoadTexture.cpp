@@ -43,8 +43,6 @@ bool Texture::load(const char* path){
     this->title = UTIL::getLastWordBySeparatingWithChar(path,UTIL::folderDistinguisher());
     this->title = UTIL::removeExtension(this->title);
 
-    stbi_set_flip_vertically_on_load(true);
-    
     int width, height, channels;
     unsigned char* data = stbi_load(path, &width, &height, &channels, 4);
 	if (data != NULL)
@@ -70,6 +68,10 @@ bool Texture::load(const char* path){
 	}
 
     stbi_image_free(data);
+
+    if(ShaderSystem::textureRenderingShader().ID){
+        this->flipTexture(false, true);
+    }
 
     return true;
 }

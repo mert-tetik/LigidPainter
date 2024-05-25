@@ -58,7 +58,7 @@ void Skybox::load(std::string path) //Path to the folder
 	for (unsigned int i = 0; i < faces.size(); i++)
 	{
 		Texture txtr;
-		unsigned char *data = txtr.getTextureDataViaPath(faces[i].c_str(),width,height,nrChannels,3,true);
+		unsigned char *data = txtr.getTextureDataViaPath(faces[i].c_str(), width, height, nrChannels, 3, true);
 
 		if (data) //Loaded
 		{

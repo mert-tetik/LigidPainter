@@ -20,7 +20,7 @@ void main(){
         for (int i = 0; i < radius; i++){
             /* Rook movement*/
             if(texture(whiteUVTexture,vec2(TexCoords.x - pixel * (i), TexCoords.y)).r == 1.){
-                color = vec4(texture(originalTexture,vec2(TexCoords.x - pixel * (i),TexCoords.y)));
+                color = vec4(texture(originalTexture,vec2(TexCoords.x - pixel * (i), TexCoords.y)));
                 break;
             }
             else if(texture(whiteUVTexture,vec2(TexCoords.x + pixel * (i), TexCoords.y)).r == 1.){

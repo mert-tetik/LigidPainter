@@ -30,6 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 static Texture txtr_for_getContext;
 static Texture txtr_for_getSecondContext;
 static Texture txtr_for_getCopyContext;
+static Texture txtr_for_getLoadingContext;
 
 Texture Texture::get_temp_copy_txtr(std::string location){
     if(getContext()->window.isContextCurrent()){
@@ -68,8 +69,20 @@ Texture Texture::get_temp_copy_txtr(std::string location){
 
         return txtr_for_getCopyContext;
     }
+    if(getLoadingContext()->window.isContextCurrent()){
+        if(!txtr_for_getLoadingContext.ID){
+            txtr_for_getLoadingContext = Texture((char*)nullptr, 1, 1);
+        }
+        if(this->getResolution() != txtr_for_getLoadingContext.getResolution()){
+            txtr_for_getLoadingContext.update((char*)nullptr, this->getResolution().x, this->getResolution().y);
+        }
+        
+        this->duplicateTextureSub(txtr_for_getLoadingContext, location + " : get_temp_copy_txtr");
 
-    return txtr_for_getCopyContext;
+        return txtr_for_getLoadingContext;
+    }
+
+    return txtr_for_getLoadingContext;
 }
 
 void Texture::duplicateTextureSub(Texture& txtr, std::string location){

@@ -25,12 +25,32 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Texture/Texture.hpp"
 #include "UTIL/GL/GL.hpp"
 
-unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int &aHeight,int &aChannels,int desiredChannels,bool flip){
-    stbi_set_flip_vertically_on_load(flip);
+static void flipImageVertically(unsigned char* pixels, int width, int height, int channels) {
+    int rowSize = width * channels; // Number of bytes per row
+    unsigned char* tempRow = new unsigned char[rowSize]; // Temporary storage for swapping
+
+    for (int i = 0; i < height / 2; ++i) {
+        unsigned char* rowTop = pixels + i * rowSize; // Pointer to the top row
+        unsigned char* rowBottom = pixels + (height - 1 - i) * rowSize; // Pointer to the bottom row
+
+        // Swap the top row with the bottom row
+        std::copy(rowTop, rowTop + rowSize, tempRow);
+        std::copy(rowBottom, rowBottom + rowSize, rowTop);
+        std::copy(tempRow, tempRow + rowSize, rowBottom);
+    }
+
+    delete[] tempRow; // Free temporary storage
+}
+
+unsigned char* Texture::getTextureDataViaPath(const char* aPath, int &aWidth, int &aHeight, int &aChannels, int desiredChannels, bool flip){
     unsigned char* data = stbi_load(aPath, &aWidth, &aHeight, &aChannels, desiredChannels);
     
     if(data != NULL){
         LGDLOG::start<< "Loaded " << aPath << LGDLOG::end;
+        
+        if(flip)
+            flipImageVertically(data, aWidth, aHeight, aChannels);
+        
         return data;
     }
     
@@ -48,6 +68,7 @@ unsigned char* Texture::getTextureDataViaPath(const char* aPath,int &aWidth,int 
         unsigned char* aData = (unsigned char*) malloc(4 * sizeof(unsigned char));
         return aData;
     }
+
 }
 
 void Texture::getData(char* pixels){
