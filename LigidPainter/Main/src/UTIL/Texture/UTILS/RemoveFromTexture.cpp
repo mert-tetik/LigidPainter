@@ -47,6 +47,8 @@ void Texture::removeSeams(Mesh& mesh){
     ShaderSystem::boundaryExpandingShader().setMat4("projectedPosProjection", glm::ortho(0.f, 1.f, 1.f, 0.f));
     ShaderSystem::boundaryExpandingShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
     ShaderSystem::boundaryExpandingShader().setVec2("scale", glm::vec2(0.5f, 0.5f));
+    
+    ShaderSystem::boundaryExpandingShader().setInt("resolution", copy_txtr.getResolution().x);
 
     int uvMask_unit = GL::bindTexture_2D(mesh.uvMask.ID, "Texture::removeSeams");
     int copy_txtr_unit = GL::bindTexture_2D(copy_txtr.ID, "Texture::removeSeams");

@@ -139,12 +139,13 @@ void Mesh::generateDisplayingTexture(){
 
 void Mesh::generateUVMask(){
     
-    const int resolution = 2024;
+    const int resolution = 512;
     
     this->uvMask = Texture((char*)nullptr, resolution, resolution, GL_LINEAR);
 
     Framebuffer FBO = FBOPOOL::requestFBO(this->uvMask, "Generating mesh uv mask");
 
+    glViewport(0,0,resolution,resolution);
     glClearColor(0, 0, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

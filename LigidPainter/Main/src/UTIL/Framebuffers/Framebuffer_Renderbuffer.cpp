@@ -278,6 +278,8 @@ void Framebuffer::bind(){
         glBindRenderbuffer(GL_RENDERBUFFER, this->renderBuffer.ID);
         LigidGL::testGLError("Framebuffer::bind : Binding RBO" + std::string(" : ") + this->purpose);
     }
+
+    TEST_FRAMEBUFFER("Framebuffer::bind");
 }
 
 void Framebuffer::setColorBuffer(Texture colorBuffer, unsigned int textureTarget){
@@ -287,9 +289,29 @@ void Framebuffer::setColorBuffer(Texture colorBuffer, unsigned int textureTarget
     
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
     bool success = LigidGL::testGLError("Framebuffer::setColorBuffer : Binding FBO" + std::string(" : ") + this->purpose);
+
+    // Release all the color attachments
+    {
+        // Maximum number of color attachments, typically 8 but can vary
+        GLint maxColorAttachments;
+        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments);
+        LigidGL::testGLError("Framebuffer::setColorBuffer : glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments)" + std::string(" : ") + this->purpose);
+
+        // Detach all color attachments
+        for (GLint i = 0; i < maxColorAttachments; ++i) {
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, 0, 0);
+            LigidGL::testGLError("Framebuffer::setColorBuffer : glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, 0, 0)" + std::string(" : ") + this->purpose);
+        }
+    }
     
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, textureTarget, colorBuffer.ID, 0);
     LigidGL::testGLError("Framebuffer::setColorBuffer : attaching colorBuffer to FBO" + std::string(" : ") + this->purpose);
+
+    GLuint attachments[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, attachments);
+    LigidGL::testGLError("Framebuffer::setColorBuffer : glDrawBuffers" + std::string(" : ") + this->purpose);
+    
+    TEST_FRAMEBUFFER("Framebuffer::bind single color attachments");
 }
 
 void Framebuffer::setColorBuffer(std::vector<Texture> colorBuffers, unsigned int textureTarget){
@@ -300,6 +322,20 @@ void Framebuffer::setColorBuffer(std::vector<Texture> colorBuffers, unsigned int
     glBindFramebuffer(GL_FRAMEBUFFER, this->ID);
     LigidGL::testGLError("Framebuffer::setColorBuffer : Binding FBO" + std::string(" : ") + this->purpose);
     
+    // Release all the color attachments
+    {
+        // Maximum number of color attachments, typically 8 but can vary
+        GLint maxColorAttachments;
+        glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments);
+        LigidGL::testGLError("Framebuffer::setColorBuffer : glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments)" + std::string(" : ") + this->purpose);
+
+        // Detach all color attachments
+        for (GLint i = 0; i < maxColorAttachments; ++i) {
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, 0, 0);
+            LigidGL::testGLError("Framebuffer::setColorBuffer : glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, 0, 0)" + std::string(" : ") + this->purpose);
+        }
+    }
+
     GLuint* attachments = new GLuint[colorBuffers.size()];
 
     for (size_t i = 0; i < colorBuffers.size(); i++)
@@ -314,6 +350,8 @@ void Framebuffer::setColorBuffer(std::vector<Texture> colorBuffers, unsigned int
     LigidGL::testGLError("Framebuffer::setColorBuffer : glDrawBuffers" + std::string(" : ") + this->purpose);
 
     delete[] attachments;
+    
+    TEST_FRAMEBUFFER("Framebuffer::bind multiple color attachments");
 }
 
 void Framebuffer::setRenderbuffer(Renderbuffer rbo){

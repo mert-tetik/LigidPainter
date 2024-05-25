@@ -135,6 +135,7 @@ static Framebuffer request_from_FBO_POOL(std::vector<Texture> txtrs, glm::ivec2 
     /* Update the color buffer of the FBO*/
     if(txtrs.size() == 1)
         res->setColorBuffer(txtrs[0], GL_TEXTURE_2D);
+        
     else if(txtrs.size() > 1)
         res->setColorBuffer(txtrs, GL_TEXTURE_2D);
 
