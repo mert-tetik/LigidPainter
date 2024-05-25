@@ -174,7 +174,7 @@ void Library::addMaterial(Material material, const std::string actionTitle){
     __materials.push_back(material);
     
     // Update the displaying texture of the new material
-    material_thread.update_material_displaying_texture(&__materials[__materials.size() - 1], getMaterialDisplayingModel(), &getMaterialDisplayingModel()->meshes[0], &getMaterialDisplayingModel()->meshes[0].material_channels);
+    material_thread.update_material_displaying_texture(&__materials[__materials.size() - 1], getMaterialDisplayingModel(), &getMaterialDisplayingModel()->meshes[0], &getMaterialDisplayingModel()->meshes[0].material_channels, 1024);
     
     Library::nameControl();
 }

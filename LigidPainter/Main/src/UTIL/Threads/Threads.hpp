@@ -47,15 +47,6 @@ extern std::atomic<bool> project_updating_thread_save_as_project;
 extern ThreadElements projectUpdatingThreadElements; 
 void projectUpdatingThread();
 
-struct MaterialChannelsPxs{
-    unsigned char albedo[1024 * 1024 * 4];
-    unsigned char roughness[1024 * 1024 * 4];
-    unsigned char metallic[1024 * 1024 * 4];
-    unsigned char normalMap[1024 * 1024 * 4];
-    unsigned char heightMap[1024 * 1024 * 4];
-    unsigned char ao[1024 * 1024 * 4];
-};
-
 struct MaterialThreadAction{
     Material* material = nullptr;
     std::string path;
@@ -67,6 +58,7 @@ struct MaterialThreadAction{
     bool object_texturing_dialog_mode = 0;
     Texture object_texturing_dialog_mask;
     std::vector<bool> update_channel_flags;
+    unsigned int resolution;
 };
 
 struct MaterialThread{
@@ -77,21 +69,19 @@ struct MaterialThread{
 
     std::vector<MaterialThreadAction> actions;
     
-    MaterialChannelsPxs material_channels_pxs;
-
     void update_thread_result();
     
-    void read_material_file(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path);
-    void apply_material(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels);
-    void update_material_displaying_texture(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels);
-    void layer_stuff(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels);
-    void update_object_texturing_dialog_result(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, Texture mask, std::vector<bool> update_channel_flags);
+    void read_material_file(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path, unsigned int resolution);
+    void apply_material(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution);
+    void update_material_displaying_texture(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution);
+    void layer_stuff(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution);
+    void update_object_texturing_dialog_result(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, Texture mask, std::vector<bool> update_channel_flags, unsigned int resolution);
 
     
 private:
     void use_thread(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path, 
                     bool update_the_material_displaying_texture, bool update_layer_scene_result, bool object_texturing_dialog_mode, 
-                    Texture object_texturing_dialog_mask, std::vector<bool> update_channel_flags);
+                    Texture object_texturing_dialog_mask, std::vector<bool> update_channel_flags, unsigned int resolution);
 
 };
 

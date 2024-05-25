@@ -108,7 +108,7 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
             if(this->selectedResultModeIndex == 1)
                 specificUpdateI = this->selectedMaterialModifierIndex;
 
-            material_thread.update_material_displaying_texture(material, this->getDisplayModel(), &this->getDisplayModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
+            material_thread.update_material_displaying_texture(material, this->getDisplayModel(), &this->getDisplayModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels, std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]));
             
             material->updateMaterialDisplayingTexture(std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]), false, this->displayerCamera, this->displayModeComboBox.selectedIndex, true, this->getDisplayModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels, this->displayingTexture, specificUpdateI);
         }
@@ -130,7 +130,7 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
             this->displayModeComboBox.selectedIndex = 0;
 
             // Update the material displaying texture one more time before closing the dialog
-            material_thread.update_material_displaying_texture(material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels);
+            material_thread.update_material_displaying_texture(material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels, std::stoi(this->displayTxtrResComboBox.texts[this->displayTxtrResComboBox.selectedIndex]));
 
             updateThePreRenderedPanels = true;
 
