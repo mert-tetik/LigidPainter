@@ -62,7 +62,7 @@ void Gizmo::render(
     ShaderSystem::gizmo().use();
     ShaderSystem::gizmo().setVec3("pos", resultPos);
     ShaderSystem::gizmo().setVec2("scale", resultScale);
-    ShaderSystem::gizmo().setMat4("projection", glm::ortho(0.f,(float)getContext()->windowScale.x,(float)getContext()->windowScale.y,0.f));
+    ShaderSystem::gizmo().setMat4("projection", getContext()->ortho_projection);
 
     glm::mat4 rotationMat = glm::mat4(1.);
 
@@ -96,11 +96,23 @@ void Gizmo::render(
     
     if(this->hover){
 
+        const unsigned int capture_res = 512;
+
         if(!this->captureTxtr.ID){
-            this->captureTxtr = Texture((char*)nullptr, Settings::videoScale()->x, Settings::videoScale()->y);
+            this->captureTxtr = Texture((char*)nullptr, capture_res, capture_res);
         }
 
         Framebuffer FBO = FBOPOOL::requestFBO(this->captureTxtr, "Gizmo FBO");
+
+        ShaderSystem::gizmo().use();
+
+        ShaderSystem::gizmo().setVec3("pos", glm::vec3(glm::vec2(capture_res / 2.f), 0.9f));
+        ShaderSystem::gizmo().setVec2("scale", glm::vec2(capture_res / 2.f));
+        ShaderSystem::gizmo().setMat4("projection", glm::ortho(0.f, (float)capture_res, (float)capture_res, 0.f));
+
+        ShaderSystem::gizmo().setMat4("rotMat", rotationMat);
+        ShaderSystem::gizmo().setInt("state", this->state);
+        ShaderSystem::gizmo().setInt("solidShading", 0);
 
         ShaderSystem::gizmo().setInt("rHover", false);
         ShaderSystem::gizmo().setInt("gHover", false);
@@ -112,19 +124,21 @@ void Gizmo::render(
         ShaderSystem::gizmo().setFloat("rod_radius", 0.04f);
         
         ShaderSystem::gizmo().setInt("solidShading", 1);
-        ShaderSystem::gizmo().setMat4("projection", glm::ortho(0.f,(float)Settings::videoScale()->x,(float)Settings::videoScale()->y,0.f));
 
         glClearColor(0,0,0,0);
         glClear(GL_COLOR_BUFFER_BIT);
-        glViewport(0,0,Settings::videoScale()->x, Settings::videoScale()->y);
 
         getBox()->draw("Gizmo : Render to custom fbo for checking hovering");
 
         unsigned char* pxs = new unsigned char[4]; 
         
+        glm::vec2 mP = glm::vec2(Mouse::cursorPos()->x, Mouse::cursorPos()->y);
+        glm::vec2 resultP = resultPos; 
+        glm::vec2 projectedP = glm::max((mP - resultP + resultScale) / (resultScale * 2.f) * (float)capture_res, 0.f);
+
         glReadPixels(
-                        Mouse::cursorPos()->x, 
-                        Settings::videoScale()->y - Mouse::cursorPos()->y, 
+                        projectedP.x, 
+                        capture_res - projectedP.y, 
                         1, 
                         1,
                         GL_RGBA,
