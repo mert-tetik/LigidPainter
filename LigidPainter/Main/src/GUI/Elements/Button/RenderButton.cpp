@@ -78,41 +78,7 @@ void Button::render(
     render(resultPos,resultScale,resultRadius,resultOutlineThickness);
     
     if(this->clicked){
-        if(this->textureSelection3D){
-            dialog_textureSelection.show(timer, this->texture, selectionDialogTxtrRes, false);
-        }
-        if(this->textureSelection2D){
-            dialog_textureSelection.show(timer, this->texture, selectionDialogTxtrRes, true);
-        }
-        if(this->filterSelection){
-            dialog_filterSelection.show(timer, this->filter, selectionDialogTxtrRes);
-            
-            this->texture.ID = this->filter.displayingTxtr.ID;
-        }
-        if(this->colorSelection){
-            unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
-            Color clrObj;
-            clrObj.loadRGB_normalized(glm::vec3(this->color.r, this->color.g, this->color.b));
-            std::string hex0Val = clrObj.getHEX();
-            auto check = tinyfd_colorChooser("Select a color", hex0Val.c_str(), defRGB,defRGB);
-            if(check){
-                Color clr(check);
-                this->color.r = clr.getRGB_normalized().r;
-                this->color.g = clr.getRGB_normalized().g;
-                this->color.b = clr.getRGB_normalized().b;
-            }        
-        }
-        if(this->meshSelection){
-            dialog_meshSelection.show(timer, this->selectedMeshI);
-        }
-        if(this->brushModification){
-            dialog_brushModification.show(timer, &this->brush.properties);
-        
-            this->brush.updateDisplayTexture(this->brush.properties.radius);
-        }
-        if(materialSelection){
-            dialog_materialSelection.show(timer, &this->material);
-        }
+        this->click_action(timer);
     }
 
     if(this->meshSelection){
@@ -146,5 +112,44 @@ void Button::render(
         infoBtn.pos.z = this->pos.z + 0.03f;
         infoBtn.render(timer, false);
         glEnable(GL_DEPTH_TEST);
+    }
+}
+
+
+void Button::click_action(Timer& timer){
+    if(this->textureSelection3D){
+        dialog_textureSelection.show(timer, this->texture, selectionDialogTxtrRes, false);
+    }
+    if(this->textureSelection2D){
+        dialog_textureSelection.show(timer, this->texture, selectionDialogTxtrRes, true);
+    }
+    if(this->filterSelection){
+        dialog_filterSelection.show(timer, this->filter, selectionDialogTxtrRes);
+        
+        this->texture.ID = this->filter.displayingTxtr.ID;
+    }
+    if(this->colorSelection){
+        unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
+        Color clrObj;
+        clrObj.loadRGB_normalized(glm::vec3(this->color.r, this->color.g, this->color.b));
+        std::string hex0Val = clrObj.getHEX();
+        auto check = tinyfd_colorChooser("Select a color", hex0Val.c_str(), defRGB,defRGB);
+        if(check){
+            Color clr(check);
+            this->color.r = clr.getRGB_normalized().r;
+            this->color.g = clr.getRGB_normalized().g;
+            this->color.b = clr.getRGB_normalized().b;
+        }        
+    }
+    if(this->meshSelection){
+        dialog_meshSelection.show(timer, this->selectedMeshI);
+    }
+    if(this->brushModification){
+        dialog_brushModification.show(timer, &this->brush.properties);
+    
+        this->brush.updateDisplayTexture(this->brush.properties.radius);
+    }
+    if(materialSelection){
+        dialog_materialSelection.show(timer, &this->material);
     }
 }

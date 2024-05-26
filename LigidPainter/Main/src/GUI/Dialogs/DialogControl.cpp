@@ -59,6 +59,8 @@ void DialogControl::updateStart(bool loop_mode){
     this->loop_mode = loop_mode;
     
     if(loop_mode){
+        getContext()->window.setCursorVisibility(true);
+
         getContext()->window.pollEvents();
 
         getContext()->updateGUIProjectionMatrix(getContext()->windowScale.x, getContext()->windowScale.y);

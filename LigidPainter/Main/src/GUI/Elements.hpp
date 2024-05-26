@@ -162,6 +162,8 @@ public:
     //Public member functions
     void render(Timer &timer,bool doMouseTracking);
 
+    void click_action(Timer& timer);
+
     void update_result_transform_values();
 };
 
