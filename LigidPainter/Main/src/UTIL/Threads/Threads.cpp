@@ -104,7 +104,7 @@ void MaterialThread::update_thread_result(){
     if(this->readyToService && !this->active && this->actions[0].material != nullptr){    
         this->readyToService = false;
 
-        if(!material_thread.actions[0].update_layer_scene_result){
+        if(!material_thread.actions[0].object_texturing_dialog_mode){
             if(material_thread.actions[0].update_channel_flags.size() != 6){
                 material_thread.actions[0].update_channel_flags = {true,true,true,true,true,true};
             }
@@ -181,7 +181,6 @@ void MaterialThread::use_thread(
                                 )
 {   
     if(!this->readyToService){
-        this->active = true; // Make sure this flag is set to true in time
 
         MaterialThreadAction action;
 
@@ -199,7 +198,10 @@ void MaterialThread::use_thread(
         
         actions.push_back(action);
 
-        this->goodToGo = true;
+        if(actions.size() == 1){
+            this->active = true; // Make sure this flag is set to true in time
+            this->goodToGo = true;
+        }
     }
 }
 

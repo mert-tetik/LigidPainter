@@ -126,8 +126,6 @@ void ObjectTexturingDialog::show(Timer& timer, Mesh& mesh, PaintingLayer* painti
         this->sceneCam.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset(), false);
 
         if(dialogControl.firstFrameActivated){
-            material_thread.update_material_displaying_texture(&this->material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels, resolution);
-
             this->sceneCam.setCameraPosition(glm::vec3(0,0,-3.5f));
             this->sceneCam.radius = 3.5f;
         }

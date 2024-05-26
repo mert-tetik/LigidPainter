@@ -97,5 +97,5 @@ void MaterialLayer::type_specific_modification(Timer& timer, bool doMouseTrackin
 
 void MaterialLayer::type_specific_generate_result(const unsigned int resolution, Mesh& mesh){
     //this->material.apply_material(Model(), resMesh, resolution, false);
-    material_thread.layer_stuff(&this->material, nullptr, &mesh, &this->result, resolution);
+    material_thread.layer_stuff(&this->material, getScene()->model, &mesh, &this->result, resolution);
 }
