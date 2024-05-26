@@ -60,26 +60,31 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
     // Render the add layer panel
     panel_add_layer.render(timer, doMouseTracking);
     
+    int context_menu_res = -1;
+    if(panel_layers.hover && *Mouse::RClick()){
+        context_menu_res = show_context_menu(timer, {"Add Texture Layer", "Add Painting Layer", "Add Material Layer", "Add Vector Layer"});
+    }
+
     // Add texture layer 
-    if(panel_add_layer.sections[0].elements[0].button.clicked){
+    if(panel_add_layer.sections[0].elements[0].button.clicked || context_menu_res == 0){
         TextureLayer* txtrLayer = new TextureLayer(layersResolution);
         getScene()->get_selected_mesh()->layerScene.add_new(txtrLayer);
     }
    
     // Add painting layer 
-    if(panel_add_layer.sections[0].elements[1].button.clicked){
+    if(panel_add_layer.sections[0].elements[1].button.clicked || context_menu_res == 1){
         PaintingLayer* paintingLayer = new PaintingLayer(layersResolution);
         getScene()->get_selected_mesh()->layerScene.add_new(paintingLayer);
     }
     
     // Add material layer 
-    if(panel_add_layer.sections[0].elements[2].button.clicked){
+    if(panel_add_layer.sections[0].elements[2].button.clicked || context_menu_res == 2){
         MaterialLayer* materialLayer = new MaterialLayer(layersResolution);
         getScene()->get_selected_mesh()->layerScene.add_new(materialLayer);
     }
     
     // Add vector layer 
-    if(panel_add_layer.sections[0].elements[3].button.clicked){
+    if(panel_add_layer.sections[0].elements[3].button.clicked || context_menu_res == 3){
         VectorLayer* vectorLayer = new VectorLayer(layersResolution);
         getScene()->get_selected_mesh()->layerScene.add_new(vectorLayer);
     }
