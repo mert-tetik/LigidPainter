@@ -267,7 +267,7 @@ class TextureEditorDialog
    //Public member functions
    void show(Timer& timer, Skybox &skybox, Texture* receivedTexture);
 
-   void updateDisplayingTexture(Texture* receivedTexture, Texture destTxtr);
+   void generate_result(Texture* receivedTexture, Texture destTxtr);
  };
 
 

@@ -24,5 +24,6 @@ void main(){
     else
         color.a = texture(txtr, uv).a;
       */  
-    color.rgb = texture(txtr, uv).rgb;
+    color = texture(txtr, uv);
+
 }

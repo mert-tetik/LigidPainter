@@ -53,6 +53,15 @@ void main(){
 
             color.rgb = hsv2rgb(hsvColor);
         }
+        if(singleColorIndex == 2){
+            color.rgb += singleColor;
+        }
+        if(singleColorIndex == 3){
+            color.rgb -= singleColor;
+        }
+        if(singleColorIndex == 4){
+            color.rgb /= singleColor;
+        }
     }
     if(coloringIndex == 2){
         color.rgb *= brightness;
