@@ -43,7 +43,13 @@ static void LOAD_models(const std::string models_folder_path);
 static void LOAD_filters(const std::string filters_folder_path);
 static void LOAD_texturePacks(const std::string texture_packs_folder_path);
 
+extern std::atomic<bool> load_ligidpainter_done;
+
 bool project_load_library_elements(std::string folderPath, std::string ligidFilePath){
+
+    // Wait until LigidPainter is loaded successfuly
+    while(!load_ligidpainter_done){}
+    
     std::lock_guard<std::mutex> lock(project_mutex);
     
     try

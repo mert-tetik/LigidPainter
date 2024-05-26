@@ -41,9 +41,13 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //Forward declaration for the util functions
 void completeFolder(std::string path, int action);
 
+extern std::atomic<bool> load_ligidpainter_done;
 
 bool project_create(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths){
     
+    // Wait until LigidPainter is loaded successfuly
+    while(!load_ligidpainter_done){}
+
     std::lock_guard<std::mutex> lock(project_mutex);
 
     //Make sure destination path doesn't have / at the end
