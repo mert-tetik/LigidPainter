@@ -60,10 +60,10 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
     twoD_mode_wrap_checkBox.pos = interaction_panel.pos; 
     twoD_mode_wrap_checkBox.pos.y += interaction_panel.scale.y + twoD_mode_wrap_checkBox.scale.y; 
 
-    this->interaction_panel.render(timer, doMouseTracking); 
+    this->interaction_panel.render(timer, !dialog_log.isHovered()); 
     
     if(!threeD)
-        twoD_mode_wrap_checkBox.render(timer, doMouseTracking);
+        twoD_mode_wrap_checkBox.render(timer, !dialog_log.isHovered());
 
     if(this->interaction_panel.sections[0].elements[1].button.clicked){
         this->subdivide_selected_points(threeD);

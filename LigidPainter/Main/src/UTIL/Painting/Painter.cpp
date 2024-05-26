@@ -245,6 +245,9 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
 
         updateThePreRenderedPanels = true;
 
+        if(settings.vertex_buffer.paint_model){
+            settings.vertex_buffer.model_mesh->layerScene.update_result(std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]), glm::vec3(0.f), *settings.vertex_buffer.model_mesh);
+        }
     }
 
     RETURN_FROM_PAINTING;
