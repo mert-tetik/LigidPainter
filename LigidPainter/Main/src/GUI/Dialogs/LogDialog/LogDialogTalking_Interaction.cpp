@@ -76,9 +76,9 @@ void LogDialog::talking_interaction(Timer& timer){
                                         CatMSG("Leaving so soon?   ", CAT_EMOTION_CRYING),
                                     });
             
-            if(!verify_exit_text_asserted){
-                this->make_cat_talk(timer, msg.text, 1000);
-                this->assert_emotion(timer, msg.face, 5);
+            if(!verify_exit_text_asserted || !is_cat_talking()){
+                this->make_cat_talk(timer, msg.text, 10);
+                this->assert_emotion(timer, msg.face, 10);
             }
             
             verify_exit_text_asserted = true;
