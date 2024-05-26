@@ -89,6 +89,8 @@ void DialogControl::updateStart(bool loop_mode){
     Settings::defaultFramebuffer()->setViewport();
 }
 
+bool _dialog_ended = false;
+
 void DialogControl::updateEnd(Timer &timer, float transitionDuration){
     
     if(loop_mode){
@@ -116,8 +118,6 @@ void DialogControl::updateEnd(Timer &timer, float transitionDuration){
             Debugger::block("GUI : Log Dialog"); // End
         }
 
-        getContext()->window.swapBuffers();
-
         //Set mouse states to default
         *Mouse::LClick() = false;
         *Mouse::RClick() = false;
@@ -136,9 +136,15 @@ void DialogControl::updateEnd(Timer &timer, float transitionDuration){
         if(Settings::defaultFramebuffer()->FBO.ID != 0)
             Settings::defaultFramebuffer()->render();
         Settings::defaultFramebuffer()->setViewport();
+
+        getContext()->window.swapBuffers();
     }
 
     glClear(GL_DEPTH_BUFFER_BIT);
+
+    if(loop_mode && this->mixVal == 0.f){
+        _dialog_ended = true;
+    }
 }
 
 void DialogControl::activate(){

@@ -89,9 +89,6 @@ void Brush::updateDisplayTexture(float radius){
 
     glm::vec2 displayRes = displayingTexture.getResolution();
 
-    glClearColor(0,0,0,0);
-    glClear(GL_COLOR_BUFFER_BIT);
-
     glm::vec2 scale = glm::vec2(0.5f);
     glm::vec3 pos = glm::vec3(0.5f, 0.5f, 1.f);
     glm::mat4 projection = glm::ortho(0.f, 1.f, 0.f, 1.f);
@@ -130,6 +127,7 @@ void Brush::updateDisplayTexture(float radius){
 
     // Create and bind the capturing framebuffer
     Framebuffer FBO = FBOPOOL::requestFBO(displayingTexture, "Brush::updateDisplayTexture");
+    glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     for (int i = 0; i < wave.size() / strokeSize; i++)

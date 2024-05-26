@@ -229,7 +229,7 @@ void BrushModificationDialog::updateDisplayingTexture(BrushProperties* brushProp
                                     "",
                                     brushProperties->brushTexture
                                 );
-
+/**/
     displayBrush.update(
                                 brushProperties->radius, 
                                 brushProperties->spacing,
@@ -246,9 +246,6 @@ void BrushModificationDialog::updateDisplayingTexture(BrushProperties* brushProp
                             );
     
     displayBrush.updateDisplayTexture(brushProperties->radius * 2.f);
-
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
 }
 
 void BrushModificationDialog::inToOut(BrushProperties* brushProperties){

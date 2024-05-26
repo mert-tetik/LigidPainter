@@ -89,6 +89,8 @@ void Renderer::start_render(){
     getScene()->camera.posShortcutInteraction(true);
 }
 
+extern bool _dialog_ended;
+
 void Renderer::end_render(){
     
     // ------- Rendering the framebuffer result ------- 
@@ -141,8 +143,11 @@ void Renderer::end_render(){
     //Than changes the active cursor as default cursor
     Mouse::updateCursor();  
 
-    //Swap the front and back buffers of the window
-    getContext()->window.swapBuffers();
+    if(!_dialog_ended){
+        //Swap the front and back buffers of the window
+        getContext()->window.swapBuffers();
+    }
+    _dialog_ended = false;
 
     getBox()->unbindBuffers(); //Finish rendering the UI
 
