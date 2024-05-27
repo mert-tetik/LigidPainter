@@ -35,7 +35,7 @@ static bool btnMoving = false;
 static std::vector<Layer*> movingLayers;
 static int btnMovingI = 0;
 
-static void moveLayer(int src, int dest, std::vector<Layer*> layers){
+static void moveLayer(int src, int dest, std::vector<Layer*>& layers){
     // Wait until no thread is in progress
     WAIT_WHILE(dialog_log.any_thread_in_progress());
 

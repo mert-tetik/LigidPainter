@@ -60,8 +60,16 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
     // Render the add layer panel
     panel_add_layer.render(timer, doMouseTracking);
     
+    bool any_layer_hovered = false;
+    for (Layer* layer : getScene()->get_selected_mesh()->layerScene.layers)
+    {
+        if(layer->layerGUI.layerButton.hover)
+            any_layer_hovered = true;
+    }
+    
+
     int context_menu_res = -1;
-    if(panel_layers.hover && *Mouse::RClick()){
+    if(panel_layers.hover && *Mouse::RClick() && !any_layer_hovered){
         context_menu_res = show_context_menu(timer, {"Add Texture Layer", "Add Painting Layer", "Add Material Layer", "Add Vector Layer"});
     }
 
