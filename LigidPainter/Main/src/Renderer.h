@@ -33,11 +33,6 @@ class Renderer
 {
 public:
 
-    /*!
-        @brief Manage time
-    */
-    Timer timer;    
-
     Fonts fonts;
 
     Renderer();

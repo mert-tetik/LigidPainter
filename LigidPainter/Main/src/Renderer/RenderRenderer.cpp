@@ -53,21 +53,21 @@ void Renderer::render(){
     Debugger::block("Prep"); // End
     
     Debugger::block("Render : Scene"); // Start
-    getScene()->render_scene(timer);
+    getScene()->render_scene(*getTimer());
     Debugger::block("Render : Scene"); // End
     //Clear the depth buffer before rendering the UI elements (prevent coliding)
     glClear(GL_DEPTH_BUFFER_BIT);
 
     Debugger::block("Render : Toolkits"); // Start
-    render_toolkits_before_panels(timer);
+    render_toolkits_before_panels(*getTimer());
     Debugger::block("Render : Toolkits"); // End
     
     Debugger::block("Render : Panels"); // Start
-    panels_render(timer);
+    panels_render(*getTimer());
     Debugger::block("Render : Panels"); // End
     
     Debugger::block("Render : Toolkits after panels"); // Start
-    render_toolkits_after_panels(timer);
+    render_toolkits_after_panels(*getTimer());
     Debugger::block("Render : Toolkits after panels"); // End
     
     Debugger::block("Painting"); // Start

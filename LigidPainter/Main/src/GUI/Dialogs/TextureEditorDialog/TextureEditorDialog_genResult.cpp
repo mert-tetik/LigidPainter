@@ -40,12 +40,12 @@
 // Defined in the RenderPanel.cpp
 extern bool updateThePreRenderedPanels;
 
-static void action_RESIZE(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> resizeElements);
-static void action_BLUR(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> blurElements);
-static void action_COLORING(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> coloringElements);
-static void action_NORMALMAP(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> normalMapElements);
-static void action_DISTORTION(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> distortionElements);
-static void action_IMAGE(Texture* receivedTexture, Texture* destTxtr, Texture image);
+void action_RESIZE(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> resizeElements);
+void action_BLUR(Texture* receivedTexture, Texture* destTxtr, int blurIndex, float directionalDirection, glm::vec2 radialPos, float strength);
+void action_COLORING(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> coloringElements);
+void action_NORMALMAP(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> normalMapElements);
+void action_DISTORTION(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> distortionElements);
+void action_IMAGE(Texture* receivedTexture, Texture* destTxtr, Texture image);
 
 
 
@@ -55,7 +55,7 @@ void TextureEditorDialog::generate_result(Texture* receivedTexture, Texture dest
         action_RESIZE(receivedTexture, &destTxtr, this->resizeElements);
     }
     else if(this->selectedSection == 1){
-        action_BLUR(receivedTexture, &destTxtr, this->bluringElement);
+        action_BLUR(receivedTexture, &destTxtr, bluringElement[0].comboBox.selectedIndex, bluringElement[1].rangeBar.value, glm::vec2(bluringElement[2].rangeBar.value, bluringElement[3].rangeBar.value), bluringElement[4].rangeBar.value);
     }
     else if(this->selectedSection == 2){
         action_COLORING(receivedTexture, &destTxtr, this->coloringElements);
@@ -107,7 +107,7 @@ void TextureEditorDialog::generate_result(Texture* receivedTexture, Texture dest
 
 
 
-static void action_RESIZE(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> resizeElements){
+void action_RESIZE(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> resizeElements){
     glm::vec2 txtrRes = receivedTexture->getResolution();
     glm::vec2 displayRes = receivedTexture->getResolution();
     if(resizeElements[5].textBox.text != "" && resizeElements[6].textBox.text != "")
@@ -179,7 +179,7 @@ static void action_RESIZE(Texture* receivedTexture, Texture* destTxtr, std::vect
 
 }
 
-static void action_BLUR(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> blurElements)
+void action_BLUR(Texture* receivedTexture, Texture* destTxtr, int blurIndex, float directionalDirection, glm::vec2 radialPos, float strength)
 {
     Framebuffer FBO = FBOPOOL::requestFBO(*destTxtr, "");
     glClearColor(0,0,0,0);
@@ -192,10 +192,10 @@ static void action_BLUR(Texture* receivedTexture, Texture* destTxtr, std::vector
 
     ShaderSystem::txtrEditorBlurShader().setVec2("txtrResolution", receivedTexture->getResolution());
     ShaderSystem::txtrEditorBlurShader().setInt("txtr", GL::bindTexture_2D(receivedTexture->ID, "TextureEditorDialog::generate_result 1")); 
-    ShaderSystem::txtrEditorBlurShader().setInt("blurIndex", blurElements[0].comboBox.selectedIndex);
-    ShaderSystem::txtrEditorBlurShader().setFloat("directionalDirection", blurElements[1].rangeBar.value);
-    ShaderSystem::txtrEditorBlurShader().setVec2("radialPos", glm::vec2(blurElements[2].rangeBar.value, blurElements[3].rangeBar.value));
-    ShaderSystem::txtrEditorBlurShader().setFloat("strength", blurElements[4].rangeBar.value);
+    ShaderSystem::txtrEditorBlurShader().setInt("blurIndex", blurIndex);
+    ShaderSystem::txtrEditorBlurShader().setFloat("directionalDirection", directionalDirection);
+    ShaderSystem::txtrEditorBlurShader().setVec2("radialPos", radialPos);
+    ShaderSystem::txtrEditorBlurShader().setFloat("strength", strength);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
@@ -208,7 +208,7 @@ static void action_BLUR(Texture* receivedTexture, Texture* destTxtr, std::vector
     FBOPOOL::releaseFBO(FBO);
 }
 
-static void action_COLORING(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> coloringElements)
+void action_COLORING(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> coloringElements)
 {
     Framebuffer FBO = FBOPOOL::requestFBO(*destTxtr, "");
     glClearColor(0,0,0,0);
@@ -239,7 +239,7 @@ static void action_COLORING(Texture* receivedTexture, Texture* destTxtr, std::ve
     FBOPOOL::releaseFBO(FBO);
 }
 
-static void action_NORMALMAP(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> normalMapElements){
+void action_NORMALMAP(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> normalMapElements){
     Framebuffer FBO = FBOPOOL::requestFBO(*destTxtr, "");
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -269,7 +269,7 @@ static void action_NORMALMAP(Texture* receivedTexture, Texture* destTxtr, std::v
     FBOPOOL::releaseFBO(FBO);
 }
 
-static void action_DISTORTION(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> distortionElements){
+void action_DISTORTION(Texture* receivedTexture, Texture* destTxtr, std::vector<Element> distortionElements){
     Framebuffer FBO = FBOPOOL::requestFBO(*destTxtr, "");
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -304,7 +304,7 @@ static void action_DISTORTION(Texture* receivedTexture, Texture* destTxtr, std::
     FBOPOOL::releaseFBO(FBO);
 }
 
-static void action_IMAGE(Texture* receivedTexture, Texture* destTxtr, Texture image){
+void action_IMAGE(Texture* receivedTexture, Texture* destTxtr, Texture image){
     Framebuffer FBO = FBOPOOL::requestFBO(*destTxtr, "");
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT);

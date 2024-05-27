@@ -47,6 +47,7 @@ Box __box;
 Box __box_2;
 Box __box_3;
 Settings::DefaultFramebuffer __defaultFramebuffer;
+Timer __timer;    
 
 glm::vec2 __videoScale;
 
@@ -272,6 +273,10 @@ Box* getBox(){
         return &__box_3;
 
     return &__box;
+}
+
+Timer* getTimer(){
+    return &__timer;
 }
 
 namespace Settings{

@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Project/ProjectUTIL.hpp"
 #include "UTIL/Threads/Threads.hpp"
+#include "UTIL/Wait/Wait.hpp"
 
 #include "GUI/Elements.hpp"
 #include "GUI/GUI.hpp"
@@ -48,7 +49,7 @@ extern std::atomic<bool> load_ligidpainter_done;
 bool project_load_library_elements(std::string folderPath, std::string ligidFilePath){
 
     // Wait until LigidPainter is loaded successfuly
-    while(!load_ligidpainter_done){}
+    WAIT_WHILE(!load_ligidpainter_done);
     
     std::lock_guard<std::mutex> lock(project_mutex);
     

@@ -14,6 +14,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Threads/Threads.hpp"
+#include "UTIL/Wait/Wait.hpp"
 
 #include "3D/ThreeD.hpp"
 
@@ -215,6 +216,8 @@ void Library::addTexturePack(TexturePack texturePack){
 }
 
 void Library::eraseTexture   (int index){
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
     
     if(index >= __textures.size()){
         LGDLOG::start<< "ERROR! : Couldn't erase the texture : Requested texture index is out of boundaries." << LGDLOG::end;
@@ -231,6 +234,8 @@ void Library::eraseTexture   (int index){
 }
 
 void Library::eraseMaterial  (int index){
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
     
     if(index >= __materials.size()){
         LGDLOG::start<< "ERROR! : Couldn't erase the material : Requested material index is out of boundaries." << LGDLOG::end;
@@ -247,6 +252,8 @@ void Library::eraseMaterial  (int index){
 }
 
 void Library::eraseBrush(int index){
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
 
     if(index >= __brushes.size()){
         LGDLOG::start<< "ERROR! : Couldn't erase the brush : Requested brush index is out of boundaries." << LGDLOG::end;
@@ -265,7 +272,9 @@ void Library::eraseBrush(int index){
 }
 
 void Library::eraseModel     (int index){
-    
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
+
     if(index >= __TDModels.size()){
         LGDLOG::start<< "ERROR! : Couldn't erase the model : Requested model index is out of boundaries." << LGDLOG::end;
         return;
@@ -298,7 +307,9 @@ void Library::eraseModel     (int index){
 }
 
 void Library::eraseFilter     (int index){
-    
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
+
     if(index >= __filters.size()){
         LGDLOG::start<< "ERROR! : Couldn't erase the filter : Requested filter index is out of boundaries." << LGDLOG::end;
         return;
@@ -313,7 +324,9 @@ void Library::eraseFilter     (int index){
 }
 
 void Library::eraseTexturePack     (int index){
-    
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
+
     if(index >= __texturePacks.size()){
         LGDLOG::start<< "ERROR! : Couldn't erase the texture pack : Requested texture pack index is out of boundaries." << LGDLOG::end;
         return;
@@ -330,6 +343,9 @@ void Library::eraseTexturePack     (int index){
 }
 
 void Library::clearTextures   (){
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
+
     __changed = true;
     
     for (size_t i = 0; i < __textures.size(); i++)
@@ -343,6 +359,9 @@ void Library::clearTextures   (){
 }
 
 void Library::clearMaterials  (){
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
+
     __changed = true;
     
     for (size_t i = 0; i < __materials.size(); i++)
@@ -354,6 +373,9 @@ void Library::clearMaterials  (){
 }
 
 void Library::clearBrushes     (){
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
+
     __changed = true;
     
     for (size_t i = 0; i < __brushes.size(); i++)
@@ -366,6 +388,9 @@ void Library::clearBrushes     (){
 }
 
 void Library::clearModels     (){
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
+
     __changed = true;
     
     for (size_t i = 0; i < __TDModels.size(); i++)
@@ -396,6 +421,9 @@ void Library::clearModels     (){
 }
 
 void Library::clearFilters     (){
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
+
     __changed = true;
     
     for (size_t i = 0; i < __filters.size(); i++)
@@ -408,6 +436,9 @@ void Library::clearFilters     (){
 }
 
 void Library::clearTexturePacks     (){
+    // Wait until threads are not in progress
+    WAIT_WHILE(dialog_log.any_thread_in_progress());
+
     __changed = true;
     
     for (size_t i = 0; i < __texturePacks.size(); i++)

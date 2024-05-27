@@ -52,10 +52,10 @@ void Renderer::start_render(){
     getContext()->window.pollEvents();
 
     // Update local timer data
-    timer.tick = false;
-    if(timer.runTimer(1.f)){
-        timer.tick = true;
-        std::cout << timer.FPS << std::endl;
+    getTimer()->tick = false;
+    if(getTimer()->runTimer(1.f)){
+        getTimer()->tick = true;
+        std::cout << getTimer()->FPS << std::endl;
     }
     
     if(_ligid_renderer_render_first_frame)
@@ -102,7 +102,7 @@ void Renderer::end_render(){
 
     if(!Settings::properties()->cat_hide){
         Debugger::block("GUI : Log Dialog"); // Start
-        dialog_log.render(timer);
+        dialog_log.render(*getTimer());
         Debugger::block("GUI : Log Dialog"); // End
     }
 

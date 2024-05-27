@@ -40,15 +40,27 @@ DialogControl::DialogControl(bool active){
     this->active = active;
 }
 
+Texture blurred_bgTexture;
+void action_BLUR(Texture* receivedTexture, Texture* destTxtr, int blurIndex, float directionalDirection, glm::vec2 radialPos, float strength);
+
+static void update_blurred_bgTexture(float mixVal){
+    if(!blurred_bgTexture.ID)
+        blurred_bgTexture = Texture((char*)nullptr, 1024, 1024);
+
+    action_BLUR(&Settings::defaultFramebuffer()->bgTxtr, &blurred_bgTexture, 1, 0.f, glm::vec2(0.f), 0.1f * mixVal);
+}
+
 static void drawBG()
 {
+    ShaderSystem::bluringShader();
+
     ShaderSystem::defaultFramebufferShader().use();
     ShaderSystem::defaultFramebufferShader().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
     ShaderSystem::defaultFramebufferShader().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.9f));
     ShaderSystem::defaultFramebufferShader().setVec2("scale", glm::vec2(0.5f));
     
     ShaderSystem::defaultFramebufferShader().setVec2("resolution", Settings::defaultFramebuffer()->resolution);
-    ShaderSystem::defaultFramebufferShader().setInt("txtr", GL::bindTexture_2D(Settings::defaultFramebuffer()->bgTxtr.ID, "DialogControl : drawBG"));
+    ShaderSystem::defaultFramebufferShader().setInt("txtr", GL::bindTexture_2D(blurred_bgTexture.ID, "DialogControl : drawBG"));
 
     getBox()->draw("DialogControl : drawBG");
 
@@ -59,6 +71,10 @@ void DialogControl::updateStart(bool loop_mode){
     this->loop_mode = loop_mode;
     
     if(loop_mode){
+        if(this->mixVal != 1.f){
+            update_blurred_bgTexture(this->mixVal);
+        }
+
         getContext()->window.setCursorVisibility(true);
 
         getContext()->window.pollEvents();

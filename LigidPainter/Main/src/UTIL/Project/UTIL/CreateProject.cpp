@@ -21,6 +21,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Project/Project.hpp"
 #include "UTIL/Project/ProjectUTIL.hpp"
+#include "UTIL/Wait/Wait.hpp"
 
 #include "GUI/GUI.hpp"
 
@@ -46,7 +47,7 @@ extern std::atomic<bool> load_ligidpainter_done;
 bool project_create(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths){
     
     // Wait until LigidPainter is loaded successfuly
-    while(!load_ligidpainter_done){}
+    WAIT_WHILE(!load_ligidpainter_done);
 
     std::lock_guard<std::mutex> lock(project_mutex);
 

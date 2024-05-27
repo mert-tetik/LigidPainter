@@ -167,7 +167,7 @@ void LogDialog::render_elements(Timer& timer)
     ShaderSystem::buttonShader().setFloat("rotation", 0.f);
 
     // Render loading icon if another thread is working
-    if(material_thread.active || project_updating_thread_working || !load_ligidpainter_done){
+    if(this->any_thread_in_progress()){
         Button loading_icon = Button(ELEMENT_STYLE_SOLID, glm::vec2(1.f), "", Texture(), 0.f, false);
         loading_icon.pos = logBtn.pos;
         loading_icon.pos.y += logBtn.scale.y;

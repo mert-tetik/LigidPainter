@@ -26,6 +26,8 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 
 #include "GUI/GUI.hpp" 
 
+#include "UTIL/Threads/Threads.hpp" 
+
 #include <string>
 #include <iostream>
 #include <vector>
@@ -119,4 +121,11 @@ void LogDialog::undo_general_history(){
     if(active_history_mode == HISTORY_MATERIALEDITOR_MODE){
         //this->history_action_records.undo_material_editor_actions();   
     }
+}
+
+extern std::atomic<bool> load_ligidpainter_done;
+extern std::atomic<bool> project_updating_thread_working;
+
+bool LogDialog::any_thread_in_progress(){
+    return material_thread.active || project_updating_thread_working || !load_ligidpainter_done;
 }

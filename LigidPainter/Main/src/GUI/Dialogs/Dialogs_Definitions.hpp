@@ -991,4 +991,6 @@ public:
 
    /*! @brief Returns true if the log dialog is hovered*/
    bool isHovered();
+
+   bool any_thread_in_progress();
 };

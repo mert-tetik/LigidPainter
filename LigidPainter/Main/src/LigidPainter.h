@@ -29,6 +29,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Threads/Threads.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/GL/GL.hpp"
+#include "UTIL/Wait/Wait.hpp"
 
 #include "Renderer.h"
 
@@ -236,7 +237,7 @@ public:
             }
         }
         
-        while(!load_ligidpainter_done){}
+        WAIT_WHILE(!load_ligidpainter_done);
 
         if(std::filesystem::exists(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp"))
             std::filesystem::remove_all(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp");
