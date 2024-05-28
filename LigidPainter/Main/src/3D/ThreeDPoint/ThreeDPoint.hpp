@@ -52,6 +52,9 @@ struct ThreeDPoint{
 
     /*! @return true if the moving conditions of the point is set*/
     bool areMovingConditionsSet(bool canMove);
+
+    /*! @return true if the point is hovered by mouse*/
+    bool is_hovered(float radius);
 };
 
 #endif

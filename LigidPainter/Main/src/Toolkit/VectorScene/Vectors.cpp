@@ -55,7 +55,19 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
     
     int result = -1;
 
-    if(!panels_any_hovered() && *Mouse::RClick()){
+    bool any_3D_point_hovered = false;
+    for(VectorStroke3D stroke : this->strokes_3D){
+        if(stroke.startPoint.is_hovered(0.02f) || stroke.endPoint.is_hovered(0.02f))
+            any_3D_point_hovered = true;
+
+    }
+    bool any_2D_point_hovered = false;
+    for(VectorStroke stroke : this->strokes_2D){
+        if(stroke.startPoint.hover || stroke.endPoint.hover || stroke.offsetPoint.hover)
+            any_2D_point_hovered = true;
+    }
+
+    if(!panels_any_hovered() && (any_3D_point_hovered || !threeD) && (any_2D_point_hovered || threeD) && *Mouse::RClick()){
         glDisable(GL_DEPTH_TEST);
         
         result = show_context_menu(timer, 

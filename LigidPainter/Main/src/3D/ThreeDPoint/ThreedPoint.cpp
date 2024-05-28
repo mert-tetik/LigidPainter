@@ -92,60 +92,12 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, f
             this->active = false;
 
         if(!aPointWasAlreadyActivated){
-            const unsigned int resolution = 512;
-            
-            glm::vec2 pointPos = glm::vec2(Mouse::cursorPos()->x, (float)getContext()->windowScale.y - Mouse::cursorPos()->y);        
-            pointPos.x /= (Settings::videoScale()->x / resolution); 
-            pointPos.y /= (Settings::videoScale()->y / resolution); 
-
-            if(!threeDPointsStencilTexture.ID){
-                threeDPointsStencilTexture = Texture((char*)nullptr, resolution, resolution);
-            }
-
-            Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(threeDPointsStencilTexture, threeDPointsStencilTexture.getResolution(), "threeDPointsStencilFBO");
-            
-            glClearColor(0,0,0,0);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-            glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)resolution), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)resolution));
-
-            ShaderSystem::alphaZero3D().use();
-            ShaderSystem::alphaZero3D().setMat4("view", getScene()->camera.viewMatrix);
-            ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
-            ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
-
-            ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh());
-
-            getScene()->get_selected_mesh()->Draw("ThreeDPoint::render");
-
-            this->render(timer, false, true, radius, false);
-
-            GL::releaseBoundTextures("ThreeDPoint : render");
-            ShaderUTIL::release_bound_shader();
-
-            unsigned char* stencilData = new unsigned char[4];
-
-            glReadPixels(
-                            pointPos.x, 
-                            pointPos.y, 
-                            1, 
-                            1,
-                            GL_RGBA,
-                            GL_UNSIGNED_BYTE,
-                            stencilData
-                        );
-
-            if(stencilData[0] > 100){
+            if(this->is_hovered(radius * 1.5f)){
                 aPointWasAlreadyActivated = true;
                 this->active = !this->active;
                 this->clickState1 = true;
                 clicked = true;
             }
-
-            delete[] stencilData;
-
-            FBOPOOL::releaseFBO(FBO);
-            ShaderUTIL::release_bound_shader();
         }
     }
 
@@ -201,4 +153,61 @@ bool ThreeDPoint::areMovingConditionsSet(bool canMove){
             !*Mouse::MPressed() && 
             !*Mouse::mouseScroll() &&
             canMove;
+}
+
+bool ThreeDPoint::is_hovered(float radius){
+    const unsigned int resolution = 256;
+            
+    glm::vec2 pointPos = glm::vec2(Mouse::cursorPos()->x, (float)getContext()->windowScale.y - Mouse::cursorPos()->y);        
+    pointPos.x /= (Settings::videoScale()->x / resolution); 
+    pointPos.y /= (Settings::videoScale()->y / resolution); 
+
+    if(!threeDPointsStencilTexture.ID){
+        threeDPointsStencilTexture = Texture((char*)nullptr, resolution, resolution);
+    }
+
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(threeDPointsStencilTexture, threeDPointsStencilTexture.getResolution(), "threeDPointsStencilFBO");
+    
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glViewport(0, 0, (float)getContext()->windowScale.x / ((float)Settings::videoScale()->x / (float)resolution), (float)getContext()->windowScale.y / ((float)Settings::videoScale()->y / (float)resolution));
+
+    ShaderSystem::alphaZero3D().use();
+    ShaderSystem::alphaZero3D().setMat4("view", getScene()->camera.viewMatrix);
+    ShaderSystem::alphaZero3D().setMat4("projection", getScene()->projectionMatrix);
+    ShaderSystem::alphaZero3D().setMat4("modelMatrix", getScene()->transformMatrix);
+
+    ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::alphaZero3D(), *getScene()->get_selected_mesh());
+
+    getScene()->get_selected_mesh()->Draw("ThreeDPoint::render");
+
+    this->render(*getTimer(), false, true, radius, false);
+
+    GL::releaseBoundTextures("ThreeDPoint : render");
+    ShaderUTIL::release_bound_shader();
+
+    unsigned char* stencilData = new unsigned char[4];
+
+    glReadPixels(
+                    pointPos.x, 
+                    pointPos.y, 
+                    1, 
+                    1,
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,
+                    stencilData
+                );
+
+    bool hovered = false;
+    if(stencilData[0] > 100){
+        hovered = true;
+    }
+
+    delete[] stencilData;
+
+    FBOPOOL::releaseFBO(FBO);
+    ShaderUTIL::release_bound_shader();
+
+    return hovered;
 }
