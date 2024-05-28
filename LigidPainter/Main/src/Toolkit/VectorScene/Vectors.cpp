@@ -76,7 +76,7 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
     if(result == 1){
         this->clear_points(threeD);
     }
-    if(result == 2){
+    if(result == 2 || shortcuts_CTRL_X()){
         this->delete_selected_points(threeD);
     }
     if(result == 3){

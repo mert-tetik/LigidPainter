@@ -87,10 +87,6 @@ void VectorScene::show_stroke_dialog(bool threeD){
 
         dialog_panel.render(*getTimer(), !dialog_log.isHovered());
 
-        if((!dialog_panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE) || dialog_panel.sections[0].elements[3].button.clicked){
-            dialog_control.unActivate();
-        }
-
         if(dialog_panel.sections[0].elements[2].button.clicked){
             bool success;
             PaintSettings paint_settings = get_paint_settings_using_GUI_data(&success);
@@ -102,6 +98,10 @@ void VectorScene::show_stroke_dialog(bool threeD){
                                         paint_settings
                                     );
             }
+        }
+
+        if((!dialog_panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE) || dialog_panel.sections[0].elements[3].button.clicked || dialog_panel.sections[0].elements[4].button.clicked){
+            dialog_control.unActivate();
         }
 
         dialog_control.updateEnd(*getTimer(), 0.15f);
