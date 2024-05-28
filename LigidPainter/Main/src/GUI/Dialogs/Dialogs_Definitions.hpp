@@ -316,7 +316,8 @@ private:
 
    bool prevUpdateTheMaterial = false;
 public:
-
+   Material* currently_edited_materialPtr = nullptr;
+      
    bool updateTheMaterial = false;
    
    DialogControl dialogControl;
@@ -975,7 +976,7 @@ public:
    void registerTextureFieldAction(const std::string title, TextureFieldScene* textureFieldScene);
 
    // -- Material Editor --
-   void registerMaterialAction(const std::string title, Material material);
+   void registerMaterialEditorAction(const std::string title, Material* material);
 
 
    void registerButtonAction(const std::string title, const Texture icon, Button* button, Button previousButton);

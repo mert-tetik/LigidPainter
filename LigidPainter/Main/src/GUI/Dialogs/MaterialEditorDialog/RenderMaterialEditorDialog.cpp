@@ -39,6 +39,7 @@ bool __materialEditorDialogESCFirstFramePressed = false;
 
 void MaterialEditorDialog::show(Timer &timer, Material* material)
 {
+    this->currently_edited_materialPtr = material;
     this->updateTheMaterial = true;
 
     dialogControl.activate();
@@ -149,4 +150,6 @@ void MaterialEditorDialog::show(Timer &timer, Material* material)
             break;
         }
     }
+
+    this->currently_edited_materialPtr = nullptr;
 }

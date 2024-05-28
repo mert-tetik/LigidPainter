@@ -56,6 +56,10 @@ void LogDialog::update_messages_array(Timer& timer){
 
 int LogDialog::get_active_history_mode(){
     
+    if(dialog_materialEditor.dialogControl.isActive()){
+        return HISTORY_MATERIALEDITOR_MODE;
+    }
+
     if(dialog_objectTexturing.dialogControl.isActive()){
         return HISTORY_MULTI_CHANNEL_PAINTING_MODE;
     }
@@ -80,11 +84,6 @@ int LogDialog::get_active_history_mode(){
         return HISTORY_PAINTING_MODE;
     }
 
-
-    if(dialog_materialEditor.dialogControl.isActive()){
-        return HISTORY_MATERIALEDITOR_MODE; 
-    }
-
     return -1;
 }
 
@@ -103,6 +102,9 @@ void LogDialog::undo_general_history(){
     if(active_history_mode == -1)
         return;
 
+    if(active_history_mode == HISTORY_MATERIALEDITOR_MODE){
+        this->history_action_records.undo_material_editor_actions();   
+    }
     if(active_history_mode == HISTORY_PAINTING_MODE){
         this->history_action_records.undo_painting_actions();   
     }
@@ -117,9 +119,6 @@ void LogDialog::undo_general_history(){
     }
     if(active_history_mode == HISTORY_TEXTUREFIELDS_MODE){
         this->history_action_records.undo_texture_field_actions();   
-    }
-    if(active_history_mode == HISTORY_MATERIALEDITOR_MODE){
-        //this->history_action_records.undo_material_editor_actions();   
     }
 }
 

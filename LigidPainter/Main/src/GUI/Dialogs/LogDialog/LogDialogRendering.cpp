@@ -353,6 +353,15 @@ static void render_selected_panel(
 
         std::string current_action_mode = "Empty";
 
+        if(activeHistoryMode == HISTORY_MATERIALEDITOR_MODE){
+            current_action_mode = "Material Editor";
+            if(dialog_materialEditor.currently_edited_materialPtr != nullptr){
+                for (size_t i = 0; i < history_action_records.actions_MaterialEditor[dialog_materialEditor.currently_edited_materialPtr].size(); i++)
+                {
+                    historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_MaterialEditor[dialog_materialEditor.currently_edited_materialPtr][i].title, Texture(), 0., false));
+                }
+            }
+        }
         if(activeHistoryMode == HISTORY_PAINTING_MODE){
             current_action_mode = "Painting";
             if(panel_library_selected_texture.ID && glIsTexture(panel_library_selected_texture.ID) == GL_TRUE){
@@ -402,13 +411,6 @@ static void render_selected_panel(
                 {
                     historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_FaceSelection[active_face_selected_mesh][i].title, Texture(), 0., false));
                 }
-            }
-        }
-        if(activeHistoryMode == HISTORY_MATERIALEDITOR_MODE){
-            current_action_mode = "Material Editor";
-            for (size_t i = 0; i < history_action_records.actions_MaterialEditor.size(); i++)
-            {
-                historyPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_MaterialEditor[i].title, Texture(), 0., false));
             }
         }
 

@@ -113,9 +113,10 @@ void LogDialog::registerTextureFieldAction(const std::string title, TextureField
     this->history_action_records.actions_TextureFields[texture_field_scene].push_back(TextureFieldsAction(title, *texture_field_scene));
 }
 
-void LogDialog::registerMaterialAction(const std::string title, Material material){
-    this->history_action_records.actions_MaterialEditor.push_back(MaterialEditorAction(title, material.duplicateMaterial()));
+void LogDialog::registerMaterialEditorAction(const std::string title, Material* material){
+    this->history_action_records.actions_MaterialEditor[material].push_back(MaterialEditorAction(title, *material));
 }
+
 
 
 

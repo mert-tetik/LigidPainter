@@ -151,15 +151,13 @@ struct HistoryActionRecords{
    std::map<unsigned int, std::vector<MultiChannelPaintingAction>>  actions_MultiChannelPainting;
    MaterialChannels get_actively_painted_material_channels();
    void undo_multi_channel_painting_actions(); 
-
+   
+   std::map<Material*, std::vector<MaterialEditorAction>> actions_MaterialEditor;
+   void undo_material_editor_actions(); 
 
    std::vector<LibraryAction> actions_Library;
    void undo_library_actions(); 
    
-
-   
-   std::vector<MaterialEditorAction> actions_MaterialEditor;
-   void undo_material_editor_actions(); 
 };
 
 #endif
