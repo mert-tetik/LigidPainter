@@ -50,7 +50,7 @@ void VectorPoint2D::render(Timer& timer, bool doMouseTracking, float scaleDivide
         this->active = true;
 
     // If mouse left button clicked
-    if(*Mouse::LClick() && doMouseTracking){
+    if((*Mouse::LClick() || *Mouse::RClick()) && doMouseTracking){
         // If clicked to the point
         if(this->hover){
             this->active = !this->active;

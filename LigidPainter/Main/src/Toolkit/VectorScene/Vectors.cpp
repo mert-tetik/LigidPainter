@@ -46,45 +46,41 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
 {
     // Rendering vectors
     if(threeD){
-        this->render3DVectors(timer, doMouseTracking && !twoD_mode_wrap_checkBox.hover && !this->interaction_panel.hover);
+        this->render3DVectors(timer, doMouseTracking);
     }
     else{
-        this->render2DVectors(timer, doMouseTracking && !twoD_mode_wrap_checkBox.hover && !this->interaction_panel.hover);
+        this->render2DVectors(timer, doMouseTracking);
+        
+    }
+    
+    int result = -1;
+
+    if(!panels_any_hovered() && *Mouse::RClick()){
+        glDisable(GL_DEPTH_TEST);
+        
+        result = show_context_menu(timer, 
+                                            {
+                                                "New Point Between The Selected Points", 
+                                                "Clear All", 
+                                                "Remove The Selected Points (CTRL + X)", 
+                                                "Stroke"
+                                            }
+                                    );
+        
+        glEnable(GL_DEPTH_TEST);
     }
 
-    // Rendering interaction panel
-    interaction_panel.pos.x = panel_library.pos.x + panel_library.scale.x + interaction_panel.scale.x + 1;
-    interaction_panel.pos.y = panel_painting_modes.pos.y + panel_painting_modes.scale.y + interaction_panel.scale.y + 1;
-
-    twoD_mode_wrap_checkBox.scale.x = interaction_panel.scale.x; 
-    twoD_mode_wrap_checkBox.pos = interaction_panel.pos; 
-    twoD_mode_wrap_checkBox.pos.y += interaction_panel.scale.y + twoD_mode_wrap_checkBox.scale.y; 
-
-    this->interaction_panel.render(timer, !dialog_log.isHovered()); 
-    
-    if(!threeD)
-        twoD_mode_wrap_checkBox.render(timer, !dialog_log.isHovered());
-
-    if(this->interaction_panel.sections[0].elements[1].button.clicked){
+    if(result == 0){
         this->subdivide_selected_points(threeD);
     }
-    if(this->interaction_panel.sections[0].elements[2].button.clicked){
+    if(result == 1){
         this->clear_points(threeD);
     }
-    if(this->interaction_panel.sections[0].elements[3].button.clicked || shortcuts_CTRL_X()){
+    if(result == 2){
         this->delete_selected_points(threeD);
     }
-    if(this->interaction_panel.sections[0].elements[4].button.clicked){
-        bool success;
-        PaintSettings paint_settings = get_paint_settings_using_GUI_data(&success);
-        paint_settings.painting_mode = this->interaction_panel.sections[0].elements[0].comboBox.selectedIndex;
-        if(success){
-            this->apply_strokes(
-                                    threeD,
-                                    twoD_mode_wrap_checkBox.clickState1,
-                                    paint_settings
-                                );
-        }
+    if(result == 3){
+        this->show_stroke_dialog(threeD);
     }
 }
 

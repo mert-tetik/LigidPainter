@@ -115,9 +115,6 @@ public:
     std::vector<VectorStroke> strokes_2D;
     std::vector<VectorStroke3D> strokes_3D;
 
-    Panel interaction_panel;
-    CheckBox twoD_mode_wrap_checkBox;
-
     void render_scene(Timer& timer, bool doMouseTracking, bool threeD);
 
     void apply_strokes(bool threeD, bool twoDWrap, PaintSettings paint_settings);
@@ -131,38 +128,6 @@ public:
         
         this->strokes_2D = strokes_2D; 
         this->strokes_3D = strokes_3D; 
-        
-        interaction_panel = Panel(
-                            {
-                                Section(
-                                    Element(Button()),
-                                    {   
-                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2,1.5f), {"Drawing", "Softening", "Smearing", "Normal", "Filtering"}, "Stroke Painting Mode", 1.f),
-                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Add Point Between The Selected Points", Texture(), 0.5f, false),
-                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Clear All", Texture(), 0.5f, false),
-                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Remove The Selected PointS (CTRL + X)", Texture(), 0.5f, false),
-                                        Button(ELEMENT_STYLE_STYLIZED,glm::vec2(2,1.5f), "Stroke", Texture(), 0.5f, false)
-                                    }
-                                )
-                            },
-                            
-                            glm::vec2(7.f, 9.f), //Initial scale value
-                            glm::vec3(50 ,50 ,0.1f),  //Initial position value
-                            glm::vec4(ColorPalette::secondColor.r, ColorPalette::secondColor.g, ColorPalette::secondColor.b, ColorPalette::secondColor.a/2.f), //Color of the panel
-                            ColorPalette::thirdColor, //Color of the panel
-                            true,
-                            true,
-                            false,
-                            true,
-                            true,
-                            1.f,
-                            1,
-                            {},
-                            20.f,
-                            false
-                        );
-
-        twoD_mode_wrap_checkBox = CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(4,2), "Paint in wrap mode", 1.f); //
     }
 
     void update3DVectorBuffers();
@@ -170,6 +135,8 @@ public:
 private:
     void render2DVectors(Timer& timer, bool doMouseTracking);
     void render3DVectors(Timer& timer, bool doMouseTracking);
+
+    void show_stroke_dialog(bool threeD);
 
     void addNew2DVector();
     void addNew3DVector();

@@ -59,7 +59,13 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
 
     this->vector_scene.render_scene(timer, true, true);
     
-    this->color_checkComboList.pos = glm::vec3(this->vector_scene.interaction_panel.pos.x - this->vector_scene.interaction_panel.scale.x + this->color_checkComboList.scale.x, this->vector_scene.interaction_panel.pos.y + this->vector_scene.interaction_panel.scale.y + this->color_checkComboList.scale.y, 0.7f);
+    glm::vec2 pos;
+    pos.x = panel_library.pos.x + panel_library.scale.x;
+    pos.y = panel_painting_modes.pos.y + panel_painting_modes.scale.y;
+
+    glm::vec2 scale = glm::vec2(5.f);
+
+    this->color_checkComboList.pos = glm::vec3(pos.x - scale.x + this->color_checkComboList.scale.x, pos.y + scale.y + this->color_checkComboList.scale.y, 0.7f);
     this->color_checkComboList.render(timer, doMouseTracking);
     
     this->mirror_checkComboList.pos = glm::vec3(this->color_checkComboList.pos.x + this->color_checkComboList.scale.x + this->mirror_checkComboList.scale.x, this->color_checkComboList.pos.y, this->color_checkComboList.pos.z);
@@ -69,16 +75,6 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
     this->brush_properties_button.pos = glm::vec3(this->mirror_checkComboList.pos.x + this->mirror_checkComboList.scale.x + this->brush_properties_button.scale.x, this->mirror_checkComboList.pos.y, this->color_checkComboList.pos.z);
     this->brush_properties_button.render(timer, doMouseTracking);
     
-    if(this->vector_scene.interaction_panel.sections[0].elements[0].comboBox.selectedIndex == 2){
-        this->smear_properties_panel.pos = glm::vec3(this->vector_scene.interaction_panel.pos.x - this->vector_scene.interaction_panel.scale.x + this->smear_properties_panel.scale.x, this->color_checkComboList.pos.y + this->color_checkComboList.scale.y + this->smear_properties_panel.scale.y, 0.7f);
-        this->smear_properties_panel.render(timer, doMouseTracking);
-    }
-
-    if(this->vector_scene.interaction_panel.sections[0].elements[0].comboBox.selectedIndex == 4){
-        this->filter_button.pos = glm::vec3(this->vector_scene.interaction_panel.pos.x - this->vector_scene.interaction_panel.scale.x + this->filter_button.scale.x, this->color_checkComboList.pos.y + this->color_checkComboList.scale.y + this->filter_button.scale.y, 0.7f);
-        this->filter_button.render(timer, doMouseTracking);
-    }
-   
     bool same = true;
 
     if(this->vector_scene.strokes_3D.size() == last_strokes.size()){
@@ -136,7 +132,7 @@ void VectorLayer::type_specific_generate_result(const unsigned int resolution, M
                                                                             ),
                                                 PaintSettings::PaintVertexBuffer(&mesh, &emptyBox, true),
                                                 PaintSettings::PointData(), // Auto-calculates in the function
-                                                this->vector_scene.interaction_panel.sections[0].elements[0].comboBox.selectedIndex,
+                                                0,
                                                 PaintSettings::DrawMode(),
                                                 PaintSettings::SoftenMode(1.f),
                                                 PaintSettings::SmearMode(smear_properties_panel.sections[0].elements[1].rangeBar.value, smear_properties_panel.sections[0].elements[0].rangeBar.value),
