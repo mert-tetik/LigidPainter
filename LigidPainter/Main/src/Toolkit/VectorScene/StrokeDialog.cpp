@@ -100,7 +100,7 @@ void VectorScene::show_stroke_dialog(bool threeD){
             }
         }
 
-        if((!dialog_panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE) || dialog_panel.sections[0].elements[3].button.clicked || dialog_panel.sections[0].elements[4].button.clicked){
+        if((!dialog_panel.hover && !dialog_log.isHovered() && *Mouse::LClick()) || getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE) || dialog_panel.sections[0].elements[3].button.clicked || dialog_panel.sections[0].elements[2].button.clicked){
             dialog_control.unActivate();
         }
 

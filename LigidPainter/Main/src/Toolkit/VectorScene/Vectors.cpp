@@ -60,10 +60,10 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
         
         result = show_context_menu(timer, 
                                             {
-                                                "New Point Between The Selected Points", 
-                                                "Clear All", 
-                                                "Remove The Selected Points (CTRL + X)", 
-                                                "Stroke"
+                                                "New Point Between Selected", 
+                                                "Stroke",
+                                                "Delete Selected (CTRL + X)", 
+                                                "Clear All" 
                                             }
                                     );
         
@@ -74,13 +74,13 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
         this->subdivide_selected_points(threeD);
     }
     if(result == 1){
-        this->clear_points(threeD);
+        this->show_stroke_dialog(threeD);
     }
     if(result == 2 || shortcuts_CTRL_X()){
         this->delete_selected_points(threeD);
     }
     if(result == 3){
-        this->show_stroke_dialog(threeD);
+        this->clear_points(threeD);
     }
 }
 
