@@ -356,6 +356,8 @@ void VectorScene::addNew2DVector(){
             this->strokes_2D[this->strokes_2D.size() - 1].endPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
             this->strokes_2D[this->strokes_2D.size() - 1].offsetPoint.pos = this->strokes_2D[this->strokes_2D.size() - 1].startPoint.pos - (this->strokes_2D[this->strokes_2D.size() - 1].startPoint.pos - this->strokes_2D[this->strokes_2D.size() - 1].endPoint.pos) / 2.f;
             this->strokes_2D[this->strokes_2D.size() - 1].offsetPoint.pos += 0.001f; // Vectors can't be rendered if the offset point alligns perfectly :(
+            this->strokes_2D[this->strokes_2D.size() - 1].endPoint.active = true;
+            this->strokes_2D[this->strokes_2D.size() - 1].endPoint.canMove = true;
         }
         else{
             dialog_log.registerVectorAction("New point", this);
@@ -363,6 +365,8 @@ void VectorScene::addNew2DVector(){
             vecStroke.endPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
             vecStroke.offsetPoint.pos = vecStroke.startPoint.pos - (vecStroke.startPoint.pos - vecStroke.endPoint.pos) /2.f;
             vecStroke.offsetPoint.pos += 0.001f; // Vectors can't be rendered if the offset point alligns perfectly :(
+            vecStroke.endPoint.active = true;
+            vecStroke.endPoint.canMove = true;
             this->strokes_2D.push_back(vecStroke);
         }
     }
