@@ -66,6 +66,40 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
 
     glDisable(GL_BLEND);
 
+    if(last_frame){
+        std::string actionTitle = "Unknown painting mode";
+
+        if(settings.painting_mode == 0)
+            actionTitle = "Painting";
+        if(settings.painting_mode == 1)
+            actionTitle = "Softening";
+        if(settings.painting_mode == 2)
+            actionTitle = "Smearing";
+        if(settings.painting_mode == 3)
+            actionTitle = "Normal map painting";
+        if(settings.painting_mode == 4)
+            actionTitle = "Filter painting";
+        if(settings.painting_mode == 6)
+            actionTitle = "Bucket painting";
+        
+        if(settings.painted_buffers.material_painting){
+            dialog_log.registerMultiChannelPaintingAction(
+                                                            "Multi-channel painting", 
+                                                            MaterialChannels(
+                                                                settings.painted_buffers.material_channel_albedo,
+                                                                settings.painted_buffers.material_channel_roughness,
+                                                                settings.painted_buffers.material_channel_metallic,
+                                                                settings.painted_buffers.material_channel_normalMap,
+                                                                settings.painted_buffers.material_channel_heightMap,
+                                                                settings.painted_buffers.material_channel_ao
+                                                            )
+                                                        );
+        }
+        else{
+            dialog_log.registerPaintingAction(actionTitle, settings.painted_buffers.solid_painted_texture);
+        }
+    }
+
     if(first_frame){
         Debugger::block("Painting : First frame: Update buffers"); // Start
         frame_counter = 0;

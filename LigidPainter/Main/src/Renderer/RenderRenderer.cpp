@@ -83,40 +83,6 @@ void Renderer::render(){
             bool first_frame = !last_painting_condition && painting_paint_condition();
             bool last_frame = last_painting_condition && !painting_paint_condition();
 
-            if(last_frame){
-                std::string actionTitle = "Unknown painting mode";
-    
-                if(paint_settings.painting_mode == 0)
-                    actionTitle = "Painting";
-                if(paint_settings.painting_mode == 1)
-                    actionTitle = "Softening";
-                if(paint_settings.painting_mode == 2)
-                    actionTitle = "Smearing";
-                if(paint_settings.painting_mode == 3)
-                    actionTitle = "Normal map painting";
-                if(paint_settings.painting_mode == 4)
-                    actionTitle = "Filter painting";
-                if(paint_settings.painting_mode == 6)
-                    actionTitle = "Bucket painting";
-                
-                if(paint_settings.painted_buffers.material_painting){
-                    dialog_log.registerMultiChannelPaintingAction(
-                                                                    "Multi-channel painting", 
-                                                                    MaterialChannels(
-                                                                        paint_settings.painted_buffers.material_channel_albedo,
-                                                                        paint_settings.painted_buffers.material_channel_roughness,
-                                                                        paint_settings.painted_buffers.material_channel_metallic,
-                                                                        paint_settings.painted_buffers.material_channel_normalMap,
-                                                                        paint_settings.painted_buffers.material_channel_heightMap,
-                                                                        paint_settings.painted_buffers.material_channel_ao
-                                                                    )
-                                                                );
-                }
-                else{
-                    dialog_log.registerPaintingAction(actionTitle, paint_settings.painted_buffers.solid_painted_texture);
-                }
-            }
-
             painting_paint_buffers(paint_settings, first_frame, last_frame);
         }
 
