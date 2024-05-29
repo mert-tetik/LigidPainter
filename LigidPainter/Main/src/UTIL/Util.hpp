@@ -183,6 +183,9 @@ namespace UTIL{
 
     /// @brief Returns true if str has the first_word as first word. Str is automatically transformed into upper-case and first_word must be upper-case too.
     bool doHaveWordAsFirstWord(const std::string& str, const std::string& first_word);
+
+    /// @brief Deletes the file at the location of filePath
+    bool deleteFile(std::string filePath);
 }
 
 /// @brief Manages color.

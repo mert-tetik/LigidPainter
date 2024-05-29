@@ -421,3 +421,22 @@ bool UTIL::doHaveWordAsFirstWord(const std::string& str, const std::string& firs
     }
     return false;
 }
+
+bool UTIL::deleteFile(std::string filePath){
+    try{
+        if(std::filesystem::exists(filePath)){
+            std::filesystem::remove(filePath);   
+        }
+        else{
+            LGDLOG::start << "ERROR : UTIL::deleteFile : Destination path doesn't exist!" << LGDLOG::end;
+            return false;
+        }
+    }
+    catch (const std::filesystem::filesystem_error& ex) {
+        // Filesystem error 
+        LGDLOG::start << "ERROR : Filesystem : Location ID 4894651329 " << ex.what() << LGDLOG::end;
+        return false;
+    }
+
+    return true;
+}

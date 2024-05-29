@@ -28,6 +28,7 @@ Official Web Page : https:ligidtools.com/ligidpainter
 #include "UTIL/Mouse/Mouse.hpp" 
 #include "UTIL/Library/Library.hpp" 
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Project/Project.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp" 
 
 #include "./HistoryActions/HistoryActions.hpp" 
@@ -44,12 +45,20 @@ extern std::vector<Brush> __brushes;
 #ifndef LOGDIALOG_REGISTERING_HPP
 #define LOGDIALOG_REGISTERING_HPP
 
+static const unsigned int max_painting_history = 20; 
+
 void LogDialog::registerPaintingAction(const std::string title, Texture painted_texture){
     PaintingAction painting_action = PaintingAction(title, painted_texture);
 
     painted_texture.writeTMP(std::to_string(painting_action.unique_ID));
 
     this->history_action_records.actions_Painting[painted_texture.ID].push_back(painting_action);
+
+    while (this->history_action_records.actions_Painting[painted_texture.ID].size() > max_painting_history)
+    {
+        UTIL::deleteFile(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + std::to_string(this->history_action_records.actions_Painting[painted_texture.ID][0].unique_ID) + ".tmp");
+        this->history_action_records.actions_Painting[painted_texture.ID].erase(this->history_action_records.actions_Painting[painted_texture.ID].begin());
+    }
 }
 
 void LogDialog::registerMultiChannelPaintingAction(const std::string title, MaterialChannels material_channels)
@@ -64,6 +73,17 @@ void LogDialog::registerMultiChannelPaintingAction(const std::string title, Mate
     material_channels.ambientOcclusion.writeTMP(std::to_string(painting_action.unique_ID) + "_5");
 
     this->history_action_records.actions_MultiChannelPainting[material_channels.albedo.ID].push_back(painting_action);
+
+    while (this->history_action_records.actions_MultiChannelPainting[material_channels.albedo.ID].size() > max_painting_history)
+    {
+        UTIL::deleteFile(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + std::to_string(this->history_action_records.actions_MultiChannelPainting[material_channels.albedo.ID][0].unique_ID) + "_0.tmp");
+        UTIL::deleteFile(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + std::to_string(this->history_action_records.actions_MultiChannelPainting[material_channels.albedo.ID][0].unique_ID) + "_1.tmp");
+        UTIL::deleteFile(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + std::to_string(this->history_action_records.actions_MultiChannelPainting[material_channels.albedo.ID][0].unique_ID) + "_2.tmp");
+        UTIL::deleteFile(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + std::to_string(this->history_action_records.actions_MultiChannelPainting[material_channels.albedo.ID][0].unique_ID) + "_3.tmp");
+        UTIL::deleteFile(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + std::to_string(this->history_action_records.actions_MultiChannelPainting[material_channels.albedo.ID][0].unique_ID) + "_4.tmp");
+        UTIL::deleteFile(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp/" + std::to_string(this->history_action_records.actions_MultiChannelPainting[material_channels.albedo.ID][0].unique_ID) + "_5.tmp");
+        this->history_action_records.actions_MultiChannelPainting[material_channels.albedo.ID].erase(this->history_action_records.actions_MultiChannelPainting[material_channels.albedo.ID].begin());
+    }
 }
 
 //void LogDialog::registerMultiMatChannelPaintingAction(const std::string)
