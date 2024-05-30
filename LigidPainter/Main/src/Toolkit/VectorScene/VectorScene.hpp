@@ -115,7 +115,7 @@ public:
     std::vector<VectorStroke> strokes_2D;
     std::vector<VectorStroke3D> strokes_3D;
 
-    void render_scene(Timer& timer, bool doMouseTracking, bool threeD);
+    void render_scene(Timer& timer, bool doMouseTracking, bool threeD, bool enable_stroke);
 
     void apply_strokes(bool threeD, bool twoDWrap, PaintSettings paint_settings);
     void delete_selected_points(bool threeD);
@@ -123,20 +123,24 @@ public:
     void subdivide_selected_points(bool threeD);
 
     
-    VectorScene(){}
-    VectorScene(std::vector<VectorStroke> strokes_2D, std::vector<VectorStroke3D> strokes_3D){
-        
-        this->strokes_2D = strokes_2D; 
-        this->strokes_3D = strokes_3D; 
-    }
+    VectorScene();
+    VectorScene(std::vector<VectorStroke> strokes_2D, std::vector<VectorStroke3D> strokes_3D);
 
     void update3DVectorBuffers();
     
-private:
+    struct StrokeDialog{
+        int paint_mode = 0;
+        bool twoD_wrap_mode = 0;
+
+        void show_stroke_dialog(bool threeD, VectorScene* vector_scene);
+    };
+
+    StrokeDialog stroke_dialog;
+
+
+
     void render2DVectors(Timer& timer, bool doMouseTracking);
     void render3DVectors(Timer& timer, bool doMouseTracking);
-
-    void show_stroke_dialog(bool threeD);
 
     void addNew2DVector();
     void addNew3DVector();

@@ -72,8 +72,11 @@ static void init_GUI(){
 
 static DialogControl dialog_control;
 
-void VectorScene::show_stroke_dialog(bool threeD){
+void VectorScene::StrokeDialog::show_stroke_dialog(bool threeD, VectorScene* vector_scene){
     
+    if(vector_scene == nullptr)
+        return;
+
     if(!dialog_panel.sections.size()){
         init_GUI();
     }
@@ -87,16 +90,35 @@ void VectorScene::show_stroke_dialog(bool threeD){
 
         dialog_panel.render(*getTimer(), !dialog_log.isHovered());
 
-        if(dialog_panel.sections[0].elements[2].button.clicked){
+        this->paint_mode = dialog_panel.sections[0].elements[0].comboBox.selectedIndex;
+        if(threeD){
+            dialog_panel.sections[0].elements[1].scale.y = 0.f;
+            this->twoD_wrap_mode = false;
+        }
+        else{
+            dialog_panel.sections[0].elements[1].scale.y = 2.f;
+            this->twoD_wrap_mode = dialog_panel.sections[0].elements[1].checkBox.clickState1;
+        }
+
+        // Calculate dialog panel's height
+        dialog_panel.scale.y = 0.f;
+        for(Element el : dialog_panel.sections[0].elements){
+            dialog_panel.scale.y += el.scale.y;
+            dialog_panel.scale.y += el.panelOffset / 2.f;
+        }
+        dialog_panel.scale.y += 1.f;
+
+        if(dialog_panel.sections[0].elements[2].button.clicked)
+        {
             bool success;
             PaintSettings paint_settings = get_paint_settings_using_GUI_data(&success);
-            paint_settings.painting_mode = dialog_panel.sections[0].elements[0].comboBox.selectedIndex;
+            paint_settings.painting_mode = paint_mode;
             if(success){
-                this->apply_strokes(
-                                        threeD,
-                                        dialog_panel.sections[0].elements[1].checkBox.clickState1,
-                                        paint_settings
-                                    );
+                vector_scene->apply_strokes(
+                                            threeD,
+                                            this->twoD_wrap_mode,
+                                            paint_settings
+                                        );
             }
         }
 

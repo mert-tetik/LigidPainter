@@ -86,7 +86,7 @@ bool ThreeDPoint::render(Timer &timer, bool doMouseTracking, bool stencilTest, f
         this->active = true;
 
     bool clicked = false;
-    if(*Mouse::LClick() && doMouseTracking && !stencilTest){
+    if((*Mouse::LClick() || *Mouse::RClick()) && doMouseTracking && !stencilTest){
         
         if(!getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_SHIFT) && !getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_CONTROL))
             this->active = false;

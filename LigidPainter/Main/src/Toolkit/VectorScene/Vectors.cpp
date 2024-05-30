@@ -42,7 +42,19 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <vector>
 #include <cstdlib>
 
-void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
+VectorScene::VectorScene()
+{
+
+}
+
+VectorScene::VectorScene(std::vector<VectorStroke> strokes_2D, std::vector<VectorStroke3D> strokes_3D)
+{
+    this->strokes_2D = strokes_2D; 
+    this->strokes_3D = strokes_3D; 
+}
+
+
+void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD, bool enable_stroke)
 {
     // Rendering vectors
     if(threeD){
@@ -50,10 +62,9 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
     }
     else{
         this->render2DVectors(timer, doMouseTracking);
-        
     }
-    
-    int result = -1;
+
+    glClear(GL_DEPTH_BUFFER_BIT);
 
     bool any_3D_point_hovered = false;
     for(VectorStroke3D stroke : this->strokes_3D){
@@ -67,196 +78,44 @@ void VectorScene::render_scene(Timer& timer, bool doMouseTracking, bool threeD)
             any_2D_point_hovered = true;
     }
 
+    std::string new_point_between_selected_txt = "New Point Between Selected";
+    std::string stroke_txt = "Stroke";
+    std::string delete_selected_txt = "Delete Selected (CTRL + X)";
+    std::string clear_all_txt = "Clear All";
+
+    std::vector<std::string> context_menu_actions = {
+                                                        new_point_between_selected_txt,                                                        
+                                                        stroke_txt,                                                        
+                                                        delete_selected_txt,                                                        
+                                                        clear_all_txt                                       
+                                                    };
+
+    if(!enable_stroke){
+        context_menu_actions.erase(context_menu_actions.begin() + 1);
+    }
+
+    int result = -1;
     if(!panels_any_hovered() && (any_3D_point_hovered || !threeD) && (any_2D_point_hovered || threeD) && *Mouse::RClick()){
         glDisable(GL_DEPTH_TEST);
         
-        result = show_context_menu(timer, 
-                                            {
-                                                "New Point Between Selected", 
-                                                "Stroke",
-                                                "Delete Selected (CTRL + X)", 
-                                                "Clear All" 
-                                            }
-                                    );
+        result = show_context_menu(timer, context_menu_actions);
         
         glEnable(GL_DEPTH_TEST);
     }
 
-    if(result == 0){
-        this->subdivide_selected_points(threeD);
-    }
-    if(result == 1){
-        this->show_stroke_dialog(threeD);
-    }
-    if(result == 2 || shortcuts_CTRL_X()){
-        this->delete_selected_points(threeD);
-    }
-    if(result == 3){
-        this->clear_points(threeD);
-    }
-}
-
-void VectorScene::delete_selected_points(bool threeD){
-    if(!threeD){
-        if(!this->isAny2DPointsActive())
-            return;
-
-        dialog_log.registerVectorAction("Selected point deleted", this);
-        while (this->isAny2DPointsActive()){
-            for (size_t i = 0; i < this->strokes_2D.size(); i++)
-            {
-                if(i == 0){
-                    if(this->strokes_2D[i].startPoint.active && this->strokes_2D[i].endPoint.active && this->strokes_2D.size() == 1){
-                        this->strokes_2D.clear(); 
-                        break;
-                    }
-                    
-                    if(this->strokes_2D[i].startPoint.active && this->strokes_2D.size() == 1){
-                        this->strokes_2D[i].startPoint.pos = this->strokes_2D[i].endPoint.pos; 
-                        this->strokes_2D[i].offsetPoint.pos = this->strokes_2D[i].endPoint.pos; 
-                        this->strokes_2D[i].startPoint.active = false; 
-                        break;
-                    }
-                    
-                    if(this->strokes_2D[i].endPoint.active && this->strokes_2D.size() == 1){
-                        this->strokes_2D[i].endPoint.pos = this->strokes_2D[i].startPoint.pos; 
-                        this->strokes_2D[i].offsetPoint.pos = this->strokes_2D[i].startPoint.pos; 
-                        this->strokes_2D[i].endPoint.active = false; 
-                        break;
-                    }
-
-                    if(this->strokes_2D[i].startPoint.active){
-                        this->strokes_2D.erase(this->strokes_2D.begin() + i);
-                        break;
-                    }
-                    
-                    if(this->strokes_2D[i].endPoint.active && this->strokes_2D.size() > 1){
-                        this->strokes_2D[i].endPoint.pos = this->strokes_2D[i + 1].endPoint.pos; 
-                        this->strokes_2D[i].endPoint.active = this->strokes_2D[i + 1].endPoint.active; 
-                        this->strokes_2D.erase(this->strokes_2D.begin() + i + 1);
-                        break;
-                    }
-                }
-                else{
-                    if(this->strokes_2D[i].endPoint.active){
-                        this->strokes_2D.erase(this->strokes_2D.begin() + i);
-                        if(i - 1 < this->strokes_2D.size() && i < this->strokes_2D.size()){
-                            this->strokes_2D[i].startPoint.pos = this->strokes_2D[i - 1].endPoint.pos; 
-                            this->strokes_2D[i].startPoint.active = false; 
-                        }
-                        break;
-                    }
-                }
-            }
+    if(result != -1){
+        if(context_menu_actions[result] == new_point_between_selected_txt){
+            this->subdivide_selected_points(threeD);
         }
-    }
-    else{
-        if(!this->isAnyWrappedPointsActive())
-            return;
-        
-        dialog_log.registerVectorAction("Selected wrapped point deleted", this);
-        while(this->isAnyWrappedPointsActive()){
-            for (size_t i = 0; i < this->strokes_3D.size(); i++)
-            {
-                if(i == 0){
-
-                    if(this->strokes_3D[i].startPoint.active && this->strokes_3D[i].endPoint.active && this->strokes_3D.size() == 1){
-                        this->strokes_3D.clear(); 
-                        break;
-                    }
-                    
-                    if(this->strokes_3D[i].startPoint.active && this->strokes_3D.size() == 1){
-                        this->strokes_3D[i].startPoint = this->strokes_3D[i].endPoint; 
-                        break;
-                    }
-                    
-                    if(this->strokes_3D[i].endPoint.active && this->strokes_3D.size() == 1){
-                        this->strokes_3D[i].endPoint = this->strokes_3D[i].startPoint; 
-                        break;
-                    }
-
-                    if(this->strokes_3D[i].startPoint.active){
-                        this->strokes_3D.erase(this->strokes_3D.begin() + i);
-                        break;
-                    }
-                    
-                    if(this->strokes_3D[i].endPoint.active && this->strokes_3D.size() > 1){
-                        this->strokes_3D[i].endPoint = this->strokes_3D[i + 1].endPoint; 
-                        this->strokes_3D.erase(this->strokes_3D.begin() + i + 1);
-                        break;
-                    }
-                }
-                else{
-                    if(this->strokes_3D[i].endPoint.active){
-                        this->strokes_3D.erase(this->strokes_3D.begin() + i);
-                        if(i - 1 < this->strokes_3D.size() && i < this->strokes_3D.size()){
-                            this->strokes_3D[i].startPoint = this->strokes_3D[i - 1].endPoint; 
-                            this->strokes_3D[i].startPoint.active = false; 
-                        }
-                        break;
-                    }
-                }
-            }
+        if(context_menu_actions[result] == stroke_txt){
+            this->stroke_dialog.show_stroke_dialog(threeD, this);
         }
-
-        this->update3DVectorBuffers();
-    }
-}
-
-void VectorScene::clear_points(bool threeD){
-    if(!threeD){
-        dialog_log.registerVectorAction("Vector strokes cleared", this);
-        this->strokes_2D.clear();
-    }
-    else{
-        dialog_log.registerVectorAction("Wrapped Vector strokes cleared", this);
-        this->strokes_3D.clear();
-    }
-}
-
-void VectorScene::subdivide_selected_points(bool threeD){
-    if(!threeD){
-        dialog_log.registerVectorAction("New point between the selected points", this);
-
-        for (size_t i = 0; i < this->strokes_2D.size(); i++)
-        {
-            if(this->strokes_2D[i].endPoint.active && this->strokes_2D[i].startPoint.active){
-                glm::vec2 strokeCenter = (this->strokes_2D[i].startPoint.pos + this->strokes_2D[i].endPoint.pos + this->strokes_2D[i].offsetPoint.pos) / 3.0f;
-                glm::vec2 offsetPointDistance = strokeCenter - this->strokes_2D[i].offsetPoint.pos;
-
-                VectorStroke newStroke;
-                newStroke.startPoint.pos = strokeCenter;
-                newStroke.endPoint.pos = this->strokes_2D[i].endPoint.pos;
-                newStroke.offsetPoint.pos = newStroke.startPoint.pos - (newStroke.startPoint.pos - newStroke.endPoint.pos) / 2.f - offsetPointDistance;
-
-                this->strokes_2D[i].endPoint.pos  = strokeCenter;
-
-                this->strokes_2D.insert(this->strokes_2D.begin() + i + 1, newStroke);
-                i++;
-            }
+        if(context_menu_actions[result] == delete_selected_txt || shortcuts_CTRL_X()){
+            this->delete_selected_points(threeD);
         }
-    }
-    else{
-        dialog_log.registerVectorAction("New point between the selected wrapped points", this);
-
-        for (size_t i = 0; i < this->strokes_3D.size(); i++)
-        {
-            if(this->strokes_3D[i].endPoint.active && this->strokes_3D[i].startPoint.active){
-                glm::vec3 strokeCenter = (this->strokes_3D[i].startPoint.pos + this->strokes_3D[i].endPoint.pos) / 2.0f;
-                glm::vec3 offsetPointDistance = strokeCenter;
-
-                VectorStroke3D newStroke;
-                newStroke.startPoint.pos = strokeCenter;
-                newStroke.endPoint = this->strokes_3D[i].endPoint;
-
-                this->strokes_3D[i].endPoint.pos  = strokeCenter;
-
-                this->strokes_3D.insert(this->strokes_3D.begin() + i + 1, newStroke);
-                i++;
-            }
+        if(context_menu_actions[result] == clear_all_txt){
+            this->clear_points(threeD);
         }
-
-        this->update3DVectorBuffers();
     }
 }
 
@@ -351,186 +210,4 @@ void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
 
     Settings::defaultFramebuffer()->FBO.bind();
     Settings::defaultFramebuffer()->setViewport();
-}
-
-void VectorScene::addNew2DVector(){
-    VectorStroke vecStroke;
-    if(!this->strokes_2D.size()){
-        dialog_log.registerVectorAction("First point created", this);
-        vecStroke.startPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f; 
-        vecStroke.endPoint.pos = vecStroke.startPoint.pos;
-        vecStroke.offsetPoint.pos = vecStroke.startPoint.pos;
-        this->strokes_2D.push_back(vecStroke);
-    }
-    else{
-        if(this->strokes_2D[this->strokes_2D.size() - 1].endPoint.pos == this->strokes_2D[this->strokes_2D.size() - 1].startPoint.pos){
-            dialog_log.registerVectorAction("New point", this);
-            this->strokes_2D[this->strokes_2D.size() - 1].endPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
-            this->strokes_2D[this->strokes_2D.size() - 1].offsetPoint.pos = this->strokes_2D[this->strokes_2D.size() - 1].startPoint.pos - (this->strokes_2D[this->strokes_2D.size() - 1].startPoint.pos - this->strokes_2D[this->strokes_2D.size() - 1].endPoint.pos) / 2.f;
-            this->strokes_2D[this->strokes_2D.size() - 1].offsetPoint.pos += 0.001f; // Vectors can't be rendered if the offset point alligns perfectly :(
-            this->strokes_2D[this->strokes_2D.size() - 1].endPoint.active = true;
-            this->strokes_2D[this->strokes_2D.size() - 1].endPoint.canMove = true;
-        }
-        else{
-            dialog_log.registerVectorAction("New point", this);
-            vecStroke.startPoint.pos = this->strokes_2D[this->strokes_2D.size() - 1].endPoint.pos; 
-            vecStroke.endPoint.pos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
-            vecStroke.offsetPoint.pos = vecStroke.startPoint.pos - (vecStroke.startPoint.pos - vecStroke.endPoint.pos) /2.f;
-            vecStroke.offsetPoint.pos += 0.001f; // Vectors can't be rendered if the offset point alligns perfectly :(
-            vecStroke.endPoint.active = true;
-            vecStroke.endPoint.canMove = true;
-            this->strokes_2D.push_back(vecStroke);
-        }
-    }
-}
-
-void VectorScene::addNew3DVector(){
-
-    // Point on top of the cursor is not valid 
-    if(getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor().pos == glm::vec3(-1000.f))
-        return;
-
-    VectorStroke3D vecStroke;
-    if(!this->strokes_3D.size()){
-        dialog_log.registerVectorAction("First wrapped point created", this);
-        vecStroke.startPoint = getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor(); 
-        vecStroke.endPoint = vecStroke.startPoint;
-        this->strokes_3D.push_back(vecStroke);
-    }
-    else{
-        if(this->strokes_3D[this->strokes_3D.size() - 1].endPoint.pos == this->strokes_3D[this->strokes_3D.size() - 1].startPoint.pos){
-            dialog_log.registerVectorAction("New wrapped point", this);
-            this->strokes_3D[this->strokes_3D.size() - 1].endPoint = getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor();
-        }
-        else{
-            dialog_log.registerVectorAction("New wrapped point", this);
-            vecStroke.startPoint = this->strokes_3D[this->strokes_3D.size() - 1].endPoint; 
-            vecStroke.endPoint = getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor();
-            this->strokes_3D.push_back(vecStroke);
-        }
-    }
-}
-
-void VectorScene::update3DVectorBuffers(){
-    for (size_t i = 0; i < this->strokes_3D.size(); i++)
-    {
-        this->strokes_3D[i].updateLinePoints();
-    }
-}
-
-/* 
-    Bezier curve function
-    
-    B(t) = (1 - t)^2 * start + 2 * (1 - t) * t * offset + t^2 * end
-*/
-static glm::vec2 bezier(float t, glm::vec2 start, glm::vec2 end, glm::vec2 offset){
-    return glm::pow((glm::vec2(1.f) - glm::vec2(t)), glm::vec2(2)) * start + glm::vec2(2) * (glm::vec2(1) - glm::vec2(t)) * glm::vec2(t) * offset + glm::pow(glm::vec2(t), glm::vec2(2)) * end;
-}
-
-static std::vector<glm::vec2> calculateBezierCurve(glm::vec2 start, glm::vec2 end, glm::vec2 direction, int frequency){
-    
-    std::vector<glm::vec2> points;
-
-    for (size_t i = 0; i < frequency; i++)
-    {
-        points.push_back(bezier((float)i / ((float)frequency - 1.f), start, end, direction));
-    }
-
-    return points;
-}
-
-void VectorScene::apply_strokes(
-                                    bool threeD,
-                                    bool twoDWrap,
-                                    PaintSettings paint_settings
-                                )
-{
-    if(threeD){
-        for (VectorStroke3D stroke3D : this->strokes_3D)
-        {
-            int stroke_pos_i = 0;
-            for (VertexUTIL stroke_pos : stroke3D.lineVertices){
-                if(stroke_pos_i % (int)std::ceil((paint_settings.stroke_brush.properties.spacing + 1.f) / 20.f) == 0){
-                    paint_settings.point.use_3D = true;
-                    paint_settings.point.point_3D = ThreeDPoint(stroke_pos.Position, stroke_pos.Normal);
-                    painting_paint_buffers(paint_settings, stroke_pos_i == 0, stroke_pos_i == stroke3D.lineVertices.size() - 1);
-                }
-
-                stroke_pos_i++;
-            }
-        }
-    }
-    else{
-        std::vector<glm::vec2> strokePositions;
-
-        for (size_t vecI = 0; vecI < strokes_2D.size(); vecI++)
-        {
-            float distance = glm::distance(strokes_2D[vecI].startPoint.pos, strokes_2D[vecI].offsetPoint.pos) + glm::distance(strokes_2D[vecI].endPoint.pos, strokes_2D[vecI].offsetPoint.pos);
-            unsigned int quality = (unsigned int)(distance / 2.f);
-
-            std::vector<glm::vec2> points = calculateBezierCurve(
-                                                                    strokes_2D[vecI].startPoint.pos / 100.f * *Settings::videoScale(), 
-                                                                    strokes_2D[vecI].endPoint.pos / 100.f * *Settings::videoScale(), 
-                                                                    strokes_2D[vecI].offsetPoint.pos / 100.f * *Settings::videoScale(), 
-                                                                    quality
-                                                                );
-
-            // Add the points of a single vector to the total stroke positions
-            for (size_t pointI = 0; pointI < points.size(); pointI++)
-            {
-                strokePositions.push_back(points[pointI]);
-            }
-        }
-        
-        const int maxStrokeSize = 50;
-
-        // Calculate how many subvectors you'll need
-        const int numSubvectors = (strokePositions.size() + maxStrokeSize - 1) / maxStrokeSize;
-
-        // Loop through and process the subvectors
-        for (int i = 0; i < numSubvectors; ++i) {
-            
-            // Calculate the start and end indices for each subvector
-            int startIdx = i * maxStrokeSize;
-            int endIdx = std::min((i + 1) * maxStrokeSize, static_cast<int>(strokePositions.size()));
-
-            // Create a subvector from the original vector
-            std::vector<glm::vec2> subVector(strokePositions.begin() + startIdx, strokePositions.begin() + endIdx);
-
-            for (size_t i = 0; i < subVector.size(); i++)
-            {
-                paint_settings.point.use_3D = false;
-                paint_settings.point.point_2D = subVector[i];
-                painting_paint_buffers(paint_settings, i == 0, i == subVector.size() - 1);
-            }
-        }
-
-        Settings::defaultFramebuffer()->FBO.bind();
-        Settings::defaultFramebuffer()->setViewport();
-    }
-}
-
-bool VectorScene::isAny2DPointsActive(){
-    for (size_t i = 0; i < this->strokes_2D.size(); i++)
-    {
-        if(this->strokes_2D[i].startPoint.active)
-            return true;
-        if(this->strokes_2D[i].endPoint.active)
-            return true;
-    }
-    
-    return false;
-}
-
-bool VectorScene::isAnyWrappedPointsActive(){
-    for (size_t i = 0; i < this->strokes_3D.size(); i++)
-    {
-        if(this->strokes_3D[i].startPoint.active)
-            return true;
-        if(this->strokes_3D[i].endPoint.active)
-            return true;
-    }
-    
-    return false;
-    
 }

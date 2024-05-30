@@ -127,7 +127,7 @@ public:
     /*! 
         @brief Renders GUI elements for the layer. Returns true if the layer is deleted
     */
-    bool render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh, LayerScene* src_layer_scene, int src_layer_index);
+    bool render_graphics(Timer& timer, bool doMouseTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh, LayerScene* src_layer_scene, int src_layer_index);
 
     void update_result_buffers(const unsigned int resolution, Mesh& mesh);
     void update_layer_buffers_resolution_values(const unsigned int resolution, Mesh& mesh);

@@ -30,7 +30,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "Toolkit/Layers/Layers.hpp"
 #include "Toolkit/Layers/Layer_Dialogs/Layer_Dialogs.hpp" // Dialogs designed specifically for layers. "LAYERDIALOG_*dialog name*"
 
-bool Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh, LayerScene* src_layer_scene, int src_layer_index){
+bool Layer::render_graphics(Timer& timer, bool doMouseTracking, glm::vec3 pos, glm::vec2 scale, float opacity, const unsigned int resolution, Mesh& mesh, LayerScene* src_layer_scene, int src_layer_index){
 
     this->layerGUI.layerButton.pos = pos;
     this->layerGUI.layerButton.scale = scale;
@@ -47,12 +47,12 @@ bool Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, g
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", opacity);
     this->layerGUI.layerButton.color.a = 0.4f;
     this->layerGUI.layerButton.text = this->title;
-    this->layerGUI.layerButton.render(timer, doMosueTracking && !this->layerGUI.eyeBtn.hover);
+    this->layerGUI.layerButton.render(timer, doMouseTracking && !this->layerGUI.eyeBtn.hover);
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
     /* Render layer elements*/
     if(scale.x > 8.f){
-        this->layerGUI.render_info_and_modification_elements(timer, doMosueTracking, this->layerIcon, &this->hiden, this->alpha.general_Alpha.alphaMap, this->alpha.general_Alpha.alphaValue, this->layerGUI.layerButton.pos, this->layerGUI.layerButton.scale, opacity);
+        this->layerGUI.render_info_and_modification_elements(timer, doMouseTracking, this->layerIcon, &this->hiden, this->alpha.general_Alpha.alphaMap, this->alpha.general_Alpha.alphaValue, this->layerGUI.layerButton.pos, this->layerGUI.layerButton.scale, opacity);
     }
 
     // Update clickedMixVal value
@@ -100,7 +100,7 @@ bool Layer::render_graphics(Timer& timer, bool doMosueTracking, glm::vec3 pos, g
 
     /* Render type specific modification thingies*/
     if(type_specific_modification_enabled)
-        this->type_specific_modification(timer, true, resolution, mesh);
+        this->type_specific_modification(timer, doMouseTracking, resolution, mesh);
 
 
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);

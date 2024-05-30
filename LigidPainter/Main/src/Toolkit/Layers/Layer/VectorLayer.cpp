@@ -51,21 +51,30 @@ VectorLayer::VectorLayer(const unsigned int resolution){
 
 static std::vector<VectorStroke3D> last_strokes;
 
-static Button cancel_editing_vectors_btn = Button(ELEMENT_STYLE_BASIC, glm::vec2(7.f,2.f), "Quit Vector Editing", Texture(), 0.f, false);
+static Button quit_modifying_button = Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Quit Modifying", Texture(), 0.f, false);
+
 static bool firstFrameActivated = true;
 void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh){
     
     panel_displaying_modes.sections[0].elements[0].button.clickState1 = true;
 
-    this->vector_scene.render_scene(timer, true, true);
+    this->vector_scene.render_scene(timer, doMouseTracking && !panels_any_hovered() && !quit_modifying_button.hover, true, false);
     
-    glm::vec2 pos;
-    pos.x = panel_library.pos.x + panel_library.scale.x;
-    pos.y = panel_painting_modes.pos.y + panel_painting_modes.scale.y;
+    glClear(GL_DEPTH_BUFFER_BIT);
 
-    glm::vec2 scale = glm::vec2(5.f);
+    Button vector_layer_specific_info_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(this->color_checkComboList.scale.x + this->mirror_checkComboList.scale.x + this->brush_properties_button.scale.x, 1.f), "Vector Layer Specific", Texture(), 0.f, false);
+    vector_layer_specific_info_btn.pos = glm::vec3(panel_library.pos.x + panel_library.scale.x + vector_layer_specific_info_btn.scale.x + 1.f, panel_library.pos.y - panel_library.scale.y + vector_layer_specific_info_btn.scale.y + panel_painting_modes.scale.y * 2.f + 1.f, 0.9f);
+    vector_layer_specific_info_btn.render(timer, false);
+    
+    quit_modifying_button.scale.x = vector_layer_specific_info_btn.scale.x;
+    quit_modifying_button.pos = glm::vec3(vector_layer_specific_info_btn.pos.x - vector_layer_specific_info_btn.scale.x + quit_modifying_button.scale.x, vector_layer_specific_info_btn.pos.y + vector_layer_specific_info_btn.scale.y + quit_modifying_button.scale.y, 0.7f);
+    quit_modifying_button.render(timer, doMouseTracking);
 
-    this->color_checkComboList.pos = glm::vec3(pos.x - scale.x + this->color_checkComboList.scale.x, pos.y + scale.y + this->color_checkComboList.scale.y, 0.7f);
+    if(quit_modifying_button.clicked){
+        this->type_specific_modification_enabled = false;
+    }
+
+    this->color_checkComboList.pos = glm::vec3(quit_modifying_button.pos.x - quit_modifying_button.scale.x + this->color_checkComboList.scale.x, quit_modifying_button.pos.y + quit_modifying_button.scale.y + this->color_checkComboList.scale.y, 0.7f);
     this->color_checkComboList.render(timer, doMouseTracking);
     
     this->mirror_checkComboList.pos = glm::vec3(this->color_checkComboList.pos.x + this->color_checkComboList.scale.x + this->mirror_checkComboList.scale.x, this->color_checkComboList.pos.y, this->color_checkComboList.pos.z);

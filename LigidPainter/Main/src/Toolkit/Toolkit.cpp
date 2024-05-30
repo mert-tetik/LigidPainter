@@ -54,7 +54,7 @@ void render_toolkits_before_panels(Timer& timer){
     
     if(GET_VECTOR_SCENE_RENDERING_CONDITION){
         Debugger::block("GUI : Vectors"); // Start
-        getVectorScene()->render_scene(timer, !panels_any_hovered() && !getScene()->get_selected_mesh()->face_selection_data.editMode, checkBox_wrap_mode.clickState1);
+        getVectorScene()->render_scene(timer, !panels_any_hovered() && !getScene()->get_selected_mesh()->face_selection_data.editMode, checkBox_wrap_mode.clickState1, true);
         Debugger::block("GUI : Vectors"); // End
     }
 
