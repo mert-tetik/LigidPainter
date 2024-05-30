@@ -542,6 +542,7 @@ namespace Debugger{
 };
 
 bool shortcuts_CTRL_Z();
+bool shortcuts_CTRL_SHIFT_Z();
 bool shortcuts_CTRL_X();
 bool shortcuts_CTRL_S();
 bool shortcuts_CTRL_N();

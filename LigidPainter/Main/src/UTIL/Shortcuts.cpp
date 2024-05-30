@@ -34,6 +34,9 @@ Box.hpp : Is used to render a single 2D square.
 bool shortcuts_CTRL_Z(){
     return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_Z) && !IS_PRESSED(SHIFT));
 }
+bool shortcuts_CTRL_SHIFT_Z(){
+    return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_Z) && IS_CLICKED(SHIFT));
+}
 bool shortcuts_CTRL_X(){
     return (IS_PRESSED(CTRL) && IS_CLICKED(LIGIDGL_KEY_X) && !IS_PRESSED(SHIFT));
 }

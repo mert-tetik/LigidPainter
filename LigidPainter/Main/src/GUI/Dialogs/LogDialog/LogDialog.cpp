@@ -67,7 +67,14 @@ void LogDialog::render(Timer& timer)
             shortcuts_CTRL_Z()
         )
     {
-        //this->undo();
+        this->undo_general_history();
+    }
+    
+    if(
+            shortcuts_CTRL_SHIFT_Z()
+        )
+    {
+        this->history_action_records.undo_library_actions();
     }
 
     lastProjectPath = project_path();

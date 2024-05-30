@@ -446,7 +446,7 @@ static void render_selected_panel(
             libraryHistoryPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(1), history_action_records.actions_Library[i].title, Texture(), 0., false));
         }
 
-        libraryHistoryPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo / CTRL+Z", Texture(), 1., false));
+        libraryHistoryPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(1), "Undo / CTRL+SHIFT+Z", Texture(), 1., false));
         
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", libraryHistoryPanel_mixVal * menu_mode_mix_val);
         libraryHistoryPanel->scale.x = menu_bar.scale.x;
