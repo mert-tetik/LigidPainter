@@ -101,19 +101,15 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
     }
 
     if(first_frame){
-        Debugger::block("Painting : First frame: Update buffers"); // Start
         frame_counter = 0;
         settings.painting_over_data.texture_field_scene->update_painting_over_texture(settings.point.use_3D);
         painting_update_buffers((settings.painted_buffers.material_painting) ? settings.painted_buffers.material_channel_albedo.getResolution().x : settings.painted_buffers.solid_painted_texture.getResolution().x);
-        Debugger::block("Painting : First frame: Update buffers"); // End
     }
 
     std::vector<MirrorSide*> mirrorSides = painting_get_selected_mirror_sides(settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z);
     
     if(settings.painting_mode == 6){
-        Debugger::block("Painting : Bucket painting"); // Start
         bucket_paint_texture(painting_projected_painting_FBO.colorBuffer, Color(settings.color_buffer.stroke_albedo_color), settings.stroke_brush.properties.opacity, (settings.vertex_buffer.paint_model) ? settings.vertex_buffer.model_mesh : nullptr);
-        Debugger::block("Painting : Bucket painting"); // End
         goto UPDATE_TEXTURE;
     } 
 
@@ -134,25 +130,18 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
             ThreeDPoint des_point = ThreeDPoint(glm::vec3(settings.point.point_3D.pos * (mirrorSide->effectAxis * -1.f) - offset * 2.f), glm::vec3(settings.point.point_3D.normal * (mirrorSide->effectAxis * -1.f)));
             ThreeDPoint last_des_point = ThreeDPoint(glm::vec3(last_threeD_point.pos * (mirrorSide->effectAxis * -1.f) - offset * 2.f), glm::vec3(last_threeD_point.normal * (mirrorSide->effectAxis * -1.f)));
 
-            Debugger::block("Painting : Process 3D point"); // Start
             std::vector<glm::vec2> strokes;
             Camera cam;
             process_3D_point(des_point, last_des_point, *mirrorSide, &cam, &strokes, settings.vertex_buffer.model_mesh, first_frame, settings.stroke_brush.properties.spacing);
-            Debugger::block("Painting : Process 3D point"); // End
             
             if(first_frame && mirrorSide->effectAxis == O_side.effectAxis)
                 last_threeD_point = settings.point.point_3D;
         
-            Debugger::block("Painting : 3D Paint : Paint window"); // Start
             // Perform window painting
             window_paint(&mirrorSide->paintingBuffers.window_painting_texture, strokes, settings.stroke_brush, frame_counter, settings.painting_mode == 2);
-            Debugger::block("Painting : 3D Paint : Paint window"); // End
 
-            Debugger::block("Painting : 3D Paint : Update depth texture"); // Start
             update_depth_texture(mirrorSide->paintingBuffers.depth_texture, cam, settings.vertex_buffer.model_mesh);
-            Debugger::block("Painting : 3D Paint : Update depth texture"); // End
 
-            Debugger::block("Painting : 3D Paint : Project window painting texture"); // Start
             project_window_painting_texture(
                                                 &mirrorSide->paintingBuffers.projected_painting_texture, 
                                                 mirrorSide->paintingBuffers.window_painting_texture, 
@@ -165,19 +154,14 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
                                                 settings.stroke_brush.properties.opacity, 
                                                 true
                                             );
-            Debugger::block("Painting : 3D Paint : Project window painting texture"); // End
         }
     }
     else{
-        Debugger::block("Painting : Process 2D point"); // Start
         std::vector<glm::vec2> strokes;
         process_2D_point(settings.point.point_2D, &strokes, first_frame, settings.stroke_brush.properties.spacing);
-        Debugger::block("Painting : Process 2D point"); // End
 
-        Debugger::block("Painting : 2D Paint : Window painting"); // Start
         // Perform window painting
         window_paint(&O_side.paintingBuffers.window_painting_texture, strokes, settings.stroke_brush, frame_counter, settings.painting_mode == 2);
-        Debugger::block("Painting : 2D Paint : Window painting"); // End
         
         for (MirrorSide* mirrorSide : mirrorSides){
             Camera cam = getScene()->camera;
@@ -185,15 +169,11 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
             if(mirrorSide->effectAxis != O_side.effectAxis){
                 cam = twoD_painting_calculate_camera(settings, *mirrorSide);
 
-                Debugger::block("Painting : 2D Paint : Generate mirrored window painting texture"); // Start
                 twoD_painting_generate_mirrored_window_painting_texture(mirrorSide);                
-                Debugger::block("Painting : 2D Paint : Generate mirrored window painting texture"); // End
             }
 
             if(first_frame){
-                Debugger::block("Painting : 2D Paint : Update depth texture"); // Start
                 update_depth_texture(mirrorSide->paintingBuffers.depth_texture, cam, settings.vertex_buffer.model_mesh);
-                Debugger::block("Painting : 2D Paint : Update depth texture"); // End
             }
 
                 Texture* projected_painting_texture = &mirrorSide->paintingBuffers.projected_painting_texture_low; 
@@ -201,7 +181,6 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
                     projected_painting_texture = &mirrorSide->paintingBuffers.projected_painting_texture; 
                 }
 
-            Debugger::block("Painting : 2D Paint : Project window painting texture"); // Start
             project_window_painting_texture(
                                                 projected_painting_texture, 
                                                 mirrorSide->paintingBuffers.window_painting_texture, 
@@ -214,14 +193,11 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
                                                 settings.stroke_brush.properties.opacity, 
                                                 false
                                             );
-            Debugger::block("Painting : 2D Paint : Project window painting texture"); // End
         }
     }
     
     GENERATE_PROJECTED_PAINTING_TEXTURE_AND_UPDATE_TEXTURE:
-    Debugger::block("Painting : Generate projected painting texture"); // Start
     generate_projected_painting_texture(&painting_projected_painting_FBO, settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z, !last_frame && !settings.point.use_3D);
-    Debugger::block("Painting : Generate projected painting texture"); // End
         
     frame_counter++;
 
@@ -239,9 +215,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
         }
         
         if(settings.color_buffer.use_custom_material){
-            Debugger::block("Painting : Update custom material mesh"); // Start
             update_custom_material_mesh(settings.color_buffer, settings.vertex_buffer.model_mesh, (settings.painted_buffers.material_painting) ? settings.painted_buffers.material_channel_albedo.getResolution() : settings.painted_buffers.solid_painted_texture.getResolution()); 
-            Debugger::block("Painting : Update custom material mesh"); // End
         }
 
         if(settings.painting_mode == 4){
@@ -255,15 +229,11 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
             for (PaintedBufferData painted_buffer : get_painted_buffers(settings))
             {
                 if(settings.color_buffer.use_custom_material){
-                    Debugger::block("Painting : Applying custom mat"); // Start
                     painted_buffer.txtr.mix(painted_buffer.corresponding_custom_material_channel, painting_projected_painting_FBO.colorBuffer, true, false, false);
                     painted_buffer.txtr.removeSeams(*getScene()->get_selected_mesh());
-                    Debugger::block("Painting : Applying custom mat"); // End
                 }
                 else{
-                    Debugger::block("Painting : Update the texture"); // Start
                     updateTheTexture(painted_buffer.txtr, painted_buffer.channel_index, settings, painting_projected_painting_FBO);
-                    Debugger::block("Painting : Update the texture"); // End
 
                     for (size_t i = 0; i < Library::getTextureArraySize(); i++)
                     {

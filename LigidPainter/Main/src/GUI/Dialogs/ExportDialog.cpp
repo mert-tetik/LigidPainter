@@ -27,6 +27,8 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Library/Library.hpp"
+#include "UTIL/Threads/Threads.hpp"
+#include "UTIL/Wait/Wait.hpp"
 #include "UTIL/Project/Project.hpp"
 #include "UTIL/Project/ProjectUTIL.hpp"
 
@@ -382,8 +384,12 @@ static void exportLibraryMaterials(std::string destPath, int resolution, std::st
                                 true
                             );
 
-        //Library::getMaterialObj(i).apply_material(Model(), matMesh, resolution, false);
+        WAIT_WHILE(material_thread.actions.size());
         
+        material_thread.apply_material(Library::getMaterial(i), nullptr, &matMesh, &matMesh.material_channels, resolution, true);
+
+        WAIT_WHILE(material_thread.active);
+
         FileHandler::writeLGDMATERIALFile(materialFolderPath, Library::getMaterialObj(i));
 
         //For all the channels

@@ -19,16 +19,19 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Renderer.h"
 #include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
+
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Threads/Threads.hpp"
+
 #include "Toolkit/Layers/Layers.hpp"
-#include "GUI/Panels.hpp"
 
 #include <string>
 #include <vector>
@@ -55,7 +58,7 @@ void checkComboList_painting_color_render(Timer& timer, bool doMouseTracking){
     display_mat.materialModifiers[0].sections[0].elements[10].button.color = glm::vec4(glm::vec3(checkComboList_painting_color.panel.sections[0].elements[12].rangeBar.value), 1.f); 
 
     if(prev_display_mat != display_mat){
-        display_mat.updateMaterialDisplayingTexture(512, true, Camera(), 0, false, getMaterialDisplayerModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels);
+        material_thread.update_material_displaying_texture(&display_mat, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels, 512);
     }
     
     prev_display_mat = display_mat;

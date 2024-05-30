@@ -58,7 +58,8 @@ struct MaterialThreadAction{
     bool object_texturing_dialog_mode = 0;
     Texture object_texturing_dialog_mask;
     std::vector<bool> update_channel_flags;
-    unsigned int resolution;
+    unsigned int resolution = 1024;
+    bool update_buffers_right_away = false;
 };
 
 struct MaterialThread{
@@ -72,7 +73,7 @@ struct MaterialThread{
     void update_thread_result();
     
     void read_material_file(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path, unsigned int resolution);
-    void apply_material(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution);
+    void apply_material(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution, bool update_buffers_right_away);
     void update_material_displaying_texture(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution);
     void layer_stuff(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution);
     void update_object_texturing_dialog_result(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, Texture mask, std::vector<bool> update_channel_flags, unsigned int resolution);
@@ -81,7 +82,7 @@ struct MaterialThread{
 private:
     void use_thread(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path, 
                     bool update_the_material_displaying_texture, bool update_layer_scene_result, bool object_texturing_dialog_mode, 
-                    Texture object_texturing_dialog_mask, std::vector<bool> update_channel_flags, unsigned int resolution);
+                    Texture object_texturing_dialog_mask, std::vector<bool> update_channel_flags, unsigned int resolution, bool update_buffers_right_away);
 
 };
 

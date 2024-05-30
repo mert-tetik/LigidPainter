@@ -28,7 +28,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Util.hpp"
 #include "UTIL/Painting/Painter.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Threads/Threads.hpp"
 #include "UTIL/GL/GL.hpp"
+#include "UTIL/Wait/Wait.hpp"
 
 #include "3D/Material/Material.hpp"
 
@@ -667,40 +669,47 @@ void bucket_paint_texture(Texture texture, Color color, float opacity, Mesh* mes
     delete[] pxs;
 }
 
-static Mesh customMatMesh;
+static MaterialChannels custom_mat_result_channels;
 static Material prevCustomMaterial;
 static int prevMeshVBO = 0;
-static int prevMeshIndicesSize = 0;
+static size_t prevMeshIndicesSize = 0;
 static void update_custom_material_mesh(PaintSettings::ColorBuffer color_buffer, Mesh* mesh, glm::ivec2 resolution){
-    /*if(prevCustomMaterial != color_buffer.material || prevMeshVBO != mesh->vertex_buffers.VBO || prevMeshIndicesSize != mesh->indices.size()){
-        customMatMesh.EBO = mesh->EBO;
-        customMatMesh.VBO = mesh->VBO;
-        customMatMesh.VAO = mesh->VAO;
-        customMatMesh.indices = mesh->indices;
-        
-        if(!customMatMesh.material_channels.albedo.ID){
-            customMatMesh.material_channels.albedo = Texture((char*)nullptr, resolution.x, resolution.y);
-            customMatMesh.material_channels.roughness = Texture((char*)nullptr, resolution.x, resolution.y);
-            customMatMesh.material_channels.metallic = Texture((char*)nullptr, resolution.x, resolution.y);
-            customMatMesh.material_channels.normalMap = Texture((char*)nullptr, resolution.x, resolution.y);
-            customMatMesh.material_channels.heightMap = Texture((char*)nullptr, resolution.x, resolution.y);
-            customMatMesh.material_channels.ambientOcclusion = Texture((char*)nullptr, resolution.x, resolution.y);
+    
+    LigidWindow* bound_context = LigidGL::getBoundContext();
+    
+    if(bound_context == nullptr){
+        LGDLOG::start << "ERROR : update_custom_material_mesh : No valid bound context" << LGDLOG::end;
+        return;
+    }
+    
+    if(prevCustomMaterial != color_buffer.material || prevMeshVBO != mesh->vertex_buffers[bound_context].VBO || prevMeshIndicesSize != mesh->indices.size()){
+        if(!custom_mat_result_channels.albedo.ID){
+            custom_mat_result_channels.albedo = Texture((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.roughness = Texture((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.metallic = Texture((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.normalMap = Texture((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.heightMap = Texture((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.ambientOcclusion = Texture((char*)nullptr, resolution.x, resolution.y);
         }
         else{
-            customMatMesh.material_channels.albedo.update((char*)nullptr, resolution.x, resolution.y);
-            customMatMesh.material_channels.roughness.update((char*)nullptr, resolution.x, resolution.y);
-            customMatMesh.material_channels.metallic.update((char*)nullptr, resolution.x, resolution.y);
-            customMatMesh.material_channels.normalMap.update((char*)nullptr, resolution.x, resolution.y);
-            customMatMesh.material_channels.heightMap.update((char*)nullptr, resolution.x, resolution.y);
-            customMatMesh.material_channels.ambientOcclusion.update((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.albedo.update((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.roughness.update((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.metallic.update((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.normalMap.update((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.heightMap.update((char*)nullptr, resolution.x, resolution.y);
+            custom_mat_result_channels.ambientOcclusion.update((char*)nullptr, resolution.x, resolution.y);
         }
 
-        //color_buffer.material.apply_material(*getScene()->model, customMatMesh, resolution.x, false);
+        WAIT_WHILE(material_thread.actions.size());
+
+        material_thread.apply_material(&color_buffer.material, getScene()->model, mesh, &custom_mat_result_channels, resolution.x, true);
+
+        WAIT_WHILE(material_thread.active);
     }
 
     prevCustomMaterial = color_buffer.material;
-    prevMeshVBO = mesh->VBO;
-    prevMeshIndicesSize = mesh->indices.size();*/
+    prevMeshVBO = mesh->vertex_buffers[bound_context].VBO;
+    prevMeshIndicesSize = mesh->indices.size();
 }
 
 static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 textureRes, unsigned int &selectedTextureID){
@@ -836,32 +845,32 @@ static std::vector<PaintedBufferData> get_painted_buffers(PaintSettings settings
             if(i == 0 && settings.painted_buffers.material_channel_albedo_active){
                 data.clr = settings.color_buffer.stroke_albedo_color.getRGB_normalized();
                 data.txtr = settings.painted_buffers.material_channel_albedo;
-                data.corresponding_custom_material_channel = customMatMesh.material_channels.albedo;
+                data.corresponding_custom_material_channel = custom_mat_result_channels.albedo;
             }
             if(i == 1 && settings.painted_buffers.material_channel_roughness_active){
                 data.clr = glm::vec3(settings.color_buffer.stroke_roughness_color);
                 data.txtr = settings.painted_buffers.material_channel_roughness;
-                data.corresponding_custom_material_channel = customMatMesh.material_channels.roughness;
+                data.corresponding_custom_material_channel = custom_mat_result_channels.roughness;
             }
             if(i == 2 && settings.painted_buffers.material_channel_metallic_active){
                 data.clr = glm::vec3(settings.color_buffer.stroke_metallic_color);
                 data.txtr = settings.painted_buffers.material_channel_metallic;
-                data.corresponding_custom_material_channel = customMatMesh.material_channels.metallic;
+                data.corresponding_custom_material_channel = custom_mat_result_channels.metallic;
             }
             if(i == 3 && settings.painted_buffers.material_channel_normalMap_active){
                 data.clr = glm::vec3(settings.color_buffer.stroke_normalMap_color);
                 data.txtr = settings.painted_buffers.material_channel_normalMap;
-                data.corresponding_custom_material_channel = customMatMesh.material_channels.normalMap;
+                data.corresponding_custom_material_channel = custom_mat_result_channels.normalMap;
             }
             if(i == 4 && settings.painted_buffers.material_channel_heightMap_active){
                 data.clr = glm::vec3(settings.color_buffer.stroke_heightMap_color);
                 data.txtr = settings.painted_buffers.material_channel_heightMap;
-                data.corresponding_custom_material_channel = customMatMesh.material_channels.heightMap;
+                data.corresponding_custom_material_channel = custom_mat_result_channels.heightMap;
             }
             if(i == 5 && settings.painted_buffers.material_channel_ao_active){
                 data.clr = glm::vec3(settings.color_buffer.stroke_ao_color);
                 data.txtr = settings.painted_buffers.material_channel_ao;
-                data.corresponding_custom_material_channel = customMatMesh.material_channels.ambientOcclusion;
+                data.corresponding_custom_material_channel = custom_mat_result_channels.ambientOcclusion;
             }
 
             data.channel_index = i;
@@ -872,7 +881,7 @@ static std::vector<PaintedBufferData> get_painted_buffers(PaintSettings settings
         PaintedBufferData data;
         data.clr = glm::vec3(settings.color_buffer.stroke_albedo_color.getRGB_normalized());
         data.txtr = settings.painted_buffers.solid_painted_texture;
-        data.corresponding_custom_material_channel = customMatMesh.material_channels.albedo;
+        data.corresponding_custom_material_channel = custom_mat_result_channels.albedo;
         data.channel_index = 0;
         result.push_back(data);
     }
