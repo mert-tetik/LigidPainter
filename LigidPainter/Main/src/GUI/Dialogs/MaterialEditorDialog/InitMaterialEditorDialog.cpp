@@ -98,6 +98,8 @@ MaterialEditorDialog::MaterialEditorDialog(int)
                             }, 
                             glm::vec2(0.f, 2.f), glm::vec3(15.f,50.f,0.9f), ColorPalette::secondColor,ColorPalette::thirdColor , false, true, false, true, true, 1.f, 1.f, {}, 10.f, true);
     
+    zoomPanel.solidStyle = true;
+
     navPanel.color.a = 1.f;
     
     bgPanel.solidStyle = true;
