@@ -106,15 +106,15 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
 
         if(selected_material != nullptr){
             if(material == nullptr)
-                this->selectedMatPanel.sections[0].elements[4].scale.y = 0.f;
+                this->selectedMatPanel.sections[0].elements[5].scale.y = 0.f;
             else
-                this->selectedMatPanel.sections[0].elements[4].scale.y = 2.f;
+                this->selectedMatPanel.sections[0].elements[5].scale.y = 2.f;
             
             if(selectedMatMode < matModePanel.sections[0].elements.size()){
                 if(matModePanel.sections[0].elements[selectedMatMode].button.text == "From Library")
-                    this->selectedMatPanel.sections[0].elements[5].scale.y = 0.f;
+                    this->selectedMatPanel.sections[0].elements[4].scale.y = 0.f;
                 else
-                    this->selectedMatPanel.sections[0].elements[5].scale.y = 2.f;
+                    this->selectedMatPanel.sections[0].elements[4].scale.y = 2.f;
             }
 
             this->selectedMatPanel.sections[0].elements[3].scale.y = 2.f;
@@ -155,7 +155,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
                     dialog_materialEditor.show(timer, selected_material);
             }
         }
-        else if(this->selectedMatPanel.sections[0].elements[4].button.clicked){
+        else if(this->selectedMatPanel.sections[0].elements[5].button.clicked){
             if(material != nullptr){
                 
                 Material* selected_material = this->get_selected_material();
@@ -171,7 +171,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
                 }
             }
         }
-        else if(this->selectedMatPanel.sections[0].elements[5].button.clicked){
+        else if(this->selectedMatPanel.sections[0].elements[4].button.clicked){
             Material* selected_material = this->get_selected_material();
             WAIT_WHILE(material_thread.actions.size());
 
