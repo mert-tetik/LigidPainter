@@ -65,6 +65,7 @@ struct VectorStroke{
     
     void renderCurve(float edge, glm::vec2 start, glm::vec2 dest, glm::vec2 offset);
     void draw(Timer& timer, float edge, bool doMouseTracking, std::vector<VectorStroke>& strokes, int curI);
+    void draw_single_stroke(Timer& timer, float edge);
 };
 
 struct VertexUTIL {

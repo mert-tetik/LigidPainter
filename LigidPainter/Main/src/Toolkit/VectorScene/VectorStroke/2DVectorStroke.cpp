@@ -135,19 +135,33 @@ void VectorStroke::draw(Timer& timer, float edge, bool doMouseTracking, std::vec
     glm::vec4 endClr = glm::vec4(1.f);
     glm::vec4 startClr = glm::vec4(1.f);
 
-    if(curI == strokes.size() - 1){
-        endClr = glm::vec4(148.f / 255.f, 194.f / 255.f, 132.f / 255.f, 1.f);
-    }
-    if(curI == 0){
-        startClr = glm::vec4(194.f / 255.f, 132.f / 255.f, 177.f / 255.f, 1.f);
-    }
+    if(strokes.size()){
+        if(curI == strokes.size() - 1){
+            endClr = glm::vec4(148.f / 255.f, 194.f / 255.f, 132.f / 255.f, 1.f);
+        }
+        if(curI == 0){
+            startClr = glm::vec4(194.f / 255.f, 132.f / 255.f, 177.f / 255.f, 1.f);
+        }
 
-    this->startPoint.render(timer, doMouseTracking, 1.f, startClr);
-    if(curI == strokes.size() - 1){
-        this->endPoint.render(timer, doMouseTracking, 1.f, endClr);
+        this->startPoint.render(timer, doMouseTracking, 1.f, startClr);
+        if(curI == strokes.size() - 1){
+            this->endPoint.render(timer, doMouseTracking, 1.f, endClr);
+        }
+        else{
+            this->endPoint = strokes[curI + 1].startPoint;
+        }
+        this->offsetPoint.render(timer, doMouseTracking, 2.f, glm::vec4(1.f));
     }
-    else{
-        this->endPoint = strokes[curI + 1].startPoint;
-    }
-    this->offsetPoint.render(timer, doMouseTracking, 2.f, glm::vec4(1.f));
 }
+
+void VectorStroke::draw_single_stroke(Timer& timer, float edge){
+    // Rendering the main curve
+    this->renderCurve(edge, this->startPoint.pos, this->endPoint.pos, this->offsetPoint.pos);
+    if(this->offsetPoint.pos != this->startPoint.pos && this->offsetPoint.pos != this->endPoint.pos){
+        // Rendering the offset curves
+        this->renderCurve(edge / 5.f, this->startPoint.pos, this->endPoint.pos, this->offsetPoint.pos);
+        this->renderCurve(edge / 5.f, this->startPoint.pos, this->offsetPoint.pos, this->offsetPoint.pos);
+        this->renderCurve(edge / 5.f, this->endPoint.pos, this->offsetPoint.pos, this->offsetPoint.pos);
+    }
+}
+    

@@ -70,7 +70,8 @@ void render_toolkits_before_panels(Timer& timer){
         line_painting(
                         timer, 
                         prevStraightLinePaintingCondition && !straightLinePaintingCondition, 
-                        !prevStraightLinePaintingCondition && straightLinePaintingCondition
+                        !prevStraightLinePaintingCondition && straightLinePaintingCondition,
+                        getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT)
                     );
         Debugger::block("GUI : Line painting"); // End
     }

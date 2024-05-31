@@ -19,73 +19,84 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <glm/gtc/type_ptr.hpp>
 
 #include "GUI/GUI.hpp"
+#include "GUI/Panels.hpp"
+
 #include "3D/ThreeD.hpp"
+
 #include "UTIL/Shader/Shader.hpp"
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Mouse/Mouse.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
+#include "UTIL/Painting/Painter.hpp"
+
 #include "Toolkit/Toolkits.hpp"
-#include "GUI/Panels.hpp"
 
 #include <string>
 #include <iostream>
 #include <vector>
 
 
-static glm::vec2 straightLinePaintingStartPos;
-static glm::vec2 straightLinePaintingDirectionPos;
+static glm::vec2 straightLinePaintingStartPos = glm::vec2(-1.f);
+static glm::vec2 straightLinePaintingDirectionPos = glm::vec2(-1.f);
+static bool leaved_threshold = false;
+static bool leaved_and_got_in_threshold = false;
 
-void line_painting(Timer& timer, bool applyStroke, bool firstFrame){
+void line_painting(Timer& timer, bool applyStroke, bool firstFrame, bool curvy){
+    float threshold = 2.f;
+    bool inside_threshold = glm::distance(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f) < threshold;
+
     if(!applyStroke){
         if(firstFrame){
+            straightLinePaintingDirectionPos = glm::vec2(-1.f);
+
             straightLinePaintingStartPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
             glm::vec2 cursorOffset = *Mouse::mouseOffset();
+            
             if(cursorOffset.x || cursorOffset.y)
                 cursorOffset = glm::normalize(cursorOffset);
-            straightLinePaintingDirectionPos = straightLinePaintingStartPos + cursorOffset * 5.f; 
         }
 
-        glm::vec2 destPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+        float offset_threshold = 7.f;
+        bool inside_offset_threshold = glm::distance(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f) < offset_threshold;
         
-        if(glm::distance(straightLinePaintingDirectionPos, straightLinePaintingStartPos) < 10.f){
-            straightLinePaintingDirectionPos = destPos; 
+        if(!curvy){
+            straightLinePaintingDirectionPos = straightLinePaintingStartPos; 
+        }
+        else{
+            if(!inside_offset_threshold && straightLinePaintingDirectionPos == glm::vec2(-1.f)){
+                straightLinePaintingDirectionPos = *Mouse::cursorPos() / *Settings::videoScale() * 100.f;
+            }
         }
 
-        //ABS
-        ShaderSystem::vectoralCurve().use();
-        ShaderSystem::vectoralCurve().setMat4("projection", getContext()->ortho_projection); 
-        
-        ShaderSystem::vectoralCurve().setVec3("pos", glm::vec3(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f, 0.9f));
-        ShaderSystem::vectoralCurve().setVec2("scale", glm::vec2(Settings::videoScale()->x/2.f, Settings::videoScale()->y/2.f));
-        
-        if(getContext()->window.isKeyPressed(LIGIDGL_KEY_LEFT_ALT))
-            ShaderSystem::vectoralCurve().setVec2("direction", straightLinePaintingDirectionPos);
-        else
-            ShaderSystem::vectoralCurve().setVec2("direction", destPos);
-        
-        ShaderSystem::vectoralCurve().setVec2("startPos", straightLinePaintingStartPos);
-        ShaderSystem::vectoralCurve().setVec2("destPos", destPos);
-        
-        ShaderSystem::vectoralCurve().setVec2("percScale", *Settings::videoScale());
-        ShaderSystem::vectoralCurve().setInt("lineCapturingMode", 0);
-        
-        ShaderSystem::vectoralCurve().setFloat("EDGE", 0.0005f);
+        if(!inside_threshold){
+            leaved_threshold = true;
+            leaved_and_got_in_threshold = false;
+        }
 
-        getBox()->draw("Straight line painting vector");
-    
-        ShaderUTIL::release_bound_shader();
+
+        if(inside_threshold && leaved_threshold){
+            leaved_and_got_in_threshold = true;
+        }
+        
+        VectorStroke stroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, (straightLinePaintingDirectionPos != glm::vec2(-1.f)) ? straightLinePaintingDirectionPos : straightLinePaintingStartPos);
+
+        if(!leaved_and_got_in_threshold)
+            stroke.draw_single_stroke(timer, 0.0005f);
     }
     else{
-        /*        
         std::vector<VectorStroke> strokeArray;
-        strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, straightLinePaintingDirectionPos));
-        painter.applyVectorStrokes(
-                                    strokeArray, 
-                                    panel_painting_modes.selectedElement, 
-                                    checkComboList_painting_color.panel.sections[0].elements[14].button.material,
-                                    painter.wrapMode
-                                );
-        */
+        strokeArray.push_back(VectorStroke(straightLinePaintingStartPos, *Mouse::cursorPos() / *Settings::videoScale() * 100.f, (straightLinePaintingDirectionPos != glm::vec2(-1.f)) ? straightLinePaintingDirectionPos : straightLinePaintingStartPos));
+        
+        VectorScene scene = VectorScene(strokeArray, {});
+        bool success = false;
+        PaintSettings settings = get_paint_settings_using_GUI_data(&success);
+
+        if(success && !leaved_and_got_in_threshold){
+            scene.apply_strokes(false, checkBox_wrap_mode.clickState1, settings);
+        }
+
+        leaved_threshold = false;
+        leaved_and_got_in_threshold = false;
     }
 }

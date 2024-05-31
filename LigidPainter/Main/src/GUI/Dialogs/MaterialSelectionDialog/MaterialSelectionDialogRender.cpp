@@ -27,6 +27,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Threads/Threads.hpp"
+#include "UTIL/Wait/Wait.hpp"
 
 #include <string>
 #include <iostream>
@@ -99,10 +100,10 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         this->selectedMatPanel.render(timer, !dialog_log.isHovered());
         this->matModePanel.render(timer, !dialog_log.isHovered());
         
-        if(material_thread.active && material_thread.actions.size()){
+        if(material_thread.active){
             Material* selected_material = this->get_selected_material();
             if(selected_material != nullptr){
-                if(material_thread.actions[0].material == selected_material){
+                if(((material_thread.actions.size()) ? material_thread.actions[0].material : nullptr) == selected_material){
                     Element* btn = &this->selectedMatPanel.sections[0].elements[0];
                     appVideos.loading.render(timer, btn->pos, glm::vec2(btn->scale.y / (Settings::videoScale()->x / Settings::videoScale()->y), btn->scale.y) / 1.2f, 1.f, 1, true);
                     btn->button.textureSizeScale = 100000000.f;
@@ -116,18 +117,26 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         }
 
         if(this->selectedMatPanel.sections[0].elements[3].button.clicked){
+
             Material* selected_material = this->get_selected_material();
+            WAIT_WHILE(material_thread.actions.size());
+
             if(selected_material != nullptr){
-                dialog_materialEditor.show(timer, selected_material);
+                if(selected_material->material_selection_dialog_initialized)
+                    dialog_materialEditor.show(timer, selected_material);
             }
         }
         else if(this->selectedMatPanel.sections[0].elements[4].button.clicked){
             if(material != nullptr){
+                
+                Material* selected_material = this->get_selected_material();
+                WAIT_WHILE(material_thread.actions.size());
+
                 material->deleteBuffers();
 
-                Material* selected_material = this->get_selected_material();
                 if(selected_material != nullptr){
-                    *material = selected_material->duplicateMaterial();
+                    if(selected_material->material_selection_dialog_initialized)
+                        *material = selected_material->duplicateMaterial();
                 }
             }
             this->dialogControl.unActivate();
@@ -170,7 +179,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
                 if(material_thread.actions.size()){
                     if(
                             !matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][matI].material_selection_dialog_initialized ||
-                            (material_thread.actions[0].material == &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][matI] && 
+                            (((material_thread.actions.size()) ? material_thread.actions[0].material : nullptr) == &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][matI] && 
                             material_thread.active)
                             )
                     {
