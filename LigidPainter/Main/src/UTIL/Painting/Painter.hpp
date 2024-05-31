@@ -301,7 +301,7 @@ struct PaintSettings{
                     PaintVertexBuffer vertex_buffer, PointData point, int painting_mode, DrawMode draw_mode, SoftenMode soften_mode, 
                     SmearMode smear_mode, NormalMode normal_mode, FilterMode filter_mode, BucketMode bucket_mode, Brush stroke_brush
                 )
-{
+    {
         this->painting_over_data = painting_over_data;
         this->color_buffer = color_buffer;
         this->painted_buffers = painted_buffers;
@@ -316,6 +316,54 @@ struct PaintSettings{
         this->filter_mode = filter_mode;
         this->bucket_mode = bucket_mode;
         this->stroke_brush = stroke_brush;
+    }
+
+    bool operator==(const PaintSettings paintSettings) const{
+        if(this->color_buffer.material != paintSettings.color_buffer.material){return false;}
+        if(this->color_buffer.stroke_albedo_color.priv_rgb != paintSettings.color_buffer.stroke_albedo_color.priv_rgb){return false;}
+        if(this->color_buffer.stroke_roughness_color != paintSettings.color_buffer.stroke_roughness_color){return false;}
+        if(this->color_buffer.stroke_metallic_color != paintSettings.color_buffer.stroke_metallic_color){return false;}
+        if(this->color_buffer.stroke_normalMap_color != paintSettings.color_buffer.stroke_normalMap_color){return false;}
+        if(this->color_buffer.stroke_heightMap_color != paintSettings.color_buffer.stroke_heightMap_color){return false;}
+        if(this->color_buffer.stroke_ao_color != paintSettings.color_buffer.stroke_ao_color){return false;}
+        if(this->filter_mode.filter.shader.ID != paintSettings.filter_mode.filter.shader.ID){return false;}
+        if(this->mirror_settings.X != paintSettings.mirror_settings.X){return false;}
+        if(this->mirror_settings.Y != paintSettings.mirror_settings.Y){return false;}
+        if(this->mirror_settings.Z != paintSettings.mirror_settings.Z){return false;}
+        if(this->mirror_settings.X_offset != paintSettings.mirror_settings.X_offset){return false;}
+        if(this->mirror_settings.Y_offset != paintSettings.mirror_settings.Y_offset){return false;}
+        if(this->mirror_settings.Z_offset != paintSettings.mirror_settings.Z_offset){return false;}
+        if(this->normal_mode.normal_strength != paintSettings.normal_mode.normal_strength){return false;}
+        if(this->painted_buffers.material_painting != paintSettings.painted_buffers.material_painting){return false;}
+        if(this->painted_buffers.solid_painted_texture != paintSettings.painted_buffers.solid_painted_texture){return false;}
+        if(this->painted_buffers.material_channel_albedo_active != paintSettings.painted_buffers.material_channel_albedo_active){return false;}
+        if(this->painted_buffers.material_channel_albedo != paintSettings.painted_buffers.material_channel_albedo){return false;}
+        if(this->painted_buffers.material_channel_roughness_active != paintSettings.painted_buffers.material_channel_roughness_active){return false;}
+        if(this->painted_buffers.material_channel_roughness != paintSettings.painted_buffers.material_channel_roughness){return false;}
+        if(this->painted_buffers.material_channel_metallic_active != paintSettings.painted_buffers.material_channel_metallic_active){return false;}
+        if(this->painted_buffers.material_channel_metallic != paintSettings.painted_buffers.material_channel_metallic){return false;}
+        if(this->painted_buffers.material_channel_normalMap_active != paintSettings.painted_buffers.material_channel_normalMap_active){return false;}
+        if(this->painted_buffers.material_channel_normalMap != paintSettings.painted_buffers.material_channel_normalMap){return false;}
+        if(this->painted_buffers.material_channel_heightMap_active != paintSettings.painted_buffers.material_channel_heightMap_active){return false;}
+        if(this->painted_buffers.material_channel_heightMap != paintSettings.painted_buffers.material_channel_heightMap){return false;}
+        if(this->painted_buffers.material_channel_ao_active != paintSettings.painted_buffers.material_channel_ao_active){return false;}
+        if(this->painted_buffers.material_channel_ao != paintSettings.painted_buffers.material_channel_ao){return false;}
+        if(this->painting_mode != paintSettings.painting_mode){return false;}
+        if(this->painting_over_data.active != paintSettings.painting_over_data.active){return false;}
+        if(this->painting_over_data.gray_scale != paintSettings.painting_over_data.gray_scale){return false;}
+        if(this->painting_over_data.texture_field_scene != paintSettings.painting_over_data.texture_field_scene){return false;}
+        if(this->smear_mode.smear_blur_strength != paintSettings.smear_mode.smear_blur_strength){return false;}
+        if(this->smear_mode.smear_transform_strength != paintSettings.smear_mode.smear_transform_strength){return false;}
+        if(this->soften_mode.softening_strength != paintSettings.soften_mode.softening_strength){return false;}
+        if(this->stroke_brush != paintSettings.stroke_brush){return false;}
+        if(this->vertex_buffer.box != paintSettings.vertex_buffer.box){return false;}
+        if(this->vertex_buffer.model_mesh != paintSettings.vertex_buffer.model_mesh){return false;}
+        if(this->vertex_buffer.paint_model != paintSettings.vertex_buffer.paint_model){return false;}
+
+        return true;
+    }
+    bool operator!=(const PaintSettings paintSettings) const{
+        return !(*this == paintSettings);
     }
 };
 

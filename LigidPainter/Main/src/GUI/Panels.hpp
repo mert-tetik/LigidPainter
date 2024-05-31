@@ -67,7 +67,7 @@ void panel_painting_modes_render(Timer& timer, bool doMouseTracking);
 
 /*! @brief 0 = Material result displayer, 1 = enable albedo, 2 = albedo color, 3 = enable roughness, 4 = roughness value, 5 = enable metallic, 6 = metallic value, 7 = enable normal, 8 = normal value, 9 = enable heightmap, 10 = heightmap value, 11 = enable ao, 12 = ao value, 13 = use custom material, 14 = select custom material */
 extern CheckComboList checkComboList_painting_color;
-void checkComboList_painting_color_render(Timer& timer, bool doMouseTracking);
+void checkComboList_painting_color_render(Timer& timer, bool doMouseTracking, CheckComboList& checkComboList_painting_color);
 
 /*! @brief 0 = Mask to selected mesh, 1 = Mesh selection mode, 2 = Selecting Mode, 3 = Circle radius, 4 = Auto Select, 5 = Mask via texture, 6 = Cancel texture mask, 7 = Hide unselected mesh*/
 extern CheckComboList checkComboList_mesh_face_selection;
@@ -75,7 +75,7 @@ void checkComboList_mesh_face_selection_render(Timer& timer, bool doMouseTrackin
 
 /*! @brief 0 = x axis, 1 = x axis offset, 2 = x axis, 3 = x axis offset, 4 = x axis, 5 = x axis offset*/
 extern CheckComboList checkComboList_painting_mirror;
-void checkComboList_painting_mirror_render(Timer& timer, bool doMouseTracking);
+void checkComboList_painting_mirror_render(Timer& timer, bool doMouseTracking, CheckComboList& checkComboList_painting_mirror);
 
 /*! @brief 0 = Use Painting Over, 1 = Editor Mode, 2 = Add Texture From Library, 3 = Add Texture From Computer, 4 = Grayscale Masking */
 extern CheckComboList checkComboList_painting_over;

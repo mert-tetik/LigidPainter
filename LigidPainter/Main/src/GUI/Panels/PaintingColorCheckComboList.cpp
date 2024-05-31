@@ -41,7 +41,7 @@ CheckComboList checkComboList_painting_color;
 static Material display_mat;
 static Material prev_display_mat;
 
-void checkComboList_painting_color_render(Timer& timer, bool doMouseTracking){
+void checkComboList_painting_color_render(Timer& timer, bool doMouseTracking, CheckComboList& checkComboList_painting_color){
     checkComboList_painting_color.checkButton.color2 = checkComboList_painting_color.checkButton.color;
     checkComboList_painting_color.checkButton.clickState1 = true;
     checkComboList_painting_color.render(timer, doMouseTracking);

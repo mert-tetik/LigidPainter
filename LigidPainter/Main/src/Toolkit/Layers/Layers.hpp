@@ -211,6 +211,8 @@ public:
     Button filter_button;
     Button brush_properties_button;
 
+    PaintSettings get_painting_settings(const unsigned int resolution, Mesh& mesh);
+
     VectorLayer(const unsigned int resolution);
 
     void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) override;

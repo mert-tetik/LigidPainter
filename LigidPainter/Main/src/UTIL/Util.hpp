@@ -205,10 +205,10 @@ private:
     std::string hsvToHex(glm::vec3 hsv);
 
 
-    /// @brief The color value in the range of 0 - 255
-    glm::vec3 priv_rgb;
 
 public:
+    /// @brief The color value in the range of 0 - 255
+    glm::vec3 priv_rgb;
 
     /// @brief @return the Red, Green, Blue value of the color in the range of 0 - 255 
     glm::vec3 getRGB();  
@@ -279,6 +279,30 @@ struct BrushProperties{
     bool individualTexture = false;
     bool sinWavePattern = false;
     Texture brushTexture;
+
+    bool operator==(BrushProperties props) const{
+        if(this->radius != props.radius) {return false;}
+        if(this->hardness != props.hardness) {return false;}
+        if(this->opacity != props.opacity) {return false;}
+        if(this->spacing != props.spacing) {return false;}
+        if(this->sizeJitter != props.sizeJitter) {return false;}
+        if(this->scatter != props.scatter) {return false;}
+        if(this->fade != props.fade) {return false;}
+        if(this->rotation != props.rotation) {return false;}
+        if(this->rotationJitter != props.rotationJitter) {return false;}
+        if(this->alphaJitter != props.alphaJitter) {return false;}
+        if(this->individualTexture != props.individualTexture) {return false;}
+        if(this->sinWavePattern != props.sinWavePattern) {return false;}
+        if(this->brushTexture != props.brushTexture) {return false;}
+
+        return true;
+    }
+
+    bool operator!=(BrushProperties props) const{
+        return !(*this == props);
+    }
+
+
 };
 
 class Brush
@@ -310,6 +334,20 @@ public:
 
     /// @brief Updates the displaying texture using brush properties.
     void updateDisplayTexture(float radius);
+
+    bool operator==(Brush brush) const{
+        if(this->properties != brush.properties)
+            return false;
+
+        if(this->displayingTexture.ID != brush.displayingTexture.ID)
+            return false;
+
+        return true;
+    }
+    
+    bool operator!=(Brush brush) const{
+        return !(*this == brush);
+    }
 };
 
 /// @brief Image filter library element. 

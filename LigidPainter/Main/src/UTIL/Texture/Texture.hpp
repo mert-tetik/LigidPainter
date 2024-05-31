@@ -228,6 +228,19 @@ public:
     Texture duplicateTexture(std::string location);
     void duplicateTexture(Texture &txtr, std::string location);
     void duplicateTextureSub(Texture &txtr, std::string location);
+
+    bool operator==(Texture texture) const{
+        if(this->ID != texture.ID)
+            return false;
+        
+        if(this->proceduralProps != texture.proceduralProps)
+            return false;
+
+        return true;
+    }
+    bool operator!=(Texture texture) const{
+        return !(*this == texture);
+    }
 };
 
 #endif

@@ -50,6 +50,7 @@ VectorLayer::VectorLayer(const unsigned int resolution){
 }
 
 static std::vector<VectorStroke3D> last_strokes;
+static PaintSettings last_paint_settings;
 
 static Button quit_modifying_button = Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "Quit Modifying", Texture(), 0.f, false);
 
@@ -63,7 +64,7 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
     glClear(GL_DEPTH_BUFFER_BIT);
 
     Button vector_layer_specific_info_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(this->color_checkComboList.scale.x + this->mirror_checkComboList.scale.x + this->brush_properties_button.scale.x, 1.f), "Vector Layer Specific", Texture(), 0.f, false);
-    vector_layer_specific_info_btn.pos = glm::vec3(panel_library.pos.x + panel_library.scale.x + vector_layer_specific_info_btn.scale.x + 1.f, panel_library.pos.y - panel_library.scale.y + vector_layer_specific_info_btn.scale.y + panel_painting_modes.scale.y * 2.f + 1.f, 0.9f);
+    vector_layer_specific_info_btn.pos = glm::vec3(panel_library.pos.x + panel_library.scale.x + vector_layer_specific_info_btn.scale.x + 1.f, panel_library.pos.y - panel_library.scale.y + vector_layer_specific_info_btn.scale.y + 1.f, 0.9f);
     vector_layer_specific_info_btn.render(timer, false);
     
     quit_modifying_button.scale.x = vector_layer_specific_info_btn.scale.x;
@@ -75,17 +76,16 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
     }
 
     this->color_checkComboList.pos = glm::vec3(quit_modifying_button.pos.x - quit_modifying_button.scale.x + this->color_checkComboList.scale.x, quit_modifying_button.pos.y + quit_modifying_button.scale.y + this->color_checkComboList.scale.y, 0.7f);
-    this->color_checkComboList.render(timer, doMouseTracking);
+    checkComboList_painting_color_render(timer, doMouseTracking, this->color_checkComboList);
     
     this->mirror_checkComboList.pos = glm::vec3(this->color_checkComboList.pos.x + this->color_checkComboList.scale.x + this->mirror_checkComboList.scale.x, this->color_checkComboList.pos.y, this->color_checkComboList.pos.z);
-    this->mirror_checkComboList.render(timer, doMouseTracking);
+    checkComboList_painting_mirror_render(timer, doMouseTracking, this->mirror_checkComboList);
    
     this->brush_properties_button.scale.y = mirror_checkComboList.scale.y;
     this->brush_properties_button.pos = glm::vec3(this->mirror_checkComboList.pos.x + this->mirror_checkComboList.scale.x + this->brush_properties_button.scale.x, this->mirror_checkComboList.pos.y, this->color_checkComboList.pos.z);
     this->brush_properties_button.render(timer, doMouseTracking);
     
     bool same = true;
-
     if(this->vector_scene.strokes_3D.size() == last_strokes.size()){
         for (size_t i = 0; i < this->vector_scene.strokes_3D.size(); i++)
         {
@@ -98,16 +98,18 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
     else
         same = false;
 
+    if(last_paint_settings != this->get_painting_settings(resolution, mesh)){
+        same = false;
+    }
+
     if(!*Mouse::LPressed() && !same){
         this->update_result_buffers(resolution, mesh);
         last_strokes = this->vector_scene.strokes_3D;
+        last_paint_settings = this->get_painting_settings(resolution, mesh);
     }
 }
 
 void VectorLayer::type_specific_generate_result(const unsigned int resolution, Mesh& mesh){
-    Box emptyBox;
-    TextureFieldScene emptyTextureFieldScene;
-
     this->result.albedo.update((char*)nullptr, this->result.albedo.getResolution().x, this->result.albedo.getResolution().y);
     this->result.roughness.update((char*)nullptr, this->result.roughness.getResolution().x, this->result.roughness.getResolution().y);
     this->result.metallic.update((char*)nullptr, this->result.metallic.getResolution().x, this->result.metallic.getResolution().y);
@@ -116,41 +118,48 @@ void VectorLayer::type_specific_generate_result(const unsigned int resolution, M
     this->result.ambientOcclusion.update((char*)nullptr, this->result.ambientOcclusion.getResolution().x, this->result.ambientOcclusion.getResolution().y);
 
     vector_scene.apply_strokes(
-                                true, 
-                                false, 
-                                PaintSettings(
-                                                PaintSettings::PaintingOverData(false, false, &emptyTextureFieldScene),
-                                                PaintSettings::ColorBuffer(
-                                                                                this->color_checkComboList.panel.sections[0].elements[2].painterColorSelection.getSelectedColor(),
-                                                                                this->color_checkComboList.panel.sections[0].elements[4].rangeBar.value,
-                                                                                this->color_checkComboList.panel.sections[0].elements[6].rangeBar.value,
-                                                                                this->color_checkComboList.panel.sections[0].elements[8].rangeBar.value,
-                                                                                this->color_checkComboList.panel.sections[0].elements[10].rangeBar.value,
-                                                                                this->color_checkComboList.panel.sections[0].elements[12].rangeBar.value,
-                                                                                this->color_checkComboList.panel.sections[0].elements[14].button.material,
-                                                                                this->color_checkComboList.panel.sections[0].elements[13].checkBox.clickState1
-                                                                            ),
-                                                PaintSettings::PaintedBuffers(true, Texture(), true, this->result.albedo, true, this->result.roughness, true, this->result.metallic, true, this->result.normalMap, true, this->result.heightMap, true, this->result.ambientOcclusion),
-                                                PaintSettings::MirrorSettings(
-                                                                                this->mirror_checkComboList.panel.sections[0].elements[0].checkBox.clickState1, 
-                                                                                this->mirror_checkComboList.panel.sections[0].elements[1].rangeBar.value, 
-                                                                                this->mirror_checkComboList.panel.sections[0].elements[2].checkBox.clickState1, 
-                                                                                this->mirror_checkComboList.panel.sections[0].elements[3].rangeBar.value, 
-                                                                                this->mirror_checkComboList.panel.sections[0].elements[4].checkBox.clickState1, 
-                                                                                this->mirror_checkComboList.panel.sections[0].elements[5].rangeBar.value
-                                                                            ),
-                                                PaintSettings::PaintVertexBuffer(&mesh, &emptyBox, true),
-                                                PaintSettings::PointData(), // Auto-calculates in the function
-                                                0,
-                                                PaintSettings::DrawMode(),
-                                                PaintSettings::SoftenMode(1.f),
-                                                PaintSettings::SmearMode(smear_properties_panel.sections[0].elements[1].rangeBar.value, smear_properties_panel.sections[0].elements[0].rangeBar.value),
-                                                PaintSettings::NormalMode(1.f),
-                                                PaintSettings::FilterMode(filter_button.filter),
-                                                PaintSettings::BucketMode(),
-                                                brush_properties_button.brush
-                                            )
+                                    true, 
+                                    false, 
+                                    this->get_painting_settings(resolution, mesh)    
                                 );
 
     mesh.layerScene.update_result(resolution, glm::vec3(0.f), mesh);
+}
+
+PaintSettings VectorLayer::get_painting_settings(const unsigned int resolution, Mesh& mesh){
+    Box emptyBox;
+    TextureFieldScene emptyTextureFieldScene;
+
+    return PaintSettings(
+                            PaintSettings::PaintingOverData(false, false, &emptyTextureFieldScene),
+                            PaintSettings::ColorBuffer(
+                                                            this->color_checkComboList.panel.sections[0].elements[2].painterColorSelection.getSelectedColor(),
+                                                            this->color_checkComboList.panel.sections[0].elements[4].rangeBar.value,
+                                                            this->color_checkComboList.panel.sections[0].elements[6].rangeBar.value,
+                                                            this->color_checkComboList.panel.sections[0].elements[8].rangeBar.value,
+                                                            this->color_checkComboList.panel.sections[0].elements[10].rangeBar.value,
+                                                            this->color_checkComboList.panel.sections[0].elements[12].rangeBar.value,
+                                                            this->color_checkComboList.panel.sections[0].elements[14].button.material,
+                                                            this->color_checkComboList.panel.sections[0].elements[13].checkBox.clickState1
+                                                        ),
+                            PaintSettings::PaintedBuffers(true, Texture(), true, this->result.albedo, true, this->result.roughness, true, this->result.metallic, true, this->result.normalMap, true, this->result.heightMap, true, this->result.ambientOcclusion),
+                            PaintSettings::MirrorSettings(
+                                                            this->mirror_checkComboList.panel.sections[0].elements[0].checkBox.clickState1, 
+                                                            this->mirror_checkComboList.panel.sections[0].elements[1].rangeBar.value, 
+                                                            this->mirror_checkComboList.panel.sections[0].elements[2].checkBox.clickState1, 
+                                                            this->mirror_checkComboList.panel.sections[0].elements[3].rangeBar.value, 
+                                                            this->mirror_checkComboList.panel.sections[0].elements[4].checkBox.clickState1, 
+                                                            this->mirror_checkComboList.panel.sections[0].elements[5].rangeBar.value
+                                                        ),
+                            PaintSettings::PaintVertexBuffer(&mesh, &emptyBox, true),
+                            PaintSettings::PointData(), // Auto-calculates in the function
+                            0,
+                            PaintSettings::DrawMode(),
+                            PaintSettings::SoftenMode(1.f),
+                            PaintSettings::SmearMode(smear_properties_panel.sections[0].elements[1].rangeBar.value, smear_properties_panel.sections[0].elements[0].rangeBar.value),
+                            PaintSettings::NormalMode(1.f),
+                            PaintSettings::FilterMode(filter_button.filter),
+                            PaintSettings::BucketMode(),
+                            brush_properties_button.brush
+                        );
 }

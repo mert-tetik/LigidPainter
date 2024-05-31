@@ -38,7 +38,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 CheckComboList checkComboList_painting_mirror;
 
-void checkComboList_painting_mirror_render(Timer& timer, bool doMouseTracking){
+void checkComboList_painting_mirror_render(Timer& timer, bool doMouseTracking, CheckComboList& checkComboList_painting_mirror){
     
     checkComboList_painting_mirror.checkButton.color2 = checkComboList_painting_mirror.checkButton.color;
     checkComboList_painting_mirror.checkButton.clickState1 = true;
