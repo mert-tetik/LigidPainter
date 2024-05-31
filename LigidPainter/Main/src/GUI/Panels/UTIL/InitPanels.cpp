@@ -314,6 +314,8 @@ void panels_init(){
 
     comboBox_layers_resolution = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f), {"256", "512", "1024", "2048", "4096", "8192"}, "Layers Resolution", 1.f);
     comboBox_layers_resolution.selectedIndex = 2;
+    comboBox_PBR_displaying_mode = ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f), {"PBR", "Albedo", "Roughness", "Metallic", "Normal Map", "Heigth Map", "Ambient Occlusion"}, "Displaying Mode", 1.f);
+    comboBox_PBR_displaying_mode.selectedIndex = 2;
 
     // ---------------------------------------------------
     

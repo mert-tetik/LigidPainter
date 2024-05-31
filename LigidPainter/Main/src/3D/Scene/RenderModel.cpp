@@ -154,6 +154,8 @@ void Scene::render_model(Timer& timer){
             ShaderSystem::tdModelShader().setInt("enableAOChannel", checkComboList_painting_color.panel.sections[0].elements[11].checkBox.clickState1);
 
             ShaderSystem::tdModelShader().setInt("paintingMode", painting_paint_condition());
+            
+            ShaderSystem::tdModelShader().setInt("displayingMode", comboBox_PBR_displaying_mode.selectedIndex);
 
             if(!(i != button_mesh_selection.selectedMeshI && this->model->meshes[i].face_selection_data.hideUnselected)){
                 this->model->meshes[i].Draw("Scene::render_model : PBR");

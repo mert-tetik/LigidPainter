@@ -42,23 +42,27 @@ void panels_transform()
     panel_window.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_window.scale.y; //Keep beneath the navigation bar
     panel_window.scale.y = 50.f - panel_navigation.scale.y; //Keep beneath the navigation bar
     
-    panel_layers.pos = panel_window.pos;
-    panel_layers.pos.x -= panel_window.scale.x + panel_layers.scale.x;
-    panel_layers.pos.y += panel_add_layer.scale.y + button_mesh_selection.scale.y + comboBox_layers_resolution.scale.y;
-    panel_layers.scale.y = panel_window.scale.y - panel_add_layer.scale.y - button_mesh_selection.scale.y - comboBox_layers_resolution.scale.y;
-
     button_mesh_selection.scale.x = panel_layers.scale.x;
-    button_mesh_selection.pos = panel_layers.pos;
-    button_mesh_selection.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + button_mesh_selection.scale.y;
+    button_mesh_selection.pos = panel_window.pos;
+    button_mesh_selection.pos.x -= panel_window.scale.x + button_mesh_selection.scale.x;
+    button_mesh_selection.pos.y -= panel_window.scale.y - button_mesh_selection.scale.y;
     
     comboBox_layers_resolution.scale.x = panel_layers.scale.x;
     comboBox_layers_resolution.pos = button_mesh_selection.pos;
     comboBox_layers_resolution.pos.y = button_mesh_selection.pos.y + button_mesh_selection.scale.y + comboBox_layers_resolution.scale.y;
     
-    panel_add_layer.scale.x = panel_layers.scale.x;
-    panel_add_layer.pos = comboBox_layers_resolution.pos;
-    panel_add_layer.pos.y = comboBox_layers_resolution.pos.y + comboBox_layers_resolution.scale.y + panel_add_layer.scale.y;
+    comboBox_PBR_displaying_mode.scale.x = comboBox_layers_resolution.scale.x;
+    comboBox_PBR_displaying_mode.pos = comboBox_layers_resolution.pos;
+    comboBox_PBR_displaying_mode.pos.y = comboBox_layers_resolution.pos.y + comboBox_layers_resolution.scale.y + comboBox_PBR_displaying_mode.scale.y;
     
+    panel_add_layer.scale.x = panel_layers.scale.x;
+    panel_add_layer.pos = comboBox_PBR_displaying_mode.pos;
+    panel_add_layer.pos.y = comboBox_PBR_displaying_mode.pos.y + comboBox_PBR_displaying_mode.scale.y + panel_add_layer.scale.y;
+    
+    panel_layers.scale.y = panel_window.scale.y - panel_add_layer.scale.y - button_mesh_selection.scale.y - comboBox_PBR_displaying_mode.scale.y - comboBox_layers_resolution.scale.y;
+    panel_layers.pos = panel_add_layer.pos;
+    panel_layers.pos.y += panel_add_layer.scale.y + panel_layers.scale.y;
+
     panel_library_modes.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_window.scale.y; //Keep beneath the navigation bar
     panel_library.pos.y = panel_navigation.pos.y + panel_navigation.scale.y + panel_library.scale.y; //Keep beneath the navigation bar
     panel_library.scale.y = 50 - panel_navigation.scale.y - panel_selected_texture_display.scale.y;

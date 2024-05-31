@@ -59,6 +59,7 @@ extern Panel panel_layers;
 extern Panel panel_add_layer;
 extern Button button_mesh_selection;
 extern ComboBox comboBox_layers_resolution;
+extern ComboBox comboBox_PBR_displaying_mode;
 void panel_layers_render(Timer& timer, bool doMouseTracking);
 
 /*! @brief 0 = Draw, 1 = Soften, 2 = Smear, 3 = Normal, 4 = Filter, 5 = Vector, 6 = Bucket*/

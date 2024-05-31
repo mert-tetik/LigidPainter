@@ -38,6 +38,7 @@ Panel panel_layers;
 Panel panel_add_layer;
 Button button_mesh_selection;
 ComboBox comboBox_layers_resolution;
+ComboBox comboBox_PBR_displaying_mode;
 
 static int lastLayerResolution = 1024;
 
@@ -51,10 +52,14 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
     
     button_mesh_selection.render(timer, doMouseTracking);
     
-    Button comboBox_layers_resolutionBG = Button(ELEMENT_STYLE_SOLID, comboBox_layers_resolution.scale, "", Texture(), 0.f, 0);
-    comboBox_layers_resolutionBG.pos = comboBox_layers_resolution.pos;
+    Button comboBox_layers_resolutionBG = Button(ELEMENT_STYLE_SOLID, glm::vec2(comboBox_layers_resolution.scale.x, comboBox_layers_resolution.scale.y + comboBox_PBR_displaying_mode.scale.y), "", Texture(), 0.f, 0);
+    comboBox_layers_resolutionBG.pos = glm::mix(comboBox_layers_resolution.pos, comboBox_PBR_displaying_mode.pos, 0.5f);
     comboBox_layers_resolutionBG.render(timer, false);
+
     comboBox_layers_resolution.render(timer, doMouseTracking);
+    
+    comboBox_PBR_displaying_mode.render(timer, doMouseTracking);
+    
     int layersResolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]);
 
     // Render the add layer panel
@@ -66,7 +71,6 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
         if(layer->layerGUI.layerButton.hover)
             any_layer_hovered = true;
     }
-    
 
     int context_menu_res = -1;
     if(panel_layers.hover && *Mouse::RClick() && !any_layer_hovered){
@@ -102,20 +106,22 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
 
     if(getScene()->model->newModelAdded || lastLayerResolution != layersResolution){
         if(lastLayerResolution != layersResolution){
-            int res = showMessageBox(
-                                        "Warning!", 
-                                        "You are altering the resolution value of the layers!" 
-                                        " This action will resize each textures in the layers."
-                                        " And is irreversible for painting layers (once you go low resolution there is no covering painting textures to high resolution)"
-                                        " Are you sure you want to proceed?",
-                                        MESSAGEBOX_TYPE_WARNING,
-                                        MESSAGEBOX_BUTTON_YESNO
-                                        );
-            
-            // Pressed to no
-            if(res == 0){
-                comboBox_layers_resolution.selectedIndex = std::log2(lastLayerResolution / 256); 
-                layersResolution = lastLayerResolution;
+            if(getScene()->get_selected_mesh()->layerScene.layers.size()){
+                int res = showMessageBox(
+                                            "Warning!", 
+                                            "You are altering the resolution value of the layers!" 
+                                            " This action will resize each textures in the layers."
+                                            " And is irreversible for painting layers (once you go low resolution there is no covering painting textures to high resolution)"
+                                            " Are you sure you want to proceed?",
+                                            MESSAGEBOX_TYPE_WARNING,
+                                            MESSAGEBOX_BUTTON_YESNO
+                                            );
+                
+                // Pressed to no
+                if(res == 0){
+                    comboBox_layers_resolution.selectedIndex = std::log2(lastLayerResolution / 256); 
+                    layersResolution = lastLayerResolution;
+                }
             }
         }
 

@@ -124,7 +124,7 @@ MaterialSelectionDialog::MaterialSelectionDialog(int){
                             ColorPalette::mainColor,
                             ColorPalette::thirdColor,
                             true,
-                            true,
+                            true, 
                             true,
                             true,
                             true,
