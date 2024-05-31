@@ -58,29 +58,34 @@ void MaterialSelectionDialog::updateMaterialTypes(){
         LGDLOG::start << "ERROR : Filesystem : Updating the material modes panel" << ex.what() << LGDLOG::end;
     }
 
-    titles.push_back("Custom");
-
     this->matModePanel.sections[0].elements.clear();
 
     for (size_t i = 0; i < titles.size(); i++)
     {
         this->matModePanel.sections[0].elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), titles[i], Texture(), 0.f, true)));
-    }
-
-    matSelection_materials["Custom"].clear();
-    for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
-    {
-        matSelection_materials["Custom"].push_back(Library::getMaterialObj(i));
-    }
+    }    
     
+    this->matModePanel.sections[0].elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f), "From Library", Texture(), 0.f, true)));
 }
 
 bool MaterialSelectionDialog::renderMatDisplayer(Timer& timer){
+    
     matDisplayerPanel.sections[0].elements.clear();
-    for (size_t i = 0; i < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size(); i++)
-    {
-        matDisplayerPanel.sections[0].elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f), "", (matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][i].material_selection_dialog_initialized) ? matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][i].displayingTexture : 0, 0.f, true)));
+    
+    if(matModePanel.sections[0].elements[selectedMatMode].button.text == "From Library"){
+        for (size_t i = 0; i < Library::getMaterialArraySize(); i++)
+        {
+            Library::getMaterial(i)->material_selection_dialog_initialized = true;
+            matDisplayerPanel.sections[0].elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f), "", Library::getMaterial(i)->displayingTexture, 0.f, true)));
+        }
     }
+    else{
+        for (size_t i = 0; i < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size(); i++)
+        {
+            matDisplayerPanel.sections[0].elements.push_back(Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(6.f), "", (matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][i].material_selection_dialog_initialized) ? matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][i].displayingTexture : 0, 0.f, true)));
+        }
+    }
+
     for (size_t i = 0; i < matDisplayerPanel.sections[0].elements.size(); i++)
     {
         if(i == selectedMatIndex){

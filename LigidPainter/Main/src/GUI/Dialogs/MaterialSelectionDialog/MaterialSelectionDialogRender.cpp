@@ -27,6 +27,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Threads/Threads.hpp"
+#include "UTIL/Library/Library.hpp"
 #include "UTIL/Wait/Wait.hpp"
 
 #include <string>
@@ -40,8 +41,17 @@ std::map<std::string, std::vector<Material>> matSelection_materials;
 Material* MaterialSelectionDialog::get_selected_material(){
     if(matModePanel.sections.size()){
         if(selectedMatMode >= 0 && selectedMatMode < matModePanel.sections[0].elements.size()){
-            if(selectedMatIndex >= 0 && selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size()){
-                return &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex];
+            if(matModePanel.sections[0].elements[selectedMatMode].button.text == "From Library"){
+                if(selectedMatIndex >= 0 && selectedMatIndex < Library::getMaterialArraySize()){
+                    Library::getMaterial(selectedMatIndex)->material_selection_dialog_initialized = true;
+                    return Library::getMaterial(selectedMatIndex);
+                }
+            }
+            else{
+                if(selectedMatIndex >= 0 && selectedMatIndex < matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text].size()){
+                    return &matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text][selectedMatIndex];
+                }
+
             }
         }
     }
@@ -91,11 +101,30 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
                 }
             }
         }
+        
+        Material* selected_material = this->get_selected_material();
 
-        if(material == nullptr)
+        if(selected_material != nullptr){
+            if(material == nullptr)
+                this->selectedMatPanel.sections[0].elements[4].scale.y = 0.f;
+            else
+                this->selectedMatPanel.sections[0].elements[4].scale.y = 2.f;
+            
+            if(selectedMatMode < matModePanel.sections[0].elements.size()){
+                if(matModePanel.sections[0].elements[selectedMatMode].button.text == "From Library")
+                    this->selectedMatPanel.sections[0].elements[5].scale.y = 0.f;
+                else
+                    this->selectedMatPanel.sections[0].elements[5].scale.y = 2.f;
+            }
+
+            this->selectedMatPanel.sections[0].elements[3].scale.y = 2.f;
+        }
+        else{
+            this->selectedMatPanel.sections[0].elements[3].scale.y = 0.f;
             this->selectedMatPanel.sections[0].elements[4].scale.y = 0.f;
-        else
-            this->selectedMatPanel.sections[0].elements[4].scale.y = 2.f;
+            this->selectedMatPanel.sections[0].elements[5].scale.y = 0.f;
+        }
+
         
         this->selectedMatPanel.render(timer, !dialog_log.isHovered());
         this->matModePanel.render(timer, !dialog_log.isHovered());
@@ -132,14 +161,25 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
                 Material* selected_material = this->get_selected_material();
                 WAIT_WHILE(material_thread.actions.size());
 
-                material->deleteBuffers();
 
                 if(selected_material != nullptr){
-                    if(selected_material->material_selection_dialog_initialized)
+                    if(selected_material->material_selection_dialog_initialized){
+                        material->deleteBuffers();
                         *material = selected_material->duplicateMaterial();
+                        this->dialogControl.unActivate();
+                    }
                 }
             }
-            this->dialogControl.unActivate();
+        }
+        else if(this->selectedMatPanel.sections[0].elements[5].button.clicked){
+            Material* selected_material = this->get_selected_material();
+            WAIT_WHILE(material_thread.actions.size());
+
+            if(selected_material != nullptr){
+                if(selected_material->material_selection_dialog_initialized){
+                    Library::addMaterial(selected_material->duplicateMaterial(), "New material via material selection dialog");
+                }
+            }
         }
         
         this->updateSelectedMaterialInPanel();
