@@ -24,13 +24,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Panels.hpp"
 
+extern std::atomic<bool> load_ligidpainter_done;
+
+
 void Scene::render_scene(Timer& timer){
     if(!panels_any_hovered() && !*Mouse::LPressed())
         this->camera.interaction(*Mouse::mouseScroll(), *Mouse::mouseOffset(), false);
 
-    Debugger::block("Skybox Rendering"); // Start
-    this->render_skybox();
-    Debugger::block("Skybox Rendering"); // End
+    if(load_ligidpainter_done){
+        Debugger::block("Skybox Rendering"); // Start
+        this->render_skybox();
+        Debugger::block("Skybox Rendering"); // End
+    }
 
     Debugger::block("Rendering scene decorations"); // Start
 
@@ -60,7 +65,9 @@ void Scene::render_scene(Timer& timer){
 
     Debugger::block("Rendering scene decorations"); // End
 
-    Debugger::block("3D Model"); // Start    
-    this->render_model(timer);
-    Debugger::block("3D Model"); // End
+    if(load_ligidpainter_done){
+        Debugger::block("3D Model"); // Start    
+        this->render_model(timer);
+        Debugger::block("3D Model"); // End
+    }
 }
