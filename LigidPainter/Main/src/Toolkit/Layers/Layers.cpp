@@ -27,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Wait/Wait.hpp"
 
 #include "GUI/Elements.hpp"
+#include "GUI/Panels.hpp"
 #include "GUI/Dialogs.hpp"
 
 #include "Toolkit/Layers/Layers.hpp"
@@ -66,66 +67,86 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, c
         }
     }
 
+    const float btn_height = 2.5f;
+
+    float slider_val = this->slider.render(doMouseTracking, glm::vec3(layerPanel.pos.x + layerPanel.scale.x - this->slider.bg_btn.scale.x, layerPanel.pos.y, layerPanel.pos.z), layerPanel.scale.y, layerPanel.scale.y, this->layers.size() * btn_height, layerPanel.hover);
+
     bool anyBtnClickState1 = false;
     for (int i = this->layers.size() -1; i >= 0; i--)
     {
-        glm::vec2 btnScale = glm::vec2(layerPanel.scale.x, 2.5f); 
-        glm::vec3 btnPos = glm::vec3(layerPanel.pos.x, layerPanel.pos.y - layerPanel.scale.y  + btnScale.y + btnScale.y * (count * 2), layerPanel.pos.z);
-        bool layerDeleted = this->layers[i]->render_graphics(timer, doMouseTracking, btnPos, btnScale, 1.f, resolution, mesh, this, i);
+        glm::vec2 btnScale = glm::vec2(layerPanel.scale.x - this->slider.bg_btn.scale.x, btn_height); 
+        glm::vec3 btnPos = glm::vec3(layerPanel.pos.x - this->slider.bg_btn.scale.x, layerPanel.pos.y - layerPanel.scale.y + btnScale.y + btnScale.y * (count * 2) - slider_val, layerPanel.pos.z);
         
-        if(layerDeleted){
-            return;
-        }
-
-        if(this->layers[i]->layerGUI.layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
-            btnMoving = true;
-
-        if(this->layers[i]->layerGUI.layerButton.clickState1)
-            anyBtnClickState1 = true;
-
-        if(this->layers[i]->layerGUI.layerButton.clickState1 && btnMoving){
-            glm::vec2 crsPos = glm::vec2(Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f, Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f);
-            for (size_t cI = 0; cI < this->layers.size(); cI++){
-                if(crsPos.y > this->layers[cI]->layerGUI.layerButton.pos.y || (cI == this->layers.size() - 1 && crsPos.y < this->layers[cI]->layerGUI.layerButton.pos.y)){
-                    Button btn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(this->layers[cI]->layerGUI.layerButton.scale.x, 0.2f), "", Texture(), 0.f, false);
-                    btn.radius = 0.05f;
-                    btn.outlineThickness /= 2.f;
-                    btn.color = glm::vec4(1.f);
-                    btn.pos = glm::vec3(this->layers[cI]->layerGUI.layerButton.pos.x, this->layers[cI]->layerGUI.layerButton.pos.y + this->layers[cI]->layerGUI.layerButton.scale.y + btn.scale.y, this->layers[cI]->layerGUI.layerButton.pos.z + 0.05f);
-                    if(!(crsPos.y > this->layers[cI]->layerGUI.layerButton.pos.y) && (cI == this->layers.size() - 1 && crsPos.y < this->layers[cI]->layerGUI.layerButton.pos.y)){
-                        btn.pos.y = this->layers[cI]->layerGUI.layerButton.pos.y - this->layers[cI]->layerGUI.layerButton.scale.y - btn.scale.y;
-                        btnMovingI = cI + 1;                    
-                    }
-                    else{
-                        btnMovingI = cI;                    
-                    }
-
-                    btn.render(timer, false);
-                    break;
-                }
-            }
-
-            int copyCount = 0;
-            for (int cI = this->layers.size() -1; cI >= 0; cI--)
-            {
-                glm::vec3 btnPos = glm::vec3(crsPos.x, crsPos.y + btnScale.y * (copyCount * 2), layerPanel.pos.z + 0.05f);
-                if(layerPanel.hover)
-                    btnPos.x = layerPanel.pos.x;
-                
-                if(this->layers[i]->subSelected && this->layers[cI]->subSelected || cI == i){
-                    if(copyCount == 0)
-                        movingLayers.clear();    
-                    movingLayers.push_back(this->layers[cI]);
-                    this->layers[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, resolution, mesh, nullptr, 0);
-                    copyCount++;
-                }
-            }
+        if(btnPos.y + btnScale.y > layerPanel.pos.y - layerPanel.scale.y){
+            //Bottom
+            ShaderSystem::color2d().use();
+            ShaderSystem::color2d().setMat4("projection", getContext()->ortho_projection);
+            ShaderSystem::color2d().setVec3("pos", glm::vec3(layerPanel.resultPos.x, layerPanel.resultPos.y + layerPanel.resultScale.y + layerPanel.resultScale.y * 2.f,   1.f)); 
+            ShaderSystem::color2d().setVec2("scale", glm::vec2(layerPanel.resultScale.y * 2.f));
+            ShaderSystem::color2d().setVec4("color" , glm::vec4(0.f)); 
+            getBox()->draw("Panel : Barrier bottom");
             
-        }
+            //Top
+            ShaderSystem::color2d().setVec3("pos", glm::vec3(layerPanel.resultPos.x, layerPanel.resultPos.y - layerPanel.resultScale.y - layerPanel.resultScale.y * 2.f, 1.f));
+            ShaderSystem::color2d().setVec2("scale", glm::vec2(layerPanel.resultScale.y * 2.f));
+            getBox()->draw("Panel : Barrier top");
+        
+            bool layerDeleted = this->layers[i]->render_graphics(timer, doMouseTracking && !panel_add_layer.hover && !comboBox_PBR_displaying_mode.hover[0] && !comboBox_layers_resolution.hover[0], btnPos, btnScale, 1.f, resolution, mesh, this, i);
+            
+            if(layerDeleted){
+                return;
+            }
 
-        if(layerPanel.hover && shortcuts_CTRL_A()){
-            for (size_t cI = 0; cI < this->layers.size(); cI++){
-                this->layers[cI]->subSelected = true;
+            if(this->layers[i]->layerGUI.layerButton.clickState1 && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y))
+                btnMoving = true;
+
+            if(this->layers[i]->layerGUI.layerButton.clickState1)
+                anyBtnClickState1 = true;
+
+            if(this->layers[i]->layerGUI.layerButton.clickState1 && btnMoving){
+                glm::vec2 crsPos = glm::vec2(Mouse::cursorPos()->x / Settings::videoScale()->x * 100.f, Mouse::cursorPos()->y / Settings::videoScale()->y * 100.f);
+                for (size_t cI = 0; cI < this->layers.size(); cI++){
+                    if(crsPos.y > this->layers[cI]->layerGUI.layerButton.pos.y || (cI == this->layers.size() - 1 && crsPos.y < this->layers[cI]->layerGUI.layerButton.pos.y)){
+                        Button btn = Button(ELEMENT_STYLE_STYLIZED, glm::vec2(this->layers[cI]->layerGUI.layerButton.scale.x, 0.2f), "", Texture(), 0.f, false);
+                        btn.radius = 0.05f;
+                        btn.outlineThickness /= 2.f;
+                        btn.color = glm::vec4(1.f);
+                        btn.pos = glm::vec3(this->layers[cI]->layerGUI.layerButton.pos.x, this->layers[cI]->layerGUI.layerButton.pos.y + this->layers[cI]->layerGUI.layerButton.scale.y + btn.scale.y, this->layers[cI]->layerGUI.layerButton.pos.z + 0.05f);
+                        if(!(crsPos.y > this->layers[cI]->layerGUI.layerButton.pos.y) && (cI == this->layers.size() - 1 && crsPos.y < this->layers[cI]->layerGUI.layerButton.pos.y)){
+                            btn.pos.y = this->layers[cI]->layerGUI.layerButton.pos.y - this->layers[cI]->layerGUI.layerButton.scale.y - btn.scale.y;
+                            btnMovingI = cI + 1;                    
+                        }
+                        else{
+                            btnMovingI = cI;                    
+                        }
+
+                        btn.render(timer, false);
+                        break;
+                    }
+                }
+
+                int copyCount = 0;
+                for (int cI = this->layers.size() -1; cI >= 0; cI--)
+                {
+                    glm::vec3 btnPos = glm::vec3(crsPos.x, crsPos.y + btnScale.y * (copyCount * 2), layerPanel.pos.z + 0.05f);
+                    if(layerPanel.hover)
+                        btnPos.x = layerPanel.pos.x;
+                    
+                    if(this->layers[i]->subSelected && this->layers[cI]->subSelected || cI == i){
+                        if(copyCount == 0)
+                            movingLayers.clear();    
+                        movingLayers.push_back(this->layers[cI]);
+                        this->layers[cI]->render_graphics(timer, false, btnPos, btnScale, 0.5f, resolution, mesh, nullptr, 0);
+                        copyCount++;
+                    }
+                }
+                
+            }
+
+            if(layerPanel.hover && shortcuts_CTRL_A()){
+                for (size_t cI = 0; cI < this->layers.size(); cI++){
+                    this->layers[cI]->subSelected = true;
+                }
             }
         }
         
@@ -165,6 +186,8 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, c
         }
         btnMoving = false;
     }
+
+    glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void LayerScene::add_new(Layer* layer){

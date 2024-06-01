@@ -105,6 +105,8 @@ bool Layer::render_graphics(Timer& timer, bool doMouseTracking, glm::vec3 pos, g
 
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
+    glClear(GL_DEPTH_BUFFER_BIT);
+
     return false;
 }
 
@@ -369,7 +371,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
     }   
 
     ShaderUTIL::release_bound_shader();
-    glClear(GL_DEPTH_BUFFER_BIT);
+    //glClear(GL_DEPTH_BUFFER_BIT);
 }
 
 void LayerGUI::render_info_and_modification_elements(Timer& timer, bool doMouseTracking, Texture icon, bool* hidden, Texture alpha_map_texture, float alpha_value, glm::vec3 pos, glm::vec2 scale, float opacity){

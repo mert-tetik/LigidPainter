@@ -236,6 +236,8 @@ public:
 
     std::vector<Layer*> layers;
 
+    Slider slider;
+
     void render(Timer& timer, Panel &layerPanel, bool doMouseTracking, const unsigned int resolution, Mesh& mesh);
     void add_new(Layer* layer);
     void update_result(unsigned int resolution, glm::vec3 baseColor, Mesh& mesh);

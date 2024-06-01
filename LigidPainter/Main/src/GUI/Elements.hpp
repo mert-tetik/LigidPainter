@@ -432,6 +432,20 @@ public:
     void render(Timer &timer,bool doMouseTracking);
 };
 
+class Slider{
+public:
+    Button slide_btn;
+    Button bg_btn;
+    Button up_btn;
+    Button down_btn;
+
+    float scroll = 0.f;
+
+    bool gui_initialized = false;
+
+    float render(bool doMouseTracking, glm::vec3 pos, float height, float panel_height, float element_max_height, bool panel_hover);
+};
+
 
 // Use this class instead of the header button
 class SectionHolder{

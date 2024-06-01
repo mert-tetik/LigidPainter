@@ -193,7 +193,6 @@ public:
         getMaterialDisplayingModel()->meshes.push_back(Mesh({}, {}, "", false));
         getTDBrushCursorModel()->meshes.push_back(Mesh({}, {}, "", false));
 
-
         Settings::initAppTextures();
 
         // Load textures in another thread
