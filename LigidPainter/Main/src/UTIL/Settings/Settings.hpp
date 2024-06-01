@@ -188,7 +188,7 @@ namespace Settings{
         /*! @brief Set swapInterval(1) if true */
         bool VSync = false; 
 
-        float framebufferResolutionDivier = 1.f;
+        float framebufferResolutionDivider = 1.f;
 
         bool cat_allowComments = false;
         bool cat_verifyTheExit = true;

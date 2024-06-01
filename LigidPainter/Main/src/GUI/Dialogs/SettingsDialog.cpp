@@ -222,7 +222,7 @@ void SettingsDialog::show(Timer& timer){
             )
         {
             dialogControl.unActivate();
-            Settings::defaultFramebuffer()->setResolution(*Settings::videoScale() / Settings::properties()->framebufferResolutionDivier);
+            Settings::defaultFramebuffer()->setResolution(*Settings::videoScale() / Settings::properties()->framebufferResolutionDivider);
         }
 
         dialogControl.updateEnd(timer,0.15f);   
@@ -256,7 +256,7 @@ void SettingsDialog::setPropertiesToDialog(){
     
     // -------- System --------
     performance_vsync_checkbox->clickState1 = Settings::properties()->VSync;
-    performance_framebuffer_resolution_divider_combobox->selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->framebufferResolutionDivier), performance_framebuffer_resolution_divider_combobox->texts);
+    performance_framebuffer_resolution_divider_combobox->selectedIndex = UTIL::findCorrespondingIndex(std::to_string(Settings::properties()->framebufferResolutionDivider), performance_framebuffer_resolution_divider_combobox->texts);
     
     cat_enable_comments_checkbox->clickState1 = Settings::properties()->cat_allowComments;
     cat_verify_exit_checkbox->clickState1 = Settings::properties()->cat_verifyTheExit;
@@ -284,7 +284,7 @@ void SettingsDialog::setDialogToProperties(){
     
     // -------- System --------
     Settings::properties()->VSync = performance_vsync_checkbox->clickState1;
-    Settings::properties()->framebufferResolutionDivier = std::stof(performance_framebuffer_resolution_divider_combobox->texts[performance_framebuffer_resolution_divider_combobox->selectedIndex]);
+    Settings::properties()->framebufferResolutionDivider = std::stof(performance_framebuffer_resolution_divider_combobox->texts[performance_framebuffer_resolution_divider_combobox->selectedIndex]);
     
     Settings::properties()->cat_allowComments = cat_enable_comments_checkbox->clickState1;
     Settings::properties()->cat_verifyTheExit = cat_verify_exit_checkbox->clickState1;
@@ -354,9 +354,9 @@ void SettingsDialog::updateInfoTexts(Timer& timer){
     
     info_txt1_button->text = "Video scale : " + std::to_string(Settings::videoScale()->x) + "x" + std::to_string(Settings::videoScale()->y);
     
-    info_txt2_button->text = "Framebuffer resolution : " + std::to_string(Settings::videoScale()->x / Settings::properties()->framebufferResolutionDivier) + "x" + std::to_string(Settings::videoScale()->y / Settings::properties()->framebufferResolutionDivier);
+    info_txt2_button->text = "Framebuffer resolution : " + std::to_string(Settings::videoScale()->x / Settings::properties()->framebufferResolutionDivider) + "x" + std::to_string(Settings::videoScale()->y / Settings::properties()->framebufferResolutionDivider);
     
-    if(Settings::properties()->framebufferResolutionDivier == 1.f)
+    if(Settings::properties()->framebufferResolutionDivider == 1.f)
         info_txt3_button->text = "Using default framebuffer (Multisampling disabled)";
     else
         info_txt3_button->text = "Using custom framebuffer";

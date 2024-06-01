@@ -82,21 +82,56 @@ bool wrtLigidFile(std::string path){
     // ------------- Version number ------------
     uint32_t versionNumber2600 = 2600;
 
-    WRITE_BITS(versionNumber2600, uint32_t, "");
+    WRITE_BITS(versionNumber2600, uint32_t, "Version number");
 
     // ------------- Date ------------
     time_t currentDate = time(0);
-    WRITE_BITS(currentDate, time_t, "");
+    WRITE_BITS(currentDate, time_t, "Date");
 
     time_t lastOpenedDate = time(0);
-    WRITE_BITS(lastOpenedDate, time_t, "");
+    WRITE_BITS(lastOpenedDate, time_t, "Date");
 
     // ------------- Current model data ------------
     if(!writeStr(wf, getScene()->model->title))
         return false;
 
     // ------------- Settings ------------
+    WRITE_BITS(panel_library_modes.selectedElement, int, "panel_library_modes.selectedElement"); // Selected library mode on the left
+    WRITE_BITS(checkBox_wrap_mode.clickState1, bool, "checkBox_wrap_mode.clickState1"); // Wrap mode checkbox
+    WRITE_BITS(panel_displaying_modes.selectedElement, int, "panel_displaying_modes.selectedElement"); // Paint display mode
+    WRITE_BITS(button_mesh_selection.selectedMeshI, int, "button_mesh_selection.selectedMeshI"); // Selected mesh
+    int layers_resolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]); 
+    WRITE_BITS(layers_resolution, int, "layers_resolution"); // Layers resolution
+    WRITE_BITS(comboBox_PBR_displaying_mode.selectedIndex, int, "comboBox_PBR_displaying_mode.selectedIndex"); // Main scene displaying mode
+    WRITE_BITS(twoD_painting_mode, bool, "twoD_painting_mode"); // 2D mode or 3D mode
+    std::string selected_texture_title = "";
+    for (size_t i = 0; i < Library::getTextureArraySize(); i++){if(Library::getTextureObj(i).ID == panel_library_selected_texture.ID)selected_texture_title = Library::getTextureObj(i).title;}
+    writeStr(wf, selected_texture_title); // Title of the selected texture
 
+    WRITE_BITS(Settings::properties()->VSync, bool, "Settings::properties()->VSync"); 
+    WRITE_BITS(Settings::properties()->cat_allowComments, bool, "Settings::properties()->cat_allowComments"); 
+    WRITE_BITS(Settings::properties()->cat_hide, bool, "Settings::properties()->cat_hide"); 
+    WRITE_BITS(Settings::properties()->cat_verifyTheExit, bool, "Settings::properties()->cat_verifyTheExit"); 
+    WRITE_BITS(Settings::properties()->framebufferResolutionDivider, float, "Settings::properties()->framebufferResolutionDivider"); 
+    
+    WRITE_BITS(getScene()->aFar, float, "getScene()->aFar"); 
+    WRITE_BITS(getScene()->aNear, float, "getScene()->aNear"); 
+    WRITE_BITS(getScene()->backfaceCulling, bool, "getScene()->backfaceCulling"); 
+    WRITE_BITS(getScene()->fov, float, "getScene()->fov"); 
+    WRITE_BITS(getScene()->heightMapStrength, float, "getScene()->heightMapStrength"); 
+    WRITE_BITS(getScene()->renderAxisDisplayer, bool, "getScene()->renderAxisDisplayer"); 
+    WRITE_BITS(getScene()->renderTiles, bool, "getScene()->renderTiles"); 
+    WRITE_BITS(getScene()->useHeightMap, bool, "getScene()->useHeightMap"); 
+    WRITE_BITS(getScene()->useOrtho, bool, "getScene()->useOrtho"); 
+    WRITE_BITS(getScene()->transformRotation.x, float, "getScene()->transformRotation.x"); 
+    WRITE_BITS(getScene()->transformRotation.y, float, "getScene()->transformRotation.y");
+    WRITE_BITS(getScene()->transformRotation.z, float, "getScene()->transformRotation.z"); 
+    WRITE_BITS(getScene()->camera.cameraPos.x, float, "getScene()->cameraPos.x"); 
+    WRITE_BITS(getScene()->camera.cameraPos.y, float, "getScene()->cameraPos.y"); 
+    WRITE_BITS(getScene()->camera.cameraPos.z, float, "getScene()->cameraPos.z"); 
+    WRITE_BITS(getScene()->camera.originPos.x, float, "getScene()->originPos.x"); 
+    WRITE_BITS(getScene()->camera.originPos.y, float, "getScene()->originPos.y"); 
+    WRITE_BITS(getScene()->camera.originPos.z, float, "getScene()->originPos.z"); 
 
     return true;
 }
@@ -124,3 +159,15 @@ bool projectUTIL_write_ligid_file(std::string path){
 
 
 //------------ UTIL FUNCTIONS -------------
+
+
+/*
+    Displaying dialog
+
+    Checkcombolists
+
+    VectorScene
+    TextureFieldScene
+
+    Mesh selected faces
+*/
