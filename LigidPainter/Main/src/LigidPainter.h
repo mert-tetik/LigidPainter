@@ -215,7 +215,7 @@ public:
             return 1;
         
         // Start the export thread
-        //std::thread projectUpdatingThreadX(projectUpdatingThread);
+        std::thread projectUpdatingThreadX(projectUpdatingThread);
         // Start the material processing thread
         material_thread.thread = std::thread(material_thread_function);
 
@@ -242,14 +242,14 @@ public:
             std::filesystem::remove_all(UTIL::environmentSpecificAppDataFolderPath() + "LigidPainter/tmp");
 
         // Signal the projectUpdatingThread to exit
-        //projectUpdatingThreadElements.exportCV.notify_one();
+        projectUpdatingThreadElements.exportCV.notify_one();
         projectUpdatingThreadElements.isRunning = false;
         readMaterialThreadElements.isRunning = false;
 
         project_discard_update_flag = true;
 
         // Wait for the projectUpdatingThread to finish
-        //projectUpdatingThreadX.join();
+        projectUpdatingThreadX.join();
         material_thread.thread.join();
         load_ligidpainter_thread.join();
 

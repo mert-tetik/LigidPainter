@@ -9,9 +9,10 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 Official Web Page : https://ligidtools.com/ligidpainter
 
 ---------------------------------------------------------------------------
+    LigidPainter's project file writer
 */
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>
@@ -41,7 +42,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
                                                     return false; \
                                                 }
 
-bool writeStr(std::ofstream& wf, std::string str){
+static bool writeStr(std::ofstream& wf, std::string str){
     int strSize = str.size(); 
     WRITE_BITS(strSize, int, "String size"); 
     for (size_t i = 0; i < strSize; i++) 
@@ -51,15 +52,13 @@ bool writeStr(std::ofstream& wf, std::string str){
     }
 }  
 
-int findIndexInLibrary(Texture txtr){
-    for (size_t i = 0; i < Library::getTextureArraySize(); i++)
-    {
-        if(txtr.ID == Library::getTextureObj(i).ID){
-            return i;
-        }
+static bool write_element(Element element, std::string element_title){
+    if(element.state == 0){
+        //WRITE_BITS(element.button.);
     }
-
-    return -1;
+    if(element.state == 1){
+        //WRITE_BITS(element.rangeBar.value);
+    }
 }
 
 bool wrtLigidFile(std::string path){
@@ -81,12 +80,6 @@ bool wrtLigidFile(std::string path){
     WRITE_BITS(h3, uint64_t, "");
     
     // ------------- Version number ------------
-    uint32_t versionNumber2000 = 2000;  
-    uint32_t versionNumber2100 = 2100;  
-    uint32_t versionNumber2200 = 2200;
-    uint32_t versionNumber2300 = 2300;
-    uint32_t versionNumber2400 = 2400;
-    uint32_t versionNumber2500 = 2500;
     uint32_t versionNumber2600 = 2600;
 
     WRITE_BITS(versionNumber2600, uint32_t, "");

@@ -372,11 +372,11 @@ void ProjectRecoverDialog::show(Timer& timer){
                     
                     std::string lgdPath = project_locate_ligid_file(project_recover_path(slot)); 
                     if(lgdPath.size()){
-                        project_load_library_elements(project_recover_path(slot), lgdPath);
+                        project_load_library_elements(project_recover_path(slot), lgdPath, true);
                     }
                     else{
                         LGDLOG::start << "WARNING! No ligid file detected. Only the library elements will be updated." << LGDLOG::end;
-                        project_load_library_elements(project_recover_path(slot), "");
+                        project_load_library_elements(project_recover_path(slot), "", true);
                     }
                 }
             }

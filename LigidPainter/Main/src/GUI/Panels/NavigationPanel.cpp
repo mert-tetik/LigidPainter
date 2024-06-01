@@ -28,6 +28,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Project/Project.hpp"
 #include "UTIL/Threads/Threads.hpp"
+#include "UTIL/Wait/Wait.hpp"
 
 #include "Toolkit/Layers/Layers.hpp"
 
@@ -105,4 +106,7 @@ void panel_navigation_render(Timer& timer ,bool doMouseTracking)
             Website("https://www.youtube.com/channel/UCMVLfsYsd5WAKEWsgM7fjtA").open();
         }
     }
+
+    // Wait until project is updated 
+    WAIT_WHILE(project_updating_thread_update_project);
 }

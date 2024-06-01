@@ -46,13 +46,14 @@ static void LOAD_texturePacks(const std::string texture_packs_folder_path);
 
 extern std::atomic<bool> load_ligidpainter_done;
 
-bool project_load_library_elements(std::string folderPath, std::string ligidFilePath){
+bool project_load_library_elements(std::string folderPath, std::string ligidFilePath, bool lock){
 
     // Wait until LigidPainter is loaded successfuly
     WAIT_WHILE(!load_ligidpainter_done);
     
-    std::lock_guard<std::mutex> lock(project_mutex);
-    
+    if(lock)
+        project_mutex.lock();
+
     try
     {
         //Load the textures
@@ -134,11 +135,16 @@ bool project_load_library_elements(std::string folderPath, std::string ligidFile
         LGDLOG::start << "ERROR : Filesystem : Location ID 658972 " << ex.what() << LGDLOG::end;
     }
 
+    if(lock)
+        project_mutex.unlock();
+
     return true;
 }
 
 
 bool project_load(std::string ligidFilePath){
+
+    std::lock_guard<std::mutex> lock(project_mutex);
 
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
@@ -150,7 +156,7 @@ bool project_load(std::string ligidFilePath){
     //Remove the file from the path (./myProject/myProject.ligid -> ./myProject/) 
     projectUTIL_set_path(UTIL::removeLastWordBySeparatingWithChar(ligidFilePath, UTIL::folderDistinguisher()));
 
-    project_load_library_elements(project_path(), ligidFilePath);
+    project_load_library_elements(project_path(), ligidFilePath, false);
 
     projectUpdatingThreadElements.updateTextures = false;
     return true;

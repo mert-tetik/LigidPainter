@@ -36,12 +36,12 @@ bool project_create(std::string destinationPath, std::string name, std::vector<s
 bool project_load(std::string ligidFilePath);
 
 /// @brief update the existing project (in the destination of the public member variable folderPath) (write files in the library)
-void project_update(bool updateTextures, bool recover_update_mode);
+void project_update(bool updateTextures, bool recover_update_mode, std::atomic<bool>* is_started);
 
-void project_save_as(std::string dstPath);
+void project_save_as(std::string dstPath, std::atomic<bool>* is_active);
 
 /// @brief Loads each library elements (textures, materials, brushes, models etc.) into the Library
-bool project_load_library_elements(std::string folderPath, std::string ligidFilePath);
+bool project_load_library_elements(std::string folderPath, std::string ligidFilePath, bool lock);
 
 /// @brief 
 void project_add_model(std::string filePath);

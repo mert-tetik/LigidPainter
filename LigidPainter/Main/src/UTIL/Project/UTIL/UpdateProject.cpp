@@ -47,13 +47,20 @@ static void PROJECT_updateModels(std::string brushFolderPath);
 // Goes from 1 to 3
 static int currentRecoverSlot = 1;
 
-void project_update(bool updateTextures, bool recover_update_mode){
+void project_update(bool updateTextures, bool recover_update_mode, std::atomic<bool>* is_active){
     
     std::lock_guard<std::mutex> lock(project_mutex);
+
+    if(is_active != nullptr)
+        *is_active = true;
 
     // Check if the project path is valid
     if(!projectUTIL_folder_path_check()){
         LGDLOG::start<< "ERROR : CAN'T UPDATE THE PROJECT FOLDER : Project path is not valid : " << project_path() << LGDLOG::end;
+        
+        if(is_active != nullptr)
+            *is_active = false;
+        
         return;
     }
     
@@ -121,9 +128,12 @@ void project_update(bool updateTextures, bool recover_update_mode){
     if(!recover_update_mode)
         LGDLOG::start << "Project saved successfuly" << LGDLOG::end;
     else
-        std::cout << "Project saved successfuly" << std::endl;
+        std::cout << "Project saved successfuly - Recover mode" << std::endl;
 
     project_discard_update_flag = false;
+
+    if(is_active != nullptr)
+        *is_active = false;
 }
 
 
