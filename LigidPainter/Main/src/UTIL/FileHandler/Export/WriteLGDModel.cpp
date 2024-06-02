@@ -229,26 +229,7 @@ bool FileHandler::writeLGDMODELFile(std::string path, Model model){
                     VectorScene* vectorScene;
                     layer->get_type_specific_variable(nullptr, &vectorScene, nullptr, nullptr, nullptr);
 
-                    uint64_t strokesSize = vectorScene->strokes_3D.size(); 
-                    WRITEBITS(strokesSize, uint64_t, "Mesh strokes size");        
-                    for (size_t strokeI = 0; strokeI < strokesSize; strokeI++)
-                    {
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.pos.x, float, "Vector stroke start position - X");
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.pos.y, float, "Vector stroke start position - Y");
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.pos.z, float, "Vector stroke start position - Z");
-                        
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.normal.x, float, "Vector stroke start normal - X");
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.normal.y, float, "Vector stroke start normal - Y");
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].startPoint.normal.z, float, "Vector stroke start normal - Z");
-                        
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.pos.x, float, "Vector stroke end position - X");
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.pos.y, float, "Vector stroke end position - Y");
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.pos.z, float, "Vector stroke end position - Z");
-                        
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.normal.x, float, "Vector stroke end normal - X");
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.normal.y, float, "Vector stroke end normal - Y");
-                        WRITEBITS((vectorScene->strokes_3D)[strokeI].endPoint.normal.z, float, "Vector stroke end normal - Z");
-                    }
+                    vectorScene->write_data(wf);
                 } 
             }
         }

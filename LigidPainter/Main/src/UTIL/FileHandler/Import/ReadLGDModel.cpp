@@ -256,29 +256,7 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                     VectorScene* vectorScene;
                     layer->get_type_specific_variable(nullptr, &vectorScene, nullptr, nullptr, nullptr);
 
-                    uint64_t strokesSize; 
-                    READBITS(strokesSize, uint64_t, "Mesh strokes size");        
-                    for (size_t strokeI = 0; strokeI < strokesSize; strokeI++)
-                    {
-                        VectorStroke3D stroke;
-                        READBITS(stroke.startPoint.pos.x, float, "Vector stroke start position - X");
-                        READBITS(stroke.startPoint.pos.y, float, "Vector stroke start position - Y");
-                        READBITS(stroke.startPoint.pos.z, float, "Vector stroke start position - Z");
-                        
-                        READBITS(stroke.startPoint.normal.x, float, "Vector stroke start normal - X");
-                        READBITS(stroke.startPoint.normal.y, float, "Vector stroke start normal - Y");
-                        READBITS(stroke.startPoint.normal.z, float, "Vector stroke start normal - Z");
-                        
-                        READBITS(stroke.endPoint.pos.x, float, "Vector stroke end position - X");
-                        READBITS(stroke.endPoint.pos.y, float, "Vector stroke end position - Y");
-                        READBITS(stroke.endPoint.pos.z, float, "Vector stroke end position - Z");
-                        
-                        READBITS(stroke.endPoint.normal.x, float, "Vector stroke end normal - X");
-                        READBITS(stroke.endPoint.normal.y, float, "Vector stroke end normal - Y");
-                        READBITS(stroke.endPoint.normal.z, float, "Vector stroke end normal - Z");
-                    
-                        vectorScene->strokes_3D.push_back(stroke);
-                    }
+                    vectorScene->read_data(rf);
                 } 
 
                 resMesh.layerScene.layers.push_back(layer);

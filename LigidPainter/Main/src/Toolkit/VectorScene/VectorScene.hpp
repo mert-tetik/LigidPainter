@@ -123,7 +123,6 @@ public:
     void clear_points(bool threeD);
     void subdivide_selected_points(bool threeD);
 
-    
     VectorScene();
     VectorScene(std::vector<VectorStroke> strokes_2D, std::vector<VectorStroke3D> strokes_3D);
 
@@ -134,11 +133,10 @@ public:
         bool twoD_wrap_mode = 0;
 
         void show_stroke_dialog(bool threeD, VectorScene* vector_scene);
+        void set_properties(int paint_mode, bool twoD_wrap_mode);
     };
 
     StrokeDialog stroke_dialog;
-
-
 
     void render2DVectors(Timer& timer, bool doMouseTracking);
     void render3DVectors(Timer& timer, bool doMouseTracking);
@@ -147,6 +145,9 @@ public:
     void addNew3DVector();
     bool isAny2DPointsActive();
     bool isAnyWrappedPointsActive();
+
+    bool write_data(std::ofstream& wf);
+    bool read_data(std::ifstream& rf);
 };
 
 #endif
