@@ -220,6 +220,9 @@ public:
                                 "Update painting over texture"
                             );
     }
+
+    bool write_data(std::ofstream& wf);
+    bool read_data(std::ifstream& rf);
 private:
     /*! @brief Used to capture painting over texture*/
     Framebuffer FBO;

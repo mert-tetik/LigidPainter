@@ -182,6 +182,8 @@ public:
     void readTMP(std::string tmpTitle);
     bool writeTextureData(std::ofstream& wf);
     bool readTextureData(std::ifstream& rf, bool threeDMode, unsigned int versionCode, bool generate_txtr);
+    bool writePixelData(std::ofstream& wf);
+    bool readPixelData(std::ifstream& rf);
 
     /*------------------  PROCEDURAL -------------------*/
     /// @brief Generates 2D displaying texture using the proceduralProps & writes the texture into the this->ID

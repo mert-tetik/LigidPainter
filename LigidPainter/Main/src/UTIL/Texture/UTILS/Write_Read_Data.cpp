@@ -84,7 +84,7 @@ bool Texture::writeTextureData(std::ofstream& wf){
     return true;
 }
 
-#define LGDMATERIAL_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
+#define LGDTEXTURE_READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
                                 LGDLOG::start<< "ERROR : Reading lgdmaterial file. Failed to read at : " << loc << LGDLOG::end;\
                                 return false; \
                             }
@@ -118,37 +118,37 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int v
     float proceduralStretch;
     float proceduralScaleModelPos;
     
-    LGDMATERIAL_READBITS(proceduralID, int, "Property texture - procedural ID");
-    LGDMATERIAL_READBITS(proceduralScale, float, "Property texture - procedural Scale");
-    LGDMATERIAL_READBITS(proceduralnverted, int, "Property texture - procedural nverted");
-    LGDMATERIAL_READBITS(proceduralNormalMap, bool, "Property texture - procedural NormalMap");
-    LGDMATERIAL_READBITS(proceduralNormalGrayScale, bool, "Property texture - procedural NormalGrayScale");
-    LGDMATERIAL_READBITS(proceduralNormalStrength, float, "Property texture - procedural NormalStrength");
-    LGDMATERIAL_READBITS(proceduralUseTexCoords, bool, "Property texture - procedural UseTexCoords");
-    LGDMATERIAL_READBITS(proceduralGrayScale, bool, "Property texture - procedural GrayScale");
-    LGDMATERIAL_READBITS(proceduralBrightness, float, "Property texture - procedural Brightness");
-    LGDMATERIAL_READBITS(smartProperties_x, float, "Property texture - Smart Properties");
-    LGDMATERIAL_READBITS(smartProperties_y, float, "Property texture - Smart Properties");
-    LGDMATERIAL_READBITS(smartProperties_z, float, "Property texture - Smart Properties");
-    LGDMATERIAL_READBITS(smartProperties_w, float, "Property texture - Smart Properties");
-    LGDMATERIAL_READBITS(txtrPackScale, float, "Property texture - txtrPackScale");
-    LGDMATERIAL_READBITS(txtrPackCount, float, "Property texture - txtrPackCount");
-    LGDMATERIAL_READBITS(txtrPackRotation_Jitter, float, "Property texture - txtrPackRotation_Jitter");
-    LGDMATERIAL_READBITS(txtrPackSize_Jitter, float, "Property texture - txtrPackSize_Jitter");
-    LGDMATERIAL_READBITS(txtrPackOpacity_Jitter, float, "Property texture - txtrPackOpacity_Jitter");
-    LGDMATERIAL_READBITS(txtrPackScatter, float, "Property texture - txtrPackScatter");
-    LGDMATERIAL_READBITS(textureSelectionDialog_selectedTextureIndex, int, "Property texture - textureSelectionDialog_selectedTextureIndex");
-    LGDMATERIAL_READBITS(textureSelectionDialog_selectedMode, int, "Property texture - textureSelectionDialog_selectedMode");
+    LGDTEXTURE_READBITS(proceduralID, int, "Property texture - procedural ID");
+    LGDTEXTURE_READBITS(proceduralScale, float, "Property texture - procedural Scale");
+    LGDTEXTURE_READBITS(proceduralnverted, int, "Property texture - procedural nverted");
+    LGDTEXTURE_READBITS(proceduralNormalMap, bool, "Property texture - procedural NormalMap");
+    LGDTEXTURE_READBITS(proceduralNormalGrayScale, bool, "Property texture - procedural NormalGrayScale");
+    LGDTEXTURE_READBITS(proceduralNormalStrength, float, "Property texture - procedural NormalStrength");
+    LGDTEXTURE_READBITS(proceduralUseTexCoords, bool, "Property texture - procedural UseTexCoords");
+    LGDTEXTURE_READBITS(proceduralGrayScale, bool, "Property texture - procedural GrayScale");
+    LGDTEXTURE_READBITS(proceduralBrightness, float, "Property texture - procedural Brightness");
+    LGDTEXTURE_READBITS(smartProperties_x, float, "Property texture - Smart Properties");
+    LGDTEXTURE_READBITS(smartProperties_y, float, "Property texture - Smart Properties");
+    LGDTEXTURE_READBITS(smartProperties_z, float, "Property texture - Smart Properties");
+    LGDTEXTURE_READBITS(smartProperties_w, float, "Property texture - Smart Properties");
+    LGDTEXTURE_READBITS(txtrPackScale, float, "Property texture - txtrPackScale");
+    LGDTEXTURE_READBITS(txtrPackCount, float, "Property texture - txtrPackCount");
+    LGDTEXTURE_READBITS(txtrPackRotation_Jitter, float, "Property texture - txtrPackRotation_Jitter");
+    LGDTEXTURE_READBITS(txtrPackSize_Jitter, float, "Property texture - txtrPackSize_Jitter");
+    LGDTEXTURE_READBITS(txtrPackOpacity_Jitter, float, "Property texture - txtrPackOpacity_Jitter");
+    LGDTEXTURE_READBITS(txtrPackScatter, float, "Property texture - txtrPackScatter");
+    LGDTEXTURE_READBITS(textureSelectionDialog_selectedTextureIndex, int, "Property texture - textureSelectionDialog_selectedTextureIndex");
+    LGDTEXTURE_READBITS(textureSelectionDialog_selectedMode, int, "Property texture - textureSelectionDialog_selectedMode");
     
     if(versionCode == 1){
-        LGDMATERIAL_READBITS(proceduralMirroredRepeat, bool, "Property texture - proceduralMirroredRepeat");
-        LGDMATERIAL_READBITS(proceduralStretch, float, "Property texture - proceduralStretch");
+        LGDTEXTURE_READBITS(proceduralMirroredRepeat, bool, "Property texture - proceduralMirroredRepeat");
+        LGDTEXTURE_READBITS(proceduralStretch, float, "Property texture - proceduralStretch");
         proceduralScaleModelPos = 1.f;
     }
     else if(versionCode == 2){
-        LGDMATERIAL_READBITS(proceduralMirroredRepeat, bool, "Property texture - proceduralMirroredRepeat");
-        LGDMATERIAL_READBITS(proceduralStretch, float, "Property texture - proceduralStretch");
-        LGDMATERIAL_READBITS(proceduralScaleModelPos, float, "Property texture - proceduralScaleModelPos");
+        LGDTEXTURE_READBITS(proceduralMirroredRepeat, bool, "Property texture - proceduralMirroredRepeat");
+        LGDTEXTURE_READBITS(proceduralStretch, float, "Property texture - proceduralStretch");
+        LGDTEXTURE_READBITS(proceduralScaleModelPos, float, "Property texture - proceduralScaleModelPos");
     }
     else{
         proceduralMirroredRepeat = true;
@@ -171,11 +171,11 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int v
     // --------- Read texture data ---------
     std::string txtrTitle = "";
     int txtrTitleSize;
-    LGDMATERIAL_READBITS(txtrTitleSize, int, "Property texture - Texture title size");
+    LGDTEXTURE_READBITS(txtrTitleSize, int, "Property texture - Texture title size");
     for (size_t i = 0; i < txtrTitleSize; i++)
     {
         char c;
-        LGDMATERIAL_READBITS(c, char, "Property texture - Texture title character");
+        LGDTEXTURE_READBITS(c, char, "Property texture - Texture title character");
         txtrTitle.push_back(c);
     }
 
@@ -231,4 +231,42 @@ bool Texture::readTextureData(std::ifstream& rf, bool threeDMode, unsigned int v
     }
 
     return true;
+}
+
+bool Texture::writePixelData(std::ofstream& wf){
+    glm::ivec2 resolution = this->getResolution();
+    unsigned int channels = 4;
+    char* pxs = new char[resolution.x * resolution.y * channels]; 
+    this->getData(pxs);
+
+    LGDTEXTURE_WRITEBITS(resolution.x, int, "resolution.x");
+    LGDTEXTURE_WRITEBITS(resolution.y, int, "resolution.y");
+    
+    LGDTEXTURE_WRITEBITS(channels, unsigned int, "channels");
+
+    wf.write(pxs, resolution.x * resolution.y * channels);
+    
+    delete[] pxs;
+}
+
+bool Texture::readPixelData(std::ifstream& rf){
+    glm::ivec2 resolution;
+    unsigned int channels = 4;
+
+    LGDTEXTURE_READBITS(resolution.x, int, "resolution.x");
+    LGDTEXTURE_READBITS(resolution.y, int, "resolution.y");
+    
+    unsigned int r_channels;
+    LGDTEXTURE_READBITS(r_channels, unsigned int, "channels");
+
+    char* pxs = new char[resolution.x * resolution.y * channels]; 
+    rf.read(pxs, resolution.x * resolution.y * channels);
+
+    if(!this->ID)
+        *this = Texture(pxs, resolution.x, resolution.y);
+    else
+        this->update(pxs, resolution.x, resolution.y);
+    
+    delete[] pxs;
+
 }
