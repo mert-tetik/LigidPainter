@@ -272,7 +272,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
 
     if(layer->layerType == "material"){
         Material* material;
-        layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr);
+        layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
         ShaderSystem::textureRenderingShader().use();
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
@@ -291,7 +291,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
     if(layer->layerType == "vector"){
         VectorScene* vectorScene;
         Brush* brush;
-        layer->get_type_specific_variable(nullptr, &vectorScene, &brush, nullptr, nullptr);
+        layer->get_type_specific_variable(nullptr, &vectorScene, &brush, nullptr, nullptr, nullptr, nullptr);
         ShaderSystem::textureRenderingShader().use();
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
@@ -310,7 +310,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
 
     if(layer->layerType == "painting"){
         Texture* capture_txtr;
-        layer->get_type_specific_variable(nullptr, nullptr, nullptr, nullptr, &capture_txtr);
+        layer->get_type_specific_variable(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &capture_txtr);
         ShaderSystem::textureRenderingShader().use();
         ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
         ShaderSystem::textureRenderingShader().setVec2("scale", glm::vec2(layerButton.resultScale.x/1.4f, layerButton.resultScale.x/ 1.4f));
@@ -328,7 +328,7 @@ void LayerGUI::render_layer_bg(Layer* layer){
 
     if(layer->layerType == "texture"){
         MaterialChannels* materialChannels;
-        layer->get_type_specific_variable(nullptr, nullptr, nullptr, &materialChannels, nullptr);
+        layer->get_type_specific_variable(nullptr, nullptr, nullptr, nullptr, nullptr, &materialChannels, nullptr);
         
         for (size_t i = 0; i < 6; i++)
         {

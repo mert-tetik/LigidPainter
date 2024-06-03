@@ -121,7 +121,7 @@ public:
     /*! @brief Generate result textures for the layer */
     virtual void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) = 0;
     virtual void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) = 0;
-    virtual void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) = 0;
+    virtual void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, CheckComboList** color_checkComboList, CheckComboList** mirror_checkComboList, MaterialChannels** materialChannels, Texture** painting_capture_txtr) = 0;
     virtual bool is_type_specific_panels_hovered() = 0;
 
     /*! 
@@ -148,7 +148,7 @@ public:
     
     void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) override;
     void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, CheckComboList** color_checkComboList, CheckComboList** mirror_checkComboList, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
         if(materialChannels != nullptr)
             *materialChannels = &this->channels;
     }
@@ -168,7 +168,7 @@ public:
     
     void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) override;
     void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, CheckComboList** color_checkComboList, CheckComboList** mirror_checkComboList, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
         if(painting_capture_txtr != nullptr)
             *painting_capture_txtr = &this->painting_capture_txtr;
     }
@@ -189,7 +189,7 @@ public:
     
     void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) override;
     void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, CheckComboList** color_checkComboList, CheckComboList** mirror_checkComboList, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
         if(material != nullptr)
             *material = &this->material; 
     }
@@ -217,12 +217,18 @@ public:
 
     void type_specific_generate_result(const unsigned int resolution, Mesh& mesh) override;
     void type_specific_modification(Timer& timer, bool doMouseTracking, const unsigned int resolution, Mesh& mesh) override;
-    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
+    
+    void get_type_specific_variable(Material** material, VectorScene** vectorScene, Brush** vector_stroke_brush, CheckComboList** color_checkComboList, CheckComboList** mirror_checkComboList, MaterialChannels** materialChannels, Texture** painting_capture_txtr) override{
         if(vectorScene != nullptr)
             *vectorScene = &this->vector_scene; 
         if(vector_stroke_brush != nullptr)
             *vector_stroke_brush = &this->brush_properties_button.brush; 
+        if(color_checkComboList != nullptr)
+            *color_checkComboList = &this->color_checkComboList; 
+        if(mirror_checkComboList != nullptr)
+            *mirror_checkComboList = &this->mirror_checkComboList; 
     }
+    
     bool is_type_specific_panels_hovered() override{
         return color_checkComboList.hover || mirror_checkComboList.hover || smear_properties_panel.hover || filter_button.hover || brush_properties_button.hover;
     }

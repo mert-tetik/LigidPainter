@@ -80,20 +80,7 @@ struct LGDBRUSHProp{
 static bool readProperties(std::ifstream& rf, std::vector<LGDBRUSHProp>& properties, uint32_t versionNumber);
 static bool parseLGDBRUSHProperties(const std::vector<LGDBRUSHProp> properties, Brush& brush);
 
-bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
-    
-    if(!std::filesystem::is_regular_file(path)){
-        LGDLOG::start << "ERROR : Loading brush : " << path << " is not a regular file!" << LGDLOG::end;
-        return false;
-    }
-
-    std::ifstream rf(path, std::ios::in | std::ios::binary);
-
-    if(!rf) {
-        LGDLOG::start<< "ERROR WHILE WRITING BRUSH FILE! Cannot open file : " << path << LGDLOG::end;
-        return false;
-    }
-        
+bool FileHandler::readBrushData(std::ifstream& rf, Brush& brush){
     //!HEADER
 
     //!Description
@@ -128,10 +115,31 @@ bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
     if(!parseLGDBRUSHProperties(properties, brush))
         return false;
 
+    brush.updateDisplayTexture(0.1f);
+
+    return true;
+}
+
+bool FileHandler::readLGDBRUSHFile(std::string path, Brush& brush){
+    
+    UTIL::correctFolderDistinguishers(path);
+
+    if(!std::filesystem::is_regular_file(path)){
+        LGDLOG::start << "ERROR : Loading brush : " << path << " is not a regular file!" << LGDLOG::end;
+        return false;
+    }
+
+    std::ifstream rf(path, std::ios::in | std::ios::binary);
+
+    if(!rf) {
+        LGDLOG::start<< "ERROR WHILE WRITING BRUSH FILE! Cannot open file : " << path << LGDLOG::end;
+        return false;
+    }
+        
+    FileHandler::readBrushData(rf, brush);
+
     brush.title = UTIL::getLastWordBySeparatingWithChar(path, UTIL::folderDistinguisher());
     brush.title = UTIL::removeExtension(brush.title);
-
-    brush.updateDisplayTexture(0.1f);
 
     return true;   
 }

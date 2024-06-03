@@ -35,6 +35,8 @@ TexturePack::TexturePack(){
 
 int TexturePack::load(std::string path){
 
+    UTIL::correctFolderDistinguishers(path);
+
     try
     {
         for (const auto& entry : std::filesystem::directory_iterator(path)) {

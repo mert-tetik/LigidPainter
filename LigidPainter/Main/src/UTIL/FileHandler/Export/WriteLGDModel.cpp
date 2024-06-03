@@ -42,6 +42,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
                                     return false; \
                                 }
 
+#define WRITE_VEC3(vec, loc)    WRITEBITS(vec.x, float, loc);\
+                                WRITEBITS(vec.y, float, loc);\
+                                WRITEBITS(vec.z, float, loc);\
+
+
 #define WRITESTR(str)   {size_t strSize = str.size();\
                         WRITEBITS(strSize, size_t, str); \
                         for (size_t charI = 0; charI < strSize; charI++)\
@@ -65,21 +70,6 @@ static bool write_channel_alpha(std::ofstream& wf, std::string path, ChannelAlph
     return true;
 }   
 
-static bool write_texture_pixels(std::ofstream& wf, std::string path, Texture texture){
-    char* pxs = new char[texture.getResolution().x * texture.getResolution().y * 4];
-    texture.getData(pxs);
-
-    int x_res = texture.getResolution().x; 
-    WRITEBITS(x_res, int, "Texture resolution data - X");
-    int y_res = texture.getResolution().y; 
-    WRITEBITS(y_res, int, "Texture resolution data - Y");
-
-    for (size_t i = 0; i < x_res * y_res * 4; i++)
-    {
-        WRITEBITS(pxs[i], char, "Texture pixel data");
-    }
-}
-
 bool FileHandler::writeLGDMODELFile(std::string path, Model model){
     
     if(path == ""){
@@ -93,6 +83,8 @@ bool FileHandler::writeLGDMODELFile(std::string path, Model model){
     }
     
     if(path.size()){
+
+        UTIL::correctFolderDistinguishers(path);
 
         // Create the file path if path leads to a directory
         if(std::filesystem::is_directory(path))    
@@ -202,7 +194,7 @@ bool FileHandler::writeLGDMODELFile(std::string path, Model model){
                 // Type specific data
                 if(layer->layerType == "texture"){
                     MaterialChannels* channels;
-                    layer->get_type_specific_variable(nullptr, nullptr, nullptr, &channels, nullptr);
+                    layer->get_type_specific_variable(nullptr, nullptr, nullptr, nullptr, nullptr, &channels, nullptr);
                     
                     channels->albedo.writeTextureData(wf);
                     channels->roughness.writeTextureData(wf);
@@ -212,26 +204,66 @@ bool FileHandler::writeLGDMODELFile(std::string path, Model model){
                     channels->ambientOcclusion.writeTextureData(wf);
                 }
                 else if(layer->layerType == "painting"){
-                    FNC(write_texture_pixels(wf, path, layer->result.albedo))
-                    FNC(write_texture_pixels(wf, path, layer->result.roughness))
-                    FNC(write_texture_pixels(wf, path, layer->result.metallic))
-                    FNC(write_texture_pixels(wf, path, layer->result.normalMap))
-                    FNC(write_texture_pixels(wf, path, layer->result.heightMap))
-                    FNC(write_texture_pixels(wf, path, layer->result.ambientOcclusion))
+                    FNC(layer->result.albedo.writePixelData(wf))
+                    FNC(layer->result.roughness.writePixelData(wf))
+                    FNC(layer->result.metallic.writePixelData(wf))
+                    FNC(layer->result.normalMap.writePixelData(wf))
+                    FNC(layer->result.heightMap.writePixelData(wf))
+                    FNC(layer->result.ambientOcclusion.writePixelData(wf))
                 }
                 else if(layer->layerType == "material"){
                     Material* material;
-                    layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr);
+                    layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
 
                     FileHandler::writeMaterialData(wf, *material);
                 }
                 else if(layer->layerType == "vector"){
                     VectorScene* vectorScene;
-                    layer->get_type_specific_variable(nullptr, &vectorScene, nullptr, nullptr, nullptr);
+                    Brush* vector_stroke_brush;
+                    CheckComboList* color_checkComboList; 
+                    CheckComboList* mirror_checkComboList;
+
+                    layer->get_type_specific_variable(nullptr, &vectorScene, &vector_stroke_brush, &color_checkComboList, &mirror_checkComboList, nullptr, nullptr);
+
+                    // Color Settings 
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[1].checkBox.clickState1, bool, "Enable Albedo Channel");
+                    WRITE_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr1_Btn.color, "Selected color 1");
+                    WRITE_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr2_Btn.color, "Selected color 2");
+                    WRITE_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr3_Btn.color, "Selected color 3");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[3].checkBox.clickState1, bool, "Enable Roughness Channel");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[4].rangeBar.value, float, "Roughness Channel Value");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[5].checkBox.clickState1, bool, "Enable Metallic Channel");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[6].rangeBar.value, float, "Metallic Channel Value");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[7].checkBox.clickState1, bool, "Enable NormalMap Channel");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[8].rangeBar.value, float, "NormalMap Channel Value");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[9].checkBox.clickState1, bool, "Enable HeightMap Channel");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[10].rangeBar.value, float, "HeightMap Channel Value");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[11].checkBox.clickState1, bool, "Enable AO Channel");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[12].rangeBar.value, float, "AO Channel Value");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[13].checkBox.clickState1, bool, "Use custom material");
+                    FileHandler::writeMaterialData(wf, color_checkComboList->panel.sections[0].elements[14].button.material);
+                    
+                    // Mirror settings
+                    WRITEBITS(mirror_checkComboList->panel.sections[0].elements[0].checkBox.clickState1, bool, "X axis");
+                    WRITEBITS(mirror_checkComboList->panel.sections[0].elements[1].rangeBar.value, float, "X axis mirror offset");
+                    WRITEBITS(mirror_checkComboList->panel.sections[0].elements[2].checkBox.clickState1, bool, "Y axis");
+                    WRITEBITS(mirror_checkComboList->panel.sections[0].elements[3].rangeBar.value, float, "Y axis mirror offset");
+                    WRITEBITS(mirror_checkComboList->panel.sections[0].elements[4].checkBox.clickState1, bool, "Z axis");
+                    WRITEBITS(mirror_checkComboList->panel.sections[0].elements[5].rangeBar.value, float, "Z axis mirror offset");
+
+                    FileHandler::writeBrushData(wf, *vector_stroke_brush, path);
 
                     vectorScene->write_data(wf);
                 } 
             }
+
+            int prim_count = model.meshes[meshI].face_selection_data.selectedPrimitiveIDs.size();
+            WRITEBITS(prim_count, int, "prim count");
+            for (size_t primI = 0; primI < prim_count; primI++)
+            {
+                WRITEBITS(model.meshes[meshI].face_selection_data.selectedPrimitiveIDs[primI], byte, "prim array");
+            }
+            
         }
     }
 

@@ -93,7 +93,7 @@ void Renderer::render(){
 
             if(layerIndex != -1 && layer->layerType == "painting"){
                 Texture* capture_txtr;
-                layer->get_type_specific_variable(nullptr, nullptr, nullptr, nullptr, &capture_txtr);
+                layer->get_type_specific_variable(nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, &capture_txtr);
                
                 ThreeDPoint point = getScene()->get_selected_mesh()->getCurrentPosNormalDataOverCursor();
                 Camera cam = getScene()->camera;

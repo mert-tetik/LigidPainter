@@ -37,14 +37,18 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 void Skybox::load(std::string path) //Path to the folder
 {
+	UTIL::correctFolderDistinguishers(path);
+
+	this->load_path = path;
+
 	std::vector<std::string> faces //Each face of the skybox 
 	{
-		path + "/px.png", 
-		path + "/nx.png",
-		path + "/ny.png",
-		path + "/py.png",
-		path + "/pz.png",
-		path + "/nz.png"
+		path + UTIL::folderDistinguisher() + "px.png", 
+		path + UTIL::folderDistinguisher() + "nx.png",
+		path + UTIL::folderDistinguisher() + "ny.png",
+		path + UTIL::folderDistinguisher() + "py.png",
+		path + UTIL::folderDistinguisher() + "pz.png",
+		path + UTIL::folderDistinguisher() + "nz.png"
 	};
 
 	LigidGL::cleanGLErrors();

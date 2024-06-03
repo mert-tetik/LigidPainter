@@ -128,6 +128,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 /// @brief Exports the 3D model in fbx format
 /// @param path folder path
 void Model::exportModel(std::string path){
+
+    UTIL::correctFolderDistinguishers(path);
+
     if(!std::filesystem::is_directory(path)){
         LGDLOG::start << "ERROR : Exporting 3D model : path is not a folder : " << path << LGDLOG::end;
     }

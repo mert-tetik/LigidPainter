@@ -136,6 +136,10 @@ void VectorScene::StrokeDialog::set_properties(int paint_mode, bool twoD_wrap_mo
     this->paint_mode = paint_mode;
     this->twoD_wrap_mode = twoD_wrap_mode;
 
+    if(!dialog_panel.sections.size()){
+        init_GUI();
+    }
+
     dialog_panel.sections[0].elements[0].comboBox.selectedIndex = paint_mode;
     dialog_panel.sections[0].elements[1].checkBox.clickState1 = twoD_wrap_mode;
 }

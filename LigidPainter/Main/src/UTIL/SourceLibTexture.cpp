@@ -21,7 +21,9 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 
-void SourceLibTexture::load(const std::string path){
+void SourceLibTexture::load(std::string path){
+    UTIL::correctFolderDistinguishers(path);
+
     //Init and load the displaying texture
     this->displayingTexture.load(path.c_str());
 
@@ -30,9 +32,10 @@ void SourceLibTexture::load(const std::string path){
 }
 
 Texture SourceLibTexture::getTexture(){
-    const std::string folderPath = "./LigidPainter/Resources/Texture Library";
+    std::string folderPath = "./LigidPainter/Resources/Texture Library";
+    UTIL::correctFolderDistinguishers(folderPath);
 
-    std::string filePath = folderPath + "/" + this->ID + ".jpg"; //Assuming the texture is in JPEG format
+    std::string filePath = folderPath + UTIL::folderDistinguisher() + this->ID + ".jpg"; //Assuming the texture is in JPEG format
 
     if(this->fullTexture.ID == 0 || glIsTexture(this->fullTexture.ID) == GL_FALSE)
         this->fullTexture.load(filePath.c_str());

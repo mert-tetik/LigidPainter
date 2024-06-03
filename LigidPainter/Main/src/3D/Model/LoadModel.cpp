@@ -56,12 +56,14 @@ static void processNode(aiNode *node, const aiScene *scene, std::vector<AssimpOb
 static void parseMeshData(std::vector<AssimpObject> &objects, std::vector<Mesh> &meshes, const aiScene* scene, bool initTxtrs);
 
 // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-bool Model::loadModel(std::string const &path, bool triangulate, bool initTxtrs)
+bool Model::loadModel(std::string path, bool triangulate, bool initTxtrs)
 {
     if(!std::filesystem::is_regular_file(path)){
         LGDLOG::start << "ERROR : Loading 3D model : " << path << " is not a regular file!" << LGDLOG::end;
         return false;
     }
+
+    UTIL::correctFolderDistinguishers(path);
 
     this->path = path;
 

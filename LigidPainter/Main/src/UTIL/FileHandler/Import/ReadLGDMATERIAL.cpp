@@ -241,6 +241,8 @@ bool FileHandler::readLGDMATERIALFile(
                                         Material& material
                                     )
 {
+    UTIL::correctFolderDistinguishers(path);
+
     LGDLOG::start << "Loading Material : " << path  << LGDLOG::end;
     
     if(!std::filesystem::is_regular_file(path)){

@@ -46,6 +46,8 @@ extern std::atomic<bool> load_ligidpainter_done;
 
 bool project_create(std::string destinationPath, std::string name, std::vector<std::string> TDModelPaths){
     
+    UTIL::correctFolderDistinguishers(destinationPath);
+
     // Wait until LigidPainter is loaded successfuly
     WAIT_WHILE(!load_ligidpainter_done);
 
@@ -59,7 +61,7 @@ bool project_create(std::string destinationPath, std::string name, std::vector<s
     if(!std::filesystem::exists(destinationPath)){
         showMessageBox(
                             "Warning!", 
-                            "Project path is not valid! Please try another directory.", 
+                            "Project path is not valid! Please try another directory : " + destinationPath, 
                             MESSAGEBOX_TYPE_WARNING, 
                             MESSAGEBOX_BUTTON_OK
                         );
@@ -94,7 +96,6 @@ bool project_create(std::string destinationPath, std::string name, std::vector<s
             }
         }
     }
-
     //Update the folder path of the project
     std::string folderPath = destinationPath + UTIL::folderDistinguisher() + name;
     
@@ -103,6 +104,8 @@ bool project_create(std::string destinationPath, std::string name, std::vector<s
         //Create the project folder
         if(!std::filesystem::create_directory(folderPath))
             LGDLOG::start<< "ERROR : Creating project folder : Creating folder : " << folderPath << LGDLOG::end; 
+        
+        projectUTIL_set_path(folderPath);
 
         //Create the saved data folder
         std::string recoverFolderPath = folderPath + UTIL::folderDistinguisher() + "Recover";

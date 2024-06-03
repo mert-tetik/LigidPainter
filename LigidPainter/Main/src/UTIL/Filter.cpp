@@ -35,6 +35,9 @@ Filter::Filter(){
 }
 
 int Filter::load(std::string path){
+
+    UTIL::correctFolderDistinguishers(path);
+    
     if(!std::filesystem::is_regular_file(path)){
         
         return 0;

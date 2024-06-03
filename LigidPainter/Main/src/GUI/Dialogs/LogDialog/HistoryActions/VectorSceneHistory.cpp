@@ -45,7 +45,7 @@ VectorScene* HistoryActionRecords::get_active_vectorScene(){
     
         if(layer != nullptr){
             VectorScene* vector_scene;
-            layer->get_type_specific_variable(nullptr, &vector_scene, nullptr, nullptr, nullptr);
+            layer->get_type_specific_variable(nullptr, &vector_scene, nullptr, nullptr, nullptr, nullptr, nullptr);
         
             return vector_scene;
         }

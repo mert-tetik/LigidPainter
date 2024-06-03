@@ -548,8 +548,11 @@ namespace FileHandler{
     
     /*! @brief Write a *.lgdbrush file to the path (path could lead to both folder or a file) */
     bool writeLGDBRUSHFile(std::string path, Brush brush);
+    bool writeBrushData(std::ofstream& wf, Brush brush, std::string path);
+    
     /*! @brief Read a *.lgdbrush file and write the data to brush param */
     bool readLGDBRUSHFile(std::string path, Brush& brush);
+    bool readBrushData(std::ifstream& rf, Brush& brush);
     
 
     /*! @brief Write a *.lgdmodel file to the path (path could lead to both folder or a file) */
@@ -575,7 +578,7 @@ public:
     Texture getTexture();
     
     /// @brief Load the textures inside of the "Resources/Texture Library"
-    void load(const std::string path);
+    void load(std::string path);
 };
 
 namespace Debugger{

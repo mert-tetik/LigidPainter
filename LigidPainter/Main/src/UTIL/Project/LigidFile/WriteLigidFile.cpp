@@ -67,6 +67,8 @@ static bool write_element(Element element, std::string element_title){
 
 bool wrtLigidFile(std::string path){
     
+    UTIL::correctFolderDistinguishers(path);
+
     // Open writing stream and truncate the file
     std::ofstream wf = std::ofstream(path, std::ios::out | std::ios::binary);
 
@@ -84,9 +86,9 @@ bool wrtLigidFile(std::string path){
     WRITE_BITS(h3, uint64_t, "");
     
     // ------------- Version number ------------
-    uint32_t versionNumber2600 = 2600;
+    uint32_t versionNumber2700 = 2700;
 
-    WRITE_BITS(versionNumber2600, uint32_t, "Version number");
+    WRITE_BITS(versionNumber2700, uint32_t, "Version number");
 
     // ------------- Date ------------
     time_t currentDate = time(0);
@@ -133,6 +135,7 @@ bool wrtLigidFile(std::string path){
     WRITE_VEC3(getScene()->transformRotation, "getScene()->transformRotation"); 
     WRITE_VEC3(getScene()->camera.cameraPos, "getScene()->camera.cameraPos"); 
     WRITE_VEC3(getScene()->camera.originPos, "getScene()->originPos"); 
+    writeStr(wf, getScene()->skybox.load_path);
     WRITE_VEC3(getScene()->skybox.bgColor, "getScene()->skybox.bgColor");
     WRITE_BITS(getScene()->skybox.opacity, float, "getScene()->skybox.opacity");
     WRITE_BITS(getScene()->skybox.lod, float, "getScene()->skybox.lod");
@@ -202,12 +205,3 @@ bool projectUTIL_write_ligid_file(std::string path){
 
     return res;
 }
-
-
-
-//------------ UTIL FUNCTIONS -------------
-
-
-/*
-    Mesh selected faces
-*/

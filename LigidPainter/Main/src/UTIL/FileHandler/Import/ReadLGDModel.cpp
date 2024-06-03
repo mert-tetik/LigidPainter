@@ -33,6 +33,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
                                     return false; \
                                 }
 
+#define READ_VEC3(vec, loc)    READBITS(vec.x, float, loc);\
+                                READBITS(vec.y, float, loc);\
+                                READBITS(vec.z, float, loc);\
+
 #define READSTR(str){size_t strSize;\
                     READBITS(strSize, size_t, str); \
                     for (size_t charI = 0; charI < strSize; charI++)\
@@ -64,26 +68,11 @@ static bool read_channel_alpha(std::ifstream& rf, std::string path, ChannelAlpha
     return true;
 }   
 
-static bool read_texture_pixels(std::ifstream& rf, std::string path, Texture& texture){
-
-    int x_res; 
-    READBITS(x_res, int, "Texture resolution data - X");
-    int y_res; 
-    READBITS(y_res, int, "Texture resolution data - Y");
-
-    char* pxs = new char[x_res * y_res * 4];
-    for (size_t i = 0; i < x_res * y_res * 4; i++)
-    {
-        READBITS(pxs[i], char, "Texture pixel data");
-    }
-
-    texture = Texture(pxs, x_res, y_res);
-}
-
 bool FileHandler::readLGDMODELFile(std::string path, Model& model){
     
-    if(path.size()){
+    UTIL::correctFolderDistinguishers(path);
 
+    if(path.size()){
         std::ifstream rf(path, std::ios::in | std::ios::binary);
 
         if(!rf) {
@@ -227,7 +216,7 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                 // Type specific data
                 if(layer->layerType == "texture"){
                     MaterialChannels* channels;
-                    layer->get_type_specific_variable(nullptr, nullptr, nullptr, &channels, nullptr);
+                    layer->get_type_specific_variable(nullptr, nullptr, nullptr, nullptr, nullptr, &channels, nullptr);
                     
                     channels->albedo.readTextureData(rf, true, 2, false);
                     channels->roughness.readTextureData(rf, true, 2, false);
@@ -237,16 +226,16 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                     channels->ambientOcclusion.readTextureData(rf, true, 2, false);
                 }
                 else if(layer->layerType == "painting"){
-                    FNC(read_texture_pixels(rf, path, layer->result.albedo))
-                    FNC(read_texture_pixels(rf, path, layer->result.roughness))
-                    FNC(read_texture_pixels(rf, path, layer->result.metallic))
-                    FNC(read_texture_pixels(rf, path, layer->result.normalMap))
-                    FNC(read_texture_pixels(rf, path, layer->result.heightMap))
-                    FNC(read_texture_pixels(rf, path, layer->result.ambientOcclusion))
+                    FNC(layer->result.albedo.readPixelData(rf))
+                    FNC(layer->result.roughness.readPixelData(rf))
+                    FNC(layer->result.metallic.readPixelData(rf))
+                    FNC(layer->result.normalMap.readPixelData(rf))
+                    FNC(layer->result.heightMap.readPixelData(rf))
+                    FNC(layer->result.ambientOcclusion.readPixelData(rf))
                 }
                 else if(layer->layerType == "material"){
                     Material* material;
-                    layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr);
+                    layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
                     
                     FileHandler::readMaterialData(rf, *material, nullptr);
                     material->updateMaterialDisplayingTexture(256, true, Camera(), 0, false, getMaterialDisplayerModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels);
@@ -254,12 +243,58 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                 }
                 else if(layer->layerType == "vector"){
                     VectorScene* vectorScene;
-                    layer->get_type_specific_variable(nullptr, &vectorScene, nullptr, nullptr, nullptr);
+                    Brush* vector_stroke_brush;
+                    CheckComboList* color_checkComboList; 
+                    CheckComboList* mirror_checkComboList;
+
+                    layer->get_type_specific_variable(nullptr, &vectorScene, &vector_stroke_brush, &color_checkComboList, &mirror_checkComboList, nullptr, nullptr);
+                    
+                    // Color Settings 
+                    READBITS(color_checkComboList->panel.sections[0].elements[1].checkBox.clickState1, bool, "Enable Albedo Channel");
+                    READ_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr1_Btn.color, "Selected color 1");
+                    READ_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr2_Btn.color, "Selected color 2");
+                    READ_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr3_Btn.color, "Selected color 3");
+                    READBITS(color_checkComboList->panel.sections[0].elements[3].checkBox.clickState1, bool, "Enable Roughness Channel");
+                    READBITS(color_checkComboList->panel.sections[0].elements[4].rangeBar.value, float, "Roughness Channel Value");
+                    READBITS(color_checkComboList->panel.sections[0].elements[5].checkBox.clickState1, bool, "Enable Metallic Channel");
+                    READBITS(color_checkComboList->panel.sections[0].elements[6].rangeBar.value, float, "Metallic Channel Value");
+                    READBITS(color_checkComboList->panel.sections[0].elements[7].checkBox.clickState1, bool, "Enable NormalMap Channel");
+                    READBITS(color_checkComboList->panel.sections[0].elements[8].rangeBar.value, float, "NormalMap Channel Value");
+                    READBITS(color_checkComboList->panel.sections[0].elements[9].checkBox.clickState1, bool, "Enable HeightMap Channel");
+                    READBITS(color_checkComboList->panel.sections[0].elements[10].rangeBar.value, float, "HeightMap Channel Value");
+                    READBITS(color_checkComboList->panel.sections[0].elements[11].checkBox.clickState1, bool, "Enable AO Channel");
+                    READBITS(color_checkComboList->panel.sections[0].elements[12].rangeBar.value, float, "AO Channel Value");
+                    READBITS(color_checkComboList->panel.sections[0].elements[13].checkBox.clickState1, bool, "Use custom material");
+                    FileHandler::readMaterialData(rf, color_checkComboList->panel.sections[0].elements[14].button.material, {});
+                    
+                    // Mirror settings
+                    READBITS(mirror_checkComboList->panel.sections[0].elements[0].checkBox.clickState1, bool, "X axis");
+                    READBITS(mirror_checkComboList->panel.sections[0].elements[1].rangeBar.value, float, "X axis mirror offset");
+                    READBITS(mirror_checkComboList->panel.sections[0].elements[2].checkBox.clickState1, bool, "Y axis");
+                    READBITS(mirror_checkComboList->panel.sections[0].elements[3].rangeBar.value, float, "Y axis mirror offset");
+                    READBITS(mirror_checkComboList->panel.sections[0].elements[4].checkBox.clickState1, bool, "Z axis");
+                    READBITS(mirror_checkComboList->panel.sections[0].elements[5].rangeBar.value, float, "Z axis mirror offset");
+
+                    FileHandler::readBrushData(rf, *vector_stroke_brush);
 
                     vectorScene->read_data(rf);
                 } 
 
                 resMesh.layerScene.layers.push_back(layer);
+            }
+
+            int prim_count;
+            READBITS(prim_count, int, "prim count");
+            std::vector<byte> selected_prims;
+            for (size_t primI = 0; primI < prim_count; primI++)
+            {
+                byte data; 
+                READBITS(data, byte, "prim array");
+                selected_prims.push_back(data);
+            }
+
+            if(resMesh.face_selection_data.selectedPrimitiveIDs.size() == selected_prims.size()){
+                resMesh.face_selection_data.selectedPrimitiveIDs = selected_prims;
             }
 
             model.meshes.push_back(resMesh);

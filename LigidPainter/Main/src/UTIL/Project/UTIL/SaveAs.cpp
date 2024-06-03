@@ -38,6 +38,8 @@ void project_save_as(std::string dstPath, std::atomic<bool>* is_active)
 {
     std::lock_guard<std::mutex> lock(project_mutex);
 
+    UTIL::correctFolderDistinguishers(dstPath);
+
     if(is_active != nullptr)
         *is_active = true;
 

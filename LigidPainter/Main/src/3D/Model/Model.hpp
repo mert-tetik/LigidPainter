@@ -38,7 +38,7 @@ public:
         
     void Draw();
     void exportModel(std::string path);
-    bool loadModel(std::string const &path, bool triangulate, bool initTxtrs);
+    bool loadModel(std::string path, bool triangulate, bool initTxtrs);
     void generateDisplayingTexture();
     void resize_meshes();
 };

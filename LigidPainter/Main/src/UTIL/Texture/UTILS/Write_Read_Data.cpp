@@ -247,6 +247,8 @@ bool Texture::writePixelData(std::ofstream& wf){
     wf.write(pxs, resolution.x * resolution.y * channels);
     
     delete[] pxs;
+
+    return true;
 }
 
 bool Texture::readPixelData(std::ifstream& rf){

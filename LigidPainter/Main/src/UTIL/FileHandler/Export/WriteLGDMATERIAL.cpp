@@ -763,6 +763,8 @@ bool FileHandler::writeLGDMATERIALFile(
                                         std::string path, 
                                         Material material)
                                     {
+    UTIL::correctFolderDistinguishers(path);
+    
     if(path == ""){
         path = showFileSystemObjectSelectionDialog(
                                                     "Select a folder to export the material file", 

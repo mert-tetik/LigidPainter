@@ -146,6 +146,8 @@ bool project_load(std::string ligidFilePath){
 
     std::lock_guard<std::mutex> lock(project_mutex);
 
+    UTIL::correctFolderDistinguishers(ligidFilePath);
+
     //Return if the ligidFilePath doesn't exists
     if(!std::filesystem::exists(ligidFilePath)){
         LGDLOG::start<< "ERROR CAN'T LOCATE THE LIGID FILE : " << ligidFilePath << LGDLOG::end;
