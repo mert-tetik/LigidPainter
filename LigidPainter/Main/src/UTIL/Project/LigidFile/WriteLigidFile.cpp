@@ -42,6 +42,10 @@ Official Web Page : https://ligidtools.com/ligidpainter
                                                     return false; \
                                                 }
 
+#define WRITE_VEC3(vec, loc)    WRITE_BITS(vec.x, float, loc);\
+                                WRITE_BITS(vec.y, float, loc);\
+                                WRITE_BITS(vec.z, float, loc);\
+
 static bool writeStr(std::ofstream& wf, std::string str){
     int strSize = str.size(); 
     WRITE_BITS(strSize, int, "String size"); 
@@ -96,6 +100,7 @@ bool wrtLigidFile(std::string path){
         return false;
 
     // ------------- Settings ------------
+    // GUI
     WRITE_BITS(panel_library_modes.selectedElement, int, "panel_library_modes.selectedElement"); // Selected library mode on the left
     WRITE_BITS(checkBox_wrap_mode.clickState1, bool, "checkBox_wrap_mode.clickState1"); // Wrap mode checkbox
     WRITE_BITS(panel_displaying_modes.selectedElement, int, "panel_displaying_modes.selectedElement"); // Paint display mode
@@ -108,12 +113,14 @@ bool wrtLigidFile(std::string path){
     for (size_t i = 0; i < Library::getTextureArraySize(); i++){if(Library::getTextureObj(i).ID == panel_library_selected_texture.ID)selected_texture_title = Library::getTextureObj(i).title;}
     writeStr(wf, selected_texture_title); // Title of the selected texture
 
+    // Settings
     WRITE_BITS(Settings::properties()->VSync, bool, "Settings::properties()->VSync"); 
     WRITE_BITS(Settings::properties()->cat_allowComments, bool, "Settings::properties()->cat_allowComments"); 
     WRITE_BITS(Settings::properties()->cat_hide, bool, "Settings::properties()->cat_hide"); 
     WRITE_BITS(Settings::properties()->cat_verifyTheExit, bool, "Settings::properties()->cat_verifyTheExit"); 
     WRITE_BITS(Settings::properties()->framebufferResolutionDivider, float, "Settings::properties()->framebufferResolutionDivider"); 
     
+    // Scene
     WRITE_BITS(getScene()->aFar, float, "getScene()->aFar"); 
     WRITE_BITS(getScene()->aNear, float, "getScene()->aNear"); 
     WRITE_BITS(getScene()->backfaceCulling, bool, "getScene()->backfaceCulling"); 
@@ -123,15 +130,55 @@ bool wrtLigidFile(std::string path){
     WRITE_BITS(getScene()->renderTiles, bool, "getScene()->renderTiles"); 
     WRITE_BITS(getScene()->useHeightMap, bool, "getScene()->useHeightMap"); 
     WRITE_BITS(getScene()->useOrtho, bool, "getScene()->useOrtho"); 
-    WRITE_BITS(getScene()->transformRotation.x, float, "getScene()->transformRotation.x"); 
-    WRITE_BITS(getScene()->transformRotation.y, float, "getScene()->transformRotation.y");
-    WRITE_BITS(getScene()->transformRotation.z, float, "getScene()->transformRotation.z"); 
-    WRITE_BITS(getScene()->camera.cameraPos.x, float, "getScene()->cameraPos.x"); 
-    WRITE_BITS(getScene()->camera.cameraPos.y, float, "getScene()->cameraPos.y"); 
-    WRITE_BITS(getScene()->camera.cameraPos.z, float, "getScene()->cameraPos.z"); 
-    WRITE_BITS(getScene()->camera.originPos.x, float, "getScene()->originPos.x"); 
-    WRITE_BITS(getScene()->camera.originPos.y, float, "getScene()->originPos.y"); 
-    WRITE_BITS(getScene()->camera.originPos.z, float, "getScene()->originPos.z"); 
+    WRITE_VEC3(getScene()->transformRotation, "getScene()->transformRotation"); 
+    WRITE_VEC3(getScene()->camera.cameraPos, "getScene()->camera.cameraPos"); 
+    WRITE_VEC3(getScene()->camera.originPos, "getScene()->originPos"); 
+    WRITE_VEC3(getScene()->skybox.bgColor, "getScene()->skybox.bgColor");
+    WRITE_BITS(getScene()->skybox.opacity, float, "getScene()->skybox.opacity");
+    WRITE_BITS(getScene()->skybox.lod, float, "getScene()->skybox.lod");
+    WRITE_BITS(getScene()->skybox.rotation, float, "getScene()->skybox.rotation");
+    WRITE_BITS(getScene()->skybox.bg_txtr_opacity, float, "getScene()->skybox.bg_txtr_opacity");
+    getScene()->skybox.bg_txtr.writePixelData(wf);
+    
+    // Scenes
+    getVectorScene()->write_data(wf);
+    getTextureFieldScene()->write_data(wf); 
+    
+    // Color Settings 
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[1].checkBox.clickState1, bool, "Enable Albedo Channel");
+    WRITE_VEC3(checkComboList_painting_color.panel.sections[0].elements[2].painterColorSelection.clr1_Btn.color, "Selected color 1");
+    WRITE_VEC3(checkComboList_painting_color.panel.sections[0].elements[2].painterColorSelection.clr2_Btn.color, "Selected color 2");
+    WRITE_VEC3(checkComboList_painting_color.panel.sections[0].elements[2].painterColorSelection.clr3_Btn.color, "Selected color 3");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[3].checkBox.clickState1, bool, "Enable Roughness Channel");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[4].rangeBar.value, float, "Roughness Channel Value");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[5].checkBox.clickState1, bool, "Enable Metallic Channel");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[6].rangeBar.value, float, "Metallic Channel Value");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[7].checkBox.clickState1, bool, "Enable NormalMap Channel");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[8].rangeBar.value, float, "NormalMap Channel Value");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[9].checkBox.clickState1, bool, "Enable HeightMap Channel");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[10].rangeBar.value, float, "HeightMap Channel Value");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[11].checkBox.clickState1, bool, "Enable AO Channel");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[12].rangeBar.value, float, "AO Channel Value");
+    WRITE_BITS(checkComboList_painting_color.panel.sections[0].elements[13].checkBox.clickState1, bool, "Use custom material");
+    FileHandler::writeMaterialData(wf, checkComboList_painting_color.panel.sections[0].elements[14].button.material);
+    
+    // Face selection settings
+    WRITE_BITS(checkComboList_mesh_face_selection.panel.sections[0].elements[0].checkBox.clickState1, bool, "Mask to selected mesh");
+    WRITE_BITS(checkComboList_mesh_face_selection.panel.sections[0].elements[1].checkBox.clickState1, bool, "Mesh selection mode");
+    checkComboList_mesh_face_selection.panel.sections[0].elements[1].button.texture.writeTextureData(wf);
+
+    // Mirror settings
+    WRITE_BITS(checkComboList_painting_mirror.panel.sections[0].elements[0].checkBox.clickState1, bool, "X axis");
+    WRITE_BITS(checkComboList_painting_mirror.panel.sections[0].elements[1].rangeBar.value, float, "X axis mirror offset");
+    WRITE_BITS(checkComboList_painting_mirror.panel.sections[0].elements[2].checkBox.clickState1, bool, "Y axis");
+    WRITE_BITS(checkComboList_painting_mirror.panel.sections[0].elements[3].rangeBar.value, float, "Y axis mirror offset");
+    WRITE_BITS(checkComboList_painting_mirror.panel.sections[0].elements[4].checkBox.clickState1, bool, "Z axis");
+    WRITE_BITS(checkComboList_painting_mirror.panel.sections[0].elements[5].rangeBar.value, float, "Z axis mirror offset");
+
+    // Painting over settings
+    WRITE_BITS(checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1, bool, "Use Painting Over");
+    WRITE_BITS(checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1, bool, "Painting over edit mode");
+    WRITE_BITS(checkComboList_painting_over.panel.sections[0].elements[4].checkBox.clickState1, bool, "Painting over grayscale masking");
 
     return true;
 }
@@ -162,12 +209,5 @@ bool projectUTIL_write_ligid_file(std::string path){
 
 
 /*
-    Displaying dialog
-
-    Checkcombolists
-
-    VectorScene
-    TextureFieldScene
-
     Mesh selected faces
 */

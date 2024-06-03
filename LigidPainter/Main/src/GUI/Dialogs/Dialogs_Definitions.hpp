@@ -149,19 +149,25 @@ public:
 
 
 class DisplayerDialog
- {
- public:
-    Panel panel;
-    
-    DialogControl dialogControl;
-    std::vector<Element> skyboxes;
+{
+public:
+   Panel panel;
+   Panel bg_txtr_selection_panel;
 
-    //Constructors
-    DisplayerDialog(){}
-    DisplayerDialog(int);
-    
-    //Public member functions
-    void show(Timer& timer, Skybox &skybox);
+   Button quit_bg_txtr_selection_btn;
+
+   bool bg_txtr_selection_mode = false;
+   float bg_txtr_selection_mode_mixVal = 0.f;
+
+   DialogControl dialogControl;
+   std::vector<Element> skyboxes;
+
+   //Constructors
+   DisplayerDialog(){}
+   DisplayerDialog(int);
+   
+   //Public member functions
+   void show(Timer& timer, Skybox &skybox);
  };
 
 //!------------------------------ MODEL INFO DIALOG ------------------------------

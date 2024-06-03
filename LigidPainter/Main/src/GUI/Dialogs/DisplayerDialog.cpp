@@ -35,14 +35,43 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include "tinyfiledialogs.h"
 
 DisplayerDialog::DisplayerDialog(int){
-    Texture bgTxtr0;
-    bgTxtr0.load("./LigidPainter/Resources/Images/BGTexture0.jpg");
-    Texture bgTxtr1;
-    bgTxtr1.load("./LigidPainter/Resources/Images/BGTexture1.jpg");
-    Texture bgTxtr2;
-    bgTxtr2.load("./LigidPainter/Resources/Images/BGTexture2.jpg");
-    Texture bgTxtr3;
-    bgTxtr3.load("./LigidPainter/Resources/Images/BGTexture3.jpg");
+
+    this->bg_txtr_selection_panel = Panel(
+        {
+            {
+                Section(
+                    Element(Button()),
+                    {
+                        Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2.f, 2.f), "Add Custom", Texture(), 4.f, false)
+                    }
+                )
+            }
+        },
+        glm::vec2(10.f, 26.f),
+        glm::vec3(50.f,50.f,0.8f),
+        ColorPalette::mainColor,
+        ColorPalette::thirdColor,
+        true,
+        true,
+        true,
+        true,
+        true,
+        1.f,
+        1.f,
+        {},
+        0.25f,
+        false
+    ); 
+
+    std::vector<std::string> bg_txtr_paths = UTIL::get_files_in_folder("./LigidPainter/Resources/Images/Background");
+    
+    for(std::string bg_path : bg_txtr_paths){
+        Texture txtr;
+        txtr.load(bg_path.c_str());
+        
+        this->bg_txtr_selection_panel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f, 4.f), txtr.title, txtr, 0.f, false));
+    }
+
 
     //Create the panel
     this->panel = Panel(
@@ -52,22 +81,19 @@ DisplayerDialog::DisplayerDialog(int){
                 Section(
                     Element(Button()),
                     {
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6),"",  Texture(), 2.f, false)),
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Rotation"  , Texture(), 2.f,0.f,360.f,0.f)), 
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Blur"  , Texture(), 2.f,0.f,100.f,0.f)), 
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Opacity"  , Texture(), 2.f,0.f,100.f,0.f)), 
-                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2),"Color"  , Texture(), 2.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4),"",  bgTxtr0, 2.f,false)),
-                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1),"Image Opacity"  , Texture(), 2.f,0.f,1.f,0.f)), 
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr0, 1.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr1, 1.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr2, 1.f, false)),
-                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,2),"",  bgTxtr3, 1.f, false)),
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,6), "", Texture(), 2.f, false)), // 0
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Rotation", Texture(), 2.f,0.f,360.f,0.f)), // 1
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Blur", Texture(), 2.f,0.f,100.f,0.f)), // 2
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Opacity", Texture(), 2.f,0.f,100.f,0.f)), // 3
+                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Color", Texture(), 2.f, false)), // 4
+                        Element(Button(ELEMENT_STYLE_SOLID,glm::vec2(2,4), "", Texture(), 2.f,false)), // 5
+                        Element(Button(ELEMENT_STYLE_BASIC,glm::vec2(2,2), "Select Background Image", Texture(), 1.f,false)), // 6
+                        Element(RangeBar(ELEMENT_STYLE_SOLID,glm::vec2(2,1), "Image Opacity", Texture(), 1.f,0.f,1.f,0.f)), // 7
                     }
                 )
             }
         },
-        glm::vec2(20.f, 34.f),
+        glm::vec2(20.f, 26.f),
         glm::vec3(50.f,50.f,0.8f),
         ColorPalette::mainColor,
         ColorPalette::thirdColor,
@@ -83,6 +109,11 @@ DisplayerDialog::DisplayerDialog(int){
         false
     );
     
+    this->quit_bg_txtr_selection_btn = Button(ELEMENT_STYLE_SOLID, glm::vec2(2,2), "", appTextures.X, 1.f,false);
+    this->quit_bg_txtr_selection_btn.color = glm::vec4(0.f);
+    this->quit_bg_txtr_selection_btn.color2 = glm::vec4(0.f);
+    this->quit_bg_txtr_selection_btn.outlineExtra = false;
+
     //For each default skybox generate a button with a unique color (there are 6 default skyboxes)
     for (size_t i = 0; i < 6; i++)
     {
@@ -122,7 +153,13 @@ void DisplayerDialog::show(Timer& timer, Skybox &skybox){
         panel.render(timer, !dialog_log.isHovered());
         
         //Update the texture of the skybox displayer button
-        panel.sections[0].elements[0].button.texture = Texture(skybox.displayingTexture);
+        panel.sections[0].elements[0].button.texture = skybox.displayingTexture;
+        panel.sections[0].elements[1].rangeBar.value = skybox.rotation;
+        panel.sections[0].elements[2].rangeBar.value = skybox.lod * 25.f;
+        panel.sections[0].elements[3].rangeBar.value = skybox.opacity * 100.f;
+        panel.sections[0].elements[4].button.color = glm::vec4(skybox.bgColor, 1.f);
+        panel.sections[0].elements[5].button.texture = skybox.bg_txtr;
+        panel.sections[0].elements[7].rangeBar.value = skybox.bg_txtr_opacity;
         
         //Render the skybox buttons if the skybox displayer is pressed
         for (size_t i = 0; i < skyboxes.size(); i++)
@@ -150,9 +187,6 @@ void DisplayerDialog::show(Timer& timer, Skybox &skybox){
             }
         }
         
-        //Set the bg color element to the bg color of the skybox
-        panel.sections[0].elements[4].button.color = glm::vec4(skybox.bgColor,1);
-        
         //If pressed to the bg color element show color picker dialog
         if(panel.sections[0].elements[4].button.clicked){
             unsigned char defRGB[4] = {0, 0, 0, 0}; // Black color (RGB = 0, 0, 0), alpha = 0
@@ -168,48 +202,79 @@ void DisplayerDialog::show(Timer& timer, Skybox &skybox){
             }
         }
 
-        if(panel.sections[0].elements[7].button.clicked)
-            panel.sections[0].elements[5].button.texture.ID = panel.sections[0].elements[7].button.texture.ID;
-        if(panel.sections[0].elements[8].button.clicked)
-            panel.sections[0].elements[5].button.texture.ID = panel.sections[0].elements[8].button.texture.ID;
-        if(panel.sections[0].elements[9].button.clicked)
-            panel.sections[0].elements[5].button.texture.ID = panel.sections[0].elements[9].button.texture.ID;
-        if(panel.sections[0].elements[10].button.clicked)
-            panel.sections[0].elements[5].button.texture.ID = panel.sections[0].elements[10].button.texture.ID;
+        timer.transition(this->bg_txtr_selection_mode, this->bg_txtr_selection_mode_mixVal, 0.3f);
 
-        if(panel.sections[0].elements[5].button.clicked){
-            std::string test = showFileSystemObjectSelectionDialog("Select a texture file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
-
-            if(test.size()){
-                if( 
-                    panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[7].button.texture.ID &&
-                    panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[8].button.texture.ID &&
-                    panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[9].button.texture.ID &&
-                    panel.sections[0].elements[5].button.texture.ID != panel.sections[0].elements[10].button.texture.ID
-                )
-                    glDeleteTextures(1, &panel.sections[0].elements[5].button.texture.ID);
-                
-                Texture uploadedTexture;
-                uploadedTexture.load(test.c_str());
-                panel.sections[0].elements[5].button.texture = uploadedTexture;
-            }
+        if(bg_txtr_selection_mode && !this->bg_txtr_selection_panel.hover && *Mouse::LClick()){
+            bg_txtr_selection_mode = false;
         }
 
-        
-        //Change the transform matrix of the skybox (rotate it using the rotation range bar element)
-        skybox.transformMatrix = glm::mat4(1);
-        skybox.transformMatrix = glm::rotate(skybox.transformMatrix,glm::radians(panel.sections[0].elements[1].rangeBar.value),glm::vec3(0,1,0));
+        if(!bg_txtr_selection_mode){
+            this->bg_txtr_selection_panel.hover = false;
+        }
 
-        //Change the skybox lod using the blur range bar element
-        skybox.lod = panel.sections[0].elements[2].rangeBar.value/25.f;
+        if(panel.sections[0].elements[6].button.clicked){
+            bg_txtr_selection_mode = true;
+        }
+
+        if(this->bg_txtr_selection_mode_mixVal){
+            ShaderSystem::buttonShader().setFloat("properties.groupOpacity", this->bg_txtr_selection_mode_mixVal);
+            
+            this->quit_bg_txtr_selection_btn.pos = glm::vec3(
+                                                                this->bg_txtr_selection_panel.pos.x + this->bg_txtr_selection_panel.scale.x - 1.f, 
+                                                                this->bg_txtr_selection_panel.pos.y - this->bg_txtr_selection_panel.scale.y + 1.f + 1.f, 
+                                                                this->bg_txtr_selection_panel.pos.z
+                                                            );
+
+            this->quit_bg_txtr_selection_btn.render(timer, !dialog_log.isHovered());
+
+            this->quit_bg_txtr_selection_btn.scale = glm::vec2(1.f) * (1.f + this->quit_bg_txtr_selection_btn.hoverMixVal / 5.f);
+
+            if(this->quit_bg_txtr_selection_btn.clicked){
+                this->bg_txtr_selection_mode = false;
+            }
+
+            this->bg_txtr_selection_panel.scale.x = this->bg_txtr_selection_mode_mixVal * 10.f;
+            this->bg_txtr_selection_panel.pos = glm::vec3(this->panel.pos.x + this->panel.scale.x + this->bg_txtr_selection_panel.scale.x, this->panel.pos.y, this->panel.pos.z);
+            this->bg_txtr_selection_panel.render(timer, !dialog_log.isHovered());
+
+            for (size_t i = 1; i < this->bg_txtr_selection_panel.sections[0].elements.size(); i++)
+            {
+                if(this->bg_txtr_selection_panel.sections[0].elements[i].button.clicked){
+                    panel.sections[0].elements[5].button.texture = this->bg_txtr_selection_panel.sections[0].elements[i].button.texture;
+                    bg_txtr_selection_mode = false;
+                }
+            }
+            
+
+            if(this->bg_txtr_selection_panel.sections[0].elements[0].button.clicked){
+                std::string test = showFileSystemObjectSelectionDialog("Select an image file.", "", FILE_SYSTEM_OBJECT_SELECTION_DIALOG_FILTER_TEMPLATE_TEXTURE, false, FILE_SYSTEM_OBJECT_SELECTION_DIALOG_TYPE_SELECT_FILE);
+
+                if(test.size()){
+                    Texture uploadedTexture;
+                    uploadedTexture.load(test.c_str());
+
+                    this->bg_txtr_selection_panel.sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.f, 4.f), uploadedTexture.title, uploadedTexture, 0.f, false));
+                
+                    UTIL::copyFileToFolder(test, "./LigidPainter/Resources/Images/Background", 1);
+                }
+            }
+
+            ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
+        }
         
-        //Change the skybox opacity using the opacity range bar element
-        skybox.opacity = panel.sections[0].elements[3].rangeBar.value/100.f;
+
+        skybox.displayingTexture = panel.sections[0].elements[0].button.texture;
+        skybox.rotation = panel.sections[0].elements[1].rangeBar.value;
+        skybox.lod = panel.sections[0].elements[2].rangeBar.value;
+        skybox.opacity = panel.sections[0].elements[3].rangeBar.value;
+        skybox.bgColor = panel.sections[0].elements[4].button.color;
+        skybox.bg_txtr = panel.sections[0].elements[5].button.texture;
+        skybox.bg_txtr_opacity = panel.sections[0].elements[7].rangeBar.value;
+        skybox.update_transformMatrix();
         
         //End the dialog
-        if((panel.sections[0].elements[2].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
+        if((panel.sections[0].elements[2].button.clicked) || getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!panel.hover && !this->bg_txtr_selection_panel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
             if(!dialogControl.firstFrameActivated){
-                panel.sections[0].elements[0].button.clickState1 = false;
                 dialogControl.unActivate();
             }
         }

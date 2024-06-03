@@ -35,6 +35,12 @@ public:
 	
     /*! @brief Used to rotate the skybox */
     glm::mat4 transformMatrix = glm::mat4(1);
+    void update_transformMatrix(){
+        this->transformMatrix = glm::mat4(1);
+        this->transformMatrix = glm::rotate(this->transformMatrix, glm::radians(this->rotation), glm::vec3(0, 1, 0));
+    }
+    float rotation = 0.f;
+    
 	
     /*! @brief Used to blur the skybox */
     float lod = 0.;
@@ -44,6 +50,9 @@ public:
 	
     /*! @brief Mixes the bgColor value and the skybox color value */
     float opacity = 0.f;
+
+    Texture bg_txtr;
+    float bg_txtr_opacity = 0.f;
 
     /*! @brief Default constructor*/
     Skybox();

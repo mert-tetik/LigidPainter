@@ -171,6 +171,25 @@ bool UTIL::deleteFilesInFolder(const std::string folderPath) {
     return true;
 }
 
+std::vector<std::string> UTIL::get_files_in_folder(const std::string folderPath) {
+    std::vector<std::string> res;
+    
+    try
+    {
+        for (const auto& entry : std::filesystem::directory_iterator(folderPath)) {
+            if (entry.is_regular_file()) {
+                res.push_back(entry.path().string());
+            }
+        }
+    }
+    catch (const std::filesystem::filesystem_error& ex) {
+        LGDLOG::start << "ERROR : Filesystem : Location ID 6845421 " << ex.what() << LGDLOG::end;
+        return {};
+    }
+
+    return res;
+}
+
 bool UTIL::duplicateFolder(const std::string src, const std::string dest){
     try
     {

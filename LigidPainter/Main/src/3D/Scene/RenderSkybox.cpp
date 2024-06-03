@@ -52,10 +52,10 @@ void Scene::render_skybox(){
 
     ShaderSystem::textureRenderingShader().use();
     ShaderSystem::textureRenderingShader().setMat4("projection", getContext()->ortho_projection);
-    ShaderSystem::textureRenderingShader().setVec2("scale", *Settings::videoScale());
+    ShaderSystem::textureRenderingShader().setVec2("scale", *Settings::videoScale() / glm::vec2(2));
     ShaderSystem::textureRenderingShader().setVec3("pos", glm::vec3(*Settings::videoScale() / glm::vec2(2), 0.1));
-    ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(dialog_displayer.panel.sections[0].elements[5].button.texture.ID, "Scene::render_skybox : Render bg texture"));
-    ShaderSystem::textureRenderingShader().setFloat("opacity", dialog_displayer.panel.sections[0].elements[6].rangeBar.value);
+    ShaderSystem::textureRenderingShader().setInt("txtr", GL::bindTexture_2D(this->skybox.bg_txtr.ID, "Scene::render_skybox : Render bg texture"));
+    ShaderSystem::textureRenderingShader().setFloat("opacity", this->skybox.bg_txtr_opacity);
     ShaderSystem::textureRenderingShader().setFloat("rotation", 0.f);
     ShaderSystem::textureRenderingShader().setFloat("depthToleranceValue", 0);
 

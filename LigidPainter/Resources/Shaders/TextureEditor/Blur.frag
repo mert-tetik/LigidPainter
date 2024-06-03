@@ -30,7 +30,7 @@ vec4 boxBlur(vec2 uv)
 #define pow2(x) (x * x)
 
 const float pi = atan(1.0) * 4.0;
-const int samples = 64;
+const int samples = 32;
 const float sigma = float(samples) * 0.25;
 
 float gaussian(vec2 i) {

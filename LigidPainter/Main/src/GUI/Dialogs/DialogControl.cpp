@@ -45,9 +45,9 @@ void action_BLUR(Texture* receivedTexture, Texture* destTxtr, int blurIndex, flo
 
 static void update_blurred_bgTexture(float mixVal){
     if(!blurred_bgTexture.ID)
-        blurred_bgTexture = Texture((char*)nullptr, 1024, 1024);
+        blurred_bgTexture = Texture((char*)nullptr, 512, 512);
 
-    action_BLUR(&Settings::defaultFramebuffer()->bgTxtr, &blurred_bgTexture, 1, 0.f, glm::vec2(0.f), 0.1f * mixVal);
+    action_BLUR(&Settings::defaultFramebuffer()->bgTxtr, &blurred_bgTexture, 1, 0.f, glm::vec2(0.f), 0.15f * mixVal + 0.05);
 }
 
 static void drawBG()

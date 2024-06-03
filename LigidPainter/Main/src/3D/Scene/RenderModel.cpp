@@ -136,7 +136,7 @@ void Scene::render_model(Timer& timer){
             }
             else{
                 if(!this->model->meshes[i].face_selection_data.hideUnselected)
-                    ShaderSystem::tdModelShader().setFloat("opacity", 0.2f);
+                    ShaderSystem::tdModelShader().setFloat("opacity", 0.35f);
                 else
                     ShaderSystem::tdModelShader().setFloat("opacity", 0.0f);
             }

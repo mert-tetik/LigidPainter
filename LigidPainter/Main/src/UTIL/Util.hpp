@@ -148,6 +148,9 @@ namespace UTIL{
     /// @param folderPath 
     bool deleteFilesInFolder(const std::string folderPath);
 
+    /// @brief Get only the files inside of a single folder
+    std::vector<std::string> get_files_in_folder(const std::string folderPath);
+
     /// @brief Writes the contents of the src folder to dest folder. (Creates the dest folder if doesn't exist)
     bool duplicateFolder(const std::string src, const std::string dest);
 
