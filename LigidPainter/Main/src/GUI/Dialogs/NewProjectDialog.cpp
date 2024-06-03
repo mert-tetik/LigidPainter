@@ -30,6 +30,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
 #include "UTIL/Settings/Settings.hpp" 
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Project/Project.hpp"
+#include "UTIL/Library/Library.hpp"
 
 #include <string>
 #include <iostream>
@@ -264,8 +265,15 @@ void NewProjectDialog::show(Timer& timer){
                                     TDModelPaths  //3D model path
                                 ))
         {
+
             project_load(pathTextbox.text + UTIL::folderDistinguisher() + titleTextbox.text + UTIL::folderDistinguisher() + titleTextbox.text + ".ligid");
 
+            for (size_t i = 0; i < Library::getModelArraySize(); i++)
+            {
+                if(Library::getModel(i)->title != "sphere" && Library::getModel(i)->title != "plane")
+                    getScene()->model = Library::getModel(i);
+            }
+            
             this->dialogControl.unActivate();
         }
     }

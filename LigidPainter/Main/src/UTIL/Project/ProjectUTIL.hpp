@@ -39,7 +39,6 @@ static bool projectUTIL_folder_path_check(){
             if(project_create(path, project_title(), {})){
                 project_load(path + UTIL::folderDistinguisher() + project_title() + UTIL::folderDistinguisher() + project_title() + ".ligid");
             }
-
         }
 
         // Filesystem has a problem
