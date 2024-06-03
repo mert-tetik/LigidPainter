@@ -398,15 +398,9 @@ void ThreeDBox::init(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 po
     glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(11 * sizeof(float)));
     LigidGL::testGLError("ThreeDBox::init : glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(11 * sizeof(float)));");
 
-
-    // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-    glBindBuffer(GL_ARRAY_BUFFER, 0); 
-    LigidGL::testGLError("ThreeDBox::init : Binding default VBO");
-
-    // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
-    // VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
     glBindVertexArray(0);
-    LigidGL::testGLError("ThreeDBox::init : Binding default VAO");
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void ThreeDBox::update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 pos_bottomLeft, glm::vec3 pos_bottomRight, glm::vec3 normal){
@@ -436,6 +430,10 @@ void ThreeDBox::update(glm::vec3 pos_topLeft, glm::vec3 pos_topRight, glm::vec3 
 
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, this->boxIndices.size() * sizeof(unsigned int), &this->boxIndices[0]);
     LigidGL::testGLError("ThreeDBox::update : Changing data in the allocated memory for the EBO");
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void ThreeDBox::updateDetailed(
@@ -539,6 +537,10 @@ void ThreeDBox::updateDetailed(
 
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, this->boxIndices.size() * sizeof(unsigned int), &this->boxIndices[0]);
     LigidGL::testGLError("ThreeDBox::update : Changing data in the allocated memory for the EBO");
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 
@@ -551,8 +553,14 @@ void ThreeDBox::draw(){
     LigidGL::testGLError("ThreeDBox::init : Binding VAO");
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     LigidGL::testGLError("ThreeDBox::init : Binding VBO");
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    LigidGL::testGLError("ThreeDBox::init : Binding EBO");
 
     //Draw the box
     glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(this->boxIndices.size()), GL_UNSIGNED_INT, 0);
     LigidGL::testGLError("ThreeDBox::draw : Drawing elements");
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }

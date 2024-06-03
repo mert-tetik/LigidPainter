@@ -236,7 +236,6 @@ void TextureField::setDetailedWrapPoints(){
 }
 
 void TextureField::updateWrapBox(){
-    
     if(!this->threeDWrapBox.VBO)
         return;
 
@@ -632,7 +631,6 @@ bool TextureField::isAnyWrapPointActive(){
 }
 
 static Texture threeDPointsStencilTexture;
-static Framebuffer threeDPointsStencilFBO;
 
 void TextureField::checkIfWrappedTextureClicked(bool doMouseTracking){
     // Positioning the first modifying button (delete button) (other modifying buttons labeled with wrap_ will be positioned according to this)
@@ -653,11 +651,9 @@ void TextureField::checkIfWrappedTextureClicked(bool doMouseTracking){
     // Generate the checking buffers
     if(!threeDPointsStencilTexture.ID){
         threeDPointsStencilTexture = Texture((char*)nullptr, resolution, resolution);
-        threeDPointsStencilFBO = Framebuffer(threeDPointsStencilTexture, GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "threeDPointsStencilFBO");
     }
 
-    // Bind the checking fbo
-    threeDPointsStencilFBO.bind();
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(threeDPointsStencilTexture, glm::ivec2(resolution), "TextureField::checkIfWrappedTextureClicked");
 
     // Clear the texture buffer
     glClearColor(0,0,0,0);
@@ -710,5 +706,5 @@ void TextureField::checkIfWrappedTextureClicked(bool doMouseTracking){
 
     // Finish
     delete[] stencilData;
-    Settings::defaultFramebuffer()->setViewport();
+    FBOPOOL::releaseFBO(FBO);
 }
