@@ -80,3 +80,17 @@ ComboBox::ComboBox(int style,glm::vec2 scale,std::vector<std::string> texts,std:
         clickedMixVal.push_back(0);
     }
 }
+
+void ComboBox::add_text(std::string text){
+    this->texts.push_back(text);
+    hover.push_back(0);
+    hoverMixVal.push_back(0);
+    clickedMixVal.push_back(0);
+}
+
+void ComboBox::clear_texts(){
+    this->texts.clear();
+    hover.clear();
+    hoverMixVal.clear();
+    clickedMixVal.clear();
+}

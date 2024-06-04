@@ -71,6 +71,38 @@ void checkComboList_mesh_face_selection_render(Timer& timer, bool doMouseTrackin
         getScene()->get_selected_mesh()->face_selection_data.meshMask.update(whitePx, 1, 1);
     }
     
+    if(checkComboList_mesh_face_selection.panel.sections[0].elements[4].comboBox.texts.size() - 1 != getScene()->get_selected_mesh()->objects.size()){
+        checkComboList_mesh_face_selection.panel.sections[0].elements[4].comboBox.clear_texts();
+        checkComboList_mesh_face_selection.panel.sections[0].elements[4].comboBox.add_text("Select");
+        for (size_t i = 0; i < getScene()->get_selected_mesh()->objects.size(); i++)
+        {
+            checkComboList_mesh_face_selection.panel.sections[0].elements[4].comboBox.add_text(getScene()->get_selected_mesh()->objects[i].title);
+        }
+    }
+    else{
+        for (size_t i = 0; i < getScene()->get_selected_mesh()->objects.size(); i++)
+        {
+            checkComboList_mesh_face_selection.panel.sections[0].elements[4].comboBox.texts[i + 1] = getScene()->get_selected_mesh()->objects[i].title;
+        }
+    }
+
+    if(checkComboList_mesh_face_selection.panel.sections[0].elements[4].comboBox.selectedIndex != 0){
+        if(checkComboList_mesh_face_selection.panel.sections[0].elements[4].comboBox.selectedIndex - 1 < getScene()->get_selected_mesh()->objects.size()){
+            glm::ivec2 vert_indices = getScene()->get_selected_mesh()->objects[checkComboList_mesh_face_selection.panel.sections[0].elements[4].comboBox.selectedIndex - 1].vertIndices;
+            if(vert_indices.x < vert_indices.y){
+                for (size_t i = vert_indices.x / 3; i < vert_indices.y / 3; i++)
+                {
+                    if(i < getScene()->get_selected_mesh()->face_selection_data.selectedPrimitiveIDs.size())
+                        getScene()->get_selected_mesh()->face_selection_data.selectedPrimitiveIDs[i] = 2;
+                }
+
+                getScene()->get_selected_mesh()->update_face_selection_buffers(true);
+            }
+        }
+    
+        checkComboList_mesh_face_selection.panel.sections[0].elements[4].comboBox.selectedIndex = 0;
+    }
+    
     getScene()->get_selected_mesh()->face_selection_data.activated = checkComboList_mesh_face_selection.panel.sections[0].elements[0].checkBox.clickState1;
     getScene()->get_selected_mesh()->face_selection_data.editMode = checkComboList_mesh_face_selection.panel.sections[0].elements[1].checkBox.clickState1;
     getScene()->get_selected_mesh()->face_selection_data.selectionModeIndex = checkComboList_mesh_face_selection.panel.sections[0].elements[2].comboBox.selectedIndex;

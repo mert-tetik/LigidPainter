@@ -47,7 +47,7 @@ void panels_render(Timer& timer)
     panels_transform();
     Debugger::block("GUI : panelPositioning"); // End
 
-    bool doMouseTracking = !dialog_log.isHovered();
+    bool doMouseTracking = !dialog_log.isHovered() && !checkComboList_mesh_face_selection.hover && !checkComboList_painting_color.hover && !checkComboList_painting_mirror.hover && !checkComboList_painting_over.hover;
 
     Debugger::block("GUI : Panels : Navigation panel"); // Start
     panel_navigation_render(timer, doMouseTracking);
@@ -108,15 +108,15 @@ void panels_render(Timer& timer)
         Debugger::block("GUI : Panels : Painting modes panel"); // End
 
         Debugger::block("GUI : Panels : Painting color check combo list"); // Start
-        checkComboList_painting_color_render(timer, doMouseTracking || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1, checkComboList_painting_color);
+        checkComboList_painting_color_render(timer, !dialog_log.isHovered() || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1, checkComboList_painting_color);
         Debugger::block("GUI : Panels : Painting color check combo list"); // End        
         
         Debugger::block("GUI : Panels : Painting mirror check combo list"); // Start
-        checkComboList_painting_mirror_render(timer, doMouseTracking || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1, checkComboList_painting_mirror);
+        checkComboList_painting_mirror_render(timer, !dialog_log.isHovered() || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1, checkComboList_painting_mirror);
         Debugger::block("GUI : Panels : Painting mirror check combo list"); // End
         
         Debugger::block("GUI : Panels : Painting over check combo list"); // Start
-        checkComboList_painting_over_render(timer, doMouseTracking || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
+        checkComboList_painting_over_render(timer, !dialog_log.isHovered() || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
         Debugger::block("GUI : Panels : Painting over check combo list"); // End
         
         Debugger::block("GUI : Panels : Painting brush button"); // Start
@@ -136,7 +136,7 @@ void panels_render(Timer& timer)
     }
 
     Debugger::block("GUI : Panels : Painting face selection check combo list"); // Start
-    checkComboList_mesh_face_selection_render(timer, doMouseTracking || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
+    checkComboList_mesh_face_selection_render(timer, !dialog_log.isHovered() || checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1);
     Debugger::block("GUI : Panels : Painting face selection check combo list"); // End
     
     if(dialog_greeting.dialogControl.isActive()){

@@ -258,6 +258,9 @@ public:
 
     ComboBox(int style,glm::vec2 scale,std::vector<std::string> texts,std::string text,float panelOffset);
 
+    void add_text(std::string text);
+    void clear_texts();
+
     //Public member functions
     void render(Timer &timer,bool doMouseTracking);
 };

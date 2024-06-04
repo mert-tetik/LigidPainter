@@ -130,7 +130,22 @@ void CheckComboList::render(
 
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 1.f);
 
-    if(hover)
+    bool any_combobox_active = false;
+
+    if(this->arrowButton.clickState1){
+        for (size_t secI = 0; secI < this->panel.sections.size(); secI++)
+        {
+            for (size_t i = 0; i < this->panel.sections[secI].elements.size(); i++)
+            {
+                if(this->panel.sections[secI].elements[i].state == 3)
+                    if(this->panel.sections[secI].elements[i].comboBox.pressed)
+                        any_combobox_active = true;
+            }   
+        }
+    }
+    
+
+    if(hover || any_combobox_active)
         lastTimeHover = LigidGL::getTime();
 
     if(LigidGL::getTime() - lastTimeHover > 0.5)

@@ -416,7 +416,7 @@ void panels_init(){
                                                                         CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), "Mesh selection mode (TAB)", 1.f), //1
                                                                         ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Circle", "Box"}, "Selecting Mode", 1.f), //2
                                                                         RangeBar(ELEMENT_STYLE_STYLIZED, glm::vec2(2,1.f), "Circle radius"  , Texture(), 2.f, 1.f, 100.f, 10.f), //3
-                                                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Custom"}, "Auto Select", 2.f), //4
+                                                                        ComboBox(ELEMENT_STYLE_BASIC, glm::vec2(2.f,2.f), {"Select"}, "Auto Select", 2.f), //4
                                                                         Element(Button(ELEMENT_STYLE_SOLID, glm::vec2(2,4), "Mask via texture"  , Texture(), 4.f, false)),//5
                                                                         Element(Button(ELEMENT_STYLE_STYLIZED, glm::vec2(2,2), "Cancel texture mask"  , Texture(), 0.f, false)),//6
                                                                         CheckBox(ELEMENT_STYLE_BASIC, glm::vec2(2,2), "Hide unselected mesh", 2.f), //7

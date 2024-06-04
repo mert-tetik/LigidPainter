@@ -34,6 +34,7 @@ bool panels_any_hovered(){
             gizmo_scene.hover ||
             button_mesh_selection.hover ||
             comboBox_layers_resolution.hover[0] ||
+            comboBox_PBR_displaying_mode.hover[0] ||
             checkComboList_painting_color.hover ||
             checkComboList_mesh_face_selection.hover ||
             checkComboList_painting_mirror.hover ||
