@@ -61,9 +61,12 @@ void RenamingDialog::show(Timer& timer, glm::vec2 pos, float width, std::string*
 
         bgBtn.render(timer, false);
         this->rename_textbox.active = true;
-        this->rename_textbox.render(timer, true);
-        if(this->rename_textbox.text.size() > max_char_count)
+        this->rename_textbox.render_the_textbox(timer, true);
+        if(this->rename_textbox.text.size() > max_char_count){
             this->rename_textbox.text.pop_back();
+            this->rename_textbox.activeChar = this->rename_textbox.text.size()-1;
+            this->rename_textbox.activeChar2 = this->rename_textbox.text.size()-1;
+        }
 
         if(
                 getContext()->window.isKeyClicked(LIGIDGL_KEY_ESCAPE)|| 

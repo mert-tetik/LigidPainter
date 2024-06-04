@@ -110,13 +110,7 @@ TextBox::TextBox(int style,glm::vec2 scale,std::string text,float panelOffset,in
     }
 }
 
-
-
-void TextBox::render(
-                        Timer &timer, //Timer that handles the animations
-                        bool doMouseTracking //If there is need to check if mouse hover
-                    ){
-    
+void TextBox::render_the_textbox(Timer& timer, bool doMouseTracking){
     ShaderSystem::buttonShader().use();
     
     this->clicked = false;
@@ -147,7 +141,7 @@ void TextBox::render(
     
     if(hover && *Mouse::LClick()){
         //Mouse left button pressed on top of the button
-        active = !active;
+        active = true;
         this->clicked = true;
     }
     
@@ -182,7 +176,6 @@ void TextBox::render(
         if(Mouse::mouseOffset()->x)
             this->active = true;
     }
-
 
     //---Get the input
     if(active){
@@ -251,4 +244,37 @@ void TextBox::render(
                             );
 
     textRenderer.renderText(textPosCharIndex,textColor2);
+}
+
+static DialogControl textbox_dialog_control;
+
+void TextBox::render(
+                        Timer &timer, //Timer that handles the animations
+                        bool doMouseTracking //If there is need to check if mouse hover
+                    ){
+    
+    if(!this->active){
+        this->render_the_textbox(timer, doMouseTracking);
+    }
+    
+    else{
+        textbox_dialog_control.activate();
+        
+        while (!getContext()->window.shouldClose())
+        {
+            textbox_dialog_control.updateStart(true);
+
+            this->render_the_textbox(timer, doMouseTracking);
+
+            if(!this->active)
+            {
+                textbox_dialog_control.unActivate();
+            }
+            
+            textbox_dialog_control.updateEnd(timer,0.15f);
+            if(textbox_dialog_control.mixVal == 0.f)
+                break;
+        }
+    }
+
 }

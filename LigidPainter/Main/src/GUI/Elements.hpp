@@ -213,6 +213,9 @@ public:
     
     /// @brief Public member function to render the text box
     void render(Timer &timer,bool doMouseTracking);
+
+    void render_the_textbox(Timer& timer, bool doMouseTracking);
+
 };
 
 
