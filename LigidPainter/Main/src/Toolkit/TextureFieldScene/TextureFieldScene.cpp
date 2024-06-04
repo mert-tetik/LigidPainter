@@ -72,22 +72,12 @@ void TextureFieldScene::add_new(TextureField texture_field){
 }
 
 void TextureFieldScene::update_painting_over_texture(bool threeD_only){
-    if(!this->FBO.ID || glIsFramebuffer(this->FBO.ID) == GL_FALSE){
-        LGDLOG::start << "ERROR : Texture field scene : Updating painting over texture : Invalid framebuffer ID" << LGDLOG::end;
-        return;
-    }
-    
     if(!this->painting_over_texture.ID || glIsTexture(this->painting_over_texture.ID) == GL_FALSE){
         LGDLOG::start << "ERROR : Texture field scene : Updating painting over texture : Invalid texture ID" << LGDLOG::end;
         return;
     }
 
-    glm::vec2 resolution = this->painting_over_texture.getResolution();
-
-    this->FBO.bind();
-    this->FBO.setColorBuffer(this->painting_over_texture, GL_TEXTURE_2D);
-
-    glViewport(0, 0, resolution.x, resolution.y);
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(this->painting_over_texture, this->painting_over_texture.getResolution(), "TextureFieldScene::update_painting_over_texture");
 
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -95,12 +85,19 @@ void TextureFieldScene::update_painting_over_texture(bool threeD_only){
     // Rendering all the painting over texture fields
     for (int i = 0; i < this->texture_fields.size(); i++)
     {
+
+        glEnable(GL_BLEND);
+        glEnable(GL_DEPTH_TEST);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+        glDepthFunc(GL_LEQUAL);
+
         if((threeD_only && this->texture_fields[i].wrapMode) || !threeD_only){
             this->texture_fields[i].render(Timer(), this, i, false, true, false);
+            glClear(GL_DEPTH_BUFFER_BIT);
         }
     }    
 
     // Finish
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
+    FBOPOOL::releaseFBO(FBO);
 }

@@ -207,25 +207,10 @@ public:
 
         //--------- init paintingOverTexture --------- 
         this->painting_over_texture = Texture((char*)nullptr, 2024, 2024, GL_LINEAR);
-
-        this->FBO = Framebuffer(
-                                this->painting_over_texture, 
-                                GL_TEXTURE_2D, 
-                                Renderbuffer(
-                                                GL_DEPTH_COMPONENT16, 
-                                                GL_DEPTH_ATTACHMENT, 
-                                                glm::ivec2(2024)
-                                            ), 
-
-                                "Update painting over texture"
-                            );
     }
 
     bool write_data(std::ofstream& wf);
     bool read_data(std::ifstream& rf);
-private:
-    /*! @brief Used to capture painting over texture*/
-    Framebuffer FBO;
 };
 
 #endif

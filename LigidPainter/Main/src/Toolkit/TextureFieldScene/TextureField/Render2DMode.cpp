@@ -146,6 +146,7 @@ void TextureField::render2DTextureField(
 
     // Rendering the texture
     {
+        ShaderSystem::buttonShader().use();
         if(!generatingTextureMode){
             ShaderSystem::buttonShader().setFloat("properties.groupOpacity", 0.4f);
         }
@@ -174,6 +175,7 @@ void TextureField::render2DTextureField(
         {
             // Render outline
             glDepthFunc(GL_LESS);
+            ShaderSystem::buttonShader().use();
             ShaderSystem::buttonShader().setFloat("rotation", this->rotation);
             this->textureDisplayingButtonIOutline.render(timer, false);
             ShaderSystem::buttonShader().setFloat("rotation", 0.f);
