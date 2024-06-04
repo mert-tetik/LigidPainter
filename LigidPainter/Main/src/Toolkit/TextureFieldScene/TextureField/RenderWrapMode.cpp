@@ -50,6 +50,14 @@ void TextureField::renderWrappedTextureField(
     // Unactive the texture field if its not the editMode or r mouse button or middle mosue button button is pressed  
     if((*Mouse::RPressed() || *Mouse::MPressed()) || !editMode)
         this->active = false; 
+
+    // Generate or update the threeDWrapBox after placing 4 main points 
+    if(!this->threeDWrapBox.VBO){
+        this->threeDWrapBox.init(
+                                threeDPointTopLeft.pos, threeDPointTopRight.pos, threeDPointBottomLeft.pos, threeDPointBottomRight.pos, 
+                                (threeDPointTopLeft.normal + threeDPointTopRight.normal + threeDPointBottomLeft.normal + threeDPointBottomRight.normal) / 4.f
+                            );
+    }
     
     if(this->threeDPointTopLeft.pos == glm::vec3(0.f) && this->threeDPointBottomRight.pos == glm::vec3(0.f) && *Mouse::LClick() && editMode){
         // If no point is selected

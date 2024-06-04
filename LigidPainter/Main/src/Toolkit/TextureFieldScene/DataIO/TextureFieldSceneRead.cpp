@@ -50,7 +50,7 @@ bool TextureFieldScene::read_data(std::ifstream& rf){
     READBITS(texture_field_size, int, "texture_field_size");
     for (size_t i = 0; i < texture_field_size; i++)
     {
-        TextureField texture_field;
+        TextureField texture_field = TextureField(Texture()); 
 
         READBITS(texture_field.active, bool, "texture_field.active");
         READBITS(texture_field.flippedH, bool, "texture_field.flippedH");

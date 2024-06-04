@@ -141,8 +141,13 @@ bool projectUTIL_read_ligid_file(
         // ---------- Settings ------------
         // GUI
         READ_BITS(panel_library_modes.selectedElement, int, "panel_library_modes.selectedElement"); // Selected library mode on the left
+        for (size_t i = 0; i < panel_library_modes.sections[0].elements.size(); i++){panel_library_modes.sections[0].elements[i].button.clickState1 = false;}
+        if(panel_library_modes.selectedElement < panel_library_modes.sections[0].elements.size())panel_library_modes.sections[0].elements[panel_library_modes.selectedElement].button.clickState1 = true;
+        
         READ_BITS(checkBox_wrap_mode.clickState1, bool, "checkBox_wrap_mode.clickState1"); // Wrap mode checkbox
         READ_BITS(panel_displaying_modes.selectedElement, int, "panel_displaying_modes.selectedElement"); // Paint display mode
+        for (size_t i = 0; i < panel_displaying_modes.sections[0].elements.size(); i++){panel_displaying_modes.sections[0].elements[i].button.clickState1 = false;}
+        if(panel_displaying_modes.selectedElement < panel_displaying_modes.sections[0].elements.size())panel_displaying_modes.sections[0].elements[panel_displaying_modes.selectedElement].button.clickState1 = true;
         READ_BITS(button_mesh_selection.selectedMeshI, int, "button_mesh_selection.selectedMeshI"); // Selected mesh
         int layers_resolution; 
         READ_BITS(layers_resolution, int, "layers_resolution"); for (size_t i = 0; i < comboBox_layers_resolution.texts.size(); i++){if(std::stoi(comboBox_layers_resolution.texts[i]) == layers_resolution)comboBox_layers_resolution.selectedIndex = i;}
@@ -172,6 +177,8 @@ bool projectUTIL_read_ligid_file(
         READ_VEC3(getScene()->transformRotation, "getScene()->transformRotation"); 
         READ_VEC3(getScene()->camera.cameraPos, "getScene()->camera.cameraPos"); 
         READ_VEC3(getScene()->camera.originPos, "getScene()->originPos"); 
+        getScene()->camera.updateViewMatrix();
+        getScene()->camera.setCameraPosition(getScene()->camera.cameraPos);
         READ_STR(getScene()->skybox.load_path);
         if(std::filesystem::exists(getScene()->skybox.load_path))
             getScene()->skybox.load(getScene()->skybox.load_path);
