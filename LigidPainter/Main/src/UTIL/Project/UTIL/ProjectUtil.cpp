@@ -108,8 +108,12 @@ void project_add_model(std::string filePath){
    
     Library::addModel(tdModel);
 
+    if(Library::getModelArraySize())
+        tdModel = Library::getModelObj(Library::getModelArraySize() - 1);
+
     const std::string originalThreedModelsFolderPath = project_path() + UTIL::folderDistinguisher() + "Original_3D_Model_Files"; 
     if((UTIL::createFolderIfDoesntExist(originalThreedModelsFolderPath))){
+        
         UTIL::copyFileToFolder(filePath, originalThreedModelsFolderPath, 1);
     }
     
