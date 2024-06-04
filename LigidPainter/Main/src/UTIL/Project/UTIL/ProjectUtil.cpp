@@ -88,7 +88,6 @@ std::string project_recover_path(int slot){
 }
 
 void project_add_model(std::string filePath){
-    
     if(!projectUTIL_folder_path_check()){
         LGDLOG::start<< "ERROR : CAN'T ADD MODEL TO PROJECT : Project path is not valid : " << project_path() << LGDLOG::end;
         return;

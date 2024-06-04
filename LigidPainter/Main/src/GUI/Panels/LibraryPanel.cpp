@@ -27,6 +27,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/ColorPalette/ColorPalette.hpp"
 #include "UTIL/Project/Project.hpp"
+#include "UTIL/Wait/Wait.hpp"
 
 #include "Toolkit/Layers/Layers.hpp"
 
@@ -50,7 +51,6 @@ void panel_library_render(
                             bool doMouseTracking
                         )
 {
-
     //Update the library displayer panel every time library changed
     
     // If clicked to bar buttons (import & add new)
@@ -333,6 +333,8 @@ void panel_library_render(
 
                     //Clicked to use the model button
                     else if(res == 1){
+                        WAIT_WHILE(dialog_log.any_thread_in_progress());
+
                         getScene()->model = Library::getModel(i);
                         getScene()->model->newModelAdded = true; 
                     }

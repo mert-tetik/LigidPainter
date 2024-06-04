@@ -50,6 +50,8 @@ namespace Library{
     /// @brief Checks all the elements in the library and generates unique names for the doubled elements and assigns a title if they are empty
     void nameControl();
 
+    void reserve_vectors();
+
     //----------- Add elements -----------
     /// @brief Pushes the element parameter back to the Textures array & generates unique ID for the texture
     void addTexture     (Texture texture, const std::string actionTitle);

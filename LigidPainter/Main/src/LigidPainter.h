@@ -186,6 +186,8 @@ public:
         // Render the LigidPainter intro
         render_intro();
 
+        Library::reserve_vectors();
+
         getScene()->model->meshes.push_back(Mesh({}, {}, "", false));
         getSphereModel()->meshes.push_back(Mesh({}, {}, "", false));
         getPlaneModel()->meshes.push_back(Mesh({}, {}, "", false));

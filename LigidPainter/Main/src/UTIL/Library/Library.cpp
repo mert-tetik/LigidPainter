@@ -37,6 +37,22 @@ int __selectedElementIndex = 0;
 
 bool __changed = true;
 
+#define MAX_TEXTURES 40
+#define MAX_MATERIALS 30
+#define MAX_BRUSHES 40
+#define MAX_MODELS 10
+#define MAX_FILTERS 40
+#define MAX_TEXTUREPACKS 10
+
+void Library::reserve_vectors(){
+    __textures.reserve(MAX_TEXTURES);
+    __materials.reserve(MAX_MATERIALS);
+    __brushes.reserve(MAX_BRUSHES);
+    __TDModels.reserve(MAX_MODELS);
+    __filters.reserve(MAX_FILTERS);
+    __texturePacks.reserve(MAX_TEXTUREPACKS);
+}
+
 void Library::nameControl(){
     for (int i = __textures.size()-1; i >= 0; i--)
     {
@@ -148,71 +164,83 @@ void Library::nameControl(){
 }
 
 void Library::addTexture(Texture texture, const std::string actionTitle){
-    __changed = true;
-    
-    if(actionTitle != "")
-        dialog_log.registerTextureAction(actionTitle);
+    if(__textures.size() < MAX_TEXTURES){
+        __changed = true;
+        
+        if(actionTitle != "")
+            dialog_log.registerTextureAction(actionTitle);
+        
+        texture.uniqueId = 0; 
 
-    texture.uniqueId = 0; 
+        projectUpdatingThreadElements.updateTextures = true;
 
-    projectUpdatingThreadElements.updateTextures = true;
+        __textures.push_back(texture);
+        
+        Library::textureGiveUniqueId(__textures.size() - 1);
 
-    __textures.push_back(texture);
-    
-    Library::textureGiveUniqueId(__textures.size() - 1);
+        Library::nameControl();
+    }
 
-    Library::nameControl();
 }
 
 void Library::addMaterial(Material material, const std::string actionTitle){
-    __changed = true;
+    if(__materials.size() < MAX_MATERIALS){
+        __changed = true;
 
-    if(actionTitle != "")
-        dialog_log.registerMaterialAction(actionTitle);
-    
-    //Give unique ID to the material
-
-    __materials.push_back(material);
-    
-    // Update the displaying texture of the new material
-    material_thread.update_material_displaying_texture(&__materials[__materials.size() - 1], getMaterialDisplayingModel(), &getMaterialDisplayingModel()->meshes[0], &getMaterialDisplayingModel()->meshes[0].material_channels, 1024);
-    
-    Library::nameControl();
+        if(actionTitle != "")
+            dialog_log.registerMaterialAction(actionTitle);
+        
+        //Give unique ID to the material
+        __materials.push_back(material);
+        
+        // Update the displaying texture of the new material
+        material_thread.update_material_displaying_texture(&__materials[__materials.size() - 1], getMaterialDisplayingModel(), &getMaterialDisplayingModel()->meshes[0], &getMaterialDisplayingModel()->meshes[0].material_channels, 1024);
+        
+        Library::nameControl();
+    }
 }
 
 void Library::addBrush(Brush brush, const std::string actionTitle){
-    __changed = true;
+    if(__brushes.size() < MAX_BRUSHES){
+        __changed = true;
 
-    if(actionTitle != "")
-        dialog_log.registerBrushAction(actionTitle);
-    
-    __brushes.push_back(brush);
-    
-    Library::nameControl();
+        if(actionTitle != "")
+            dialog_log.registerBrushAction(actionTitle);
+        
+        __brushes.push_back(brush);
+        
+        Library::nameControl();
+    }
 }
 
 void Library::addModel(Model model){
-    __changed = true;
+    if(__TDModels.size() < MAX_MODELS){
+        __changed = true;
 
-    __TDModels.push_back(model);
-    
-    Library::nameControl();
+        __TDModels.push_back(model);
+        
+        Library::nameControl();
+    }
 }
 
 void Library::addFilter(Filter filter){
-    __changed = true;
-    
-    __filters.push_back(filter);
-    
-    Library::nameControl();
+    if(__filters.size() < MAX_FILTERS){
+        __changed = true;
+        
+        __filters.push_back(filter);
+        
+        Library::nameControl();
+    }
 }
 
 void Library::addTexturePack(TexturePack texturePack){
-    __changed = true;
-    
-    __texturePacks.push_back(texturePack);
-    
-    Library::nameControl();
+    if(__texturePacks.size() < MAX_TEXTUREPACKS){
+        __changed = true;
+        
+        __texturePacks.push_back(texturePack);
+        
+        Library::nameControl();
+    }
 }
 
 void Library::eraseTexture   (int index){
