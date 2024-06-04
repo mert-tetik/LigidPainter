@@ -21,6 +21,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "GUI/Panels.hpp"
 
+#include "UTIL/Project/Project.hpp"
+
 #include <string>
 #include <vector>
 
@@ -47,7 +49,7 @@ void panels_render(Timer& timer)
     panels_transform();
     Debugger::block("GUI : panelPositioning"); // End
 
-    bool doMouseTracking = !dialog_log.isHovered() && !checkComboList_mesh_face_selection.hover && !checkComboList_painting_color.hover && !checkComboList_painting_mirror.hover && !checkComboList_painting_over.hover;
+    bool doMouseTracking = !dialog_log.isHovered() && !checkComboList_mesh_face_selection.hover && !checkComboList_painting_color.hover && !checkComboList_painting_mirror.hover && !checkComboList_painting_over.hover && project_path() != "";
 
     Debugger::block("GUI : Panels : Navigation panel"); // Start
     panel_navigation_render(timer, doMouseTracking);
