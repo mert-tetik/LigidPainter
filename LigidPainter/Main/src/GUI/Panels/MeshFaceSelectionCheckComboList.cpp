@@ -50,9 +50,9 @@ void checkComboList_mesh_face_selection_render(Timer& timer, bool doMouseTrackin
     
     checkComboList_mesh_face_selection.render(timer, doMouseTracking);
 
-    if(shortcuts_F3())
+    if(shortcuts_F2())
         checkComboList_mesh_face_selection.panel.sections[0].elements[0].checkBox.clickState1 = !checkComboList_mesh_face_selection.panel.sections[0].elements[0].checkBox.clickState1;
-    if(shortcuts_F4())
+    if(checkComboList_mesh_face_selection.panel.sections[0].elements[0].checkBox.clickState1 && getContext()->window.isKeyClicked(LIGIDGL_KEY_TAB))
         checkComboList_mesh_face_selection.panel.sections[0].elements[1].checkBox.clickState1 = !checkComboList_mesh_face_selection.panel.sections[0].elements[1].checkBox.clickState1;
 
     // Generate mesh mask 

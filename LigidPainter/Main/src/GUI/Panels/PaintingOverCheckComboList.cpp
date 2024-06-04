@@ -43,7 +43,7 @@ void checkComboList_painting_over_render(Timer& timer, bool doMouseTracking){
 
     if(shortcuts_F1())
         checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1 = !checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1;
-    if(shortcuts_F2())
+    if(checkComboList_painting_over.panel.sections[0].elements[0].checkBox.clickState1 && getContext()->window.isKeyClicked(LIGIDGL_KEY_TAB))
         checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1 = !checkComboList_painting_over.panel.sections[0].elements[1].checkBox.clickState1;
 
 
