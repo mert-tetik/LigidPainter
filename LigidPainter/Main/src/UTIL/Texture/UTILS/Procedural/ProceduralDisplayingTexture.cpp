@@ -103,11 +103,11 @@ void Texture::generateProceduralDisplayingTexture(int displayingTextureRes, int 
             ShaderSystem::PBRDisplayOnly().setInt("skybox", GL::bindTexture_CubeMap(getScene()->skybox.ID, "Texture::generateNormalMap"));
             ShaderSystem::PBRDisplayOnly().setInt("prefilterMap", GL::bindTexture_CubeMap(getScene()->skybox.IDPrefiltered, "Texture::generateNormalMap"));
             ShaderSystem::PBRDisplayOnly().setInt("albedoTxtr", GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture")); 
-            ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture")); 
-            ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture")); 
+            ShaderSystem::PBRDisplayOnly().setInt("roughnessTxtr", GL::bindTexture_2D(appTextures.white.ID, "Texture::generateProceduralDisplayingTexture")); 
+            ShaderSystem::PBRDisplayOnly().setInt("metallicTxtr", GL::bindTexture_2D(appTextures.black.ID, "Texture::generateProceduralDisplayingTexture")); 
             ShaderSystem::PBRDisplayOnly().setInt("normalMapTxtr", GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture")); 
             ShaderSystem::PBRDisplayOnly().setInt("heightMapTxtr", GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture")); 
-            ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", GL::bindTexture_2D(proc.ID, "Texture::generateProceduralDisplayingTexture")); 
+            ShaderSystem::PBRDisplayOnly().setInt("ambientOcclusionTxtr", GL::bindTexture_2D(appTextures.white.ID, "Texture::generateProceduralDisplayingTexture")); 
             
             // Get the capture framebuffer
             Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(*this, this->getResolution(), "Texture::generateProceduralDisplayingTexture");
