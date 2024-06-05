@@ -46,48 +46,50 @@ void projectUpdatingThread(){
         
         std::lock_guard<std::mutex> lock(projectUpdatingThreadElements.mutex);
 
-        /* Auto update every *durationSec* seconds*/
-        if(project_path() != ""){
-            getCopyContext()->window.makeContextCurrent();
-            
-            project_update(true, true, &project_updating_thread_working);
-            
-            getCopyContext()->window.releaseContext();
-        }
-
-        // Sleep between exports
-        const int durationSec = 15;
-        for (size_t i = 0; i < durationSec; i++)
-        {
-            /* Update on user request */
-            if(project_updating_thread_update_project){
-                if(project_path() != ""){
-                    getCopyContext()->window.makeContextCurrent();
-                    
-                    project_update(true, false, &project_updating_thread_working);
-                    
-                    getCopyContext()->window.releaseContext();
-                }
-                project_updating_thread_update_project = false;
-            }
-            
-            /* Save as on user request */
-            if(project_updating_thread_save_as_project){
-                if(project_path() != ""){
-                    getCopyContext()->window.makeContextCurrent();
-
-                    project_update(true, false, &project_updating_thread_working);
-                    project_save_as("", &project_updating_thread_working);
-
-                    getCopyContext()->window.releaseContext();
-                }
-                project_updating_thread_save_as_project = false;
-            }
-
-            if(!projectUpdatingThreadElements.isRunning)
-                break;
+        if(!dialog_materialSelection.dialogControl.isActive()){
+            /* Auto update every *durationSec* seconds*/
+            if(project_path() != ""){
+                getCopyContext()->window.makeContextCurrent();
                 
-            std::this_thread::sleep_for(std::chrono::seconds(1)); 
+                project_update(true, true, &project_updating_thread_working);
+                
+                getCopyContext()->window.releaseContext();
+            }
+
+            // Sleep between exports
+            const int durationSec = 15;
+            for (size_t i = 0; i < durationSec; i++)
+            {
+                /* Update on user request */
+                if(project_updating_thread_update_project){
+                    if(project_path() != ""){
+                        getCopyContext()->window.makeContextCurrent();
+                        
+                        project_update(true, false, &project_updating_thread_working);
+                        
+                        getCopyContext()->window.releaseContext();
+                    }
+                    project_updating_thread_update_project = false;
+                }
+                
+                /* Save as on user request */
+                if(project_updating_thread_save_as_project){
+                    if(project_path() != ""){
+                        getCopyContext()->window.makeContextCurrent();
+
+                        project_update(true, false, &project_updating_thread_working);
+                        project_save_as("", &project_updating_thread_working);
+
+                        getCopyContext()->window.releaseContext();
+                    }
+                    project_updating_thread_save_as_project = false;
+                }
+
+                if(!projectUpdatingThreadElements.isRunning)
+                    break;
+                    
+                std::this_thread::sleep_for(std::chrono::seconds(1)); 
+            }
         }
     }
 }
@@ -96,72 +98,25 @@ MaterialThread material_thread;
 
 ThreadElements readMaterialThreadElements;
 
-static MaterialChannels material_channels;
-
-void MaterialThread::update_thread_result(){
-    if(this->readyToService && !this->active && this->actions[0].material != nullptr){    
-        this->readyToService = false;
-
-        if(!material_thread.actions[0].object_texturing_dialog_mode && !material_thread.actions[0].update_buffers_right_away){
-            if(material_thread.actions[0].update_channel_flags.size() != 6){
-                material_thread.actions[0].update_channel_flags = {true,true,true,true,true,true};
-            }
-
-            unsigned int res = material_thread.actions[0].resolution;
-
-            unsigned char* albedo_pxs = new unsigned char[res * res * 4]; material_channels.albedo.getData(albedo_pxs);
-            unsigned char* roughness_pxs = new unsigned char[res * res * 4]; material_channels.roughness.getData(roughness_pxs);
-            unsigned char* metallic_pxs = new unsigned char[res * res * 4]; material_channels.metallic.getData(metallic_pxs);
-            unsigned char* normalMap_pxs = new unsigned char[res * res * 4]; material_channels.normalMap.getData(normalMap_pxs);
-            unsigned char* heightMap_pxs = new unsigned char[res * res * 4]; material_channels.heightMap.getData(heightMap_pxs);
-            unsigned char* ambientOcclusion_pxs = new unsigned char[res * res * 4]; material_channels.ambientOcclusion.getData(ambientOcclusion_pxs);
-
-            if(material_thread.actions[0].update_channel_flags[0])
-                material_thread.actions[0].materialChannels->albedo.update(albedo_pxs, res, res);
-            if(material_thread.actions[0].update_channel_flags[1])
-                material_thread.actions[0].materialChannels->roughness.update(roughness_pxs, res, res);
-            if(material_thread.actions[0].update_channel_flags[2])
-                material_thread.actions[0].materialChannels->metallic.update(metallic_pxs, res, res);
-            if(material_thread.actions[0].update_channel_flags[3])
-                material_thread.actions[0].materialChannels->normalMap.update(normalMap_pxs, res, res);
-            if(material_thread.actions[0].update_channel_flags[4])
-                material_thread.actions[0].materialChannels->heightMap.update(heightMap_pxs, res, res);
-            if(material_thread.actions[0].update_channel_flags[5])
-                material_thread.actions[0].materialChannels->ambientOcclusion.update(ambientOcclusion_pxs, res, res);
-        }
-
-        if(material_thread.actions[0].update_the_material_displaying_texture)
-            material_thread.actions[0].material->updateMaterialDisplayingTexture(material_thread.actions[0].resolution, false, Camera(), 0, false, (material_thread.actions[0].model != nullptr && material_thread.actions[0].model->meshes.size()) ? material_thread.actions[0].model->meshes[0] : Mesh(), *material_thread.actions[0].materialChannels);
-
-        if(material_thread.actions[0].update_layer_scene_result)
-            material_thread.actions[0].mesh->layerScene.update_result(material_thread.actions[0].resolution, glm::vec3(0.f), *material_thread.actions[0].mesh);
-
-        this->actions.erase(this->actions.begin());
-        if(this->actions.size()){
-            this->active = true;
-            this->goodToGo = true;
-        }
-    }
-}
 
 void MaterialThread::read_material_file(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path, unsigned int resolution){
-    this->use_thread(material, model, mesh, materialChannels, path, true, false, false, Texture(), {}, resolution, false);
+    this->use_thread(material, model, mesh, materialChannels, path, true, false, false, Texture(), {}, resolution);
 }
 
-void MaterialThread::apply_material(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution, bool update_buffers_right_away){
-    this->use_thread(material, model, mesh, materialChannels, "", false, false, false, Texture(), {}, resolution, update_buffers_right_away);
+void MaterialThread::apply_material(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution){
+    this->use_thread(material, model, mesh, materialChannels, "", false, false, false, Texture(), {}, resolution);
 }
 
 void MaterialThread::update_material_displaying_texture(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution){
-    this->use_thread(material, model, mesh, materialChannels, "", true, false, false, Texture(), {}, resolution, false);
+    this->use_thread(material, model, mesh, materialChannels, "", true, false, false, Texture(), {}, resolution);
 }
 
 void MaterialThread::update_object_texturing_dialog_result(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, Texture mask, std::vector<bool> update_channel_flags, unsigned int resolution){
-    this->use_thread(material, model, mesh, materialChannels, "", false, true, true, mask, update_channel_flags, resolution, false);
+    this->use_thread(material, model, mesh, materialChannels, "", false, true, true, mask, update_channel_flags, resolution);
 }
 
 void MaterialThread::layer_stuff(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, unsigned int resolution){
-    this->use_thread(material, model, mesh, materialChannels, "", false, true, false, Texture(), {}, resolution, false);
+    this->use_thread(material, model, mesh, materialChannels, "", false, true, false, Texture(), {}, resolution);
 }
 
 void MaterialThread::use_thread(
@@ -175,11 +130,10 @@ void MaterialThread::use_thread(
                                     bool object_texturing_dialog_mode,
                                     Texture object_texturing_dialog_mask,
                                     std::vector<bool> update_channel_flags,
-                                    unsigned int resolution,
-                                    bool update_buffers_right_away
+                                    unsigned int resolution
                                 )
 {   
-    if(!this->readyToService){
+    if(true){
 
         MaterialThreadAction action;
 
@@ -194,16 +148,16 @@ void MaterialThread::use_thread(
         action.object_texturing_dialog_mask = object_texturing_dialog_mask;
         action.update_channel_flags = update_channel_flags;
         action.resolution = resolution;
-        action.update_buffers_right_away = update_buffers_right_away;
         
         actions.push_back(action);
 
         if(actions.size() == 1){
             this->active = true; // Make sure this flag is set to true in time
-            this->goodToGo = true;
         }
     }
 }
+
+static MaterialChannels material_channels;
 
 void material_thread_function(){    
     // Create the copy context for another threads    
@@ -222,12 +176,12 @@ void material_thread_function(){
         if(getSecondContext()->window.isContextCurrent())
             getSecondContext()->window.releaseContext();
         
-        if(material_thread.goodToGo && material_thread.actions[0].material != nullptr)
+        if(material_thread.actions.size())
         {        
-            // Start 
-            material_thread.active = true;
+            if(material_thread.actions[0].material != nullptr){
+                // Start 
+                material_thread.active = true;
             
-            if(material_thread.actions.size()){
                 getSecondContext()->window.makeContextCurrent();
                 
                 if(material_thread.actions[0].path.size()){
@@ -254,43 +208,70 @@ void material_thread_function(){
                     material_channels.ambientOcclusion.update((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
                 }
 
-                MaterialChannels* dest_channels;
-                if(material_thread.actions[0].update_buffers_right_away){
-                    dest_channels = material_thread.actions[0].materialChannels; 
-                }
-                else{
-                    dest_channels = &material_channels; 
-                }
+                material_thread.actions[0].material->apply_material((material_thread.actions[0].model != nullptr) ? *material_thread.actions[0].model : Model(), *material_thread.actions[0].mesh, &material_channels, material_thread.actions[0].resolution, false);
 
-                material_thread.actions[0].material->apply_material((material_thread.actions[0].model != nullptr) ? *material_thread.actions[0].model : Model(), *material_thread.actions[0].mesh, dest_channels, material_thread.actions[0].resolution, false);
+                if(material_thread.actions[0].update_channel_flags.size() != 6){
+                    material_thread.actions[0].update_channel_flags = {true,true,true,true,true,true};
+                }
 
                 if(material_thread.actions[0].object_texturing_dialog_mode)
                 {
-                    if(material_thread.actions[0].update_channel_flags.size() != 6){
-                        material_thread.actions[0].update_channel_flags = {true,true,true,true,true,true};
-                    }
-                    
                     // Mask source to material result
                     if(material_thread.actions[0].update_channel_flags[0])
-                        material_thread.actions[0].materialChannels->albedo.mix(dest_channels->albedo, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
+                        material_thread.actions[0].materialChannels->albedo.mix(material_channels.albedo, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
                     if(material_thread.actions[0].update_channel_flags[1])
-                        material_thread.actions[0].materialChannels->roughness.mix(dest_channels->roughness, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
+                        material_thread.actions[0].materialChannels->roughness.mix(material_channels.roughness, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
                     if(material_thread.actions[0].update_channel_flags[2])
-                        material_thread.actions[0].materialChannels->metallic.mix(dest_channels->metallic, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
+                        material_thread.actions[0].materialChannels->metallic.mix(material_channels.metallic, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
                     if(material_thread.actions[0].update_channel_flags[3])
-                        material_thread.actions[0].materialChannels->normalMap.mix(dest_channels->normalMap, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
+                        material_thread.actions[0].materialChannels->normalMap.mix(material_channels.normalMap, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
                     if(material_thread.actions[0].update_channel_flags[4])
-                        material_thread.actions[0].materialChannels->heightMap.mix(dest_channels->heightMap, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
+                        material_thread.actions[0].materialChannels->heightMap.mix(material_channels.heightMap, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
                     if(material_thread.actions[0].update_channel_flags[5])
-                        material_thread.actions[0].materialChannels->ambientOcclusion.mix(dest_channels->ambientOcclusion, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
+                        material_thread.actions[0].materialChannels->ambientOcclusion.mix(material_channels.ambientOcclusion, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
                 }
+                else{
+                    unsigned int res = material_thread.actions[0].resolution;
+
+                    unsigned char* albedo_pxs = new unsigned char[res * res * 4]; material_channels.albedo.getData(albedo_pxs);
+                    unsigned char* roughness_pxs = new unsigned char[res * res * 4]; material_channels.roughness.getData(roughness_pxs);
+                    unsigned char* metallic_pxs = new unsigned char[res * res * 4]; material_channels.metallic.getData(metallic_pxs);
+                    unsigned char* normalMap_pxs = new unsigned char[res * res * 4]; material_channels.normalMap.getData(normalMap_pxs);
+                    unsigned char* heightMap_pxs = new unsigned char[res * res * 4]; material_channels.heightMap.getData(heightMap_pxs);
+                    unsigned char* ambientOcclusion_pxs = new unsigned char[res * res * 4]; material_channels.ambientOcclusion.getData(ambientOcclusion_pxs);
+
+                    if(material_thread.actions[0].update_channel_flags[0])
+                        material_thread.actions[0].materialChannels->albedo.update(albedo_pxs, res, res);
+                    if(material_thread.actions[0].update_channel_flags[1])
+                        material_thread.actions[0].materialChannels->roughness.update(roughness_pxs, res, res);
+                    if(material_thread.actions[0].update_channel_flags[2])
+                        material_thread.actions[0].materialChannels->metallic.update(metallic_pxs, res, res);
+                    if(material_thread.actions[0].update_channel_flags[3])
+                        material_thread.actions[0].materialChannels->normalMap.update(normalMap_pxs, res, res);
+                    if(material_thread.actions[0].update_channel_flags[4])
+                        material_thread.actions[0].materialChannels->heightMap.update(heightMap_pxs, res, res);
+                    if(material_thread.actions[0].update_channel_flags[5])
+                        material_thread.actions[0].materialChannels->ambientOcclusion.update(ambientOcclusion_pxs, res, res);
+
+                    delete[] albedo_pxs;
+                    delete[] roughness_pxs;
+                    delete[] metallic_pxs;
+                    delete[] normalMap_pxs;
+                    delete[] heightMap_pxs;
+                    delete[] ambientOcclusion_pxs;
+                }
+
+                if(material_thread.actions[0].update_the_material_displaying_texture)
+                    material_thread.actions[0].material->updateMaterialDisplayingTexture(material_thread.actions[0].resolution, false, Camera(), 0, false, (material_thread.actions[0].model != nullptr && material_thread.actions[0].model->meshes.size()) ? material_thread.actions[0].model->meshes[0] : Mesh(), *material_thread.actions[0].materialChannels);
+
+                if(material_thread.actions[0].update_layer_scene_result)
+                    material_thread.actions[0].mesh->layerScene.update_result(material_thread.actions[0].resolution, glm::vec3(0.f), *material_thread.actions[0].mesh);
+
+                material_thread.actions.erase(material_thread.actions.begin());
+
+                // End
+                material_thread.active = false;
             }
-
-            // End
-            material_thread.active = false;
-            material_thread.goodToGo = false;
-            material_thread.readyToService = true;
         }
-
     }
 }

@@ -204,7 +204,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
         for (Material& material : matSelection_materials[matModePanel.sections[0].elements[selectedMatMode].button.text])
         {
             if(!material.material_selection_dialog_initialized){
-                if(!material_thread.active && !material_thread.readyToService){
+                if(!material_thread.actions.size()){
                     material.material_selection_dialog_initialized = true;
                     material_thread.read_material_file(&material, getMaterialDisplayingModel(), &getMaterialDisplayingModel()->meshes[0], &getMaterialDisplayingModel()->meshes[0].material_channels, material.material_selection_dialog_path, 512);
                 }

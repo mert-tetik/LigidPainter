@@ -384,11 +384,10 @@ static void exportLibraryMaterials(std::string destPath, int resolution, std::st
                                 true
                             );
 
-        WAIT_WHILE(material_thread.actions.size());
         
-        material_thread.apply_material(Library::getMaterial(i), nullptr, &matMesh, &matMesh.material_channels, resolution, true);
+        material_thread.apply_material(Library::getMaterial(i), nullptr, &matMesh, &matMesh.material_channels, resolution);
 
-        WAIT_WHILE(material_thread.active);
+        WAIT_WHILE(material_thread.actions.size());
 
         FileHandler::writeLGDMATERIALFile(materialFolderPath, Library::getMaterialObj(i));
 

@@ -109,8 +109,6 @@ bool _dialog_ended = false;
 void DialogControl::updateEnd(Timer &timer, float transitionDuration){
     
     if(loop_mode){
-        material_thread.update_thread_result();
-
         // Update local timer data
         timer.tick = false;
         if(timer.runTimer(1.f)){

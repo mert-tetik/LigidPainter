@@ -106,8 +106,6 @@ void Renderer::end_render(){
         Debugger::block("GUI : Log Dialog"); // End
     }
 
-    material_thread.update_thread_result();
-    
     //Set mouse states to default
     *Mouse::LClick() = false;
     *Mouse::RClick() = false;

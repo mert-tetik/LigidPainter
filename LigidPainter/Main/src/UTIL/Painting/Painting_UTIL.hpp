@@ -700,11 +700,10 @@ static void update_custom_material_mesh(PaintSettings::ColorBuffer color_buffer,
             custom_mat_result_channels.ambientOcclusion.update((char*)nullptr, resolution.x, resolution.y);
         }
 
+
+        material_thread.apply_material(&color_buffer.material, getScene()->model, mesh, &custom_mat_result_channels, resolution.x);
+
         WAIT_WHILE(material_thread.actions.size());
-
-        material_thread.apply_material(&color_buffer.material, getScene()->model, mesh, &custom_mat_result_channels, resolution.x, true);
-
-        WAIT_WHILE(material_thread.active);
     }
 
     prevCustomMaterial = color_buffer.material;
