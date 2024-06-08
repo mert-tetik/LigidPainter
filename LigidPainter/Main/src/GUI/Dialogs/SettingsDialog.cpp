@@ -226,8 +226,14 @@ void SettingsDialog::show(Timer& timer){
         }
 
         dialogControl.updateEnd(timer,0.15f);   
-        if(dialogControl.mixVal == 0.f)
+        if(dialogControl.mixVal == 0.f){
             break;
+        }
+    }
+    
+    for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
+    {
+        getScene()->model->meshes[i].processHeightMap();
     }
 }
 
@@ -339,13 +345,6 @@ void SettingsDialog::renderPanel(Timer& timer){
     {
         if(btns[i]->clickState1 == false && i == this->selectedSettingsMode)
             btns[i]->clickState1 = true;
-    }
-
-    if(heightmap_heightmap_strength_rangebar->pointerPressed && !*Mouse::LPressed() && heightmap_apply_heightmap_checkbox->clickState1){
-        for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
-        {
-            getScene()->model->meshes[i].processHeightMap();
-        }
     }
 }
 

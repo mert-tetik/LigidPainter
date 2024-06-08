@@ -26,7 +26,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "3D/Mesh/Mesh.hpp"
 #include "GUI/GUI.hpp"
 
-static void _update_vertex_buffers(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+static void _update_vertex_buffers(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, Mesh* mesh);
 
 void Mesh::update_vertex_buffers(){
 
@@ -51,7 +51,8 @@ void Mesh::update_vertex_buffers(){
                                     &it.second.VAO, 
                                     &it.second.EBO, 
                                     this->vertices,
-                                    this->indices
+                                    this->indices,
+                                    this
                                 );
         }
     }
@@ -59,9 +60,30 @@ void Mesh::update_vertex_buffers(){
     current_context->makeContextCurrent();
 }
 
-static void _update_vertex_buffers(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices){
+void Mesh::update_height_map_processed_vertex_buffers(){
+    if(!this->height_map_processed_vertices.size())
+        height_map_processed_vertices.push_back(Vertex());
+
+    if(!indices.size())
+        indices.push_back(0);
+
+    _update_vertex_buffers(
+                            &height_map_processed_vertex_buffers.VBO, 
+                            &height_map_processed_vertex_buffers.VAO, 
+                            &height_map_processed_vertex_buffers.EBO, 
+                            this->height_map_processed_vertices,
+                            this->indices,
+                            this
+                        );
+}
+
+static void _update_vertex_buffers(unsigned int* VBO, unsigned int* VAO, unsigned int* EBO, std::vector<Vertex>& vertices, std::vector<unsigned int>& indices, Mesh* mesh){
     LigidGL::cleanGLErrors();
-    
+
+    if(*VAO == 0){
+        mesh->initVertexBuffers(VBO, VAO, EBO);
+    }
+
     glBindBuffer(GL_ARRAY_BUFFER, *VBO);
     LigidGL::testGLError("Mesh::update_vertex_buffers : Binding VBO");
     

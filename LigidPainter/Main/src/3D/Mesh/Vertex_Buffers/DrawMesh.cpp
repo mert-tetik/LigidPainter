@@ -71,5 +71,43 @@ void Mesh::Draw(std::string location)
     
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     LigidGL::testGLError("Mesh::Draw : " + location + " : Binding 0 array buffer");
+}
+
+void Mesh::draw_height_map_processed_vertices(std::string location){
+    LigidGL::cleanGLErrors();
+
+    if(this->height_map_processed_vertex_buffers.VBO == 0){
+        LigidGL::testGLError("Mesh::draw_height_map_processed_vertices : invalid VBO ID");
+        return;
+    }
+    if(this->height_map_processed_vertex_buffers.EBO == 0){
+        LigidGL::testGLError("Mesh::draw_height_map_processed_vertices : invalid EBO ID");
+        return;
+    }
+    if(this->height_map_processed_vertex_buffers.VAO == 0){
+        LigidGL::testGLError("Mesh::draw_height_map_processed_vertices : invalid VAO ID");
+        return;
+    }
+
+    // draw mesh
+    glBindBuffer(GL_ARRAY_BUFFER, this->height_map_processed_vertex_buffers.VBO);
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding VBO");
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->height_map_processed_vertex_buffers.EBO);
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding EBO"); 
     
+    glBindVertexArray(this->height_map_processed_vertex_buffers.VAO);
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding VAO");
+    
+    glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(indices.size()), GL_UNSIGNED_INT, 0);
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Drawing Elements");
+
+    glBindVertexArray(0);
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding 0 vertex buffer");
+    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding 0 element array buffer");
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    LigidGL::testGLError("Mesh::Draw : " + location + " : Binding 0 array buffer");
 }

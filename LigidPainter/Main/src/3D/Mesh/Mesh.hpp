@@ -24,9 +24,9 @@ struct MaterialIDColor{
 };
 
 struct MeshVertexBuffers{
-    unsigned int VBO;
-    unsigned int VAO;
-    unsigned int EBO;
+    unsigned int VBO = 0;
+    unsigned int VAO = 0;
+    unsigned int EBO = 0;
 };
 
 struct Vertex {
@@ -137,12 +137,18 @@ public:
 
     /*! @brief Vertices of the mesh */
     std::vector<Vertex> vertices;
+    std::vector<Vertex> height_map_processed_vertices;
+    MeshVertexBuffers height_map_processed_vertex_buffers; 
+    void update_height_map_processed_vertex_buffers();
+    void draw_height_map_processed_vertices(std::string location);
+
 
     /*! @brief Indices of the mesh */
     std::vector<unsigned int> indices;
     
     /*! @brief Buffers for each OpenGL contexts */
     std::map<LigidWindow*, MeshVertexBuffers> vertex_buffers;
+
 
     /*! @brief Title of the mesh */
     std::string materialName;

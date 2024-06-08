@@ -38,10 +38,10 @@ void Mesh::processHeightMap(){
     }
     
     // Calculate the new vertices
-    this->vertices = calculate_height_mapped_vertices(this->material_channels.heightMap, this->vertices, getScene()->heightMapStrength);
+    this->height_map_processed_vertices = calculate_height_mapped_vertices(this->material_channels.heightMap, this->vertices, getScene()->heightMapStrength);
 
     // Update the vertex buffers after calculating the new vertices
-    this->update_vertex_buffers();
+    this->update_height_map_processed_vertex_buffers();
 }
 
 static std::vector<Vertex> calculate_height_mapped_vertices(Texture& heightMap, std::vector<Vertex>& originalVertices, float strength){
