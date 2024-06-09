@@ -169,10 +169,8 @@ bool projectUTIL_read_ligid_file(
         READ_BITS(getScene()->aNear, float, "getScene()->aNear"); 
         READ_BITS(getScene()->backfaceCulling, bool, "getScene()->backfaceCulling"); 
         READ_BITS(getScene()->fov, float, "getScene()->fov"); 
-        READ_BITS(getScene()->heightMapStrength, float, "getScene()->heightMapStrength"); 
         READ_BITS(getScene()->renderAxisDisplayer, bool, "getScene()->renderAxisDisplayer"); 
         READ_BITS(getScene()->renderTiles, bool, "getScene()->renderTiles"); 
-        READ_BITS(getScene()->useHeightMap, bool, "getScene()->useHeightMap"); 
         READ_BITS(getScene()->useOrtho, bool, "getScene()->useOrtho"); 
         READ_VEC3(getScene()->transformRotation, "getScene()->transformRotation"); 
         READ_VEC3(getScene()->camera.cameraPos, "getScene()->camera.cameraPos"); 

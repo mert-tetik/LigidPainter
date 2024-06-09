@@ -59,6 +59,12 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
     comboBox_layers_resolution.render(timer, doMouseTracking);
     
     comboBox_PBR_displaying_mode.render(timer, doMouseTracking);
+
+    // Height map selected
+    if(comboBox_PBR_displaying_mode.selectedIndex == 5){
+        dialog_heightMapDisplayer.show(timer, getScene()->model);
+        comboBox_PBR_displaying_mode.selectedIndex = 0;
+    }
     
     int layersResolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]);
 

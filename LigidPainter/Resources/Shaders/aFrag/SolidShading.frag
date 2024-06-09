@@ -22,6 +22,8 @@ struct Light {
     vec3 specular;
 };
 
+uniform sampler2D txtr;
+uniform int use_txtr;
 
 //Position of the camera
 uniform vec3 viewPos;
@@ -33,9 +35,17 @@ void main() {
     Light light;
     Material material;
 
+    vec3 txtr_clr = texture(txtr, TexCoords).rgb;
+
     material.ambient = vec3(0.31, 0.5, 1.0);
     material.diffuse = vec3(0.31, 0.5, 1.0);
     material.specular = vec3( 0.5, 0.5, 0.5);
+
+    if(use_txtr == 1){
+        material.ambient = txtr_clr;
+        material.diffuse = txtr_clr;
+    }
+
     material.shininess = 32.0;
 
     vec3 lightColor;

@@ -48,8 +48,6 @@ struct Scene{
     void render_skybox();
     
     bool backfaceCulling = false;
-    bool useHeightMap = false;
-    float heightMapStrength = 0.f;
     Model* model = new Model();
     Mesh* get_selected_mesh();
     void render_model(Timer& timer);

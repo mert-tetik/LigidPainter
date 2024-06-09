@@ -127,10 +127,8 @@ bool wrtLigidFile(std::string path){
     WRITE_BITS(getScene()->aNear, float, "getScene()->aNear"); 
     WRITE_BITS(getScene()->backfaceCulling, bool, "getScene()->backfaceCulling"); 
     WRITE_BITS(getScene()->fov, float, "getScene()->fov"); 
-    WRITE_BITS(getScene()->heightMapStrength, float, "getScene()->heightMapStrength"); 
     WRITE_BITS(getScene()->renderAxisDisplayer, bool, "getScene()->renderAxisDisplayer"); 
     WRITE_BITS(getScene()->renderTiles, bool, "getScene()->renderTiles"); 
-    WRITE_BITS(getScene()->useHeightMap, bool, "getScene()->useHeightMap"); 
     WRITE_BITS(getScene()->useOrtho, bool, "getScene()->useOrtho"); 
     WRITE_VEC3(getScene()->transformRotation, "getScene()->transformRotation"); 
     WRITE_VEC3(getScene()->camera.cameraPos, "getScene()->camera.cameraPos"); 

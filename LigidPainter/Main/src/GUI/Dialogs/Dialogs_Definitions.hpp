@@ -497,6 +497,31 @@ public:
    void show(Timer& timer, Material* material);
 };
 
+//!------------------------------HEIGHT MAP DISPLAYER------------------------------
+
+class HeightMapDisplayerDialog
+{
+public:
+   Button display1;
+   Button display2;
+
+   Button exit_btn;
+
+   RangeBar strength_rangebar;
+   
+   Camera display1_cam;
+   Camera display2_cam;
+   
+   DialogControl dialogControl;
+
+   //Constructors
+   HeightMapDisplayerDialog(){}
+   HeightMapDisplayerDialog(int);
+
+   //Public member functions
+   void show(Timer& timer, Model* model);
+};
+
 //!------------------------------TEXTURE DISPLAYER------------------------------
 
 class DisplayTextureDialog

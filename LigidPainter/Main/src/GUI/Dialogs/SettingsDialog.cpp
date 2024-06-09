@@ -42,9 +42,6 @@ static RangeBar* camera_near_rangebar;
 static RangeBar* camera_far_rangebar;
 static CheckBox* camera_ortho_projection_checkbox;
 
-static CheckBox* heightmap_apply_heightmap_checkbox;
-static RangeBar* heightmap_heightmap_strength_rangebar;
-
 static CheckBox* scene_backface_culling_checkbox;
 static CheckBox* scene_render_grid_checkbox;
 static CheckBox* scene_render_axis_displayer_checkbox;
@@ -100,13 +97,6 @@ SettingsDialog::SettingsDialog(int){
                                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Near", Texture(),2.f, 0.f, 1.f, 0.1f)), 
                                     Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Far", Texture(),2.f, 0.f, 1000.f, 1000.f)), 
                                     Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Orthographic projection"  , 0.f)),
-                                }
-                            ),
-                            Section(
-                                SectionHolder(sectionBtnClr, 1.5f, "Height Map"),
-                                {       
-                                    Element(CheckBox(ELEMENT_STYLE_BASIC,glm::vec2(2,2.f),"Apply Height Map"  , 0.5f)),
-                                    Element(RangeBar(ELEMENT_STYLE_BASIC,glm::vec2(2,1.f),"Height Map Strength", Texture(),0.f, 0.f, 1.f, 0.1f)), 
                                 }
                             ),
                             Section(
@@ -172,12 +162,9 @@ SettingsDialog::SettingsDialog(int){
     camera_far_rangebar = &TDRendererSettings[1].elements[2].rangeBar;
     camera_ortho_projection_checkbox = &TDRendererSettings[1].elements[3].checkBox;
         
-    heightmap_apply_heightmap_checkbox = &TDRendererSettings[2].elements[0].checkBox;
-    heightmap_heightmap_strength_rangebar = &TDRendererSettings[2].elements[1].rangeBar;
-        
-    scene_backface_culling_checkbox = &TDRendererSettings[3].elements[0].checkBox;
-    scene_render_grid_checkbox = &TDRendererSettings[3].elements[1].checkBox;
-    scene_render_axis_displayer_checkbox = &TDRendererSettings[3].elements[2].checkBox;
+    scene_backface_culling_checkbox = &TDRendererSettings[2].elements[0].checkBox;
+    scene_render_grid_checkbox = &TDRendererSettings[2].elements[1].checkBox;
+    scene_render_axis_displayer_checkbox = &TDRendererSettings[2].elements[2].checkBox;
         
     // -------- System --------
     performance_vsync_checkbox = &systemSettings[0].elements[0].checkBox;
@@ -230,11 +217,6 @@ void SettingsDialog::show(Timer& timer){
             break;
         }
     }
-    
-    for (size_t i = 0; i < getScene()->model->meshes.size(); i++)
-    {
-        getScene()->model->meshes[i].processHeightMap();
-    }
 }
 
 
@@ -252,9 +234,6 @@ void SettingsDialog::setPropertiesToDialog(){
     camera_near_rangebar->value = getScene()->aNear;
     camera_far_rangebar->value = getScene()->aFar;
     camera_ortho_projection_checkbox->clickState1 = getScene()->useOrtho;
-    
-    heightmap_apply_heightmap_checkbox->clickState1 = getScene()->useHeightMap;
-    heightmap_heightmap_strength_rangebar->value = getScene()->heightMapStrength;
     
     scene_backface_culling_checkbox->clickState1 = getScene()->backfaceCulling;
     scene_render_grid_checkbox->clickState1 = getScene()->renderTiles;
@@ -280,9 +259,6 @@ void SettingsDialog::setDialogToProperties(){
     getScene()->aNear = camera_near_rangebar->value;
     getScene()->aFar = camera_far_rangebar->value;
     getScene()->useOrtho = camera_ortho_projection_checkbox->clickState1;
-    
-    getScene()->useHeightMap = heightmap_apply_heightmap_checkbox->clickState1;
-    getScene()->heightMapStrength = heightmap_heightmap_strength_rangebar->value;
     
     getScene()->backfaceCulling = scene_backface_culling_checkbox->clickState1;
     getScene()->renderTiles = scene_render_grid_checkbox->clickState1;

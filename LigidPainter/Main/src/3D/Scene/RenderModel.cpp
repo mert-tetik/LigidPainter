@@ -158,10 +158,7 @@ void Scene::render_model(Timer& timer){
             ShaderSystem::tdModelShader().setInt("displayingMode", comboBox_PBR_displaying_mode.selectedIndex);
 
             if(!(i != button_mesh_selection.selectedMeshI && this->model->meshes[i].face_selection_data.hideUnselected)){
-                if(this->useHeightMap)
-                    this->model->meshes[i].draw_height_map_processed_vertices("Scene::render_model : PBR");
-                else
-                    this->model->meshes[i].Draw("Scene::render_model : PBR");
+                this->model->meshes[i].Draw("Scene::render_model : PBR");
             }
 
             if(i == button_mesh_selection.selectedMeshI){
@@ -225,10 +222,7 @@ void Scene::render_model(Timer& timer){
 
         ShaderUTIL::set_shader_struct_face_selection_data(ShaderSystem::solidPaintingShader(), *this->get_selected_mesh());
 
-        if(this->useHeightMap)
-            this->get_selected_mesh()->draw_height_map_processed_vertices("Scene::render_model : single texture");
-        else
-            this->get_selected_mesh()->Draw("Scene::render_model : single texture");
+        this->get_selected_mesh()->Draw("Scene::render_model : single texture");
 
         render_wireframe_if_needed(*this->get_selected_mesh(), this->camera, this->projectionMatrix, this->transformMatrix);
         

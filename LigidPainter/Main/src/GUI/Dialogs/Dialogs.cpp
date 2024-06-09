@@ -24,6 +24,7 @@ GreetingDialog dialog_greeting;
 NewProjectDialog dialog_newProject;
 ExportDialog dialog_export;
 MaterialDisplayerDialog dialog_materialDisplayer;
+HeightMapDisplayerDialog dialog_heightMapDisplayer;
 DisplayTextureDialog dialog_textureDisplayer;
 FilterDisplayerDialog dialog_filterDisplayer;
 DropperDialog dialog_dropper;
@@ -51,6 +52,7 @@ void init_dialogs(){
    dialog_newProject = NewProjectDialog(0);
    dialog_export = ExportDialog(0);
    dialog_materialDisplayer = MaterialDisplayerDialog(0);
+   dialog_heightMapDisplayer = HeightMapDisplayerDialog(0);
    dialog_textureDisplayer = DisplayTextureDialog(0);
    dialog_filterDisplayer = FilterDisplayerDialog(0);
    dialog_dropper = DropperDialog(0);

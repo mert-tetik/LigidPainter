@@ -162,7 +162,7 @@ public:
     /*! @brief Renders the mesh*/
     void Draw(std::string location);
 
-    void processHeightMap();
+    void processHeightMap(float strength);
 
     void generateDisplayingTexture();
 

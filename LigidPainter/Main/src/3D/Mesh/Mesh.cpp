@@ -121,6 +121,8 @@ void Mesh::generateDisplayingTexture(){
     ShaderSystem::solidShadingShader().use();
 
     //Throw the camera data to the shader
+    ShaderSystem::solidShadingShader().setInt("use_txtr", false); //
+    
     ShaderSystem::solidShadingShader().setMat4("projection", projectionMatrix);
     ShaderSystem::solidShadingShader().setMat4("view", view);
     

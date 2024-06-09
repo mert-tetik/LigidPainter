@@ -75,6 +75,8 @@ void Model::generateDisplayingTexture(){
     //Use the 3D model rendering shader
     ShaderSystem::solidShadingShader().use();
 
+    ShaderSystem::solidShadingShader().setInt("use_txtr", false);
+
     //Throw the camera data to the shader
     ShaderSystem::solidShadingShader().setMat4("projection", projectionMatrix);
     ShaderSystem::solidShadingShader().setMat4("view", view);
