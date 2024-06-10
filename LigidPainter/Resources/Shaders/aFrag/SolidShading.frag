@@ -44,6 +44,9 @@ void main() {
     if(use_txtr == 1){
         material.ambient = txtr_clr;
         material.diffuse = txtr_clr;
+
+        fragColor = vec4(txtr_clr, 1.);
+        return;
     }
 
     material.shininess = 32.0;

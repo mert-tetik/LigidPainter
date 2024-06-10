@@ -192,10 +192,10 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
             if(selected_material != nullptr){
                 if(!this->selectedMatPanel.sections[0].elements[2].checkBox.clickState1){
                     if(anyMatClicked){
-                        material_thread.update_material_displaying_texture(selected_material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels, 2048);
+                        material_thread.update_material_displaying_texture(selected_material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels, 1024);
                     }
                     else{
-                        selected_material->updateMaterialDisplayingTexture(512, false, this->displayingCam, 0, true, getMaterialDisplayerModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels, this->displayingTexture, -1);
+                        selected_material->updateMaterialDisplayingTexture(1024, false, this->displayingCam, 0, true, getMaterialDisplayerModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels, this->displayingTexture, -1);
                     }
                 }
             }
@@ -206,7 +206,7 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
             if(!material.material_selection_dialog_initialized){
                 if(!material_thread.actions.size()){
                     material.material_selection_dialog_initialized = true;
-                    material_thread.read_material_file(&material, getMaterialDisplayingModel(), &getMaterialDisplayingModel()->meshes[0], &getMaterialDisplayingModel()->meshes[0].material_channels, material.material_selection_dialog_path, 512);
+                    material_thread.read_material_file(&material, getMaterialDisplayingModel(), &getMaterialDisplayingModel()->meshes[0], &getMaterialDisplayingModel()->meshes[0].material_channels, material.material_selection_dialog_path, 128);
                 }
             }
         }
@@ -232,7 +232,6 @@ void MaterialSelectionDialog::show(Timer& timer, Material* material){
             matI++;
         }
         
-
         //Close the dialog
         if(getContext()->window.isKeyPressed(LIGIDGL_KEY_ESCAPE) == LIGIDGL_PRESS || (!bgPanel.hover && !dialog_log.isHovered() && *Mouse::LClick())){
             if(!dialogControl.firstFrameActivated){

@@ -212,12 +212,12 @@ bool Filter::readFilterData(std::ifstream& rf, bool dont_gen_buffers){
     }
 
     if(!lib_match){
-        //if(!dont_gen_buffers)
-        //    this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode);
+        if(!dont_gen_buffers)
+            this->shader.loadShaderPS("LigidPainter/Resources/Shaders/aVert/2D_uniforms.vert", this->srcCode, this->shader.shader_name);
     }
 
-    //if(!dont_gen_buffers)
-    //    this->generateDisplayingTexture(glm::vec2(256));
+    if(!dont_gen_buffers && !lib_match)
+        this->generateDisplayingTexture(glm::vec2(256));
 
     this->displayingTxtr.title = "ReadenFilterDisplayerTXTR";
     this->title = "ReadenFilter";

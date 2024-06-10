@@ -44,6 +44,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 //4 = height map
 //5 = ambient Occlusion
 
+static Texture black_txtr;
+
 static void channelPrep(Material &material, MaterialChannels* materialChannels, int& textureResolution, int& curModI, glm::mat4& perspective, glm::mat4& view, int& channelI, Texture& currentTexture, Texture& previousTexture){
     glDisable(GL_DEPTH_TEST);
 
@@ -285,8 +287,8 @@ static void setUniforms(
     /* Channel Properties */
     modifierShader.setInt("state", channelI); //Set the state
     modifierShader.setInt("mask", GL::bindTexture_2D(maskTexture_procedural, "UpdateMaterialChannel : setUniforms"));
-    modifierShader.setInt("previousTxtr", GL::bindTexture_2D((curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode) ? previousTexture.ID : appTextures.black.ID, "UpdateMaterialChannel : setUniforms"));
-    modifierShader.setInt( "depthTxtr" , GL::bindTexture_2D((curModI != material.materialModifiers.size()-1) ? prevDepthTexture.ID : appTextures.black.ID, "UpdateMaterialChannel : setUniforms"));
+    modifierShader.setInt("previousTxtr", GL::bindTexture_2D((curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode) ? previousTexture.ID : black_txtr.ID, "UpdateMaterialChannel : setUniforms"));
+    modifierShader.setInt( "depthTxtr" , GL::bindTexture_2D((curModI != material.materialModifiers.size()-1) ? prevDepthTexture.ID : black_txtr.ID, "UpdateMaterialChannel : setUniforms"));
     
     if(material.materialModifiers[curModI].modifierIndex != SOLID_MATERIAL_MODIFIER)
         modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[material.materialModifiers[curModI].sections.size()-4].elements[channelI].rangeBar.value);
@@ -518,6 +520,12 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
         maskTexture_procedural = Texture((char*)nullptr, textureResolution, textureResolution);
     else
         maskTexture_procedural.update((char*)nullptr, textureResolution, textureResolution);
+
+    if(!black_txtr.ID){
+        unsigned char black_px[4] = {0, 0, 0, 255}; 
+        black_txtr = Texture(black_px, 1, 1, GL_NEAREST);
+    }
+    
     material.materialModifiers[curModI].maskTexture.generateProceduralTexture(mesh, maskTexture_procedural, textureResolution);
 
     for (int channelI = 0; channelI < 6; channelI++){
@@ -587,6 +595,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             //Delete the framebuffer after completing the channel
             FBOPOOL::releaseFBO(FBO);
             ShaderUTIL::release_bound_shader();
+            GL::releaseBoundTextures("MaterialModifier::updateMaterialChannels::setUniforms");
 
             //Generating the normal map based on the height map
             if(channelI == 4){
@@ -677,7 +686,7 @@ void MaterialModifier::updateMaterialChannels(Material &material, int curModI, M
             modifierShader.setInt( "operationIndex" , material.materialModifiers[curModI].sections[0].elements[0].comboBox.selectedIndex);
             modifierShader.setInt( "useRightSideTxtr" , material.materialModifiers[curModI].sections[0].elements[4].checkBox.clickState1);
             modifierShader.setFloat( "rightSideVal" , material.materialModifiers[curModI].sections[0].elements[3].rangeBar.value);
-            modifierShader.setInt( "previousTxtr" , GL::bindTexture_2D((curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode) ? previousTexture.ID : appTextures.black.ID, "MaterialModifier::updateMaterialChannels"));
+            modifierShader.setInt( "previousTxtr" , GL::bindTexture_2D((curModI != material.materialModifiers.size()-1 && !noPrevTxtrMode) ? previousTexture.ID : black_txtr.ID, "MaterialModifier::updateMaterialChannels"));
             modifierShader.setInt( "rightSideTxtr" , GL::bindTexture_2D(mathModifierTexture_procedural.ID, "MaterialModifier::updateMaterialChannels"));
             modifierShader.setInt( "mask" , GL::bindTexture_2D(maskTexture_procedural.ID, "MaterialModifier::updateMaterialChannels"));
             modifierShader.setFloat( "opacity" , material.materialModifiers[curModI].sections[1].elements[channelI].rangeBar.value);
