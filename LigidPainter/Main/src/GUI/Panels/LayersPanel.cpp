@@ -45,12 +45,20 @@ static int lastLayerResolution = 1024;
 void panel_layers_render(Timer& timer, bool doMouseTracking)
 {
     // Render the layers panel
-    panel_layers.render(timer, doMouseTracking);
+    panel_layers.render(timer, doMouseTracking && !comboBox_layers_resolution.pressed && !comboBox_PBR_displaying_mode.pressed);
     if(panel_layers.resizingDone){
         panels_transform();
     }
     
-    button_mesh_selection.render(timer, doMouseTracking);
+    int layersResolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]);
+
+    // Render the layers
+    getScene()->get_selected_mesh()->layerScene.render(timer, panel_layers, doMouseTracking && !comboBox_layers_resolution.pressed && !comboBox_PBR_displaying_mode.pressed, layersResolution, *getScene()->get_selected_mesh());
+
+    // Render the add layer panel
+    panel_add_layer.render(timer, doMouseTracking && !comboBox_layers_resolution.pressed && !comboBox_PBR_displaying_mode.pressed);
+    
+    button_mesh_selection.render(timer, doMouseTracking && !comboBox_layers_resolution.pressed && !comboBox_PBR_displaying_mode.pressed);
     
     Button comboBox_layers_resolutionBG = Button(ELEMENT_STYLE_SOLID, glm::vec2(comboBox_layers_resolution.scale.x, comboBox_layers_resolution.scale.y + comboBox_PBR_displaying_mode.scale.y), "", Texture(), 0.f, 0);
     comboBox_layers_resolutionBG.pos = glm::mix(comboBox_layers_resolution.pos, comboBox_PBR_displaying_mode.pos, 0.5f);
@@ -59,18 +67,13 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
     comboBox_layers_resolution.render(timer, doMouseTracking);
     
     comboBox_PBR_displaying_mode.render(timer, doMouseTracking);
-
+    
     // Height map selected
     if(comboBox_PBR_displaying_mode.selectedIndex == 5){
         dialog_heightMapDisplayer.show(timer, getScene()->model);
         comboBox_PBR_displaying_mode.selectedIndex = 0;
     }
-    
-    int layersResolution = std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]);
 
-    // Render the add layer panel
-    panel_add_layer.render(timer, doMouseTracking);
-    
     bool any_layer_hovered = false;
     for (Layer* layer : getScene()->get_selected_mesh()->layerScene.layers)
     {
@@ -106,9 +109,6 @@ void panel_layers_render(Timer& timer, bool doMouseTracking)
         VectorLayer* vectorLayer = new VectorLayer(layersResolution);
         getScene()->get_selected_mesh()->layerScene.add_new(vectorLayer);
     }
-
-    // Render the layers
-    getScene()->get_selected_mesh()->layerScene.render(timer, panel_layers, doMouseTracking, layersResolution, *getScene()->get_selected_mesh());
 
     if(getScene()->model->newModelAdded || lastLayerResolution != layersResolution){
         if(lastLayerResolution != layersResolution){
