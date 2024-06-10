@@ -91,9 +91,9 @@ void HeightMapDisplayerDialog::show(Timer& timer, Model* model){
             {
                 mesh.processHeightMap(this->strength_rangebar.value);
             }
+            prev_strength = this->strength_rangebar.value;
         }
 
-        prev_strength = this->strength_rangebar.value;
         
         glm::mat4 projectionMatrix = glm::perspective(
                                                         glm::radians(35.f), //Fov  
@@ -158,8 +158,8 @@ void HeightMapDisplayerDialog::show(Timer& timer, Model* model){
             
             for (size_t i = 0; i < model->meshes.size(); i++)
             {
-                ShaderSystem::solidShadingShader().setInt("use_txtr", true);
-                ShaderSystem::solidShadingShader().setInt("txtr", model->meshes[i].material_channels.heightMap.ID);
+                ShaderSystem::solidShadingShader().setInt("use_txtr", 1);
+                ShaderSystem::solidShadingShader().setInt("txtr", GL::bindTexture_2D(model->meshes[i].material_channels.heightMap.ID, "HeightMapDisplayerDialog display 2"));
 
                 //Draw the sphere
                 model->meshes[i].Draw("HeightMapDisplayerDialog display 2");
