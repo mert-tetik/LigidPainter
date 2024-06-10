@@ -24,6 +24,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 
 #include "UTIL/Util.hpp"
 #include "UTIL/Settings/Settings.hpp"
+#include "UTIL/Threads/Threads.hpp"
 #include "UTIL/Painting/Painter.hpp"
 
 #include "GUI/Elements.hpp"
@@ -98,12 +99,12 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
     else
         same = false;
 
-    if(last_paint_settings != this->get_painting_settings(resolution, mesh)){
-        same = false;
-    }
+    //if(last_paint_settings != this->get_painting_settings(resolution, mesh)){
+    //    same = false;
+    //}
 
-    if(!*Mouse::LPressed() && !same){
-        this->update_result_buffers(resolution, mesh);
+    if(!same){
+        vector_thread.use_thread(resolution, &this->vector_scene, this, &mesh);
         last_strokes = this->vector_scene.strokes_3D;
         last_paint_settings = this->get_painting_settings(resolution, mesh);
     }

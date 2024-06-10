@@ -80,10 +80,30 @@ private:
                     Texture object_texturing_dialog_mask, std::vector<bool> update_channel_flags, unsigned int resolution);
 
 };
+void material_thread_function();
 
 extern MaterialThread material_thread;
 extern ThreadElements readMaterialThreadElements;
 
-void material_thread_function();
+struct VectorThreadAction{
+    unsigned int resolution;
+    VectorScene* vector_scene = nullptr; 
+    VectorLayer* vector_layer = nullptr;
+    Mesh* mesh = nullptr;
+};
+
+struct VectorThread{
+    std::atomic<bool> active = false;
+    std::thread thread;
+
+    std::vector<VectorThreadAction> actions;
+
+    void use_thread(unsigned int resolution, VectorScene* vector_scene, VectorLayer* vector_layer, Mesh* mesh);
+
+};
+void vector_thread_function();
+
+extern VectorThread vector_thread;
+
 
 #endif

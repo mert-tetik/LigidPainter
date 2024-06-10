@@ -31,7 +31,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include "UTIL/Library/Library.hpp"
 #include "UTIL/Settings/Settings.hpp"
 #include "UTIL/Project/Project.hpp"
+#include "UTIL/Painting/Painter.hpp"
 #include "UTIL/Threads/Threads.hpp"
+
+#include "Toolkit/VectorScene/VectorScene.hpp"
+#include "Toolkit/Layers/Layers.hpp"
 
 ThreadElements projectUpdatingThreadElements;
 
@@ -182,7 +186,7 @@ void material_thread_function(){
                 // Start 
                 material_thread.active = true;
             
-                getSecondContext()->window.makeContextCurrent();
+                while(!getSecondContext()->window.makeContextCurrent()){}
                 
                 if(material_thread.actions[0].path.size()){
                     std::ifstream rf(material_thread.actions[0].path, std::ios::out | std::ios::binary); 
@@ -192,20 +196,10 @@ void material_thread_function(){
                 }
 
                 if(!material_channels.albedo.ID){
-                    material_channels.albedo = Texture((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
-                    material_channels.roughness = Texture((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
-                    material_channels.metallic = Texture((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
-                    material_channels.normalMap = Texture((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
-                    material_channels.heightMap = Texture((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
-                    material_channels.ambientOcclusion = Texture((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
+                    material_channels.generate_channels(glm::ivec2(material_thread.actions[0].resolution));
                 }
                 else{
-                    material_channels.albedo.update((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
-                    material_channels.roughness.update((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
-                    material_channels.metallic.update((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
-                    material_channels.normalMap.update((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
-                    material_channels.heightMap.update((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
-                    material_channels.ambientOcclusion.update((char*)nullptr, material_thread.actions[0].resolution, material_thread.actions[0].resolution);
+                    material_channels.update_channels(glm::ivec2(material_thread.actions[0].resolution));
                 }
 
                 material_thread.actions[0].material->apply_material((material_thread.actions[0].model != nullptr) ? *material_thread.actions[0].model : Model(), *material_thread.actions[0].mesh, &material_channels, material_thread.actions[0].resolution, false);
@@ -231,34 +225,7 @@ void material_thread_function(){
                         material_thread.actions[0].materialChannels->ambientOcclusion.mix(material_channels.ambientOcclusion, material_thread.actions[0].object_texturing_dialog_mask, false, false, false);
                 }
                 else{
-                    unsigned int res = material_thread.actions[0].resolution;
-
-                    unsigned char* albedo_pxs = new unsigned char[res * res * 4]; material_channels.albedo.getData(albedo_pxs);
-                    unsigned char* roughness_pxs = new unsigned char[res * res * 4]; material_channels.roughness.getData(roughness_pxs);
-                    unsigned char* metallic_pxs = new unsigned char[res * res * 4]; material_channels.metallic.getData(metallic_pxs);
-                    unsigned char* normalMap_pxs = new unsigned char[res * res * 4]; material_channels.normalMap.getData(normalMap_pxs);
-                    unsigned char* heightMap_pxs = new unsigned char[res * res * 4]; material_channels.heightMap.getData(heightMap_pxs);
-                    unsigned char* ambientOcclusion_pxs = new unsigned char[res * res * 4]; material_channels.ambientOcclusion.getData(ambientOcclusion_pxs);
-
-                    if(material_thread.actions[0].update_channel_flags[0])
-                        material_thread.actions[0].materialChannels->albedo.update(albedo_pxs, res, res);
-                    if(material_thread.actions[0].update_channel_flags[1])
-                        material_thread.actions[0].materialChannels->roughness.update(roughness_pxs, res, res);
-                    if(material_thread.actions[0].update_channel_flags[2])
-                        material_thread.actions[0].materialChannels->metallic.update(metallic_pxs, res, res);
-                    if(material_thread.actions[0].update_channel_flags[3])
-                        material_thread.actions[0].materialChannels->normalMap.update(normalMap_pxs, res, res);
-                    if(material_thread.actions[0].update_channel_flags[4])
-                        material_thread.actions[0].materialChannels->heightMap.update(heightMap_pxs, res, res);
-                    if(material_thread.actions[0].update_channel_flags[5])
-                        material_thread.actions[0].materialChannels->ambientOcclusion.update(ambientOcclusion_pxs, res, res);
-
-                    delete[] albedo_pxs;
-                    delete[] roughness_pxs;
-                    delete[] metallic_pxs;
-                    delete[] normalMap_pxs;
-                    delete[] heightMap_pxs;
-                    delete[] ambientOcclusion_pxs;
+                    material_thread.actions[0].materialChannels->apply_another_material_channels(material_channels, material_thread.actions[0].update_channel_flags);
                 }
 
                 if(material_thread.actions[0].update_the_material_displaying_texture)
@@ -271,6 +238,89 @@ void material_thread_function(){
 
                 // End
                 material_thread.active = false;
+            }
+        }
+    }
+}
+
+VectorThread vector_thread;
+
+
+void VectorThread::use_thread(
+                                    unsigned int resolution, 
+                                    VectorScene* vector_scene, 
+                                    VectorLayer* vector_layer,
+                                    Mesh* mesh
+                                )
+{   
+    if(true){
+
+        VectorThreadAction action;
+
+        action.resolution = resolution;
+        action.vector_layer = vector_layer;
+        action.vector_scene = vector_scene;
+        action.mesh = mesh;
+        
+        actions.push_back(action);
+        
+        if(actions.size() == 1){
+            this->active = true; // Make sure this flag is set to true in time
+        }
+    }
+}
+
+MaterialChannels result_channels;
+
+void vector_thread_function(){    
+    // Create the copy context for another threads    
+    getSecondContext()->window.makeContextCurrent();
+
+    if (!gladLoadGLLoader((GLADloadproc)LigidGL::getProcAddress))
+    {
+        LGDLOG::start<< "Failed to initialize GLAD for vector thread" << LGDLOG::end;
+    }   
+
+    getSecondContext()->window.releaseContext();
+
+    while (readMaterialThreadElements.isRunning){
+        std::lock_guard<std::mutex> lock(readMaterialThreadElements.mutex);
+
+        if(getSecondContext()->window.isContextCurrent())
+            getSecondContext()->window.releaseContext();
+        
+        if(vector_thread.actions.size())
+        {        
+            while(!getSecondContext()->window.makeContextCurrent()){}
+
+            if(vector_thread.actions[0].vector_scene != nullptr){
+                std::this_thread::sleep_for(std::chrono::seconds(1)); 
+
+                if(!result_channels.albedo.ID){
+                    result_channels.generate_channels(glm::ivec2(vector_thread.actions[0].resolution));
+                }
+                else{
+                    result_channels.update_channels(glm::ivec2(vector_thread.actions[0].resolution));
+                }
+
+                PaintSettings paint_settings = vector_thread.actions[0].vector_layer->get_painting_settings(vector_thread.actions[0].resolution, *vector_thread.actions[0].mesh);
+                paint_settings.painted_buffers = PaintSettings::PaintedBuffers(true, Texture(), true, result_channels.albedo, true, result_channels.roughness, true, result_channels.metallic, true, result_channels.normalMap, true, result_channels.heightMap, true, result_channels.ambientOcclusion);
+
+                vector_thread.actions[0].vector_scene->apply_strokes(
+                                                                        true, 
+                                                                        false, 
+                                                                        paint_settings                                
+                                                                    );
+                
+                vector_thread.actions[0].vector_layer->result.apply_another_material_channels(result_channels, {true,true,true,true,true,true});
+
+                vector_thread.actions[0].mesh->layerScene.update_result(vector_thread.actions[0].resolution, glm::vec3(0.f), *vector_thread.actions[0].mesh);
+            
+                if(vector_thread.actions.size() > 1)
+                    vector_thread.actions = {vector_thread.actions.back()};
+                else{
+                    vector_thread.actions.clear();
+                }
             }
         }
     }

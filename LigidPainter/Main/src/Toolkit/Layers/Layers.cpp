@@ -196,39 +196,28 @@ void LayerScene::add_new(Layer* layer){
 
 std::mutex layerscene_update_result_mutex;
 
+static MaterialChannels result_channels;
+
 void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mesh& mesh){
     
     std::lock_guard<std::mutex> lock(layerscene_update_result_mutex);
 
-    if(!mesh.material_channels.albedo.ID){
-        mesh.material_channels.albedo = Texture((char*)nullptr, resolution, resolution);
-        mesh.material_channels.roughness = Texture((char*)nullptr, resolution, resolution);
-        mesh.material_channels.metallic = Texture((char*)nullptr, resolution, resolution);
-        mesh.material_channels.normalMap = Texture((char*)nullptr, resolution, resolution);
-        mesh.material_channels.heightMap = Texture((char*)nullptr, resolution, resolution);
-        mesh.material_channels.ambientOcclusion = Texture((char*)nullptr, resolution, resolution);
+    if(!result_channels.albedo.ID){
+        result_channels.generate_channels(glm::ivec2(resolution));
     }
     else{
-        glm::vec2 albedoRes = mesh.material_channels.albedo.getResolution();
-        if(albedoRes.x != resolution){
-            mesh.material_channels.albedo.update((char*)nullptr, resolution, resolution);
-            mesh.material_channels.roughness.update((char*)nullptr, resolution, resolution);
-            mesh.material_channels.metallic.update((char*)nullptr, resolution, resolution);
-            mesh.material_channels.normalMap.update((char*)nullptr, resolution, resolution);
-            mesh.material_channels.heightMap.update((char*)nullptr, resolution, resolution);
-            mesh.material_channels.ambientOcclusion.update((char*)nullptr, resolution, resolution);
-        }
+        result_channels.update_channels(glm::ivec2(resolution));
     }
     
     // Update FBO
     Framebuffer FBO = FBOPOOL::requestFBO(
                                             {
-                                                mesh.material_channels.albedo, 
-                                                mesh.material_channels.roughness, 
-                                                mesh.material_channels.metallic, 
-                                                mesh.material_channels.normalMap, 
-                                                mesh.material_channels.heightMap, 
-                                                mesh.material_channels.ambientOcclusion
+                                                result_channels.albedo, 
+                                                result_channels.roughness, 
+                                                result_channels.metallic, 
+                                                result_channels.normalMap, 
+                                                result_channels.heightMap, 
+                                                result_channels.ambientOcclusion
                                             },
                                             "LayerScene::updateResult"
                                         );
@@ -270,8 +259,14 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
         GL::releaseBoundTextures("LayerScene::update_result");
         ShaderUTIL::release_bound_shader();
     }
-    
+
     FBOPOOL::releaseFBO(FBO);
+    
+    if(!mesh.material_channels.albedo.ID){
+        mesh.material_channels.generate_channels(glm::ivec2(resolution));
+    }
+
+    mesh.material_channels.apply_another_material_channels(result_channels, {true, true, true, true, true, true});
 }
 
 bool LayerScene::any_dialog_hovered(){

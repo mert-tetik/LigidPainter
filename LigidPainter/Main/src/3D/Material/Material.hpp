@@ -54,6 +54,55 @@ struct MaterialChannels{
         this->heightMap = heightMap;
         this->ambientOcclusion = ambientOcclusion;
     }
+
+    void generate_channels(glm::ivec2 resolution){
+        this->albedo = Texture((char*)nullptr, resolution.x, resolution.y);
+        this->roughness = Texture((char*)nullptr, resolution.x, resolution.y);
+        this->metallic = Texture((char*)nullptr, resolution.x, resolution.y);
+        this->normalMap = Texture((char*)nullptr, resolution.x, resolution.y);
+        this->heightMap = Texture((char*)nullptr, resolution.x, resolution.y);
+        this->ambientOcclusion = Texture((char*)nullptr, resolution.x, resolution.y);
+    }
+    
+    void update_channels(glm::ivec2 resolution){
+        this->albedo.update((char*)nullptr, resolution.x, resolution.y);
+        this->roughness.update((char*)nullptr, resolution.x, resolution.y);
+        this->metallic.update((char*)nullptr, resolution.x, resolution.y);
+        this->normalMap.update((char*)nullptr, resolution.x, resolution.y);
+        this->heightMap.update((char*)nullptr, resolution.x, resolution.y);
+        this->ambientOcclusion.update((char*)nullptr, resolution.x, resolution.y);
+    }
+
+    void apply_another_material_channels(MaterialChannels material_channels, std::vector<bool> update_channel_flags){
+        unsigned int res = material_channels.albedo.getResolution().x;
+
+        unsigned char* albedo_pxs = new unsigned char[res * res * 4]; material_channels.albedo.getData(albedo_pxs);
+        unsigned char* roughness_pxs = new unsigned char[res * res * 4]; material_channels.roughness.getData(roughness_pxs);
+        unsigned char* metallic_pxs = new unsigned char[res * res * 4]; material_channels.metallic.getData(metallic_pxs);
+        unsigned char* normalMap_pxs = new unsigned char[res * res * 4]; material_channels.normalMap.getData(normalMap_pxs);
+        unsigned char* heightMap_pxs = new unsigned char[res * res * 4]; material_channels.heightMap.getData(heightMap_pxs);
+        unsigned char* ambientOcclusion_pxs = new unsigned char[res * res * 4]; material_channels.ambientOcclusion.getData(ambientOcclusion_pxs);
+
+        if(update_channel_flags[0])
+            this->albedo.update(albedo_pxs, res, res);
+        if(update_channel_flags[1])
+            this->roughness.update(roughness_pxs, res, res);
+        if(update_channel_flags[2])
+            this->metallic.update(metallic_pxs, res, res);
+        if(update_channel_flags[3])
+            this->normalMap.update(normalMap_pxs, res, res);
+        if(update_channel_flags[4])
+            this->heightMap.update(heightMap_pxs, res, res);
+        if(update_channel_flags[5])
+            this->ambientOcclusion.update(ambientOcclusion_pxs, res, res);
+
+        delete[] albedo_pxs;
+        delete[] roughness_pxs;
+        delete[] metallic_pxs;
+        delete[] normalMap_pxs;
+        delete[] heightMap_pxs;
+        delete[] ambientOcclusion_pxs;
+    }
 };
 
 //-------------- MATERIAL MODIFIER ------------

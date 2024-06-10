@@ -220,6 +220,7 @@ public:
         std::thread projectUpdatingThreadX(projectUpdatingThread);
         // Start the material processing thread
         material_thread.thread = std::thread(material_thread_function);
+        vector_thread.thread = std::thread(vector_thread_function);
 
         getContext()->window.style(0);
         getContext()->window.setWindowSize(Settings::videoScale()->x, Settings::videoScale()->y);
