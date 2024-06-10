@@ -163,6 +163,8 @@ void VectorScene::render2DVectors(Timer& timer, bool doMouseTracking){
 
 void VectorScene::render3DVectors(Timer& timer, bool doMouseTracking){
     
+    glClear(GL_DEPTH_BUFFER_BIT);
+
     // Set the cursor to ink pen if the current cursor is the default one 
     if(doMouseTracking && Mouse::activeCursor()->cursorType == Mouse::defaultCursor()->cursorType)
         Mouse::setCursor(*Mouse::inkPenCursor());

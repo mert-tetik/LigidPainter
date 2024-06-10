@@ -154,6 +154,7 @@ void VectorStroke3D::genLineVertices(){
         VertexUTIL vert;
         vert.Position = this->startPoint.pos - (this->startPoint.pos - this->endPoint.pos) / glm::vec3(details) * glm::vec3(i);
         vert.Normal = this->startPoint.normal - (this->startPoint.normal - this->endPoint.normal) / glm::vec3(details) * glm::vec3(i);
+        if(i == 0 || i == details - 1)
         this->lineVertices.push_back(vert);
     }
 }

@@ -337,6 +337,11 @@ void panel_library_render(
 
                         getScene()->model = Library::getModel(i);
                         getScene()->model->newModelAdded = true; 
+
+                        for (Mesh& mesh : getScene()->model->meshes)
+                        {
+                            mesh.layerScene.update_result(std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]), glm::vec3(0.f), mesh);
+                        }
                     }
                 }
             }

@@ -270,8 +270,14 @@ void NewProjectDialog::show(Timer& timer){
 
             for (size_t i = 0; i < Library::getModelArraySize(); i++)
             {
-                if(Library::getModel(i)->title != "sphere" && Library::getModel(i)->title != "plane")
+                if(Library::getModel(i)->title != "sphere" && Library::getModel(i)->title != "plane"){
                     getScene()->model = Library::getModel(i);
+
+                    for (Mesh& mesh : getScene()->model->meshes)
+                    {
+                        mesh.layerScene.update_result(std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]), glm::vec3(0.f), mesh);
+                    }
+                }
             }
             
             this->dialogControl.unActivate();

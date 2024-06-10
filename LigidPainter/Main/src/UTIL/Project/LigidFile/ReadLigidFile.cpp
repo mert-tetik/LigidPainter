@@ -130,6 +130,11 @@ bool projectUTIL_read_ligid_file(
         {
             if(Library::getModelObj(i).title == modelTitle){
                 getScene()->model = Library::getModel(i);
+
+                for (Mesh& mesh : getScene()->model->meshes)
+                {
+                    mesh.layerScene.update_result(std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]), glm::vec3(0.f), mesh);
+                }
             }
         }
         
