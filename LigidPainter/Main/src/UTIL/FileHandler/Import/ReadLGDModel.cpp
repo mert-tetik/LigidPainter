@@ -26,6 +26,8 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <filesystem>
 
 #include "UTIL/Util.hpp"
+#include "UTIL/Threads/Threads.hpp"
+#include "UTIL/Wait/Wait.hpp"
 #include "GUI/GUI.hpp"
     
 #define READBITS(var, type, loc) if(!rf.read(reinterpret_cast<char*>(   &var     ), sizeof(type))){ \
@@ -237,9 +239,11 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                     Material* material;
                     layer->get_type_specific_variable(&material, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr);
                     
-                    FileHandler::readMaterialData(rf, *material, nullptr);
-                    material->updateMaterialDisplayingTexture(256, true, Camera(), 0, false, getMaterialDisplayerModel()->meshes[0], getMaterialDisplayerModel()->meshes[0].material_channels);
+                    *material = Material("", {});
 
+                    FileHandler::readMaterialData(rf, *material, nullptr);
+                    material_thread.update_material_displaying_texture(material, getMaterialDisplayerModel(), &getMaterialDisplayerModel()->meshes[0], &getMaterialDisplayerModel()->meshes[0].material_channels, 512);
+                    WAIT_WHILE(material_thread.actions.size());
                 }
                 else if(layer->layerType == "vector"){
                     VectorScene* vectorScene;
