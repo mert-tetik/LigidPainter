@@ -219,7 +219,12 @@ void Settings::loadAppTextures(){
     }
 
     appTextures.white = Texture(whitePxs, 256, 256, GL_NEAREST);
+    appTextures.white.proceduralProps.proceduralID = 24;
+
     appTextures.black = Texture(blackPxs, 256, 256, GL_NEAREST);
+    appTextures.black.proceduralProps.proceduralID = 24;
+    appTextures.black.proceduralProps.proceduralnverted = true;
+    
     appTextures.transparent = Texture((char*)nullptr, 1, 1, GL_NEAREST);
 }
 

@@ -325,7 +325,7 @@ void SettingsDialog::renderPanel(Timer& timer){
 }
 
 void SettingsDialog::updateInfoTexts(Timer& timer){
-    info_txt0_button->text = "Painting framebuffer resolution : " + std::to_string(painting_projected_painting_FBO.colorBuffer.getResolution().x) + "x" + std::to_string(painting_projected_painting_FBO.colorBuffer.getResolution().y);
+    info_txt0_button->text = "Painting framebuffer resolution : " + std::to_string(painting_projected_painting_txtr.getResolution().x) + "x" + std::to_string(painting_projected_painting_txtr.getResolution().y);
     
     info_txt1_button->text = "Video scale : " + std::to_string(Settings::videoScale()->x) + "x" + std::to_string(Settings::videoScale()->y);
     

@@ -92,7 +92,7 @@ void Scene::render_model(Timer& timer){
                                                                                                                                     (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].material_channels.normalMap : appTextures.noLayersWarningTexture,
                                                                                                                                     (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].material_channels.heightMap : appTextures.white,
                                                                                                                                     (this->model->meshes[i].layerScene.layers.size()) ? this->model->meshes[i].material_channels.ambientOcclusion : appTextures.white,
-                                                                                                                                    painting_projected_painting_FBO.colorBuffer
+                                                                                                                                    painting_projected_painting_txtr
                                                                                                                                 ),   
                                                                                         ShaderUTIL::PaintingData::PaintingSmearData(
                                                                                                                                         panel_smear_painting_properties.sections[0].elements[0].rangeBar.value,
@@ -182,7 +182,7 @@ void Scene::render_model(Timer& timer){
                                                                                                                                 0,
                                                                                                                                 0,
                                                                                                                                 0,
-                                                                                                                                painting_projected_painting_FBO.colorBuffer
+                                                                                                                                painting_projected_painting_txtr
                                                                                                                             ),   
                                                                                     ShaderUTIL::PaintingData::PaintingSmearData(
                                                                                                                                     panel_smear_painting_properties.sections[0].elements[0].rangeBar.value,

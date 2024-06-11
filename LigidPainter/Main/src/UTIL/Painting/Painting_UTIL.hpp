@@ -100,12 +100,10 @@ static void set_brush_properties (
                                                 data = settings.filter_mode.src;
 
 static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> strokes, Brush brush, int frame_count, bool paint_offset_value){
-    
     //Bind the painting texture to the painting framebuffer
     Texture copy_txtr = window_paint_texture->get_temp_copy_txtr("void window_paint");
 
     Framebuffer FBO = FBOPOOL::requestFBO(*window_paint_texture, "window_paint");
-    FBO.bind();
 
     float resolution = window_paint_texture->getResolution().x;
 
@@ -163,7 +161,6 @@ static void window_paint(Texture* window_paint_texture, std::vector<glm::vec2> s
     glDepthFunc(GL_LESS);
 }
 
-static Framebuffer project_window_painting_texture_FBO;
 static void project_window_painting_texture(
                                                 // Textures
                                                 Texture* projected_painting_texture, 
@@ -181,22 +178,8 @@ static void project_window_painting_texture(
                                                 bool wrapMode
                                             )
 {
-    // Create FBO
-    if(!project_window_painting_texture_FBO.ID){
-        project_window_painting_texture_FBO = Framebuffer(*projected_painting_texture, GL_TEXTURE_2D, get_renderbuffer_for_texture(*projected_painting_texture), "project_window_painting_texture_FBO");
-    }
 
-    // Update color buffer
-    else{
-        project_window_painting_texture_FBO.setColorBuffer(*projected_painting_texture, GL_TEXTURE_2D);
-    }
-
-    // Update renderbuffer
-    if(projected_painting_texture->getResolution() != project_window_painting_texture_FBO.renderBuffer.getResolution()){
-        project_window_painting_texture_FBO.setRenderbuffer(get_renderbuffer_for_texture(*projected_painting_texture));
-    }
-
-    project_window_painting_texture_FBO.bind();
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(*projected_painting_texture, projected_painting_texture->getResolution(), "project_window_painting_texture");
     
     glClearColor(0, 0, 0, 0);
     
@@ -205,8 +188,6 @@ static void project_window_painting_texture(
     else
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glViewport(0, 0, projected_painting_texture->getResolution().x, projected_painting_texture->getResolution().y);
-
     // Bind the related shader program
     ShaderSystem::projectingPaintedTextureShader().use();
 
@@ -275,6 +256,7 @@ static void project_window_painting_texture(
 
     GL::releaseBoundTextures("paintingUTIL::project_window_painting_texture");
     ShaderUTIL::release_bound_shader();
+    FBOPOOL::releaseFBO(FBO);
 
 }
 
@@ -343,7 +325,7 @@ static glm::vec2 findPos(glm::ivec2 res, float* posData, float* pxs){
     return glm::vec2(-1.f);
 }
 
-static Framebuffer process3DPointFBO;
+static Texture process3DPointTxtr;
 
 static void process_3D_point_calculate_cam(Camera* cam, ThreeDPoint threeDPoint){
     cam->cameraPos = glm::vec3(
@@ -361,10 +343,16 @@ static void process_3D_point_calculate_cam(Camera* cam, ThreeDPoint threeDPoint)
     cam->updateViewMatrix(cam->cameraPos, cam->originPos);
 }
 
-static glm::vec2 process_3D_point_calculate_2D_location(Camera cam, ThreeDPoint threeDPoint, const unsigned int resolution, Mesh* mesh){
-    process3DPointFBO.bind();
+static glm::vec2 process_3D_point_calculate_2D_location(Camera cam, ThreeDPoint threeDPoint, Mesh* mesh){
 
-    glViewport(0, 0, resolution, resolution);
+    const unsigned int resolution = 512;
+
+    if(!process3DPointTxtr.ID){
+        process3DPointTxtr = Texture((char*)nullptr, resolution, resolution);
+    }
+
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(process3DPointTxtr, glm::ivec2(resolution), "process_3D_point_calculate_2D_location");
+
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
@@ -409,16 +397,17 @@ static glm::vec2 process_3D_point_calculate_2D_location(Camera cam, ThreeDPoint 
 
     delete[] pxs;
 
+    FBOPOOL::releaseFBO(FBO);
+
     return res;
 }
 
 static void process_3D_point(      
                             ThreeDPoint threeDPoint, 
                             ThreeDPoint threeDPoint2, 
-                            MirrorSide mirrorSide,
+                            MirrorSide* mirrorSide,
 
                             // Return params
-                            Camera* cam, 
                             std::vector<glm::vec2>* strokes,
                             Mesh* mesh, 
 
@@ -427,23 +416,16 @@ static void process_3D_point(
                             float spacing
                         )
 {
-    process_3D_point_calculate_cam(cam, threeDPoint);
-    
-    const unsigned int resolution = 512; 
-    if(!process3DPointFBO.ID){
-        process3DPointFBO = Framebuffer(Texture((char*)nullptr, resolution, resolution), GL_TEXTURE_2D, Renderbuffer(GL_DEPTH_COMPONENT16, GL_DEPTH_ATTACHMENT, glm::ivec2(resolution)), "process3DPointFBO");
+    if(first_stroke){
+        process_3D_point_calculate_cam(&mirrorSide->threeD_cam, threeDPoint);
     }
 
-    glm::vec2 crs_pos = process_3D_point_calculate_2D_location(*cam, threeDPoint, resolution, mesh);
-    ThreeDPoint center;
-    center.pos = (threeDPoint.pos + threeDPoint2.pos) / 2.f;
-    center.normal = (threeDPoint.normal + threeDPoint2.normal) / 2.f;
-    Camera centerCam;
-    process_3D_point_calculate_cam(&centerCam, center);
-    glm::vec2 crs_pos_2 = process_3D_point_calculate_2D_location(*cam, threeDPoint2, resolution, mesh);
+    glm::vec2 crs_pos = process_3D_point_calculate_2D_location(mirrorSide->threeD_cam, threeDPoint, mesh);
+    glm::vec2 crs_pos_2 = process_3D_point_calculate_2D_location(mirrorSide->threeD_cam, threeDPoint2, mesh);
+    crs_pos_2.y = getContext()->windowScale.y - crs_pos_2.y;
+    crs_pos.y = getContext()->windowScale.y - crs_pos.y;
 
     if(crs_pos != glm::vec2(-1.f) && crs_pos_2 != glm::vec2(-1.f)){
-        crs_pos_2.y = getContext()->windowScale.y - crs_pos_2.y;
         *strokes = getCursorSubstitution(spacing, crs_pos, crs_pos_2);
     }
     else if(crs_pos != glm::vec2(-1.f))
@@ -473,29 +455,15 @@ void process_2D_point(
     last_point = point;
 }
 
-static Framebuffer update_depth_texture_FBO;
 void update_depth_texture(Texture depth_texture, Camera cam, Mesh* mesh){
-    // Create FBO
-    if(!update_depth_texture_FBO.ID){
-        update_depth_texture_FBO = Framebuffer(depth_texture, GL_TEXTURE_2D, get_renderbuffer_for_texture(depth_texture), "update_depth_texture_FBO");
-    }
 
-    // Update color buffer
-    else{
-        update_depth_texture_FBO.setColorBuffer(depth_texture, GL_TEXTURE_2D);
-    }
-
-    // Update renderbuffer
-    if(depth_texture.getResolution() != update_depth_texture_FBO.renderBuffer.getResolution()){
-        update_depth_texture_FBO.setRenderbuffer(get_renderbuffer_for_texture(depth_texture));
-    }
-    
-    glDepthFunc(GL_LESS);
+    Framebuffer FBO = FBOPOOL::requestFBO_with_RBO(depth_texture, depth_texture.getResolution(),"update_depth_texture");
     
     //Clear the depth texture
-    glViewport(0, 0, depth_texture.getResolution().x, depth_texture.getResolution().y);
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glDepthFunc(GL_LESS);
     
     //Use the depth 3D shader
     ShaderSystem::depth3D().use();
@@ -507,25 +475,24 @@ void update_depth_texture(Texture depth_texture, Camera cam, Mesh* mesh){
     
     mesh->Draw("update_depth_texture");
 
+    //!Finished
     GL::releaseBoundTextures("paintingUTIL : update_depth_texture");
     ShaderUTIL::release_bound_shader();
+    FBOPOOL::releaseFBO(FBO);
 
-    //!Finished
-    Settings::defaultFramebuffer()->FBO.bind();
-    Settings::defaultFramebuffer()->setViewport();
 
     glDepthFunc(GL_LEQUAL);
 } 
 
-void generate_projected_painting_texture(Framebuffer* FBO, bool mirror_X, bool mirror_Y, bool mirror_Z, bool use_low_resolution_buffers){
+void generate_projected_painting_texture(Texture* txtr, bool mirror_X, bool mirror_Y, bool mirror_Z, bool use_low_resolution_buffers){
         
     if(mirror_X || mirror_Y || mirror_Z){
         // Generate and bind the capturing framebuffer
-        FBO->bind();
+        Framebuffer FBO = FBOPOOL::requestFBO(*txtr, "generate_projected_painting_texture");
         
         glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glViewport(0, 0, FBO->colorBuffer.getResolution().x, FBO->colorBuffer.getResolution().y);
+        glViewport(0, 0, txtr->getResolution().x, txtr->getResolution().y);
 
         ShaderSystem::projectedPaintingTextureMixerShader().use();
 
@@ -562,12 +529,13 @@ void generate_projected_painting_texture(Framebuffer* FBO, bool mirror_X, bool m
 
         GL::releaseBoundTextures("PaintingUTIL : generate_projected_painting_texture");
         ShaderUTIL::release_bound_shader();
+        FBOPOOL::releaseFBO(FBO);
     }
     else{
         if(use_low_resolution_buffers)
-            O_side.paintingBuffers.projected_painting_texture_low.duplicateTexture(FBO->colorBuffer, "generate_projected_painting_texture");
+            O_side.paintingBuffers.projected_painting_texture_low.duplicateTexture(*txtr, "generate_projected_painting_texture");
         else
-            O_side.paintingBuffers.projected_painting_texture.duplicateTexture(FBO->colorBuffer, "generate_projected_painting_texture");
+            O_side.paintingBuffers.projected_painting_texture.duplicateTexture(*txtr, "generate_projected_painting_texture");
     }
 }
 
@@ -711,38 +679,37 @@ static void update_custom_material_mesh(PaintSettings::ColorBuffer color_buffer,
     prevMeshIndicesSize = mesh->indices.size();
 }
 
-static void captureTxtrToSourceTxtr(unsigned int &captureTexture, glm::ivec2 textureRes, unsigned int &selectedTextureID){
-    //Bind the capture texture
-    GL::bindTexture_2D(captureTexture, "captureTxtrToSourceTxtr");
-    
-    //Get the pixels of the capture texture
-    char* pixels = new char[textureRes.x * textureRes.y * 4];
-    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_BYTE, pixels);
-    
-    Texture selectedTextureOBJ = Texture(selectedTextureID);
-    selectedTextureOBJ.update(pixels, textureRes.x, textureRes.y);
+static void captureTxtrToSourceTxtr(Texture &captureTexture, Texture &selectedTexture){
+    unsigned char* pxs = new unsigned char[captureTexture.getResolution().x * captureTexture.getResolution().y * 4]; 
+    captureTexture.getData(pxs);
 
-    delete[] pixels; //Remove the capture texture's pixels out of the memory
-    glDeleteTextures(1, &captureTexture);
+    selectedTexture.update(pxs, captureTexture.getResolution().x, captureTexture.getResolution().y);
+
+    delete[] pxs; //Remove the capture texture's pixels out of the memory
 
     GL::releaseBoundTextures("captureTxtrToSourceTxtr");
 }
 
+static Texture captureTexture;
 static void updateTheTexture(
                                 Texture txtr, 
                                 int channelI,
-                                PaintSettings settings ,
-                                Framebuffer projected_painting_FBO
+                                PaintSettings settings,
+                                Texture projected_painting_txtr
                             )
 {
     glm::vec2 destScale = glm::vec2(txtr.getResolution());
 
     glActiveTexture(GL_TEXTURE0);
 
-    Texture captureTexture = Texture((char*)nullptr, destScale.x, destScale.y, GL_LINEAR);
-    Framebuffer captureFBO = Framebuffer(captureTexture, GL_TEXTURE_2D, "Painter::updateTheTexture");
+    if(!captureTexture.ID){
+        captureTexture = Texture((char*)nullptr, destScale.x, destScale.y, GL_LINEAR);
+    }
+    else{
+        captureTexture.update((char*)nullptr, destScale.x, destScale.y, GL_LINEAR);
+    }
     
-    captureFBO.bind();
+    Framebuffer FBO = FBOPOOL::requestFBO(captureTexture, "Painter::updateTheTexture");
 
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -781,7 +748,7 @@ static void updateTheTexture(
                                                                                                                             txtr,
                                                                                                                             txtr,
                                                                                                                             txtr,
-                                                                                                                            projected_painting_FBO.colorBuffer
+                                                                                                                            projected_painting_txtr
                                                                                                                         ),   
                                                                                 ShaderUTIL::PaintingData::PaintingSmearData(
                                                                                                                                 settings.smear_mode.smear_transform_strength,
@@ -807,23 +774,23 @@ static void updateTheTexture(
     if(settings.vertex_buffer.paint_model){
         //Draw the UV of the selected model
         settings.vertex_buffer.model_mesh->Draw("updateTheTexture");         
+
+        FBOPOOL::releaseFBO(FBO);
         
         captureTexture.removeSeams(*settings.vertex_buffer.model_mesh);
     }
     else{
-        
         settings.vertex_buffer.box->bindBuffers();
         getBox()->draw("Painter::updateTheTexture : Applying painting to the texture");
+        
+        FBOPOOL::releaseFBO(FBO);
     }
     
     GL::releaseBoundTextures("paintingUTIL : updateTheTexture");
     ShaderUTIL::release_bound_shader();
 
-    //Delete the capture framebuffer
-    captureFBO.deleteBuffers(false, false);
-
     //Copy capture texture into the source texture (painted texture)
-    captureTxtrToSourceTxtr(captureTexture.ID, destScale, txtr.ID);
+    captureTxtrToSourceTxtr(captureTexture, txtr);
 }
 
 struct PaintedBufferData{
@@ -888,86 +855,49 @@ static std::vector<PaintedBufferData> get_painted_buffers(PaintSettings settings
     return result;
 }
 
-Framebuffer refresh_FBO;
-static void refresh_buffers(Framebuffer* projected_painting_FBO){
-    if(!refresh_FBO.ID)
-        refresh_FBO = Framebuffer(projected_painting_FBO->colorBuffer.ID, GL_TEXTURE_2D, "Refresh buffers fbo");
-    
-    refresh_FBO.bind();
+#define REFRESH_BUFFER(buffer) {Framebuffer FBO = FBOPOOL::requestFBO(buffer, "Refresh buffers fbo"); glClearColor(0,0,0,0); glClear(GL_COLOR_BUFFER_BIT); FBOPOOL::releaseFBO(FBO);} 
+static void refresh_buffers(Texture* projected_painting_txtr){
 
-    refresh_FBO.setColorBuffer(projected_painting_FBO->colorBuffer, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
+    REFRESH_BUFFER(*projected_painting_txtr)
 
-    refresh_FBO.setColorBuffer(O_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(O_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(O_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(O_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
+    REFRESH_BUFFER(O_side.paintingBuffers.depth_texture)
+    REFRESH_BUFFER(O_side.paintingBuffers.projected_painting_texture)
+    REFRESH_BUFFER(O_side.paintingBuffers.projected_painting_texture_low)
+    REFRESH_BUFFER(O_side.paintingBuffers.window_painting_texture)
     
-    refresh_FBO.setColorBuffer(X_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(X_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(X_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(X_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
+    REFRESH_BUFFER(X_side.paintingBuffers.depth_texture)
+    REFRESH_BUFFER(X_side.paintingBuffers.projected_painting_texture)
+    REFRESH_BUFFER(X_side.paintingBuffers.projected_painting_texture_low)
+    REFRESH_BUFFER(X_side.paintingBuffers.window_painting_texture)
     
-    refresh_FBO.setColorBuffer(Y_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(Y_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(Y_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(Y_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
+    REFRESH_BUFFER(Y_side.paintingBuffers.depth_texture)
+    REFRESH_BUFFER(Y_side.paintingBuffers.projected_painting_texture)
+    REFRESH_BUFFER(Y_side.paintingBuffers.projected_painting_texture_low)
+    REFRESH_BUFFER(Y_side.paintingBuffers.window_painting_texture)
     
-    refresh_FBO.setColorBuffer(XY_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(XY_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(XY_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(XY_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
+    REFRESH_BUFFER(XY_side.paintingBuffers.depth_texture)
+    REFRESH_BUFFER(XY_side.paintingBuffers.projected_painting_texture)
+    REFRESH_BUFFER(XY_side.paintingBuffers.projected_painting_texture_low)
+    REFRESH_BUFFER(XY_side.paintingBuffers.window_painting_texture)
     
-    refresh_FBO.setColorBuffer(Z_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(Z_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(Z_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(Z_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
+    REFRESH_BUFFER(Z_side.paintingBuffers.depth_texture)
+    REFRESH_BUFFER(Z_side.paintingBuffers.projected_painting_texture)
+    REFRESH_BUFFER(Z_side.paintingBuffers.projected_painting_texture_low)
+    REFRESH_BUFFER(Z_side.paintingBuffers.window_painting_texture)
     
-    refresh_FBO.setColorBuffer(XZ_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(XZ_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(XZ_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(XZ_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
+    REFRESH_BUFFER(XZ_side.paintingBuffers.depth_texture)
+    REFRESH_BUFFER(XZ_side.paintingBuffers.projected_painting_texture)
+    REFRESH_BUFFER(XZ_side.paintingBuffers.projected_painting_texture_low)
+    REFRESH_BUFFER(XZ_side.paintingBuffers.window_painting_texture)
     
-    refresh_FBO.setColorBuffer(YZ_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(YZ_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(YZ_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(YZ_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
+    REFRESH_BUFFER(YZ_side.paintingBuffers.depth_texture)
+    REFRESH_BUFFER(YZ_side.paintingBuffers.projected_painting_texture)
+    REFRESH_BUFFER(YZ_side.paintingBuffers.projected_painting_texture_low)
+    REFRESH_BUFFER(YZ_side.paintingBuffers.window_painting_texture)
     
-    refresh_FBO.setColorBuffer(XYZ_side.paintingBuffers.depth_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(XYZ_side.paintingBuffers.projected_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(XYZ_side.paintingBuffers.projected_painting_texture_low, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
-    refresh_FBO.setColorBuffer(XYZ_side.paintingBuffers.window_painting_texture, GL_TEXTURE_2D);
-    glClear(GL_COLOR_BUFFER_BIT);
+    REFRESH_BUFFER(XYZ_side.paintingBuffers.depth_texture)
+    REFRESH_BUFFER(XYZ_side.paintingBuffers.projected_painting_texture)
+    REFRESH_BUFFER(XYZ_side.paintingBuffers.projected_painting_texture_low)
+    REFRESH_BUFFER(XYZ_side.paintingBuffers.window_painting_texture)
     
 }

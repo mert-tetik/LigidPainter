@@ -498,11 +498,11 @@ void Library::setChanged(bool state){
     __changed = state;
 }
 
+static Texture txtr_a;
 Texture* Library::getTexture(int index){
     if(index >= __textures.size()){
         LGDLOG::start<< "ERROR! : Couldn't get the texture : Requested texture index is out of boundaries." << LGDLOG::end;
-        Texture a = Texture();
-        return &a;
+        return &txtr_a;
     }
     return &__textures[index];
 }
@@ -516,11 +516,11 @@ Texture Library::getTextureObj(int index){
     return __textures[index];
 }
 
+static Material material_a;
 Material* Library::getMaterial(int index){
     if(index >= __materials.size()){
         LGDLOG::start<< "ERROR! : Couldn't get the material : Requested material index is out of boundaries." << LGDLOG::end;
-        Material a = Material();
-        return &a;
+        return &material_a;
     }
     return &__materials[index];
 }
@@ -534,11 +534,11 @@ Material Library::getMaterialObj(int index){
     return __materials[index];
 }
 
+static Brush brush_a;
 Brush* Library::getBrush(int index){
     if(index >= __brushes.size()){
         LGDLOG::start<< "ERROR! : Couldn't get the brush : Requested brush index is out of boundaries." << LGDLOG::end;
-        Brush a = Brush();
-        return &a;
+        return &brush_a;
     }
     return &__brushes[index];
 }
@@ -551,11 +551,11 @@ Brush Library::getBrushObj(int index){
     return __brushes[index];
 }
 
+static Model model_a = Model();
 Model* Library::getModel(int index){
     if(index >= __TDModels.size()){
         LGDLOG::start<< "ERROR! : Couldn't get the model : Requested model index is out of boundaries." << LGDLOG::end;
-        Model a = Model();
-        return &a;
+        return &model_a;
     }
     return &__TDModels[index];
 }
@@ -568,11 +568,11 @@ Model Library::getModelObj(int index){
     return __TDModels[index];
 }
 
+static Filter filter_a;
 Filter* Library::getFilter(int index){
     if(index >= __filters.size()){
         LGDLOG::start<< "ERROR! : Couldn't get the filter : Requested filter index is out of boundaries." << LGDLOG::end;
-        Filter a = Filter();
-        return &a;
+        return &filter_a;
     }
     return &__filters[index];
 }
@@ -585,11 +585,11 @@ Filter Library::getFilterObj(int index){
     return __filters[index];
 }
 
+static TexturePack texturePack_a;
 TexturePack* Library::getTexturePack(int index){
     if(index >= __texturePacks.size()){
         LGDLOG::start << "ERROR! : Couldn't get the texture pack : Requested texture pack index is out of boundaries." << LGDLOG::end;
-        TexturePack a = TexturePack();
-        return &a;
+        return &texturePack_a;
     }
     return &__texturePacks[index];
 }

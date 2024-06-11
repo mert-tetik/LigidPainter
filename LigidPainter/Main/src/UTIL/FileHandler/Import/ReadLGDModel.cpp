@@ -280,6 +280,8 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                     READBITS(mirror_checkComboList->panel.sections[0].elements[5].rangeBar.value, float, "Z axis mirror offset");
 
                     FileHandler::readBrushData(rf, *vector_stroke_brush);
+                    READBITS(vector_stroke_brush->properties.radius, float, "vector_stroke_brush->properties.radius");
+                    READBITS(vector_stroke_brush->properties.opacity, float, "vector_stroke_brush->properties.opacity");
 
                     vectorScene->read_data(rf);
                 } 

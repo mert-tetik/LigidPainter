@@ -47,6 +47,7 @@ VectorLayer::VectorLayer(const unsigned int resolution){
     this->smear_properties_panel = panel_smear_painting_properties;
     this->filter_button = button_painting_filter_mode_filter;
     this->brush_properties_button = button_painting_brush;
+    this->brush_properties_button.brush = Brush(BrushProperties(appTextures.white.duplicateTexture("button_painting_brush.brush texture")), "Vector layer brush");
 
 }
 
@@ -99,9 +100,9 @@ void VectorLayer::type_specific_modification(Timer& timer, bool doMouseTracking,
     else
         same = false;
 
-    //if(last_paint_settings != this->get_painting_settings(resolution, mesh)){
-    //    same = false;
-    //}
+    if(last_paint_settings != this->get_painting_settings(resolution, mesh)){
+        same = false;
+    }
 
     if(!same){
         vector_thread.use_thread(resolution, &this->vector_scene, this, &mesh);

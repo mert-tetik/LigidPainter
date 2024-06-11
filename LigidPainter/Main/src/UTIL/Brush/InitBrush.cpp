@@ -58,14 +58,13 @@ Brush::Brush(
     props.alphaJitter = alphaJitter;
     props.individualTexture = individualTexture;
     props.sinWavePattern = sinWavePattern;
-    props.brushTexture.proceduralProps = texture.proceduralProps;
-    props.brushTexture = texture.duplicateTexture("Brush::Brush");
+    props.brushTexture = texture;
 
     *this = Brush(props, title);
 }
 
 Brush::Brush(BrushProperties brushProperties, std::string title){
-    this->displayingTexture = Texture((char*)nullptr, 100, 100, GL_LINEAR);
+    this->displayingTexture = Texture((char*)nullptr, 256, 256, GL_LINEAR);
     this->displayingTexture.title = "BrushDisplayingTexture";    
     
     this->updateDisplayTexture(brushProperties.radius);
@@ -101,8 +100,7 @@ void Brush::update(
     this->properties.individualTexture = individualTexture;
     this->properties.sinWavePattern = sinWavePattern;
     
-    this->properties.brushTexture.proceduralProps = texture.proceduralProps;
-    this->properties.brushTexture = texture.duplicateTexture("Brush::update");
+    this->properties.brushTexture = texture;
 
     this->updateDisplayTexture(displayRadius);
 }

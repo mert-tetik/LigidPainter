@@ -97,6 +97,7 @@ void BrushModificationDialog::show(Timer &timer, BrushProperties* brushPropertie
     if(!this->bgPanel.sections[0].elements[8].button.texture.ID){
         this->bgPanel.sections[0].elements[8].button.texture = Texture(whiteTxtr, brushTextureResolution, brushTextureResolution);
     }
+  
     if(!brushProperties->brushTexture.ID){
         brushProperties->brushTexture = Texture(whiteTxtr, brushTextureResolution, brushTextureResolution);
     }

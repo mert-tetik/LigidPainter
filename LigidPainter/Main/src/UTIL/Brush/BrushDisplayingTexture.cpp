@@ -98,7 +98,7 @@ void Brush::updateDisplayTexture(float radius){
     ShaderSystem::twoDPainting().setVec2("scale", scale); //Cover the screen
     ShaderSystem::twoDPainting().setVec3("pos", pos); //Cover the screen
     ShaderSystem::twoDPainting().setMat4("projection", projection); //Cover the screen
-    ShaderSystem::twoDPainting().setVec2("paintingRes", displayRes); 
+    ShaderSystem::twoDPainting().setVec2("paintingRes", glm::vec2(100.f)); 
     ShaderSystem::twoDPainting().setVec2("videoScale", displayRes); 
     ShaderSystem::twoDPainting().setInt("redChannelOnly", false);
     ShaderSystem::twoDPainting().setVec3("rgbClr", glm::vec3(1.f)); //Cover the screen

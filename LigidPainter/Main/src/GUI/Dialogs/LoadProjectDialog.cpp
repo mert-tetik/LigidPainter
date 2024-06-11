@@ -12,7 +12,7 @@ Official GitHub Link : https://github.com/mert-tetik/LigidPainter
  ---------------------------------------------------------------------------
  */
 
-#include<glad/glad.h>
+#include <glad/glad.h>
 #include "LigidGL/LigidGL.hpp"
 
 #include <glm/glm.hpp>

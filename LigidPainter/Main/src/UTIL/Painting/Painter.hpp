@@ -62,6 +62,8 @@ struct MirrorSide{
 
     PaintingBuffers paintingBuffers;
 
+    Camera threeD_cam;
+
     /*! @brief Whichever axis this mirror side effects becomes -1 and other axises being set to 1. For instance glm::vec3(-1.f, 1.f, 1.f) effects only the x axis*/
     glm::vec3 effectAxis = glm::vec3(0.);
 
@@ -367,7 +369,7 @@ struct PaintSettings{
     }
 };
 
-extern Framebuffer painting_projected_painting_FBO;
+extern Texture painting_projected_painting_txtr;
 
 /*! @brief Returns true if we're painting*/
 bool painting_paint_condition();

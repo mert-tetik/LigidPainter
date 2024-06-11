@@ -59,15 +59,13 @@ void VectorScene::apply_strokes(
     if(threeD){
         for (VectorStroke3D stroke3D : this->strokes_3D)
         {
-            int stroke_pos_i = 0;
-            for (VertexUTIL stroke_pos : stroke3D.lineVertices){
-                if(stroke_pos_i % (int)std::ceil((paint_settings.stroke_brush.properties.spacing + 1.f) / 20.f) == 0){
+            for (size_t i = 0; i < stroke3D.lineVertices.size(); i++)
+            {
+                if(i == 0 || i % 3 == 0 || i == stroke3D.lineVertices.size() - 1){
                     paint_settings.point.use_3D = true;
-                    paint_settings.point.point_3D = ThreeDPoint(stroke_pos.Position, stroke_pos.Normal);
-                    painting_paint_buffers(paint_settings, stroke_pos_i == 0, stroke_pos_i == stroke3D.lineVertices.size() - 1);
+                    paint_settings.point.point_3D = ThreeDPoint(stroke3D.lineVertices[i].Position, stroke3D.lineVertices[i].Normal);
+                    painting_paint_buffers(paint_settings, i == 0, i == stroke3D.lineVertices.size() - 1);
                 }
-
-                stroke_pos_i++;
             }
         }
     }

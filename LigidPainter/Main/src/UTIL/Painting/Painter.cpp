@@ -42,7 +42,7 @@ TODO : Refresh painting buffers
 
 extern bool updateThePreRenderedPanels;
 
-Framebuffer painting_projected_painting_FBO;
+Texture painting_projected_painting_txtr;
 
 MirrorSide O_side;
 MirrorSide X_side;
@@ -109,11 +109,12 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
     std::vector<MirrorSide*> mirrorSides = painting_get_selected_mirror_sides(settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z);
     
     if(settings.painting_mode == 6){
-        bucket_paint_texture(painting_projected_painting_FBO.colorBuffer, Color(settings.color_buffer.stroke_albedo_color), settings.stroke_brush.properties.opacity, (settings.vertex_buffer.paint_model) ? settings.vertex_buffer.model_mesh : nullptr);
+        bucket_paint_texture(painting_projected_painting_txtr, Color(settings.color_buffer.stroke_albedo_color), settings.stroke_brush.properties.opacity, (settings.vertex_buffer.paint_model) ? settings.vertex_buffer.model_mesh : nullptr);
         goto UPDATE_TEXTURE;
     } 
 
     if(settings.point.use_3D){
+        int mirror_I = 0;
         for (MirrorSide* mirrorSide : mirrorSides)
         {
             glm::vec3 offset = glm::vec3(
@@ -131,22 +132,21 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
             ThreeDPoint last_des_point = ThreeDPoint(glm::vec3(last_threeD_point.pos * (mirrorSide->effectAxis * -1.f) - offset * 2.f), glm::vec3(last_threeD_point.normal * (mirrorSide->effectAxis * -1.f)));
 
             std::vector<glm::vec2> strokes;
-            Camera cam;
-            process_3D_point(des_point, last_des_point, *mirrorSide, &cam, &strokes, settings.vertex_buffer.model_mesh, first_frame, settings.stroke_brush.properties.spacing);
+            process_3D_point(des_point, last_des_point, mirrorSide, &strokes, settings.vertex_buffer.model_mesh, first_frame, settings.stroke_brush.properties.spacing);
             
-            if(first_frame && mirrorSide->effectAxis == O_side.effectAxis)
-                last_threeD_point = settings.point.point_3D;
+            if(mirror_I == mirrorSides.size() - 1)
+                last_threeD_point = settings.point.point_3D; 
         
             // Perform window painting
             window_paint(&mirrorSide->paintingBuffers.window_painting_texture, strokes, settings.stroke_brush, frame_counter, settings.painting_mode == 2);
 
-            update_depth_texture(mirrorSide->paintingBuffers.depth_texture, cam, settings.vertex_buffer.model_mesh);
+            update_depth_texture(mirrorSide->paintingBuffers.depth_texture, mirrorSide->threeD_cam, settings.vertex_buffer.model_mesh);
 
             project_window_painting_texture(
                                                 &mirrorSide->paintingBuffers.projected_painting_texture, 
                                                 mirrorSide->paintingBuffers.window_painting_texture, 
                                                 mirrorSide->paintingBuffers.depth_texture.ID, 
-                                                cam,
+                                                mirrorSide->threeD_cam,
                                                 settings.vertex_buffer,
                                                 settings.painting_over_data,
                                                 settings.color_buffer.stroke_albedo_color.getRGB_normalized(),
@@ -154,6 +154,8 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
                                                 settings.stroke_brush.properties.opacity, 
                                                 true
                                             );
+        
+            mirror_I++;
         }
     }
     else{
@@ -197,7 +199,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
     }
     
     GENERATE_PROJECTED_PAINTING_TEXTURE_AND_UPDATE_TEXTURE:
-    generate_projected_painting_texture(&painting_projected_painting_FBO, settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z, !last_frame && !settings.point.use_3D);
+    generate_projected_painting_texture(&painting_projected_painting_txtr, settings.mirror_settings.X, settings.mirror_settings.Y, settings.mirror_settings.Z, !last_frame && !settings.point.use_3D);
         
     frame_counter++;
 
@@ -222,18 +224,18 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
             for (PaintedBufferData painted_buffer : get_painted_buffers(settings)){
                 char clrPx[4] = {painted_buffer.clr.r * 127, painted_buffer.clr.g * 127, painted_buffer.clr.b * 127, 1.};
                 one_px_txtr.update(clrPx, 1, 1);
-                button_painting_filter_mode_filter.filter.applyFilter(painted_buffer.txtr, painting_projected_painting_FBO.colorBuffer, one_px_txtr);
+                button_painting_filter_mode_filter.filter.applyFilter(painted_buffer.txtr, painting_projected_painting_txtr, one_px_txtr);
             }
         }
         else{
             for (PaintedBufferData painted_buffer : get_painted_buffers(settings))
             {
                 if(settings.color_buffer.use_custom_material){
-                    painted_buffer.txtr.mix(painted_buffer.corresponding_custom_material_channel, painting_projected_painting_FBO.colorBuffer, true, false, false);
+                    painted_buffer.txtr.mix(painted_buffer.corresponding_custom_material_channel, painting_projected_painting_txtr, true, false, false);
                     painted_buffer.txtr.removeSeams(*getScene()->get_selected_mesh());
                 }
                 else{
-                    updateTheTexture(painted_buffer.txtr, painted_buffer.channel_index, settings, painting_projected_painting_FBO);
+                    updateTheTexture(painted_buffer.txtr, painted_buffer.channel_index, settings, painting_projected_painting_txtr);
 
                     for (size_t i = 0; i < Library::getTextureArraySize(); i++)
                     {
@@ -245,7 +247,7 @@ void painting_paint_buffers(PaintSettings settings, bool first_frame, bool last_
             }
         }
 
-        refresh_buffers(&painting_projected_painting_FBO);
+        refresh_buffers(&painting_projected_painting_txtr);
 
         updateThePreRenderedPanels = true;
 
@@ -317,7 +319,7 @@ std::vector<MirrorSide*> painting_get_selected_mirror_sides(bool mirror_X, bool 
 void painting_init_buffers(){
     one_px_txtr = Texture((char*)nullptr, 1, 1, GL_NEAREST);
 
-    painting_projected_painting_FBO = Framebuffer(Texture((char*)nullptr, 1024, 1024), GL_TEXTURE_2D, "projected_painting_FBO");
+    painting_projected_painting_txtr = Texture((char*)nullptr, 1024, 1024);
     
     INIT_MIRROR_SIDE(O_side, glm::vec3(-1.f, -1.f, -1.f))
     INIT_MIRROR_SIDE(X_side, glm::vec3(1.f, -1.f, -1.f));
@@ -337,8 +339,8 @@ void painting_init_buffers(){
 void painting_update_buffers(const unsigned int resolution){
     one_px_txtr = Texture((char*)nullptr, 1, 1, GL_NEAREST);
 
-    if(painting_projected_painting_FBO.colorBuffer.getResolution().x != resolution)
-        painting_projected_painting_FBO.colorBuffer.update((char*)nullptr, resolution, resolution);
+    if(painting_projected_painting_txtr.getResolution().x != resolution)
+        painting_projected_painting_txtr.update((char*)nullptr, resolution, resolution);
     
     if(O_side.paintingBuffers.projected_painting_texture.getResolution().x != resolution){
         O_side.paintingBuffers.projected_painting_texture.update((char*)nullptr, resolution, resolution);

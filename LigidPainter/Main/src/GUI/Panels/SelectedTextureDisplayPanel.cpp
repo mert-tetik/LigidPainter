@@ -41,7 +41,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 Panel panel_selected_texture_display;
 
 extern MirrorSide O_side;
-extern Framebuffer painting_projected_painting_FBO;
+extern Texture painting_projected_painting_txtr;
 
 void panel_selected_texture_display_render(Timer& timer, bool doMouseTracking){
     panel_selected_texture_display.sections[0].elements[0].button.texture = panel_library_selected_texture;

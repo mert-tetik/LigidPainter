@@ -77,7 +77,7 @@ void panel_twoD_painting_render(Timer& timer, bool doMouseTracking){
                                                                                                                             0,
                                                                                                                             0,
                                                                                                                             0,
-                                                                                                                            painting_projected_painting_FBO.colorBuffer
+                                                                                                                            painting_projected_painting_txtr
                                                                                                                         ),   
                                                                                 ShaderUTIL::PaintingData::PaintingSmearData(
                                                                                                                                 panel_smear_painting_properties.sections[0].elements[0].rangeBar.value,

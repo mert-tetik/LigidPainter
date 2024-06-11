@@ -252,6 +252,8 @@ bool FileHandler::writeLGDMODELFile(std::string path, Model model){
                     WRITEBITS(mirror_checkComboList->panel.sections[0].elements[5].rangeBar.value, float, "Z axis mirror offset");
 
                     FileHandler::writeBrushData(wf, *vector_stroke_brush, path);
+                    WRITEBITS(vector_stroke_brush->properties.radius, float, "vector_stroke_brush->properties.radius");
+                    WRITEBITS(vector_stroke_brush->properties.opacity, float, "vector_stroke_brush->properties.opacity");
 
                     vectorScene->write_data(wf);
                 } 

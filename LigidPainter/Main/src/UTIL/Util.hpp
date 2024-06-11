@@ -283,6 +283,12 @@ struct BrushProperties{
     bool sinWavePattern = false;
     Texture brushTexture;
 
+    BrushProperties(){}
+
+    BrushProperties(Texture brushTexture){
+        this->brushTexture = brushTexture;
+    }
+
     bool operator==(BrushProperties props) const{
         if(this->radius != props.radius) {return false;}
         if(this->hardness != props.hardness) {return false;}
