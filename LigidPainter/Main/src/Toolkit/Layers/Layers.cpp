@@ -225,6 +225,10 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
     glClearColor(baseColor.r, baseColor.g, baseColor.b, 0.f);
     glClear(GL_COLOR_BUFFER_BIT);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquationSeparate(GL_FUNC_ADD, GL_FUNC_ADD);
+
     for (size_t i = 0; i < this->layers.size(); i++)
     {
         ShaderSystem::layersUpdate().use();

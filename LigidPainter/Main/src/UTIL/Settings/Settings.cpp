@@ -126,6 +126,30 @@ void Settings::initAppTextures(){
     glGenTextures(1, &appTextures.historyIcon.ID);
     glGenTextures(1, &appTextures.historyLibraryIcon.ID);
     glGenTextures(1, &appTextures.messageIcon.ID);
+
+    char whitePxs[256 * 256 * 4];
+    char blackPxs[256 * 256 * 4];
+
+    for (int i = 0; i < 256 * 256 * 4; i += 4) {
+        whitePxs[i] = 127;
+        whitePxs[i + 1] = 127;
+        whitePxs[i + 2] = 127;
+        whitePxs[i + 3] = 127;
+
+        blackPxs[i] = 0;
+        blackPxs[i + 1] = 0;
+        blackPxs[i + 2] = 0;
+        blackPxs[i + 3] = 127;
+    }
+
+    appTextures.white = Texture(whitePxs, 256, 256, GL_NEAREST);
+    appTextures.white.proceduralProps.proceduralID = 24;
+
+    appTextures.black = Texture(blackPxs, 256, 256, GL_NEAREST);
+    appTextures.black.proceduralProps.proceduralID = 24;
+    appTextures.black.proceduralProps.proceduralnverted = true;
+    
+    appTextures.transparent = Texture((char*)nullptr, 1, 1, GL_NEAREST);
 }
 
 void Settings::loadAppTextures(){
@@ -202,30 +226,7 @@ void Settings::loadAppTextures(){
     appTextures.mascotCat_pawL.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawL.png");
     appTextures.mascotCat_pawR.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/pawR.png");
     appTextures.mascotCat_speechBubble.load("./LigidPainter/Resources/Images/Mascot_Cat_Sprites/SpeechBubble.png");
-    
-    char whitePxs[256 * 256 * 4];
-    char blackPxs[256 * 256 * 4];
 
-    for (int i = 0; i < 256 * 256 * 4; i += 4) {
-        whitePxs[i] = 127;
-        whitePxs[i + 1] = 127;
-        whitePxs[i + 2] = 127;
-        whitePxs[i + 3] = 127;
-
-        blackPxs[i] = 0;
-        blackPxs[i + 1] = 0;
-        blackPxs[i + 2] = 0;
-        blackPxs[i + 3] = 127;
-    }
-
-    appTextures.white = Texture(whitePxs, 256, 256, GL_NEAREST);
-    appTextures.white.proceduralProps.proceduralID = 24;
-
-    appTextures.black = Texture(blackPxs, 256, 256, GL_NEAREST);
-    appTextures.black.proceduralProps.proceduralID = 24;
-    appTextures.black.proceduralProps.proceduralnverted = true;
-    
-    appTextures.transparent = Texture((char*)nullptr, 1, 1, GL_NEAREST);
 }
 
 void Settings::loadAppVideos(){
