@@ -475,6 +475,9 @@ static void render_selected_panel(
         if(!load_ligidpainter_done)
             multiThreadInfoPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.5f), "LigidPainter is being loaded...", Texture(), 0., false));
         
+        if(!vector_thread.active)
+            multiThreadInfoPanel->sections[0].elements.push_back(Button(ELEMENT_STYLE_SOLID, glm::vec2(2.5f), "Ongoing vector processing action...", Texture(), 0., false));
+        
         ShaderSystem::buttonShader().setFloat("properties.groupOpacity", multiThreadInfoPanel_mixVal * menu_mode_mix_val);
         multiThreadInfoPanel->scale.x = menu_bar.scale.x;
         multiThreadInfoPanel->scale.y = multiThreadInfoPanel_mixVal * menu_mode_mix_val * panel_scale;

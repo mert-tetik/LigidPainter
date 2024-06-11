@@ -248,12 +248,14 @@ public:
         projectUpdatingThreadElements.exportCV.notify_one();
         projectUpdatingThreadElements.isRunning = false;
         readMaterialThreadElements.isRunning = false;
+        vectorThreadElements.isRunning = false;
 
         project_discard_update_flag = true;
 
         // Wait for the projectUpdatingThread to finish
         projectUpdatingThreadX.join();
         material_thread.thread.join();
+        vector_thread.thread.join();
         load_ligidpainter_thread.join();
 
         getContext()->window.deleteContext();

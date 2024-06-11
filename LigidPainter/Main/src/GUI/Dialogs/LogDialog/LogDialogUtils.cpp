@@ -126,5 +126,5 @@ extern std::atomic<bool> load_ligidpainter_done;
 extern std::atomic<bool> project_updating_thread_working;
 
 bool LogDialog::any_thread_in_progress(){
-    return material_thread.active || project_updating_thread_working || !load_ligidpainter_done;
+    return material_thread.active || project_updating_thread_working || !load_ligidpainter_done || vector_thread.active;
 }

@@ -101,6 +101,7 @@ void projectUpdatingThread(){
 MaterialThread material_thread;
 
 ThreadElements readMaterialThreadElements;
+ThreadElements vectorThreadElements;
 
 
 void MaterialThread::read_material_file(Material* material, Model* model, Mesh* mesh, MaterialChannels* materialChannels, std::string path, unsigned int resolution){
@@ -283,8 +284,8 @@ void vector_thread_function(){
 
     getSecondContext()->window.releaseContext();
 
-    while (readMaterialThreadElements.isRunning){
-        std::lock_guard<std::mutex> lock(readMaterialThreadElements.mutex);
+    while (vectorThreadElements.isRunning){
+        std::lock_guard<std::mutex> lock(vectorThreadElements.mutex);
 
         if(getSecondContext()->window.isContextCurrent())
             getSecondContext()->window.releaseContext();
@@ -294,6 +295,8 @@ void vector_thread_function(){
             while(!getSecondContext()->window.makeContextCurrent()){}
 
             if(vector_thread.actions[0].vector_scene != nullptr){
+                vector_thread.active = true;
+                
                 std::this_thread::sleep_for(std::chrono::seconds(1)); 
 
                 if(!result_channels.albedo.ID){
@@ -321,6 +324,8 @@ void vector_thread_function(){
                 else{
                     vector_thread.actions.clear();
                 }
+
+                vector_thread.active = false;
             }
         }
     }

@@ -84,6 +84,7 @@ void material_thread_function();
 
 extern MaterialThread material_thread;
 extern ThreadElements readMaterialThreadElements;
+extern ThreadElements vectorThreadElements;
 
 struct VectorThreadAction{
     unsigned int resolution;
