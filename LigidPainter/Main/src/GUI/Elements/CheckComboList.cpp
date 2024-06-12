@@ -103,7 +103,7 @@ void CheckComboList::render(
     this->scale.x = checkButton.scale.x + arrowButton.scale.x;
     this->scale.y = checkButton.scale.y;
 
-    this->hover = checkButton.hover || arrowButton.hover || panel.hover;
+    this->hover = checkButton.hover || arrowButton.hover || arrowButton.clickState1 && (panel.hover);
 
     ShaderSystem::buttonShader().setFloat("properties.groupOpacity", arrowButton.clickedMixVal);
     panel.pos = arrowButton.pos;
