@@ -119,6 +119,8 @@ void VectorLayer::type_specific_generate_result(const unsigned int resolution, M
     this->result.heightMap.update((char*)nullptr, this->result.heightMap.getResolution().x, this->result.heightMap.getResolution().y);
     this->result.ambientOcclusion.update((char*)nullptr, this->result.ambientOcclusion.getResolution().x, this->result.ambientOcclusion.getResolution().y);
 
+    this->vector_scene.update3DVectorBuffers();
+
     vector_scene.apply_strokes(
                                     true, 
                                     false, 

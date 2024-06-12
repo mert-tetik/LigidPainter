@@ -258,6 +258,7 @@ bool FileHandler::readLGDMODELFile(std::string path, Model& model){
                     READ_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr1_Btn.color, "Selected color 1");
                     READ_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr2_Btn.color, "Selected color 2");
                     READ_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr3_Btn.color, "Selected color 3");
+                    READBITS(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.selectedI, int, "Selected color index");
                     READBITS(color_checkComboList->panel.sections[0].elements[3].checkBox.clickState1, bool, "Enable Roughness Channel");
                     READBITS(color_checkComboList->panel.sections[0].elements[4].rangeBar.value, float, "Roughness Channel Value");
                     READBITS(color_checkComboList->panel.sections[0].elements[5].checkBox.clickState1, bool, "Enable Metallic Channel");

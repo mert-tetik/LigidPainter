@@ -230,6 +230,7 @@ bool FileHandler::writeLGDMODELFile(std::string path, Model model){
                     WRITE_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr1_Btn.color, "Selected color 1");
                     WRITE_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr2_Btn.color, "Selected color 2");
                     WRITE_VEC3(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.clr3_Btn.color, "Selected color 3");
+                    WRITEBITS(color_checkComboList->panel.sections[0].elements[2].painterColorSelection.selectedI, int, "Selected color index");
                     WRITEBITS(color_checkComboList->panel.sections[0].elements[3].checkBox.clickState1, bool, "Enable Roughness Channel");
                     WRITEBITS(color_checkComboList->panel.sections[0].elements[4].rangeBar.value, float, "Roughness Channel Value");
                     WRITEBITS(color_checkComboList->panel.sections[0].elements[5].checkBox.clickState1, bool, "Enable Metallic Channel");

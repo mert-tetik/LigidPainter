@@ -275,7 +275,7 @@ void NewProjectDialog::show(Timer& timer){
 
                     for (Mesh& mesh : getScene()->model->meshes)
                     {
-                        mesh.layerScene.update_result(std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]), glm::vec3(0.f), mesh);
+                        mesh.layerScene.update_all_layers(std::stoi(comboBox_layers_resolution.texts[comboBox_layers_resolution.selectedIndex]), glm::vec3(0.f), mesh);
                     }
                 }
             }

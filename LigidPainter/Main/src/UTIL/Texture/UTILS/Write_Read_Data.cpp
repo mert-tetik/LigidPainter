@@ -271,4 +271,5 @@ bool Texture::readPixelData(std::ifstream& rf){
     
     delete[] pxs;
 
+    return true;
 }
