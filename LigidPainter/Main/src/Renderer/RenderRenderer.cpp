@@ -73,7 +73,7 @@ void Renderer::render(){
     Debugger::block("Painting"); // Start
     //Painting
     if(
-            painting_paint_condition() || last_painting_condition
+            (painting_paint_condition() || last_painting_condition) && (Mouse::mouseOffset()->x || Mouse::mouseOffset()->y || *Mouse::LClick() || (last_painting_condition && !painting_paint_condition()))
         )
     {
         bool success = false;
