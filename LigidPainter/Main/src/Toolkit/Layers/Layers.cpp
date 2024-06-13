@@ -182,6 +182,10 @@ void LayerScene::render(Timer& timer, Panel &layerPanel, bool doMouseTracking, c
                 }
                 
                 moveLayer(movingLayerI, movingI, this->layers);
+            
+                if(movingLayerI != movingI){
+                    this->update_result(resolution, glm::vec3(0.f), mesh);
+                }
             }
         }
         btnMoving = false;
@@ -231,37 +235,40 @@ void LayerScene::update_result(unsigned int resolution, glm::vec3 baseColor, Mes
 
     for (size_t i = 0; i < this->layers.size(); i++)
     {
-        ShaderSystem::layersUpdate().use();
-        ShaderSystem::layersUpdate().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
-        ShaderSystem::layersUpdate().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.7f));
-        ShaderSystem::layersUpdate().setVec2("scale", glm::vec2(0.5f));    
+        if(!this->layers[i]->hiden){
+
+            ShaderSystem::layersUpdate().use();
+            ShaderSystem::layersUpdate().setMat4("projection", glm::ortho(0.f, 1.f, 1.f, 0.f));
+            ShaderSystem::layersUpdate().setVec3("pos", glm::vec3(0.5f, 0.5f, 0.7f));
+            ShaderSystem::layersUpdate().setVec2("scale", glm::vec2(0.5f));    
+        
+            ShaderSystem::layersUpdate().setInt("albedoTxtr", GL::bindTexture_2D(this->layers[i]->result.albedo.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setInt("roughnessTxtr", GL::bindTexture_2D(this->layers[i]->result.roughness.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setInt("metallicTxtr", GL::bindTexture_2D(this->layers[i]->result.metallic.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setInt("normalMapTxtr", GL::bindTexture_2D(this->layers[i]->result.normalMap.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setInt("heightMapTxtr", GL::bindTexture_2D(this->layers[i]->result.heightMap.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setInt("ambientOcclusionTxtr", GL::bindTexture_2D(this->layers[i]->result.ambientOcclusion.ID, "LayerScene::update_result"));
+
+            ShaderSystem::layersUpdate().setInt("generalMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.general_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setFloat("generalOpacity", this->layers[i]->alpha.general_Alpha.alphaValue);
+            ShaderSystem::layersUpdate().setInt("albedoMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.albedo_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setFloat("albedoOpacity", this->layers[i]->alpha.albedo_Alpha.alphaValue);
+            ShaderSystem::layersUpdate().setInt("roughnessMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.roughness_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setFloat("roughnessOpacity", this->layers[i]->alpha.roughness_Alpha.alphaValue);
+            ShaderSystem::layersUpdate().setInt("metallicMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.metallic_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setFloat("metallicOpacity", this->layers[i]->alpha.metallic_Alpha.alphaValue);
+            ShaderSystem::layersUpdate().setInt("normalMapMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.normalMap_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setFloat("normalMapOpacity", this->layers[i]->alpha.normalMap_Alpha.alphaValue);
+            ShaderSystem::layersUpdate().setInt("heightMapMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.heightMap_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setFloat("heightMapOpacity", this->layers[i]->alpha.heightMap_Alpha.alphaValue);
+            ShaderSystem::layersUpdate().setInt("ambientOcclusionMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
+            ShaderSystem::layersUpdate().setFloat("ambientOcclusionOpacity", this->layers[i]->alpha.ambientOcclusion_Alpha.alphaValue);
     
-        ShaderSystem::layersUpdate().setInt("albedoTxtr", GL::bindTexture_2D(this->layers[i]->result.albedo.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setInt("roughnessTxtr", GL::bindTexture_2D(this->layers[i]->result.roughness.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setInt("metallicTxtr", GL::bindTexture_2D(this->layers[i]->result.metallic.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setInt("normalMapTxtr", GL::bindTexture_2D(this->layers[i]->result.normalMap.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setInt("heightMapTxtr", GL::bindTexture_2D(this->layers[i]->result.heightMap.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setInt("ambientOcclusionTxtr", GL::bindTexture_2D(this->layers[i]->result.ambientOcclusion.ID, "LayerScene::update_result"));
+            getBox()->draw("layers_update_result");
 
-        ShaderSystem::layersUpdate().setInt("generalMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.general_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setFloat("generalOpacity", this->layers[i]->alpha.general_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("albedoMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.albedo_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setFloat("albedoOpacity", this->layers[i]->alpha.albedo_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("roughnessMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.roughness_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setFloat("roughnessOpacity", this->layers[i]->alpha.roughness_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("metallicMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.metallic_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setFloat("metallicOpacity", this->layers[i]->alpha.metallic_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("normalMapMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.normalMap_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setFloat("normalMapOpacity", this->layers[i]->alpha.normalMap_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("heightMapMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.heightMap_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setFloat("heightMapOpacity", this->layers[i]->alpha.heightMap_Alpha.alphaValue);
-        ShaderSystem::layersUpdate().setInt("ambientOcclusionMaskTxtr", GL::bindTexture_2D(this->layers[i]->alpha.ambientOcclusion_Alpha.alphaMapProceduralTxtr.ID, "LayerScene::update_result"));
-        ShaderSystem::layersUpdate().setFloat("ambientOcclusionOpacity", this->layers[i]->alpha.ambientOcclusion_Alpha.alphaValue);
-   
-        getBox()->draw("layers_update_result");
-
-        GL::releaseBoundTextures("LayerScene::update_result");
-        ShaderUTIL::release_bound_shader();
+            GL::releaseBoundTextures("LayerScene::update_result");
+            ShaderUTIL::release_bound_shader();
+        }
     }
 
     FBOPOOL::releaseFBO(FBO);

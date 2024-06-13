@@ -238,6 +238,7 @@ bool LayerGUI::show_layer_context_menu(Timer& timer, Layer* layer, LayerScene* s
     // Pressed to hide - unhide button
     if(context_menu_elements[res] == hide_txt || context_menu_elements[res] == unhide_txt || context_menu_elements[res] == hide_unhide_all_txt){
         src_layer_scene->hide_unhide_selected_layers();
+        src_layer_scene->update_result(resolution, glm::vec3(0.f), mesh);
     }   
 
     // Pressed to set elements button
@@ -248,6 +249,7 @@ bool LayerGUI::show_layer_context_menu(Timer& timer, Layer* layer, LayerScene* s
     // Pressed to delete button
     if(context_menu_elements[res] == delete_txt || context_menu_elements[res] == delete_all_txt){
         src_layer_scene->delete_all_selected_layers();
+        src_layer_scene->update_result(resolution, glm::vec3(0.f), mesh);
         return true;
     }
 
