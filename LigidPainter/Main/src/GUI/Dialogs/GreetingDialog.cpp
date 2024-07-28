@@ -31,7 +31,7 @@
 #include <vector>
 
 static bool newVersionMode = false;
-static int currentVersion = 241;
+static int currentVersion = 300;
 
 static size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp)
 {
@@ -48,39 +48,74 @@ bool isNumeric(const std::string& str) {
     return true;
 }
 
+int extractVersionNumber(const std::string& data, const std::string& tag) {
+    // Find the position of the tag_name
+    std::string searchStr = "\"" + tag + "\":\"v";
+    size_t tagPos = data.find(searchStr);
+    if (tagPos == std::string::npos) {
+        // Tag not found
+        return -1;
+    }
+
+    // Move position to the start of the version number
+    tagPos += searchStr.length();
+
+    // Find the end of the version number
+    size_t endPos = data.find('"', tagPos);
+    if (endPos == std::string::npos) {
+        // Malformed data
+        return -1;
+    }
+
+    // Extract the version string
+    std::string versionStr = data.substr(tagPos, endPos - tagPos);
+
+    // Convert version string to integer
+    std::stringstream ss(versionStr);
+    int major, minor, patch = 0;
+    char dot1, dot2;
+
+    if (!(ss >> major >> dot1 >> minor >> dot2 >> patch) || dot1 != '.' || (dot2 != '.' && dot2 != '\0')) {
+        // Malformed version string
+        return -1;
+    }
+
+    // Return version as integer (e.g., v2.4.0 => 20400)
+    return major * 100 + minor * 10 + patch;
+}
+
 GreetingDialog::GreetingDialog(int){
 
-    CURL *curl;
+    CURL* curl;
     CURLcode res;
     std::string readBuffer;
 
     curl = curl_easy_init();
     if(curl) {
+        struct curl_slist* headers = NULL;
 
-        curl_easy_setopt(curl, CURLOPT_URL, "http://storage.googleapis.com/ligidtoolsbucket/LigidPainter_Latest_Version.txt");
+        // Add User-Agent header
+        headers = curl_slist_append(headers, "User-Agent: FloralPen");
+
+        curl_easy_setopt(curl, CURLOPT_URL, "https://api.github.com/repos/mert-tetik/LigidPainter/releases/latest");
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
-
+        
         res = curl_easy_perform(curl);
-        curl_easy_cleanup(curl);
 
-        if(readBuffer.size()){
-            if(isNumeric(readBuffer)){
-                try
-                {
-                    if(std::stoi(readBuffer) > currentVersion){
-                        newVersionMode = true;
-                    }
-                }
-                catch(const std::exception& e)
-                {
-                }
-            }
-        }
+        if(res != CURLE_OK)
+            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+
+        curl_slist_free_all(headers); // Free the header list
+        curl_easy_cleanup(curl);
     }
-    else{
-        std::cout << "Failed to initialize libcurl!" << std::endl;
+
+    if(extractVersionNumber(readBuffer, "tag_name") > currentVersion){
+        newVersionMode = true;
     }
+
+    curl_global_cleanup();
 
     
     //First text button

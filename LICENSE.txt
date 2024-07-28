@@ -1,6 +1,6 @@
 © 2024 Mert Tetik. All rights reserved.
 
-LigidPainter Source Code License Agreement
+LigidPainter Source Code & Binary Form License Agreement
 
 Version 1.1
 

@@ -4,10 +4,10 @@ in vec2 TexCoords;
 
 uniform sampler2D txtr;
 uniform vec2 txtrResolution;
+uniform float strength;
 uniform int blurIndex;
 uniform vec2 radialPos;
 uniform float directionalDirection;
-uniform float strength;
 
 out vec4 color;
 

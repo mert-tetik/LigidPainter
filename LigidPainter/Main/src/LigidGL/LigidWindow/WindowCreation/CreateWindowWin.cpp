@@ -25,6 +25,7 @@ Official Web Page : https://ligidtools.com/ligidpainter
 #include <cstdint>
 
 #include <Windows.h>
+#include <GL/wglext.h>
 
 //  --------------------    WGL    --------------------
 
@@ -133,10 +134,10 @@ static void init_opengl_extensions(void)
     pfd.nVersion = 1;
     pfd.iPixelType = PFD_TYPE_RGBA;
     pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-    pfd.cColorBits = 32;
+    pfd.cColorBits = 24;
     pfd.cAlphaBits = 8;
     pfd.iLayerType = PFD_MAIN_PLANE;
-    pfd.cDepthBits = 24;
+    pfd.cDepthBits = 8;
     pfd.cStencilBits = 8;
 
     int pixel_format = ChoosePixelFormat(dummy_dc, &pfd);
@@ -181,11 +182,15 @@ HGLRC init_opengl(HDC real_dc)
         WGL_DOUBLE_BUFFER_ARB,      GL_TRUE,
         WGL_ACCELERATION_ARB,       WGL_FULL_ACCELERATION_ARB,
         WGL_PIXEL_TYPE_ARB,         WGL_TYPE_RGBA_ARB,
-        WGL_COLOR_BITS_ARB,         32,
-        WGL_DEPTH_BITS_ARB,         24,
+        WGL_COLOR_BITS_ARB,         24,
+        WGL_ALPHA_BITS_ARB,         8,   // Request alpha bits
+        WGL_DEPTH_BITS_ARB,         8,
         WGL_STENCIL_BITS_ARB,       8,
+        //WGL_SAMPLE_BUFFERS_ARB,     1,
+        //WGL_SAMPLES_ARB,            1,
         0
     };
+
 
     int pixel_format;
     UINT num_formats;

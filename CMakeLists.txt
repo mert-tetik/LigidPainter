@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.9)
 
 # Define the project data
-project(LigidPainter VERSION 2.5.0)
+project(LigidPainter VERSION 3.0.0)
 
 # Glob all source files in the LigidPainter directory
 file(GLOB_RECURSE LIGID_SOURCES
@@ -74,8 +74,8 @@ install(
         )
 
 # Set the project version
-set(PROJECT_VERSION_MAJOR 2)
-set(PROJECT_VERSION_MINOR 5)
+set(PROJECT_VERSION_MAJOR 3)
+set(PROJECT_VERSION_MINOR 0)
 set(PROJECT_VERSION_PATCH 0)
 
 # Set CPack package details
@@ -93,8 +93,8 @@ set(CPACK_PACKAGE_EXECUTABLES Ligid;LigidPainter)
 set(CPACK_CREATE_DESKTOP_LINKS Ligid)
 
 # Set CPack package version
-set(CPACK_PACKAGE_VERSION_MAJOR 2)
-set(CPACK_PACKAGE_VERSION_MINOR 5)
+set(CPACK_PACKAGE_VERSION_MAJOR 3)
+set(CPACK_PACKAGE_VERSION_MINOR 0)
 set(CPACK_PACKAGE_VERSION_PATCH 0)
 set(CPACK_GENERATOR WIX)
 
@@ -140,5 +140,5 @@ target_link_libraries(Ligid PRIVATE
     zlibd 
     OpenAL32 
     OpenGL::GL
-    libcurl-d_imp
+    libcurl
 )
