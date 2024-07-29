@@ -20,10 +20,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Define CMAKE_HAS_X
 add_definitions(-DCMAKE_HAS_X)
 
-if(WIN32)
+if(WIN32) 
     # Add Windows-specific configurations
     add_executable(  
-                    Ligid
+                    Ligid WIN32
                     ${LIGID_SOURCES}
                     ${CMAKE_SOURCE_DIR}/Installer/AppIcon.rc
                  )
@@ -47,12 +47,12 @@ target_compile_definitions(Ligid PRIVATE UNICODE _UNICODE)
 install(TARGETS Ligid)
 
 install(
-            FILES
+            FILES 
             "${CMAKE_SOURCE_DIR}/freetype.dll"
             "${CMAKE_SOURCE_DIR}/assimp-vc142-mtd.dll"
             "${CMAKE_SOURCE_DIR}/OpenAL32.dll"
             "${CMAKE_SOURCE_DIR}/zlibd.dll"
-            "${CMAKE_SOURCE_DIR}/libcurl-d.dll"
+            "${CMAKE_SOURCE_DIR}/libcurl.dll"
             "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.29.30133/debug_nonredist/x64/Microsoft.VC142.DebugCRT/concrt140d.dll"
             "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.29.30133/debug_nonredist/x64/Microsoft.VC142.DebugCRT/msvcp140_1d.dll"
             "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Redist/MSVC/14.29.30133/debug_nonredist/x64/Microsoft.VC142.DebugCRT/msvcp140_2d.dll"

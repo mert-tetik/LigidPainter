@@ -19,10 +19,11 @@ Official Web Page : https://ligidtools.com/ligidpainter
 bool ligidPainter_DEBUG_MODE = false;
 bool ligidPainter_ONLY_INIT = false;
 
-int main(int argc, char *argv[]) 
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	LigidPainter ligidPainter;
 
+	/*
 	if (argc >= 2) {
         // The first argument (argv[0]) is the program name
         // The second argument (argv[1]) is the variable name
@@ -43,6 +44,8 @@ int main(int argc, char *argv[])
 			std::cout << "WARNING! INVALID ARGUMENT SET : " << variableName << " : DEBUG MODE IS 'DEBUG_MODE' " << std::endl;
 		}
 	} 
+	*/
+
 	bool end = ligidPainter.run();
 	
 	return 0;
